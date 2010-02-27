@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.29 2009/11/24 21:44:48 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.30 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 #include "ObjectClassSet.hh"
 #include "DeclarationManagement.hh"
 #include "NM_Classes.hh"
+#include "M_Classes.hh"
 
 #include <memory>
 
@@ -57,8 +58,8 @@ DeclarationManagement::~DeclarationManagement()
 // publishObjectClass
 void
 DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
-                                          std::vector <AttributeHandle> &attribArray,
-                                          UShort attribArraySize,
+                                          const std::vector <AttributeHandle> &attribArray,
+                                          uint32_t attribArraySize,
                                           TypeException &e)
 {
     G.Out(pdGendoc,"enter DeclarationManagement::publishObjectClass") ;
@@ -87,7 +88,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     req.federation      = fm->_numero_federation ;
     req.federate        = fm->federate ;
 
-    for (int i=0 ; i<attribArraySize ; i++)
+    for (uint32_t i=0 ; i<attribArraySize ; i++)
         req.handleArray[i] = attribArray[i] ;
 
     // Emission
@@ -213,8 +214,8 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 void
 DeclarationManagement::
 subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                              std::vector <AttributeHandle> &attribArray,
-                              UShort attribArraySize,
+                              const std::vector <AttributeHandle> &attribArray,
+                              uint32_t attribArraySize,
                               TypeException &e)
 {
     NM_Subscribe_Object_Class req;
@@ -230,7 +231,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
-    for (int i=0 ; i<attribArraySize ; i++)
+    for (uint32_t i=0 ; i<attribArraySize ; i++)
         req.handleArray[i] = attribArray[i] ;
 
     // Emission
@@ -380,9 +381,8 @@ startRegistrationForObjectClass(ObjectClassHandle the_class,
 {
     G.Out(pdGendoc,"enter DeclarationManagement::startRegistrationForObjectClass");
 
-    Message req;
+    M_Start_Registration_For_Object_Class req;
 
-    req.type = Message::START_REGISTRATION_FOR_OBJECT_CLASS ;
     req.setObjectClass(the_class);
 
     comm->requestFederateService(&req);
@@ -397,26 +397,23 @@ DeclarationManagement::
 stopRegistrationForObjectClass(ObjectClassHandle the_class,
                                TypeException &e)
 {
-    Message req, rep ;
-
+    M_Stop_Registration_For_Object_Class req;
     // Pas de partie Locale
 
     // Partie Federe
 
-    req.type = Message::STOP_REGISTRATION_FOR_OBJECT_CLASS ;
     req.setObjectClass(the_class);
-
     comm->sendUN(&req);
 
-    comm->receiveUN(&rep);
+    std::auto_ptr<Message>  rep(comm->receiveUN());
 
-    if (rep.type != req.type) {
+    if (rep->getType() != req.getType()) {
         D.Out(pdExcept, "Unknown response type when waiting for "
               "START_REGISTRATION_FOR_OBJECT_CLASS.");
         throw RTIinternalError("");
     }
 
-    e = rep.getExceptionType();
+    e = rep->getExceptionType();
 }
 
 void
@@ -450,19 +447,18 @@ DeclarationManagement::
 turnInteractionsOn(InteractionClassHandle interaction,
                    TypeException &e)
 {
-    Message req, rep ;
-    req.type = Message::TURN_INTERACTIONS_ON ;
+    M_Turn_Interactions_On req;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
-    comm->receiveUN(&rep);
+    std::auto_ptr<Message> rep(comm->receiveUN());
 
-    if (rep.type != req.type) {
+    if (rep->getType() != req.getType()) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_ON.");
         throw RTIinternalError("");
     }
 
-    e = rep.getExceptionType();
+    e = rep->getExceptionType();
 }
 
 // ----------------------------------------------------------------------------
@@ -472,22 +468,20 @@ DeclarationManagement::
 turnInteractionsOff(InteractionClassHandle interaction,
                     TypeException &e)
 {
-    Message req ;
-    req.type = Message::TURN_INTERACTIONS_OFF ;
+    M_Turn_Interactions_Off req ;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
-    Message rep ;
-    comm->receiveUN(&rep);
+    std::auto_ptr<Message> rep(comm->receiveUN());
 
-    if (rep.type != req.type) {
+    if (rep->getType() != req.getType()) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
         throw RTIinternalError("");
     }
 
-    e = rep.getExceptionType();
+    e = rep->getExceptionType();
 }
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.29 2009/11/24 21:44:48 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.30 2010/02/27 16:53:36 erk Exp $

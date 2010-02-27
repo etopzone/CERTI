@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.36 2009/11/24 21:44:48 erk Exp $
+// $Id: Communications.cc,v 3.37 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 #include <assert.h>
 #include "PrettyDebug.hh"
 #include "NM_Classes.hh"
+#include "M_Classes.hh"
 
 #include "SocketHTTPProxy.hh"
 #include "SecureTCPSocket.hh"
@@ -165,7 +166,7 @@ Communications::requestFederateService(Message *req)
     // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
     //               "type %d",req->type);
     assert(req != NULL);
-    D.Out(pdRequest, "Sending Request to Federate, Type %d.", req->type);
+    D.Out(pdRequest, "Sending Request to Federate, Name %s, Type %d.", req->getMessageName(),req->getType());
     req->send(socketUN, msgBufSend);
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
@@ -245,8 +246,7 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
     else if (msg && socketUN->isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
-    	(*msg) = new Message();
-        (*msg)->receive(socketUN, msgBufReceive);
+    	*msg = M_Factory::receive(socketUN);
         n = 2 ;
     }
     else {
@@ -291,9 +291,8 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
             n = 1 ;
         }
         else if (FD_ISSET(socketUN->returnSocket(), &fdset)) {
-            // Read a message coming from the federate.            
-            (*msg) = new Message();
-            (*msg)->receive(socketUN, msgBufReceive);
+            // Read a message coming from the federate.
+			*msg = M_Factory::receive(socketUN);
             n = 2 ;
         }
         else
@@ -350,12 +349,13 @@ Communications::sendUN(Message *Msg)
 }
 
 // ----------------------------------------------------------------------------
-void
-Communications::receiveUN(Message *Msg)
+Message*
+Communications::receiveUN()
 {
-    Msg->receive(socketUN, msgBufReceive);
+	Message* msg = M_Factory::receive(socketUN);
+	return msg;
 }
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.36 2009/11/24 21:44:48 erk Exp $
+// $Id: Communications.cc,v 3.37 2010/02/27 16:53:36 erk Exp $

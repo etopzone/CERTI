@@ -17,31 +17,43 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.40 2010/01/30 23:14:50 erk Exp $
+// $Id: Message_RW.cc,v 3.41 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Message.hh"
 #include <cassert>
+#include <iostream>
 
 namespace certi {
 
 static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
 
+void Message::show(std::ostream& out) {
+	out << "[Message -Begin]" << std::endl;
+	out << "     type = " << type << std::endl;
+	out << "     exception = " << exception << std::endl;
+	if (exception != e_NO_EXCEPTION) {
+		out << "     exceptionReason = " << exceptionReason << std::endl;
+	} else {
+		BasicMessage::show(out);
+	}
+	out << "[Message -End]" << std::endl;
+} /* end of show */
 
 void Message::serialize(MessageBuffer& msgBuffer) {
 	G.Out(pdGendoc,"enter Message::serialize");
 	if ((type==NOT_USED) || (type==LAST)) {
-			throw RTIinternalError("Invalid network type (not a valid type);");
+		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
-	D.Out(pdDebug, "Serialize <%s>", getName());
+	D.Out(pdDebug, "Serialize <%s>", getMessageName());
+	//show(std::cerr);
 	/* type of message */
 	msgBuffer.write_int32(type);
 	msgBuffer.write_int32(exception);
 	if (exception != e_NO_EXCEPTION) {
-	    msgBuffer.write_string(exceptionReason);
+		msgBuffer.write_string(exceptionReason);
 	} else {
-		msgBuffer.write_double(fed_time.getTime());
 		BasicMessage::serialize(msgBuffer);
 	}
 	G.Out(pdGendoc,"exit Message::serialize");
@@ -52,16 +64,15 @@ void Message::deserialize(MessageBuffer& msgBuffer) {
 	/* We serialize the common Message part
 	 * ALL Messages will contain the following
 	 */
-	Debug(D, pdDebug) << "Deserialize <" << getName()<<">"<<std::endl;
-    /* deserialize common part */
-    type        = static_cast<Message::Type>(msgBuffer.read_int32());
-    exception   = static_cast<TypeException>(msgBuffer.read_int32());
-    if (exception != e_NO_EXCEPTION) {
-        msgBuffer.read_string(exceptionReason);
-    } else {
-    	fed_time    = msgBuffer.read_double();
-    	BasicMessage::deserialize(msgBuffer);
-    }
+	Debug(D, pdDebug) << "Deserialize <" << getMessageName()<<">"<<std::endl;
+	/* deserialize common part */
+	type        = static_cast<Message::Type>(msgBuffer.read_int32());
+	exception   = static_cast<TypeException>(msgBuffer.read_int32());
+	if (exception != e_NO_EXCEPTION) {
+		msgBuffer.read_string(exceptionReason);
+	} else {
+		BasicMessage::deserialize(msgBuffer);
+	}
 	G.Out(pdGendoc,"exit Message::deserialize");
 } /* end of deserialize */
 
@@ -77,7 +88,7 @@ Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, N
 	serialize(msgBuffer);
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName(),msgBuffer.size());
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
 	//msgBuf.show(msgBuffer(0),5);
 	/* 3- effectively send the raw message to socket */
 	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
@@ -93,7 +104,7 @@ Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError
 	 */
 	msgBuffer.reset();
 	/* 1- Read 'reserved bytes' header from socket */
-	D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
+	D.Out(pdDebug,"(recv) Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
 	socket->receive(static_cast<const unsigned char *>(msgBuffer(0)), msgBuffer.reservedBytes);
 	//msgBuffer.show(msgBuffer(0),5);fflush(stdout);
 	/* 2- update (assume) complete message size from reserved bytes */
@@ -109,6 +120,7 @@ Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError
 	G.Out(pdGendoc,"exit  Message::receive");
 } /* end of receive */
 
+/*
 void
 Message::readHandleArray(MessageBuffer &msgBuffer)
 {
@@ -129,7 +141,8 @@ Message::writeHandleArray(MessageBuffer &msgBuffer)
       msgBuffer.write_uint64(handleArray[i]) ;
       }
 }
+ */
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.40 2010/01/30 23:14:50 erk Exp $
+// $Id: Message_RW.cc,v 3.41 2010/02/27 16:53:36 erk Exp $

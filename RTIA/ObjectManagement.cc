@@ -33,6 +33,7 @@
 #include "PrettyDebug.hh"
 #include "TimeManagement.hh"
 #include "NM_Classes.hh"
+#include "M_Classes.hh"
 
 using std::cout ;
 using std::endl ;
@@ -110,15 +111,14 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 */
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
-                                        std::vector<AttributeHandle> &attribArray,
-                                        std::vector<AttributeValue_t> &valueArray,
-                                        UShort attribArraySize,
+                                        const std::vector<AttributeHandle> &attribArray,
+                                        const std::vector<AttributeValue_t> &valueArray,
+                                        uint32_t attribArraySize,
                                         FederationTime theTime,
                                         const std::string& theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
-    int i ;
     bool validCall ;
     EventRetractionHandle evtrHandle;
 
@@ -136,7 +136,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     	req.handleArraySize = attribArraySize ;
         req.sizeValueArray(attribArraySize) ;
 
-        for (i = 0 ; i < attribArraySize ; i++) {
+        for (uint32_t i = 0 ; i < attribArraySize ; i++) {
             req.handleArray[i] = attribArray[i] ;
             req.valueArray[i] = valueArray[i] ;
         }
@@ -176,14 +176,13 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 */
 void
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
-                                        std::vector<AttributeHandle> &attribArray,
-                                        std::vector<AttributeValue_t> &valueArray,
-                                        UShort attribArraySize,
+                                        const std::vector<AttributeHandle> &attribArray,
+                                        const std::vector<AttributeValue_t> &valueArray,
+                                        uint32_t attribArraySize,
                                         const std::string& theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
-    int i ;
 
     G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues without time");
     // Building request (req NetworkMessage)
@@ -195,7 +194,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.handleArraySize = attribArraySize ;
     req.sizeValueArray(attribArraySize) ;
 
-    for (i = 0 ; i < attribArraySize ; i++) {
+    for (uint32_t i = 0 ; i < attribArraySize ; i++) {
         req.handleArray[i] = attribArray[i] ;
         req.valueArray[i] = valueArray[i];
     }
@@ -219,14 +218,13 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
                                  EventRetractionHandle the_event,
                                  TypeException &)
 {
-    Message req;
+    M_Discover_Object_Instance req;
 
-    req.type = Message::DISCOVER_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setObjectClass(the_class);
-    req.setFederationTime(the_time);
+    req.setDate(the_time);
     req.setEventRetraction(the_event);
-    req.setName(the_name);
+    req.setObjectName(the_name);
 
     comm->requestFederateService(&req);
 
@@ -243,7 +241,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
     try {
       // Adding discovered object in federate internal object list.
       rootObject->registerObjectInstance(fm->federate, the_class, the_object,
-                                         req.getName());
+                                         req.getObjectName());
     } 
     catch (ObjectAlreadyRegistered) {
     }
@@ -261,17 +259,20 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          EventRetractionHandle the_event,
                                          TypeException &)
 {
-    Message req;
+    M_Reflect_Attribute_Values req;
 
     G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues with time");
-    req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
-    req.setFederationTime(the_time);
+    req.setDate(the_time);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
-    req.setAttributes(the_attributes, the_values, the_size);
-    // true for RAV without time
-    req.setBoolean(true);
+
+    req.setValuesSize(the_size);
+    req.setAttributesSize(the_size);
+    for (int i=0; i<the_size;++i) {
+    	req.setValues(the_values[i],i);
+    	req.setAttributes(the_attributes[i],i);
+    }
 
     comm->requestFederateService(&req);
     G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues with time");
@@ -287,15 +288,19 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          const std::string& the_tag,
                                          TypeException &)
 {
-    Message req;
+    M_Reflect_Attribute_Values req;
 
     G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues without time");
-    req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setTag(the_tag);
-    req.setAttributes(the_attributes, the_values, the_size);
-    // false for RAV without time
-    req.setBoolean(false);
+
+    req.setValuesSize(the_size);
+    req.setAttributesSize(the_size);
+        for (int i=0; i<the_size;++i) {
+        	req.setValues(the_values[i],i);
+        	req.setAttributes(the_attributes[i],i);
+        }
+
 
     comm->requestFederateService(&req);
     G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues without time");
@@ -305,9 +310,9 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 //! sendInteraction with time
 EventRetractionHandle
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
-                                  std::vector <ParameterHandle> &paramArray,
-                                  std::vector <ParameterValue_t> &valueArray,
-                                  UShort paramArraySize,
+                                  const std::vector <ParameterHandle> &paramArray,
+                                  const std::vector <ParameterValue_t> &valueArray,
+                                  uint32_t paramArraySize,
                                   FederationTime theTime,
                                   const std::string& theTag,
 				  RegionHandle region,
@@ -338,7 +343,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
        req.handleArraySize = paramArraySize ;
        req.sizeValueArray(paramArraySize) ;
 
-       for (int i=0 ; i<paramArraySize ; i++) {
+       for (unsigned int i=0 ; i<paramArraySize ; i++) {
         	req.handleArray[i] = paramArray[i] ;
                 req.valueArray[i] = valueArray[i];
        }
@@ -363,9 +368,9 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 //! sendInteraction without time
 void
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
-                                  std::vector <ParameterHandle> &paramArray,
-                                  std::vector <ParameterValue_t> &valueArray,
-                                  UShort paramArraySize,
+                                  const std::vector <ParameterHandle> &paramArray,
+                                  const std::vector <ParameterValue_t> &valueArray,
+                                  uint32_t paramArraySize,
                                   const std::string& theTag,
 				  RegionHandle region,
                                   TypeException &e)
@@ -387,7 +392,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     req.handleArraySize = paramArraySize ;
     req.sizeValueArray(paramArraySize) ;
 
-    for (int i=0 ; i<paramArraySize ; i++) {
+    for (unsigned int i=0 ; i<paramArraySize ; i++) {
         	req.handleArray[i] = paramArray[i] ;
                 req.valueArray[i] = valueArray[i];
     }
@@ -414,15 +419,18 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      EventRetractionHandle the_event,
                                      TypeException &)
 {
-    Message req;
+    M_Receive_Interaction req;
 
-    req.type = Message::RECEIVE_INTERACTION ;
     req.setInteractionClass(the_interaction);
-    req.setFederationTime(the_time);
+    req.setDate(the_time);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
-    req.setParameters(the_parameters, the_values, the_size);
-    req.setBoolean(true);
+    req.setParametersSize(the_size);
+    req.setValuesSize(the_size);
+    for (uint32_t i=0;i<the_size;++i) {
+    	req.setParameters(the_parameters[i],i);
+    	req.setValues(the_values[i],i);
+    }
     comm->requestFederateService(&req);
 }
 
@@ -436,13 +444,16 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      const std::string& the_tag,
                                      TypeException &)
 {
-    Message req;
+    M_Receive_Interaction req;
 
-    req.type = Message::RECEIVE_INTERACTION ;
     req.setInteractionClass(the_interaction);
     req.setTag(the_tag);
-    req.setParameters(the_parameters, the_values, the_size);
-    req.setBoolean(false);
+    req.setParametersSize(the_size);
+    req.setValuesSize(the_size);
+    for (uint32_t i=0;i<the_size;++i) {
+        	req.setParameters(the_parameters[i],i);
+        	req.setValues(the_values[i],i);
+    }
     comm->requestFederateService(&req);
 }
 
@@ -509,14 +520,12 @@ ObjectManagement::removeObject(ObjectHandle the_object,
                                TypeException &)
 
 {
-    Message req;
+    M_Remove_Object_Instance req;
 
-    req.type = Message::REMOVE_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
-    req.setFederationTime(theTime);
-    req.setBoolean(true);
+    req.setDate(theTime);
 
     comm->requestFederateService(&req);
 
@@ -531,12 +540,10 @@ ObjectManagement::removeObject(ObjectHandle the_object,
                                const std::string& the_tag,
                                TypeException &)
 {
-    Message req;
+    M_Remove_Object_Instance req;
 
-    req.type = Message::REMOVE_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setTag(the_tag);
-    req.setBoolean(false);
 
     comm->requestFederateService(&req);
 
@@ -547,13 +554,13 @@ ObjectManagement::removeObject(ObjectHandle the_object,
 //! changeAttributeTransportType
 EventRetractionHandle
 ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
-                                               std::vector <AttributeHandle> &attribArray,
-                                               UShort attribArraySize,
+                                               const std::vector <AttributeHandle> &attribArray,
+                                               uint32_t attribArraySize,
                                                TransportType theType,
                                                TypeException &e)
 {
     NM_Change_Attribute_Transport_Type req;
-    int i ;
+    uint32_t i ;
 
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
@@ -579,13 +586,13 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
 //! changeAttributeOrderType
 EventRetractionHandle
 ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
-                                           std::vector <AttributeHandle> &attribArray,
-                                           UShort attribArraySize,
+                                           const std::vector <AttributeHandle> &attribArray,
+                                           uint32_t attribArraySize,
                                            OrderType theType,
                                            TypeException &e)
 {
     NM_Change_Attribute_Order_Type req ;
-    int i ;
+    uint32_t i ;
 
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
@@ -655,8 +662,8 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 //! requestObjectAttributeValueUpdate
 void
 ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
-                                                    std::vector <AttributeHandle> &attribs,
-                                                    UShort attribArraySize,
+                                                    const std::vector <AttributeHandle> &attribs,
+                                                    uint32_t attribArraySize,
                                                     TypeException &e)
 {
     NM_Request_Object_Attribute_Value_Update req;
@@ -668,7 +675,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     req.federate = fm->federate ;
     req.handleArray.resize(attribArraySize) ;
 
-    for (int i = 0 ; i < attribArraySize ; i++) {
+    for (uint32_t i = 0 ; i < attribArraySize ; i++) {
         req.handleArray[i] = attribs[i] ;
     }
 
@@ -692,15 +699,14 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
                                               UShort attribArraySize,
                                               TypeException &)
 {
-    Message req;
+    M_Provide_Attribute_Value_Update req;
 
     G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
-    req.type = Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE ;
     req.setObject(the_object);
-    req.handleArraySize = attribArraySize ;
-    req.handleArray.resize(req.handleArraySize) ;
+    req.setAttributesSize(attribArraySize);
+
     for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = the_attributes[i] ;
+        req.setAttributes(the_attributes[i],i);
     }
 
     comm->requestFederateService(&req);
@@ -933,17 +939,16 @@ attributesInScope(ObjectHandle theObject,
                   const std::vector <AttributeHandle> &attribArray,
                   const UShort attribArraySize,
                   TypeException &e) {
-    Message req;
+
+    M_Attributes_In_Scope req;
 
     G.Out(pdGendoc,"enter ObjectManagement::attributesInScope");
 
-    req.type = Message::ATTRIBUTES_IN_SCOPE;
     req.setObject(theObject);
-    req.handleArraySize = attribArraySize;
-    req.handleArray.resize(attribArraySize);
+    req.setAttributesSize(attribArraySize);
 
     for (int i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i];
+        req.setAttributes(attribArray[i],i);
 
     comm->requestFederateService(&req);
 
@@ -960,17 +965,16 @@ attributesOutOfScope(ObjectHandle theObject,
                      const std::vector <AttributeHandle> &attribArray,
                      const UShort attribArraySize,
                      TypeException &e) {
-    Message req;
+
+    M_Attributes_Out_Of_Scope req;
 
     G.Out(pdGendoc,"enter ObjectManagement::attributesOutScope");
 
-    req.type = Message::ATTRIBUTES_OUT_OF_SCOPE;
     req.setObject(theObject);
-    req.handleArraySize = attribArraySize;
-    req.handleArray.resize(attribArraySize);
+    req.setAttributesSize(attribArraySize);
 
     for (int i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i];
+        req.setAttributes(attribArray[i],i);
 
     comm->requestFederateService(&req);
 
@@ -1011,17 +1015,16 @@ turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                            const std::vector <AttributeHandle> &attribArray,
                            const UShort attribArraySize,
                            TypeException &e) {
-    Message req;
+
+    M_Turn_Updates_On_For_Object_Instance req;
 
     G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOnForObjectInstance");
 
-    req.type = Message::TURN_UPDATES_ON_FOR_OBJECT_INSTANCE;
     req.setObject(theObject);
-    req.handleArraySize = attribArraySize;
-    req.handleArray.resize(attribArraySize);
+    req.setAttributesSize(attribArraySize);
 
     for (int i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i];
+        req.setAttributes(attribArray[i],i);
 
     comm->requestFederateService(&req);
 
@@ -1038,17 +1041,16 @@ turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                          const std::vector <AttributeHandle> &attribArray,
                          const UShort attribArraySize,
                          TypeException &e) {
-    Message req;
+
+    M_Turn_Updates_Off_For_Object_Instance req;
 
     G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOffForObjectInstance");
 
-    req.type = Message::TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE;
     req.setObject(theObject);
-    req.handleArraySize = attribArraySize;
-    req.handleArray.resize(attribArraySize);
+    req.setAttributesSize(attribArraySize);
 
     for (int i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i];
+        req.setAttributes(attribArray[i],i);
 
     comm->requestFederateService(&req);
 

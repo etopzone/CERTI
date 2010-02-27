@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.28 2009/11/20 16:31:31 erk Exp $
+// $Id: FederationManagement.hh,v 3.29 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -74,7 +74,7 @@ public:
     void registerSynchronization(const std::string& label,
                                  const std::string& tag,
                                  unsigned short array_size,
-                                 std::vector <FederateHandle> &fed_array,
+                                 const std::vector <FederateHandle> &fed_array,
                                  TypeException &e);
     void unregisterSynchronization(const std::string& label,
                                    TypeException &e);
@@ -130,4 +130,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.28 2009/11/20 16:31:31 erk Exp $
+// $Id: FederationManagement.hh,v 3.29 2010/02/27 16:53:36 erk Exp $

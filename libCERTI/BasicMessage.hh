@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.13 2010/01/30 18:41:37 erk Exp $
+// $Id: BasicMessage.hh,v 3.14 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -36,20 +36,23 @@ namespace certi {
 
 /** 
  * Base class for messages. 
- * It contains common attributes and methods
- * for Message and NetworkMessage classes.
+ * It contains common attributes and methods for Message and NetworkMessage classes.
+ * Currently there is too much information in this class.
+ * FIXME Extents and Region should be in derived specific classes.
+ * FIXME BasicMessage is mostly used for Message, NetworkMessage goes
+ *       on its own, this is due to historical and MUST be changed.
  * @sa Message, NetworkMessage
  */
 class CERTI_EXPORT BasicMessage
 {
 public:
 	/**
-	 * Indicate if the message is dated/timestamped or not
+	 * Indicate if the message is dated/time-stamped or not
 	 */
 	bool isDated() {return _isDated;};
 	/**
 	 * If ones set Date then this is a Dated message
-	 * Message builder which setDate will generate a Dated message
+	 * Message builder which setDate will generate a Dated TimeStamped message
 	 */
 	void setDate(FederationTime new_date) {_isDated=true; date = new_date;};
 	const FederationTime getDate() const {return this->date;};
@@ -75,6 +78,8 @@ public:
 	void setRegions(const std::vector<RegionHandle> &);
 	const std::vector<RegionHandle> &getRegions() const ;
 
+	virtual void show(std::ostream& out);
+
 protected:
 	BasicMessage();
 	virtual ~BasicMessage();
@@ -91,7 +96,17 @@ protected:
 	 */
 	virtual void deserialize(MessageBuffer& msgBuffer);
 
+	/**
+	 * Serialize the message into a buffer
+	 * @param[in] msgBuffer the serialization buffer
+	 */
+	virtual void serializeExtent(MessageBuffer& msgBuffer);
 
+	/**
+	 * DeSerialize the message from a buffer
+	 * @param[in] msgBuffer the deserialization buffer
+	 */
+	virtual void deserializeExtent(MessageBuffer& msgBuffer);
 
 	/**
 	 * The date of message if it is dated.
@@ -147,4 +162,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.13 2010/01/30 18:41:37 erk Exp $
+// $Id: BasicMessage.hh,v 3.14 2010/02/27 16:53:36 erk Exp $

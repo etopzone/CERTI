@@ -1,4 +1,4 @@
-// Generated on 2010 February Sat, 06 at 19:58:21 by the CERTI message generator
+// Generated on 2010 February Sat, 27 at 15:30:45 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -28,16 +28,16 @@
 namespace certi {
 
    M_Close_Connexion::M_Close_Connexion() {
-      this->name = "M_Close_Connexion";
-      this->type = Message:: CLOSE_CONNEXION;
+      this->messageName = "M_Close_Connexion";
+      this->type = Message::CLOSE_CONNEXION;
    }
 
    M_Close_Connexion::~M_Close_Connexion() {
    }
 
    M_Create_Federation_Execution::M_Create_Federation_Execution() {
-      this->name = "M_Create_Federation_Execution";
-      this->type = Message:: CREATE_FEDERATION_EXECUTION;
+      this->messageName = "M_Create_Federation_Execution";
+      this->type = Message::CREATE_FEDERATION_EXECUTION;
       //federationName= <no default value in message spec using builtin>
       //FEDid= <no default value in message spec using builtin>
    }
@@ -61,9 +61,17 @@ namespace certi {
       msgBuffer.read_string(FEDid);
    }
 
+   void M_Create_Federation_Execution::show(std::ostream& out) {
+      out << "[M_Create_Federation_Execution -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " federationName = " << federationName << " "       << std::endl;
+      out << " FEDid = " << FEDid << " "       << std::endl;
+      out << "[M_Create_Federation_Execution -End]" << std::endl;   }
+
    M_Destroy_Federation_Execution::M_Destroy_Federation_Execution() {
-      this->name = "M_Destroy_Federation_Execution";
-      this->type = Message:: DESTROY_FEDERATION_EXECUTION;
+      this->messageName = "M_Destroy_Federation_Execution";
+      this->type = Message::DESTROY_FEDERATION_EXECUTION;
       //federationName= <no default value in message spec using builtin>
    }
 
@@ -84,9 +92,16 @@ namespace certi {
       msgBuffer.read_string(federationName);
    }
 
+   void M_Destroy_Federation_Execution::show(std::ostream& out) {
+      out << "[M_Destroy_Federation_Execution -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " federationName = " << federationName << " "       << std::endl;
+      out << "[M_Destroy_Federation_Execution -End]" << std::endl;   }
+
    M_Join_Federation_Execution::M_Join_Federation_Execution() {
-      this->name = "M_Join_Federation_Execution";
-      this->type = Message:: JOIN_FEDERATION_EXECUTION;
+      this->messageName = "M_Join_Federation_Execution";
+      this->type = Message::JOIN_FEDERATION_EXECUTION;
       //federate= <no default value in message spec using builtin>
       //federationName= <no default value in message spec using builtin>
       //federateName= <no default value in message spec using builtin>
@@ -113,9 +128,18 @@ namespace certi {
       msgBuffer.read_string(federateName);
    }
 
+   void M_Join_Federation_Execution::show(std::ostream& out) {
+      out << "[M_Join_Federation_Execution -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " federate = " << federate << " "       << std::endl;
+      out << " federationName = " << federationName << " "       << std::endl;
+      out << " federateName = " << federateName << " "       << std::endl;
+      out << "[M_Join_Federation_Execution -End]" << std::endl;   }
+
    M_Resign_Federation_Execution::M_Resign_Federation_Execution() {
-      this->name = "M_Resign_Federation_Execution";
-      this->type = Message:: RESIGN_FEDERATION_EXECUTION;
+      this->messageName = "M_Resign_Federation_Execution";
+      this->type = Message::RESIGN_FEDERATION_EXECUTION;
       //resignAction= <no default value in message spec using builtin>
    }
 
@@ -136,9 +160,16 @@ namespace certi {
       resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
    }
 
+   void M_Resign_Federation_Execution::show(std::ostream& out) {
+      out << "[M_Resign_Federation_Execution -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " resignAction = " << resignAction << " "       << std::endl;
+      out << "[M_Resign_Federation_Execution -End]" << std::endl;   }
+
    M_Register_Federation_Synchronization_Point::M_Register_Federation_Synchronization_Point() {
-      this->name = "M_Register_Federation_Synchronization_Point";
-      this->type = Message:: REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
+      this->messageName = "M_Register_Federation_Synchronization_Point";
+      this->type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
       //federateSet= <no default value in message spec using builtin>
    }
 
@@ -167,129 +198,162 @@ namespace certi {
       }
    }
 
+   void M_Register_Federation_Synchronization_Point::show(std::ostream& out) {
+      out << "[M_Register_Federation_Synchronization_Point -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << "    federateSet [] =" << std::endl;
+      for (uint32_t i = 0; i < getFederateSetSize(); ++i) {
+         out << federateSet[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Register_Federation_Synchronization_Point -End]" << std::endl;   }
+
    M_Synchronization_Point_Registration_Failed::M_Synchronization_Point_Registration_Failed() {
-      this->name = "M_Synchronization_Point_Registration_Failed";
-      this->type = Message:: SYNCHRONIZATION_POINT_REGISTRATION_FAILED;
+      this->messageName = "M_Synchronization_Point_Registration_Failed";
+      this->type = Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED;
    }
 
    M_Synchronization_Point_Registration_Failed::~M_Synchronization_Point_Registration_Failed() {
    }
 
    M_Synchronization_Point_Registration_Succeeded::M_Synchronization_Point_Registration_Succeeded() {
-      this->name = "M_Synchronization_Point_Registration_Succeeded";
-      this->type = Message:: SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+      this->messageName = "M_Synchronization_Point_Registration_Succeeded";
+      this->type = Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
    }
 
    M_Synchronization_Point_Registration_Succeeded::~M_Synchronization_Point_Registration_Succeeded() {
    }
 
    M_Announce_Synchronization_Point::M_Announce_Synchronization_Point() {
-      this->name = "M_Announce_Synchronization_Point";
-      this->type = Message:: ANNOUNCE_SYNCHRONIZATION_POINT;
+      this->messageName = "M_Announce_Synchronization_Point";
+      this->type = Message::ANNOUNCE_SYNCHRONIZATION_POINT;
    }
 
    M_Announce_Synchronization_Point::~M_Announce_Synchronization_Point() {
    }
 
    M_Synchronization_Point_Achieved::M_Synchronization_Point_Achieved() {
-      this->name = "M_Synchronization_Point_Achieved";
-      this->type = Message:: SYNCHRONIZATION_POINT_ACHIEVED;
+      this->messageName = "M_Synchronization_Point_Achieved";
+      this->type = Message::SYNCHRONIZATION_POINT_ACHIEVED;
    }
 
    M_Synchronization_Point_Achieved::~M_Synchronization_Point_Achieved() {
    }
 
    M_Federation_Synchronized::M_Federation_Synchronized() {
-      this->name = "M_Federation_Synchronized";
-      this->type = Message:: FEDERATION_SYNCHRONIZED;
+      this->messageName = "M_Federation_Synchronized";
+      this->type = Message::FEDERATION_SYNCHRONIZED;
    }
 
    M_Federation_Synchronized::~M_Federation_Synchronized() {
    }
 
    M_Request_Federation_Save::M_Request_Federation_Save() {
-      this->name = "M_Request_Federation_Save";
-      this->type = Message:: REQUEST_FEDERATION_SAVE;
+      this->messageName = "M_Request_Federation_Save";
+      this->type = Message::REQUEST_FEDERATION_SAVE;
    }
 
    M_Request_Federation_Save::~M_Request_Federation_Save() {
    }
 
    M_Initiate_Federate_Save::M_Initiate_Federate_Save() {
-      this->name = "M_Initiate_Federate_Save";
-      this->type = Message:: INITIATE_FEDERATE_SAVE;
+      this->messageName = "M_Initiate_Federate_Save";
+      this->type = Message::INITIATE_FEDERATE_SAVE;
    }
 
    M_Initiate_Federate_Save::~M_Initiate_Federate_Save() {
    }
 
    M_Federate_Save_Begun::M_Federate_Save_Begun() {
-      this->name = "M_Federate_Save_Begun";
-      this->type = Message:: FEDERATE_SAVE_BEGUN;
+      this->messageName = "M_Federate_Save_Begun";
+      this->type = Message::FEDERATE_SAVE_BEGUN;
    }
 
    M_Federate_Save_Begun::~M_Federate_Save_Begun() {
    }
 
    M_Federate_Save_Complete::M_Federate_Save_Complete() {
-      this->name = "M_Federate_Save_Complete";
-      this->type = Message:: FEDERATE_SAVE_COMPLETE;
+      this->messageName = "M_Federate_Save_Complete";
+      this->type = Message::FEDERATE_SAVE_COMPLETE;
    }
 
    M_Federate_Save_Complete::~M_Federate_Save_Complete() {
    }
 
    M_Federate_Save_Not_Complete::M_Federate_Save_Not_Complete() {
-      this->name = "M_Federate_Save_Not_Complete";
-      this->type = Message:: FEDERATE_SAVE_NOT_COMPLETE;
+      this->messageName = "M_Federate_Save_Not_Complete";
+      this->type = Message::FEDERATE_SAVE_NOT_COMPLETE;
    }
 
    M_Federate_Save_Not_Complete::~M_Federate_Save_Not_Complete() {
    }
 
    M_Federation_Saved::M_Federation_Saved() {
-      this->name = "M_Federation_Saved";
-      this->type = Message:: FEDERATION_SAVED;
+      this->messageName = "M_Federation_Saved";
+      this->type = Message::FEDERATION_SAVED;
    }
 
    M_Federation_Saved::~M_Federation_Saved() {
    }
 
    M_Federation_Not_Saved::M_Federation_Not_Saved() {
-      this->name = "M_Federation_Not_Saved";
-      this->type = Message:: FEDERATION_NOT_SAVED;
+      this->messageName = "M_Federation_Not_Saved";
+      this->type = Message::FEDERATION_NOT_SAVED;
    }
 
    M_Federation_Not_Saved::~M_Federation_Not_Saved() {
    }
 
    M_Request_Federation_Restore::M_Request_Federation_Restore() {
-      this->name = "M_Request_Federation_Restore";
-      this->type = Message:: REQUEST_FEDERATION_RESTORE;
+      this->messageName = "M_Request_Federation_Restore";
+      this->type = Message::REQUEST_FEDERATION_RESTORE;
    }
 
    M_Request_Federation_Restore::~M_Request_Federation_Restore() {
    }
 
    M_Request_Federation_Restore_Failed::M_Request_Federation_Restore_Failed() {
-      this->name = "M_Request_Federation_Restore_Failed";
-      this->type = Message:: REQUEST_FEDERATION_RESTORE_FAILED;
+      this->messageName = "M_Request_Federation_Restore_Failed";
+      this->type = Message::REQUEST_FEDERATION_RESTORE_FAILED;
+      //reason= <no default value in message spec using builtin>
    }
 
    M_Request_Federation_Restore_Failed::~M_Request_Federation_Restore_Failed() {
    }
 
+   void M_Request_Federation_Restore_Failed::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_string(reason);
+   }
+
+   void M_Request_Federation_Restore_Failed::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      msgBuffer.read_string(reason);
+   }
+
+   void M_Request_Federation_Restore_Failed::show(std::ostream& out) {
+      out << "[M_Request_Federation_Restore_Failed -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " reason = " << reason << " "       << std::endl;
+      out << "[M_Request_Federation_Restore_Failed -End]" << std::endl;   }
+
    M_Request_Federation_Restore_Succeeded::M_Request_Federation_Restore_Succeeded() {
-      this->name = "M_Request_Federation_Restore_Succeeded";
-      this->type = Message:: REQUEST_FEDERATION_RESTORE_SUCCEEDED;
+      this->messageName = "M_Request_Federation_Restore_Succeeded";
+      this->type = Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED;
    }
 
    M_Request_Federation_Restore_Succeeded::~M_Request_Federation_Restore_Succeeded() {
    }
 
    M_Initiate_Federate_Restore::M_Initiate_Federate_Restore() {
-      this->name = "M_Initiate_Federate_Restore";
-      this->type = Message:: INITIATE_FEDERATE_RESTORE;
+      this->messageName = "M_Initiate_Federate_Restore";
+      this->type = Message::INITIATE_FEDERATE_RESTORE;
       //federate= <no default value in message spec using builtin>
    }
 
@@ -310,51 +374,58 @@ namespace certi {
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Initiate_Federate_Restore::show(std::ostream& out) {
+      out << "[M_Initiate_Federate_Restore -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " federate = " << federate << " "       << std::endl;
+      out << "[M_Initiate_Federate_Restore -End]" << std::endl;   }
+
    M_Federate_Restore_Complete::M_Federate_Restore_Complete() {
-      this->name = "M_Federate_Restore_Complete";
-      this->type = Message:: FEDERATE_RESTORE_COMPLETE;
+      this->messageName = "M_Federate_Restore_Complete";
+      this->type = Message::FEDERATE_RESTORE_COMPLETE;
    }
 
    M_Federate_Restore_Complete::~M_Federate_Restore_Complete() {
    }
 
    M_Federate_Restore_Not_Complete::M_Federate_Restore_Not_Complete() {
-      this->name = "M_Federate_Restore_Not_Complete";
-      this->type = Message:: FEDERATE_RESTORE_NOT_COMPLETE;
+      this->messageName = "M_Federate_Restore_Not_Complete";
+      this->type = Message::FEDERATE_RESTORE_NOT_COMPLETE;
    }
 
    M_Federate_Restore_Not_Complete::~M_Federate_Restore_Not_Complete() {
    }
 
    M_Federation_Restored::M_Federation_Restored() {
-      this->name = "M_Federation_Restored";
-      this->type = Message:: FEDERATION_RESTORED;
+      this->messageName = "M_Federation_Restored";
+      this->type = Message::FEDERATION_RESTORED;
    }
 
    M_Federation_Restored::~M_Federation_Restored() {
    }
 
    M_Federation_Not_Restored::M_Federation_Not_Restored() {
-      this->name = "M_Federation_Not_Restored";
-      this->type = Message:: FEDERATION_NOT_RESTORED;
+      this->messageName = "M_Federation_Not_Restored";
+      this->type = Message::FEDERATION_NOT_RESTORED;
    }
 
    M_Federation_Not_Restored::~M_Federation_Not_Restored() {
    }
 
    M_Federation_Restore_Begun::M_Federation_Restore_Begun() {
-      this->name = "M_Federation_Restore_Begun";
-      this->type = Message:: FEDERATION_RESTORE_BEGUN;
+      this->messageName = "M_Federation_Restore_Begun";
+      this->type = Message::FEDERATION_RESTORE_BEGUN;
    }
 
    M_Federation_Restore_Begun::~M_Federation_Restore_Begun() {
    }
 
    M_Publish_Object_Class::M_Publish_Object_Class() {
-      this->name = "M_Publish_Object_Class";
-      this->type = Message:: PUBLISH_OBJECT_CLASS;
+      this->messageName = "M_Publish_Object_Class";
+      this->type = Message::PUBLISH_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Publish_Object_Class::~M_Publish_Object_Class() {
@@ -365,10 +436,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -377,16 +448,28 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Publish_Object_Class::show(std::ostream& out) {
+      out << "[M_Publish_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Publish_Object_Class -End]" << std::endl;   }
+
    M_Unpublish_Object_Class::M_Unpublish_Object_Class() {
-      this->name = "M_Unpublish_Object_Class";
-      this->type = Message:: UNPUBLISH_OBJECT_CLASS;
+      this->messageName = "M_Unpublish_Object_Class";
+      this->type = Message::UNPUBLISH_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
    }
 
@@ -407,9 +490,16 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Unpublish_Object_Class::show(std::ostream& out) {
+      out << "[M_Unpublish_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "[M_Unpublish_Object_Class -End]" << std::endl;   }
+
    M_Publish_Interaction_Class::M_Publish_Interaction_Class() {
-      this->name = "M_Publish_Interaction_Class";
-      this->type = Message:: PUBLISH_INTERACTION_CLASS;
+      this->messageName = "M_Publish_Interaction_Class";
+      this->type = Message::PUBLISH_INTERACTION_CLASS;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -430,9 +520,16 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Publish_Interaction_Class::show(std::ostream& out) {
+      out << "[M_Publish_Interaction_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Publish_Interaction_Class -End]" << std::endl;   }
+
    M_Unpublish_Interaction_Class::M_Unpublish_Interaction_Class() {
-      this->name = "M_Unpublish_Interaction_Class";
-      this->type = Message:: UNPUBLISH_INTERACTION_CLASS;
+      this->messageName = "M_Unpublish_Interaction_Class";
+      this->type = Message::UNPUBLISH_INTERACTION_CLASS;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -453,11 +550,19 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Unpublish_Interaction_Class::show(std::ostream& out) {
+      out << "[M_Unpublish_Interaction_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Unpublish_Interaction_Class -End]" << std::endl;   }
+
    M_Subscribe_Object_Class_Attributes::M_Subscribe_Object_Class_Attributes() {
-      this->name = "M_Subscribe_Object_Class_Attributes";
-      this->type = Message:: SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES;
+      this->messageName = "M_Subscribe_Object_Class_Attributes";
+      this->type = Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES;
       //objectClass= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
+      active=true;
    }
 
    M_Subscribe_Object_Class_Attributes::~M_Subscribe_Object_Class_Attributes() {
@@ -468,11 +573,12 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
+      msgBuffer.write_bool(active);
    }
 
    void M_Subscribe_Object_Class_Attributes::deserialize(MessageBuffer& msgBuffer) {
@@ -480,16 +586,30 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
+      active = msgBuffer.read_bool();
    }
 
+   void M_Subscribe_Object_Class_Attributes::show(std::ostream& out) {
+      out << "[M_Subscribe_Object_Class_Attributes -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << " active = " << active << " "       << std::endl;
+      out << "[M_Subscribe_Object_Class_Attributes -End]" << std::endl;   }
+
    M_Unsubscribe_Object_Class::M_Unsubscribe_Object_Class() {
-      this->name = "M_Unsubscribe_Object_Class";
-      this->type = Message:: UNSUBSCRIBE_OBJECT_CLASS;
+      this->messageName = "M_Unsubscribe_Object_Class";
+      this->type = Message::UNSUBSCRIBE_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
    }
 
@@ -510,9 +630,16 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Unsubscribe_Object_Class::show(std::ostream& out) {
+      out << "[M_Unsubscribe_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "[M_Unsubscribe_Object_Class -End]" << std::endl;   }
+
    M_Subscribe_Interaction_Class::M_Subscribe_Interaction_Class() {
-      this->name = "M_Subscribe_Interaction_Class";
-      this->type = Message:: SUBSCRIBE_INTERACTION_CLASS;
+      this->messageName = "M_Subscribe_Interaction_Class";
+      this->type = Message::SUBSCRIBE_INTERACTION_CLASS;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -533,9 +660,16 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Subscribe_Interaction_Class::show(std::ostream& out) {
+      out << "[M_Subscribe_Interaction_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Subscribe_Interaction_Class -End]" << std::endl;   }
+
    M_Unsubscribe_Interaction_Class::M_Unsubscribe_Interaction_Class() {
-      this->name = "M_Unsubscribe_Interaction_Class";
-      this->type = Message:: UNSUBSCRIBE_INTERACTION_CLASS;
+      this->messageName = "M_Unsubscribe_Interaction_Class";
+      this->type = Message::UNSUBSCRIBE_INTERACTION_CLASS;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -556,9 +690,16 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Unsubscribe_Interaction_Class::show(std::ostream& out) {
+      out << "[M_Unsubscribe_Interaction_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Unsubscribe_Interaction_Class -End]" << std::endl;   }
+
    M_Start_Registration_For_Object_Class::M_Start_Registration_For_Object_Class() {
-      this->name = "M_Start_Registration_For_Object_Class";
-      this->type = Message:: START_REGISTRATION_FOR_OBJECT_CLASS;
+      this->messageName = "M_Start_Registration_For_Object_Class";
+      this->type = Message::START_REGISTRATION_FOR_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
    }
 
@@ -579,9 +720,16 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Start_Registration_For_Object_Class::show(std::ostream& out) {
+      out << "[M_Start_Registration_For_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "[M_Start_Registration_For_Object_Class -End]" << std::endl;   }
+
    M_Stop_Registration_For_Object_Class::M_Stop_Registration_For_Object_Class() {
-      this->name = "M_Stop_Registration_For_Object_Class";
-      this->type = Message:: STOP_REGISTRATION_FOR_OBJECT_CLASS;
+      this->messageName = "M_Stop_Registration_For_Object_Class";
+      this->type = Message::STOP_REGISTRATION_FOR_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
    }
 
@@ -602,9 +750,16 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Stop_Registration_For_Object_Class::show(std::ostream& out) {
+      out << "[M_Stop_Registration_For_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "[M_Stop_Registration_For_Object_Class -End]" << std::endl;   }
+
    M_Turn_Interactions_On::M_Turn_Interactions_On() {
-      this->name = "M_Turn_Interactions_On";
-      this->type = Message:: TURN_INTERACTIONS_ON;
+      this->messageName = "M_Turn_Interactions_On";
+      this->type = Message::TURN_INTERACTIONS_ON;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -625,9 +780,16 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Turn_Interactions_On::show(std::ostream& out) {
+      out << "[M_Turn_Interactions_On -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Turn_Interactions_On -End]" << std::endl;   }
+
    M_Turn_Interactions_Off::M_Turn_Interactions_Off() {
-      this->name = "M_Turn_Interactions_Off";
-      this->type = Message:: TURN_INTERACTIONS_OFF;
+      this->messageName = "M_Turn_Interactions_Off";
+      this->type = Message::TURN_INTERACTIONS_OFF;
       //interactionClass= <no default value in message spec using builtin>
    }
 
@@ -648,9 +810,16 @@ namespace certi {
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Turn_Interactions_Off::show(std::ostream& out) {
+      out << "[M_Turn_Interactions_Off -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "[M_Turn_Interactions_Off -End]" << std::endl;   }
+
    M_Register_Object_Instance::M_Register_Object_Instance() {
-      this->name = "M_Register_Object_Instance";
-      this->type = Message:: REGISTER_OBJECT_INSTANCE;
+      this->messageName = "M_Register_Object_Instance";
+      this->type = Message::REGISTER_OBJECT_INSTANCE;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
@@ -665,7 +834,10 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      msgBuffer.write_string(objectName);
+      msgBuffer.write_bool(hasObjectName);
+      if (hasObjectName) {
+         msgBuffer.write_string(objectName);
+      }
    }
 
    void M_Register_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
@@ -674,17 +846,29 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(objectName);
+      hasObjectName = msgBuffer.read_bool();
+      if (hasObjectName) {
+         msgBuffer.read_string(objectName);
+      }
    }
 
+   void M_Register_Object_Instance::show(std::ostream& out) {
+      out << "[M_Register_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "(opt) objectName =" << objectName << " "       << std::endl;
+      out << "[M_Register_Object_Instance -End]" << std::endl;   }
+
    M_Update_Attribute_Values::M_Update_Attribute_Values() {
-      this->name = "M_Update_Attribute_Values";
-      this->type = Message:: UPDATE_ATTRIBUTE_VALUES;
+      this->messageName = "M_Update_Attribute_Values";
+      this->type = Message::UPDATE_ATTRIBUTE_VALUES;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
-      //handle= <no default value in message spec using builtin>
-      //attributeValues= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
+      //values= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Update_Attribute_Values::~M_Update_Attribute_Values() {
@@ -696,17 +880,21 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      uint32_t handleSize = handle.size();
-      msgBuffer.write_uint32(handleSize);
-      for (uint32_t i = 0; i < handleSize; ++i) {
-         msgBuffer.write_uint64(handle[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
-      uint32_t attributeValuesSize = attributeValues.size();
-      msgBuffer.write_uint32(attributeValuesSize);
-      for (uint32_t i = 0; i < attributeValuesSize; ++i) {
-         msgBuffer.write_string(attributeValues[i]);
+      uint32_t valuesSize = values.size();
+      msgBuffer.write_uint32(valuesSize);
+      for (uint32_t i = 0; i < valuesSize; ++i) {
+         msgBuffer.write_string(values[i]);
       }
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
@@ -715,26 +903,49 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handleSize = msgBuffer.read_uint32();
-      handle.resize(handleSize);
-      for (uint32_t i = 0; i < handleSize; ++i) {
-         handle[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
-      uint32_t attributeValuesSize = msgBuffer.read_uint32();
-      attributeValues.resize(attributeValuesSize);
-      for (uint32_t i = 0; i < attributeValuesSize; ++i) {
-         msgBuffer.read_string(attributeValues[i]);
+      uint32_t valuesSize = msgBuffer.read_uint32();
+      values.resize(valuesSize);
+      for (uint32_t i = 0; i < valuesSize; ++i) {
+         msgBuffer.read_string(values[i]);
       }
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Update_Attribute_Values::show(std::ostream& out) {
+      out << "[M_Update_Attribute_Values -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "    values [] =" << std::endl;
+      for (uint32_t i = 0; i < getValuesSize(); ++i) {
+         out << values[i] << " " ;
+      }
+      out << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Update_Attribute_Values -End]" << std::endl;   }
+
    M_Discover_Object_Instance::M_Discover_Object_Instance() {
-      this->name = "M_Discover_Object_Instance";
-      this->type = Message:: DISCOVER_OBJECT_INSTANCE;
+      this->messageName = "M_Discover_Object_Instance";
+      this->type = Message::DISCOVER_OBJECT_INSTANCE;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Discover_Object_Instance::~M_Discover_Object_Instance() {
@@ -747,7 +958,11 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Discover_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
@@ -757,17 +972,31 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Discover_Object_Instance::show(std::ostream& out) {
+      out << "[M_Discover_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << " objectName = " << objectName << " "       << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Discover_Object_Instance -End]" << std::endl;   }
+
    M_Reflect_Attribute_Values::M_Reflect_Attribute_Values() {
-      this->name = "M_Reflect_Attribute_Values";
-      this->type = Message:: REFLECT_ATTRIBUTE_VALUES;
+      this->messageName = "M_Reflect_Attribute_Values";
+      this->type = Message::REFLECT_ATTRIBUTE_VALUES;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
-      //handle= <no default value in message spec using builtin>
-      //attributeValues= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
+      //values= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Reflect_Attribute_Values::~M_Reflect_Attribute_Values() {
@@ -779,17 +1008,21 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      uint32_t handleSize = handle.size();
-      msgBuffer.write_uint32(handleSize);
-      for (uint32_t i = 0; i < handleSize; ++i) {
-         msgBuffer.write_uint64(handle[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
-      uint32_t attributeValuesSize = attributeValues.size();
-      msgBuffer.write_uint32(attributeValuesSize);
-      for (uint32_t i = 0; i < attributeValuesSize; ++i) {
-         msgBuffer.write_string(attributeValues[i]);
+      uint32_t valuesSize = values.size();
+      msgBuffer.write_uint32(valuesSize);
+      for (uint32_t i = 0; i < valuesSize; ++i) {
+         msgBuffer.write_string(values[i]);
       }
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Reflect_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
@@ -798,27 +1031,50 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handleSize = msgBuffer.read_uint32();
-      handle.resize(handleSize);
-      for (uint32_t i = 0; i < handleSize; ++i) {
-         handle[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
-      uint32_t attributeValuesSize = msgBuffer.read_uint32();
-      attributeValues.resize(attributeValuesSize);
-      for (uint32_t i = 0; i < attributeValuesSize; ++i) {
-         msgBuffer.read_string(attributeValues[i]);
+      uint32_t valuesSize = msgBuffer.read_uint32();
+      values.resize(valuesSize);
+      for (uint32_t i = 0; i < valuesSize; ++i) {
+         msgBuffer.read_string(values[i]);
       }
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Reflect_Attribute_Values::show(std::ostream& out) {
+      out << "[M_Reflect_Attribute_Values -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "    values [] =" << std::endl;
+      for (uint32_t i = 0; i < getValuesSize(); ++i) {
+         out << values[i] << " " ;
+      }
+      out << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Reflect_Attribute_Values -End]" << std::endl;   }
+
    M_Send_Interaction::M_Send_Interaction() {
-      this->name = "M_Send_Interaction";
-      this->type = Message:: SEND_INTERACTION;
+      this->messageName = "M_Send_Interaction";
+      this->type = Message::SEND_INTERACTION;
       //interactionClass= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //parameters= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Send_Interaction::~M_Send_Interaction() {
@@ -829,10 +1085,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t parametersSize = parameters.size();
+      msgBuffer.write_uint32(parametersSize);
+      for (uint32_t i = 0; i < parametersSize; ++i) {
+         msgBuffer.write_uint32(parameters[i]);
       }
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
@@ -840,7 +1096,11 @@ namespace certi {
          msgBuffer.write_string(values[i]);
       }
       msgBuffer.write_uint32(region);
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
@@ -848,10 +1108,10 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t parametersSize = msgBuffer.read_uint32();
+      parameters.resize(parametersSize);
+      for (uint32_t i = 0; i < parametersSize; ++i) {
+         parameters[i] = static_cast<ParameterHandle>(msgBuffer.read_uint32());
       }
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
@@ -859,17 +1119,40 @@ namespace certi {
          msgBuffer.read_string(values[i]);
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Send_Interaction::show(std::ostream& out) {
+      out << "[M_Send_Interaction -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "    parameters [] =" << std::endl;
+      for (uint32_t i = 0; i < getParametersSize(); ++i) {
+         out << parameters[i] << " " ;
+      }
+      out << std::endl;
+      out << "    values [] =" << std::endl;
+      for (uint32_t i = 0; i < getValuesSize(); ++i) {
+         out << values[i] << " " ;
+      }
+      out << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Send_Interaction -End]" << std::endl;   }
+
    M_Receive_Interaction::M_Receive_Interaction() {
-      this->name = "M_Receive_Interaction";
-      this->type = Message:: RECEIVE_INTERACTION;
+      this->messageName = "M_Receive_Interaction";
+      this->type = Message::RECEIVE_INTERACTION;
       //interactionClass= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //parameters= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Receive_Interaction::~M_Receive_Interaction() {
@@ -880,10 +1163,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t parametersSize = parameters.size();
+      msgBuffer.write_uint32(parametersSize);
+      for (uint32_t i = 0; i < parametersSize; ++i) {
+         msgBuffer.write_uint32(parameters[i]);
       }
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
@@ -891,7 +1174,11 @@ namespace certi {
          msgBuffer.write_string(values[i]);
       }
       msgBuffer.write_uint32(region);
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Receive_Interaction::deserialize(MessageBuffer& msgBuffer) {
@@ -899,10 +1186,10 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t parametersSize = msgBuffer.read_uint32();
+      parameters.resize(parametersSize);
+      for (uint32_t i = 0; i < parametersSize; ++i) {
+         parameters[i] = static_cast<ParameterHandle>(msgBuffer.read_uint32());
       }
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
@@ -910,16 +1197,39 @@ namespace certi {
          msgBuffer.read_string(values[i]);
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Receive_Interaction::show(std::ostream& out) {
+      out << "[M_Receive_Interaction -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << "    parameters [] =" << std::endl;
+      for (uint32_t i = 0; i < getParametersSize(); ++i) {
+         out << parameters[i] << " " ;
+      }
+      out << std::endl;
+      out << "    values [] =" << std::endl;
+      for (uint32_t i = 0; i < getValuesSize(); ++i) {
+         out << values[i] << " " ;
+      }
+      out << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Receive_Interaction -End]" << std::endl;   }
+
    M_Delete_Object_Instance::M_Delete_Object_Instance() {
-      this->name = "M_Delete_Object_Instance";
-      this->type = Message:: DELETE_OBJECT_INSTANCE;
+      this->messageName = "M_Delete_Object_Instance";
+      this->type = Message::DELETE_OBJECT_INSTANCE;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Delete_Object_Instance::~M_Delete_Object_Instance() {
@@ -932,7 +1242,11 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Delete_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
@@ -942,24 +1256,60 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Delete_Object_Instance::show(std::ostream& out) {
+      out << "[M_Delete_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << " objectName = " << objectName << " "       << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Delete_Object_Instance -End]" << std::endl;   }
+
    M_Local_Delete_Object_Instance::M_Local_Delete_Object_Instance() {
-      this->name = "M_Local_Delete_Object_Instance";
-      this->type = Message:: LOCAL_DELETE_OBJECT_INSTANCE;
+      this->messageName = "M_Local_Delete_Object_Instance";
+      this->type = Message::LOCAL_DELETE_OBJECT_INSTANCE;
+      //object= <no default value in message spec using builtin>
    }
 
    M_Local_Delete_Object_Instance::~M_Local_Delete_Object_Instance() {
    }
 
+   void M_Local_Delete_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+   }
+
+   void M_Local_Delete_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+   }
+
+   void M_Local_Delete_Object_Instance::show(std::ostream& out) {
+      out << "[M_Local_Delete_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "[M_Local_Delete_Object_Instance -End]" << std::endl;   }
+
    M_Remove_Object_Instance::M_Remove_Object_Instance() {
-      this->name = "M_Remove_Object_Instance";
-      this->type = Message:: REMOVE_OBJECT_INSTANCE;
+      this->messageName = "M_Remove_Object_Instance";
+      this->type = Message::REMOVE_OBJECT_INSTANCE;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
-      //resignAction= <no default value in message spec using builtin>
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Remove_Object_Instance::~M_Remove_Object_Instance() {
@@ -972,7 +1322,11 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_uint16(resignAction);
+      msgBuffer.write_bool(hasEventRetraction);
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
    void M_Remove_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
@@ -982,16 +1336,30 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
+      hasEventRetraction = msgBuffer.read_bool();
+      if (hasEventRetraction) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      }
    }
 
+   void M_Remove_Object_Instance::show(std::ostream& out) {
+      out << "[M_Remove_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << " objectName = " << objectName << " "       << std::endl;
+      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Remove_Object_Instance -End]" << std::endl;   }
+
    M_Change_Attribute_Transportation_Type::M_Change_Attribute_Transportation_Type() {
-      this->name = "M_Change_Attribute_Transportation_Type";
-      this->type = Message:: CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE;
-      //transport= <no default value in message spec using builtin>
-      //order= <no default value in message spec using builtin>
+      this->messageName = "M_Change_Attribute_Transportation_Type";
+      this->type = Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE;
+      //transportationType= <no default value in message spec using builtin>
+      //orderType= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Change_Attribute_Transportation_Type::~M_Change_Attribute_Transportation_Type() {
@@ -1001,13 +1369,13 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_uint8(transport);
-      msgBuffer.write_uint8(order);
+      msgBuffer.write_uint8(transportationType);
+      msgBuffer.write_uint8(orderType);
       msgBuffer.write_uint32(object);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -1015,22 +1383,36 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      transport = static_cast<TransportType>(msgBuffer.read_uint8());
-      order = static_cast<OrderType>(msgBuffer.read_uint8());
+      transportationType = static_cast<TransportType>(msgBuffer.read_uint8());
+      orderType = static_cast<OrderType>(msgBuffer.read_uint8());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Change_Attribute_Transportation_Type::show(std::ostream& out) {
+      out << "[M_Change_Attribute_Transportation_Type -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " transportationType = " << transportationType << " "       << std::endl;
+      out << " orderType = " << orderType << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Change_Attribute_Transportation_Type -End]" << std::endl;   }
+
    M_Change_Interaction_Transportation_Type::M_Change_Interaction_Transportation_Type() {
-      this->name = "M_Change_Interaction_Transportation_Type";
-      this->type = Message:: CHANGE_INTERACTION_TRANSPORTATION_TYPE;
+      this->messageName = "M_Change_Interaction_Transportation_Type";
+      this->type = Message::CHANGE_INTERACTION_TRANSPORTATION_TYPE;
       //interactionClass= <no default value in message spec using builtin>
-      //transport= <no default value in message spec using builtin>
-      //order= <no default value in message spec using builtin>
+      //transportationType= <no default value in message spec using builtin>
+      //orderType= <no default value in message spec using builtin>
    }
 
    M_Change_Interaction_Transportation_Type::~M_Change_Interaction_Transportation_Type() {
@@ -1041,8 +1423,8 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      msgBuffer.write_uint8(transport);
-      msgBuffer.write_uint8(order);
+      msgBuffer.write_uint8(transportationType);
+      msgBuffer.write_uint8(orderType);
    }
 
    void M_Change_Interaction_Transportation_Type::deserialize(MessageBuffer& msgBuffer) {
@@ -1050,15 +1432,24 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      transport = static_cast<TransportType>(msgBuffer.read_uint8());
-      order = static_cast<OrderType>(msgBuffer.read_uint8());
+      transportationType = static_cast<TransportType>(msgBuffer.read_uint8());
+      orderType = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
+   void M_Change_Interaction_Transportation_Type::show(std::ostream& out) {
+      out << "[M_Change_Interaction_Transportation_Type -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " transportationType = " << transportationType << " "       << std::endl;
+      out << " orderType = " << orderType << " "       << std::endl;
+      out << "[M_Change_Interaction_Transportation_Type -End]" << std::endl;   }
+
    M_Request_Object_Attribute_Value_Update::M_Request_Object_Attribute_Value_Update() {
-      this->name = "M_Request_Object_Attribute_Value_Update";
-      this->type = Message:: REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
+      this->messageName = "M_Request_Object_Attribute_Value_Update";
+      this->type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
       //object= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Request_Object_Attribute_Value_Update::~M_Request_Object_Attribute_Value_Update() {
@@ -1069,10 +1460,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(object);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -1081,18 +1472,30 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Request_Object_Attribute_Value_Update::show(std::ostream& out) {
+      out << "[M_Request_Object_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Request_Object_Attribute_Value_Update -End]" << std::endl;   }
+
    M_Request_Class_Attribute_Value_Update::M_Request_Class_Attribute_Value_Update() {
-      this->name = "M_Request_Class_Attribute_Value_Update";
-      this->type = Message:: REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE;
+      this->messageName = "M_Request_Class_Attribute_Value_Update";
+      this->type = Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE;
       //objectClass= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Request_Class_Attribute_Value_Update::~M_Request_Class_Attribute_Value_Update() {
@@ -1103,10 +1506,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -1115,18 +1518,30 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Request_Class_Attribute_Value_Update::show(std::ostream& out) {
+      out << "[M_Request_Class_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Request_Class_Attribute_Value_Update -End]" << std::endl;   }
+
    M_Provide_Attribute_Value_Update::M_Provide_Attribute_Value_Update() {
-      this->name = "M_Provide_Attribute_Value_Update";
-      this->type = Message:: PROVIDE_ATTRIBUTE_VALUE_UPDATE;
+      this->messageName = "M_Provide_Attribute_Value_Update";
+      this->type = Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE;
       //object= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Provide_Attribute_Value_Update::~M_Provide_Attribute_Value_Update() {
@@ -1137,10 +1552,10 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(object);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -1149,56 +1564,220 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Provide_Attribute_Value_Update::show(std::ostream& out) {
+      out << "[M_Provide_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Provide_Attribute_Value_Update -End]" << std::endl;   }
+
    M_Attributes_In_Scope::M_Attributes_In_Scope() {
-      this->name = "M_Attributes_In_Scope";
-      this->type = Message:: ATTRIBUTES_IN_SCOPE;
+      this->messageName = "M_Attributes_In_Scope";
+      this->type = Message::ATTRIBUTES_IN_SCOPE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attributes_In_Scope::~M_Attributes_In_Scope() {
    }
 
+   void M_Attributes_In_Scope::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attributes_In_Scope::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attributes_In_Scope::show(std::ostream& out) {
+      out << "[M_Attributes_In_Scope -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attributes_In_Scope -End]" << std::endl;   }
+
    M_Attributes_Out_Of_Scope::M_Attributes_Out_Of_Scope() {
-      this->name = "M_Attributes_Out_Of_Scope";
-      this->type = Message:: ATTRIBUTES_OUT_OF_SCOPE;
+      this->messageName = "M_Attributes_Out_Of_Scope";
+      this->type = Message::ATTRIBUTES_OUT_OF_SCOPE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attributes_Out_Of_Scope::~M_Attributes_Out_Of_Scope() {
    }
 
+   void M_Attributes_Out_Of_Scope::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attributes_Out_Of_Scope::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attributes_Out_Of_Scope::show(std::ostream& out) {
+      out << "[M_Attributes_Out_Of_Scope -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attributes_Out_Of_Scope -End]" << std::endl;   }
+
    M_Turn_Updates_On_For_Object_Instance::M_Turn_Updates_On_For_Object_Instance() {
-      this->name = "M_Turn_Updates_On_For_Object_Instance";
-      this->type = Message:: TURN_UPDATES_ON_FOR_OBJECT_INSTANCE;
+      this->messageName = "M_Turn_Updates_On_For_Object_Instance";
+      this->type = Message::TURN_UPDATES_ON_FOR_OBJECT_INSTANCE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Turn_Updates_On_For_Object_Instance::~M_Turn_Updates_On_For_Object_Instance() {
    }
 
+   void M_Turn_Updates_On_For_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Turn_Updates_On_For_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Turn_Updates_On_For_Object_Instance::show(std::ostream& out) {
+      out << "[M_Turn_Updates_On_For_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Turn_Updates_On_For_Object_Instance -End]" << std::endl;   }
+
    M_Turn_Updates_Off_For_Object_Instance::M_Turn_Updates_Off_For_Object_Instance() {
-      this->name = "M_Turn_Updates_Off_For_Object_Instance";
-      this->type = Message:: TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE;
+      this->messageName = "M_Turn_Updates_Off_For_Object_Instance";
+      this->type = Message::TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Turn_Updates_Off_For_Object_Instance::~M_Turn_Updates_Off_For_Object_Instance() {
    }
 
+   void M_Turn_Updates_Off_For_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Turn_Updates_Off_For_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Turn_Updates_Off_For_Object_Instance::show(std::ostream& out) {
+      out << "[M_Turn_Updates_Off_For_Object_Instance -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Turn_Updates_Off_For_Object_Instance -End]" << std::endl;   }
+
    M_Request_Attribute_Ownership_Divestiture::M_Request_Attribute_Ownership_Divestiture() {
-      this->name = "M_Request_Attribute_Ownership_Divestiture";
-      this->type = Message:: REQUEST_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+      this->messageName = "M_Request_Attribute_Ownership_Divestiture";
+      this->type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
    }
 
    M_Request_Attribute_Ownership_Divestiture::~M_Request_Attribute_Ownership_Divestiture() {
    }
 
    M_Request_Attribute_Ownership_Assumption::M_Request_Attribute_Ownership_Assumption() {
-      this->name = "M_Request_Attribute_Ownership_Assumption";
-      this->type = Message:: REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION;
+      this->messageName = "M_Request_Attribute_Ownership_Assumption";
+      this->type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION;
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }
@@ -1230,9 +1809,21 @@ namespace certi {
       }
    }
 
+   void M_Request_Attribute_Ownership_Assumption::show(std::ostream& out) {
+      out << "[M_Request_Attribute_Ownership_Assumption -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Request_Attribute_Ownership_Assumption -End]" << std::endl;   }
+
    M_Negotiated_Attribute_Ownership_Divestiture::M_Negotiated_Attribute_Ownership_Divestiture() {
-      this->name = "M_Negotiated_Attribute_Ownership_Divestiture";
-      this->type = Message:: NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+      this->messageName = "M_Negotiated_Attribute_Ownership_Divestiture";
+      this->type = Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }
@@ -1264,25 +1855,113 @@ namespace certi {
       }
    }
 
+   void M_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+      out << "[M_Negotiated_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+
    M_Attribute_Ownership_Divestiture_Notification::M_Attribute_Ownership_Divestiture_Notification() {
-      this->name = "M_Attribute_Ownership_Divestiture_Notification";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION;
+      this->messageName = "M_Attribute_Ownership_Divestiture_Notification";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Divestiture_Notification::~M_Attribute_Ownership_Divestiture_Notification() {
    }
 
+   void M_Attribute_Ownership_Divestiture_Notification::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Divestiture_Notification::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Divestiture_Notification::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Divestiture_Notification -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Divestiture_Notification -End]" << std::endl;   }
+
    M_Attribute_Ownership_Acquisition_Notification::M_Attribute_Ownership_Acquisition_Notification() {
-      this->name = "M_Attribute_Ownership_Acquisition_Notification";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION;
+      this->messageName = "M_Attribute_Ownership_Acquisition_Notification";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Acquisition_Notification::~M_Attribute_Ownership_Acquisition_Notification() {
    }
 
+   void M_Attribute_Ownership_Acquisition_Notification::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition_Notification::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition_Notification::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Acquisition_Notification -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Acquisition_Notification -End]" << std::endl;   }
+
    M_Request_Attribute_Ownership_Acquisition::M_Request_Attribute_Ownership_Acquisition() {
-      this->name = "M_Request_Attribute_Ownership_Acquisition";
-      this->type = Message:: REQUEST_ATTRIBUTE_OWNERSHIP_ACQUISITION;
+      this->messageName = "M_Request_Attribute_Ownership_Acquisition";
+      this->type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_ACQUISITION;
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }
@@ -1314,9 +1993,21 @@ namespace certi {
       }
    }
 
+   void M_Request_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+      out << "[M_Request_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Request_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+
    M_Request_Attribute_Ownership_Release::M_Request_Attribute_Ownership_Release() {
-      this->name = "M_Request_Attribute_Ownership_Release";
-      this->type = Message:: REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE;
+      this->messageName = "M_Request_Attribute_Ownership_Release";
+      this->type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE;
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }
@@ -1348,9 +2039,21 @@ namespace certi {
       }
    }
 
+   void M_Request_Attribute_Ownership_Release::show(std::ostream& out) {
+      out << "[M_Request_Attribute_Ownership_Release -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Request_Attribute_Ownership_Release -End]" << std::endl;   }
+
    M_Query_Attribute_Ownership::M_Query_Attribute_Ownership() {
-      this->name = "M_Query_Attribute_Ownership";
-      this->type = Message:: QUERY_ATTRIBUTE_OWNERSHIP;
+      this->messageName = "M_Query_Attribute_Ownership";
+      this->type = Message::QUERY_ATTRIBUTE_OWNERSHIP;
       //object= <no default value in message spec using builtin>
       //attribute= <no default value in message spec using builtin>
    }
@@ -1374,9 +2077,17 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Query_Attribute_Ownership::show(std::ostream& out) {
+      out << "[M_Query_Attribute_Ownership -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << "[M_Query_Attribute_Ownership -End]" << std::endl;   }
+
    M_Inform_Attribute_Ownership::M_Inform_Attribute_Ownership() {
-      this->name = "M_Inform_Attribute_Ownership";
-      this->type = Message:: INFORM_ATTRIBUTE_OWNERSHIP;
+      this->messageName = "M_Inform_Attribute_Ownership";
+      this->type = Message::INFORM_ATTRIBUTE_OWNERSHIP;
       //object= <no default value in message spec using builtin>
       //attribute= <no default value in message spec using builtin>
       //federate= <no default value in message spec using builtin>
@@ -1403,9 +2114,18 @@ namespace certi {
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Inform_Attribute_Ownership::show(std::ostream& out) {
+      out << "[M_Inform_Attribute_Ownership -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << " federate = " << federate << " "       << std::endl;
+      out << "[M_Inform_Attribute_Ownership -End]" << std::endl;   }
+
    M_Is_Attribute_Owned_By_Federate::M_Is_Attribute_Owned_By_Federate() {
-      this->name = "M_Is_Attribute_Owned_By_Federate";
-      this->type = Message:: IS_ATTRIBUTE_OWNED_BY_FEDERATE;
+      this->messageName = "M_Is_Attribute_Owned_By_Federate";
+      this->type = Message::IS_ATTRIBUTE_OWNED_BY_FEDERATE;
       //object= <no default value in message spec using builtin>
       //attribute= <no default value in message spec using builtin>
    }
@@ -1429,9 +2149,17 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Is_Attribute_Owned_By_Federate::show(std::ostream& out) {
+      out << "[M_Is_Attribute_Owned_By_Federate -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << "[M_Is_Attribute_Owned_By_Federate -End]" << std::endl;   }
+
    M_Attribute_Is_Not_Owned::M_Attribute_Is_Not_Owned() {
-      this->name = "M_Attribute_Is_Not_Owned";
-      this->type = Message:: ATTRIBUTE_IS_NOT_OWNED;
+      this->messageName = "M_Attribute_Is_Not_Owned";
+      this->type = Message::ATTRIBUTE_IS_NOT_OWNED;
       //object= <no default value in message spec using builtin>
       //attribute= <no default value in message spec using builtin>
       //federate= <no default value in message spec using builtin>
@@ -1458,49 +2186,210 @@ namespace certi {
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Attribute_Is_Not_Owned::show(std::ostream& out) {
+      out << "[M_Attribute_Is_Not_Owned -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << " federate = " << federate << " "       << std::endl;
+      out << "[M_Attribute_Is_Not_Owned -End]" << std::endl;   }
+
    M_Attribute_Owned_By_Rti::M_Attribute_Owned_By_Rti() {
-      this->name = "M_Attribute_Owned_By_Rti";
-      this->type = Message:: ATTRIBUTE_OWNED_BY_RTI;
+      this->messageName = "M_Attribute_Owned_By_Rti";
+      this->type = Message::ATTRIBUTE_OWNED_BY_RTI;
    }
 
    M_Attribute_Owned_By_Rti::~M_Attribute_Owned_By_Rti() {
    }
 
    M_Attribute_Ownership_Acquisition_If_Available::M_Attribute_Ownership_Acquisition_If_Available() {
-      this->name = "M_Attribute_Ownership_Acquisition_If_Available";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE;
+      this->messageName = "M_Attribute_Ownership_Acquisition_If_Available";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Acquisition_If_Available::~M_Attribute_Ownership_Acquisition_If_Available() {
    }
 
+   void M_Attribute_Ownership_Acquisition_If_Available::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition_If_Available::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition_If_Available::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Acquisition_If_Available -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Acquisition_If_Available -End]" << std::endl;   }
+
    M_Attribute_Ownership_Unavailable::M_Attribute_Ownership_Unavailable() {
-      this->name = "M_Attribute_Ownership_Unavailable";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_UNAVAILABLE;
+      this->messageName = "M_Attribute_Ownership_Unavailable";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Unavailable::~M_Attribute_Ownership_Unavailable() {
    }
 
+   void M_Attribute_Ownership_Unavailable::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Unavailable::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Unavailable::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Unavailable -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Unavailable -End]" << std::endl;   }
+
    M_Unconditional_Attribute_Ownership_Divestiture::M_Unconditional_Attribute_Ownership_Divestiture() {
-      this->name = "M_Unconditional_Attribute_Ownership_Divestiture";
-      this->type = Message:: UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+      this->messageName = "M_Unconditional_Attribute_Ownership_Divestiture";
+      this->type = Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Unconditional_Attribute_Ownership_Divestiture::~M_Unconditional_Attribute_Ownership_Divestiture() {
    }
 
+   void M_Unconditional_Attribute_Ownership_Divestiture::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Unconditional_Attribute_Ownership_Divestiture::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Unconditional_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+      out << "[M_Unconditional_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Unconditional_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+
    M_Attribute_Ownership_Acquisition::M_Attribute_Ownership_Acquisition() {
-      this->name = "M_Attribute_Ownership_Acquisition";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_ACQUISITION;
+      this->messageName = "M_Attribute_Ownership_Acquisition";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Acquisition::~M_Attribute_Ownership_Acquisition() {
    }
 
+   void M_Attribute_Ownership_Acquisition::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+
    M_Cancel_Negotiated_Attribute_Ownership_Divestiture::M_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
-      this->name = "M_Cancel_Negotiated_Attribute_Ownership_Divestiture";
-      this->type = Message:: CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+      this->messageName = "M_Cancel_Negotiated_Attribute_Ownership_Divestiture";
+      this->type = Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }
@@ -1532,37 +2421,163 @@ namespace certi {
       }
    }
 
+   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+      out << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+
    M_Attribute_Ownership_Release_Response::M_Attribute_Ownership_Release_Response() {
-      this->name = "M_Attribute_Ownership_Release_Response";
-      this->type = Message:: ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE;
+      this->messageName = "M_Attribute_Ownership_Release_Response";
+      this->type = Message::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Attribute_Ownership_Release_Response::~M_Attribute_Ownership_Release_Response() {
    }
 
+   void M_Attribute_Ownership_Release_Response::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Attribute_Ownership_Release_Response::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Attribute_Ownership_Release_Response::show(std::ostream& out) {
+      out << "[M_Attribute_Ownership_Release_Response -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Attribute_Ownership_Release_Response -End]" << std::endl;   }
+
    M_Cancel_Attribute_Ownership_Acquisition::M_Cancel_Attribute_Ownership_Acquisition() {
-      this->name = "M_Cancel_Attribute_Ownership_Acquisition";
-      this->type = Message:: CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION;
+      this->messageName = "M_Cancel_Attribute_Ownership_Acquisition";
+      this->type = Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Cancel_Attribute_Ownership_Acquisition::~M_Cancel_Attribute_Ownership_Acquisition() {
    }
 
+   void M_Cancel_Attribute_Ownership_Acquisition::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Cancel_Attribute_Ownership_Acquisition::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Cancel_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+      out << "[M_Cancel_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Cancel_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+
    M_Confirm_Attribute_Ownership_Acquisition_Cancellation::M_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
-      this->name = "M_Confirm_Attribute_Ownership_Acquisition_Cancellation";
-      this->type = Message:: CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION;
+      this->messageName = "M_Confirm_Attribute_Ownership_Acquisition_Cancellation";
+      this->type = Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION;
+      //object= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Confirm_Attribute_Ownership_Acquisition_Cancellation::~M_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
    }
 
+   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(object);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::show(std::ostream& out) {
+      out << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation -End]" << std::endl;   }
+
    M_Change_Attribute_Order_Type::M_Change_Attribute_Order_Type() {
-      this->name = "M_Change_Attribute_Order_Type";
-      this->type = Message:: CHANGE_ATTRIBUTE_ORDER_TYPE;
+      this->messageName = "M_Change_Attribute_Order_Type";
+      this->type = Message::CHANGE_ATTRIBUTE_ORDER_TYPE;
       //transport= <no default value in message spec using builtin>
       //order= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Change_Attribute_Order_Type::~M_Change_Attribute_Order_Type() {
@@ -1575,10 +2590,10 @@ namespace certi {
       msgBuffer.write_uint8(transport);
       msgBuffer.write_uint8(order);
       msgBuffer.write_uint32(object);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint64(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -1589,16 +2604,30 @@ namespace certi {
       transport = static_cast<TransportType>(msgBuffer.read_uint8());
       order = static_cast<OrderType>(msgBuffer.read_uint8());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<Handle>(msgBuffer.read_uint64());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Change_Attribute_Order_Type::show(std::ostream& out) {
+      out << "[M_Change_Attribute_Order_Type -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " transport = " << transport << " "       << std::endl;
+      out << " order = " << order << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Change_Attribute_Order_Type -End]" << std::endl;   }
+
    M_Change_Interaction_Order_Type::M_Change_Interaction_Order_Type() {
-      this->name = "M_Change_Interaction_Order_Type";
-      this->type = Message:: CHANGE_INTERACTION_ORDER_TYPE;
+      this->messageName = "M_Change_Interaction_Order_Type";
+      this->type = Message::CHANGE_INTERACTION_ORDER_TYPE;
       //interactionClass= <no default value in message spec using builtin>
       //transport= <no default value in message spec using builtin>
       //order= <no default value in message spec using builtin>
@@ -1625,11 +2654,20 @@ namespace certi {
       order = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
+   void M_Change_Interaction_Order_Type::show(std::ostream& out) {
+      out << "[M_Change_Interaction_Order_Type -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " transport = " << transport << " "       << std::endl;
+      out << " order = " << order << " "       << std::endl;
+      out << "[M_Change_Interaction_Order_Type -End]" << std::endl;   }
+
    M_Enable_Time_Regulation::M_Enable_Time_Regulation() {
-      this->name = "M_Enable_Time_Regulation";
-      this->type = Message:: ENABLE_TIME_REGULATION;
-      //enable= <no default value in message spec using builtin>
-      //lookahead= <no default value in message spec using builtin>
+      this->messageName = "M_Enable_Time_Regulation";
+      this->type = Message::ENABLE_TIME_REGULATION;
+      enable=true;
+      lookahead=0;
    }
 
    M_Enable_Time_Regulation::~M_Enable_Time_Regulation() {
@@ -1651,11 +2689,19 @@ namespace certi {
       lookahead = msgBuffer.read_double();
    }
 
+   void M_Enable_Time_Regulation::show(std::ostream& out) {
+      out << "[M_Enable_Time_Regulation -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " enable = " << enable << " "       << std::endl;
+      out << " lookahead = " << lookahead << " "       << std::endl;
+      out << "[M_Enable_Time_Regulation -End]" << std::endl;   }
+
    M_Disable_Time_Regulation::M_Disable_Time_Regulation() {
-      this->name = "M_Disable_Time_Regulation";
-      this->type = Message:: DISABLE_TIME_REGULATION;
-      //enable= <no default value in message spec using builtin>
-      //lookahead= <no default value in message spec using builtin>
+      this->messageName = "M_Disable_Time_Regulation";
+      this->type = Message::DISABLE_TIME_REGULATION;
+      enable=false;
+      lookahead=0;
    }
 
    M_Disable_Time_Regulation::~M_Disable_Time_Regulation() {
@@ -1677,11 +2723,18 @@ namespace certi {
       lookahead = msgBuffer.read_double();
    }
 
+   void M_Disable_Time_Regulation::show(std::ostream& out) {
+      out << "[M_Disable_Time_Regulation -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " enable = " << enable << " "       << std::endl;
+      out << " lookahead = " << lookahead << " "       << std::endl;
+      out << "[M_Disable_Time_Regulation -End]" << std::endl;   }
+
    M_Enable_Time_Constrained::M_Enable_Time_Constrained() {
-      this->name = "M_Enable_Time_Constrained";
-      this->type = Message:: ENABLE_TIME_CONSTRAINED;
-      //enable= <no default value in message spec using builtin>
-      //lookahead= <no default value in message spec using builtin>
+      this->messageName = "M_Enable_Time_Constrained";
+      this->type = Message::ENABLE_TIME_CONSTRAINED;
+      enable=true;
    }
 
    M_Enable_Time_Constrained::~M_Enable_Time_Constrained() {
@@ -1692,7 +2745,6 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_bool(enable);
-      msgBuffer.write_double(lookahead);
    }
 
    void M_Enable_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
@@ -1700,14 +2752,19 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       enable = msgBuffer.read_bool();
-      lookahead = msgBuffer.read_double();
    }
 
+   void M_Enable_Time_Constrained::show(std::ostream& out) {
+      out << "[M_Enable_Time_Constrained -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " enable = " << enable << " "       << std::endl;
+      out << "[M_Enable_Time_Constrained -End]" << std::endl;   }
+
    M_Disable_Time_Constrained::M_Disable_Time_Constrained() {
-      this->name = "M_Disable_Time_Constrained";
-      this->type = Message:: DISABLE_TIME_CONSTRAINED;
-      //enable= <no default value in message spec using builtin>
-      //lookahead= <no default value in message spec using builtin>
+      this->messageName = "M_Disable_Time_Constrained";
+      this->type = Message::DISABLE_TIME_CONSTRAINED;
+      enable=false;
    }
 
    M_Disable_Time_Constrained::~M_Disable_Time_Constrained() {
@@ -1718,7 +2775,6 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_bool(enable);
-      msgBuffer.write_double(lookahead);
    }
 
    void M_Disable_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
@@ -1726,36 +2782,42 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       enable = msgBuffer.read_bool();
-      lookahead = msgBuffer.read_double();
    }
 
+   void M_Disable_Time_Constrained::show(std::ostream& out) {
+      out << "[M_Disable_Time_Constrained -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " enable = " << enable << " "       << std::endl;
+      out << "[M_Disable_Time_Constrained -End]" << std::endl;   }
+
    M_Query_Lbts::M_Query_Lbts() {
-      this->name = "M_Query_Lbts";
-      this->type = Message:: QUERY_LBTS;
+      this->messageName = "M_Query_Lbts";
+      this->type = Message::QUERY_LBTS;
    }
 
    M_Query_Lbts::~M_Query_Lbts() {
    }
 
    M_Query_Federate_Time::M_Query_Federate_Time() {
-      this->name = "M_Query_Federate_Time";
-      this->type = Message:: QUERY_FEDERATE_TIME;
+      this->messageName = "M_Query_Federate_Time";
+      this->type = Message::QUERY_FEDERATE_TIME;
    }
 
    M_Query_Federate_Time::~M_Query_Federate_Time() {
    }
 
    M_Query_Min_Next_Event_Time::M_Query_Min_Next_Event_Time() {
-      this->name = "M_Query_Min_Next_Event_Time";
-      this->type = Message:: QUERY_MIN_NEXT_EVENT_TIME;
+      this->messageName = "M_Query_Min_Next_Event_Time";
+      this->type = Message::QUERY_MIN_NEXT_EVENT_TIME;
    }
 
    M_Query_Min_Next_Event_Time::~M_Query_Min_Next_Event_Time() {
    }
 
    M_Modify_Lookahead::M_Modify_Lookahead() {
-      this->name = "M_Modify_Lookahead";
-      this->type = Message:: MODIFY_LOOKAHEAD;
+      this->messageName = "M_Modify_Lookahead";
+      this->type = Message::MODIFY_LOOKAHEAD;
       //lookahead= <no default value in message spec using builtin>
    }
 
@@ -1776,9 +2838,16 @@ namespace certi {
       lookahead = msgBuffer.read_double();
    }
 
+   void M_Modify_Lookahead::show(std::ostream& out) {
+      out << "[M_Modify_Lookahead -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " lookahead = " << lookahead << " "       << std::endl;
+      out << "[M_Modify_Lookahead -End]" << std::endl;   }
+
    M_Query_Lookahead::M_Query_Lookahead() {
-      this->name = "M_Query_Lookahead";
-      this->type = Message:: QUERY_LOOKAHEAD;
+      this->messageName = "M_Query_Lookahead";
+      this->type = Message::QUERY_LOOKAHEAD;
       //lookahead= <no default value in message spec using builtin>
    }
 
@@ -1799,107 +2868,138 @@ namespace certi {
       lookahead = msgBuffer.read_double();
    }
 
+   void M_Query_Lookahead::show(std::ostream& out) {
+      out << "[M_Query_Lookahead -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " lookahead = " << lookahead << " "       << std::endl;
+      out << "[M_Query_Lookahead -End]" << std::endl;   }
+
    M_Retract::M_Retract() {
-      this->name = "M_Retract";
-      this->type = Message:: RETRACT;
+      this->messageName = "M_Retract";
+      this->type = Message::RETRACT;
+      //eventRetraction= <no default value in message spec using builtin>
    }
 
    M_Retract::~M_Retract() {
    }
 
+   void M_Retract::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      // FIXME FIXME FIXME
+      // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+   }
+
+   void M_Retract::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      // FIXME FIXME FIXME
+      // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+   }
+
+   void M_Retract::show(std::ostream& out) {
+      out << "[M_Retract -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " eventRetraction = " << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "[M_Retract -End]" << std::endl;   }
+
    M_Request_Retraction::M_Request_Retraction() {
-      this->name = "M_Request_Retraction";
-      this->type = Message:: REQUEST_RETRACTION;
+      this->messageName = "M_Request_Retraction";
+      this->type = Message::REQUEST_RETRACTION;
    }
 
    M_Request_Retraction::~M_Request_Retraction() {
    }
 
    M_Time_Advance_Request::M_Time_Advance_Request() {
-      this->name = "M_Time_Advance_Request";
-      this->type = Message:: TIME_ADVANCE_REQUEST;
+      this->messageName = "M_Time_Advance_Request";
+      this->type = Message::TIME_ADVANCE_REQUEST;
    }
 
    M_Time_Advance_Request::~M_Time_Advance_Request() {
    }
 
    M_Time_Advance_Request_Available::M_Time_Advance_Request_Available() {
-      this->name = "M_Time_Advance_Request_Available";
-      this->type = Message:: TIME_ADVANCE_REQUEST_AVAILABLE;
+      this->messageName = "M_Time_Advance_Request_Available";
+      this->type = Message::TIME_ADVANCE_REQUEST_AVAILABLE;
    }
 
    M_Time_Advance_Request_Available::~M_Time_Advance_Request_Available() {
    }
 
    M_Next_Event_Request::M_Next_Event_Request() {
-      this->name = "M_Next_Event_Request";
-      this->type = Message:: NEXT_EVENT_REQUEST;
+      this->messageName = "M_Next_Event_Request";
+      this->type = Message::NEXT_EVENT_REQUEST;
    }
 
    M_Next_Event_Request::~M_Next_Event_Request() {
    }
 
    M_Next_Event_Request_Available::M_Next_Event_Request_Available() {
-      this->name = "M_Next_Event_Request_Available";
-      this->type = Message:: NEXT_EVENT_REQUEST_AVAILABLE;
+      this->messageName = "M_Next_Event_Request_Available";
+      this->type = Message::NEXT_EVENT_REQUEST_AVAILABLE;
    }
 
    M_Next_Event_Request_Available::~M_Next_Event_Request_Available() {
    }
 
    M_Flush_Queue_Request::M_Flush_Queue_Request() {
-      this->name = "M_Flush_Queue_Request";
-      this->type = Message:: FLUSH_QUEUE_REQUEST;
+      this->messageName = "M_Flush_Queue_Request";
+      this->type = Message::FLUSH_QUEUE_REQUEST;
    }
 
    M_Flush_Queue_Request::~M_Flush_Queue_Request() {
    }
 
    M_Time_Advance_Grant::M_Time_Advance_Grant() {
-      this->name = "M_Time_Advance_Grant";
-      this->type = Message:: TIME_ADVANCE_GRANT;
+      this->messageName = "M_Time_Advance_Grant";
+      this->type = Message::TIME_ADVANCE_GRANT;
    }
 
    M_Time_Advance_Grant::~M_Time_Advance_Grant() {
    }
 
    M_Enable_Asynchronous_Delivery::M_Enable_Asynchronous_Delivery() {
-      this->name = "M_Enable_Asynchronous_Delivery";
-      this->type = Message:: ENABLE_ASYNCHRONOUS_DELIVERY;
+      this->messageName = "M_Enable_Asynchronous_Delivery";
+      this->type = Message::ENABLE_ASYNCHRONOUS_DELIVERY;
    }
 
    M_Enable_Asynchronous_Delivery::~M_Enable_Asynchronous_Delivery() {
    }
 
    M_Disable_Asynchronous_Delivery::M_Disable_Asynchronous_Delivery() {
-      this->name = "M_Disable_Asynchronous_Delivery";
-      this->type = Message:: DISABLE_ASYNCHRONOUS_DELIVERY;
+      this->messageName = "M_Disable_Asynchronous_Delivery";
+      this->type = Message::DISABLE_ASYNCHRONOUS_DELIVERY;
    }
 
    M_Disable_Asynchronous_Delivery::~M_Disable_Asynchronous_Delivery() {
    }
 
    M_Time_Regulation_Enabled::M_Time_Regulation_Enabled() {
-      this->name = "M_Time_Regulation_Enabled";
-      this->type = Message:: TIME_REGULATION_ENABLED;
+      this->messageName = "M_Time_Regulation_Enabled";
+      this->type = Message::TIME_REGULATION_ENABLED;
    }
 
    M_Time_Regulation_Enabled::~M_Time_Regulation_Enabled() {
    }
 
    M_Time_Constrained_Enabled::M_Time_Constrained_Enabled() {
-      this->name = "M_Time_Constrained_Enabled";
-      this->type = Message:: TIME_CONSTRAINED_ENABLED;
+      this->messageName = "M_Time_Constrained_Enabled";
+      this->type = Message::TIME_CONSTRAINED_ENABLED;
    }
 
    M_Time_Constrained_Enabled::~M_Time_Constrained_Enabled() {
    }
 
    M_Ddm_Create_Region::M_Ddm_Create_Region() {
-      this->name = "M_Ddm_Create_Region";
-      this->type = Message:: DDM_CREATE_REGION;
+      this->messageName = "M_Ddm_Create_Region";
+      this->type = Message::DDM_CREATE_REGION;
       //space= <no default value in message spec using builtin>
-      //nbExtent= <no default value in message spec using builtin>
+      //extentSet= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
    }
 
@@ -1911,7 +3011,12 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(space);
-      msgBuffer.write_uint32(nbExtent);
+      uint32_t extentSetSize = extentSet.size();
+      msgBuffer.write_uint32(extentSetSize);
+      for (uint32_t i = 0; i < extentSetSize; ++i) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <extentSet> of type <Extent>
+      }
       msgBuffer.write_uint32(region);
    }
 
@@ -1920,14 +3025,33 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
-      nbExtent = msgBuffer.read_uint32();
+      uint32_t extentSetSize = msgBuffer.read_uint32();
+      extentSet.resize(extentSetSize);
+      for (uint32_t i = 0; i < extentSetSize; ++i) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <extentSet> of type <Extent>
+      }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Ddm_Create_Region::show(std::ostream& out) {
+      out << "[M_Ddm_Create_Region -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " space = " << space << " "       << std::endl;
+      out << "    extentSet [] =" << std::endl;
+      for (uint32_t i = 0; i < getExtentSetSize(); ++i) {
+         out << "         //FIXME FIXME don't know how to serialize native field <extentSet> of type <Extent>";
+      }
+      out << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "[M_Ddm_Create_Region -End]" << std::endl;   }
+
    M_Ddm_Modify_Region::M_Ddm_Modify_Region() {
-      this->name = "M_Ddm_Modify_Region";
-      this->type = Message:: DDM_MODIFY_REGION;
+      this->messageName = "M_Ddm_Modify_Region";
+      this->type = Message::DDM_MODIFY_REGION;
       //region= <no default value in message spec using builtin>
+      //extentSet= <no default value in message spec using builtin>
    }
 
    M_Ddm_Modify_Region::~M_Ddm_Modify_Region() {
@@ -1938,6 +3062,12 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(region);
+      uint32_t extentSetSize = extentSet.size();
+      msgBuffer.write_uint32(extentSetSize);
+      for (uint32_t i = 0; i < extentSetSize; ++i) {
+         // FIXME FIXME FIXME
+         // don't know how to serialize native field <extentSet> of type <Extent>
+      }
    }
 
    void M_Ddm_Modify_Region::deserialize(MessageBuffer& msgBuffer) {
@@ -1945,11 +3075,29 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
+      uint32_t extentSetSize = msgBuffer.read_uint32();
+      extentSet.resize(extentSetSize);
+      for (uint32_t i = 0; i < extentSetSize; ++i) {
+         // FIXME FIXME FIXME
+         // don't know how to deserialize native field <extentSet> of type <Extent>
+      }
    }
 
+   void M_Ddm_Modify_Region::show(std::ostream& out) {
+      out << "[M_Ddm_Modify_Region -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " region = " << region << " "       << std::endl;
+      out << "    extentSet [] =" << std::endl;
+      for (uint32_t i = 0; i < getExtentSetSize(); ++i) {
+         out << "         //FIXME FIXME don't know how to serialize native field <extentSet> of type <Extent>";
+      }
+      out << std::endl;
+      out << "[M_Ddm_Modify_Region -End]" << std::endl;   }
+
    M_Ddm_Delete_Region::M_Ddm_Delete_Region() {
-      this->name = "M_Ddm_Delete_Region";
-      this->type = Message:: DDM_DELETE_REGION;
+      this->messageName = "M_Ddm_Delete_Region";
+      this->type = Message::DDM_DELETE_REGION;
       //region= <no default value in message spec using builtin>
    }
 
@@ -1970,12 +3118,20 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Ddm_Delete_Region::show(std::ostream& out) {
+      out << "[M_Ddm_Delete_Region -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " region = " << region << " "       << std::endl;
+      out << "[M_Ddm_Delete_Region -End]" << std::endl;   }
+
    M_Ddm_Register_Object::M_Ddm_Register_Object() {
-      this->name = "M_Ddm_Register_Object";
-      this->type = Message:: DDM_REGISTER_OBJECT;
+      this->messageName = "M_Ddm_Register_Object";
+      this->type = Message::DDM_REGISTER_OBJECT;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //objectInstanceName= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Ddm_Register_Object::~M_Ddm_Register_Object() {
@@ -1987,10 +3143,14 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint32(handles[i]);
+      msgBuffer.write_bool(hasObjectInstanceName);
+      if (hasObjectInstanceName) {
+         msgBuffer.write_string(objectInstanceName);
+      }
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -2000,18 +3160,37 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      hasObjectInstanceName = msgBuffer.read_bool();
+      if (hasObjectInstanceName) {
+         msgBuffer.read_string(objectInstanceName);
+      }
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Ddm_Register_Object::show(std::ostream& out) {
+      out << "[M_Ddm_Register_Object -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "(opt) objectInstanceName =" << objectInstanceName << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Ddm_Register_Object -End]" << std::endl;   }
+
    M_Ddm_Associate_Region::M_Ddm_Associate_Region() {
-      this->name = "M_Ddm_Associate_Region";
-      this->type = Message:: DDM_ASSOCIATE_REGION;
+      this->messageName = "M_Ddm_Associate_Region";
+      this->type = Message::DDM_ASSOCIATE_REGION;
       //object= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Ddm_Associate_Region::~M_Ddm_Associate_Region() {
@@ -2023,6 +3202,11 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(object);
       msgBuffer.write_uint32(region);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
    }
 
    void M_Ddm_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
@@ -2031,11 +3215,29 @@ namespace certi {
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
    }
 
+   void M_Ddm_Associate_Region::show(std::ostream& out) {
+      out << "[M_Ddm_Associate_Region -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Ddm_Associate_Region -End]" << std::endl;   }
+
    M_Ddm_Unassociate_Region::M_Ddm_Unassociate_Region() {
-      this->name = "M_Ddm_Unassociate_Region";
-      this->type = Message:: DDM_UNASSOCIATE_REGION;
+      this->messageName = "M_Ddm_Unassociate_Region";
+      this->type = Message::DDM_UNASSOCIATE_REGION;
       //object= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
    }
@@ -2059,13 +3261,21 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Ddm_Unassociate_Region::show(std::ostream& out) {
+      out << "[M_Ddm_Unassociate_Region -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "[M_Ddm_Unassociate_Region -End]" << std::endl;   }
+
    M_Ddm_Subscribe_Attributes::M_Ddm_Subscribe_Attributes() {
-      this->name = "M_Ddm_Subscribe_Attributes";
-      this->type = Message:: DDM_SUBSCRIBE_ATTRIBUTES;
+      this->messageName = "M_Ddm_Subscribe_Attributes";
+      this->type = Message::DDM_SUBSCRIBE_ATTRIBUTES;
       //objectClass= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
       //passive= <no default value in message spec using builtin>
-      //handles= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Ddm_Subscribe_Attributes::~M_Ddm_Subscribe_Attributes() {
@@ -2078,10 +3288,10 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(region);
       msgBuffer.write_bool(passive);
-      uint32_t handlesSize = handles.size();
-      msgBuffer.write_uint32(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         msgBuffer.write_uint32(handles[i]);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
       }
    }
 
@@ -2092,16 +3302,30 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
       passive = msgBuffer.read_bool();
-      uint32_t handlesSize = msgBuffer.read_uint32();
-      handles.resize(handlesSize);
-      for (uint32_t i = 0; i < handlesSize; ++i) {
-         handles[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
       }
    }
 
+   void M_Ddm_Subscribe_Attributes::show(std::ostream& out) {
+      out << "[M_Ddm_Subscribe_Attributes -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << " passive = " << passive << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Ddm_Subscribe_Attributes -End]" << std::endl;   }
+
    M_Ddm_Unsubscribe_Attributes::M_Ddm_Unsubscribe_Attributes() {
-      this->name = "M_Ddm_Unsubscribe_Attributes";
-      this->type = Message:: DDM_UNSUBSCRIBE_ATTRIBUTES;
+      this->messageName = "M_Ddm_Unsubscribe_Attributes";
+      this->type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES;
       //objectClass= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
    }
@@ -2125,9 +3349,17 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Ddm_Unsubscribe_Attributes::show(std::ostream& out) {
+      out << "[M_Ddm_Unsubscribe_Attributes -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "[M_Ddm_Unsubscribe_Attributes -End]" << std::endl;   }
+
    M_Ddm_Subscribe_Interaction::M_Ddm_Subscribe_Interaction() {
-      this->name = "M_Ddm_Subscribe_Interaction";
-      this->type = Message:: DDM_SUBSCRIBE_INTERACTION;
+      this->messageName = "M_Ddm_Subscribe_Interaction";
+      this->type = Message::DDM_SUBSCRIBE_INTERACTION;
       //interactionClass= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
       //passive= <no default value in message spec using builtin>
@@ -2154,9 +3386,18 @@ namespace certi {
       passive = msgBuffer.read_bool();
    }
 
+   void M_Ddm_Subscribe_Interaction::show(std::ostream& out) {
+      out << "[M_Ddm_Subscribe_Interaction -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << " passive = " << passive << " "       << std::endl;
+      out << "[M_Ddm_Subscribe_Interaction -End]" << std::endl;   }
+
    M_Ddm_Unsubscribe_Interaction::M_Ddm_Unsubscribe_Interaction() {
-      this->name = "M_Ddm_Unsubscribe_Interaction";
-      this->type = Message:: DDM_UNSUBSCRIBE_INTERACTION;
+      this->messageName = "M_Ddm_Unsubscribe_Interaction";
+      this->type = Message::DDM_UNSUBSCRIBE_INTERACTION;
       //interactionClass= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
       //passive= <no default value in message spec using builtin>
@@ -2183,20 +3424,70 @@ namespace certi {
       passive = msgBuffer.read_bool();
    }
 
+   void M_Ddm_Unsubscribe_Interaction::show(std::ostream& out) {
+      out << "[M_Ddm_Unsubscribe_Interaction -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << " passive = " << passive << " "       << std::endl;
+      out << "[M_Ddm_Unsubscribe_Interaction -End]" << std::endl;   }
+
    M_Ddm_Request_Update::M_Ddm_Request_Update() {
-      this->name = "M_Ddm_Request_Update";
-      this->type = Message:: DDM_REQUEST_UPDATE;
+      this->messageName = "M_Ddm_Request_Update";
+      this->type = Message::DDM_REQUEST_UPDATE;
+      //objectClass= <no default value in message spec using builtin>
+      //region= <no default value in message spec using builtin>
+      //attributes= <no default value in message spec using builtin>
    }
 
    M_Ddm_Request_Update::~M_Ddm_Request_Update() {
    }
 
+   void M_Ddm_Request_Update::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(objectClass);
+      msgBuffer.write_uint32(region);
+      uint32_t attributesSize = attributes.size();
+      msgBuffer.write_uint32(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         msgBuffer.write_uint32(attributes[i]);
+      }
+   }
+
+   void M_Ddm_Request_Update::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
+      region = static_cast<RegionHandle>(msgBuffer.read_uint32());
+      uint32_t attributesSize = msgBuffer.read_uint32();
+      attributes.resize(attributesSize);
+      for (uint32_t i = 0; i < attributesSize; ++i) {
+         attributes[i] = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      }
+   }
+
+   void M_Ddm_Request_Update::show(std::ostream& out) {
+      out << "[M_Ddm_Request_Update -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " region = " << region << " "       << std::endl;
+      out << "    attributes [] =" << std::endl;
+      for (uint32_t i = 0; i < getAttributesSize(); ++i) {
+         out << attributes[i] << " " ;
+      }
+      out << std::endl;
+      out << "[M_Ddm_Request_Update -End]" << std::endl;   }
+
    M_Get_Object_Class_Handle::M_Get_Object_Class_Handle() {
-      this->name = "M_Get_Object_Class_Handle";
-      this->type = Message:: GET_OBJECT_CLASS_HANDLE;
+      this->messageName = "M_Get_Object_Class_Handle";
+      this->type = Message::GET_OBJECT_CLASS_HANDLE;
       //objectClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //attribute= <no default value in message spec using builtin>
+      //className= <no default value in message spec using builtin>
    }
 
    M_Get_Object_Class_Handle::~M_Get_Object_Class_Handle() {
@@ -2207,8 +3498,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint32(attribute);
+      msgBuffer.write_string(className);
    }
 
    void M_Get_Object_Class_Handle::deserialize(MessageBuffer& msgBuffer) {
@@ -2216,16 +3506,22 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
-      attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      msgBuffer.read_string(className);
    }
 
+   void M_Get_Object_Class_Handle::show(std::ostream& out) {
+      out << "[M_Get_Object_Class_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " className = " << className << " "       << std::endl;
+      out << "[M_Get_Object_Class_Handle -End]" << std::endl;   }
+
    M_Get_Object_Class_Name::M_Get_Object_Class_Name() {
-      this->name = "M_Get_Object_Class_Name";
-      this->type = Message:: GET_OBJECT_CLASS_NAME;
+      this->messageName = "M_Get_Object_Class_Name";
+      this->type = Message::GET_OBJECT_CLASS_NAME;
       //objectClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //attribute= <no default value in message spec using builtin>
+      //className= <no default value in message spec using builtin>
    }
 
    M_Get_Object_Class_Name::~M_Get_Object_Class_Name() {
@@ -2236,8 +3532,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint32(attribute);
+      msgBuffer.write_string(className);
    }
 
    void M_Get_Object_Class_Name::deserialize(MessageBuffer& msgBuffer) {
@@ -2245,16 +3540,23 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
-      attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
+      msgBuffer.read_string(className);
    }
 
+   void M_Get_Object_Class_Name::show(std::ostream& out) {
+      out << "[M_Get_Object_Class_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " className = " << className << " "       << std::endl;
+      out << "[M_Get_Object_Class_Name -End]" << std::endl;   }
+
    M_Get_Attribute_Handle::M_Get_Attribute_Handle() {
-      this->name = "M_Get_Attribute_Handle";
-      this->type = Message:: GET_ATTRIBUTE_HANDLE;
+      this->messageName = "M_Get_Attribute_Handle";
+      this->type = Message::GET_ATTRIBUTE_HANDLE;
       //objectClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //attribute= <no default value in message spec using builtin>
+      //attributeName= <no default value in message spec using builtin>
+      attribute=0;
    }
 
    M_Get_Attribute_Handle::~M_Get_Attribute_Handle() {
@@ -2265,7 +3567,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(attributeName);
       msgBuffer.write_uint32(attribute);
    }
 
@@ -2274,16 +3576,25 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(attributeName);
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Attribute_Handle::show(std::ostream& out) {
+      out << "[M_Get_Attribute_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " attributeName = " << attributeName << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << "[M_Get_Attribute_Handle -End]" << std::endl;   }
+
    M_Get_Attribute_Name::M_Get_Attribute_Name() {
-      this->name = "M_Get_Attribute_Name";
-      this->type = Message:: GET_ATTRIBUTE_NAME;
+      this->messageName = "M_Get_Attribute_Name";
+      this->type = Message::GET_ATTRIBUTE_NAME;
       //objectClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //attribute= <no default value in message spec using builtin>
+      //attributeName= <no default value in message spec using builtin>
+      attribute=0;
    }
 
    M_Get_Attribute_Name::~M_Get_Attribute_Name() {
@@ -2294,7 +3605,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(attributeName);
       msgBuffer.write_uint32(attribute);
    }
 
@@ -2303,16 +3614,24 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(attributeName);
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Attribute_Name::show(std::ostream& out) {
+      out << "[M_Get_Attribute_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " attributeName = " << attributeName << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << "[M_Get_Attribute_Name -End]" << std::endl;   }
+
    M_Get_Interaction_Class_Handle::M_Get_Interaction_Class_Handle() {
-      this->name = "M_Get_Interaction_Class_Handle";
-      this->type = Message:: GET_INTERACTION_CLASS_HANDLE;
-      //interactionClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //parameter= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Interaction_Class_Handle";
+      this->type = Message::GET_INTERACTION_CLASS_HANDLE;
+      interactionClass=0;
+      //className= <no default value in message spec using builtin>
    }
 
    M_Get_Interaction_Class_Handle::~M_Get_Interaction_Class_Handle() {
@@ -2323,8 +3642,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint32(parameter);
+      msgBuffer.write_string(className);
    }
 
    void M_Get_Interaction_Class_Handle::deserialize(MessageBuffer& msgBuffer) {
@@ -2332,16 +3650,22 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
-      parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
+      msgBuffer.read_string(className);
    }
 
+   void M_Get_Interaction_Class_Handle::show(std::ostream& out) {
+      out << "[M_Get_Interaction_Class_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " className = " << className << " "       << std::endl;
+      out << "[M_Get_Interaction_Class_Handle -End]" << std::endl;   }
+
    M_Get_Interaction_Class_Name::M_Get_Interaction_Class_Name() {
-      this->name = "M_Get_Interaction_Class_Name";
-      this->type = Message:: GET_INTERACTION_CLASS_NAME;
+      this->messageName = "M_Get_Interaction_Class_Name";
+      this->type = Message::GET_INTERACTION_CLASS_NAME;
       //interactionClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //parameter= <no default value in message spec using builtin>
+      //className= <no default value in message spec using builtin>
    }
 
    M_Get_Interaction_Class_Name::~M_Get_Interaction_Class_Name() {
@@ -2352,8 +3676,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint32(parameter);
+      msgBuffer.write_string(className);
    }
 
    void M_Get_Interaction_Class_Name::deserialize(MessageBuffer& msgBuffer) {
@@ -2361,16 +3684,23 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
-      parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
+      msgBuffer.read_string(className);
    }
 
+   void M_Get_Interaction_Class_Name::show(std::ostream& out) {
+      out << "[M_Get_Interaction_Class_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " className = " << className << " "       << std::endl;
+      out << "[M_Get_Interaction_Class_Name -End]" << std::endl;   }
+
    M_Get_Parameter_Handle::M_Get_Parameter_Handle() {
-      this->name = "M_Get_Parameter_Handle";
-      this->type = Message:: GET_PARAMETER_HANDLE;
+      this->messageName = "M_Get_Parameter_Handle";
+      this->type = Message::GET_PARAMETER_HANDLE;
       //interactionClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //parameter= <no default value in message spec using builtin>
+      //parameterName= <no default value in message spec using builtin>
+      parameter=0;
    }
 
    M_Get_Parameter_Handle::~M_Get_Parameter_Handle() {
@@ -2381,7 +3711,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(parameterName);
       msgBuffer.write_uint32(parameter);
    }
 
@@ -2390,16 +3720,25 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(parameterName);
       parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Parameter_Handle::show(std::ostream& out) {
+      out << "[M_Get_Parameter_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " parameterName = " << parameterName << " "       << std::endl;
+      out << " parameter = " << parameter << " "       << std::endl;
+      out << "[M_Get_Parameter_Handle -End]" << std::endl;   }
+
    M_Get_Parameter_Name::M_Get_Parameter_Name() {
-      this->name = "M_Get_Parameter_Name";
-      this->type = Message:: GET_PARAMETER_NAME;
+      this->messageName = "M_Get_Parameter_Name";
+      this->type = Message::GET_PARAMETER_NAME;
       //interactionClass= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
-      //parameter= <no default value in message spec using builtin>
+      //parameterName= <no default value in message spec using builtin>
+      parameter=0;
    }
 
    M_Get_Parameter_Name::~M_Get_Parameter_Name() {
@@ -2410,7 +3749,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(parameterName);
       msgBuffer.write_uint32(parameter);
    }
 
@@ -2419,15 +3758,24 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(parameterName);
       parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Parameter_Name::show(std::ostream& out) {
+      out << "[M_Get_Parameter_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " parameterName = " << parameterName << " "       << std::endl;
+      out << " parameter = " << parameter << " "       << std::endl;
+      out << "[M_Get_Parameter_Name -End]" << std::endl;   }
+
    M_Get_Object_Instance_Handle::M_Get_Object_Instance_Handle() {
-      this->name = "M_Get_Object_Instance_Handle";
-      this->type = Message:: GET_OBJECT_INSTANCE_HANDLE;
-      //object= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Object_Instance_Handle";
+      this->type = Message::GET_OBJECT_INSTANCE_HANDLE;
+      object=0;
+      //objectInstanceName= <no default value in message spec using builtin>
    }
 
    M_Get_Object_Instance_Handle::~M_Get_Object_Instance_Handle() {
@@ -2438,7 +3786,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(object);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(objectInstanceName);
    }
 
    void M_Get_Object_Instance_Handle::deserialize(MessageBuffer& msgBuffer) {
@@ -2446,14 +3794,22 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(objectInstanceName);
    }
 
+   void M_Get_Object_Instance_Handle::show(std::ostream& out) {
+      out << "[M_Get_Object_Instance_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " objectInstanceName = " << objectInstanceName << " "       << std::endl;
+      out << "[M_Get_Object_Instance_Handle -End]" << std::endl;   }
+
    M_Get_Object_Instance_Name::M_Get_Object_Instance_Name() {
-      this->name = "M_Get_Object_Instance_Name";
-      this->type = Message:: GET_OBJECT_INSTANCE_NAME;
+      this->messageName = "M_Get_Object_Instance_Name";
+      this->type = Message::GET_OBJECT_INSTANCE_NAME;
       //object= <no default value in message spec using builtin>
-      //name= <no default value in message spec using builtin>
+      //objectInstanceName= <no default value in message spec using builtin>
    }
 
    M_Get_Object_Instance_Name::~M_Get_Object_Instance_Name() {
@@ -2464,7 +3820,7 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(object);
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(objectInstanceName);
    }
 
    void M_Get_Object_Instance_Name::deserialize(MessageBuffer& msgBuffer) {
@@ -2472,14 +3828,22 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(objectInstanceName);
    }
 
+   void M_Get_Object_Instance_Name::show(std::ostream& out) {
+      out << "[M_Get_Object_Instance_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " object = " << object << " "       << std::endl;
+      out << " objectInstanceName = " << objectInstanceName << " "       << std::endl;
+      out << "[M_Get_Object_Instance_Name -End]" << std::endl;   }
+
    M_Get_Space_Handle::M_Get_Space_Handle() {
-      this->name = "M_Get_Space_Handle";
-      this->type = Message:: GET_SPACE_HANDLE;
-      //name= <no default value in message spec using builtin>
-      //space= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Space_Handle";
+      this->type = Message::GET_SPACE_HANDLE;
+      //spaceName= <no default value in message spec using builtin>
+      space=0;
    }
 
    M_Get_Space_Handle::~M_Get_Space_Handle() {
@@ -2489,7 +3853,7 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(spaceName);
       msgBuffer.write_uint32(space);
    }
 
@@ -2497,14 +3861,22 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(spaceName);
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Space_Handle::show(std::ostream& out) {
+      out << "[M_Get_Space_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " spaceName = " << spaceName << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << "[M_Get_Space_Handle -End]" << std::endl;   }
+
    M_Get_Space_Name::M_Get_Space_Name() {
-      this->name = "M_Get_Space_Name";
-      this->type = Message:: GET_SPACE_NAME;
-      //name= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Space_Name";
+      this->type = Message::GET_SPACE_NAME;
+      //spaceName= <no default value in message spec using builtin>
       //space= <no default value in message spec using builtin>
    }
 
@@ -2515,7 +3887,7 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(spaceName);
       msgBuffer.write_uint32(space);
    }
 
@@ -2523,16 +3895,24 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(spaceName);
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Space_Name::show(std::ostream& out) {
+      out << "[M_Get_Space_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " spaceName = " << spaceName << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << "[M_Get_Space_Name -End]" << std::endl;   }
+
    M_Get_Dimension_Handle::M_Get_Dimension_Handle() {
-      this->name = "M_Get_Dimension_Handle";
-      this->type = Message:: GET_DIMENSION_HANDLE;
-      //name= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Dimension_Handle";
+      this->type = Message::GET_DIMENSION_HANDLE;
+      //dimensionName= <no default value in message spec using builtin>
       //space= <no default value in message spec using builtin>
-      //dimension= <no default value in message spec using builtin>
+      dimension=0;
    }
 
    M_Get_Dimension_Handle::~M_Get_Dimension_Handle() {
@@ -2542,7 +3922,7 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(dimensionName);
       msgBuffer.write_uint32(space);
       msgBuffer.write_uint32(dimension);
    }
@@ -2551,15 +3931,24 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(dimensionName);
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
       dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Dimension_Handle::show(std::ostream& out) {
+      out << "[M_Get_Dimension_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " dimensionName = " << dimensionName << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << " dimension = " << dimension << " "       << std::endl;
+      out << "[M_Get_Dimension_Handle -End]" << std::endl;   }
+
    M_Get_Dimension_Name::M_Get_Dimension_Name() {
-      this->name = "M_Get_Dimension_Name";
-      this->type = Message:: GET_DIMENSION_NAME;
-      //name= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Dimension_Name";
+      this->type = Message::GET_DIMENSION_NAME;
+      //dimensionName= <no default value in message spec using builtin>
       //space= <no default value in message spec using builtin>
       //dimension= <no default value in message spec using builtin>
    }
@@ -2571,7 +3960,7 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
+      msgBuffer.write_string(dimensionName);
       msgBuffer.write_uint32(space);
       msgBuffer.write_uint32(dimension);
    }
@@ -2580,17 +3969,26 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
+      msgBuffer.read_string(dimensionName);
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
       dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Dimension_Name::show(std::ostream& out) {
+      out << "[M_Get_Dimension_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " dimensionName = " << dimensionName << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << " dimension = " << dimension << " "       << std::endl;
+      out << "[M_Get_Dimension_Name -End]" << std::endl;   }
+
    M_Get_Attribute_Space_Handle::M_Get_Attribute_Space_Handle() {
-      this->name = "M_Get_Attribute_Space_Handle";
-      this->type = Message:: GET_ATTRIBUTE_SPACE_HANDLE;
+      this->messageName = "M_Get_Attribute_Space_Handle";
+      this->type = Message::GET_ATTRIBUTE_SPACE_HANDLE;
       //objectClass= <no default value in message spec using builtin>
       //attribute= <no default value in message spec using builtin>
-      //space= <no default value in message spec using builtin>
+      space=0;
    }
 
    M_Get_Attribute_Space_Handle::~M_Get_Attribute_Space_Handle() {
@@ -2614,9 +4012,18 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Attribute_Space_Handle::show(std::ostream& out) {
+      out << "[M_Get_Attribute_Space_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " attribute = " << attribute << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << "[M_Get_Attribute_Space_Handle -End]" << std::endl;   }
+
    M_Get_Object_Class::M_Get_Object_Class() {
-      this->name = "M_Get_Object_Class";
-      this->type = Message:: GET_OBJECT_CLASS;
+      this->messageName = "M_Get_Object_Class";
+      this->type = Message::GET_OBJECT_CLASS;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
    }
@@ -2640,11 +4047,19 @@ namespace certi {
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Object_Class::show(std::ostream& out) {
+      out << "[M_Get_Object_Class -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectClass = " << objectClass << " "       << std::endl;
+      out << " object = " << object << " "       << std::endl;
+      out << "[M_Get_Object_Class -End]" << std::endl;   }
+
    M_Get_Interaction_Space_Handle::M_Get_Interaction_Space_Handle() {
-      this->name = "M_Get_Interaction_Space_Handle";
-      this->type = Message:: GET_INTERACTION_SPACE_HANDLE;
+      this->messageName = "M_Get_Interaction_Space_Handle";
+      this->type = Message::GET_INTERACTION_SPACE_HANDLE;
       //interactionClass= <no default value in message spec using builtin>
-      //space= <no default value in message spec using builtin>
+      space=0;
    }
 
    M_Get_Interaction_Space_Handle::~M_Get_Interaction_Space_Handle() {
@@ -2666,11 +4081,19 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
+   void M_Get_Interaction_Space_Handle::show(std::ostream& out) {
+      out << "[M_Get_Interaction_Space_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " interactionClass = " << interactionClass << " "       << std::endl;
+      out << " space = " << space << " "       << std::endl;
+      out << "[M_Get_Interaction_Space_Handle -End]" << std::endl;   }
+
    M_Get_Transportation_Handle::M_Get_Transportation_Handle() {
-      this->name = "M_Get_Transportation_Handle";
-      this->type = Message:: GET_TRANSPORTATION_HANDLE;
-      //name= <no default value in message spec using builtin>
-      //transport= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Transportation_Handle";
+      this->type = Message::GET_TRANSPORTATION_HANDLE;
+      //transportationName= <no default value in message spec using builtin>
+      transportation=0;
    }
 
    M_Get_Transportation_Handle::~M_Get_Transportation_Handle() {
@@ -2680,23 +4103,31 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint8(transport);
+      msgBuffer.write_string(transportationName);
+      msgBuffer.write_uint8(transportation);
    }
 
    void M_Get_Transportation_Handle::deserialize(MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
-      transport = static_cast<TransportType>(msgBuffer.read_uint8());
+      msgBuffer.read_string(transportationName);
+      transportation = static_cast<TransportType>(msgBuffer.read_uint8());
    }
 
+   void M_Get_Transportation_Handle::show(std::ostream& out) {
+      out << "[M_Get_Transportation_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " transportationName = " << transportationName << " "       << std::endl;
+      out << " transportation = " << transportation << " "       << std::endl;
+      out << "[M_Get_Transportation_Handle -End]" << std::endl;   }
+
    M_Get_Transportation_Name::M_Get_Transportation_Name() {
-      this->name = "M_Get_Transportation_Name";
-      this->type = Message:: GET_TRANSPORTATION_NAME;
-      //name= <no default value in message spec using builtin>
-      //transport= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Transportation_Name";
+      this->type = Message::GET_TRANSPORTATION_NAME;
+      //transportationName= <no default value in message spec using builtin>
+      //transportation= <no default value in message spec using builtin>
    }
 
    M_Get_Transportation_Name::~M_Get_Transportation_Name() {
@@ -2706,23 +4137,31 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint8(transport);
+      msgBuffer.write_string(transportationName);
+      msgBuffer.write_uint8(transportation);
    }
 
    void M_Get_Transportation_Name::deserialize(MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
-      transport = static_cast<TransportType>(msgBuffer.read_uint8());
+      msgBuffer.read_string(transportationName);
+      transportation = static_cast<TransportType>(msgBuffer.read_uint8());
    }
 
+   void M_Get_Transportation_Name::show(std::ostream& out) {
+      out << "[M_Get_Transportation_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " transportationName = " << transportationName << " "       << std::endl;
+      out << " transportation = " << transportation << " "       << std::endl;
+      out << "[M_Get_Transportation_Name -End]" << std::endl;   }
+
    M_Get_Ordering_Handle::M_Get_Ordering_Handle() {
-      this->name = "M_Get_Ordering_Handle";
-      this->type = Message:: GET_ORDERING_HANDLE;
-      //name= <no default value in message spec using builtin>
-      //order= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Ordering_Handle";
+      this->type = Message::GET_ORDERING_HANDLE;
+      //orderingName= <no default value in message spec using builtin>
+      ordering=0;
    }
 
    M_Get_Ordering_Handle::~M_Get_Ordering_Handle() {
@@ -2732,23 +4171,31 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint8(order);
+      msgBuffer.write_string(orderingName);
+      msgBuffer.write_uint8(ordering);
    }
 
    void M_Get_Ordering_Handle::deserialize(MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
-      order = static_cast<OrderType>(msgBuffer.read_uint8());
+      msgBuffer.read_string(orderingName);
+      ordering = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
+   void M_Get_Ordering_Handle::show(std::ostream& out) {
+      out << "[M_Get_Ordering_Handle -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " orderingName = " << orderingName << " "       << std::endl;
+      out << " ordering = " << ordering << " "       << std::endl;
+      out << "[M_Get_Ordering_Handle -End]" << std::endl;   }
+
    M_Get_Ordering_Name::M_Get_Ordering_Name() {
-      this->name = "M_Get_Ordering_Name";
-      this->type = Message:: GET_ORDERING_NAME;
-      //name= <no default value in message spec using builtin>
-      //order= <no default value in message spec using builtin>
+      this->messageName = "M_Get_Ordering_Name";
+      this->type = Message::GET_ORDERING_NAME;
+      //orderingName= <no default value in message spec using builtin>
+      //ordering= <no default value in message spec using builtin>
    }
 
    M_Get_Ordering_Name::~M_Get_Ordering_Name() {
@@ -2758,85 +4205,93 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_string(name);
-      msgBuffer.write_uint8(order);
+      msgBuffer.write_string(orderingName);
+      msgBuffer.write_uint8(ordering);
    }
 
    void M_Get_Ordering_Name::deserialize(MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      msgBuffer.read_string(name);
-      order = static_cast<OrderType>(msgBuffer.read_uint8());
+      msgBuffer.read_string(orderingName);
+      ordering = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
+   void M_Get_Ordering_Name::show(std::ostream& out) {
+      out << "[M_Get_Ordering_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " orderingName = " << orderingName << " "       << std::endl;
+      out << " ordering = " << ordering << " "       << std::endl;
+      out << "[M_Get_Ordering_Name -End]" << std::endl;   }
+
    M_Enable_Class_Relevance_Advisory_Switch::M_Enable_Class_Relevance_Advisory_Switch() {
-      this->name = "M_Enable_Class_Relevance_Advisory_Switch";
-      this->type = Message:: ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Enable_Class_Relevance_Advisory_Switch";
+      this->type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Enable_Class_Relevance_Advisory_Switch::~M_Enable_Class_Relevance_Advisory_Switch() {
    }
 
    M_Disable_Class_Relevance_Advisory_Switch::M_Disable_Class_Relevance_Advisory_Switch() {
-      this->name = "M_Disable_Class_Relevance_Advisory_Switch";
-      this->type = Message:: DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Disable_Class_Relevance_Advisory_Switch";
+      this->type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Disable_Class_Relevance_Advisory_Switch::~M_Disable_Class_Relevance_Advisory_Switch() {
    }
 
    M_Enable_Attribute_Relevance_Advisory_Switch::M_Enable_Attribute_Relevance_Advisory_Switch() {
-      this->name = "M_Enable_Attribute_Relevance_Advisory_Switch";
-      this->type = Message:: ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Enable_Attribute_Relevance_Advisory_Switch";
+      this->type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Enable_Attribute_Relevance_Advisory_Switch::~M_Enable_Attribute_Relevance_Advisory_Switch() {
    }
 
    M_Disable_Attribute_Relevance_Advisory_Switch::M_Disable_Attribute_Relevance_Advisory_Switch() {
-      this->name = "M_Disable_Attribute_Relevance_Advisory_Switch";
-      this->type = Message:: DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Disable_Attribute_Relevance_Advisory_Switch";
+      this->type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Disable_Attribute_Relevance_Advisory_Switch::~M_Disable_Attribute_Relevance_Advisory_Switch() {
    }
 
    M_Enable_Attribute_Scope_Advisory_Switch::M_Enable_Attribute_Scope_Advisory_Switch() {
-      this->name = "M_Enable_Attribute_Scope_Advisory_Switch";
-      this->type = Message:: ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH;
+      this->messageName = "M_Enable_Attribute_Scope_Advisory_Switch";
+      this->type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH;
    }
 
    M_Enable_Attribute_Scope_Advisory_Switch::~M_Enable_Attribute_Scope_Advisory_Switch() {
    }
 
    M_Disable_Attribute_Scope_Advisory_Switch::M_Disable_Attribute_Scope_Advisory_Switch() {
-      this->name = "M_Disable_Attribute_Scope_Advisory_Switch";
-      this->type = Message:: DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH;
+      this->messageName = "M_Disable_Attribute_Scope_Advisory_Switch";
+      this->type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH;
    }
 
    M_Disable_Attribute_Scope_Advisory_Switch::~M_Disable_Attribute_Scope_Advisory_Switch() {
    }
 
    M_Enable_Interaction_Relevance_Advisory_Switch::M_Enable_Interaction_Relevance_Advisory_Switch() {
-      this->name = "M_Enable_Interaction_Relevance_Advisory_Switch";
-      this->type = Message:: ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Enable_Interaction_Relevance_Advisory_Switch";
+      this->type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Enable_Interaction_Relevance_Advisory_Switch::~M_Enable_Interaction_Relevance_Advisory_Switch() {
    }
 
    M_Disable_Interaction_Relevance_Advisory_Switch::M_Disable_Interaction_Relevance_Advisory_Switch() {
-      this->name = "M_Disable_Interaction_Relevance_Advisory_Switch";
-      this->type = Message:: DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH;
+      this->messageName = "M_Disable_Interaction_Relevance_Advisory_Switch";
+      this->type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH;
    }
 
    M_Disable_Interaction_Relevance_Advisory_Switch::~M_Disable_Interaction_Relevance_Advisory_Switch() {
    }
 
    M_Tick_Request::M_Tick_Request() {
-      this->name = "M_Tick_Request";
-      this->type = Message:: TICK_REQUEST;
+      this->messageName = "M_Tick_Request";
+      this->type = Message::TICK_REQUEST;
       //multiple= <no default value in message spec using builtin>
       //minTickTime= <no default value in message spec using builtin>
       //maxTickTime= <no default value in message spec using builtin>
@@ -2863,17 +4318,26 @@ namespace certi {
       maxTickTime = msgBuffer.read_double();
    }
 
+   void M_Tick_Request::show(std::ostream& out) {
+      out << "[M_Tick_Request -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " multiple = " << multiple << " "       << std::endl;
+      out << " minTickTime = " << minTickTime << " "       << std::endl;
+      out << " maxTickTime = " << maxTickTime << " "       << std::endl;
+      out << "[M_Tick_Request -End]" << std::endl;   }
+
    M_Tick_Request_Next::M_Tick_Request_Next() {
-      this->name = "M_Tick_Request_Next";
-      this->type = Message:: TICK_REQUEST_NEXT;
+      this->messageName = "M_Tick_Request_Next";
+      this->type = Message::TICK_REQUEST_NEXT;
    }
 
    M_Tick_Request_Next::~M_Tick_Request_Next() {
    }
 
    M_Tick_Request_Stop::M_Tick_Request_Stop() {
-      this->name = "M_Tick_Request_Stop";
-      this->type = Message:: TICK_REQUEST_STOP;
+      this->messageName = "M_Tick_Request_Stop";
+      this->type = Message::TICK_REQUEST_STOP;
    }
 
    M_Tick_Request_Stop::~M_Tick_Request_Stop() {

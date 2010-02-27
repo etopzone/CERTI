@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.31 2009/11/19 18:15:30 erk Exp $
+// $Id: DataDistribution.cc,v 3.32 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -213,8 +213,8 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 void
 DataDistribution::associateRegion(ObjectHandle object,
 				  RegionHandle region,
-				  std::vector <AttributeHandle> &attr,
-				  int nb,
+				  const std::vector <AttributeHandle> &attr,
+				  uint32_t nb,
 				  TypeException &e)
     throw (RegionNotKnown)
 {
@@ -224,7 +224,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 
     Debug(D, pdDebug) << "- unassociate object " << object << std::endl ;
     rootObject->getObject(object)->unassociate(r);
-    for (int i = 0 ; i < nb ; ++i) {
+    for (uint32_t i = 0 ; i < nb ; ++i) {
 	Debug(D, pdDebug) << "- associate attribute " << attr[i] << std::endl ;
 	rootObject->getObjectAttribute(object, attr[i])->associate(r);
     }
@@ -318,8 +318,8 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 void
 DataDistribution::subscribe(ObjectClassHandle obj_class,
 			    RegionHandle region,
-			    std::vector <AttributeHandle> &attr,
-			    int nb,
+			    const std::vector <AttributeHandle> &attr,
+			    uint32_t nb,
 			    TypeException &e)
     throw (RegionNotKnown)
 {
@@ -412,4 +412,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.31 2009/11/19 18:15:30 erk Exp $
+// $Id: DataDistribution.cc,v 3.32 2010/02/27 16:53:36 erk Exp $

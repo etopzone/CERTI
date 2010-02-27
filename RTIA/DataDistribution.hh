@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.17 2009/11/19 18:15:30 erk Exp $
+// $Id: DataDistribution.hh,v 3.18 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -62,8 +62,8 @@ public:
     void deleteRegion(long, TypeException &)
         throw (RegionNotKnown, RegionInUse);
 
-    void associateRegion(ObjectHandle, RegionHandle, std::vector <AttributeHandle> &,
-			 int, TypeException &)
+    void associateRegion(ObjectHandle, RegionHandle, const std::vector <AttributeHandle> &,
+			 uint32_t, TypeException &)
 	throw (RegionNotKnown);
 
     ObjectHandle registerObject(ObjectClassHandle, const std::string&,
@@ -74,7 +74,7 @@ public:
     void unassociateRegion(ObjectHandle, RegionHandle, TypeException &e)
 	throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown);
 
-    void subscribe(ObjectClassHandle, RegionHandle, std::vector <AttributeHandle> &, int,
+    void subscribe(ObjectClassHandle, RegionHandle, const std::vector <AttributeHandle> &, uint32_t,
 		   TypeException &)
 	throw (RegionNotKnown);
 
@@ -99,4 +99,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.17 2009/11/19 18:15:30 erk Exp $
+// $Id: DataDistribution.hh,v 3.18 2010/02/27 16:53:36 erk Exp $

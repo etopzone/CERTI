@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.30 2009/11/19 18:15:31 erk Exp $
+// $Id: InteractionSet.cc,v 3.31 2010/02/27 16:53:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -205,7 +205,7 @@ throw (InteractionParameterNotDefined,
 void
 InteractionSet::isReady(FederateHandle federate_handle,
 		InteractionClassHandle the_interaction,
-		std::vector <ParameterHandle> &param_array,
+		const std::vector <ParameterHandle> &param_array,
 		UShort param_array_size)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
@@ -272,4 +272,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.30 2009/11/19 18:15:31 erk Exp $
+// $Id: InteractionSet.cc,v 3.31 2010/02/27 16:53:35 erk Exp $

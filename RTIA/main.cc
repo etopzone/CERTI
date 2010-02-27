@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.27 2009/11/24 21:44:48 erk Exp $
+// $Id: main.cc,v 3.28 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,6 +80,8 @@ main(int argc, char **argv) {
 
 		RTIA rtia(rtia_port, rtia_fd);
 
+		PrettyDebug::setFederateName("RTIA::UnknownFederate");
+
 		try {
 			rtia.execute();
 		}
@@ -126,4 +128,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.27 2009/11/24 21:44:48 erk Exp $
+// EOF $Id: main.cc,v 3.28 2010/02/27 16:53:36 erk Exp $

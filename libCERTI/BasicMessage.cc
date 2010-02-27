@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.15 2010/01/30 18:41:37 erk Exp $
+// $Id: BasicMessage.cc,v 3.16 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -41,33 +41,97 @@ BasicMessage::BasicMessage() :
 	_isLabelled(false)
 {
 
-}
+} /* end of BasicMessage */
 
 BasicMessage::~BasicMessage() {
 	
-}
+} /* end of ~BasicMessage */
 
-// ----------------------------------------------------------------------------
-/** Set extents
- */
+void BasicMessage::show(std::ostream& out) {
+	out << "[BasicMessage -Begin]" << std::endl;
+	if (_isDated) {
+			out << "(opt) Date = " << date << std::endl;
+		} else {
+			out << "(opt) Date = <not provided>" << std::endl;
+		}
+	if (_isTagged) {
+				out << "(opt) Tag = " << tag << std::endl;
+			} else {
+				out << "(opt) Tag = <not provided>" << std::endl;
+			}
+	if (_isLabelled) {
+		out << "(opt) Label = " << label << std::endl;
+	} else {
+		out << "(opt) label = <not provided>" << std::endl;
+	}
+	out << "[BasicMessage -End]" << std::endl;
+} /* end of show */
+
 void
-BasicMessage::setExtents(const std::vector<Extent> &e)
-{
+BasicMessage::setExtents(const std::vector<Extent> &e) {
     extents = e ;
     assert(extents.size() == e.size());
 }
 
-// ----------------------------------------------------------------------------
-/** Get extents
- */
 const vector<Extent> &
-BasicMessage::getExtents() const
-{
+BasicMessage::getExtents() const {
     return extents ;
 }
+void BasicMessage::serialize(MessageBuffer& msgBuffer) {
+	/* We serialize the common Basic messages part
+	 * ALL Basic Message will contain the following
+	 */
+	D.Out(pdDebug, "Serialize <%s>", "BasicMessage");
+	/*
+	 * "builtin" Optional part
+	 * The subclass may chose in the constructor the variable part.
+	 * isDated may be chosen on Message instance basis
+	 * (same message may Dated or Not Dated)
+	 */
+	msgBuffer.write_bool(_isDated);
+	if (_isDated) {
+		msgBuffer.write_double(date.getTime());
+		D.Out(pdDebug, "Sent Message date is  <%f>", date.getTime());
+	}
+	msgBuffer.write_bool(_isLabelled);
+	if (_isLabelled) {
+		msgBuffer.write_string(label);
+	}
+	msgBuffer.write_bool(_isTagged);
+	if (_isTagged) {
+		msgBuffer.write_string(tag);
+	}
+} /* end of serialize */
+
+void BasicMessage::deserialize(MessageBuffer& msgBuffer) {
+	/* We serialize the common Basic message part
+	 * ALL Basic Messages will contain the following
+	 */
+	Debug(D, pdDebug) << "Deserialize <" << "BasicMessage" << ">" << endl;
+	/* deserialize common part */
+	/*
+	 * "builtin" Optional part
+	 * The subclass may chose in the constructor the variable part.
+	 * isDated may be chosen on Message instance basis
+	 * (same message may Dated or Not Dated)
+	 */
+	_isDated = msgBuffer.read_bool();
+	if (_isDated) {
+		date = msgBuffer.read_double();
+		D.Out(pdDebug, "Received Message date is  <%f>", date.getTime());
+	}
+	_isLabelled = msgBuffer.read_bool();
+	if (_isLabelled) {
+		msgBuffer.read_string(label);
+	}
+	_isTagged = msgBuffer.read_bool();
+	if (_isTagged) {
+		msgBuffer.read_string(tag);
+	}
+} /* end of deserialize */
 
 void 
-BasicMessage::serialize(MessageBuffer& msgBuffer) {
+BasicMessage::serializeExtent(MessageBuffer& msgBuffer) {
 	/* Write Extent */
 	Debug(D, pdDebug) << "Serialize " << extents.size() << " extent(s)" << endl;
 	msgBuffer.write_int32(static_cast<int32_t>(extents.size()));
@@ -90,10 +154,10 @@ BasicMessage::serialize(MessageBuffer& msgBuffer) {
 	for (int i = 0; i < n; ++i) {
 		msgBuffer.write_int32(regions[i]);
 	}
-} /* end of serialize */
+} /* end of serializeExtent */
 
 void 
-BasicMessage::deserialize(MessageBuffer& msgBuffer) {
+BasicMessage::deserializeExtent(MessageBuffer& msgBuffer) {
 	/* Deserialize Extents */
 	int32_t nb_extents;
 	int32_t temp;
@@ -128,7 +192,7 @@ BasicMessage::deserialize(MessageBuffer& msgBuffer) {
 		regions.push_back(temp);
 	}
 
-} /* end of serialize */
+} /* end of serializeExtent */
 
 // ----------------------------------------------------------------------------
 /** Write the 'extent' Message attribute into the body. Format : number of
@@ -212,7 +276,7 @@ void
 BasicMessage::setRegions(const BaseRegion *reg[], int size)
 {
     regions.resize(size);
-    
+
     for (int i = 0 ; i < size ; ++i) {
         regions[i] = reg[i]->getHandle();
     }
@@ -233,4 +297,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.15 2010/01/30 18:41:37 erk Exp $
+// $Id: BasicMessage.cc,v 3.16 2010/02/27 16:53:36 erk Exp $

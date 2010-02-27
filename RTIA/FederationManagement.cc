@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.79 2009/11/25 22:05:19 erk Exp $
+// $Id: FederationManagement.cc,v 3.80 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 #include "TimeManagement.hh"
 #include "PrettyDebug.hh"
 #include "NM_Classes.hh"
+#include "M_Classes.hh"
 
 #include <cstring>
 #include <cstdio>
@@ -390,7 +391,7 @@ void
 FederationManagement::registerSynchronization(const std::string& label,
                                               const std::string& tag,
                                               unsigned short array_size,
-                                              std::vector <FederateHandle> &fed_array,
+                                              const std::vector <FederateHandle> &fed_array,
                                               TypeException &e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
@@ -465,9 +466,8 @@ FederationManagement::announceSynchronizationPoint(const std::string& label,
 {
     D.Out(pdInit, "Announce Synchronization Point \"%s\"(%s).", label.c_str(), tag.c_str());
 
-    Message req;
+    M_Announce_Synchronization_Point req;
 
-    req.type = Message::ANNOUNCE_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(tag);
 
@@ -484,11 +484,9 @@ synchronizationPointRegistrationFailed(const std::string& label)
     D.Out(pdInit, "Synchronization Point Registration Failed \"%s\".",
           label.c_str());
 
-    Message req;
+    M_Synchronization_Point_Registration_Failed req;
 
     G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationFailed");
-
-    req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED ;
     req.setLabel(label);
 
     comm->requestFederateService(&req);
@@ -504,11 +502,9 @@ synchronizationPointRegistrationSucceeded(const std::string& label)
     D.Out(pdInit, "Synchronization Point Registration Succeeded \"%s\".",
           label.c_str());
 
-    Message req;
+    M_Synchronization_Point_Registration_Succeeded req;
 
     G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationSucceeded");
-
-    req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     req.setLabel(label);
 
     comm->requestFederateService(&req);
@@ -523,11 +519,9 @@ FederationManagement::federationSynchronized(const std::string& label)
 {
     D.Out(pdInit, "Federation Synchronized \"%s\".", label.c_str());
 
-    Message req;
+    M_Federation_Synchronized req;
 
-    req.type = Message::FEDERATION_SYNCHRONIZED ;
     req.setLabel(label);
-
     comm->requestFederateService(&req);
 }
 
@@ -642,9 +636,8 @@ FederationManagement::initiateFederateSave(const std::string& label)
 
     savingState = true ;
 
-    Message req;
+    M_Initiate_Federate_Save req;
 
-    req.type = Message::INITIATE_FEDERATE_SAVE ;
     req.setLabel(label);
 
     comm->requestFederateService(&req);
@@ -660,13 +653,13 @@ FederationManagement::federationSavedStatus(bool status)
     D.Out(pdInit, "Federation %ssaved.", status ? "" : "not ");
 
     savingState = false ;
-
-    Message req;
-
-    req.type = status ? Message::FEDERATION_SAVED : Message::FEDERATION_NOT_SAVED ;
-
-    comm->requestFederateService(&req);
-
+    if (status) {
+        M_Federation_Saved     req;
+    	comm->requestFederateService(&req);
+    } else {
+        M_Federation_Not_Saved req;
+    	comm->requestFederateService(&req);
+    }
     G.Out(pdGendoc,"exit  FederationManagement::federationSavedStatus");
 }
 
@@ -718,18 +711,20 @@ FederationManagement::requestFederationRestoreStatus(bool status,
     D.Out(pdInit, "Federation restore request %saccepted",
           status ? "" : "not ");
 
-    Message req;
+    Message* req;
 
-    req.setLabel(label);
-
-    if (status)
-        req.type = Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED ;
-    else {
-        req.type = Message::REQUEST_FEDERATION_RESTORE_FAILED ;
-        req.setTag(reason);
+    if (status) {
+    	req = new M_Request_Federation_Restore_Succeeded();
     }
-
-    comm->requestFederateService(&req);
+    else {
+    	M_Request_Federation_Restore_Failed* RFRF;
+    	RFRF = new M_Request_Federation_Restore_Failed();
+        RFRF->setReason(reason);
+        req = RFRF;
+    }
+    req->setLabel(label);
+    comm->requestFederateService(req);
+    delete req;
     G.Out(pdGendoc,"exit  FederationManagement::requestFederationRestoreStatus");
 }
 
@@ -740,11 +735,8 @@ FederationManagement::federationRestoreBegun()
     G.Out(pdGendoc,"enter FederationManagement::federationRestoreBegun");
     D.Out(pdInit, "Federation restore begun");
 
-    Message req;
-    req.type = Message::FEDERATION_RESTORE_BEGUN ;
-
+    M_Federation_Restore_Begun req;
     comm->requestFederateService(&req);
-
     G.Out(pdGendoc,"exit  FederationManagement::federationRestoreBegun");
 }
 
@@ -759,8 +751,8 @@ FederationManagement::initiateFederateRestore(const std::string& label,
 
     restoringState = true ;
 
-    Message req;
-    req.type = Message::INITIATE_FEDERATE_RESTORE ;
+    M_Initiate_Federate_Restore req;
+
     req.setFederate(handle);
     req.setLabel(label);
 
@@ -770,20 +762,22 @@ FederationManagement::initiateFederateRestore(const std::string& label,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federationRestoredStatus(bool status)
-{
+FederationManagement::federationRestoredStatus(bool status) {
     D.Out(pdInit, "Federation %srestored.", status ? "" : "not ");
 
     restoringState = false ;
 
-    Message req;
+    Message* req;
 
-    if (status)
-        req.type = Message::FEDERATION_RESTORED ;
-    else
-        req.type = Message::FEDERATION_NOT_RESTORED ;
+    if (status) {
+    	req = new M_Federation_Restored();
+    }
+    else {
+    	req = new M_Federation_Not_Restored();
+    }
 
-    comm->requestFederateService(&req);
+    comm->requestFederateService(req);
+    delete req;
 }
 
 // ----------------------------------------------------------------------------

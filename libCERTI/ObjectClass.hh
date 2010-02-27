@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.51 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClass.hh,v 3.52 2010/02/27 16:53:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -150,8 +150,8 @@ public:
 
 	// Publication and Subscription
 	void publish(FederateHandle theFederateHandle,
-			std::vector <AttributeHandle> &theAttributeList,
-			UShort theListSize,
+			const std::vector <AttributeHandle> &theAttributeList,
+			uint32_t theListSize,
 			bool PubOrUnpub)
 	throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
@@ -342,4 +342,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.51 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClass.hh,v 3.52 2010/02/27 16:53:35 erk Exp $

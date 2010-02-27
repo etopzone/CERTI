@@ -19,19 +19,53 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.23 2009/11/24 21:44:48 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.24 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIambPrivateRefs.hh"
 #include "RTItypesImp.hh"
 #include "PrettyDebug.hh"
+#include "M_Classes.hh"
 #include <sstream>
 #include <iostream>
 
 namespace {
 static PrettyDebug D("LIBRTI", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
+
+template<typename T>
+std::vector<std::pair<AttributeHandle, AttributeValue_t> >
+getAHVPSFromRequest(T* request)
+{
+	uint32_t size = request->getAttributesSize();
+    std::vector<std::pair<AttributeHandle, AttributeValue_t> > result;
+    result.resize(size);
+
+    for (uint32_t i = 0 ; i < size ; ++i) {
+        result[i].first = request->getAttributes(i);
+        result[i].second.assign(request->getValues(i).data(), request->getValues(i).length());
+    }
+
+    return result;
+}
+
+template<typename T>
+std::vector<std::pair<ParameterHandle, ParameterValue_t> >
+getPHVPSFromRequest(T* request)
+{
+	uint32_t size = request->getParametersSize();
+
+    std::vector<std::pair<ParameterHandle, ParameterValue_t> > result;
+    result.resize(size);
+
+    for (uint32_t i = 0 ; i < size ; ++i) {
+        result[i].first = request->getParameters(i);
+        result[i].second.assign(request->getValues(i).data(), request->getValues(i).length());
+    }
+
+    return result;
+}
 }
 
 RTIambPrivateRefs::RTIambPrivateRefs()
@@ -65,7 +99,7 @@ RTIambPrivateRefs::leave(const char *msg) throw (RTI::RTIinternalError)
 void
 RTIambPrivateRefs::executeService(Message *req, Message *rep)
 {
-    G.Out(pdGendoc,"enter RTIambPrivateRefs::executeService");
+    G.Out(pdGendoc,"enter RTIambPrivateRefs::executeService(%s,%s)",req->getMessageName(),rep->getMessageName());
 
     D.Out(pdDebug, "sending request to RTIA.");
 
@@ -91,7 +125,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     D.Out(pdDebug, "RTIA reply received.");
 
 
-    if (rep->type != req->type) {
+    if (rep->getType() != req->getType()) {
         std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
         throw RTI::RTIinternalError("RTIambPrivateRefs::executeService: "
                                "rep->type != req->type");
@@ -111,8 +145,7 @@ RTIambPrivateRefs::sendTickRequestStop()
 {
     G.Out(pdGendoc,"enter RTIambPrivateRefs::sendTickRequestStop");
 
-    Message req, rep ;
-    req.type = Message::TICK_REQUEST_STOP;
+    M_Tick_Request_Stop req, rep ;
 
     try {
         req.send(socketUn, msgBufSend);
@@ -593,7 +626,7 @@ void
 RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     throw (RTI::RTIinternalError)
 {
-    switch (msg->type) {
+    switch (msg->getType()) {
 
       case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         try {
@@ -655,8 +688,9 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::INITIATE_FEDERATE_RESTORE:
         try {
-            fed_amb->initiateFederateRestore((msg->getLabel()).c_str(),
-                                         msg->getFederate());
+        	M_Initiate_Federate_Restore *IFR = static_cast<M_Initiate_Federate_Restore *>(msg);
+            fed_amb->initiateFederateRestore((IFR->getLabel()).c_str(),
+            		IFR->getFederate());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("initiateFederateRestore")
         break ;
@@ -677,57 +711,61 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::START_REGISTRATION_FOR_OBJECT_CLASS:
         try {
-            fed_amb->startRegistrationForObjectClass(msg->getObjectClass());
+            fed_amb->startRegistrationForObjectClass(static_cast<M_Start_Registration_For_Object_Class *>(msg)->getObjectClass());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("startRegistrationForObjectClass")
         break ;
 
       case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS:
         try {
-            fed_amb->stopRegistrationForObjectClass(msg->getObjectClass());
+            fed_amb->stopRegistrationForObjectClass(static_cast<M_Stop_Registration_For_Object_Class *>(msg)->getObjectClass());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("stopRegistrationForObjectClass")
         break ;
 
       case Message::TURN_INTERACTIONS_ON:
         try {
-            fed_amb->turnInteractionsOn(msg->getInteractionClass());
+            fed_amb->turnInteractionsOn(static_cast<M_Turn_Interactions_On *>(msg)->getInteractionClass());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("turnInteractionsOn")
         break ;
 
       case Message::TURN_INTERACTIONS_OFF:
         try {
-            fed_amb->turnInteractionsOff(msg->getInteractionClass());
+            fed_amb->turnInteractionsOff(static_cast<M_Turn_Interactions_Off *>(msg)->getInteractionClass());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("turnInteractionsOff")
         break ;
 
       case Message::DISCOVER_OBJECT_INSTANCE:
         try {
-            fed_amb->discoverObjectInstance(msg->getObject(),
-                                            msg->getObjectClass(),
-                                            msg->getName().c_str());
+        	M_Discover_Object_Instance* DOI = static_cast<M_Discover_Object_Instance *>(msg);
+            fed_amb->discoverObjectInstance(DOI->getObject(),
+            		                        DOI->getObjectClass(),
+            				                DOI->getObjectName().c_str());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("discoverObjectInstance")
         break ;
 
       case Message::REFLECT_ATTRIBUTE_VALUES:
         try {
+        	M_Reflect_Attribute_Values* RAV = static_cast<M_Reflect_Attribute_Values *>(msg);
             G.Out(pdGendoc,"          tick_kernel call to reflectAttributeValues");
             RTI::AttributeHandleValuePairSet *attributes =
-                new AttributeHandleValuePairSetImp(msg->getAHVPS());
+                new AttributeHandleValuePairSetImp(getAHVPSFromRequest(RAV));
 
-            if (msg->getBoolean())
-               fed_amb->reflectAttributeValues(msg->getObject(),
+            if (msg->isDated()) {
+               fed_amb->reflectAttributeValues(RAV->getObject(),
                                                *attributes,
-                                               RTIfedTime(msg->getFedTime()),
+                                               RTIfedTime(msg->getDate().getTime()),
                                                (msg->getTag()).c_str(),
-                                               msg->getEventRetraction());
-            else
-               fed_amb->reflectAttributeValues(msg->getObject(),
+                                               RAV->getEventRetraction());
+            }
+            else {
+               fed_amb->reflectAttributeValues(RAV->getObject(),
                                                *attributes,
                                                (msg->getTag()).c_str());
+            }
             delete attributes ;
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("reflectAttributeValues")
@@ -735,22 +773,24 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::RECEIVE_INTERACTION:
         try {
+        	M_Receive_Interaction* RI = static_cast<M_Receive_Interaction *>(msg);
             RTI::ParameterHandleValuePairSet *parameters =
-                new ParameterHandleValuePairSetImp(msg->getPHVPS());
+                new ParameterHandleValuePairSetImp(getPHVPSFromRequest(RI));
 
-            if (msg->getBoolean())
+            if (msg->isDated()) {
                 fed_amb->receiveInteraction(
-                                        msg->getInteractionClass(),
+                                        RI->getInteractionClass(),
                                         *parameters,
-                                        RTIfedTime(msg->getFedTime()),
+                                        RTIfedTime(msg->getDate().getTime()),
                                         (msg->getTag()).c_str(),
-                                        msg->getEventRetraction());
-            else
+                                        RI->getEventRetraction());
+            }
+            else {
                 fed_amb->receiveInteraction(
-                                        msg->getInteractionClass(),
+                                        RI->getInteractionClass(),
                                         *parameters,
                                         (msg->getTag()).c_str());
-
+            }
             delete parameters ;
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("receiveInteraction")
@@ -758,16 +798,17 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::REMOVE_OBJECT_INSTANCE:
         try {
-            if (msg->getBoolean()) {
+        	M_Remove_Object_Instance* ROI = static_cast<M_Remove_Object_Instance *>(msg);
+            if (msg->isDated()) {
                 fed_amb->removeObjectInstance(
-                                          msg->getObject(),
-                                          RTIfedTime(msg->getFedTime()),
+                                          ROI->getObject(),
+                                          RTIfedTime(msg->getDate().getTime()),
                                           (msg->getTag()).c_str(),
-                                          msg->getEventRetraction());
+                                          ROI->getEventRetraction());
             }
             else {
                 fed_amb->removeObjectInstance(
-                                          msg->getObject(),
+                                          ROI->getObject(),
                                           (msg->getTag()).c_str());
             }
         }
@@ -776,10 +817,11 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
         try {
+        	M_Provide_Attribute_Value_Update* PAVU = static_cast<M_Provide_Attribute_Value_Update *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(PAVU->getAttributes());
 
-            fed_amb->provideAttributeValueUpdate(msg->getObject(),*attributeSet);
+            fed_amb->provideAttributeValueUpdate(PAVU->getObject(),*attributeSet);
             delete attributeSet ;
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("provideAttributeValueUpdate")
@@ -791,11 +833,12 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         try {
+        	M_Request_Attribute_Ownership_Assumption* RAOA = static_cast<M_Request_Attribute_Ownership_Assumption *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(RAOA->getAttributes());
 
             fed_amb->
-                requestAttributeOwnershipAssumption(msg->getObject(),
+                requestAttributeOwnershipAssumption(RAOA->getObject(),
                                                     *attributeSet,
                                                     (msg->getTag()).c_str());
             delete attributeSet ;
@@ -805,11 +848,12 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
         try {
+        	M_Request_Attribute_Ownership_Release* RAOR = static_cast<M_Request_Attribute_Ownership_Release *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(RAOR->getAttributes());
 
             fed_amb->requestAttributeOwnershipRelease(
-                msg->getObject(),
+            		RAOR->getObject(),
                 *attributeSet,
                 (msg->getTag()).c_str());
 
@@ -820,10 +864,11 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
         try {
+        	M_Attribute_Ownership_Unavailable* AOU = static_cast<M_Attribute_Ownership_Unavailable *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(AOU->getAttributes());
 
-            fed_amb->attributeOwnershipUnavailable(msg->getObject(),
+            fed_amb->attributeOwnershipUnavailable(AOU->getObject(),
                                                        *attributeSet);
 
             delete attributeSet ;
@@ -833,11 +878,12 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
         try {
+        	M_Attribute_Ownership_Acquisition_Notification* AOAN = static_cast<M_Attribute_Ownership_Acquisition_Notification *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(AOAN->getAttributes());
 
             fed_amb->attributeOwnershipAcquisitionNotification(
-                msg->getObject(),
+            		AOAN->getObject(),
                 *attributeSet);
 
             delete attributeSet ;
@@ -847,11 +893,12 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         try {
+        	M_Attribute_Ownership_Divestiture_Notification* AODN = static_cast<M_Attribute_Ownership_Divestiture_Notification *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(AODN->getAttributes());
 
             fed_amb->attributeOwnershipDivestitureNotification(
-                msg->getObject(),
+            		AODN->getObject(),
                 *attributeSet);
 
             delete attributeSet ;
@@ -861,11 +908,12 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
         try {
+        	M_Confirm_Attribute_Ownership_Acquisition_Cancellation* CAOAC = static_cast<M_Confirm_Attribute_Ownership_Acquisition_Cancellation *>(msg);
             RTI::AttributeHandleSet *attributeSet =
-                new AttributeHandleSetImp(msg->getAHS());
+                new AttributeHandleSetImp(CAOAC->getAttributes());
 
             fed_amb->confirmAttributeOwnershipAcquisitionCancellation(
-                msg->getObject(),
+            		CAOAC->getObject(),
                 *attributeSet);
 
             delete attributeSet ;
@@ -875,39 +923,41 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::INFORM_ATTRIBUTE_OWNERSHIP:
         try {
+        	M_Inform_Attribute_Ownership* IAO = static_cast<M_Inform_Attribute_Ownership *>(msg);
             fed_amb->
-                informAttributeOwnership(msg->getObject(),
-                                         msg->getAttribute(),
-                                         msg->getFederate());
+                informAttributeOwnership(IAO->getObject(),
+                		                 IAO->getAttribute(),
+                				         IAO->getFederate());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("informAttributeOwnership")
         break ;
 
       case Message::ATTRIBUTE_IS_NOT_OWNED:
         try {
-            fed_amb->attributeIsNotOwned(msg->getObject(),
-                                                      msg->getAttribute());
+        	M_Attribute_Is_Not_Owned* AINO = static_cast<M_Attribute_Is_Not_Owned *>(msg);
+            fed_amb->attributeIsNotOwned(AINO->getObject(),
+            		                     AINO->getAttribute());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("attributeIsNotOwned")
         break ;
 
       case Message::TIME_ADVANCE_GRANT:
         try {
-            fed_amb->timeAdvanceGrant(RTIfedTime(msg->getFedTime()));
+            fed_amb->timeAdvanceGrant(RTIfedTime(msg->getDate().getTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeAdvanceGrant")
         break ;
 
       case Message::TIME_REGULATION_ENABLED:
         try {
-            fed_amb->timeRegulationEnabled(RTIfedTime(msg->getFedTime()));
+            fed_amb->timeRegulationEnabled(RTIfedTime(msg->getDate().getTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeRegulationEnabled")
         break ;
 
       case Message::TIME_CONSTRAINED_ENABLED:
         try {
-            fed_amb->timeConstrainedEnabled(RTIfedTime(msg->getFedTime()));
+            fed_amb->timeConstrainedEnabled(RTIfedTime(msg->getDate().getTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeConstrainedEnabled")
         break ;
@@ -917,4 +967,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.23 2009/11/24 21:44:48 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.24 2010/02/27 16:53:36 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.50 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.51 2010/02/27 16:53:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -289,8 +289,8 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
 void
 ObjectClassSet::publish(FederateHandle theFederateHandle,
                         ObjectClassHandle theClassHandle,
-                        std::vector <AttributeHandle> &theAttributeList,
-                        UShort theListSize,
+                        const std::vector <AttributeHandle> &theAttributeList,
+                        uint32_t theListSize,
                         bool PubOrUnpub)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
@@ -634,4 +634,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.50 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.51 2010/02/27 16:53:35 erk Exp $

@@ -1,4 +1,4 @@
-// Generated on 2010 February Sat, 06 at 19:51:15 by the CERTI message generator
+// Generated on 2010 February Sat, 27 at 15:30:42 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -14,6 +14,8 @@
 #include "RTItypes.hh"
 
 #include "certi.hh"
+
+#include "Extent.hh"
 
 #include "SocketUN.hh"
 // ----------------------------------------------------------------------------
@@ -46,6 +48,8 @@ namespace certi {
    //     - with typedef (see below [if any])
 
    typedef RTI::ResignAction ResignAction;
+
+   typedef RTI::EventRetractionHandle EventRetractionHandle;
 
    typedef SocketUN* StreamType;
 
@@ -220,6 +224,8 @@ namespace certi {
          void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
          const std::string& getFEDid() const {return FEDid;}
          void setFEDid(const std::string& newFEDid) {FEDid=newFEDid;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          std::string federationName;// the federation name
          std::string FEDid;// the Federation ID which is in fact a filename
@@ -236,6 +242,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const std::string& getFederationName() const {return federationName;}
          void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          std::string federationName;
       private:
@@ -255,6 +263,8 @@ namespace certi {
          void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
          const std::string& getFederateName() const {return federateName;}
          void setFederateName(const std::string& newFederateName) {federateName=newFederateName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          FederateHandle federate;
          std::string federationName;
@@ -272,6 +282,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ResignAction& getResignAction() const {return resignAction;}
          void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ResignAction resignAction;
       private:
@@ -285,11 +297,14 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         uint32_t getNumFederateSet() const {return federateSet.size();}
-         void setNumFederateSet(uint32_t num) {federateSet.resize(num);}
+         uint32_t getFederateSetSize() const {return federateSet.size();}
+         void setFederateSetSize(uint32_t num) {federateSet.resize(num);}
+         const std::vector<FederateHandle>& getFederateSet() const {return federateSet;}
          const FederateHandle& getFederateSet(uint32_t rank) const {return federateSet[rank];}
          FederateHandle& getFederateSet(uint32_t rank) {return federateSet[rank];}
          void setFederateSet(const FederateHandle& newFederateSet, uint32_t rank) {federateSet[rank]=newFederateSet;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          std::vector<FederateHandle> federateSet;// the set of Federate which will participate to this sync point.
       private:
@@ -417,7 +432,15 @@ namespace certi {
          typedef Message Super;
          M_Request_Federation_Restore_Failed();
          virtual ~M_Request_Federation_Restore_Failed();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getReason() const {return reason;}
+         void setReason(const std::string& newReason) {reason=newReason;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         std::string reason;
       private:
    };
 
@@ -440,6 +463,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          FederateHandle federate;
       private:
@@ -500,14 +525,17 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -521,6 +549,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -536,6 +566,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -551,6 +583,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -566,14 +600,20 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         const bool& getActive() const {return active;}
+         void setActive(const bool& newActive) {active=newActive;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
+         bool active;
       private:
    };
 
@@ -587,6 +627,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -602,6 +644,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -617,6 +661,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -632,6 +678,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -647,6 +695,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -662,6 +712,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -677,6 +729,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -695,11 +749,17 @@ namespace certi {
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
-         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         void setObjectName(const std::string& newObjectName) {
+            hasObjectName=true;
+            objectName=newObjectName;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
+         bool hasObjectName;
       private:
    };
 
@@ -715,24 +775,32 @@ namespace certi {
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandle() const {return handle.size();}
-         void setNumHandle(uint32_t num) {handle.resize(num);}
-         const Handle& getHandle(uint32_t rank) const {return handle[rank];}
-         Handle& getHandle(uint32_t rank) {return handle[rank];}
-         void setHandle(const Handle& newHandle, uint32_t rank) {handle[rank]=newHandle;}
-         uint32_t getNumAttributeValues() const {return attributeValues.size();}
-         void setNumAttributeValues(uint32_t num) {attributeValues.resize(num);}
-         const std::string& getAttributeValues(uint32_t rank) const {return attributeValues[rank];}
-         std::string& getAttributeValues(uint32_t rank) {return attributeValues[rank];}
-         void setAttributeValues(const std::string& newAttributeValues, uint32_t rank) {attributeValues[rank]=newAttributeValues;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         uint32_t getValuesSize() const {return values.size();}
+         void setValuesSize(uint32_t num) {values.resize(num);}
+         const std::vector<AttributeValue_t>& getValues() const {return values;}
+         const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
+         AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
-         std::vector<Handle> handle;
-         std::vector<std::string> attributeValues;// FIXME check this one
-         ResignAction resignAction;
+         std::vector<AttributeHandle> attributes;
+         std::vector<AttributeValue_t> values;// FIXME check this one
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -750,13 +818,19 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         ResignAction resignAction;
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -772,24 +846,32 @@ namespace certi {
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandle() const {return handle.size();}
-         void setNumHandle(uint32_t num) {handle.resize(num);}
-         const Handle& getHandle(uint32_t rank) const {return handle[rank];}
-         Handle& getHandle(uint32_t rank) {return handle[rank];}
-         void setHandle(const Handle& newHandle, uint32_t rank) {handle[rank]=newHandle;}
-         uint32_t getNumAttributeValues() const {return attributeValues.size();}
-         void setNumAttributeValues(uint32_t num) {attributeValues.resize(num);}
-         const std::string& getAttributeValues(uint32_t rank) const {return attributeValues[rank];}
-         std::string& getAttributeValues(uint32_t rank) {return attributeValues[rank];}
-         void setAttributeValues(const std::string& newAttributeValues, uint32_t rank) {attributeValues[rank]=newAttributeValues;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         uint32_t getValuesSize() const {return values.size();}
+         void setValuesSize(uint32_t num) {values.resize(num);}
+         const std::vector<AttributeValue_t>& getValues() const {return values;}
+         const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
+         AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
-         std::vector<Handle> handle;
-         std::vector<std::string> attributeValues;// FIXME check this one
-         ResignAction resignAction;
+         std::vector<AttributeHandle> attributes;
+         std::vector<AttributeValue_t> values;// FIXME check this one
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -803,26 +885,34 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
-         uint32_t getNumValues() const {return values.size();}
-         void setNumValues(uint32_t num) {values.resize(num);}
-         const std::string& getValues(uint32_t rank) const {return values[rank];}
-         std::string& getValues(uint32_t rank) {return values[rank];}
-         void setValues(const std::string& newValues, uint32_t rank) {values[rank]=newValues;}
+         uint32_t getParametersSize() const {return parameters.size();}
+         void setParametersSize(uint32_t num) {parameters.resize(num);}
+         const std::vector<ParameterHandle>& getParameters() const {return parameters;}
+         const ParameterHandle& getParameters(uint32_t rank) const {return parameters[rank];}
+         ParameterHandle& getParameters(uint32_t rank) {return parameters[rank];}
+         void setParameters(const ParameterHandle& newParameters, uint32_t rank) {parameters[rank]=newParameters;}
+         uint32_t getValuesSize() const {return values.size();}
+         void setValuesSize(uint32_t num) {values.resize(num);}
+         const std::vector<ParameterValue_t>& getValues() const {return values;}
+         const ParameterValue_t& getValues(uint32_t rank) const {return values[rank];}
+         ParameterValue_t& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::vector<Handle> handles;
-         std::vector<std::string> values;
+         std::vector<ParameterHandle> parameters;
+         std::vector<ParameterValue_t> values;
          RegionHandle region;
-         ResignAction resignAction;
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -836,26 +926,34 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
-         uint32_t getNumValues() const {return values.size();}
-         void setNumValues(uint32_t num) {values.resize(num);}
-         const std::string& getValues(uint32_t rank) const {return values[rank];}
-         std::string& getValues(uint32_t rank) {return values[rank];}
-         void setValues(const std::string& newValues, uint32_t rank) {values[rank]=newValues;}
+         uint32_t getParametersSize() const {return parameters.size();}
+         void setParametersSize(uint32_t num) {parameters.resize(num);}
+         const std::vector<ParameterHandle>& getParameters() const {return parameters;}
+         const ParameterHandle& getParameters(uint32_t rank) const {return parameters[rank];}
+         ParameterHandle& getParameters(uint32_t rank) {return parameters[rank];}
+         void setParameters(const ParameterHandle& newParameters, uint32_t rank) {parameters[rank]=newParameters;}
+         uint32_t getValuesSize() const {return values.size();}
+         void setValuesSize(uint32_t num) {values.resize(num);}
+         const std::vector<ParameterValue_t>& getValues() const {return values;}
+         const ParameterValue_t& getValues(uint32_t rank) const {return values[rank];}
+         ParameterValue_t& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::vector<Handle> handles;
-         std::vector<std::string> values;
+         std::vector<ParameterHandle> parameters;
+         std::vector<ParameterValue_t> values;
          RegionHandle region;
-         ResignAction resignAction;
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -873,13 +971,19 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         ResignAction resignAction;
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -888,7 +992,15 @@ namespace certi {
          typedef Message Super;
          M_Local_Delete_Object_Instance();
          virtual ~M_Local_Delete_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
       private:
    };
 
@@ -906,13 +1018,19 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const ResignAction& getResignAction() const {return resignAction;}
-         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+            hasEventRetraction=true;
+            eventRetraction=newEventRetraction;
+         }
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         ResignAction resignAction;
+         EventRetractionHandle eventRetraction;
+         bool hasEventRetraction;
       private:
    };
 
@@ -924,22 +1042,25 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const TransportType& getTransport() const {return transport;}
-         void setTransport(const TransportType& newTransport) {transport=newTransport;}
-         const OrderType& getOrder() const {return order;}
-         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const TransportType& getTransportationType() const {return transportationType;}
+         void setTransportationType(const TransportType& newTransportationType) {transportationType=newTransportationType;}
+         const OrderType& getOrderType() const {return orderType;}
+         void setOrderType(const OrderType& newOrderType) {orderType=newOrderType;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         TransportType transport;
-         OrderType order;
+         TransportType transportationType;
+         OrderType orderType;
          ObjectHandle object;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -953,14 +1074,16 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         const TransportType& getTransport() const {return transport;}
-         void setTransport(const TransportType& newTransport) {transport=newTransport;}
-         const OrderType& getOrder() const {return order;}
-         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const TransportType& getTransportationType() const {return transportationType;}
+         void setTransportationType(const TransportType& newTransportationType) {transportationType=newTransportationType;}
+         const OrderType& getOrderType() const {return orderType;}
+         void setOrderType(const OrderType& newOrderType) {orderType=newOrderType;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         TransportType transport;
-         OrderType order;
+         TransportType transportationType;
+         OrderType orderType;
       private:
    };
 
@@ -974,14 +1097,17 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -995,14 +1121,17 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1016,14 +1145,17 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1032,7 +1164,22 @@ namespace certi {
          typedef Message Super;
          M_Attributes_In_Scope();
          virtual ~M_Attributes_In_Scope();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1041,7 +1188,22 @@ namespace certi {
          typedef Message Super;
          M_Attributes_Out_Of_Scope();
          virtual ~M_Attributes_Out_Of_Scope();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1050,7 +1212,22 @@ namespace certi {
          typedef Message Super;
          M_Turn_Updates_On_For_Object_Instance();
          virtual ~M_Turn_Updates_On_For_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1059,7 +1236,22 @@ namespace certi {
          typedef Message Super;
          M_Turn_Updates_Off_For_Object_Instance();
          virtual ~M_Turn_Updates_Off_For_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
    // Ownership management
@@ -1082,11 +1274,14 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumAttributes() const {return attributes.size();}
-         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1103,11 +1298,14 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumAttributes() const {return attributes.size();}
-         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1119,7 +1317,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Divestiture_Notification();
          virtual ~M_Attribute_Ownership_Divestiture_Notification();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1128,7 +1341,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition_Notification();
          virtual ~M_Attribute_Ownership_Acquisition_Notification();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1142,11 +1370,14 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumAttributes() const {return attributes.size();}
-         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1163,11 +1394,14 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumAttributes() const {return attributes.size();}
-         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1186,6 +1420,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1206,6 +1442,8 @@ namespace certi {
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1225,6 +1463,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1245,6 +1485,8 @@ namespace certi {
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1266,7 +1508,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition_If_Available();
          virtual ~M_Attribute_Ownership_Acquisition_If_Available();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1275,7 +1532,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Unavailable();
          virtual ~M_Attribute_Ownership_Unavailable();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1284,7 +1556,22 @@ namespace certi {
          typedef Message Super;
          M_Unconditional_Attribute_Ownership_Divestiture();
          virtual ~M_Unconditional_Attribute_Ownership_Divestiture();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1293,7 +1580,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition();
          virtual ~M_Attribute_Ownership_Acquisition();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1307,11 +1609,14 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumAttributes() const {return attributes.size();}
-         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1323,7 +1628,22 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Release_Response();
          virtual ~M_Attribute_Ownership_Release_Response();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1332,7 +1652,22 @@ namespace certi {
          typedef Message Super;
          M_Cancel_Attribute_Ownership_Acquisition();
          virtual ~M_Cancel_Attribute_Ownership_Acquisition();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1341,7 +1676,22 @@ namespace certi {
          typedef Message Super;
          M_Confirm_Attribute_Ownership_Acquisition_Cancellation();
          virtual ~M_Confirm_Attribute_Ownership_Acquisition_Cancellation();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
    // Time
@@ -1359,16 +1709,19 @@ namespace certi {
          void setOrder(const OrderType& newOrder) {order=newOrder;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
-         Handle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          TransportType transport;
          OrderType order;
          ObjectHandle object;
-         std::vector<Handle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1386,6 +1739,8 @@ namespace certi {
          void setTransport(const TransportType& newTransport) {transport=newTransport;}
          const OrderType& getOrder() const {return order;}
          void setOrder(const OrderType& newOrder) {order=newOrder;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          TransportType transport;
@@ -1406,6 +1761,8 @@ namespace certi {
          bool isEnableOn() const {return enable;}
          const double_t& getLookahead() const {return lookahead;}
          void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          bool enable;
          double_t lookahead;
@@ -1425,6 +1782,8 @@ namespace certi {
          bool isEnableOn() const {return enable;}
          const double_t& getLookahead() const {return lookahead;}
          void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          bool enable;
          double_t lookahead;
@@ -1442,11 +1801,10 @@ namespace certi {
          void enableOn() {enable = true;}
          void enableOff() {enable = false;}
          bool isEnableOn() const {return enable;}
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          bool enable;
-         double_t lookahead;
       private:
    };
 
@@ -1461,11 +1819,10 @@ namespace certi {
          void enableOn() {enable = true;}
          void enableOff() {enable = false;}
          bool isEnableOn() const {return enable;}
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          bool enable;
-         double_t lookahead;
       private:
    };
 
@@ -1506,6 +1863,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const double_t& getLookahead() const {return lookahead;}
          void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          double_t lookahead;
       private:
@@ -1521,6 +1880,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const double_t& getLookahead() const {return lookahead;}
          void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          double_t lookahead;
       private:
@@ -1531,7 +1892,15 @@ namespace certi {
          typedef Message Super;
          M_Retract();
          virtual ~M_Retract();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {eventRetraction=newEventRetraction;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         EventRetractionHandle eventRetraction;
       private:
    };
 
@@ -1644,14 +2013,20 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
-         const uint32_t& getNbExtent() const {return nbExtent;}
-         void setNbExtent(const uint32_t& newNbExtent) {nbExtent=newNbExtent;}
+         uint32_t getExtentSetSize() const {return extentSet.size();}
+         void setExtentSetSize(uint32_t num) {extentSet.resize(num);}
+         const std::vector<Extent>& getExtentSet() const {return extentSet;}
+         const Extent& getExtentSet(uint32_t rank) const {return extentSet[rank];}
+         Extent& getExtentSet(uint32_t rank) {return extentSet[rank];}
+         void setExtentSet(const Extent& newExtentSet, uint32_t rank) {extentSet[rank]=newExtentSet;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         SpaceHandle space;
-         uint32_t nbExtent;
-         RegionHandle region;
+         SpaceHandle space;// the routing space designator
+         std::vector<Extent> extentSet;// the extent set    
+         RegionHandle region;// the region handle obtained upon successful creation
       private:
    };
 
@@ -1665,8 +2040,17 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         uint32_t getExtentSetSize() const {return extentSet.size();}
+         void setExtentSetSize(uint32_t num) {extentSet.resize(num);}
+         const std::vector<Extent>& getExtentSet() const {return extentSet;}
+         const Extent& getExtentSet(uint32_t rank) const {return extentSet[rank];}
+         Extent& getExtentSet(uint32_t rank) {return extentSet[rank];}
+         void setExtentSet(const Extent& newExtentSet, uint32_t rank) {extentSet[rank]=newExtentSet;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         RegionHandle region;//repeated M_Extents extent    readExtents(msgBuffer);
+         RegionHandle region;
+         std::vector<Extent> extentSet;// the extent set
       private:
    };
 
@@ -1680,6 +2064,8 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          RegionHandle region;
       private:
@@ -1697,15 +2083,25 @@ namespace certi {
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const AttributeHandle& getHandles(uint32_t rank) const {return handles[rank];}
-         AttributeHandle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const AttributeHandle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         const std::string& getObjectInstanceName() const {return objectInstanceName;}
+         void setObjectInstanceName(const std::string& newObjectInstanceName) {
+            hasObjectInstanceName=true;
+            objectInstanceName=newObjectInstanceName;
+         }
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
-         std::vector<AttributeHandle> handles;// repeated M_Regions   regions 
+         std::string objectInstanceName;
+         bool hasObjectInstanceName;
+         std::vector<AttributeHandle> attributes;// repeated RegionHandle      regions 
       private:
    };
 
@@ -1721,9 +2117,18 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          RegionHandle region;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1739,6 +2144,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
          RegionHandle region;
@@ -1760,16 +2167,19 @@ namespace certi {
          void passiveOn() {passive = true;}
          void passiveOff() {passive = false;}
          bool isPassiveOn() const {return passive;}
-         uint32_t getNumHandles() const {return handles.size();}
-         void setNumHandles(uint32_t num) {handles.resize(num);}
-         const AttributeHandle& getHandles(uint32_t rank) const {return handles[rank];}
-         AttributeHandle& getHandles(uint32_t rank) {return handles[rank];}
-         void setHandles(const AttributeHandle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          RegionHandle region;
          bool passive;
-         std::vector<AttributeHandle> handles;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -1785,6 +2195,8 @@ namespace certi {
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          RegionHandle region;
@@ -1806,6 +2218,8 @@ namespace certi {
          void passiveOn() {passive = true;}
          void passiveOff() {passive = false;}
          bool isPassiveOn() const {return passive;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          RegionHandle region;
@@ -1828,6 +2242,8 @@ namespace certi {
          void passiveOn() {passive = true;}
          void passiveOff() {passive = false;}
          bool isPassiveOn() const {return passive;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          RegionHandle region;
@@ -1840,7 +2256,25 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Request_Update();
          virtual ~M_Ddm_Request_Update();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         uint32_t getAttributesSize() const {return attributes.size();}
+         void setAttributesSize(uint32_t num) {attributes.resize(num);}
+         const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
+         ObjectClassHandle objectClass;
+         RegionHandle region;
+         std::vector<AttributeHandle> attributes;
       private:
    };
    // Support Services
@@ -1854,14 +2288,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const AttributeHandle& getAttribute() const {return attribute;}
-         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         const std::string& getClassName() const {return className;}
+         void setClassName(const std::string& newClassName) {className=newClassName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::string name;
-         AttributeHandle attribute;
+         std::string className;
       private:
    };
 
@@ -1875,14 +2308,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const AttributeHandle& getAttribute() const {return attribute;}
-         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         const std::string& getClassName() const {return className;}
+         void setClassName(const std::string& newClassName) {className=newClassName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::string name;
-         AttributeHandle attribute;
+         std::string className;
       private:
    };
 
@@ -1896,13 +2328,15 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getAttributeName() const {return attributeName;}
+         void setAttributeName(const std::string& newAttributeName) {attributeName=newAttributeName;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::string name;
+         std::string attributeName;
          AttributeHandle attribute;
       private:
    };
@@ -1917,13 +2351,15 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getAttributeName() const {return attributeName;}
+         void setAttributeName(const std::string& newAttributeName) {attributeName=newAttributeName;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
-         std::string name;
+         std::string attributeName;
          AttributeHandle attribute;
       private:
    };
@@ -1938,14 +2374,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const ParameterHandle& getParameter() const {return parameter;}
-         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
+         const std::string& getClassName() const {return className;}
+         void setClassName(const std::string& newClassName) {className=newClassName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::string name;
-         ParameterHandle parameter;
+         std::string className;
       private:
    };
 
@@ -1959,14 +2394,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const ParameterHandle& getParameter() const {return parameter;}
-         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
+         const std::string& getClassName() const {return className;}
+         void setClassName(const std::string& newClassName) {className=newClassName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::string name;
-         ParameterHandle parameter;
+         std::string className;
       private:
    };
 
@@ -1980,13 +2414,15 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getParameterName() const {return parameterName;}
+         void setParameterName(const std::string& newParameterName) {parameterName=newParameterName;}
          const ParameterHandle& getParameter() const {return parameter;}
          void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::string name;
+         std::string parameterName;
          ParameterHandle parameter;
       private:
    };
@@ -2001,13 +2437,15 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getParameterName() const {return parameterName;}
+         void setParameterName(const std::string& newParameterName) {parameterName=newParameterName;}
          const ParameterHandle& getParameter() const {return parameter;}
          void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
-         std::string name;
+         std::string parameterName;
          ParameterHandle parameter;
       private:
    };
@@ -2022,11 +2460,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getObjectInstanceName() const {return objectInstanceName;}
+         void setObjectInstanceName(const std::string& newObjectInstanceName) {objectInstanceName=newObjectInstanceName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
-         std::string name;
+         std::string objectInstanceName;
       private:
    };
 
@@ -2040,11 +2480,13 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getObjectInstanceName() const {return objectInstanceName;}
+         void setObjectInstanceName(const std::string& newObjectInstanceName) {objectInstanceName=newObjectInstanceName;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectHandle object;
-         std::string name;
+         std::string objectInstanceName;
       private:
    };
 
@@ -2056,12 +2498,14 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getSpaceName() const {return spaceName;}
+         void setSpaceName(const std::string& newSpaceName) {spaceName=newSpaceName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
+         std::string spaceName;
          SpaceHandle space;
       private:
    };
@@ -2074,12 +2518,14 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getSpaceName() const {return spaceName;}
+         void setSpaceName(const std::string& newSpaceName) {spaceName=newSpaceName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
+         std::string spaceName;
          SpaceHandle space;
       private:
    };
@@ -2092,14 +2538,16 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getDimensionName() const {return dimensionName;}
+         void setDimensionName(const std::string& newDimensionName) {dimensionName=newDimensionName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          const DimensionHandle& getDimension() const {return dimension;}
          void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
+         std::string dimensionName;
          SpaceHandle space;
          DimensionHandle dimension;
       private:
@@ -2113,14 +2561,16 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
+         const std::string& getDimensionName() const {return dimensionName;}
+         void setDimensionName(const std::string& newDimensionName) {dimensionName=newDimensionName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          const DimensionHandle& getDimension() const {return dimension;}
          void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
+         std::string dimensionName;
          SpaceHandle space;
          DimensionHandle dimension;
       private:
@@ -2140,6 +2590,8 @@ namespace certi {
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          AttributeHandle attribute;
@@ -2159,6 +2611,8 @@ namespace certi {
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -2177,6 +2631,8 @@ namespace certi {
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          SpaceHandle space;
@@ -2191,13 +2647,15 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const TransportType& getTransport() const {return transport;}
-         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const std::string& getTransportationName() const {return transportationName;}
+         void setTransportationName(const std::string& newTransportationName) {transportationName=newTransportationName;}
+         const TransportType& getTransportation() const {return transportation;}
+         void setTransportation(const TransportType& newTransportation) {transportation=newTransportation;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
-         TransportType transport;
+         std::string transportationName;
+         TransportType transportation;
       private:
    };
 
@@ -2209,13 +2667,15 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const TransportType& getTransport() const {return transport;}
-         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const std::string& getTransportationName() const {return transportationName;}
+         void setTransportationName(const std::string& newTransportationName) {transportationName=newTransportationName;}
+         const TransportType& getTransportation() const {return transportation;}
+         void setTransportation(const TransportType& newTransportation) {transportation=newTransportation;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
-         TransportType transport;
+         std::string transportationName;
+         TransportType transportation;
       private:
    };
 
@@ -2227,13 +2687,15 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const OrderType& getOrder() const {return order;}
-         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const std::string& getOrderingName() const {return orderingName;}
+         void setOrderingName(const std::string& newOrderingName) {orderingName=newOrderingName;}
+         const OrderType& getOrdering() const {return ordering;}
+         void setOrdering(const OrderType& newOrdering) {ordering=newOrdering;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
-         OrderType order;
+         std::string orderingName;
+         OrderType ordering;
       private:
    };
 
@@ -2245,13 +2707,15 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const std::string& getName() const {return name;}
-         void setName(const std::string& newName) {name=newName;}
-         const OrderType& getOrder() const {return order;}
-         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const std::string& getOrderingName() const {return orderingName;}
+         void setOrderingName(const std::string& newOrderingName) {orderingName=newOrderingName;}
+         const OrderType& getOrdering() const {return ordering;}
+         void setOrdering(const OrderType& newOrdering) {ordering=newOrdering;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
-         std::string name;
-         OrderType order;
+         std::string orderingName;
+         OrderType ordering;
       private:
    };
 
@@ -2341,6 +2805,8 @@ namespace certi {
          void setMinTickTime(const double_t& newMinTickTime) {minTickTime=newMinTickTime;}
          const double_t& getMaxTickTime() const {return maxTickTime;}
          void setMaxTickTime(const double_t& newMaxTickTime) {maxTickTime=newMaxTickTime;}
+         // the show method
+         virtual void show(std::ostream& out);
       protected:
          bool multiple;
          double_t minTickTime;

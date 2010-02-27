@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.58 2009/11/24 16:39:20 erk Exp $
+// $Id: Interaction.cc,v 3.59 2010/02/27 16:53:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -325,7 +325,7 @@ Interaction::isPublishing(FederateHandle fed)
  */
 void
 Interaction::isReady(FederateHandle federate_handle,
-		std::vector <ParameterHandle> &parameter_list,
+		const std::vector <ParameterHandle> &parameter_list,
 		UShort list_size)
 throw (FederateNotPublishing,
 		InteractionParameterNotDefined,
@@ -543,4 +543,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.58 2009/11/24 16:39:20 erk Exp $
+// $Id: Interaction.cc,v 3.59 2010/02/27 16:53:35 erk Exp $

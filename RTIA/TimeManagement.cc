@@ -18,12 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.53 2009/11/21 21:00:56 erk Exp $
+// $Id: TimeManagement.cc,v 3.54 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "TimeManagement.hh"
 #include "NM_Classes.hh"
+#include "M_Classes.hh"
+
 #include <float.h>
 
 namespace certi {
@@ -704,22 +706,20 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 // ----------------------------------------------------------------------------
 void
 TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) {
-    Message req;
+    M_Time_Regulation_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_REGULATION_ENABLED to Federate");
-    req.type = Message::TIME_REGULATION_ENABLED;
-    req.setFederationTime(theTime);
+    req.setDate(theTime);
     comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
 void
 TimeManagement::timeConstrainedEnabled(FederationTime theTime, TypeException &e) {
-    Message req;
+    M_Time_Constrained_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_CONSTRAINED_ENABLED to Federate");
-    req.type = Message::TIME_CONSTRAINED_ENABLED;
-    req.setFederationTime(theTime);
+    req.setDate(theTime);
     comm->requestFederateService(&req);
 }
 
@@ -883,13 +883,12 @@ void
 TimeManagement::timeAdvanceGrant(FederationTime logical_time,
                                  TypeException &e)
 {
-    Message req;
+    M_Time_Advance_Grant req;
 
-    req.type = Message::TIME_ADVANCE_GRANT ;
-    req.setFederationTime(logical_time);
+    req.setDate(logical_time);
 
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
-          req.getFederationTime().getTime());
+          req.getDate().getTime());
 
     if (_lookahead_courant == epsilon2)
         _lookahead_courant = 0.0 ;
@@ -995,4 +994,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.53 2009/11/21 21:00:56 erk Exp $
+// $Id: TimeManagement.cc,v 3.54 2010/02/27 16:53:36 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.38 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.39 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -79,8 +79,8 @@ public:
 	// Object Class Management
 	void publish(FederateHandle theFederateHandle,
 			ObjectClassHandle theClassHandle,
-			std::vector <AttributeHandle> &theAttributeList,
-			UShort theListSize,
+			const std::vector <AttributeHandle> &theAttributeList,
+			uint32_t theListSize,
 			bool PubOrUnpub)
 	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
 			SecurityError);
@@ -182,4 +182,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.38 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.39 2010/02/27 16:53:36 erk Exp $

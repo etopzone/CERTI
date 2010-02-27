@@ -207,13 +207,19 @@ public:
     };
 
 public:
+    /** Default Message creator */
     Message();
+
+    /** The name corresponding to message type */
+    const char* getMessageName() const {return messageName;}
 
 	/**
 	 * Serialize the message into a buffer
 	 * @param[in] msgBuffer the serialization buffer
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
+
+	virtual void show(std::ostream& out);
 
 	/**
 	 * DeSerialize the message from a buffer
@@ -234,210 +240,26 @@ public:
 	 * @param[out] msgBuffer the buffer were the read message will be written
 	 */
 	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
-	void trace(const char* context);
-
-    // Return a newly allocated ValueArray, exactly of size HandleArraySize.
-    // containing the actual Attrib/Param values.
-    std::vector <AttributeValue_t> getValueArray();
-
-    const std::string& getLabel() const { return label ; };
-    void setLabel(const std::string& new_label);
-
-    //const char *getName() const { return name ; };
-    const std::string& getName() const {return name;}
-    void setName(const std::string& new_name);
-
-    DimensionHandle getDimension() const { return dimension ; };
-    void setDimension(DimensionHandle);
-
-    const std::string& getFederationName() const { return federationName ; };
-    void setFederationName(const std::string& federation_name);
-
-    const std::string& getFederateName() const { return federateName ; };
-    void setFederateName(const std::string& federate_name);
-
-    const std::string& getTag() const { return tag ; };
-    void setTag(const std::string& new_tag);
-
-    SpaceHandle getSpace() const { return space ; };
-    void setSpace(SpaceHandle);
 
     Type getType() const { return type ; };
-    void setType(Type);
-
-    unsigned long getNumber() const { return number ; };
-    void setNumber(unsigned long);
-
-    long getRegion() const { return region ; };
-    void setRegion(long);
-
-    RTI::TickTime getMinTickTime() const { return minTickTime ; };
-    void setMinTickTime(RTI::TickTime);
-
-    RTI::TickTime getMaxTickTime() const { return maxTickTime ; };
-    void setMaxTickTime(RTI::TickTime);
-
-    void setFederationTimeDelta(FederationTimeDelta);
-    FederationTimeDelta getFederationTimeDelta() const
-    { return lookahead ; };
-
-    void setAttribute(AttributeHandle);
-    AttributeHandle getAttribute() const { return attribute ; };
-
-    void setInteractionClass(InteractionClassHandle);
-    InteractionClassHandle getInteractionClass() const {
-        return interactionClass ;
-    };
-
-    void setObjectClass(ObjectClassHandle);
-    ObjectClassHandle getObjectClass() const { return objectClass ; };
-
-    void setResignAction(RTI::ResignAction);
-    RTI::ResignAction getResignAction() const { return resignAction ; };
-
-    void setFedTime(const double);
-    double getFedTime() const { return fed_time.getTime(); };
-
-    void setLookahead(const double);
-
-    void setFederationTime(FederationTime);
-    FederationTime getFederationTime() const { return fed_time.getTime(); };
-
-    void setBoolean(bool);
-    bool getBoolean() const { return boolean ; };
-
-    void setObject(ObjectHandle);
-    ObjectHandle getObject() const { return object ; };
-
-    void setTransportation(TransportType);
-    TransportType getTransportation() const
-    { return transport; }
-
-    void setOrdering(OrderType);
-    OrderType getOrdering() const
-    { return order; }
-
-    void setEventRetraction(EventRetractionHandle);
-    EventRetractionHandle getEventRetraction() const
-    { return eventRetraction ; };
-
-    void setParameter(ParameterHandle);
-    ParameterHandle getParameter() const { return parameter ; };
-
-    void setFederate(FederateHandle);
-    FederateHandle getFederate() const { return federate ; };
-
-    const std::vector<AttributeHandle>& getAHS() const ;
-    void setAHS(const std::vector<AttributeHandle> &);
-    void setAHS(const AttributeHandle *, int);
-
-    std::vector<std::pair<AttributeHandle, AttributeValue_t> > getAHVPS() const ;
-    void setAHVPS(const std::vector<std::pair<AttributeHandle, AttributeValue_t> > &);
-
-    std::vector<std::pair<ParameterHandle, ParameterValue_t> > getPHVPS() const ;
-    void setPHVPS(const std::vector<std::pair<ParameterHandle, ParameterValue_t> > &);
-
-    void setAttributes(std::vector <AttributeHandle> &, UShort);
-    void setAttributes(std::vector <AttributeHandle> &, std::vector <AttributeValue_t> &, UShort);
-    void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterValue_t> &, UShort);
 
     void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
 
-    const std::string& getFEDid() const { return FEDid ; };
-    void setFEDid(const std::string& FEDid);
-
-        void displayvalueArray(char *);
-
-    // Public attributes
-    Type type ;
-
 protected:
+    Type type ;
     TypeException exception ;
     std::string exceptionReason;
 
-    FedTime fed_time;
-    bool boolean ;
-    FederationTimeDelta lookahead ;
-    FederateHandle federate ;
     RTI::ResignAction resignAction ;
-    UShort idCount ;
-    ObjectHandle firstId ;
-    ObjectHandle lastId ;
-    ObjectClassHandle objectClass ;
-    InteractionClassHandle interactionClass ;
-    AttributeHandle attribute ;
-    ParameterHandle parameter ;
-    ObjectHandle object ;
-    TransportType transport ;
-    OrderType order ;
     EventRetractionHandle eventRetraction ;
     SpaceHandle space ;
     DimensionHandle dimension ;
-    // TransportationHandle transportation ;
-    // OrderingHandle ordering ;
-    unsigned long number ;
-    long region ;
-    RTI::TickTime minTickTime;
-    RTI::TickTime maxTickTime;
-
-public:
-
-    // used for both Attributes and Parameters arrays.
-    UShort handleArraySize ;
-    std::vector <AttributeHandle> handleArray ;
-    std::vector <AttributeValue_t> valueArray ;
-
-    Message &operator=(const Message &);
-
-    void display(char *);
-
-protected:
-    std::string name ;
+    const char* messageName ;
 
 private:
-
-    // Read a Message Body from a Socket. Should be called after
-    // ReadHeader.
-    void readBody(MessageBuffer &msgBuffer);
-
-    // Read a Header (buffer beginning)
-    void readHeader(MessageBuffer &msgBuffer);
-
-    // The message is written onto the socket by WriteHeader if no
-    // body is required, or by WriteBody is a body has been required
-    // by WriteHeader.
-
-    // Prepare and write a Body to a socket. Should be called after
-    // WriteHeader.
-    void writeBody(MessageBuffer &msgBuffer);
-
-    // Write a Header (buffer beginning)
-    void writeHeader(MessageBuffer &msgBuffer);
-
-    // -- Other Private Read Methods --
-    void readHandleArray(MessageBuffer &msgBuffer);
-    void readLabel(MessageBuffer &msgBuffer);
-    void readName(MessageBuffer &msgBuffer);
-    void readFederationName(MessageBuffer &msgBuffer);
-    void readFederateName(MessageBuffer &msgBuffer);
-    void readResignAction(MessageBuffer &msgBuffer);
-    void readTag(MessageBuffer &msgBuffer);
-    void readValueArray(MessageBuffer &msgBuffer);
-    void readFEDid(MessageBuffer &msgBuffer);
-
-    // -- Other Private Write Methods --
-    void writeHandleArray(MessageBuffer &msgBuffer);
-    void writeResignAction(MessageBuffer &msgBuffer);
-    void writeValueArray(MessageBuffer &msgBuffer);
-    void writeFEDid(MessageBuffer &msgBuffer);
-    void writeFederationName(MessageBuffer &msgBuffer);
-
-    std::string federateName ;
-    std::string federationName ;
-
-    std::string FEDid ;
+    Message &operator=(const Message &);
 };
 
 } // namespace certi

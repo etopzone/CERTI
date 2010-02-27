@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.76 2009/11/24 21:44:47 erk Exp $
+// $Id: ObjectClass.cc,v 3.77 2010/02/27 16:53:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -593,8 +593,8 @@ ObjectClass::killFederate(FederateHandle the_federate)
 //! publish.
 void
 ObjectClass::publish(FederateHandle theFederateHandle,
-                     std::vector <AttributeHandle> &theAttributeList,
-                     UShort theListSize,
+                     const std::vector <AttributeHandle> &theAttributeList,
+                     uint32_t theListSize,
                      bool PubOrUnpub)
     throw (AttributeNotDefined,
            RTIinternalError,
@@ -1720,4 +1720,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.76 2009/11/24 21:44:47 erk Exp $
+// $Id: ObjectClass.cc,v 3.77 2010/02/27 16:53:35 erk Exp $

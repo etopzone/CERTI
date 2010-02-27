@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.31 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectManagement.hh,v 3.32 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -50,17 +50,17 @@ public:
 
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
-                          std::vector<AttributeHandle> &attribArray,
-                          std::vector<AttributeValue_t> &valueArray,
-                          UShort attribArraySize,
+                          const std::vector<AttributeHandle> &attribArray,
+                          const std::vector<AttributeValue_t> &valueArray,
+                          uint32_t attribArraySize,
                           FederationTime theTime,
                           const std::string& theTag,
                           TypeException &e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
-                          std::vector<AttributeHandle> &attribArray,
-                          std::vector<AttributeValue_t> &valueArray,
-                          UShort attribArraySize,
+                          const std::vector<AttributeHandle> &attribArray,
+                          const std::vector<AttributeValue_t> &valueArray,
+                          uint32_t attribArraySize,
                           const std::string& theTag,
                           TypeException &e);
 
@@ -89,9 +89,9 @@ public:
 
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
-                    std::vector <ParameterHandle> &paramArray,
-                    std::vector <ParameterValue_t> &valueArray,
-                    UShort paramArraySize,
+                    const std::vector <ParameterHandle> &paramArray,
+                    const std::vector <ParameterValue_t> &valueArray,
+                    uint32_t paramArraySize,
                     FederationTime theTime,
                     const std::string& theTag,
 		    RegionHandle,
@@ -99,9 +99,9 @@ public:
 
     void
     sendInteraction(InteractionClassHandle theInteraction,
-                    std::vector <ParameterHandle> &paramArray,
-                    std::vector <ParameterValue_t> &valueArray,
-                    UShort paramArraySize,
+                    const std::vector <ParameterHandle> &paramArray,
+                    const std::vector <ParameterValue_t> &valueArray,
+                    uint32_t paramArraySize,
                     const std::string& theTag,
 		    RegionHandle,
                     TypeException &e);
@@ -149,15 +149,15 @@ public:
 
     EventRetractionHandle
     changeAttributeTransportType(ObjectHandle theObjectHandle,
-                                 std::vector <AttributeHandle> &attribArray,
-                                 UShort attribArraySize,
+                                 const std::vector <AttributeHandle> &attribArray,
+                                 uint32_t attribArraySize,
                                  TransportType theType,
                                  TypeException &e);
 
     EventRetractionHandle
     changeAttributeOrderType(ObjectHandle theObjectHandle,
-                             std::vector <AttributeHandle> &attribArray,
-                             UShort attribArraySize,
+                             const std::vector <AttributeHandle> &attribArray,
+                             uint32_t attribArraySize,
                              OrderType theType,
                              TypeException &e);
 
@@ -173,8 +173,8 @@ public:
 
     void
     requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
-                                      std::vector <AttributeHandle> &attribArray,
-                                      UShort attribArraySize,
+                                      const std::vector <AttributeHandle> &attribArray,
+                                      uint32_t attribArraySize,
                                       TypeException &e);
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
@@ -298,4 +298,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.31 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectManagement.hh,v 3.32 2010/02/27 16:53:36 erk Exp $

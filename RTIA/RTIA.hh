@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.18 2009/10/11 17:12:06 erk Exp $
+// $Id: RTIA.hh,v 3.19 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -112,7 +112,7 @@ private:
      * @param[out] answer answer message to be sent back to the federate
      * @param[out] e exception raised (if any).
      */
-    void chooseFederateProcessing(Message *request, Message &answer, TypeException &e);
+    void chooseFederateProcessing(Message *request, Message* answer, TypeException &e);
 
     /**
      * RTIA processes the TICK_REQUEST.
@@ -124,4 +124,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.18 2009/10/11 17:12:06 erk Exp $
+// $Id: RTIA.hh,v 3.19 2010/02/27 16:53:36 erk Exp $
