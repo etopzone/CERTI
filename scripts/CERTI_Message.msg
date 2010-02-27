@@ -88,6 +88,7 @@ native RegionHandle {
 native AttributeHandle {
     representation uint32
     language CXX [#include "certi.hh"]
+    language CXX [#define ATTRIBUTE_HANDLE_UNDEFINED_VALUE 0]
 }
 
 native DimensionHandle {
@@ -135,6 +136,21 @@ native OrderType {
     language CXX [#include "certi.hh"]
 }
 
+native AttributeValue_t {
+	representation string
+	language CXX [#include "certi.hh"]
+}
+
+native ParameterValue_t {
+	representation string
+	language CXX [#include "certi.hh"]
+}
+
+native EventRetractionHandle {    
+    language CXX [#include "RTItypes.hh"]	
+    language CXX [typedef RTI::EventRetractionHandle EventRetractionHandle;]   
+}
+
 // Closing connexion message
 message M_Close_Connexion : merge Message {
 }
@@ -174,7 +190,11 @@ message M_Federate_Save_Not_Complete : merge Message {}
 message M_Federation_Saved : merge Message {}
 message M_Federation_Not_Saved : merge Message {}
 message M_Request_Federation_Restore : merge Message {}
-message M_Request_Federation_Restore_Failed : merge Message {}
+
+message M_Request_Federation_Restore_Failed : merge Message {
+     required string reason
+}
+
 message M_Request_Federation_Restore_Succeeded : merge Message {}
 
 message M_Initiate_Federate_Restore : merge Message {
@@ -189,7 +209,7 @@ message M_Federation_Restore_Begun : merge Message {}
 // Declaration
 message M_Publish_Object_Class : merge Message {
 	required ObjectClassHandle objectClass
-        repeated Handle handles
+    repeated AttributeHandle   attributes
 }
 
 message M_Unpublish_Object_Class : merge Message {
@@ -206,7 +226,8 @@ message M_Unpublish_Interaction_Class : merge Message {
 
 message M_Subscribe_Object_Class_Attributes : merge Message {
 	required ObjectClassHandle objectClass
-        repeated Handle handles
+    repeated AttributeHandle   attributes
+    required bool              active {default=true}
 }
 
 message M_Unsubscribe_Object_Class : merge Message {
@@ -240,100 +261,119 @@ message M_Turn_Interactions_Off : merge Message {
 // Object
 message M_Register_Object_Instance : merge Message {
 	required ObjectClassHandle objectClass
-        required ObjectHandle      object
-        required string            objectName
+    required ObjectHandle      object
+    optional string            objectName
 }
 
 message M_Update_Attribute_Values : merge Message {
         required ObjectClassHandle  objectClass
-	required ObjectHandle       object
-        repeated Handle             handle
-        repeated string             attributeValues // FIXME check this one
-        required ResignAction       resignAction
+	    required ObjectHandle       object
+        repeated AttributeHandle    attributes
+        repeated AttributeValue_t   values // FIXME check this one
+        optional EventRetractionHandle eventRetraction
 }
 
 message M_Discover_Object_Instance : merge Message {
-	required ObjectClassHandle objectClass
-        required ObjectHandle      object
-        required string            objectName
-        required ResignAction      resignAction
+	    required ObjectClassHandle     objectClass
+        required ObjectHandle          object
+        required string                objectName        
+        optional EventRetractionHandle eventRetraction
 }
 
 message M_Reflect_Attribute_Values : merge Message {
- 	required ObjectClassHandle  objectClass
-	required ObjectHandle       object
-        repeated Handle             handle
-        repeated string             attributeValues // FIXME check this one
-        required ResignAction       resignAction
+ 	    required ObjectClassHandle  objectClass
+	    required ObjectHandle       object
+        repeated AttributeHandle    attributes
+        repeated AttributeValue_t   values // FIXME check this one
+        optional EventRetractionHandle eventRetraction
 }
 
 message M_Send_Interaction : merge Message {
 	required InteractionClassHandle interactionClass
-        repeated Handle                 handles
-	repeated string                 values
+    repeated ParameterHandle        parameters
+	repeated ParameterValue_t       values
 	required RegionHandle           region
-	required ResignAction           resignAction          
+	optional EventRetractionHandle eventRetraction          
 }
 
 message M_Receive_Interaction : merge Message {
 	required InteractionClassHandle interactionClass
-        repeated Handle                 handles
-	repeated string                 values
-	required RegionHandle           region
-	required ResignAction           resignAction
+    repeated ParameterHandle        parameters
+	repeated ParameterValue_t       values
+	required RegionHandle           region	
+	optional EventRetractionHandle eventRetraction
 }
 
 message M_Delete_Object_Instance : merge Message {
-	required ObjectClassHandle objectClass
+	    required ObjectClassHandle objectClass
         required ObjectHandle      object
-        required string            objectName
-        required ResignAction      resignAction
+        required string            objectName        
+        optional EventRetractionHandle eventRetraction
 }
 
-message M_Local_Delete_Object_Instance : merge Message {}
+message M_Local_Delete_Object_Instance : merge Message {
+	    required ObjectHandle      object
+}
 
 message M_Remove_Object_Instance : merge Message {
-	required ObjectClassHandle objectClass
+	    required ObjectClassHandle objectClass
         required ObjectHandle      object
-        required string            objectName
-        required ResignAction      resignAction
+        required string            objectName        
+        optional EventRetractionHandle eventRetraction
 }
 
 message M_Change_Attribute_Transportation_Type : merge Message {
-        required TransportType transport
-        required OrderType     order
-        required ObjectHandle  object
-	repeated Handle        handles
+        required TransportType   transportationType
+        required OrderType       orderType
+        required ObjectHandle    object
+	    repeated AttributeHandle attributes
 }
 
 message M_Change_Interaction_Transportation_Type : merge Message {
-	required InteractionClassHandle interactionClass
-        required TransportType          transport
-        required OrderType              order
+	    required InteractionClassHandle interactionClass
+        required TransportType          transportationType
+        required OrderType              orderType
 }
 
 message M_Request_Object_Attribute_Value_Update : merge Message {
-	required ObjectHandle object
-        repeated Handle       handles
+	required ObjectHandle       object
+    repeated AttributeHandle    attributes
 }
 
 message M_Request_Class_Attribute_Value_Update : merge Message {
 	required ObjectClassHandle objectClass
-        repeated Handle            handles
+    repeated AttributeHandle   attributes
 }
 
 message M_Provide_Attribute_Value_Update : merge Message {
-	required ObjectHandle object
-        repeated Handle       handles	
+	required ObjectHandle      object
+    repeated AttributeHandle   attributes	
 }
 
-message M_Attributes_In_Scope : merge Message {}
-message M_Attributes_Out_Of_Scope : merge Message {}
-message M_Turn_Updates_On_For_Object_Instance : merge Message {}
-message M_Turn_Updates_Off_For_Object_Instance : merge Message {}
+message M_Attributes_In_Scope : merge Message {
+   required ObjectHandle object
+   repeated AttributeHandle attributes
+}
+
+message M_Attributes_Out_Of_Scope : merge Message {
+   required ObjectHandle object
+   repeated AttributeHandle attributes
+}
+
+message M_Turn_Updates_On_For_Object_Instance : merge Message {
+   required ObjectHandle object
+   repeated AttributeHandle attributes
+}
+
+message M_Turn_Updates_Off_For_Object_Instance : merge Message {
+   required ObjectHandle object
+   repeated AttributeHandle attributes
+}
 
 // Ownership management
-message M_Request_Attribute_Ownership_Divestiture : merge Message {}
+message M_Request_Attribute_Ownership_Divestiture : merge Message {
+}
+
 message M_Request_Attribute_Ownership_Assumption : merge Message {
 	required ObjectHandle object
 	repeated AttributeHandle attributes
@@ -344,8 +384,16 @@ message M_Negotiated_Attribute_Ownership_Divestiture : merge Message {
 	repeated AttributeHandle attributes
 }
 
-message M_Attribute_Ownership_Divestiture_Notification : merge Message {}
-message M_Attribute_Ownership_Acquisition_Notification : merge Message {}
+message M_Attribute_Ownership_Divestiture_Notification : merge Message {
+    required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Attribute_Ownership_Acquisition_Notification : merge Message {
+    required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
 message M_Request_Attribute_Ownership_Acquisition : merge Message {
 	required ObjectHandle object
 	repeated AttributeHandle attributes
@@ -378,24 +426,53 @@ message M_Attribute_Is_Not_Owned : merge Message {
 }
 
 message M_Attribute_Owned_By_Rti : merge Message {}
-message M_Attribute_Ownership_Acquisition_If_Available : merge Message {}
-message M_Attribute_Ownership_Unavailable : merge Message {}
-message M_Unconditional_Attribute_Ownership_Divestiture : merge Message {}
-message M_Attribute_Ownership_Acquisition : merge Message {}
+
+message M_Attribute_Ownership_Acquisition_If_Available : merge Message {
+    required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Attribute_Ownership_Unavailable : merge Message {
+    required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Unconditional_Attribute_Ownership_Divestiture : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Attribute_Ownership_Acquisition : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
 message M_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge Message {
 	required ObjectHandle object
 	repeated AttributeHandle attributes
 }
-message M_Attribute_Ownership_Release_Response : merge Message {}
-message M_Cancel_Attribute_Ownership_Acquisition : merge Message {}
-message M_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge Message {}
+
+message M_Attribute_Ownership_Release_Response : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Cancel_Attribute_Ownership_Acquisition : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
+message M_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge Message {
+    required ObjectHandle object
+	repeated AttributeHandle attributes
+}
 
         // Time
 message M_Change_Attribute_Order_Type : merge Message {
-        required TransportType transport
-        required OrderType     order
-        required ObjectHandle  object
-	repeated Handle        handles
+        required TransportType      transport
+        required OrderType          order
+        required ObjectHandle       object
+	    repeated AttributeHandle    attributes
 }
 
 message M_Change_Interaction_Order_Type : merge Message {
@@ -405,23 +482,21 @@ message M_Change_Interaction_Order_Type : merge Message {
 }
 
 message M_Enable_Time_Regulation : merge Message {
-    required onoff  enable
-    required double lookahead
+    required onoff  enable {default=true}
+    required double lookahead {default=0}
 }
 
 message M_Disable_Time_Regulation : merge Message {
-    required onoff  enable
-    required double lookahead
+    required onoff  enable {default=false}
+    required double lookahead {default=0}
 }
 
 message M_Enable_Time_Constrained : merge Message {
-    required onoff  enable
-    required double lookahead
+    required onoff  enable {default=true}
 }
 
 message M_Disable_Time_Constrained : merge Message {
-    required onoff  enable
-    required double lookahead
+    required onoff  enable {default=false}
 }
 
 message M_Query_Lbts : merge Message {}
@@ -436,7 +511,10 @@ message M_Query_Lookahead : merge Message {
 	required double lookahead
 }
 
-message M_Retract : merge Message {}
+message M_Retract : merge Message {
+	required EventRetractionHandle eventRetraction
+}
+
 message M_Request_Retraction : merge Message {}
 message M_Time_Advance_Request : merge Message {}
 message M_Time_Advance_Request_Available : merge Message {}
@@ -449,16 +527,20 @@ message M_Disable_Asynchronous_Delivery : merge Message {}
 message M_Time_Regulation_Enabled : merge Message {}
 message M_Time_Constrained_Enabled : merge Message {}
 
+native Extent {
+   language CXX [#include "Extent.hh"]	     
+}
+
 // Data Distribution Management
 message M_Ddm_Create_Region : merge Message {
-	required SpaceHandle  space
-        required uint32       nbExtent
-        required RegionHandle region
+	required SpaceHandle  space      // the routing space designator
+	repeated Extent       extentSet  // the extent set    
+    required RegionHandle region     // the region handle obtained upon successful creation
 }
 
 message M_Ddm_Modify_Region : merge Message {
 	required RegionHandle region
-	//repeated M_Extents extent    readExtents(msgBuffer);
+	repeated Extent       extentSet  // the extent set
 }
 
 message M_Ddm_Delete_Region : merge Message {
@@ -468,13 +550,15 @@ message M_Ddm_Delete_Region : merge Message {
 message M_Ddm_Register_Object : merge Message {
 	required ObjectClassHandle objectClass
 	required ObjectHandle      object
-	repeated AttributeHandle   handles
-	// repeated M_Regions   regions 
+	optional string            objectInstanceName
+	repeated AttributeHandle   attributes
+	// repeated RegionHandle      regions 
 }
 
 message M_Ddm_Associate_Region : merge Message {
-	required ObjectHandle object
-	required RegionHandle region	
+	required ObjectHandle      object
+	required RegionHandle      region	
+	repeated AttributeHandle   attributes
 }
 
 message M_Ddm_Unassociate_Region : merge Message {
@@ -486,7 +570,7 @@ message M_Ddm_Subscribe_Attributes : merge Message {
 	required ObjectClassHandle objectClass
 	required RegionHandle      region
 	required onoff             passive
-	repeated AttributeHandle   handles
+	repeated AttributeHandle   attributes
 }
 
 message M_Ddm_Unsubscribe_Attributes : merge Message {
@@ -506,123 +590,123 @@ message M_Ddm_Unsubscribe_Interaction : merge Message {
 	required onoff                  passive
 }
 
-message M_Ddm_Request_Update : merge Message {}
+message M_Ddm_Request_Update : merge Message {
+   required ObjectClassHandle objectClass
+   required RegionHandle      region
+   repeated AttributeHandle   attributes
+}
 
-        // Support Services
+// Support Services
 message M_Get_Object_Class_Handle : merge Message {
 	required ObjectClassHandle objectClass
-        required string            name
-        required AttributeHandle   attribute
+    required string            className    
 }
 
 message M_Get_Object_Class_Name : merge Message {
 	required ObjectClassHandle objectClass
-        required string            name
-        required AttributeHandle   attribute
+    required string            className    
 }
 
 message M_Get_Attribute_Handle : merge Message {
 	required ObjectClassHandle objectClass
-        required string            name
-        required AttributeHandle   attribute
+    required string            attributeName
+    required AttributeHandle   attribute {default=0}
 }
 
 message M_Get_Attribute_Name : merge Message {
 	required ObjectClassHandle objectClass
-        required string            name
-        required AttributeHandle   attribute
+    required string            attributeName
+    required AttributeHandle   attribute {default=0}
 }
 
 message M_Get_Interaction_Class_Handle : merge Message {
-	required InteractionClassHandle interactionClass
-        required string                 name
-        required ParameterHandle        parameter
+	required InteractionClassHandle interactionClass {default=0}
+    required string                 className
 }
 
 message M_Get_Interaction_Class_Name : merge Message {
-	required InteractionClassHandle interactionClass
-        required string                 name
-        required ParameterHandle        parameter	
+	required InteractionClassHandle interactionClass    
+	required string                 className	
 }
 
 message M_Get_Parameter_Handle : merge Message {
 	required InteractionClassHandle interactionClass
-        required string                 name
-        required ParameterHandle        parameter
+    required string                 parameterName
+    required ParameterHandle        parameter {default=0}
 }
 
 message M_Get_Parameter_Name : merge Message {
 	required InteractionClassHandle interactionClass
-        required string                 name
-        required ParameterHandle        parameter
+    required string                 parameterName
+    required ParameterHandle        parameter {default=0}
 }
 
 message M_Get_Object_Instance_Handle : merge Message {
-	required ObjectHandle object
-	required string       name
+	required ObjectHandle object {default=0}
+	required string       objectInstanceName
 }
 
 message M_Get_Object_Instance_Name : merge Message {
 	required ObjectHandle object
-	required string       name
+	required string       objectInstanceName
 }
 
 message M_Get_Space_Handle : merge Message {
-	required string      name
-        required SpaceHandle space
+	required string      spaceName
+    required SpaceHandle space {default=0}
 }
 
 message M_Get_Space_Name : merge Message {
-	required string      name
-        required SpaceHandle space
+	required string      spaceName
+	required SpaceHandle space
 }
 
 message M_Get_Dimension_Handle : merge Message {
-	required string          name
-        required SpaceHandle     space
-	required DimensionHandle dimension
+	required string          dimensionName
+ 	required SpaceHandle     space
+	required DimensionHandle dimension {default=0}
 }
 
 message M_Get_Dimension_Name : merge Message {
-	required string          name
-        required SpaceHandle     space
+	required string          dimensionName
+    required SpaceHandle     space
 	required DimensionHandle dimension
 }
 
 message M_Get_Attribute_Space_Handle : merge Message {
 	required ObjectClassHandle objectClass
-        required AttributeHandle   attribute
-        required SpaceHandle       space
+    required AttributeHandle   attribute
+    required SpaceHandle       space {default=0}
 }
 
 message M_Get_Object_Class : merge Message {
-        required ObjectClassHandle objectClass
-        required ObjectHandle      object 
+     required ObjectClassHandle objectClass
+     required ObjectHandle      object 
 }
 
 message M_Get_Interaction_Space_Handle : merge Message {
 	required InteractionClassHandle interactionClass
-        required SpaceHandle            space
+    required SpaceHandle            space {default=0}
 }
 
 message M_Get_Transportation_Handle : merge Message {
-	required string         name
-        required TransportType  transport
+	required string         transportationName
+    required TransportType  transportation {default=0}
 }
 
 message M_Get_Transportation_Name : merge Message {
-	required string         name
-        required TransportType  transport
+	required string         transportationName
+    required TransportType  transportation
 }
 
 message M_Get_Ordering_Handle : merge Message {
-	required string     name
-        required OrderType  order
+	required string     orderingName
+    required OrderType  ordering {default=0}
 }
 
 message M_Get_Ordering_Name : merge Message {
-	required string     name
-        required OrderType  order
+	required string     orderingName
+    required OrderType  ordering
 }
 message M_Enable_Class_Relevance_Advisory_Switch : merge Message {}
 message M_Disable_Class_Relevance_Advisory_Switch : merge Message {}
@@ -635,8 +719,8 @@ message M_Disable_Interaction_Relevance_Advisory_Switch : merge Message {}
 
 message M_Tick_Request : merge Message {
 	required bool    multiple
-        required double  minTickTime
-        required double  maxTickTime
+    required double  minTickTime
+    required double  maxTickTime
 }
 
 message M_Tick_Request_Next : merge Message {}
@@ -655,7 +739,6 @@ native M_Type {
 }
 
 factory M_Factory {
-
 	factoryCreator  Message create(M_Type)
 	factoryReceiver Message receive(StreamType)
 }

@@ -1,0 +1,23 @@
+TODO list for the CERTI Message generator:
+
+0) Write the documentation (and may be BNF) for  
+   the CERTI Message specification language
+
+1) Modularize generator such that 
+   each backend generator (C++, Java, Python etc...) may be loaded separately
+
+2) Support variant for sequences
+
+3) Explain the on-the-wire encoding scheme (i.e. MessageBuffer)
+
+4) Add a display method for each message (C++ generator)
+   or an helper method which may authorize
+   cout << msg;
+
+5) Parser --> improve syntax error reporting 
+
+6) Enhance C++ generator (or write another one) for which
+   runtime check is done for setting 'required' field before sending
+   (or default value exists)
+
+7) Handle natively defined default values for members

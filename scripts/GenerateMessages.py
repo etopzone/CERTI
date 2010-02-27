@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.29 2010/02/06 19:01:03 erk Exp $
+## $Id: GenerateMessages.py,v 1.30 2010/02/27 16:45:19 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1204,7 +1204,6 @@ class CXXGenerator(CodeGenerator):
                     return representation
         return None
 
-
     def getSerializeMethodName(self,name):
         if name in self.serializeTypeMap.keys():
             return self.serializeTypeMap[name]
@@ -1248,12 +1247,16 @@ class CXXGenerator(CodeGenerator):
         if field.typeid.name == "onoff":
             if field.qualifier == "repeated":
                 stream.write(self.getIndent())
-                stream.write("uint32_t getNum"+self.upperFirst(field.name)+"() const")
+                stream.write("uint32_t get"+self.upperFirst(field.name)+"Size() const")
                 stream.write(" {return "+field.name+".size();}\n")
 
                 stream.write(self.getIndent())
-                stream.write("void setNum"+self.upperFirst(field.name)+"(uint32_t num)")
+                stream.write("void set"+self.upperFirst(field.name)+"Size(uint32_t num)")
                 stream.write(" {"+field.name+".resize(num);}\n")
+                
+                stream.write(self.getIndent())
+                stream.write("const std::vector<"+targetTypeName+">& get"+self.upperFirst(field.name)+"() const")
+                stream.write(" {return "+field.name+";}\n")
 
                 stream.write(self.getIndent())
                 stream.write("void "+field.name+"On(uint32_t rank)")
@@ -1281,12 +1284,16 @@ class CXXGenerator(CodeGenerator):
         else:
             if field.qualifier == "repeated":
                 stream.write(self.getIndent())
-                stream.write("uint32_t getNum"+self.upperFirst(field.name)+"() const")
+                stream.write("uint32_t get"+self.upperFirst(field.name)+"Size() const")
                 stream.write(" {return "+field.name+".size();}\n")
 
                 stream.write(self.getIndent())
-                stream.write("void setNum"+self.upperFirst(field.name)+"(uint32_t num)")
+                stream.write("void set"+self.upperFirst(field.name)+"Size(uint32_t num)")
                 stream.write(" {"+field.name+".resize(num);}\n")
+                
+                stream.write(self.getIndent())
+                stream.write("const std::vector<"+targetTypeName+">& get"+self.upperFirst(field.name)+"() const")
+                stream.write(" {return "+field.name+";}\n")
 
                 stream.write(self.getIndent())
                 stream.write("const "+targetTypeName+"& get"+self.upperFirst(field.name)+"(uint32_t rank) const")
@@ -1438,7 +1445,10 @@ class CXXGenerator(CodeGenerator):
                     stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
                     for field in msg.fields:
                         self.writeOneGetterSetter(stream,field)
-                                
+                    # the show method
+                    stream.write(self.getIndent()+self.commentLineBeginWith+" the show method\n")
+                    stream.write(self.getIndent()+virtual+"void show(std::ostream& out);\n")
+                                                    
                 self.unIndent()
                 # end public:
                 
@@ -1500,8 +1510,7 @@ class CXXGenerator(CodeGenerator):
             stream.write(self.commentLineBeginWith)
             stream.write(field.name+"= <no default value in message spec using builtin>\n")
             # FIXME find a default value for every type beside natives
-            
-            
+                           
     def writeSerializeFieldStatement(self,stream,field):
         indexField = ''
         if field.qualifier == "optional":
@@ -1538,6 +1547,47 @@ class CXXGenerator(CodeGenerator):
         elif field.qualifier == "repeated":
             self.unIndent()
             stream.write(self.getIndent()+"}\n")
+            
+    def writeShowFieldStatement(self,stream,field):
+        indexField = ''
+        if field.qualifier == "optional":
+            stream.write(self.getIndent())
+            stream.write("out << \"(opt) %s =\" " % field.name)
+        elif field.qualifier == "repeated":
+            indexField = '[i]'
+            stream.write(self.getIndent())
+            stream.write("out << \"    %s [] =\" << std::endl;\n" % field.name )
+            stream.write(self.getIndent())
+            stream.write("for (uint32_t i = 0; i < get"+self.upperFirst(field.name)+"Size(); ++i) {\n")            
+            self.indent()
+            stream.write(self.getIndent()+"out ")
+        else:
+            stream.write(self.getIndent())
+            stream.write("out << \" %s = \" " % field.name)
+                   
+        methodName = self.getSerializeMethodName(field.typeid.name)
+        if None == methodName:
+            if field.typeid.name in [m.name for m in self.AST.messages]:
+                stream.write("<< \"FIXME inherited \";\n ")
+                stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")                
+            else:
+                stream.write("<< \"")
+                stream.write(self.getIndent()+self.commentLineBeginWith+"FIXME FIXME don't know how to serialize native field <%s> of type <%s>"%(field.name,field.typeid.name))
+                stream.write("\"")
+                                            
+        else:            
+            stream.write("<< %s << \" \" " % (field.name+indexField))
+        
+        if field.qualifier == "optional":            
+            stream.write(self.getIndent()+"<< std::endl;\n")
+        elif field.qualifier == "repeated":
+            stream.write(";\n")
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n")
+            stream.write(self.getIndent()+"out << std::endl;\n")
+        else:
+            stream.write(self.getIndent()+"<< std::endl;\n")
+                        
     
     def writeDeSerializeFieldStatement(self,stream,field):
         indexField = ''
@@ -1590,7 +1640,8 @@ class CXXGenerator(CodeGenerator):
         stream.write(self.getIndent() + "switch (type) {\n")
         self.indent()
         for e in self.AST.eMessageType.values:            
-            stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name))
+            #stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name))
+            stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace("M_","",1)))
             self.indent()
             if None==e.type:
                 stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
@@ -1634,12 +1685,12 @@ class CXXGenerator(CodeGenerator):
         stream.write("#include <vector>\n")
         stream.write("#include <string>\n")
 
-	# [Try to] add corresponding header include
-	supposedHeaderName=stream.name
-	if supposedHeaderName != "<stdout>":
-	   supposedHeaderName=os.path.basename(supposedHeaderName)
-           supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
-	stream.write("#include \""+supposedHeaderName+".hh\"\n")
+        # [Try to] add corresponding header include
+        supposedHeaderName=stream.name
+        if supposedHeaderName != "<stdout>":
+            supposedHeaderName=os.path.basename(supposedHeaderName)
+            supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
+	    stream.write("#include \""+supposedHeaderName+".hh\"\n")
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1650,8 +1701,9 @@ class CXXGenerator(CodeGenerator):
                 stream.write(self.getIndent()+"%s::%s() {\n" % (msg.name,msg.name))            
                 self.indent()
                 # Assign my name.
-                stream.write(self.getIndent()+"this->name = \""+msg.name+"\";\n")
-                stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("NM_","NetworkMessage::")+";\n")
+                stream.write(self.getIndent()+"this->messageName = \""+msg.name+"\";\n")
+                #stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("NM_","NetworkMessage::")+";\n")
+                stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("M_","Message::",1)+";\n")
                 # Write init value if any was provided
                 if len(msg.fields)>0:
                     for field in msg.fields:
@@ -1696,6 +1748,22 @@ class CXXGenerator(CodeGenerator):
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n\n")
                     # end deserialize method
+                    # begin show method
+                    stream.write(self.getIndent()+"void %s::show(std::ostream& out) {\n" % msg.name)
+                    self.indent()
+                    stream.write(self.getIndent()+"out << \"[%s -Begin]\" << std::endl;" % msg.name)
+                    if msg.hasMerge():
+                        stream.write(self.getIndent()+self.commentLineBeginWith)
+                        stream.write("Call mother class\n")
+                        stream.write(self.getIndent()+"Super::show(out);\n")
+                    stream.write(self.getIndent()+self.commentLineBeginWith)
+                    stream.write("Specific show code\n")
+                    for field in msg.fields:
+                        self.writeShowFieldStatement(stream,field)
+                    stream.write(self.getIndent()+"out << \"[%s -End]\" << std::endl;" % msg.name)
+                    self.unIndent()
+                    stream.write(self.getIndent()+"}\n\n")
+                    # end show method
                     
         # Generate Factory (if any)
         # @todo
@@ -1979,8 +2047,14 @@ parserlogger.addHandler(stdoutHandler)
 parser = ply.yacc.yacc(debug=True)
 parser.logger = parserlogger 
     
-mainlogger.info("Parsing message file specifications...")    
-msgFile =  open(inputFile,'r')
+mainlogger.info("Parsing message file specifications...")
+try:    
+    msgFile =  open(inputFile,'r')
+except IOError, e:        
+    mainlogger.error("IOError raised: <"+str(e)+">")
+    mainlogger.error("May be input file <%s> is unreadable or mispelled?" % inputFile)
+    sys.exit()
+    
 lexer.lineno = 1
 parser.AST = MessageAST(inputFile)
 parser.parse(msgFile.read(),lexer=lexer)
@@ -2017,14 +2091,5 @@ else:
 if generator != None:
     generator.generate(output,gentype,factoryOnly) 
 mainlogger.info("Generate %s from AST, Done." % language)
-
-sys.exit()
-for l in msgFile:
-    cname = l.strip('_ \n')        
-
-    if (gentype.lower()=="factory"):
-        print "case NetworkMessage::%s:" % cname
-        print "   msg = new NM_%s(); " %cname.title()
-        print "   break;"
 
 msgFile.close()
