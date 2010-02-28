@@ -78,8 +78,13 @@ RTI::FedTime *
 RTI::FedTimeFactory::decode(const char *buf)
     throw (RTI::MemoryExhausted)
 {
+	union ud {
+		double   dv;
+		uint64_t uv;
+	} value;
     try {
-        return new RTIfedTime(*(const RTI::Double*)buf);
+    	value.uv = CERTI_DECODE_DOUBLE_FROM_UINT64BE(buf);
+        return new RTIfedTime(value.dv);
     }
     catch (std::bad_alloc) {
         //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
@@ -159,18 +164,27 @@ int
 RTIfedTime::encodedLength() const
 {
 	// current implementation of RTIfedtime takes
-	// four IEEE-754 double values.
-	return (sizeof(_fedTime)+
-			sizeof(_zero)+
-			sizeof(_epsilon)+
-			sizeof(_positiveInfinity));
+	// four IEEE-754 double values:
+	// _fedTime
+	// _zero
+	// _epsilon
+	// _positiveInfinity
+	// but we only transmit _fedTime because other value will
+	// be reconstructed autonomously
+	return (sizeof(double));
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIfedTime::encode(char *buffer) const
 {
-    memcpy(buffer, &_fedTime, sizeof(RTI::Double));
+#ifdef HOST_IS_BIG_ENDIAN
+	memcpy(buffer, &_fedTime, sizeof(double));
+#else
+	uint64_t value;
+	value = CERTI_ENCODE_DOUBLE_TO_UINT64BE(&_fedTime);
+	memcpy(buffer,&value,sizeof(double));
+#endif
 }
 
 // ----------------------------------------------------------------------------

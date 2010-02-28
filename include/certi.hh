@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.42 2010/02/07 10:39:50 gotthardp Exp $
+// $Id: certi.hh,v 3.43 2010/02/28 18:54:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -73,6 +73,39 @@
     #endif
 	#define CERTI_EXPORT
 #endif
+
+#define CERTI_UINT64_SWAP_LE_BE_CONSTANT(val)	((uint64_t) ( \
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00000000000000ffU)) << 56) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x000000000000ff00U)) << 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x0000000000ff0000U)) << 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00000000ff000000U)) <<  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x000000ff00000000U)) >>  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00ff000000000000U)) >> 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
+
+#ifdef HOST_IS_BIG_ENDIAN
+  #define CERTI_UINT64_SWAP_LE_BE(val) (CERTI_UINT64_SWAP_LE_BE_CONSTANT(val))
+  #define CERTI_UINT64_TO_BE(val)	   (val)
+  #define CERTI_UINT64_TO_LE(val)	   (CERTI_UINT64_SWAP_LE_BE (val))
+#else
+  #define CERTI_UINT64_SWAP_LE_BE(val) (CERTI_UINT64_SWAP_LE_BE_CONSTANT(val))
+  #define CERTI_UINT64_TO_BE(val)	   (CERTI_UINT64_SWAP_LE_BE (val))
+  #define CERTI_UINT64_TO_LE(val)      (val)
+#endif
+
+#define CERTI_UINT64_FROM_BE(val)	            (CERTI_UINT64_TO_BE(val))
+#define CERTI_UINT64_FROM_LE(val)	            (CERTI_UINT64_TO_LE(val))
+#define CERTI_ENCODE_DOUBLE_TO_UINT64BE(val)    (CERTI_UINT64_TO_BE   (*(uint64_t*)(val)))
+#define CERTI_DECODE_DOUBLE_FROM_UINT64BE(val)  (CERTI_UINT64_FROM_BE (*(uint64_t*)(val)))
 
 #include "RTI.hh"
 
@@ -231,4 +264,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.42 2010/02/07 10:39:50 gotthardp Exp $
+// $Id: certi.hh,v 3.43 2010/02/28 18:54:44 erk Exp $

@@ -77,6 +77,16 @@ ENDIF (MINGW)
 
 SET_TARGET_PROPERTIES(FedTime PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+SET(TestFedTime_SRCS
+  TestFedTime.cc
+)
+
+ADD_EXECUTABLE(TestFedTime ${TestFedTime_SRCS})
+
+TARGET_LINK_LIBRARIES(TestFedTime FedTime RTI)
+
+ADD_TEST(TestLibFedTime TestFedTime)
+
 # Install rules for both libRTI-NG and libFedTime
 INSTALL(TARGETS RTI FedTime
     RUNTIME DESTINATION bin
