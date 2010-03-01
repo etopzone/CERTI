@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.112 2010/02/27 16:53:36 erk Exp $
+// $Id: RTIambassador.cc,v 3.113 2010/03/01 16:44:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -610,13 +610,6 @@ throw (RTI::FederateOwnsAttributes,
 
 		}
 
-// ----------------------------------------------------------------------------
-//! Register Federation Synchronization Point without set of federates 
-//  (all federates in the federation execution are informed)
-/**
-    @param label Synchronization point label
-    @param the_tag User-supplied tag
- */
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 		const char *the_tag)
@@ -624,8 +617,7 @@ throw (RTI::FederateNotExecutionMember,
 		RTI::ConcurrentAccessAttempted,
 		RTI::SaveInProgress,
 		RTI::RestoreInProgress,
-		RTI::RTIinternalError)
-		{
+		RTI::RTIinternalError) {
 	M_Register_Federation_Synchronization_Point req, rep ;
 
 	G.Out(pdGendoc,"enter RTIambassador::registerFederationSynchronizationPoint for all federates");
@@ -643,23 +635,14 @@ throw (RTI::FederateNotExecutionMember,
 
 	G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for all federates");
 
-		}
+} /* end of RTI::RTIambassador::registerFederationSynchronizationPoint */
 
-// ----------------------------------------------------------------------------
-//! Register Federation Synchronization Point with set of federates (UNIMPLEMENTED)
-//  (only federates in the set are informed)
-/**
-    @param label Synchronization point label
-    @param theTag User-supplied tag
-    @param set_of_fed set of federate designators
- */
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 		const char *theTag,
 		const FederateHandleSet &set_of_fed)
 throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
-		RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
-		{
+		RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember) {
 
 	M_Register_Federation_Synchronization_Point req, rep ;
 
@@ -685,7 +668,7 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 
 	G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for some federates");
 
-		}
+} /* end of RTI::RTIambassador::registerFederationSynchronizationPoint */
 
 // ----------------------------------------------------------------------------
 //! Synchronization Point Achieved
@@ -2979,4 +2962,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.112 2010/02/27 16:53:36 erk Exp $
+// $Id: RTIambassador.cc,v 3.113 2010/03/01 16:44:27 erk Exp $

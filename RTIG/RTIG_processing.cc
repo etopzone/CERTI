@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.93 2009/11/21 21:00:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.94 2010/03/01 16:44:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -534,7 +534,7 @@ RTIG::processRegisterSynchronization(Socket *link, NM_Register_Federation_Synchr
 		<< req->getTag() << "\"" ;
 
     // boolean true means a federates set exists
-    if ( req->doesSetExist() )
+    if ( req->doesSetExist() ) {
         federations.manageSynchronization(req->federation,
                                           req->federate,
                                           true,
@@ -542,12 +542,14 @@ RTIG::processRegisterSynchronization(Socket *link, NM_Register_Federation_Synchr
                                           req->getTag(),
                                           req->handleArraySize,
                                           req->handleArray);
-    else
+    }
+    else {
         federations.manageSynchronization(req->federation,
                                           req->federate,
                                           true,
                                           req->getLabel(),
                                           req->getTag());
+    }
     D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
     // send synchronizationPointRegistrationSucceeded() to federate.
@@ -1457,4 +1459,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.93 2009/11/21 21:00:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.94 2010/03/01 16:44:27 erk Exp $

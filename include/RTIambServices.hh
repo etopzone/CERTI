@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.4 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIambServices.hh,v 3.5 2010/03/01 16:44:29 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -22,11 +22,26 @@ void resignFederationExecution(ResignAction)
     throw (FederateOwnsAttributes, FederateNotExecutionMember, InvalidResignAction,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
+/**
+ * Register Federation Synchronization Point.
+ * All federates who have joined the federation are informed.
+ *
+ * @param[in] label Synchronization point label
+ * @param[in] tag User-supplied tag
+ */
 void registerFederationSynchronizationPoint(const char *, const char *)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
-void registerFederationSynchronizationPoint(const char *, const char *, const FederateHandleSet &)
+/**
+ * Register Federation Synchronization Point with set of federates.
+ * Only federates in the set are informed.
+ *
+ * @param[in] label Synchronization point label
+ * @param[in] tag User-supplied tag
+ * @param[in] federates set of federate designators
+ */
+void registerFederationSynchronizationPoint(const char *label, const char *tag, const FederateHandleSet &federates)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, SaveInProgress,
 	   RestoreInProgress, RTIinternalError);
 
@@ -493,4 +508,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.4 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIambServices.hh,v 3.5 2010/03/01 16:44:29 erk Exp $

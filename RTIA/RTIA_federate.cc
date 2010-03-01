@@ -192,10 +192,13 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		RFSPq = static_cast<M_Register_Federation_Synchronization_Point *>(req);
 		D.Out(pdTrace, "Receiving Message from Federate, type RegisterFederationSynchronizationPoint.");
 
-		// boolean true means with federates set
+		// Check whether if the with federates set size is strictly positive,
+		// which means with federate set.
 		if ( RFSPq->getFederateSetSize()>0 ) {
-			fm->registerSynchronization(req->getLabel(), req->getTag(),
-					static_cast<unsigned short>(RFSPq->getFederateSetSize()), RFSPq->getFederateSet(), e);
+			fm->registerSynchronization(req->getLabel(),
+										req->getTag(),
+										static_cast<unsigned short>(RFSPq->getFederateSetSize()),
+										RFSPq->getFederateSet(), e);
 		}
 		else {
 			fm->registerSynchronization(req->getLabel(), req->getTag(), e);
@@ -1655,8 +1658,8 @@ RTIA::processFederateRequest(Message *req)
 	delete req;
 
 	if (rep->getType() != Message::TICK_REQUEST &&
-			rep->getType() != Message::TICK_REQUEST_NEXT &&
-			rep->getType() != Message::TICK_REQUEST_STOP) {
+		rep->getType() != Message::TICK_REQUEST_NEXT &&
+		rep->getType() != Message::TICK_REQUEST_STOP) {
 		// generic federate service acknowledgment
 		// the TICK_REQUEST confirmation is generated in processOngoingTick()
 		comm->sendUN(rep.get());
