@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.2 2010/03/05 13:57:08 erk Exp $
+## $Id: GenMsgBase.py,v 1.3 2010/03/05 18:15:35 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -182,8 +182,9 @@ class MsgSpecGenerator(CodeGenerator):
                 self.indent()
                 if (native.hasRepresentation()):
                     stream.write(self.getIndent()+ "representation " + native.getRepresentation()+"\n")
-                for l in native.languages.values():
-                    stream.write(self.getIndent()+"language " +  l.name + "     ["+l.statement+"]\n")
+                for (k,v) in native.languages.items():
+                    for l in v:
+                        stream.write(self.getIndent()+"language " +  k + "     ["+l.statement+"]\n")
                 self.unIndent()
                 stream.write("}\n")
                                 

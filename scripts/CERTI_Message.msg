@@ -40,12 +40,12 @@ native AttributeHandleSet {
 }
 
 native LogicalTimeInterval {
-    language CXX  [//unimplemented]
+    language CXX  [//unimplemented 1]
+    language CXX  [//unimplemented 2]
     language Java [import hla.rti.AttributeHandleSet;]
 }
 
-native SuppliedAttributes {
-    language CXX  [//unimplemented]
+native SuppliedAttributes {    
     language Java [import hla.rti.SuppliedAttributes;]
 }
 
@@ -76,7 +76,7 @@ native ResignAction  {
 }
 
 native Handle {
-    representation uint64
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
@@ -150,6 +150,12 @@ native AttributeValue_t {
 native ParameterValue_t {
 	representation string
 	language CXX [#include "certi.hh"]
+}
+
+native ParameterHandleValuePairSet {
+    representation combine
+    language CXX   [#include "RTItypes.hh"]
+    language Java  [import hla.rti.SuppliedParameters]
 }
 
 native EventRetractionHandle {    

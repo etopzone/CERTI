@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.2 2010/03/05 13:57:08 erk Exp $
+## $Id: GenMsgCXX.py,v 1.3 2010/03/05 18:15:35 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -246,8 +246,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             headerProtectMacroName = supposedHeaderName
         else:
             (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
-            headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
             
+        headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()            
         stream.write("#ifndef %s\n"%headerProtectMacroName)
         stream.write("#define %s\n"%headerProtectMacroName)        
         # add necessary standard and global includes
@@ -259,12 +259,14 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         # add include coming from native type specification 
         stream.write(self.commentLineBeginWith+" ****-**** Includes coming from native types ****-****\n")
         for native in self.AST.natives:
-            line = native.getLanguage(self.generatorName()).statement
-            # we are only interested in native "include" statement
-            if line.find("#include")>=0 and (not line in self.included.keys()):
-                self.writeComment(stream, native)
-                stream.write(line+"\n")
-                self.included[line]=1
+            if native.hasLanguage(self.generatorName()):
+                for line in native.getLanguageLines(self.generatorName()):
+                    # we are only interested in native "include" statement
+                    stmt = line.statement
+                    if stmt.find("#include")>=0 and (not stmt in self.included.keys()):
+                        self.writeComment(stream, native)
+                        stream.write(stmt+"\n")
+                        self.included[stmt]=1
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -277,14 +279,16 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             stream.write("     - by included headers (see above)\n")
             stream.write(self.getIndent()+self.commentLineBeginWith)
             stream.write("     - with typedef (see below [if any])\n")
-            for native in self.AST.natives:    
-                line = native.getLanguage("CXX").statement
-                # we are only interested in native statement
-                # which are not #include
-                if line.find("typedef")>=0 and (not line in self.typedefed.keys()):
-                    self.writeComment(stream, native)
-                    stream.write(self.getIndent()+line+"\n")
-                    self.typedefed[line]=1                                    
+            for native in self.AST.natives:  
+                if native.hasLanguage(self.generatorName()):
+                   for line in native.getLanguageLines(self.generatorName()):
+                       stmt = line.statement
+                       # we are only interested in native statement
+                       # which are not #include
+                       if stmt.find("typedef")>=0 and (not stmt in self.typedefed.keys()):
+                           self.writeComment(stream, native)
+                           stream.write(self.getIndent()+stmt+"\n")
+                           self.typedefed[stmt]=1                                    
             
             # Generate enum
             lastname = ""
@@ -304,10 +308,10 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     else:
                         stream.write(self.getIndent())
                         if (enumval.name==lastname):
-                            stream.write("%s " % enumval.name)		    
+                            stream.write("%s \n" % enumval.name)		    
                         else:
                             stream.write("%s, " % enumval.name)		    
-                            self.writeComment(stream, enumval)
+                            self.writeComment(stream, enumval)                            
                 self.unIndent()      
                 stream.write(self.getIndent())          
                 stream.write("} %s_t; " %  enum.name) 

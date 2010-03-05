@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.1 2010/03/05 13:57:08 erk Exp $
+## $Id: GenMsgAST.py,v 1.2 2010/03/05 18:15:35 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -321,6 +321,7 @@ class NativeType(ASTElement):
     A C{NaptiveType} is a simple C{ASTElement} whose
     name is the name the native type.
     """
+    
     def __init__(self,name,lines):
         super(NativeType,self).__init__(name=name)
         # store language line list in a dictionnary
@@ -329,14 +330,21 @@ class NativeType(ASTElement):
         self.representation = None
         for l in lines:
             if isinstance(l,NativeType.LanguageLine):
-                self.languages[l.name] = l
+                if l.name in self.languages.keys():
+                    self.languages[l.name].append(l)
+                else:
+                    self.languages[l.name] = list()
+                    self.languages[l.name].append(l)
             else:
                 self.representation = l.representation
         
     def __repr__(self):
         return "native %s" % self.name
     
-    def getLanguage(self,language):
+    def hasLanguage(self,language):
+        return (language in self.languages.keys())
+    
+    def getLanguageLines(self,language):
         if language in self.languages.keys():
             return self.languages[language]
         
