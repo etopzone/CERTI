@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.1 2010/03/04 09:28:30 erk Exp $
+## $Id: GenMsgCXX.py,v 1.2 2010/03/05 13:57:08 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -27,6 +27,7 @@ The CERTI Message Generator.
 C++ Backend Generator
 """
 import logging
+import GenMsgAST
 import GenMsgBase    
 import sys
 import os   
@@ -38,7 +39,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
     """
     
     def generatorName(cls):
-        return "C++"
+        return "CXX"
     generatorName = classmethod(generatorName)
     
     
@@ -238,14 +239,15 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
-	supposedHeaderName=stream.name
-	if supposedHeaderName != "<stdout>":
-	   supposedHeaderName=os.path.basename(supposedHeaderName)
-           supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
-	   headerProtectMacroName = supposedHeaderName
-	else:
-           (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
-        headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
+        supposedHeaderName=stream.name
+        if supposedHeaderName != "<stdout>":
+            supposedHeaderName=os.path.basename(supposedHeaderName)
+            supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
+            headerProtectMacroName = supposedHeaderName
+        else:
+            (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
+            headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
+            
         stream.write("#ifndef %s\n"%headerProtectMacroName)
         stream.write("#define %s\n"%headerProtectMacroName)        
         # add necessary standard and global includes
@@ -257,7 +259,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         # add include coming from native type specification 
         stream.write(self.commentLineBeginWith+" ****-**** Includes coming from native types ****-****\n")
         for native in self.AST.natives:
-            line = native.getLanguage("CXX").statement
+            line = native.getLanguage(self.generatorName()).statement
             # we are only interested in native "include" statement
             if line.find("#include")>=0 and (not line in self.included.keys()):
                 self.writeComment(stream, native)
@@ -285,25 +287,27 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     self.typedefed[line]=1                                    
             
             # Generate enum
+            lastname = ""
             for enum in self.AST.enums:            
                 self.writeComment(stream, enum)
                 stream.write(self.getIndent())
                 stream.write("typedef enum %s {\n" % enum.name)
                 self.indent()
                 first = True
-		lastname = (enum.values[len(enum.values)-1]).name
+                lastname = (enum.values[len(enum.values)-1]).name
                 for enumval in enum.values:
                     if first:
                         stream.write(self.getIndent())
                         stream.write("%s = %d, " % (enumval.name,enumval.value))                
                         first=False
+                        self.writeComment(stream, enumval)
                     else:
                         stream.write(self.getIndent())
-			if (enumval.name==lastname):
+                        if (enumval.name==lastname):
                             stream.write("%s " % enumval.name)		    
-			else:
+                        else:
                             stream.write("%s, " % enumval.name)		    
-                    self.writeComment(stream, enumval)
+                            self.writeComment(stream, enumval)
                 self.unIndent()      
                 stream.write(self.getIndent())          
                 stream.write("} %s_t; " %  enum.name) 
@@ -320,9 +324,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 else:
                     stream.write(" {\n")
                     virtual = ""
-                
-                self.indent()
-                
+                                    
+                self.indent()                
                 # begin public
                 stream.write(self.getIndent()+"public:\n") 
                 self.indent()
@@ -341,7 +344,11 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     # specific getter/setter
                     stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
                     for field in msg.fields:
-                        self.writeOneGetterSetter(stream,field)
+                        if (isinstance(field,GenMsgAST.MessageType.CombinedField)):
+                            for cfield in field.fields:
+                                self.writeOneGetterSetter(stream,cfield)
+                        else:
+                            self.writeOneGetterSetter(stream,field)
                     # the show method
                     stream.write(self.getIndent()+self.commentLineBeginWith+" the show method\n")
                     stream.write(self.getIndent()+virtual+"void show(std::ostream& out);\n")
@@ -353,7 +360,11 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent()+"protected:\n")
                 self.indent()
                 for field in msg.fields:
-                    self.writeDeclarationFieldStatement(stream,field)                    
+                    if (isinstance(field,GenMsgAST.MessageType.CombinedField)):
+                        for cfield in field.fields:
+                            self.writeDeclarationFieldStatement(stream,cfield)
+                    else:
+                        self.writeDeclarationFieldStatement(stream,field)                    
                 self.unIndent()
                 # end protected  
                 
@@ -517,7 +528,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 stream.write("msgBuffer."+methodName+"("+field.name+indexField+");\n")
             else:
                 # We may have to vast in order to enforce conversion
-                if isinstance(field.typeid,NativeType):
+                if isinstance(field.typeid,GenMsgAST.NativeType):
                    stream.write(field.name+indexField+" = static_cast<"+field.typeid.name+">(msgBuffer."+methodName+"());\n")
                 else:
                    stream.write(field.name+indexField+" = msgBuffer."+methodName+"();\n")
@@ -573,6 +584,13 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         self.unIndent()
         stream.write(self.getIndent()+("} /* end of %s::%s */ \n\n" % (receiver[1],receiver[2])))
     
+    def applyToFields(self,stream,fields,applyObject):
+        for field in fields:
+            if (isinstance(field, GenMsgAST.MessageType.CombinedField)):
+                for cfield in field.fields:
+                    applyObject(stream,cfield)
+            else:
+                applyObject(stream,field)                        
         
     def generateBody(self,stream,factoryOnly=False):
         """
@@ -603,8 +621,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("M_","Message::",1)+";\n")
                 # Write init value if any was provided
                 if len(msg.fields)>0:
-                    for field in msg.fields:
-                        self.writeInitFieldStatement(stream,field)                        
+                    self.applyToFields(stream, msg.fields, self.writeInitFieldStatement)                                         
                 self.unIndent()
                 stream.write(self.getIndent()+"}\n\n")
                 # Generate Destructor                
@@ -625,8 +642,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         stream.write(self.getIndent()+"Super::serialize(msgBuffer);\n")
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific serialization code\n")
-                    for field in msg.fields:
-                        self.writeSerializeFieldStatement(stream,field)
+                    self.applyToFields(stream, msg.fields, self.writeSerializeFieldStatement)                    
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n\n")
                     # end serialize method
@@ -640,8 +656,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         stream.write(self.getIndent()+"Super::deserialize(msgBuffer);\n")
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific deserialization code\n")
-                    for field in msg.fields:
-                        self.writeDeSerializeFieldStatement(stream,field)
+                    self.applyToFields(stream, msg.fields, self.writeDeSerializeFieldStatement)                    
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n\n")
                     # end deserialize method
@@ -655,8 +670,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         stream.write(self.getIndent()+"Super::show(out);\n")
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific show code\n")
-                    for field in msg.fields:
-                        self.writeShowFieldStatement(stream,field)
+                    self.applyToFields(stream, msg.fields, self.writeShowFieldStatement)                  
                     stream.write(self.getIndent()+"out << \"[%s -End]\" << std::endl;" % msg.name)
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n\n")
@@ -670,4 +684,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             # begin receiver
             self.writeFactoryReceiver(stream)                                                            
                         
-        self.closeNamespaces(stream)                        
+        self.closeNamespaces(stream)
+        
+               

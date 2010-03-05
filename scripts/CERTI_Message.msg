@@ -136,6 +136,12 @@ native OrderType {
     language CXX [#include "certi.hh"]
 }
 
+native AttributeHandleValuePairSet {
+    representation combine
+    language CXX   [#include "RTItypes.hh"]
+    language Java  [import hla.rti.SuppliedAttributes] 
+}
+
 native AttributeValue_t {
 	representation string
 	language CXX [#include "certi.hh"]
@@ -266,10 +272,12 @@ message M_Register_Object_Instance : merge Message {
 }
 
 message M_Update_Attribute_Values : merge Message {
-        required ObjectClassHandle  objectClass
-	    required ObjectHandle       object
-        repeated AttributeHandle    attributes
-        repeated AttributeValue_t   values // FIXME check this one
+        required ObjectClassHandle     objectClass
+	    required ObjectHandle          object
+	    combine AttributeHandleValuePairSet {
+           repeated AttributeHandle       attributes
+           repeated AttributeValue_t      values
+        }
         optional EventRetractionHandle eventRetraction
 }
 
@@ -283,8 +291,10 @@ message M_Discover_Object_Instance : merge Message {
 message M_Reflect_Attribute_Values : merge Message {
  	    required ObjectClassHandle  objectClass
 	    required ObjectHandle       object
-        repeated AttributeHandle    attributes
-        repeated AttributeValue_t   values // FIXME check this one
+	    combine AttributeHandleValuePairSet {
+           repeated AttributeHandle    attributes
+           repeated AttributeValue_t   values
+        }
         optional EventRetractionHandle eventRetraction
 }
 

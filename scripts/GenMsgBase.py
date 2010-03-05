@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.1 2010/03/04 09:28:30 erk Exp $
+## $Id: GenMsgBase.py,v 1.2 2010/03/05 13:57:08 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -32,6 +32,7 @@ Generator Base class
 import logging
 import sys 
 import datetime
+import GenMsgAST
     
 class CodeGenerator(object):
     """
@@ -177,8 +178,15 @@ class MsgSpecGenerator(CodeGenerator):
             # Generate native type
             for native in self.AST.natives:            
                 self.writeComment(stream, native)
-                stream.write("native %s\n\n" % native.name)          
-                
+                stream.write("native %s {\n" % native.name)
+                self.indent()
+                if (native.hasRepresentation()):
+                    stream.write(self.getIndent()+ "representation " + native.getRepresentation()+"\n")
+                for l in native.languages.values():
+                    stream.write(self.getIndent()+"language " +  l.name + "     ["+l.statement+"]\n")
+                self.unIndent()
+                stream.write("}\n")
+                                
             # Generate enum
             for enum in self.AST.enums:
                 self.writeComment(stream, enum)
@@ -205,10 +213,20 @@ class MsgSpecGenerator(CodeGenerator):
                     stream.write(" {\n")
                 
                 for field in msg.fields:
-                    stream.write("        %s %s %s " % (field.qualifier,field.typeid.name,field.name))
-                    if field.hasDefaultValue():
-                        stream.write("[default=%s] " % field.defaultValue)                                    
-                    self.writeComment(stream, field)                    
+                    if (isinstance(field, GenMsgAST.MessageType.CombinedField)):
+                        stream.write("        combined %s {" % (field.typeid))
+                        self.writeComment(stream, field)
+                        for cfield in field.fields:
+                            stream.write("            %s %s %s " % (cfield.qualifier,cfield.typeid.name,cfield.name))
+                            if cfield.hasDefaultValue():
+                                stream.write("[default=%s] " % cfield.defaultValue)                                    
+                            self.writeComment(stream, cfield)
+                        stream.write("        }\n")    
+                    else:
+                        stream.write("        %s %s %s " % (field.qualifier,field.typeid.name,field.name))
+                        if field.hasDefaultValue():
+                            stream.write("[default=%s] " % field.defaultValue)                                    
+                        self.writeComment(stream, field)                    
                 stream.write("}\n\n")
             
         # Generate Factory
