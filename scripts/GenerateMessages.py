@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.32 2010/03/05 13:57:08 erk Exp $
+## $Id: GenerateMessages.py,v 1.33 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -81,7 +81,8 @@ import GenMsgAST
 
 generatorBackends = dict()
 generatorBackends[GenMsgBase.MsgSpecGenerator.generatorName().lower()] = GenMsgBase.MsgSpecGenerator
-generatorBackends[GenMsgCXX.CXXGenerator.generatorName().lower()] = GenMsgCXX.CXXGenerator
+generatorBackends[GenMsgCXX.CXXCERTIMessageGenerator.generatorName().lower()] = GenMsgCXX.CXXCERTIMessageGenerator
+generatorBackends[GenMsgCXX.CXXCERTINetworkMessageGenerator.generatorName().lower()] = GenMsgCXX.CXXCERTINetworkMessageGenerator
 generatorBackends[GenMsgPython.PythonGenerator.generatorName().lower()] = GenMsgPython.PythonGenerator
 generatorBackends[GenMsgJava.JavaGenerator.generatorName().lower()] = GenMsgJava.JavaGenerator
 
@@ -102,12 +103,13 @@ if len(opts) < 1:
     usage()
     sys.exit(2)
     
-# default value
-verbose=False
-factoryOnly=False
-gentype="header"
-language=GenMsgBase.MsgSpecGenerator.generatorName()
-output=sys.stdout
+# default values for command line options
+verbose     = False
+factoryOnly = False
+gentype     = "header"
+language    = GenMsgBase.MsgSpecGenerator.generatorName()
+output      = sys.stdout
+inputFile   = None
 
 # Parse command line options
 for o, a in opts:
@@ -127,7 +129,7 @@ for o, a in opts:
     if o in ("-h", "--help"):
         usage()
         sys.exit(0)
-
+        
 mainlogger.info("Reading message specifications from: <%s>" % inputFile)       
 mainlogger.info("output send to: <%s>" % repr(output.name))
 mainlogger.info("Generating for language: <%s>" % language)
@@ -505,13 +507,17 @@ parserlogger.setLevel(logging.ERROR)
 parserlogger.addHandler(stdoutHandler)
 parser = ply.yacc.yacc(debug=True)
 parser.logger = parserlogger 
-    
-mainlogger.info("Parsing message file specifications...")
-try:    
-    msgFile =  open(inputFile,'r')
-except IOError, e:        
-    mainlogger.error("IOError raised: <"+str(e)+">")
-    mainlogger.error("May be input file <%s> is unreadable or mispelled?" % inputFile)
+
+if inputFile != None:    
+    mainlogger.info("Parsing message file specifications...")
+    try:    
+        msgFile =  open(inputFile,'r')
+    except IOError, e:        
+        mainlogger.error("IOError raised: <"+str(e)+">")
+        mainlogger.error("May be input file <%s> is unreadable or mispelled?" % inputFile)
+        sys.exit()
+else:
+    mainlogger.error("No input file given!!")
     sys.exit()
     
 lexer.lineno = 1

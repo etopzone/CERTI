@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -19,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.2 2010/03/05 18:15:35 erk Exp $
+## $Id: GenMsgAST.py,v 1.3 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """

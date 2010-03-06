@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -19,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.3 2010/03/05 18:15:35 erk Exp $
+## $Id: GenMsgCXX.py,v 1.4 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -32,7 +30,7 @@ import GenMsgBase
 import sys
 import os   
             
-class CXXGenerator(GenMsgBase.CodeGenerator):    
+class CXXCERTIGenerator(GenMsgBase.CodeGenerator):    
     """
     This is a C++ generator for C{MessageAST}.
     
@@ -44,10 +42,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
     
     
     def __init__(self,MessageAST):
-        super(CXXGenerator,self).__init__(MessageAST,"//")
-        self.logger = logging.Logger("CXXGenerator")
-        self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(logging.StreamHandler(sys.stdout))
+        super(CXXCERTIGenerator,self).__init__(MessageAST,"//")
         self.included = dict()
         self.typedefed = dict()
         self.builtinTypeMap = {'onoff'    : 'bool',
@@ -93,6 +88,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                                'float'    : 'read_float',
                                'double'   : 'read_double',}
         self.__languageName="C++"
+        self.replacePrefix = None
 
     def getRepresentationFor(self,name):
         for native in self.AST.natives:
@@ -259,8 +255,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         # add include coming from native type specification 
         stream.write(self.commentLineBeginWith+" ****-**** Includes coming from native types ****-****\n")
         for native in self.AST.natives:
-            if native.hasLanguage(self.generatorName()):
-                for line in native.getLanguageLines(self.generatorName()):
+            if native.hasLanguage("CXX"):
+                for line in native.getLanguageLines("CXX"):
                     # we are only interested in native "include" statement
                     stmt = line.statement
                     if stmt.find("#include")>=0 and (not stmt in self.included.keys()):
@@ -280,8 +276,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent()+self.commentLineBeginWith)
             stream.write("     - with typedef (see below [if any])\n")
             for native in self.AST.natives:  
-                if native.hasLanguage(self.generatorName()):
-                   for line in native.getLanguageLines(self.generatorName()):
+                if native.hasLanguage("CXX"):
+                   for line in native.getLanguageLines("CXX"):
                        stmt = line.statement
                        # we are only interested in native statement
                        # which are not #include
@@ -551,9 +547,9 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent()+"%s* msg;\n\n" % creator[0])
         stream.write(self.getIndent() + "switch (type) {\n")
         self.indent()
-        for e in self.AST.eMessageType.values:            
-            #stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name))
-            stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace("M_","",1)))
+        for e in self.AST.eMessageType.values:
+            if (None!=self.replacePrefix):                        
+                stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))
             self.indent()
             if None==e.type:
                 stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
@@ -621,8 +617,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 self.indent()
                 # Assign my name.
                 stream.write(self.getIndent()+"this->messageName = \""+msg.name+"\";\n")
-                #stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("NM_","NetworkMessage::")+";\n")
-                stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("M_","Message::",1)+";\n")
+                if (None!=self.replacePrefix):                    
+                    stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace(self.replacePrefix[0],self.replacePrefix[1],1)+";\n")
                 # Write init value if any was provided
                 if len(msg.fields)>0:
                     self.applyToFields(stream, msg.fields, self.writeInitFieldStatement)                                         
@@ -690,4 +686,32 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         
         self.closeNamespaces(stream)
         
-               
+class CXXCERTIMessageGenerator(CXXCERTIGenerator):    
+    """
+    This is a C++ generator for C{MessageAST}.
+    
+    """               
+    def generatorName(cls):
+        return "CXXCERTIMessage"
+    generatorName = classmethod(generatorName)
+        
+    def __init__(self,MessageAST):
+        super(CXXCERTIMessageGenerator,self).__init__(MessageAST)   
+        self.replacePrefix = list()
+        self.replacePrefix.append("M_")
+        self.replacePrefix.append("Message::")     
+
+class CXXCERTINetworkMessageGenerator(CXXCERTIGenerator):    
+    """
+    This is a C++ generator for C{MessageAST}.
+    
+    """               
+    def generatorName(cls):
+        return "CXXCERTINetworkMessage"
+    generatorName = classmethod(generatorName)
+    
+    def __init__(self,MessageAST):
+        super(CXXCERTINetworkMessageGenerator,self).__init__(MessageAST)   
+        self.replacePrefix = list()
+        self.replacePrefix.append("NM_")
+        self.replacePrefix.append("NetworkMessage::")     

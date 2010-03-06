@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -19,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.3 2010/03/05 18:15:35 erk Exp $
+## $Id: GenMsgBase.py,v 1.4 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -48,7 +46,7 @@ class CodeGenerator(object):
     def __init__(self,MessageAST,commentLineBeginWith):
         self.AST = MessageAST
         self.commentLineBeginWith = commentLineBeginWith
-        self.logger = logging.Logger("CodeGenerator")
+        self.logger = logging.Logger(self.generatorName()+"Generator")
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(logging.StreamHandler(sys.stdout))
         self.__indentString = "   "

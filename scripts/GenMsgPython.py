@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -19,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgPython.py,v 1.1 2010/03/04 09:28:30 erk Exp $
+## $Id: GenMsgPython.py,v 1.2 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -41,8 +39,5 @@ class PythonGenerator(GenMsgBase.CodeGenerator):
     
     def __init__(self,MessageAST):
         super(PythonGenerator,self).__init__(MessageAST,"##")
-        self.logger = logging.Logger("PythonGenerator")
-        self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(logging.StreamHandler(sys.stdout))
         # Message builtin type to Python type
         

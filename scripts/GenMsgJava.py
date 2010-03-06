@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -19,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgJava.py,v 1.1 2010/03/04 09:28:30 erk Exp $
+## $Id: GenMsgJava.py,v 1.2 2010/03/06 12:55:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -41,9 +39,6 @@ class JavaGenerator(GenMsgBase.CodeGenerator):
     
     def __init__(self, MessageAST):
         super(JavaGenerator, self).__init__(MessageAST, "//")
-        self.logger = logging.Logger("JavaGenerator")
-        self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(logging.StreamHandler(sys.stdout))
         # Message builtin type to Java type
         # Note that java integer type are ALL signed:
         # http://java.sun.com/docs/books/tutorial/java/nutsandbolts/datatypes.html
