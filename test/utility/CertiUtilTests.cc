@@ -30,6 +30,7 @@ using std::endl;
 #include <cassert>
 #include <string>
 #include <cstring>
+#include <cstdio>
 
 #include "Clock.hh"
 void clockTests(certi::Clock& aClock) {
