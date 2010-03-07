@@ -5,6 +5,7 @@ TODO list for the CERTI Message generator:
 
 1) Modularize generator such that 
    each backend generator (C++, Java, Python etc...) may be loaded separately
+   PARTIALLY DONE --> need to automatize the backend loading.
 
 2) Support variant for sequences
 
@@ -13,6 +14,7 @@ TODO list for the CERTI Message generator:
 4) Add a display method for each message (C++ generator)
    or an helper method which may authorize
    cout << msg;
+   DONE --> this is the show(ostream& out) method 
 
 5) Parser --> improve syntax error reporting 
 
