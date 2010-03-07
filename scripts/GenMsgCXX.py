@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.4 2010/03/06 12:55:10 erk Exp $
+## $Id: GenMsgCXX.py,v 1.5 2010/03/07 18:22:03 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -476,8 +476,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:
             if field.typeid.name in [m.name for m in self.AST.messages]:
-                stream.write("<< \"FIXME inherited \";\n ")
-                stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")                
+                stream.write("<< \"FIXME inherited \" ")
+                
+                #stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")                
             else:
                 stream.write("<< \"")
                 stream.write(self.getIndent()+self.commentLineBeginWith+"FIXME FIXME don't know how to serialize native field <%s> of type <%s>"%(field.name,field.typeid.name))
@@ -549,7 +550,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         self.indent()
         for e in self.AST.eMessageType.values:
             if (None!=self.replacePrefix):                        
-                stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))
+                stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))                
             self.indent()
             if None==e.type:
                 stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
@@ -615,10 +616,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 # Generate Constructor                
                 stream.write(self.getIndent()+"%s::%s() {\n" % (msg.name,msg.name))            
                 self.indent()
-                # Assign my name.
-                stream.write(self.getIndent()+"this->messageName = \""+msg.name+"\";\n")
-                if (None!=self.replacePrefix):                    
-                    stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace(self.replacePrefix[0],self.replacePrefix[1],1)+";\n")
+                if msg.hasMerge():
+                    # Assign my name.
+                    stream.write(self.getIndent()+"this->messageName = \""+msg.name+"\";\n")
+                    if (None!=self.replacePrefix):                    
+                        stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace(self.replacePrefix[0],self.replacePrefix[1],1)+";\n")
+                        
                 # Write init value if any was provided
                 if len(msg.fields)>0:
                     self.applyToFields(stream, msg.fields, self.writeInitFieldStatement)                                         

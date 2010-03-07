@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.33 2010/03/06 12:55:10 erk Exp $
+## $Id: GenerateMessages.py,v 1.34 2010/03/07 18:22:03 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -57,7 +57,6 @@ import re
 # We use logging for ... logging :-)
 # see http://docs.python.org/library/logging.html
 import logging 
-
 
 # Build some logger related objects
 stdoutHandler = logging.StreamHandler(sys.stdout)

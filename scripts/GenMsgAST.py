@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.3 2010/03/06 12:55:10 erk Exp $
+## $Id: GenMsgAST.py,v 1.4 2010/03/07 18:22:03 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -496,9 +496,13 @@ class ASTChecker(object):
         enumval.type = None
         msgTypeEnumVals = [enumval]
         for msg in AST.messages:
-            enumval      = EnumType.EnumValue(msg.name.upper(),None)
-            enumval.type = msg.name
-            msgTypeEnumVals.append(enumval)
+            # We do not generate the enum factory entry for a message
+            # with no merge there is no possible factory for that
+            # kind of message. 
+            if msg.hasMerge():
+                enumval      = EnumType.EnumValue(msg.name.upper(),None)
+                enumval.type = msg.name
+                msgTypeEnumVals.append(enumval)
             self.checkMessageFields(msg,AST)            
         enumval      = EnumType.EnumValue("LAST",None)
         enumval.type = None                                    
