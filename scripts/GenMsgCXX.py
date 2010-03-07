@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.5 2010/03/07 18:22:03 erk Exp $
+## $Id: GenMsgCXX.py,v 1.6 2010/03/07 18:46:25 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -48,7 +48,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         self.builtinTypeMap = {'onoff'    : 'bool',
                                'bool'     : 'bool',
                                'string'   : 'std::string',
-                               'byte'     : 'byte',
+                               'byte'     : 'uint8_t',
                                'int8'     : 'int8_t',
                                'uint8'    : 'uint8_t',
                                'int16'    : 'int16_t',
@@ -57,8 +57,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                'uint32'   : 'uint32_t',   
                                'int64'    : 'int64_t',
                                'uint64'   : 'uint64_t',
-                               'float'    : 'float_t',
-                               'double'   : 'double_t',}
+                               'float'    : 'float',
+                               'double'   : 'double',}
         self.serializeTypeMap = {'onoff'    : 'write_bool',
                                'bool'     : 'write_bool',
                                'string'   : 'write_string',

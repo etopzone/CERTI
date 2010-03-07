@@ -1,4 +1,4 @@
-// Generated on 2010 March Sat, 06 at 18:06:18 by the CERTI message generator
+// Generated on 2010 March Sun, 07 at 19:42:42 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -1772,13 +1772,13 @@ namespace certi {
          void enableOn() {enable = true;}
          void enableOff() {enable = false;}
          bool isEnableOn() const {return enable;}
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         const double& getLookahead() const {return lookahead;}
+         void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
          bool enable;
-         double_t lookahead;
+         double lookahead;
       private:
    };
 
@@ -1793,13 +1793,13 @@ namespace certi {
          void enableOn() {enable = true;}
          void enableOff() {enable = false;}
          bool isEnableOn() const {return enable;}
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         const double& getLookahead() const {return lookahead;}
+         void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
          bool enable;
-         double_t lookahead;
+         double lookahead;
       private:
    };
 
@@ -1874,12 +1874,12 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         const double& getLookahead() const {return lookahead;}
+         void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
-         double_t lookahead;
+         double lookahead;
       private:
    };
 
@@ -1891,12 +1891,12 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const double_t& getLookahead() const {return lookahead;}
-         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
+         const double& getLookahead() const {return lookahead;}
+         void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
-         double_t lookahead;
+         double lookahead;
       private:
    };
 
@@ -2814,16 +2814,16 @@ namespace certi {
          // specific Getter(s)/Setter(s)
          const bool& getMultiple() const {return multiple;}
          void setMultiple(const bool& newMultiple) {multiple=newMultiple;}
-         const double_t& getMinTickTime() const {return minTickTime;}
-         void setMinTickTime(const double_t& newMinTickTime) {minTickTime=newMinTickTime;}
-         const double_t& getMaxTickTime() const {return maxTickTime;}
-         void setMaxTickTime(const double_t& newMaxTickTime) {maxTickTime=newMaxTickTime;}
+         const double& getMinTickTime() const {return minTickTime;}
+         void setMinTickTime(const double& newMinTickTime) {minTickTime=newMinTickTime;}
+         const double& getMaxTickTime() const {return maxTickTime;}
+         void setMaxTickTime(const double& newMaxTickTime) {maxTickTime=newMaxTickTime;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
          bool multiple;
-         double_t minTickTime;
-         double_t maxTickTime;
+         double minTickTime;
+         double maxTickTime;
       private:
    };
 
