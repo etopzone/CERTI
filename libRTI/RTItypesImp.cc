@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.6 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypesImp.cc,v 3.7 2010/03/07 19:07:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -51,7 +51,7 @@ AttributeHandleValuePairSetImp::~AttributeHandleValuePairSetImp()
 {
 }
 
-RTI::RTI::ULong AttributeHandleValuePairSetImp::size() const
+RTI::ULong AttributeHandleValuePairSetImp::size() const
 {
     return _set.size();
 }
@@ -565,4 +565,4 @@ void RegionImp::commit()
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.6 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypesImp.cc,v 3.7 2010/03/07 19:07:25 erk Exp $
