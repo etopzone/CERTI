@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.5 2009/05/20 08:17:16 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.6 2010/03/07 18:23:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+#include <cstdio>
 
 namespace certi {
 
@@ -252,4 +253,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.5 2009/05/20 08:17:16 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.6 2010/03/07 18:23:39 erk Exp $

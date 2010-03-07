@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.5 2010/03/01 16:44:29 erk Exp $
+// $Id: RTIambServices.hh,v 3.6 2010/03/07 18:23:40 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -324,13 +324,13 @@ void deleteRegion(Region *)
     throw (RegionNotKnown, RegionInUse, FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
-ObjectHandle registerObjectInstanceWithRegion(ObjectClassHandle, const char *, AttributeHandle [],
+RTI::ObjectHandle registerObjectInstanceWithRegion(ObjectClassHandle, const char *, AttributeHandle [],
 					      Region *theRegions[], ULong)
     throw (ObjectClassNotDefined, ObjectClassNotPublished, AttributeNotDefined, AttributeNotPublished,
 	   RegionNotKnown, InvalidRegionContext, ObjectAlreadyRegistered, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-ObjectHandle registerObjectInstanceWithRegion(ObjectClassHandle, AttributeHandle [], Region *regions[], ULong)
+RTI::ObjectHandle registerObjectInstanceWithRegion(ObjectClassHandle, AttributeHandle [], Region *regions[], ULong)
     throw (ObjectClassNotDefined, ObjectClassNotPublished, AttributeNotDefined, AttributeNotPublished,
 	   RegionNotKnown, InvalidRegionContext, FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
@@ -422,7 +422,7 @@ SpaceHandle getRoutingSpaceHandle(const char *)
 char *getRoutingSpaceName(SpaceHandle)
     throw (SpaceNotDefined, FederateNotExecutionMember, ConcurrentAccessAttempted, RTIinternalError);
 
-DimensionHandle getDimensionHandle(const char *, SpaceHandle)
+RTI::DimensionHandle getDimensionHandle(const char *, SpaceHandle)
     throw (SpaceNotDefined, NameNotFound, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
@@ -430,14 +430,14 @@ char *getDimensionName(DimensionHandle, SpaceHandle)
     throw (SpaceNotDefined, DimensionNotDefined, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
-SpaceHandle getAttributeRoutingSpaceHandle(AttributeHandle, ObjectClassHandle)
+RTI::SpaceHandle getAttributeRoutingSpaceHandle(AttributeHandle, ObjectClassHandle)
     throw (ObjectClassNotDefined, AttributeNotDefined, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
-ObjectClassHandle getObjectClass(ObjectHandle)
+RTI::ObjectClassHandle getObjectClass(ObjectHandle)
     throw (ObjectNotKnown, FederateNotExecutionMember, ConcurrentAccessAttempted, RTIinternalError);
 
-SpaceHandle getInteractionRoutingSpaceHandle(InteractionClassHandle)
+RTI::SpaceHandle getInteractionRoutingSpaceHandle(InteractionClassHandle)
     throw (InteractionClassNotDefined, FederateNotExecutionMember, ConcurrentAccessAttempted, RTIinternalError);
 
 TransportationHandle getTransportationHandle(const char *)
@@ -508,4 +508,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.5 2010/03/01 16:44:29 erk Exp $
+// $Id: RTIambServices.hh,v 3.6 2010/03/07 18:23:40 erk Exp $

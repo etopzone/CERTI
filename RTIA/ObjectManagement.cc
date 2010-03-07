@@ -219,11 +219,13 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
                                  TypeException &)
 {
     M_Discover_Object_Instance req;
+    EventRetraction  event;
 
     req.setObject(the_object);
     req.setObjectClass(the_class);
     req.setDate(the_time);
-    req.setEventRetraction(the_event);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
     req.setObjectName(the_name);
 
     comm->requestFederateService(&req);
@@ -260,11 +262,13 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          TypeException &)
 {
     M_Reflect_Attribute_Values req;
+    EventRetraction event;
 
     G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues with time");
     req.setObject(the_object);
     req.setDate(the_time);
-    req.setEventRetraction(the_event);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
     req.setTag(the_tag);
 
     req.setValuesSize(the_size);
@@ -420,10 +424,12 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      TypeException &)
 {
     M_Receive_Interaction req;
+    EventRetraction  event;
 
     req.setInteractionClass(the_interaction);
     req.setDate(the_time);
-    req.setEventRetraction(the_event);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
     req.setTag(the_tag);
     req.setParametersSize(the_size);
     req.setValuesSize(the_size);
@@ -521,9 +527,11 @@ ObjectManagement::removeObject(ObjectHandle the_object,
 
 {
     M_Remove_Object_Instance req;
+    EventRetraction    event;
 
     req.setObject(the_object);
-    req.setEventRetraction(the_event);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
     req.setTag(the_tag);
     req.setDate(theTime);
 

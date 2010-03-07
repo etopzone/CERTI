@@ -1,4 +1,4 @@
-// Generated on 2010 February Sat, 27 at 15:30:45 by the CERTI message generator
+// Generated on 2010 March Sat, 06 at 18:06:19 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -26,6 +26,32 @@
 // ----------------------------------------------------------------------------
 // The messages related classes will be placed in the certi package
 namespace certi {
+
+   EventRetraction::EventRetraction() {
+      sendingFederate=0;
+      SN=0;
+   }
+
+   EventRetraction::~EventRetraction() {
+   }
+
+   void EventRetraction::serialize(MessageBuffer& msgBuffer) {
+      //Specific serialization code
+      msgBuffer.write_uint32(sendingFederate);
+      msgBuffer.write_uint64(SN);
+   }
+
+   void EventRetraction::deserialize(MessageBuffer& msgBuffer) {
+      //Specific deserialization code
+      sendingFederate = static_cast<FederateHandle>(msgBuffer.read_uint32());
+      SN = msgBuffer.read_uint64();
+   }
+
+   void EventRetraction::show(std::ostream& out) {
+      out << "[EventRetraction -Begin]" << std::endl;      //Specific show code
+      out << " sendingFederate = " << sendingFederate << " "       << std::endl;
+      out << " SN = " << SN << " "       << std::endl;
+      out << "[EventRetraction -End]" << std::endl;   }
 
    M_Close_Connexion::M_Close_Connexion() {
       this->messageName = "M_Close_Connexion";
@@ -892,8 +918,7 @@ namespace certi {
       }
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -915,8 +940,7 @@ namespace certi {
       }
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -936,7 +960,7 @@ namespace certi {
          out << values[i] << " " ;
       }
       out << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Update_Attribute_Values -End]" << std::endl;   }
 
    M_Discover_Object_Instance::M_Discover_Object_Instance() {
@@ -960,8 +984,7 @@ namespace certi {
       msgBuffer.write_string(objectName);
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -974,8 +997,7 @@ namespace certi {
       msgBuffer.read_string(objectName);
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -986,7 +1008,7 @@ namespace certi {
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Discover_Object_Instance -End]" << std::endl;   }
 
    M_Reflect_Attribute_Values::M_Reflect_Attribute_Values() {
@@ -1020,8 +1042,7 @@ namespace certi {
       }
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -1043,8 +1064,7 @@ namespace certi {
       }
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -1064,7 +1084,7 @@ namespace certi {
          out << values[i] << " " ;
       }
       out << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Reflect_Attribute_Values -End]" << std::endl;   }
 
    M_Send_Interaction::M_Send_Interaction() {
@@ -1098,8 +1118,7 @@ namespace certi {
       msgBuffer.write_uint32(region);
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -1121,8 +1140,7 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -1142,7 +1160,7 @@ namespace certi {
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Send_Interaction -End]" << std::endl;   }
 
    M_Receive_Interaction::M_Receive_Interaction() {
@@ -1176,8 +1194,7 @@ namespace certi {
       msgBuffer.write_uint32(region);
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -1199,8 +1216,7 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -1220,7 +1236,7 @@ namespace certi {
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Receive_Interaction -End]" << std::endl;   }
 
    M_Delete_Object_Instance::M_Delete_Object_Instance() {
@@ -1244,8 +1260,7 @@ namespace certi {
       msgBuffer.write_string(objectName);
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -1258,8 +1273,7 @@ namespace certi {
       msgBuffer.read_string(objectName);
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -1270,7 +1284,7 @@ namespace certi {
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Delete_Object_Instance -End]" << std::endl;   }
 
    M_Local_Delete_Object_Instance::M_Local_Delete_Object_Instance() {
@@ -1324,8 +1338,7 @@ namespace certi {
       msgBuffer.write_string(objectName);
       msgBuffer.write_bool(hasEventRetraction);
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.serialize(msgBuffer);
       }
    }
 
@@ -1338,8 +1351,7 @@ namespace certi {
       msgBuffer.read_string(objectName);
       hasEventRetraction = msgBuffer.read_bool();
       if (hasEventRetraction) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+         eventRetraction.deserialize(msgBuffer);
       }
    }
 
@@ -1350,7 +1362,7 @@ namespace certi {
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
       out << "[M_Remove_Object_Instance -End]" << std::endl;   }
 
    M_Change_Attribute_Transportation_Type::M_Change_Attribute_Transportation_Type() {
@@ -2888,23 +2900,21 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      // FIXME FIXME FIXME
-      // don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>
+      eventRetraction.serialize(msgBuffer);
    }
 
    void M_Retract::deserialize(MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      // FIXME FIXME FIXME
-      // don't know how to deserialize native field <eventRetraction> of type <EventRetractionHandle>
+      eventRetraction.deserialize(msgBuffer);
    }
 
    void M_Retract::show(std::ostream& out) {
       out << "[M_Retract -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
-      out << " eventRetraction = " << "      //FIXME FIXME don't know how to serialize native field <eventRetraction> of type <EventRetractionHandle>"      << std::endl;
+      out << " eventRetraction = " << "FIXME inherited "       << std::endl;
       out << "[M_Retract -End]" << std::endl;   }
 
    M_Request_Retraction::M_Request_Retraction() {

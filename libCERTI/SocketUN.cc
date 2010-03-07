@@ -17,19 +17,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-
 #include "certi.hh"
 #include "SocketUN.hh"
-
 #include "SocketTCP.hh"
 
 #include <cstring>
 #include <cerrno>
+#include <cstdio>
+#include <cassert>
+
 #include <sstream>
 #include <string>
-
 #include <iostream>
-#include <assert.h>
 
 using std::string ;
 using std::cout ;

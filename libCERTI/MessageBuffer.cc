@@ -26,6 +26,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstring>
+#include <cstdio>
 
 namespace certi {
 

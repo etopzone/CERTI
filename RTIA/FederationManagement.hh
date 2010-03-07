@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.29 2010/02/27 16:53:36 erk Exp $
+// $Id: FederationManagement.hh,v 3.30 2010/03/07 18:23:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -63,7 +63,7 @@ public:
                                            RootObject* rootObject,
                                            TypeException &e);
 
-    void resignFederationExecution(RTI::ResignAction action,
+    void resignFederationExecution(ResignAction action,
                                    TypeException &e);
     void resignFederationExecutionForTermination();
 
@@ -130,4 +130,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.29 2010/02/27 16:53:36 erk Exp $
+// $Id: FederationManagement.hh,v 3.30 2010/03/07 18:23:40 erk Exp $

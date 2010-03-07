@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.12 2010/02/27 16:53:36 erk Exp $
+// $Id: Extent.cc,v 3.13 2010/03/07 18:23:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 #include "Extent.hh"
 #include "Dimension.hh"
 #include "PrettyDebug.hh"
+#include <iostream>
 
 using std::vector ;
 
@@ -107,4 +108,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.12 2010/02/27 16:53:36 erk Exp $
+// $Id: Extent.cc,v 3.13 2010/03/07 18:23:39 erk Exp $

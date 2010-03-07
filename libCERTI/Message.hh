@@ -252,7 +252,7 @@ protected:
     TypeException exception ;
     std::string exceptionReason;
 
-    RTI::ResignAction resignAction ;
+    ResignAction resignAction ;
     EventRetractionHandle eventRetraction ;
     SpaceHandle space ;
     DimensionHandle dimension ;

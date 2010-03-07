@@ -39,7 +39,7 @@ Message::Message()
     exceptionReason = "" ;
     messageName = "Message (generic)";
     type = NOT_USED ;
-    resignAction = RTI::NO_ACTION ;
+    resignAction = certi::NO_ACTION ;
     space = 0 ;
     dimension = 0 ;
 } /* end of Message default constructor */

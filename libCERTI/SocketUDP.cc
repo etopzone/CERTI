@@ -17,13 +17,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-
-
 #include "certi.hh"
 #include "SocketUDP.hh"
 #include "PrettyDebug.hh"
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 4096

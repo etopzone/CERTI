@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.113 2010/03/01 16:44:27 erk Exp $
+// $Id: RTIambassador.cc,v 3.114 2010/03/07 18:23:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -59,11 +59,11 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 using namespace certi ;
 
-std::vector<RTI::Handle>
+std::vector<certi::RegionHandle>
 build_region_handles(RTI::Region **regions, int nb)
 throw (RTI::RegionNotKnown)
 {
-	std::vector<RTI::Handle> vect(nb);
+	std::vector<certi::RegionHandle> vect(nb);
 	for (int i = 0 ; i < nb ; ++i) {
 		RTI::Region *region = regions[i] ;
 		try {
@@ -110,7 +110,7 @@ throw (RTI::RTIinternalError)
 
 template<typename T>
 void
-assignAHVToRequest(const std::vector<AttributeHandle>& AHV, T request) {
+assignAHVToRequest(const std::vector<RTI::AttributeHandle>& AHV, T request) {
 	request.setAttributesSize(AHV.size());
 	for (uint32_t i=0;i<AHV.size();++i) {
 		request.setAttributes(AHV[i],i);
@@ -119,7 +119,7 @@ assignAHVToRequest(const std::vector<AttributeHandle>& AHV, T request) {
 
 template<typename T>
 void
-assignAHVPSToRequest(const std::vector<std::pair<AttributeHandle, AttributeValue_t> >& AHVPSv, T request) {
+assignAHVPSToRequest(const std::vector<std::pair<RTI::AttributeHandle, AttributeValue_t> >& AHVPSv, T request) {
 
 	uint32_t size = AHVPSv.size();
 	request.setAttributesSize(size);
@@ -134,7 +134,7 @@ assignAHVPSToRequest(const std::vector<std::pair<AttributeHandle, AttributeValue
 
 template<typename T>
 void
-assignPHVPSToRequest(const std::vector<std::pair<ParameterHandle, ParameterValue_t> > &PHVPSv, T request) {
+assignPHVPSToRequest(const std::vector<std::pair<RTI::ParameterHandle, ParameterValue_t> > &PHVPSv, T request) {
 
 	uint32_t size = PHVPSv.size();
 	request.setParametersSize(size);
@@ -559,7 +559,7 @@ throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
 
 // ----------------------------------------------------------------------------
 //! Join Federation Execution.
-FederateHandle
+RTI::FederateHandle
 RTI::RTIambassador::joinFederationExecution(const char *yourName,
 		const char *executionName,
 		FederateAmbassadorPtr fedamb)
@@ -601,7 +601,7 @@ throw (RTI::FederateOwnsAttributes,
 
 	G.Out(pdGendoc,"enter RTIambassador::resignFederationExecution");
 
-	req.setResignAction(theAction);
+	req.setResignAction(static_cast<certi::ResignAction>(theAction));
 
 	G.Out(pdGendoc,"        ====>executeService RESIGN_FEDERATION_EXECUTION");
 	privateRefs->executeService(&req, &rep);
@@ -992,7 +992,7 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 
 // ----------------------------------------------------------------------------
 // Register Object
-ObjectHandle
+RTI::ObjectHandle
 RTI::RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
 		const char *theObjectName)
 throw (RTI::RTIinternalError, RTI::RestoreInProgress,
@@ -1010,7 +1010,7 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress,
 		}
 
 // ----------------------------------------------------------------------------
-ObjectHandle
+RTI::ObjectHandle
 RTI::RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
 throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 		RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember,
@@ -1053,6 +1053,7 @@ throw (RTI::ObjectNotKnown,
 		{
 	G.Out(pdGendoc,"enter RTIambassador::updateAttributeValues with time");
 	M_Update_Attribute_Values req, rep ;
+	RTI::EventRetractionHandle_s eventRetraction;
 	const std::vector<AttributeHandleValuePair_t>& AHVPS = certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs();
 	req.setObject(theObject);
 	req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
@@ -1069,7 +1070,9 @@ throw (RTI::ObjectNotKnown,
 
 	privateRefs->executeService(&req, &rep);
 	G.Out(pdGendoc,"return  RTIambassador::updateAttributeValues with time");
-	return rep.getEventRetraction();
+	eventRetraction.sendingFederate = rep.getEventRetraction().getSendingFederate();
+	eventRetraction.theSerialNumber = rep.getEventRetraction().getSN();
+	return eventRetraction;
 		}
 
 // ----------------------------------------------------------------------------
@@ -1135,7 +1138,7 @@ throw (RTI::InteractionClassNotDefined,
 		RTI::RTIinternalError)
 		{
 	M_Send_Interaction req, rep ;
-
+	RTI::EventRetractionHandle    eventRetraction;
 	req.setInteractionClass(theInteraction);
 	req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
 	if (theTag == NULL) {
@@ -1147,7 +1150,10 @@ throw (RTI::InteractionClassNotDefined,
 
 	privateRefs->executeService(&req, &rep);
 
-	return rep.getEventRetraction();
+	eventRetraction.sendingFederate = rep.getEventRetraction().getSendingFederate();
+	eventRetraction.theSerialNumber = rep.getEventRetraction().getSN();
+	return eventRetraction;
+
 		}
 
 // ----------------------------------------------------------------------------
@@ -1203,6 +1209,7 @@ throw (RTI::ObjectNotKnown,
 		RTI::RTIinternalError)
 		{
 	M_Delete_Object_Instance req, rep ;
+    RTI::EventRetractionHandle eventRetraction;
 
 	req.setObject(theObject);
 	req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
@@ -1213,7 +1220,10 @@ throw (RTI::ObjectNotKnown,
 	req.setTag(theTag);
 
 	privateRefs->executeService(&req, &rep);
-	return rep.getEventRetraction();
+	eventRetraction.sendingFederate = rep.getEventRetraction().getSendingFederate();
+		eventRetraction.theSerialNumber = rep.getEventRetraction().getSN();
+		return eventRetraction;
+
 		}
 
 // ----------------------------------------------------------------------------
@@ -1448,6 +1458,7 @@ throw (RTI::ObjectNotKnown,
 		RTI::RTIinternalError)
 		{
 	M_Attribute_Ownership_Release_Response req, rep ;
+	AttributeHandleSetImp* retval;
 
 	req.setObject(theObject);
 	assignAHVToRequest(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles(),req);
@@ -1455,7 +1466,11 @@ throw (RTI::ObjectNotKnown,
 	privateRefs->executeService(&req, &rep);
 
 	if (rep.getExceptionType() == e_NO_EXCEPTION) {
-		return new AttributeHandleSetImp(rep.getAttributes());
+		retval = new AttributeHandleSetImp(rep.getAttributesSize());
+		for (uint32_t i=0;i<rep.getAttributesSize();++i) {
+			retval->add(rep.getAttributes()[i]);
+		}
+		return retval;
 	}
 
 	return NULL ;
@@ -1863,8 +1878,11 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 		{
 	throw RTI::RTIinternalError("Unimplemented Service retract");
 	M_Retract req, rep ;
+	EventRetraction event;
 
-	req.setEventRetraction(handle);
+	event.setSN(handle.theSerialNumber);
+	event.setSendingFederate(handle.sendingFederate);
+	req.setEventRetraction(event);
 
 	privateRefs->executeService(&req, &rep);
 		}
@@ -2004,7 +2022,7 @@ throw (RTI::RegionNotKnown,
 
 // ----------------------------------------------------------------------------
 // Register Object Instance With Region
-ObjectHandle
+RTI::ObjectHandle
 RTI::RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
 		const char *tag,
 		AttributeHandle attrs[],
@@ -2043,10 +2061,10 @@ throw (RTI::ObjectClassNotDefined,
 		}
 
 // ----------------------------------------------------------------------------
-ObjectHandle
+RTI::ObjectHandle
 RTI::RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
-		AttributeHandle attrs[],
-		Region *regions[],
+		RTI::AttributeHandle attrs[],
+		RTI::Region *regions[],
 		ULong nb)
 throw (RTI::ObjectClassNotDefined,
 		RTI::ObjectClassNotPublished,
@@ -2277,7 +2295,7 @@ throw (RTI::InteractionClassNotDefined,
 		RTI::RTIinternalError)
 		{
 	M_Send_Interaction req, rep ;
-
+    EventRetractionHandle  event;
 	req.setInteractionClass(interaction);
 	assignPHVPSToRequest(certi_cast<ParameterHandleValuePairSetImp>()(par).getParameterHandleValuePairs(),req);
 	req.setDate(certi_cast<RTIfedTime>()(time).getTime());
@@ -2289,8 +2307,9 @@ throw (RTI::InteractionClassNotDefined,
 	req.setRegion(get_handle(region));
 
 	privateRefs->executeService(&req, &rep);
-
-	return rep.getEventRetraction();
+	event.theSerialNumber = rep.getEventRetraction().getSN();
+	event.sendingFederate = rep.getEventRetraction().getSendingFederate();
+	return event;
 		}
 
 // ----------------------------------------------------------------------------
@@ -2346,7 +2365,7 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 /** Get object class handle
     \param theName Name of the object class
  */
-ObjectClassHandle
+RTI::ObjectClassHandle
 RTI::RTIambassador::getObjectClassHandle(const char *theName)
 throw (RTI::NameNotFound,
 		RTI::FederateNotExecutionMember,
@@ -2390,7 +2409,7 @@ throw (RTI::ObjectClassNotDefined,
     \param theName Name of the attribute
     \param whichClass Handle of the attribute's class
  */
-AttributeHandle
+RTI::AttributeHandle
 RTI::RTIambassador::getAttributeHandle(const char *theName,
 		ObjectClassHandle whichClass)
 throw (RTI::ObjectClassNotDefined,
@@ -2434,7 +2453,7 @@ throw (RTI::ObjectClassNotDefined,
 
 // ----------------------------------------------------------------------------
 // Get Interaction Class Handle
-InteractionClassHandle
+RTI::InteractionClassHandle
 RTI::RTIambassador::getInteractionClassHandle(const char *theName)
 throw (RTI::NameNotFound,
 		RTI::FederateNotExecutionMember,
@@ -2470,7 +2489,7 @@ throw (RTI::InteractionClassNotDefined,
 
 // ----------------------------------------------------------------------------
 // Get Parameter Handle
-ParameterHandle
+RTI::ParameterHandle
 RTI::RTIambassador::getParameterHandle(const char *theName,
 		InteractionClassHandle whichClass)
 throw (RTI::InteractionClassNotDefined,
@@ -2513,7 +2532,7 @@ throw (RTI::InteractionClassNotDefined,
 
 // ----------------------------------------------------------------------------
 // Get Object Instance Handle
-ObjectHandle
+RTI::ObjectHandle
 RTI::RTIambassador::getObjectInstanceHandle(const char *theName)
 throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
 		RTI::FederateNotExecutionMember, RTI::ObjectNotKnown)
@@ -2547,7 +2566,7 @@ throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
 /** Get routing space handle
     \param rs_name Name of the routing space
  */
-SpaceHandle
+RTI::SpaceHandle
 RTI::RTIambassador::getRoutingSpaceHandle(const char *rs_name)
 throw (RTI::NameNotFound,
 		RTI::FederateNotExecutionMember,
@@ -2585,7 +2604,7 @@ throw (RTI::SpaceNotDefined,
     \param dimension Name of the dimension
     \param space The dimension's routing SpaceHandle
  */
-DimensionHandle
+RTI::DimensionHandle
 RTI::RTIambassador::getDimensionHandle(const char *dimension,
 		SpaceHandle space)
 throw (RTI::SpaceNotDefined,
@@ -2630,7 +2649,7 @@ throw (RTI::SpaceNotDefined,
     \param object_class The attribute's class handle
     \return The associated routing space handle
  */
-SpaceHandle
+RTI::SpaceHandle
 RTI::RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
 		ObjectClassHandle object_class)
 throw (RTI::ObjectClassNotDefined,
@@ -2649,7 +2668,7 @@ throw (RTI::ObjectClassNotDefined,
 
 // ----------------------------------------------------------------------------
 // Get Object Class
-ObjectClassHandle
+RTI::ObjectClassHandle
 RTI::RTIambassador::getObjectClass(ObjectHandle theObject)
 throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
 		RTI::FederateNotExecutionMember, RTI::ObjectNotKnown)
@@ -2666,7 +2685,7 @@ throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
     \param inter The interaction handle
     \return The associated routing space
  */
-SpaceHandle
+RTI::SpaceHandle
 RTI::RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
 throw (RTI::InteractionClassNotDefined,
 		RTI::FederateNotExecutionMember,
@@ -2962,4 +2981,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.113 2010/03/01 16:44:27 erk Exp $
+// $Id: RTIambassador.cc,v 3.114 2010/03/07 18:23:39 erk Exp $

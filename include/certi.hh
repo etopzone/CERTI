@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.43 2010/02/28 18:54:44 erk Exp $
+// $Id: certi.hh,v 3.44 2010/03/07 18:23:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -107,7 +107,8 @@
 #define CERTI_ENCODE_DOUBLE_TO_UINT64BE(val)    (CERTI_UINT64_TO_BE   (*(uint64_t*)(val)))
 #define CERTI_DECODE_DOUBLE_FROM_UINT64BE(val)  (CERTI_UINT64_FROM_BE (*(uint64_t*)(val)))
 
-#include "RTI.hh"
+//#include "RTI.hh"
+#include <string>
 
 /**
  * @defgroup libCERTI The CERTI library.
@@ -120,28 +121,35 @@
 
 namespace certi {
 
-typedef unsigned short UShort;
-typedef unsigned long ULong;
-typedef long Long;
-typedef ULong Handle;
+typedef uint16_t UShort;
+typedef uint32_t ULong;
+
+typedef uint32_t Handle;
 typedef Handle ObjectClassHandle;
 typedef Handle InteractionClassHandle;
-typedef ULong ExtentIndex;
+typedef uint32_t ExtentIndex;
 typedef Handle AttributeHandle;
 typedef Handle ParameterHandle;
 typedef Handle ObjectHandle;
 typedef Handle DimensionHandle;
 typedef Handle FederateHandle;
 typedef Handle OrderType;
-typedef Long SpaceHandle;
+typedef Handle SpaceHandle;
 typedef Handle TransportType;
+typedef Handle EventRetractionHandle;
 
-typedef RTI::EventRetractionHandle EventRetractionHandle;
+typedef double TickTime;
 
-typedef UShort ObjectHandlecount ;
 typedef std::string ObjectName_t ;
 typedef std::string AttributeValue_t;
 typedef std::string ParameterValue_t;
+
+enum ResignAction {
+    RELEASE_ATTRIBUTES = 1,
+    DELETE_OBJECTS,
+    DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES,
+    NO_ACTION
+};
 
 enum ObjectRemovalReason {
     OUT_OF_REGION = 1,
@@ -264,4 +272,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.43 2010/02/28 18:54:44 erk Exp $
+// $Id: certi.hh,v 3.44 2010/03/07 18:23:40 erk Exp $

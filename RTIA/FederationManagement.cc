@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.80 2010/02/27 16:53:36 erk Exp $
+// $Id: FederationManagement.cc,v 3.81 2010/03/07 18:23:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -292,7 +292,7 @@ joinFederationExecution(const std::string& Federate,
 // -------------------------------
 
 void
-FederationManagement::resignFederationExecution(RTI::ResignAction,
+FederationManagement::resignFederationExecution(ResignAction,
                                                 TypeException &e)
 {
     NM_Resign_Federation_Execution msg;
@@ -341,7 +341,7 @@ FederationManagement::resignFederationExecutionForTermination()
 
     if (_est_membre_federation) {
         TypeException e ;
-        resignFederationExecution(RTI::DELETE_OBJECTS, e);
+        resignFederationExecution(DELETE_OBJECTS, e);
     }
 
     G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecutionForTermination");

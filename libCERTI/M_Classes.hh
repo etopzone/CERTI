@@ -1,4 +1,4 @@
-// Generated on 2010 February Sat, 27 at 15:30:42 by the CERTI message generator
+// Generated on 2010 March Sat, 06 at 18:06:18 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -10,8 +10,6 @@
 // Every message which is a merge from Message will first include the content 
 // of a Message
 #include "Message.hh"
-
-#include "RTItypes.hh"
 
 #include "certi.hh"
 
@@ -46,10 +44,6 @@ namespace certi {
    // Native types has been defined:
    //     - by included headers (see above)
    //     - with typedef (see below [if any])
-
-   typedef RTI::ResignAction ResignAction;
-
-   typedef RTI::EventRetractionHandle EventRetractionHandle;
 
    typedef SocketUN* StreamType;
 
@@ -202,6 +196,25 @@ namespace certi {
       M_TICK_REQUEST_STOP, 
       LAST 
    } CERTI_Message_MessageType_t; //end of enum CERTI_Message_MessageType 
+
+   class CERTI_EXPORT EventRetraction {
+      public:
+         EventRetraction();
+         ~EventRetraction();
+         void serialize(MessageBuffer& msgBuffer);
+         void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const FederateHandle& getSendingFederate() const {return sendingFederate;}
+         void setSendingFederate(const FederateHandle& newSendingFederate) {sendingFederate=newSendingFederate;}
+         const uint64_t& getSN() const {return SN;}
+         void setSN(const uint64_t& newSN) {SN=newSN;}
+         // the show method
+         void show(std::ostream& out);
+      protected:
+         FederateHandle sendingFederate;
+         uint64_t SN;
+      private:
+   };
    // Closing connexion message
    class CERTI_EXPORT M_Close_Connexion : public Message {
       public:
@@ -787,8 +800,8 @@ namespace certi {
          const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
          AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -798,8 +811,8 @@ namespace certi {
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
-         std::vector<AttributeValue_t> values;// FIXME check this one
-         EventRetractionHandle eventRetraction;
+         std::vector<AttributeValue_t> values;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -818,8 +831,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -829,7 +842,7 @@ namespace certi {
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -858,8 +871,8 @@ namespace certi {
          const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
          AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -869,8 +882,8 @@ namespace certi {
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
-         std::vector<AttributeValue_t> values;// FIXME check this one
-         EventRetractionHandle eventRetraction;
+         std::vector<AttributeValue_t> values;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -899,8 +912,8 @@ namespace certi {
          void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -911,7 +924,7 @@ namespace certi {
          std::vector<ParameterHandle> parameters;
          std::vector<ParameterValue_t> values;
          RegionHandle region;
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -940,8 +953,8 @@ namespace certi {
          void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -952,7 +965,7 @@ namespace certi {
          std::vector<ParameterHandle> parameters;
          std::vector<ParameterValue_t> values;
          RegionHandle region;
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -971,8 +984,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -982,7 +995,7 @@ namespace certi {
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -1018,8 +1031,8 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {
             hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
@@ -1029,7 +1042,7 @@ namespace certi {
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
          bool hasEventRetraction;
       private:
    };
@@ -1895,12 +1908,12 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const EventRetractionHandle& getEventRetraction() const {return eventRetraction;}
-         void setEventRetraction(const EventRetractionHandle& newEventRetraction) {eventRetraction=newEventRetraction;}
+         const EventRetraction& getEventRetraction() const {return eventRetraction;}
+         void setEventRetraction(const EventRetraction& newEventRetraction) {eventRetraction=newEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
-         EventRetractionHandle eventRetraction;
+         EventRetraction eventRetraction;
       private:
    };
 

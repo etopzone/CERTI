@@ -369,6 +369,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	case Message::UPDATE_ATTRIBUTE_VALUES: {
 		M_Update_Attribute_Values *UAVq,*UAVr;
+		EventRetraction   event;
 		UAVq = static_cast<M_Update_Attribute_Values *>(req);
 		UAVr = static_cast<M_Update_Attribute_Values *>(rep);
 		try {
@@ -376,14 +377,15 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 			{
 				D.Out(pdTrace,"Receiving Message from Federate, type "
 						"UpdateAttribValues with TIMESTAMP.");
-				UAVr->setEventRetraction(
-						om->updateAttributeValues(UAVq->getObject(),
-								UAVq->getAttributes(),
-								UAVq->getValues(),
-								UAVq->getAttributesSize(),
-								UAVq->getDate(),
-								UAVq->getTag(),
-								e));
+				event.setSN(om->updateAttributeValues(UAVq->getObject(),
+						UAVq->getAttributes(),
+						UAVq->getValues(),
+						UAVq->getAttributesSize(),
+						UAVq->getDate(),
+						UAVq->getTag(),
+						e));
+				//FIXME event.setSendingFederate()
+				UAVr->setEventRetraction(event);
 				// answer should contains the date too
 				UAVr->setDate(UAVq->getDate());
 			}
@@ -406,6 +408,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	case Message::SEND_INTERACTION: {
 		M_Send_Interaction *SIr, *SIq;
+		EventRetraction    event;
 		SIq = static_cast<M_Send_Interaction *>(req);
 		SIr = static_cast<M_Send_Interaction *>(rep);
 		G.Out(pdGendoc,"S_I into RTIA::chooseFederateProcessing") ;
@@ -413,15 +416,15 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		if (SIq->isDated() ) {
 			D.Out(pdTrace,
 					"Receiving Message from Federate, type SendInteraction with TIMESTAMP.");
-			SIr->setEventRetraction(
-					om->sendInteraction(SIq->getInteractionClass(),
-							SIq->getParameters(),
-							SIq->getValues(),
-							SIq->getParametersSize(),
-							SIq->getDate(),
-							SIq->getTag(),
-							SIq->getRegion(),
-							e));
+			event.setSN(om->sendInteraction(SIq->getInteractionClass(),
+					SIq->getParameters(),
+					SIq->getValues(),
+					SIq->getParametersSize(),
+					SIq->getDate(),
+					SIq->getTag(),
+					SIq->getRegion(),
+					e));
+			SIr->setEventRetraction(event);
 		}
 		else {
 			D.Out(pdTrace,
@@ -439,6 +442,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	case Message::DELETE_OBJECT_INSTANCE: {
 		M_Delete_Object_Instance *DOIr, *DOIq;
+		EventRetraction   event;
 		DOIq = static_cast<M_Delete_Object_Instance *>(req);
 		DOIr = static_cast<M_Delete_Object_Instance *>(rep);
 		G.Out(pdGendoc,"D_O_I into RTIA::chooseFederateProcessing") ;
@@ -448,12 +452,13 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 				D.Out(pdTrace,
 						"Receiving Message from Federate, type DeleteObjectInstance with \
 				TIMESTAMP.");
-				DOIr->setEventRetraction(
-						om->deleteObject(
-								DOIq->getObject(),
-								DOIq->getDate(),
-								DOIq->getTag(),
-								e));
+				event.setSN(om->deleteObject(
+						DOIq->getObject(),
+						DOIq->getDate(),
+						DOIq->getTag(),
+						e));
+				// FIXME event.setSendingFederate();
+				DOIr->setEventRetraction(event);
 			}
 			else {
 				D.Out(pdTrace,

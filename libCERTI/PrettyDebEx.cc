@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.8 2009/11/18 18:50:49 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.9 2010/03/07 18:23:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -27,10 +27,12 @@
 #include "Message.hh"
 #include "NetworkMessage.hh"
 
-#include <stdlib.h>
-#include <stdarg.h>
+#include <cstdlib>
+#include <cstdarg>
 #include <iostream>
 #include <cstring>
+#include <cstdio>
+
 #ifdef _WIN32
 	#include <time.h>
 #else
@@ -317,4 +319,4 @@ strcat(theMessage, "\n"); // Add trailing \n
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.8 2009/11/18 18:50:49 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.9 2010/03/07 18:23:39 erk Exp $
