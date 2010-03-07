@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: GAV.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
+// $Id: GAV.cc,v 3.22 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -41,7 +41,7 @@ static PrettyDebug D("GAV", "(gav) - ");
 // ----------------------------------------------------------------------------
 AttributeHandleValuePair::AttributeHandleValuePair(Handle handle,
                                                    const char *value,
-                                                   ULong value_length)
+                                                   uint32_t value_length)
 {
     _handle = handle ;
     _valueLength = value_length ;
@@ -59,7 +59,7 @@ AttributeHandleValuePair::~AttributeHandleValuePair()
 // ----------------------------------------------------------------------------
 // AttributeHandleValuePairSet
 // ----------------------------------------------------------------------------
-AttributeHandleValuePairSet::AttributeHandleValuePairSet(ULong)
+AttributeHandleValuePairSet::AttributeHandleValuePairSet(uint32_t)
 {
     _order = RECEIVE ;
     _transport = RELIABLE ;
@@ -72,7 +72,7 @@ AttributeHandleValuePairSet::~AttributeHandleValuePairSet()
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 AttributeHandleValuePairSet::size() const
 {
     return _set.size();
@@ -80,11 +80,11 @@ AttributeHandleValuePairSet::size() const
 
 // ----------------------------------------------------------------------------
 Handle
-AttributeHandleValuePairSet::getHandle(ULong i) const
+AttributeHandleValuePairSet::getHandle(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k)
             return (*j)->_handle ;
     }
@@ -93,12 +93,12 @@ AttributeHandleValuePairSet::getHandle(ULong i) const
 }
 
 // ----------------------------------------------------------------------------
-ULong
-AttributeHandleValuePairSet::getValueLength(ULong i) const
+uint32_t
+AttributeHandleValuePairSet::getValueLength(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k)
             return (*j)->_valueLength ;
     }
@@ -108,13 +108,13 @@ AttributeHandleValuePairSet::getValueLength(ULong i) const
 
 // ----------------------------------------------------------------------------
 void
-AttributeHandleValuePairSet::getValue(ULong i,
+AttributeHandleValuePairSet::getValue(uint32_t i,
                                          char *buff,
-                                         ULong& value_length) const
+                                         uint32_t& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k) {
             value_length = (*j)->_valueLength ;
             memcpy(buff, (*j)->_value, (*j)->_valueLength);
@@ -127,12 +127,12 @@ AttributeHandleValuePairSet::getValue(ULong i,
 
 // ----------------------------------------------------------------------------
 char *
-AttributeHandleValuePairSet::getValuePointer(ULong i,
-                                                ULong& value_length) const
+AttributeHandleValuePairSet::getValuePointer(uint32_t i,
+                                                uint32_t& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k) {
             value_length = (*j)->_valueLength ;
             return (*j)->_value ;
@@ -144,7 +144,7 @@ AttributeHandleValuePairSet::getValuePointer(ULong i,
 
 // ----------------------------------------------------------------------------
 TransportType
-AttributeHandleValuePairSet::getTransportType(ULong) const
+AttributeHandleValuePairSet::getTransportType(uint32_t) const
     throw (InvalidHandleValuePairSetContext)
 {
     return _transport ;
@@ -152,7 +152,7 @@ AttributeHandleValuePairSet::getTransportType(ULong) const
 
 // ----------------------------------------------------------------------------
 OrderType
-AttributeHandleValuePairSet::getOrderType(ULong) const
+AttributeHandleValuePairSet::getOrderType(uint32_t) const
     throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
     return _order ;
@@ -162,7 +162,7 @@ AttributeHandleValuePairSet::getOrderType(ULong) const
 void
 AttributeHandleValuePairSet::add(Handle h,
                                     const char *buff,
-                                    ULong value_length)
+                                    uint32_t value_length)
     throw (ValueLengthExceeded, ValueCountExceeded)
 {
     AttributeHandleValuePair *ahvp ;
@@ -191,7 +191,7 @@ AttributeHandleValuePairSet::remove(Handle h)
 // ----------------------------------------------------------------------------
 void
 AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&,
-                                         ULong&)
+                                         uint32_t&)
     throw (ValueCountExceeded, ArrayIndexOutOfBounds)
 {
     throw RTIinternalError("Unimplemented service");
@@ -208,7 +208,7 @@ AttributeHandleValuePairSet::empty()
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 AttributeHandleValuePairSet::start() const
 {
     //not implemented
@@ -216,16 +216,16 @@ AttributeHandleValuePairSet::start() const
 }
 
 // ----------------------------------------------------------------------------
-ULong
-AttributeHandleValuePairSet::valid(ULong) const
+uint32_t
+AttributeHandleValuePairSet::valid(uint32_t) const
 {
     //not implemented
     return 0 ;
 }
 
 // ----------------------------------------------------------------------------
-ULong
-AttributeHandleValuePairSet::next(ULong) const
+uint32_t
+AttributeHandleValuePairSet::next(uint32_t) const
 {
     //not implemented
     return 0 ;
@@ -234,7 +234,7 @@ AttributeHandleValuePairSet::next(ULong) const
 // ----------------------------------------------------------------------------
 // AttributeHandleSet
 // ----------------------------------------------------------------------------
-AttributeHandleSet::AttributeHandleSet(ULong size)
+AttributeHandleSet::AttributeHandleSet(uint32_t size)
 {
 }
 
@@ -244,7 +244,7 @@ AttributeHandleSet::~AttributeHandleSet()
 }
 
 // ----------------------------------------------------------------------------
-inline ULong
+inline uint32_t
 AttributeHandleSet::size() const
 {
     return _set.size();
@@ -252,11 +252,11 @@ AttributeHandleSet::size() const
 
 // ----------------------------------------------------------------------------
 AttributeHandle
-AttributeHandleSet::getHandle(ULong i) const
+AttributeHandleSet::getHandle(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandle>::const_iterator h ;
-    ULong j ;
+    uint32_t j ;
     for (j = 0, h = _set.begin(); h != _set.end(); h++, j++) {
         if (i == j)
             return (*h);
@@ -314,7 +314,7 @@ FederateHandleSet::~FederateHandleSet()
 }
 
 // ----------------------------------------------------------------------------
-inline ULong
+inline uint32_t
 FederateHandleSet::size() const
 {
     return _set.size();
@@ -322,11 +322,11 @@ FederateHandleSet::size() const
 
 // ----------------------------------------------------------------------------
 FederateHandle
-FederateHandleSet::getHandle(ULong i) const
+FederateHandleSet::getHandle(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<FederateHandle>::const_iterator h ;
-    ULong j ;
+    uint32_t j ;
     for (j = 0, h = _set.begin(); h != _set.end(); h++, j++) {
         if (i == j)
             return (*h);
@@ -374,7 +374,7 @@ FederateHandleSet::isMember(FederateHandle h) const
 
 ParameterHandleValuePair::ParameterHandleValuePair(Handle handle,
                                                    const char *value,
-                                                   ULong value_length)
+                                                   uint32_t value_length)
 {
     _handle = handle ;
     _valueLength = value_length ;
@@ -392,7 +392,7 @@ ParameterHandleValuePair::~ParameterHandleValuePair()
 // ----------------------------------------------------------------------------
 // ParameterHandleValuePairSet
 // ----------------------------------------------------------------------------
-ParameterHandleValuePairSet::ParameterHandleValuePairSet(ULong)
+ParameterHandleValuePairSet::ParameterHandleValuePairSet(uint32_t)
 {
     _order = RECEIVE ;
     _transport = RELIABLE ;
@@ -404,7 +404,7 @@ ParameterHandleValuePairSet::~ParameterHandleValuePairSet()
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 ParameterHandleValuePairSet::size() const
 {
     return _set.size();
@@ -412,11 +412,11 @@ ParameterHandleValuePairSet::size() const
 
 // ----------------------------------------------------------------------------
 Handle
-ParameterHandleValuePairSet::getHandle(ULong i) const
+ParameterHandleValuePairSet::getHandle(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k)
             return (*j)->_handle ;
     }
@@ -425,12 +425,12 @@ ParameterHandleValuePairSet::getHandle(ULong i) const
 }
 
 // ----------------------------------------------------------------------------
-ULong
-ParameterHandleValuePairSet::getValueLength(ULong i) const
+uint32_t
+ParameterHandleValuePairSet::getValueLength(uint32_t i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k)
             return (*j)->_valueLength ;
     }
@@ -440,13 +440,13 @@ ParameterHandleValuePairSet::getValueLength(ULong i) const
 
 // ----------------------------------------------------------------------------
 void
-ParameterHandleValuePairSet::getValue(ULong i,
+ParameterHandleValuePairSet::getValue(uint32_t i,
                                          char *buff,
-                                         ULong& value_length) const
+                                         uint32_t& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k) {
             value_length = (*j)->_valueLength ;
             memcpy(buff, (*j)->_value, (*j)->_valueLength);
@@ -459,12 +459,12 @@ ParameterHandleValuePairSet::getValue(ULong i,
 
 // ----------------------------------------------------------------------------
 char *
-ParameterHandleValuePairSet::getValuePointer(ULong i,
-                                                ULong& value_length) const
+ParameterHandleValuePairSet::getValuePointer(uint32_t i,
+                                                uint32_t& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = _set.begin();
-    for (ULong k = 0 ; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0 ; j != _set.end(); j++, k++) {
         if (i == k) {
             value_length = (*j)->_valueLength ;
             return (*j)->_value ;
@@ -494,7 +494,7 @@ ParameterHandleValuePairSet::getOrderType() const
 void
 ParameterHandleValuePairSet::add(Handle h,
                                     const char *buff,
-                                    ULong value_length)
+                                    uint32_t value_length)
     throw (ValueLengthExceeded, ValueCountExceeded)
 {
     ParameterHandleValuePair *phvp ;
@@ -523,7 +523,7 @@ ParameterHandleValuePairSet::remove(Handle h)
 // ----------------------------------------------------------------------------
 void
 ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&,
-                                         ULong&)
+                                         uint32_t&)
     throw (ValueCountExceeded, ArrayIndexOutOfBounds)
 {
     throw RTIinternalError("Unimplemented service");
@@ -540,7 +540,7 @@ ParameterHandleValuePairSet::empty()
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 ParameterHandleValuePairSet::start() const
 {
     //not implemented
@@ -548,16 +548,16 @@ ParameterHandleValuePairSet::start() const
 }
 
 // ----------------------------------------------------------------------------
-ULong
-ParameterHandleValuePairSet::valid(ULong) const
+uint32_t
+ParameterHandleValuePairSet::valid(uint32_t) const
 {
     //not implemented
     return 0 ;
 }
 
 // ----------------------------------------------------------------------------
-ULong
-ParameterHandleValuePairSet::next(ULong) const
+uint32_t
+ParameterHandleValuePairSet::next(uint32_t) const
 {
     //not implemented
     return 0 ;
@@ -565,5 +565,5 @@ ParameterHandleValuePairSet::next(ULong) const
 
 } // namespace certi
 
-// $Id: GAV.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
+// $Id: GAV.cc,v 3.22 2010/03/07 21:30:30 erk Exp $
 

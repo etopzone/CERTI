@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.8 2008/06/12 07:39:49 erk Exp $
+// $Id: Dimension.cc,v 3.9 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Dimension.hh"
@@ -27,8 +27,8 @@
 
 namespace certi {
 
-ULong Dimension::axisLowerBound = 0 ;
-ULong Dimension::axisUpperBound = LONG_MAX ;
+uint32_t Dimension::axisLowerBound = 0 ;
+uint32_t Dimension::axisUpperBound = UINT_MAX ;
 
 Dimension::Dimension(DimensionHandle dimensionHandle)
 {
@@ -38,20 +38,20 @@ Dimension::Dimension(DimensionHandle dimensionHandle)
 
 // ----------------------------------------------------------------------------
 void
-Dimension::setLowerBound(ULong lowerBound)
+Dimension::setLowerBound(uint32_t lowerBound)
 {
     Dimension::axisLowerBound = lowerBound ;
 }
 
 // ----------------------------------------------------------------------------
 void
-Dimension::setUpperBound(ULong upperBound)
+Dimension::setUpperBound(uint32_t upperBound)
 {
     Dimension::axisUpperBound = upperBound ;
 }
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.8 2008/06/12 07:39:49 erk Exp $
+// $Id: Dimension.cc,v 3.9 2010/03/07 21:30:30 erk Exp $
 
 

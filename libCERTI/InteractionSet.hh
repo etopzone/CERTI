@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.26 2010/02/27 16:53:35 erk Exp $
+// $Id: InteractionSet.hh,v 3.27 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -117,7 +117,7 @@ public:
 	void isReady(FederateHandle theFederateHandle,
 			InteractionClassHandle theInteraction,
 			const std::vector <ParameterHandle> &paramArray,
-			UShort paramArraySize)
+			uint16_t paramArraySize)
 	throw (FederateNotPublishing,
 			InteractionClassNotDefined,
 			InteractionParameterNotDefined,
@@ -127,7 +127,7 @@ public:
 			InteractionClassHandle theInteractionHandle,
 			std::vector <ParameterHandle> &theParameterList,
 			std::vector <ParameterValue_t> &theValueList,
-			UShort theListSize,
+			uint16_t theListSize,
 			FederationTime theTime,
 			const RTIRegion *,
                         const std::string& theTag)
@@ -140,7 +140,7 @@ public:
 			InteractionClassHandle theInteractionHandle,
 			std::vector <ParameterHandle> &theParameterList,
 			std::vector <ParameterValue_t> &theValueList,
-			UShort theListSize,
+			uint16_t theListSize,
 			const RTIRegion *,
 			const std::string& theTag)
 	throw (FederateNotPublishing,
@@ -157,4 +157,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.26 2010/02/27 16:53:35 erk Exp $
+// $Id: InteractionSet.hh,v 3.27 2010/03/07 21:30:30 erk Exp $

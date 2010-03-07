@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.77 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClass.cc,v 3.78 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -604,7 +604,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
           theFederateHandle);
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
-    for (UShort index = 0 ; index < theListSize ; index++)
+    for (uint16_t index = 0 ; index < theListSize ; index++)
         getAttribute(theAttributeList[index]);
 
     // Check Security Levels
@@ -622,7 +622,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 
     // Publish attributes one by one.
     ObjectClassAttribute * attribute ;
-    for (UShort i = 0 ; i < theListSize ; i++) {
+    for (uint16_t i = 0 ; i < theListSize ; i++) {
         D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.",
               handle, theFederateHandle, theAttributeList[i]);
         attribute = getAttribute(theAttributeList[i]);
@@ -1720,4 +1720,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.77 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClass.cc,v 3.78 2010/03/07 21:30:30 erk Exp $

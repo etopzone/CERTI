@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.40 2010/02/27 16:53:35 erk Exp $
+// $Id: Interaction.hh,v 3.41 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -165,7 +165,7 @@ public:
     // -- Instance Broadcasting --
     void isReady(FederateHandle federate_handle,
                  const std::vector <ParameterHandle> &parameter_list,
-                 UShort list_size)
+                 uint16_t list_size)
         throw (FederateNotPublishing,
                InteractionParameterNotDefined,
                RTIinternalError);
@@ -174,7 +174,7 @@ public:
     sendInteraction(FederateHandle federate_handle,
                     std::vector <ParameterHandle> &parameter_list,
                     std::vector <ParameterValue_t> &value_list,
-                    UShort list_size,
+                    uint16_t list_size,
                     FederationTime the_time,
 		    const RTIRegion *,
                     const std::string& the_tag)
@@ -187,7 +187,7 @@ public:
     sendInteraction(FederateHandle federate_handle,
                     std::vector <ParameterHandle> &parameter_list,
                     std::vector <ParameterValue_t> &value_list,
-                    UShort list_size,
+                    uint16_t list_size,
 		    const RTIRegion *,
                     const std::string& the_tag)
         throw (FederateNotPublishing,
@@ -213,7 +213,7 @@ public:
 
     //std::list<InteractionClassHandle> children ;
 
-    UShort depth ;
+    uint16_t depth ;
 
     /*! Interaction messages' Transport Type(Reliable, Best Effort),
       Currently not used.
@@ -265,4 +265,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.40 2010/02/27 16:53:35 erk Exp $
+// $Id: Interaction.hh,v 3.41 2010/03/07 21:30:30 erk Exp $

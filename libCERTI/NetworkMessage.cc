@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.44 2010/01/30 18:41:37 erk Exp $
+// $Id: NetworkMessage.cc,v 3.45 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -65,7 +65,7 @@ NetworkMessage::~NetworkMessage() {
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::removeAttribute(UShort Rank)
+NetworkMessage::removeAttribute(uint16_t Rank)
 {
     if (Rank >= valueArray.size())
         throw RTIinternalError("Bad Rank while removing Nmessage attribute.");
@@ -78,7 +78,7 @@ NetworkMessage::removeAttribute(UShort Rank)
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::removeParameter(UShort Rank)
+NetworkMessage::removeParameter(uint16_t Rank)
 {
     if (Rank >= valueArray.size())
         throw RTIinternalError("Bad Rank while removing Nmessage parameter.");
@@ -126,4 +126,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.44 2010/01/30 18:41:37 erk Exp $
+// $Id: NetworkMessage.cc,v 3.45 2010/03/07 21:30:30 erk Exp $

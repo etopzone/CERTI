@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.cc,v 3.5 2007/07/06 09:25:17 erk Exp $
+// $Id: FedRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -52,7 +52,7 @@ FedRegion::getSpaceHandle() const
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 FedRegion::getRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -61,7 +61,7 @@ FedRegion::getRangeLowerBound(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 FedRegion::getRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -73,7 +73,7 @@ FedRegion::getRangeUpperBound(ExtentIndex index,
 void
 FedRegion::setRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension,
-			       ULong val)
+			       uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     BaseRegion::setRangeLowerBound(index, dimension, val);
@@ -83,7 +83,7 @@ FedRegion::setRangeLowerBound(ExtentIndex index,
 void
 FedRegion::setRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension,
-			       ULong val)
+			       uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     BaseRegion::setRangeUpperBound(index, dimension, val);
@@ -92,7 +92,7 @@ FedRegion::setRangeUpperBound(ExtentIndex index,
 // ----------------------------------------------------------------------------
 // getRangeLowerBoundNotificationLimit
 //
-ULong
+uint32_t
 FedRegion::getRangeLowerBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -108,7 +108,7 @@ FedRegion::getRangeLowerBoundNotificationLimit(ExtentIndex index,
 // ----------------------------------------------------------------------------
 // getRangeUpperBoundNotificationLimit
 //
-ULong
+uint32_t
 FedRegion::getRangeUpperBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -122,7 +122,7 @@ FedRegion::getRangeUpperBoundNotificationLimit(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 FedRegion::getNumberOfExtents() const
     throw ()
 {
@@ -140,4 +140,4 @@ FedRegion::commit()
 
 } // namespace certi
 
-// $Id: FedRegion.cc,v 3.5 2007/07/06 09:25:17 erk Exp $
+// $Id: FedRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $

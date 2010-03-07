@@ -66,7 +66,7 @@ ObjectSet::~ObjectSet()
 void
 ObjectSet::changeAttributeTransportationType(ObjectHandle,
                                              AttributeHandle *,
-                                             UShort,
+                                             uint16_t,
                                              TransportType)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -81,7 +81,7 @@ ObjectSet::changeAttributeTransportationType(ObjectHandle,
 void
 ObjectSet::changeAttributeOrderType(ObjectHandle,
                                     AttributeHandle *,
-                                    UShort,
+                                    uint16_t,
                                     TransportType)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -268,7 +268,7 @@ void ObjectSet::
 negotiatedAttributeOwnershipDivestiture(FederateHandle,
                                         ObjectHandle,
                                         AttributeHandle *,
-                                        UShort,
+                                        uint16_t,
                                         const std::string&)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -284,7 +284,7 @@ void ObjectSet::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle,
                                          ObjectHandle,
                                          AttributeHandle *,
-                                         UShort)
+                                         uint16_t)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -301,7 +301,7 @@ void ObjectSet::
 unconditionalAttributeOwnershipDivestiture(FederateHandle,
                                            ObjectHandle,
                                            AttributeHandle *,
-                                           UShort)
+                                           uint16_t)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -315,7 +315,7 @@ void
 ObjectSet::attributeOwnershipAcquisition(FederateHandle,
                                          ObjectHandle,
                                          AttributeHandle *,
-                                         UShort,
+                                         uint16_t,
                                          const std::string&)
 
     throw (ObjectNotKnown,
@@ -333,7 +333,7 @@ void ObjectSet::
 cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                               ObjectHandle the_object,
                                               std::vector <AttributeHandle> &the_attributes,
-                                              UShort the_size)
+                                              uint16_t the_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -373,7 +373,7 @@ AttributeHandleSet *
 ObjectSet::attributeOwnershipReleaseResponse(FederateHandle,
                                              ObjectHandle,
                                              std::vector <AttributeHandle> &,
-                                             UShort)
+                                             uint16_t)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -390,7 +390,7 @@ void
 ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
                                                ObjectHandle,
                                                std::vector <AttributeHandle> &,
-                                               UShort)
+                                               uint16_t)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeAlreadyOwned,
@@ -461,4 +461,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.27 2009/11/19 18:15:31 erk Exp $
+// $Id: ObjectSet.cc,v 3.28 2010/03/07 21:30:30 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.31 2010/02/27 16:53:35 erk Exp $
+// $Id: InteractionSet.cc,v 3.32 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -65,7 +65,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 		InteractionClassHandle interaction_handle,
 		std::vector <ParameterHandle> &parameter_list,
 		std::vector <ParameterValue_t> &value_list,
-		UShort list_size,
+		uint16_t list_size,
 		FederationTime the_time,
 		const RTIRegion *region,
 		const std::string& the_tag)
@@ -114,7 +114,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 		InteractionClassHandle interaction_handle,
 		std::vector <ParameterHandle> &parameter_list,
 		std::vector <ParameterValue_t> &value_list,
-		UShort list_size,
+		uint16_t list_size,
 		const RTIRegion *region,
 		const std::string& the_tag)
 throw (FederateNotPublishing,
@@ -206,7 +206,7 @@ void
 InteractionSet::isReady(FederateHandle federate_handle,
 		InteractionClassHandle the_interaction,
 		const std::vector <ParameterHandle> &param_array,
-		UShort param_array_size)
+		uint16_t param_array_size)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
 		InteractionParameterNotDefined,
@@ -272,4 +272,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.31 2010/02/27 16:53:35 erk Exp $
+// $Id: InteractionSet.cc,v 3.32 2010/03/07 21:30:30 erk Exp $

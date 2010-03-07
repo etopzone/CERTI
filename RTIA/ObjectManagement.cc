@@ -255,7 +255,7 @@ void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeHandle> &the_attributes,
                                          std::vector <AttributeValue_t> &the_values,
-                                         UShort the_size,
+                                         uint16_t the_size,
                                          FederationTime the_time,
                                          const std::string& the_tag,
                                          EventRetractionHandle the_event,
@@ -288,7 +288,7 @@ void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeHandle> &the_attributes,
                                          std::vector <AttributeValue_t> &the_values,
-                                         UShort the_size,
+                                         uint16_t the_size,
                                          const std::string& the_tag,
                                          TypeException &)
 {
@@ -417,7 +417,7 @@ void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterHandle> &the_parameters,
                                      std::vector <ParameterValue_t> &the_values,
-                                     UShort the_size,
+                                     uint16_t the_size,
                                      FederationTime the_time,
                                      const std::string& the_tag,
                                      EventRetractionHandle the_event,
@@ -446,7 +446,7 @@ void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterHandle> &the_parameters,
                                      std::vector <ParameterValue_t> &the_values,
-                                     UShort the_size,
+                                     uint16_t the_size,
                                      const std::string& the_tag,
                                      TypeException &)
 {
@@ -704,7 +704,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 void
 ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
                                               std::vector <AttributeHandle> &the_attributes,
-                                              UShort attribArraySize,
+                                              uint16_t attribArraySize,
                                               TypeException &)
 {
     M_Provide_Attribute_Value_Update req;
@@ -945,7 +945,7 @@ void
 ObjectManagement::
 attributesInScope(ObjectHandle theObject,
                   const std::vector <AttributeHandle> &attribArray,
-                  const UShort attribArraySize,
+                  const uint16_t attribArraySize,
                   TypeException &e) {
 
     M_Attributes_In_Scope req;
@@ -971,7 +971,7 @@ void
 ObjectManagement::
 attributesOutOfScope(ObjectHandle theObject,
                      const std::vector <AttributeHandle> &attribArray,
-                     const UShort attribArraySize,
+                     const uint16_t attribArraySize,
                      TypeException &e) {
 
     M_Attributes_Out_Of_Scope req;
@@ -1021,7 +1021,7 @@ void
 ObjectManagement::
 turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                            const std::vector <AttributeHandle> &attribArray,
-                           const UShort attribArraySize,
+                           const uint16_t attribArraySize,
                            TypeException &e) {
 
     M_Turn_Updates_On_For_Object_Instance req;
@@ -1047,7 +1047,7 @@ void
 ObjectManagement::
 turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                          const std::vector <AttributeHandle> &attribArray,
-                         const UShort attribArraySize,
+                         const uint16_t attribArraySize,
                          TypeException &e) {
 
     M_Turn_Updates_Off_For_Object_Instance req;

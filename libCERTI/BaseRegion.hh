@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.hh,v 3.2 2007/06/22 08:51:36 erk Exp $
+// $Id: BaseRegion.hh,v 3.3 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BASE_REGION_HH
@@ -40,19 +40,19 @@ public:
     BaseRegion(RegionHandle);
     virtual ~BaseRegion();
 
-    virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
+    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual ULong getRangeUpperBound(ExtentIndex, DimensionHandle) const
+    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, ULong)
+    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
-    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, ULong)
+    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
-    virtual ULong getNumberOfExtents() const
+    virtual uint32_t getNumberOfExtents() const
         throw ();
 
     virtual SpaceHandle getSpaceHandle() const

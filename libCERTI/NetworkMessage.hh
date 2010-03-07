@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.57 2010/03/07 18:23:40 erk Exp $
+// $Id: NetworkMessage.hh,v 3.58 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -183,10 +183,10 @@ public:
 	//->removeParameter(1)
 	// ParamArraySize = 2,
 	// ParamArray =[1, 3], ValueArray =["Val1", "Val3"]
-	void removeParameter(UShort Rank);
+	void removeParameter(uint16_t Rank);
 
 	// See RemoveParameter for explanations.
-	void removeAttribute(UShort Rank);
+	void removeAttribute(uint16_t Rank);
 
 	// Value Array Management
 
@@ -281,4 +281,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.57 2010/03/07 18:23:40 erk Exp $
+// $Id: NetworkMessage.hh,v 3.58 2010/03/07 21:30:30 erk Exp $

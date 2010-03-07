@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.63 2010/02/07 00:19:12 erk Exp $
+// $Id: Federation.hh,v 3.64 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -270,7 +270,7 @@ public:
     void publishObject(FederateHandle theFederateHandle,
                        ObjectClassHandle theObjectHandle,
                        std::vector <AttributeHandle> &theAttributeList,
-                       UShort theListSize,
+                       uint16_t theListSize,
                        bool PubOrUnpub)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
@@ -295,7 +295,7 @@ public:
     FederateHandle requestObjectOwner(FederateHandle theFederateHandle,
                                 ObjectHandle theObject,
                                 std::vector <AttributeHandle> &theAttributeList,
-                                UShort theListSize)
+                                uint16_t theListSize)
         throw (ObjectNotKnown);
 
     /**
@@ -310,7 +310,7 @@ public:
     void subscribeObject(FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
-                         UShort theListSize)
+                         uint16_t theListSize)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederateNotExecutionMember,
@@ -323,7 +323,7 @@ public:
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttributeList,
                                std::vector <AttributeValue_t> &theValueList,
-                               UShort theListSize,
+                               uint16_t theListSize,
                                FederationTime theTime,
                                const std::string& theTag)
         throw (FederateNotExecutionMember,
@@ -338,7 +338,7 @@ public:
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttributeList,
                                std::vector <AttributeValue_t> &theValueList,
-                               UShort theListSize,
+                               uint16_t theListSize,
                                const std::string& theTag)
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
@@ -356,7 +356,7 @@ public:
                               InteractionClassHandle theInteractionHandle,
                               std::vector <ParameterHandle> &theParameterList,
                               std::vector <ParameterValue_t> &theValueList,
-                              UShort theListSize,
+                              uint16_t theListSize,
                               FederationTime theTime,
 			      RegionHandle,
                               const std::string& theTag)
@@ -372,7 +372,7 @@ public:
                               InteractionClassHandle theInteractionHandle,
                               std::vector <ParameterHandle> &theParameterList,
                               std::vector <ParameterValue_t> &theValueList,
-                              UShort theListSize,
+                              uint16_t theListSize,
 			      RegionHandle,
                               const std::string& theTag)
         throw (FederateNotExecutionMember,
@@ -431,7 +431,7 @@ public:
     void negotiateDivestiture(FederateHandle theFederateHandle,
                               ObjectHandle theObjectHandle,
                               std::vector <AttributeHandle> &theAttributeList,
-                              UShort theListSize,
+                              uint16_t theListSize,
                               const std::string& theTag)
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
@@ -445,7 +445,7 @@ public:
     void acquireIfAvailable(FederateHandle theFederateHandle,
                             ObjectHandle theObjectHandle,
                             std::vector <AttributeHandle> &theAttributeList,
-                            UShort theListSize)
+                            uint16_t theListSize)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
                AttributeNotDefined,
@@ -460,7 +460,7 @@ public:
     void divest(FederateHandle theFederateHandle,
                 ObjectHandle theObjectHandle,
                 std::vector <AttributeHandle> &theAttributeList,
-                UShort theListSize)
+                uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -472,7 +472,7 @@ public:
     void acquire(FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
                  std::vector <AttributeHandle> &theAttributeList,
-                 UShort theListSize,
+                 uint16_t theListSize,
                  const std::string& theTag)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
@@ -487,7 +487,7 @@ public:
     void cancelDivestiture(FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            std::vector <AttributeHandle> &theAttributeList,
-                           UShort theListSize)
+                           uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -500,7 +500,7 @@ public:
     AttributeHandleSet* respondRelease(FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
                                        std::vector <AttributeHandle> &theAttributeList,
-                                       UShort theListSize)
+                                       uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -513,7 +513,7 @@ public:
     void cancelAcquisition(FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            std::vector <AttributeHandle> &theAttributeList,
-                           UShort theListSize)
+                           uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeAlreadyOwned,
@@ -683,4 +683,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.63 2010/02/07 00:19:12 erk Exp $
+// $Id: Federation.hh,v 3.64 2010/03/07 21:30:30 erk Exp $

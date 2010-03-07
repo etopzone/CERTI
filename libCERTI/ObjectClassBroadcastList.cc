@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.27 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.28 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -82,12 +82,12 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     	reducedMessage->setLabel(message->getLabel());
     }
     // Copy attributes that are in the bsWaiting state in Line.
-    UShort currentSize ;
+    uint16_t currentSize ;
     AttributeHandle currentAttrib ;
 
     reducedMessage->handleArraySize = 0 ;
 
-    for (UShort i = 0 ; i < message->handleArraySize ; i++) {
+    for (uint16_t i = 0 ; i < message->handleArraySize ; i++) {
 
         currentAttrib = message->handleArray[i] ;
 
@@ -401,4 +401,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.27 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.28 2010/03/07 21:30:30 erk Exp $

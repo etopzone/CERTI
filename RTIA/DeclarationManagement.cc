@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.30 2010/02/27 16:53:36 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.31 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -109,7 +109,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
 {
     // Variables leurres
     //AttributeHandle *attribArray = NULL ;
-    UShort attribArraySize = 0 ;
+    uint16_t attribArraySize = 0 ;
     std::vector <AttributeHandle> attribArrayVector ;
     attribArrayVector.empty();
 
@@ -484,4 +484,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.30 2010/02/27 16:53:36 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.31 2010/03/07 21:30:30 erk Exp $

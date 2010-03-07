@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.9 2007/10/31 10:30:20 erk Exp $
+// $Id: Dimension.hh,v 3.10 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -54,33 +54,33 @@ public:
      * Set dimension lower bound.
      * @param[in] lowerBound the lower bound 
      */
-    static void setLowerBound(ULong lowerBound);
+    static void setLowerBound(uint32_t lowerBound);
     
     /**
      * Set dimension upper bound.
      * @param[in] upperBound the upper bound 
      */
-    static void setUpperBound(ULong upperBound);
+    static void setUpperBound(uint32_t upperBound);
     
     /**
      * Get dimension lower bound.
      * @return the lower bound 
      */
-    static ULong getLowerBound() { return axisLowerBound ; }
+    static uint32_t getLowerBound() { return axisLowerBound ; }
     
     /**
      * Get dimension upper bound.
      * @return the upper bound 
      */
-    static ULong getUpperBound() { return axisUpperBound ; }
+    static uint32_t getUpperBound() { return axisUpperBound ; }
 
 private:
-    static ULong axisLowerBound ;
-    static ULong axisUpperBound ;
+    static uint32_t axisLowerBound ;
+    static uint32_t axisUpperBound ;
 };
 
 } // namespace certi
 
 #endif
 
-// $Id: Dimension.hh,v 3.9 2007/10/31 10:30:20 erk Exp $
+// $Id: Dimension.hh,v 3.10 2010/03/07 21:30:30 erk Exp $

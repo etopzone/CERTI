@@ -30,12 +30,12 @@ namespace certi {
 class CERTI_EXPORT AttributeHandleSet
 {
 public:
-    AttributeHandleSet(ULong size);
+    AttributeHandleSet(uint32_t size);
     virtual ~AttributeHandleSet();
 
-    virtual ULong size() const ;
+    virtual uint32_t size() const ;
 
-    virtual AttributeHandle getHandle(ULong i) const
+    virtual AttributeHandle getHandle(uint32_t i) const
         throw (ArrayIndexOutOfBounds);
 
     virtual void add(AttributeHandle h)
@@ -56,12 +56,12 @@ protected:
 class FederateHandleSet
 {
 public:
-    FederateHandleSet(ULong size);
+    FederateHandleSet(uint32_t size);
     virtual ~FederateHandleSet();
 
-    virtual ULong size() const ;
+    virtual uint32_t size() const ;
 
-    virtual FederateHandle getHandle(ULong i) const
+    virtual FederateHandle getHandle(uint32_t i) const
         throw (ArrayIndexOutOfBounds);
 
     virtual void add(FederateHandle h)
@@ -83,14 +83,14 @@ class AttributeHandleValuePair
     // ATTRIBUTES
 public:
     Handle _handle ;
-    ULong _valueLength ;
+    uint32_t _valueLength ;
     char *_value ;
 
     // METHODS
 public :
     AttributeHandleValuePair(Handle handle,
                              const char *value,
-                             ULong value_length);
+                             uint32_t value_length);
     ~AttributeHandleValuePair();
 };
 
@@ -103,36 +103,36 @@ public:
 
     // METHODS
 public:
-    AttributeHandleValuePairSet(ULong size);
+    AttributeHandleValuePairSet(uint32_t size);
     virtual ~AttributeHandleValuePairSet();
 
-    virtual ULong size() const ;
-    virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
-    virtual ULong getValueLength(ULong i) const throw (ArrayIndexOutOfBounds);
+    virtual uint32_t size() const ;
+    virtual Handle getHandle(uint32_t i) const throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getValueLength(uint32_t i) const throw (ArrayIndexOutOfBounds);
 
-    virtual void getValue(ULong i, char *buff, ULong& valueLength) const
+    virtual void getValue(uint32_t i, char *buff, uint32_t& valueLength) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual char *getValuePointer(ULong i, ULong& valueLength) const
+    virtual char *getValuePointer(uint32_t i, uint32_t& valueLength) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual TransportType getTransportType(ULong i) const
+    virtual TransportType getTransportType(uint32_t i) const
         throw (InvalidHandleValuePairSetContext);
 
-    virtual OrderType getOrderType(ULong i) const
+    virtual OrderType getOrderType(uint32_t i) const
         throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
 
-    virtual void add(Handle h, const char *buff, ULong valueLength)
+    virtual void add(Handle h, const char *buff, uint32_t valueLength)
         throw (ValueLengthExceeded, ValueCountExceeded);
     virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
 
-    virtual void moveFrom(const AttributeHandleValuePairSet& ahvps, ULong& i)
+    virtual void moveFrom(const AttributeHandleValuePairSet& ahvps, uint32_t& i)
         throw (ValueCountExceeded, ArrayIndexOutOfBounds);
 
     virtual void empty();
-    virtual ULong start() const ;
-    virtual ULong valid(ULong i) const ;
-    virtual ULong next(ULong i) const ;
+    virtual uint32_t start() const ;
+    virtual uint32_t valid(uint32_t i) const ;
+    virtual uint32_t next(uint32_t i) const ;
 
 protected:
     std::list<AttributeHandleValuePair *> _set;
@@ -142,10 +142,10 @@ class ParameterHandleValuePair
 {
 public:
     Handle _handle ;
-    ULong _valueLength ;
+    uint32_t _valueLength ;
     char *_value ;
 
-    ParameterHandleValuePair(Handle handle, const char *value, ULong length);
+    ParameterHandleValuePair(Handle handle, const char *value, uint32_t length);
     ~ParameterHandleValuePair();
 };
 
@@ -156,19 +156,19 @@ public:
     TransportType _transport ;
 
 public:
-    ParameterHandleValuePairSet(ULong size);
+    ParameterHandleValuePairSet(uint32_t size);
     virtual ~ParameterHandleValuePairSet();
 
-    virtual ULong size() const ;
+    virtual uint32_t size() const ;
 
-    virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
+    virtual Handle getHandle(uint32_t i) const throw (ArrayIndexOutOfBounds);
 
-    virtual ULong getValueLength(ULong i) const throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getValueLength(uint32_t i) const throw (ArrayIndexOutOfBounds);
 
-    virtual void getValue(ULong i, char *buff, ULong& valueLength) const
+    virtual void getValue(uint32_t i, char *buff, uint32_t& valueLength) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual char *getValuePointer(ULong i, ULong& valueLength) const
+    virtual char *getValuePointer(uint32_t i, uint32_t& valueLength) const
         throw (ArrayIndexOutOfBounds);
 
     virtual TransportType getTransportType() const
@@ -177,18 +177,18 @@ public:
     virtual OrderType getOrderType() const
         throw (InvalidHandleValuePairSetContext);
 
-    virtual void add(Handle h, const char *buff, ULong valueLength)
+    virtual void add(Handle h, const char *buff, uint32_t valueLength)
         throw (ValueLengthExceeded, ValueCountExceeded);
 
     virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
 
-    virtual void moveFrom(const ParameterHandleValuePairSet& phvps, ULong& i)
+    virtual void moveFrom(const ParameterHandleValuePairSet& phvps, uint32_t& i)
         throw (ValueCountExceeded, ArrayIndexOutOfBounds);
 
     virtual void empty();
-    virtual ULong start() const ;
-    virtual ULong valid(ULong i) const ;
-    virtual ULong next(ULong i) const ;
+    virtual uint32_t start() const ;
+    virtual uint32_t valid(uint32_t i) const ;
+    virtual uint32_t next(uint32_t i) const ;
 
 protected:
     std::list<ParameterHandleValuePair *> _set;

@@ -59,14 +59,14 @@ public:
 
     void changeAttributeTransportationType(ObjectHandle the_object,
                                            AttributeHandle *the_attributes,
-                                           UShort the_size,
+                                           uint16_t the_size,
                                            TransportType the_type)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
     void changeAttributeOrderType(ObjectHandle the_object,
                                   AttributeHandle *the_attributes,
-                                  UShort the_size,
+                                  uint16_t the_size,
                                   TransportType the_type)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
@@ -104,7 +104,7 @@ public:
     negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                             ObjectHandle the_object,
                                             AttributeHandle *the_attributes,
-                                            UShort the_size,
+                                            uint16_t the_size,
                                             const std::string& the_tag)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                AttributeAlreadyBeingDivested, RTIinternalError);
@@ -113,7 +113,7 @@ public:
     attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                                              ObjectHandle the_object,
                                              AttributeHandle *the_attributes,
-                                             UShort the_size)
+                                             uint16_t the_size)
         throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
                AttributeNotPublished, FederateOwnsAttributes,
                AttributeAlreadyBeingAcquired, RTIinternalError);
@@ -122,7 +122,7 @@ public:
     unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                ObjectHandle the_object,
                                                AttributeHandle *the_attributes,
-                                               UShort the_size)
+                                               uint16_t the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError);
 
@@ -130,7 +130,7 @@ public:
     attributeOwnershipAcquisition(FederateHandle the_federate,
                                   ObjectHandle the_object,
                                   AttributeHandle *the_attributes,
-                                  UShort the_size,
+                                  uint16_t the_size,
                                   const std::string& the_tag)
         throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
                AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
@@ -139,7 +139,7 @@ public:
     cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                   ObjectHandle the_object,
                                                   std::vector <AttributeHandle> &,
-                                                  UShort the_size)
+                                                  uint16_t the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                AttributeDivestitureWasNotRequested, RTIinternalError);
 
@@ -147,7 +147,7 @@ public:
     attributeOwnershipReleaseResponse(FederateHandle the_federate,
                                       ObjectHandle the_object,
                                       std::vector <AttributeHandle> &the_attributes,
-                                      UShort the_size)
+                                      uint16_t the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
@@ -155,7 +155,7 @@ public:
     cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
                                         ObjectHandle the_object,
                                         std::vector <AttributeHandle> &the_attributes,
-                                        UShort the_size)
+                                        uint16_t the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested, RTIinternalError);
 

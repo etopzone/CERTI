@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.11 2010/02/27 16:53:35 erk Exp $
+// $Id: Extent.hh,v 3.12 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_EXTENT_HH
@@ -34,7 +34,7 @@
 
 namespace certi {
 
-typedef std::pair<ULong, ULong> Range ;
+typedef std::pair<uint32_t, uint32_t> Range ;
 typedef std::vector<Range> RangeSet ;
 
 /** 
@@ -54,19 +54,19 @@ public:
     Extent(size_t n);
 
     /** Get range lower bound */
-    ULong getRangeLowerBound(DimensionHandle) const
+    uint32_t getRangeLowerBound(DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
     /** Get range upper bound */
-    ULong getRangeUpperBound(DimensionHandle) const
+    uint32_t getRangeUpperBound(DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
     /** Set range upper bound */
-    void setRangeUpperBound(DimensionHandle, ULong)
+    void setRangeUpperBound(DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
     /** Set range lower bound */
-    void setRangeLowerBound(DimensionHandle, ULong)
+    void setRangeLowerBound(DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
     /** Check whether both extents overlap */
@@ -83,4 +83,4 @@ private:
 
 #endif // CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.11 2010/02/27 16:53:35 erk Exp $
+// $Id: Extent.hh,v 3.12 2010/03/07 21:30:30 erk Exp $

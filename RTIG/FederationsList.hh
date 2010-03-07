@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.52 2009/11/20 22:43:46 erk Exp $
+// $Id: FederationsList.hh,v 3.53 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -290,7 +290,7 @@ public:
                        FederateHandle theFederateHandle,
                        ObjectClassHandle theObjectHandle,
                        std::vector <AttributeHandle> &theAttributeList,
-                       UShort theListSize,
+                       uint16_t theListSize,
                        bool pub)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
@@ -305,7 +305,7 @@ public:
                          FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
-                         UShort theListSize)
+                         uint16_t theListSize)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederationExecutionDoesNotExist,
@@ -332,7 +332,7 @@ public:
                                 FederateHandle federate,
                                 ObjectHandle id,
                                 std::vector <AttributeHandle> &attributes,
-                                 UShort list_size)
+                                 uint16_t list_size)
         throw (ObjectNotKnown,
                FederationExecutionDoesNotExist,
                RTIinternalError);
@@ -369,7 +369,7 @@ public:
                          ObjectHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
                          std::vector <AttributeValue_t> &theValueList,
-                         UShort theListSize,
+                         uint16_t theListSize,
                          FederationTime theTime,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
@@ -386,7 +386,7 @@ public:
                          ObjectHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
                          std::vector <AttributeValue_t> &theValueList,
-                         UShort theListSize,
+                         uint16_t theListSize,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
@@ -430,7 +430,7 @@ public:
                          InteractionClassHandle theInteractionHandle,
                          std::vector <ParameterHandle> &theParameterList,
                          std::vector <ParameterValue_t> &theValueList,
-                         UShort theListSize,
+                         uint16_t theListSize,
                          FederationTime theTime,
 			 RegionHandle,
                          const std::string& theTag)
@@ -448,7 +448,7 @@ public:
                          InteractionClassHandle theInteractionHandle,
                          std::vector <ParameterHandle> &theParameterList,
                          std::vector <ParameterValue_t> &theValueList,
-                         UShort theListSize,
+                         uint16_t theListSize,
 			 RegionHandle,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
@@ -489,7 +489,7 @@ public:
                               FederateHandle,
                               ObjectHandle,
                               std::vector <AttributeHandle>&,
-                              UShort,
+                              uint16_t,
                               const std::string& )
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
@@ -504,7 +504,7 @@ public:
                             FederateHandle,
                             ObjectHandle,
                             std::vector <AttributeHandle>&,
-                            UShort)
+                            uint16_t)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
                AttributeNotDefined,
@@ -520,7 +520,7 @@ public:
                 FederateHandle,
                 ObjectHandle,
                 std::vector <AttributeHandle>&,
-                UShort)
+                uint16_t)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -533,7 +533,7 @@ public:
                  FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
                  std::vector <AttributeHandle> &theAttributeList,
-                 UShort theListSize,
+                 uint16_t theListSize,
                  const std::string& theTag)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
@@ -549,7 +549,7 @@ public:
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            std::vector <AttributeHandle> &theAttributeList,
-                           UShort theListSize)
+                           uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -563,7 +563,7 @@ public:
                                        FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
                                        std::vector <AttributeHandle> &theAttributeList,
-                                       UShort theListSize)
+                                       uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeNotOwned,
@@ -577,7 +577,7 @@ public:
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            std::vector <AttributeHandle> &theAttributeList,
-                           UShort theListSize)
+                           uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeAlreadyOwned,
@@ -661,4 +661,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.52 2009/11/20 22:43:46 erk Exp $
+// $Id: FederationsList.hh,v 3.53 2010/03/07 21:30:30 erk Exp $

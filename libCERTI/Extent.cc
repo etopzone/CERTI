@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.13 2010/03/07 18:23:39 erk Exp $
+// $Id: Extent.cc,v 3.14 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -46,7 +46,7 @@ Extent::Extent(size_t n)
 
 // ----------------------------------------------------------------------------
 
-ULong
+uint32_t
 Extent::getRangeLowerBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
@@ -56,7 +56,7 @@ Extent::getRangeLowerBound(DimensionHandle handle) const
 	return ranges[handle - 1].first ;	
 }
 
-ULong
+uint32_t
 Extent::getRangeUpperBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
@@ -67,7 +67,7 @@ Extent::getRangeUpperBound(DimensionHandle handle) const
 }
 
 void
-Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
+Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
@@ -77,7 +77,7 @@ Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
 }
 
 void
-Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
+Extent::setRangeUpperBound(DimensionHandle handle, uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
@@ -108,4 +108,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.13 2010/03/07 18:23:39 erk Exp $
+// $Id: Extent.cc,v 3.14 2010/03/07 21:30:30 erk Exp $

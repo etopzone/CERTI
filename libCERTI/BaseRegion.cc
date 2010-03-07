@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.5 2007/07/06 09:25:18 erk Exp $
+// $Id: BaseRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -41,7 +41,7 @@ BaseRegion::~BaseRegion()
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 BaseRegion::getNumberOfExtents() const
     throw ()
 {
@@ -49,7 +49,7 @@ BaseRegion::getNumberOfExtents() const
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 BaseRegion::getRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -63,7 +63,7 @@ BaseRegion::getRangeLowerBound(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-ULong
+uint32_t
 BaseRegion::getRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
@@ -80,7 +80,7 @@ BaseRegion::getRangeUpperBound(ExtentIndex index,
 void
 BaseRegion::setRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension,
-			       ULong val)
+			       uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
@@ -95,7 +95,7 @@ BaseRegion::setRangeLowerBound(ExtentIndex index,
 void
 BaseRegion::setRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension,
-			       ULong val)
+			       uint32_t val)
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
@@ -156,4 +156,4 @@ BaseRegion::overlaps(const BaseRegion &region) const
 
 } // namespace certi
 
-// $Id: BaseRegion.cc,v 3.5 2007/07/06 09:25:18 erk Exp $
+// $Id: BaseRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $

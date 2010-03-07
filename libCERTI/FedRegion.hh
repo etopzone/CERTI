@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.hh,v 3.4 2008/12/07 20:16:13 gotthardp Exp $
+// $Id: FedRegion.hh,v 3.5 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FED_REGION_HH
@@ -38,29 +38,29 @@ public:
     FedRegion(RegionHandle, SpaceHandle, const std::vector<Extent> &);
     virtual ~FedRegion();
 
-    virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
+    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual ULong getRangeUpperBound(ExtentIndex, DimensionHandle) const
+    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, ULong)
+    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
-    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, ULong)
+    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t)
         throw (ArrayIndexOutOfBounds);
 
     virtual SpaceHandle getSpaceHandle() const
         throw ();
 
-    virtual ULong getNumberOfExtents() const
+    virtual uint32_t getNumberOfExtents() const
         throw ();
 
-    virtual ULong getRangeLowerBoundNotificationLimit(ExtentIndex,
+    virtual uint32_t getRangeLowerBoundNotificationLimit(ExtentIndex,
                                                       DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual ULong getRangeUpperBoundNotificationLimit(ExtentIndex,
+    virtual uint32_t getRangeUpperBoundNotificationLimit(ExtentIndex,
                                                       DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
@@ -75,4 +75,4 @@ private:
 
 #endif // CERTI_FED_REGION_HH
 
-// $Id: FedRegion.hh,v 3.4 2008/12/07 20:16:13 gotthardp Exp $
+// $Id: FedRegion.hh,v 3.5 2010/03/07 21:30:30 erk Exp $

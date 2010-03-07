@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.59 2010/02/27 16:53:35 erk Exp $
+// $Id: Interaction.cc,v 3.60 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -326,7 +326,7 @@ Interaction::isPublishing(FederateHandle fed)
 void
 Interaction::isReady(FederateHandle federate_handle,
 		const std::vector <ParameterHandle> &parameter_list,
-		UShort list_size)
+		uint16_t list_size)
 throw (FederateNotPublishing,
 		InteractionParameterNotDefined,
 		RTIinternalError)
@@ -336,7 +336,7 @@ throw (FederateNotPublishing,
 		throw FederateNotPublishing("");
 
 	// Are Parameters Defined?
-	for (UShort i = 0 ; i < list_size ; i++)
+	for (uint16_t i = 0 ; i < list_size ; i++)
 		getParameterByHandle(parameter_list[i]);
 		}
 
@@ -400,7 +400,7 @@ InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
 		std::vector <ParameterHandle> &parameter_list,
 		std::vector <ParameterValue_t> &value_list,
-		UShort list_size,
+		uint16_t list_size,
 		FederationTime time,
 		const RTIRegion *region,
 		const std::string& the_tag)
@@ -461,7 +461,7 @@ InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
 		std::vector <ParameterHandle> &parameter_list,
 		std::vector <ParameterValue_t> &value_list,
-		UShort list_size,
+		uint16_t list_size,
 		const RTIRegion *region,
 		const std::string& the_tag)
 throw (FederateNotPublishing,
@@ -543,4 +543,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.59 2010/02/27 16:53:35 erk Exp $
+// $Id: Interaction.cc,v 3.60 2010/03/07 21:30:30 erk Exp $

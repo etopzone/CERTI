@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.32 2010/02/27 16:53:36 erk Exp $
+// $Id: ObjectManagement.hh,v 3.33 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -74,7 +74,7 @@ public:
     void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
                                 std::vector <AttributeValue_t> &valueArray,
-                                UShort attribArraySize,
+                                uint16_t attribArraySize,
                                 FederationTime theTime,
                                 const std::string& theTag,
                                 EventRetractionHandle theHandle,
@@ -83,7 +83,7 @@ public:
    void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
                                 std::vector <AttributeValue_t> &valueArray,
-                                UShort attribArraySize,
+                                uint16_t attribArraySize,
                                 const std::string& theTag,
                                 TypeException &e);
 
@@ -109,7 +109,7 @@ public:
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
                             std::vector <ParameterValue_t> &valueArray,
-                            UShort paramArraySize,
+                            uint16_t paramArraySize,
                             FederationTime theTime,
                             const std::string& theTag,
                             EventRetractionHandle theHandle,
@@ -118,7 +118,7 @@ public:
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
                             std::vector <ParameterValue_t> &valueArray,
-                            UShort paramArraySize,
+                            uint16_t paramArraySize,
                             const std::string& theTag,
                             TypeException &e);
 
@@ -179,7 +179,7 @@ public:
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
                                       std::vector <AttributeHandle> &theAttributes,
-                                      UShort attribArraySize,
+                                      uint16_t attribArraySize,
                                      TypeException &e);
 
     void retract(EventRetractionHandle theHandle, TypeException &e);
@@ -204,14 +204,14 @@ public:
     void
     attributesInScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
-                      const UShort attribArraySize,
+                      const uint16_t attribArraySize,
                       TypeException &e);
 
     // 6.14
     void
     attributesOutOfScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
-                      const UShort attribArraySize,
+                      const uint16_t attribArraySize,
                       TypeException &e);
 
     /**
@@ -231,14 +231,14 @@ public:
     void
     turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
-		      const UShort attribArraySize,
+		      const uint16_t attribArraySize,
                       TypeException &e);
 
     // 6.18
     void
     turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
-                      const UShort attribArraySize,
+                      const uint16_t attribArraySize,
                       TypeException &e);
 
     // RTI Support Services
@@ -298,4 +298,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.32 2010/02/27 16:53:36 erk Exp $
+// $Id: ObjectManagement.hh,v 3.33 2010/03/07 21:30:30 erk Exp $
