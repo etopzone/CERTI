@@ -29,19 +29,16 @@ package certi
 // Every message which is a merge from Message will first include the content 
 // of a Message
 native Message {
-    language CXX    [#include "Message.hh"]
-    language Python [import certi.Message]
-    language Java   [import certi.Message]
+    language CXX    [#include "Message.hh"] 
+    language Java   [import certi.communication.CertiMessage]
 }
 
-native AttributeHandleSet {
-    language CXX  [include "RTItypes.hh"]
+native AttributeHandleSet {    
+    language CXX  [#include "certi.hh"]
     language Java [import hla.rti.AttributeHandleSet;]
 }
 
 native LogicalTimeInterval {
-    language CXX  [//unimplemented 1]
-    language CXX  [//unimplemented 2]
     language Java [import hla.rti.AttributeHandleSet;]
 }
 
@@ -50,29 +47,27 @@ native SuppliedAttributes {
 }
 
 native FederateHandleSet {
-    language CXX  [#include "RTItypes.hh"]
+    language CXX  [#include "certi.hh"]
+    //language CXX  [typedef RTI::FederateHandleSet FederateHandleSet;]
     language Java [import hla.rti.FederateHandleSet;]
 }
 
-native SuppliedParameters {
-    language CXX  [//unimplemented]
+native SuppliedParameters {    
     language Java [import hla.rti.SuppliedParameters;]
 }
 
-native Regions {
-    language CXX  [#include "RTItypes.hh"]
-    language Java [import hla.rti.Regions;]
+native Region {
+    language CXX  [#include "certi.hh"]    
+    language Java [import hla.rti.Region;]
 }
 
-native Extents {
-    language CXX  [//unimplemented]
+native Extents {    
     language Java [import hla.rti.Extents;]
 }
 
 native ResignAction  {
     representation uint16
-    language CXX [#include "RTItypes.hh"]	
-    language CXX [typedef RTI::ResignAction ResignAction;]	
+    language CXX [#include "certi.hh"]	    
 }
 
 native Handle {
@@ -113,7 +108,7 @@ native ObjectHandle {
 
 native FederateHandle {
     representation uint32
-    language CXX [#include "RTItypes.hh"]
+    language CXX [#include "certi.hh"]
 }
 
 native ParameterHandle {
@@ -138,7 +133,7 @@ native OrderType {
 
 native AttributeHandleValuePairSet {
     representation combine
-    language CXX   [#include "RTItypes.hh"]
+    language CXX   [combine AttributeHandleValuePairSet]
     language Java  [import hla.rti.SuppliedAttributes] 
 }
 
@@ -154,14 +149,19 @@ native ParameterValue_t {
 
 native ParameterHandleValuePairSet {
     representation combine
-    language CXX   [#include "RTItypes.hh"]
+    language CXX   [combine ParameterHandleValuePairSet]
     language Java  [import hla.rti.SuppliedParameters]
 }
 
-native EventRetractionHandle {    
-    language CXX [#include "RTItypes.hh"]	
-    language CXX [typedef RTI::EventRetractionHandle EventRetractionHandle;]   
+native EventRetractionHandle {
+    representation combine    
+    language CXX [combine EventRetractionHandle]      
 }
+
+message EventRetraction {
+	required FederateHandle sendingFederate {default = 0}
+    required uint64         SN              {default = 0}
+}        
 
 // Closing connexion message
 message M_Close_Connexion : merge Message {
@@ -283,15 +283,19 @@ message M_Update_Attribute_Values : merge Message {
 	    combine AttributeHandleValuePairSet {
            repeated AttributeHandle       attributes
            repeated AttributeValue_t      values
-        }
-        optional EventRetractionHandle eventRetraction
+        }        
+        combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        } 
 }
 
 message M_Discover_Object_Instance : merge Message {
 	    required ObjectClassHandle     objectClass
         required ObjectHandle          object
         required string                objectName        
-        optional EventRetractionHandle eventRetraction
+        combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }
 }
 
 message M_Reflect_Attribute_Values : merge Message {
@@ -301,7 +305,9 @@ message M_Reflect_Attribute_Values : merge Message {
            repeated AttributeHandle    attributes
            repeated AttributeValue_t   values
         }
-        optional EventRetractionHandle eventRetraction
+        combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }
 }
 
 message M_Send_Interaction : merge Message {
@@ -309,7 +315,9 @@ message M_Send_Interaction : merge Message {
     repeated ParameterHandle        parameters
 	repeated ParameterValue_t       values
 	required RegionHandle           region
-	optional EventRetractionHandle eventRetraction          
+	combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }          
 }
 
 message M_Receive_Interaction : merge Message {
@@ -317,14 +325,18 @@ message M_Receive_Interaction : merge Message {
     repeated ParameterHandle        parameters
 	repeated ParameterValue_t       values
 	required RegionHandle           region	
-	optional EventRetractionHandle eventRetraction
+	combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }
 }
 
 message M_Delete_Object_Instance : merge Message {
 	    required ObjectClassHandle objectClass
         required ObjectHandle      object
         required string            objectName        
-        optional EventRetractionHandle eventRetraction
+        combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }
 }
 
 message M_Local_Delete_Object_Instance : merge Message {
@@ -335,7 +347,9 @@ message M_Remove_Object_Instance : merge Message {
 	    required ObjectClassHandle objectClass
         required ObjectHandle      object
         required string            objectName        
-        optional EventRetractionHandle eventRetraction
+        combine EventRetractionHandle {
+           optional EventRetraction eventRetraction                    
+        }
 }
 
 message M_Change_Attribute_Transportation_Type : merge Message {
@@ -528,7 +542,9 @@ message M_Query_Lookahead : merge Message {
 }
 
 message M_Retract : merge Message {
-	required EventRetractionHandle eventRetraction
+    combine EventRetractionHandle {
+          required EventRetraction eventRetraction                    
+    }	
 }
 
 message M_Request_Retraction : merge Message {}
