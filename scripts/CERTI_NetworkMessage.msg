@@ -29,33 +29,31 @@ package certi
 // AKA CERTI Network Message
 native NetworkMessage {
     language CXX    [#include "NetworkMessage.hh"]
-    language Python [import certi.NetworkMessage]
-    language Java   [import certi.NetworkMessage]
+    language Java   [import certi.communication.NetworkMessage]
 }
 
 native FederationTime {
-    language CXX    [#include "FedTimeD.hh"]
-    language Python [import certi.FedTimeD]
+    language CXX    [#include "FedTimeD.hh"]    
     language Java   [import certi.FedTimeD]
 }
 
 native AttributeHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
 native DimensionHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
 native InteractionClassHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
 native ObjectClassHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
@@ -65,12 +63,12 @@ native ObjectHandle {
 }
 
 native ParameterHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
 native SpaceHandle {
-    representation uint16
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
@@ -85,42 +83,44 @@ native OrderType {
 }
 
 message NM_FOM_Dimension {
-        required DimensionHandle handle
-        required string name
+    required DimensionHandle handle {default=0}
+    required string name
 }
 
-message NM_FOM_Rounting_Space {
-	required SpaceHandle space
-	required string name
-        repeated NM_FOM_Dimension dimensions
+message NM_FOM_Routing_Space {
+    required SpaceHandle space {default=0}
+    required string name
+    repeated NM_FOM_Dimension dimensions
 }
 
 message NM_FOM_Attribute {
-        required AttributeHandle handle
-        required string name
-	required SpaceHandle spaceHandle
-	required OrderType order
-	required TransportType transport
+    required AttributeHandle handle {default=0}
+    required string name
+    required SpaceHandle spaceHandle {default=0}
+    required OrderType order
+    required TransportType transport
 }
 
 message NM_FOM_Object_Class {
-	required ObjectClassHandle handle
-	required ObjectClassHandle superClass
-	required string name
-        repeated NM_FOM_Attribute attributes
+    required ObjectClassHandle handle     {default=0}
+    required ObjectClassHandle superClass {default=0}
+    required string name
+    repeated NM_FOM_Attribute attributes
 }
 
 message NM_FOM_Parameter {
-        required ParameterHandle handle
-        required string name
+    required ParameterHandle handle {default=0}
+    required string name
 }
 
 message NM_FOM_Interaction_Class {
-	required InteractionClassHandle handle
-	required SpaceHandle space
+	required InteractionClassHandle interactionClass {default=0}
+	required string name
+        required InteractionClassHandle superClass {default=0}
+	required SpaceHandle space {default=0}
 	required OrderType order
 	required TransportType transport
-    repeated NM_FOM_Parameter parameters
+        repeated NM_FOM_Parameter parameters
 }
 
 message NM_Close_Connexion : merge NetworkMessage {}
@@ -146,9 +146,9 @@ message NM_Join_Federation_Execution : merge NetworkMessage {
 	required uint32  bestEffortPeer
 	required string  federationName // the federation name
 	required string  federateName   // the federate name (should be unique within a federation)
-        repeated NM_FOM_Rounting_Space routingSpaces
-        repeated NM_FOM_Object_Class objectClasses
-        repeated NM_FOM_Interaction_Class interactionClasses
+    repeated NM_FOM_Routing_Space routingSpaces
+    repeated NM_FOM_Object_Class objectClasses
+    repeated NM_FOM_Interaction_Class interactionClasses
 }
 
 // Resign from federation
@@ -225,6 +225,10 @@ message NM_Initiate_Federate_Restore : merge NetworkMessage {}
 message NM_Federation_Restored : merge NetworkMessage {}
 
 message NM_Federation_Not_Restored : merge NetworkMessage {}
+
+message NM_WithHandleArray : merge  NetworkMessage {
+	repeated AttributeHandle handle 
+}
 
 message NM_Publish_Object_Class : merge NM_WithHandleArray {}
 
@@ -314,12 +318,17 @@ message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Request_Object_Attr
 
 message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Request_Object_Attribute_Value_Update {}
 
-message NM_DDM_Create_Region : merge NM_DDM_Base {
+message NM_DDM_Base : merge  NM_WithHandleArray {
+	required bool DDM_bool { default=false }	
+} 
+
+message NM_DDM_Create_Region : merge NM_DDM_Base {        
 	required SpaceHandle space
 	required int32 region
 }
 
 message NM_DDM_Modify_Region : merge NM_DDM_Base {
+        
 	required int32 region
 }
 
@@ -349,14 +358,6 @@ message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
 
 message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
 	required ObjectClassHandle objectClass
-}
-
-message NM_WithHandleArray : merge  NetworkMessage {
-	repeated AttributeHandle handle 
-}
-
-message NM_DDM_Base : merge  NM_WithHandleArray {
-	required bool DDM_bool { default=false }
 }
 
 message New_NetworkMessage {
