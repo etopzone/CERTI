@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.4 2010/03/07 18:22:03 erk Exp $
+## $Id: GenMsgAST.py,v 1.5 2010/03/08 12:52:11 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -460,8 +460,7 @@ class ASTChecker(object):
         for f in msg.fields:
             if not AST.isDefined(f.typeid):
                 self.logger.fatal("The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)" % (f.typeid,msg.name,f.name))
-                self.logger.fatal(" --> Check lines (%d,%d)" % (f.linespan) + " of <%s>" % AST.name)
-                AST.checked = False
+                self.logger.fatal(" --> Check lines (%d,%d)" % (f.linespan) + " of <%s>" % AST.name)                
                 return
             else:
                 if (isinstance(f,MessageType.MessageField)):                   
@@ -480,14 +479,16 @@ class ASTChecker(object):
         @type AST: C{MessageAST}  
         """
         
+        # Consider the AST not checked.
+        AST.checked = False
+        
         # check if the supplied object has appropriate super type
         # @todo: note that we may just require to have the appropriate
         #        fields and not being sub-class of MesssageAST.
         #        this could be done with introspection.
         #        see: http://docs.python.org/library/inspect.html
         if not isinstance(AST, MessageAST):
-           self.logger.error("The supplied object is not an instance of MessageAST: <%s>" % type(AST))
-           AST.checked = False 
+           self.logger.error("The supplied object is not an instance of MessageAST: <%s>" % type(AST))        
            return
        
         # check if all field used in message have known types
@@ -523,8 +524,7 @@ class ASTChecker(object):
             if msg.hasMerge():
                 if not AST.isDefined(msg.merge):
                     self.logger.fatal("The merge target <%s> of message <%s> is unknown (not a builtin, nor native, nor message)" % (msg.merge,msg.name))
-                    self.logger.fatal(" --> Check lines (%d,%d)" % (msg.linespan) + " of <%s>" % AST.name )                    
-                    AST.checked = False
+                    self.logger.fatal(" --> Check lines (%d,%d)" % (msg.linespan) + " of <%s>" % AST.name )                           
                     return
                 else:
                     msg.merge = AST.getType(msg.merge)
@@ -533,24 +533,20 @@ class ASTChecker(object):
         if AST.hasFactory():                        
             if not AST.isDefined(AST.factory.creator[0]):
                 self.logger.fatal("The return type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.creator[0])
-                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
-                AST.checked = False
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )                
                 return
             if not AST.isDefined(AST.factory.creator[2]):
                 self.logger.fatal("The parameter type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.creator[2])
-                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
-                AST.checked = False
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )                
                 return
             if not AST.isDefined(AST.factory.receiver[0]):
                 self.logger.fatal("The return type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.receiver[0])
-                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
-                AST.checked = False
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )                
                 return
             if not AST.isDefined(AST.factory.receiver[2]):
                 self.logger.fatal("The parameter type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.receiver[2])
-                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
-                AST.checked = False
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )                
                 return
-                
+        # Now the AST has been checked successfully
         AST.checked = True                  
                                                                                  
