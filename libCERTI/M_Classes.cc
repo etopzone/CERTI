@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 07 at 19:45:00 by the CERTI message generator
+// Generated on 2010 March Mon, 08 at 09:41:06 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -2678,7 +2678,6 @@ namespace certi {
    M_Enable_Time_Regulation::M_Enable_Time_Regulation() {
       this->messageName = "M_Enable_Time_Regulation";
       this->type = Message::ENABLE_TIME_REGULATION;
-      enable=true;
       lookahead=0;
    }
 
@@ -2689,7 +2688,6 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_bool(enable);
       msgBuffer.write_double(lookahead);
    }
 
@@ -2697,7 +2695,6 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      enable = msgBuffer.read_bool();
       lookahead = msgBuffer.read_double();
    }
 
@@ -2705,14 +2702,12 @@ namespace certi {
       out << "[M_Enable_Time_Regulation -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
-      out << " enable = " << enable << " "       << std::endl;
       out << " lookahead = " << lookahead << " "       << std::endl;
       out << "[M_Enable_Time_Regulation -End]" << std::endl;   }
 
    M_Disable_Time_Regulation::M_Disable_Time_Regulation() {
       this->messageName = "M_Disable_Time_Regulation";
       this->type = Message::DISABLE_TIME_REGULATION;
-      enable=false;
       lookahead=0;
    }
 
@@ -2723,7 +2718,6 @@ namespace certi {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
-      msgBuffer.write_bool(enable);
       msgBuffer.write_double(lookahead);
    }
 
@@ -2731,7 +2725,6 @@ namespace certi {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
-      enable = msgBuffer.read_bool();
       lookahead = msgBuffer.read_double();
    }
 
@@ -2739,69 +2732,24 @@ namespace certi {
       out << "[M_Disable_Time_Regulation -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
-      out << " enable = " << enable << " "       << std::endl;
       out << " lookahead = " << lookahead << " "       << std::endl;
       out << "[M_Disable_Time_Regulation -End]" << std::endl;   }
 
    M_Enable_Time_Constrained::M_Enable_Time_Constrained() {
       this->messageName = "M_Enable_Time_Constrained";
       this->type = Message::ENABLE_TIME_CONSTRAINED;
-      enable=true;
    }
 
    M_Enable_Time_Constrained::~M_Enable_Time_Constrained() {
    }
 
-   void M_Enable_Time_Constrained::serialize(MessageBuffer& msgBuffer) {
-      //Call mother class
-      Super::serialize(msgBuffer);
-      //Specific serialization code
-      msgBuffer.write_bool(enable);
-   }
-
-   void M_Enable_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
-      //Call mother class
-      Super::deserialize(msgBuffer);
-      //Specific deserialization code
-      enable = msgBuffer.read_bool();
-   }
-
-   void M_Enable_Time_Constrained::show(std::ostream& out) {
-      out << "[M_Enable_Time_Constrained -Begin]" << std::endl;      //Call mother class
-      Super::show(out);
-      //Specific show code
-      out << " enable = " << enable << " "       << std::endl;
-      out << "[M_Enable_Time_Constrained -End]" << std::endl;   }
-
    M_Disable_Time_Constrained::M_Disable_Time_Constrained() {
       this->messageName = "M_Disable_Time_Constrained";
       this->type = Message::DISABLE_TIME_CONSTRAINED;
-      enable=false;
    }
 
    M_Disable_Time_Constrained::~M_Disable_Time_Constrained() {
    }
-
-   void M_Disable_Time_Constrained::serialize(MessageBuffer& msgBuffer) {
-      //Call mother class
-      Super::serialize(msgBuffer);
-      //Specific serialization code
-      msgBuffer.write_bool(enable);
-   }
-
-   void M_Disable_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
-      //Call mother class
-      Super::deserialize(msgBuffer);
-      //Specific deserialization code
-      enable = msgBuffer.read_bool();
-   }
-
-   void M_Disable_Time_Constrained::show(std::ostream& out) {
-      out << "[M_Disable_Time_Constrained -Begin]" << std::endl;      //Call mother class
-      Super::show(out);
-      //Specific show code
-      out << " enable = " << enable << " "       << std::endl;
-      out << "[M_Disable_Time_Constrained -End]" << std::endl;   }
 
    M_Query_Lbts::M_Query_Lbts() {
       this->messageName = "M_Query_Lbts";

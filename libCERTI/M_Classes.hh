@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 07 at 19:42:42 by the CERTI message generator
+// Generated on 2010 March Mon, 08 at 09:41:07 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -196,7 +196,12 @@ namespace certi {
       M_TICK_REQUEST_STOP, 
       LAST 
    } CERTI_Message_MessageType_t; //end of enum CERTI_Message_MessageType 
-
+   // The EventRetraction is not inheriting from base "Message"
+   // this is a plain message which may be used as field
+   // in messages merging from "Message". As such
+   // it won't appear in the generated factory method.
+   // It's a convenient way to describe a structured native
+   // message using "combine". 
    class CERTI_EXPORT EventRetraction {
       public:
          EventRetraction();
@@ -1760,7 +1765,7 @@ namespace certi {
          OrderType order;
       private:
    };
-
+   // HLA 1.3 - §8.2
    class CERTI_EXPORT M_Enable_Time_Regulation : public Message {
       public:
          typedef Message Super;
@@ -1769,19 +1774,15 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         void enableOn() {enable = true;}
-         void enableOff() {enable = false;}
-         bool isEnableOn() const {return enable;}
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
-         bool enable;
          double lookahead;
       private:
    };
-
+   // HLA 1.3 - §8.4
    class CERTI_EXPORT M_Disable_Time_Regulation : public Message {
       public:
          typedef Message Super;
@@ -1790,52 +1791,30 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         void enableOn() {enable = true;}
-         void enableOff() {enable = false;}
-         bool isEnableOn() const {return enable;}
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
-         bool enable;
          double lookahead;
       private:
    };
-
+   // HLA 1.3 - §8.5
    class CERTI_EXPORT M_Enable_Time_Constrained : public Message {
       public:
          typedef Message Super;
          M_Enable_Time_Constrained();
          virtual ~M_Enable_Time_Constrained();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
-         // specific Getter(s)/Setter(s)
-         void enableOn() {enable = true;}
-         void enableOff() {enable = false;}
-         bool isEnableOn() const {return enable;}
-         // the show method
-         virtual void show(std::ostream& out);
       protected:
-         bool enable;
       private:
    };
-
+   // HLA 1.3 - §8.7
    class CERTI_EXPORT M_Disable_Time_Constrained : public Message {
       public:
          typedef Message Super;
          M_Disable_Time_Constrained();
          virtual ~M_Disable_Time_Constrained();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
-         // specific Getter(s)/Setter(s)
-         void enableOn() {enable = true;}
-         void enableOff() {enable = false;}
-         bool isEnableOn() const {return enable;}
-         // the show method
-         virtual void show(std::ostream& out);
       protected:
-         bool enable;
       private:
    };
 
@@ -1925,7 +1904,7 @@ namespace certi {
       protected:
       private:
    };
-
+   // HLA 1.3 - §8.8
    class CERTI_EXPORT M_Time_Advance_Request : public Message {
       public:
          typedef Message Super;
@@ -1997,7 +1976,7 @@ namespace certi {
       protected:
       private:
    };
-
+   // HLA 1.3 - §8.3
    class CERTI_EXPORT M_Time_Regulation_Enabled : public Message {
       public:
          typedef Message Super;
@@ -2006,7 +1985,7 @@ namespace certi {
       protected:
       private:
    };
-
+   // HLA 1.3 - §8.6
    class CERTI_EXPORT M_Time_Constrained_Enabled : public Message {
       public:
          typedef Message Super;

@@ -34,26 +34,20 @@ native Message {
 }
 
 native AttributeHandleSet {    
+    representation combine
     language CXX  [#include "certi.hh"]
     language Java [import hla.rti.AttributeHandleSet;]
 }
 
 native LogicalTimeInterval {
-    language Java [import hla.rti.AttributeHandleSet;]
-}
-
-native SuppliedAttributes {    
-    language Java [import hla.rti.SuppliedAttributes;]
+    representation combine
+    language Java [import hla.rti.LogicalTimeInterval;]
 }
 
 native FederateHandleSet {
-    language CXX  [#include "certi.hh"]
-    //language CXX  [typedef RTI::FederateHandleSet FederateHandleSet;]
+    representation combine
+    language CXX  [#include "certi.hh"]   
     language Java [import hla.rti.FederateHandleSet;]
-}
-
-native SuppliedParameters {    
-    language Java [import hla.rti.SuppliedParameters;]
 }
 
 native Region {
@@ -158,6 +152,12 @@ native EventRetractionHandle {
     language CXX [combine EventRetractionHandle]      
 }
 
+// The EventRetraction is not inheriting from base "Message"
+// this is a plain message which may be used as field
+// in messages merging from "Message". As such
+// it won't appear in the generated factory method.
+// It's a convenient way to describe a structured native
+// message using "combine". 
 message EventRetraction {
 	required FederateHandle sendingFederate {default = 0}
     required uint64         SN              {default = 0}
@@ -506,27 +506,31 @@ message M_Change_Attribute_Order_Type : merge Message {
 }
 
 message M_Change_Interaction_Order_Type : merge Message {
-	required InteractionClassHandle interactionClass
+	    required InteractionClassHandle interactionClass
         required TransportType          transport
         required OrderType              order
 }
 
-message M_Enable_Time_Regulation : merge Message {
-    required onoff  enable {default=true}
-    required double lookahead {default=0}
+// HLA 1.3 - §8.2
+message M_Enable_Time_Regulation : merge Message {    
+    combine LogicalTimeInterval {
+        required double lookahead {default=0}
+    }
 }
 
-message M_Disable_Time_Regulation : merge Message {
-    required onoff  enable {default=false}
-    required double lookahead {default=0}
+// HLA 1.3 - §8.4
+message M_Disable_Time_Regulation : merge Message {        
+    combine LogicalTimeInterval {
+        required double lookahead {default=0}
+    }
 }
 
-message M_Enable_Time_Constrained : merge Message {
-    required onoff  enable {default=true}
+// HLA 1.3 - §8.5
+message M_Enable_Time_Constrained : merge Message {   
 }
 
-message M_Disable_Time_Constrained : merge Message {
-    required onoff  enable {default=false}
+// HLA 1.3 - §8.7
+message M_Disable_Time_Constrained : merge Message {    
 }
 
 message M_Query_Lbts : merge Message {}
@@ -548,15 +552,28 @@ message M_Retract : merge Message {
 }
 
 message M_Request_Retraction : merge Message {}
+
+// HLA 1.3 - §8.8
 message M_Time_Advance_Request : merge Message {}
+
 message M_Time_Advance_Request_Available : merge Message {}
+
 message M_Next_Event_Request : merge Message {}
+
 message M_Next_Event_Request_Available : merge Message {}
+
 message M_Flush_Queue_Request : merge Message {}
+
 message M_Time_Advance_Grant : merge Message {}
+
 message M_Enable_Asynchronous_Delivery : merge Message {}
+
 message M_Disable_Asynchronous_Delivery : merge Message {}
+
+// HLA 1.3 - §8.3
 message M_Time_Regulation_Enabled : merge Message {}
+
+// HLA 1.3 - §8.6
 message M_Time_Constrained_Enabled : merge Message {}
 
 native Extent {
