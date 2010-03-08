@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.34 2010/03/07 18:22:03 erk Exp $
+## $Id: GenerateMessages.py,v 1.35 2010/03/08 11:34:54 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -543,8 +543,10 @@ if language.lower() in generatorBackends.keys():
     generator = generatorBackends[language.lower()](parser.AST)
 elif language.lower()=="none":
     mainlogger.info("Nothing to generate for <%s>." % language)
+    usage()
 else:     
     mainlogger.error("Language <%s> is unknown" % language)
+    usage()
     
 if generator != None:
     generator.generate(output,gentype,factoryOnly) 
