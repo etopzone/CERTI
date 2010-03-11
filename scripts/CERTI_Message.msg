@@ -159,7 +159,7 @@ native EventRetractionHandle {
 // It's a convenient way to describe a structured native
 // message using "combine". 
 message EventRetraction {
-	required FederateHandle sendingFederate {default = 0}
+    required FederateHandle sendingFederate {default = 0}
     required uint64         SN              {default = 0}
 }        
 
@@ -779,8 +779,8 @@ native SocketUN {
     language CXX [#include "SocketUN.hh"]
 }
 
-native StreamType {
-    language CXX [typedef SocketUN* StreamType;]
+native MStreamType {
+    language CXX [typedef SocketUN* MStreamType;]
 }
 
 native M_Type {
@@ -789,5 +789,5 @@ native M_Type {
 
 factory M_Factory {
 	factoryCreator  Message create(M_Type)
-	factoryReceiver Message receive(StreamType)
+	factoryReceiver Message receive(MStreamType)
 }

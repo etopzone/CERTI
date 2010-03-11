@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.6 2010/03/07 18:46:25 erk Exp $
+## $Id: GenMsgCXX.py,v 1.7 2010/03/11 10:38:01 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -288,6 +288,10 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             
             # Generate enum
             lastname = ""
+            # Put enum in a namespace in order to avoid conflict
+            stream.write(self.getIndent())
+            stream.write("namespace %s {\n" % self.AST.name.split(".")[0])
+            self.indent()
             for enum in self.AST.enums:            
                 self.writeComment(stream, enum)
                 stream.write(self.getIndent())
@@ -312,7 +316,11 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent())          
                 stream.write("} %s_t; " %  enum.name) 
                 stream.write(self.commentLineBeginWith + "end of enum %s \n" % enum.name)
-             
+            # close enum namespace            
+            self.unIndent()
+            stream.write(self.getIndent())
+            stream.write("}\n")
+
             # Generate message type
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
