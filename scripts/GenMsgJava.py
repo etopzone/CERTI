@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgJava.py,v 1.2 2010/03/06 12:55:10 erk Exp $
+## $Id: GenMsgJava.py,v 1.3 2010/03/11 12:13:27 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -26,6 +26,7 @@ Java Backend Generator
 """
 import logging
 import GenMsgBase
+import GenMsgAST
 import sys
 
 class JavaGenerator(GenMsgBase.CodeGenerator):
@@ -133,9 +134,11 @@ import hla.rti.LogicalTimeInterval;\n\n""")
 
     def generateHeader(self, stream, factoryOnly=False):
         for native in self.AST.natives:
-            line = native.getLanguage("Java").statement
-            # we are only interested in native "include" statement
-            stream.write("Hohohoo maaary christmass" + line + "\n")
+            if native.hasLanguage("Java"):                               
+                # This an example may be it would be worth to check whether if the
+                # refered native types are valids?  
+                for line in native.getLanguageLines("Java"):
+                    stream.write("Found native **" + line.statement + "**\n")
 
     def prepareName(self, name):
         upperAfterScore = lambda x:__import__('re').sub(r'_(.)', lambda y:y.group(0).upper(), x)
@@ -148,6 +151,7 @@ import hla.rti.LogicalTimeInterval;\n\n""")
             representation = self.getRepresentationFor(name)
             if representation:
                 return self.getSerializeMethodName(representation)
+        print "No serialize method name for <%s> " % name            
         return None
 
     def getDeSerializeMethodName(self, name):
@@ -205,7 +209,16 @@ import hla.rti.LogicalTimeInterval;\n\n""")
             if len(msg.fields) > 0:
                 for field in msg.fields:
                     file.write(self.getIndent() + "private ");
-                    self.writeFieldStatement(file, field)
+                    # Combined field and "plain" field must not be treated the same way
+                    if not isinstance(field,GenMsgAST.MessageType.CombinedField):
+                        self.writeFieldStatement(file, field)
+                    else:
+                        # combined field may be written in a specific way
+                        # or the field contained in the combined field may
+                        # be written as usual and Getter/Setter for the combined may be 
+                        # generated
+                        for cfield in field.fields:
+                            self.writeFieldStatement(file, cfield)
 
             file.write("\n")
             #constructor
@@ -238,7 +251,13 @@ import hla.rti.LogicalTimeInterval;\n\n""")
                 file.write(self.getIndent() + "super.writeMessage(messageBuffer); //Header\n\n");
 
                 for field in msg.fields:
-                    file.write(self.getIndent() + self.getSerializeMethodName(field.typeid.name) % field.name + "\n")
+                    # Combined field and "plain" field must not be treated the same way
+                    if not isinstance(field,GenMsgAST.MessageType.CombinedField):
+                        file.write(self.getIndent() + self.getSerializeMethodName(field.typeid.name) % field.name + "\n")                                            
+                    else:
+                        # FIXME TODO
+                        for cfield in field.fields:
+                            pass                    
 
                 self.unIndent()
                 file.write(self.getIndent() + "}\n\n");
@@ -249,7 +268,13 @@ import hla.rti.LogicalTimeInterval;\n\n""")
                 file.write(self.getIndent() + "super.readMessage(messageBuffer); //Header \n\n");
 
                 for field in msg.fields:
-                    file.write(self.getIndent() + self.getDeSerializeMethodName(field.typeid.name) % field.name + "\n")
+                    # Combined field and "plain" field must not be treated the same way
+                    if not isinstance(field,GenMsgAST.MessageType.CombinedField):
+                        file.write(self.getIndent() + self.getDeSerializeMethodName(field.typeid.name) % field.name + "\n")                        
+                    else:
+                        # FIXME TODO
+                        for cfield in field.fields:
+                            pass                
 
                 self.unIndent()
                 file.write(self.getIndent() + "}\n\n");
@@ -266,19 +291,23 @@ import hla.rti.LogicalTimeInterval;\n\n""")
 
                 #GETTERS
                 for field in msg.fields:
-                    file.write(self.getIndent() + "public " + self.getTargetTypeName(field.typeid.name) + " get" + field.name[0].capitalize() + field.name[1:] + "() {\n");
-                    self.indent()
-                    file.write(self.getIndent() + "return " + field.name + ";\n")
-                    self.unIndent()
-                    file.write(self.getIndent() + "}\n\n")
+                    # Combined field and "plain" field must not be treated the same way
+                    if not isinstance(field,GenMsgAST.MessageType.CombinedField):
+                        file.write(self.getIndent() + "public " + self.getTargetTypeName(field.typeid.name) + " get" + field.name[0].capitalize() + field.name[1:] + "() {\n");
+                        self.indent()
+                        file.write(self.getIndent() + "return " + field.name + ";\n")
+                        self.unIndent()
+                        file.write(self.getIndent() + "}\n\n")
 
                 #SETTERS
                 for field in msg.fields:
-                    file.write(self.getIndent() + "public void set" + field.name[0].capitalize() + field.name[1:] + "(" + self.getTargetTypeName(field.typeid.name) + " new" + field.name[0].capitalize() + field.name[1:] + ") {\n");
-                    self.indent()
-                    file.write(self.getIndent() + "this." + field.name + " = new" + field.name[0].capitalize() + field.name[1:] + ";\n")
-                    self.unIndent()
-                    file.write(self.getIndent() + "}\n\n")
+                    # Combined field and "plain" field must not be treated the same way
+                    if not isinstance(field,GenMsgAST.MessageType.CombinedField):
+                        file.write(self.getIndent() + "public void set" + field.name[0].capitalize() + field.name[1:] + "(" + self.getTargetTypeName(field.typeid.name) + " new" + field.name[0].capitalize() + field.name[1:] + ") {\n");
+                        self.indent()
+                        file.write(self.getIndent() + "this." + field.name + " = new" + field.name[0].capitalize() + field.name[1:] + ";\n")
+                        self.unIndent()
+                        file.write(self.getIndent() + "}\n\n")
 
             file.write("}\n\n")
             self.unIndent()
