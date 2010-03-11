@@ -7,7 +7,7 @@ TODO list for the CERTI Message generator:
    each backend generator (C++, Java, Python etc...) may be loaded separately
    PARTIALLY DONE --> need to automatize the backend loading.
 
-2) Support variant for sequences
+2) Support variant for sequences (vector/list/queue/...)
 
 3) Explain the on-the-wire encoding scheme (i.e. MessageBuffer)
 
@@ -23,3 +23,11 @@ TODO list for the CERTI Message generator:
    (or default value exists)
 
 7) Handle natively defined default values for members
+
+8) Add "merge" qualifier for fields which should be applicable
+   only for "message type" fields. This would "merge-in"
+   the field of the target message as if it were written
+   in the body of the merger message itself.
+   
+9) May be it would be worth implementing a "clone" method.
+   
