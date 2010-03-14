@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.31 2009/11/18 18:50:48 erk Exp $
+// $Id: RTIA.cc,v 3.32 2010/03/14 15:35:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -97,7 +97,7 @@ RTIA::execute() {
     NetworkMessage *msg_tcp_udp;
     int n ;
 
-    while (!fm->_fin_execution) {
+    while (fm->_connection_state != FederationManagement::CONNECTION_FIN) {
        
         /* 
          * readMessage call will allocate EITHER a Network Message or a Message 
@@ -148,7 +148,7 @@ RTIA::execute() {
             /* timev is undefined after select() */
         }
         catch (NetworkSignal) {
-            fm->_fin_execution = true ;
+            fm->_connection_state = FederationManagement::CONNECTION_FIN;
             n = 0 ;
             delete msg_un ;
             delete msg_tcp_udp ;
@@ -180,4 +180,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.31 2009/11/18 18:50:48 erk Exp $
+// $Id: RTIA.cc,v 3.32 2010/03/14 15:35:53 gotthardp Exp $

@@ -51,6 +51,7 @@ throw (SaveInProgress, RestoreInProgress)
 	//D.Mes(pdMessage, 'N', type);
 
 	switch (type) {
+	case Message::OPEN_CONNEXION:
 	case Message::CLOSE_CONNEXION:
 	case Message::RESIGN_FEDERATION_EXECUTION:
 	case Message::TICK_REQUEST:
@@ -112,7 +113,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 	case Message::CLOSE_CONNEXION:
 		D.Out(pdTrace,
 				"Receiving Message from Federate, type CloseConnexion.");
-		fm->_fin_execution = true;
+		fm->_connection_state = FederationManagement::CONNECTION_FIN;
 		// the this->comm can now be used only to sent the CLOSE_CONNEXION response
 		break ;
 
@@ -1313,6 +1314,36 @@ RTIA::processOngoingTick() {
 } /* RTIA::processOngoingTick() */
 
 void
+RTIA::initFederateProcessing(Message *req, Message* rep)
+{
+	if(req->getType() == Message::OPEN_CONNEXION) {
+		M_Open_Connexion *OCq, *OCr;
+		OCq = static_cast<M_Open_Connexion *>(req);
+		OCr = static_cast<M_Open_Connexion *>(rep);
+
+		if(OCq->getVersionMajor() == CERTI_Message::versionMajor) {
+			uint32_t minorEffective = OCq->getVersionMinor() < CERTI_Message::versionMinor
+				? OCq->getVersionMinor() : CERTI_Message::versionMinor;
+			OCr->setVersionMajor(CERTI_Message::versionMajor);
+			OCr->setVersionMinor(minorEffective);
+
+			fm->_connection_state = FederationManagement::CONNECTION_READY;
+		}
+		else {
+			rep->setException(e_RTIinternalError, stringize()
+				<< "RTIA protocol version mismatch"
+				<< "; federate " << OCq->getVersionMajor() << "." << OCq->getVersionMinor()
+				<< ", RTIA " << CERTI_Message::versionMajor << "." << CERTI_Message::versionMinor);
+		}
+	}
+	else {
+		rep->setException(e_RTIinternalError,
+			"RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
+	}
+	stat.federateService(req->getType());
+}
+
+void
 RTIA::processFederateRequest(Message *req)
 {
 	/* use virtual constructor in order to build  *
@@ -1322,10 +1353,26 @@ RTIA::processFederateRequest(Message *req)
 	G.Out(pdGendoc,"enter RTIA::processFederateRequest");
 
 	try {
-		TypeException exc ;
-		chooseFederateProcessing(req, rep.get(), exc);
-		if ( exc != e_RTIinternalError && exc != e_NO_EXCEPTION) {
-			rep->setException(exc);
+		switch(fm->_connection_state) {
+		case FederationManagement::CONNECTION_PRELUDE:
+			initFederateProcessing(req, rep.get());
+			break;
+
+		case FederationManagement::CONNECTION_READY:
+		{
+			TypeException exc ;
+			chooseFederateProcessing(req, rep.get(), exc);
+			if ( exc != e_RTIinternalError && exc != e_NO_EXCEPTION) {
+				rep->setException(exc);
+			}
+			break;
+		}
+
+		case FederationManagement::CONNECTION_FIN:
+		default:
+			rep->setException(e_RTIinternalError,
+				"RTIA connection already closed.");
+			break;
 		}
 	}
 	// FIXME should

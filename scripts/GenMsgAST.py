@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.5 2010/03/08 12:52:11 erk Exp $
+## $Id: GenMsgAST.py,v 1.6 2010/03/14 15:35:54 gotthardp Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -101,6 +101,7 @@ class MessageAST(ASTElement):
     def __init__(self,name):
         super(MessageAST,self).__init__(name=name)
         self.__package            = None
+        self.__version            = None
         self.__factory            = None
         self.__nativeTypes        = []
         self.__messageTypes       = []
@@ -133,6 +134,15 @@ class MessageAST(ASTElement):
         self.__package = package
     # pythonic getter/setter using properties   
     package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None)
+
+    def hasVersion(self):
+        return self.__version != None
+    def __getVersion(self):
+        return self.__version
+    def __setVersion(self,version):
+        self.__version = version
+    # pythonic getter/setter using properties   
+    version = property(fget=__getVersion,fset=__setVersion,fdel=None,doc=None)
 
     def hasFactory(self):
         return self.__factory != None
@@ -186,6 +196,8 @@ class MessageAST(ASTElement):
                 self.addMessageType(any)
             elif isinstance(any,Package):
                 self.package = any
+            elif isinstance(any,Version):
+                self.version = any
             elif isinstance(any,Factory):
                 self.factory = any
             # Handle comment block preceding other AST element
@@ -293,6 +305,20 @@ class Package(ASTElement):
           
     def __repr__(self):
         return "package %s" % self.name
+
+class Version(ASTElement):
+    """
+    Represents a version number.
+    
+    A C{Version} is a simple C{ASTElement} whose
+    name is a C{string}.
+    """
+    def __init__(self,number):
+        super(Version,self).__init__(name="Version")
+        self.number = number
+          
+    def __repr__(self):
+        return "version %d.%d" % self.number
 
 class Factory(ASTElement):
     """

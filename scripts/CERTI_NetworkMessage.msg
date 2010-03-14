@@ -23,6 +23,7 @@
 // ----------------------------------------------------------------------------
 // The messages related classes will be placed in the certi package
 package certi
+version 1.0
 
 // Network message is the base class
 // for message exchanged between RTIA and RTIG

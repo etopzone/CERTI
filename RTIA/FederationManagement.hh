@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.30 2010/03/07 18:23:40 erk Exp $
+// $Id: FederationManagement.hh,v 3.31 2010/03/14 15:35:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -108,7 +108,21 @@ public:
     TimeManagement *tm ;
     Handle _numero_federation ;
     FederateHandle federate ;
-    bool _fin_execution ;
+
+    /**
+     * State of the connection towards the federate. The state is changed
+     * through the OPEN_CONNEXION and CLOSE_CONNEXION messages.
+     */
+    typedef enum ConnectionState {
+        //! Initial state before OPEN_CONNEXION; no other message allowed.
+        CONNECTION_PRELUDE,
+        //! Communication is active.
+        CONNECTION_READY,
+        //! State after CLOSE_CONNEXION; no further messages allowed.
+        CONNECTION_FIN
+    } ConnectionState_t;
+
+    ConnectionState_t _connection_state;
 
 private:
     Communications *comm ;
@@ -130,4 +144,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.30 2010/03/07 18:23:40 erk Exp $
+// $Id: FederationManagement.hh,v 3.31 2010/03/14 15:35:53 gotthardp Exp $

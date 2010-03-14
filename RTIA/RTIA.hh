@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.19 2010/02/27 16:53:36 erk Exp $
+// $Id: RTIA.hh,v 3.20 2010/03/14 15:35:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -106,6 +106,14 @@ private:
 
     /**
      * The method called by processFederateRequest in order to
+     * process requests in the FederationManagement::CONNECTION_PRELUDE state.
+     * @param[in] request the federate request message
+     * @param[out] answer answer message to be sent back to the federate
+     */
+    void initFederateProcessing(Message *request, Message* answer);
+
+    /**
+     * The method called by processFederateRequest in order to
      * effectively process the request and build the appropriate
      * answer.
      * @param[in] request the federate request message
@@ -124,4 +132,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.19 2010/02/27 16:53:36 erk Exp $
+// $Id: RTIA.hh,v 3.20 2010/03/14 15:35:53 gotthardp Exp $

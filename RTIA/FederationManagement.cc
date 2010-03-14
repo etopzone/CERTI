@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.81 2010/03/07 18:23:40 erk Exp $
+// $Id: FederationManagement.cc,v 3.82 2010/03/14 15:35:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,7 +53,7 @@ static PrettyDebug G("GENDOC",__FILE__);
     _numero_federation = 0 ;
     federate = 0 ;
 
-    _fin_execution = false ;
+    _connection_state = CONNECTION_PRELUDE;
 
     _est_membre_federation = false ;
 

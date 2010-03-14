@@ -23,6 +23,7 @@
 // ----------------------------------------------------------------------------
 // The messages related classes will be placed in the certi package
 package certi
+version 1.0
 
 // Message is the base class for
 // message exchanged between RTIA and Federate (libRTI) AKA CERTI Message. 
@@ -162,6 +163,12 @@ message EventRetraction {
     required FederateHandle sendingFederate {default = 0}
     required uint64         SN              {default = 0}
 }        
+
+// Connexion initialization message
+message M_Open_Connexion : merge Message {
+    required uint32 versionMajor
+    required uint32 versionMinor
+}
 
 // Closing connexion message
 message M_Close_Connexion : merge Message {

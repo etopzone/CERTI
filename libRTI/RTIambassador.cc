@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.114 2010/03/07 18:23:39 erk Exp $
+// $Id: RTIambassador.cc,v 3.115 2010/03/14 15:35:54 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -321,6 +321,13 @@ throw (RTI::MemoryExhausted, RTI::RTIinternalError)
 		throw RTI::RTIinternalError( "Cannot connect to RTIA" );
 	}
 #endif
+
+	M_Open_Connexion req, rep ;
+	req.setVersionMajor(CERTI_Message::versionMajor);
+	req.setVersionMinor(CERTI_Message::versionMinor);
+
+	G.Out(pdGendoc,"        ====>executeService OPEN_CONNEXION");
+	privateRefs->executeService(&req, &rep);
 
 	G.Out(pdGendoc,"exit  RTIambassador::RTIambassador");
 }
@@ -2981,4 +2988,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.114 2010/03/07 18:23:39 erk Exp $
+// $Id: RTIambassador.cc,v 3.115 2010/03/14 15:35:54 gotthardp Exp $

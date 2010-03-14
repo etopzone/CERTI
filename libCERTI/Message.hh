@@ -45,6 +45,7 @@ public:
 
     enum Type {
         NOT_USED = 0,
+        OPEN_CONNEXION,
         CLOSE_CONNEXION,
 
         // gestion federation

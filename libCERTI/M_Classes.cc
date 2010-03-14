@@ -1,4 +1,4 @@
-// Generated on 2010 March Mon, 08 at 09:41:06 by the CERTI message generator
+// Generated on 2010 March Sun, 14 at 16:30:18 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -52,6 +52,40 @@ namespace certi {
       out << " sendingFederate = " << sendingFederate << " "       << std::endl;
       out << " SN = " << SN << " "       << std::endl;
       out << "[EventRetraction -End]" << std::endl;   }
+
+   M_Open_Connexion::M_Open_Connexion() {
+      this->messageName = "M_Open_Connexion";
+      this->type = Message::OPEN_CONNEXION;
+      //versionMajor= <no default value in message spec using builtin>
+      //versionMinor= <no default value in message spec using builtin>
+   }
+
+   M_Open_Connexion::~M_Open_Connexion() {
+   }
+
+   void M_Open_Connexion::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_uint32(versionMajor);
+      msgBuffer.write_uint32(versionMinor);
+   }
+
+   void M_Open_Connexion::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      versionMajor = msgBuffer.read_uint32();
+      versionMinor = msgBuffer.read_uint32();
+   }
+
+   void M_Open_Connexion::show(std::ostream& out) {
+      out << "[M_Open_Connexion -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " versionMajor = " << versionMajor << " "       << std::endl;
+      out << " versionMinor = " << versionMinor << " "       << std::endl;
+      out << "[M_Open_Connexion -End]" << std::endl;   }
 
    M_Close_Connexion::M_Close_Connexion() {
       this->messageName = "M_Close_Connexion";
@@ -4302,11 +4336,14 @@ namespace certi {
    }
 
    Message* M_Factory::create(M_Type type) throw (RTIinternalError) {
-      Message* msg;
+      Message* msg = NULL;
 
       switch (type) {
          case Message::NOT_USED:
             throw RTIinternalError("NOT_USED message type should not be used!!");
+            break;
+         case Message::OPEN_CONNEXION:
+            msg = new M_Open_Connexion();
             break;
          case Message::CLOSE_CONNEXION:
             msg = new M_Close_Connexion();
@@ -4744,7 +4781,7 @@ namespace certi {
       return msg;
    } /* end of M_Factory::create */
 
-   Message* M_Factory::receive(StreamType stream) throw (RTIinternalError) {
+   Message* M_Factory::receive(MStreamType stream) throw (RTIinternalError) {
       // FIXME This is not thread safe
       static MessageBuffer msgBuffer;
       Message  msgGen;

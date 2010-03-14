@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.35 2010/03/08 11:34:54 erk Exp $
+## $Id: GenerateMessages.py,v 1.36 2010/03/14 15:35:54 gotthardp Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -137,6 +137,7 @@ mainlogger.info("Generating for language: <%s>" % language)
 # reserved keywords
 reserved = {
    'package'        : 'PACKAGE',
+   'version'        : 'VERSION',
    'factory'        : 'FACTORY',
    'factoryCreator' : 'FACTORY_CREATOR',
    'factoryReceiver': 'FACTORY_RECEIVER',   
@@ -275,6 +276,7 @@ def p_statement_list(p):
 def p_statement(p):
     '''statement : comment_block
                  | package
+                 | version
                  | factory
                  | message                 
                  | native                 
@@ -302,6 +304,10 @@ def p_package_id(p):
         p[0]=p[1]
     else:
         p[0]=p[1]+"."+p[3]
+
+def p_version(p):
+    '''version : VERSION INTEGER_VALUE PERIOD INTEGER_VALUE'''
+    p[0]=GenMsgAST.Version((p[2],p[4]))
 
 def p_factory(p):
     '''factory : FACTORY ID LBRACE factory_creator factory_receiver RBRACE'''
