@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.54 2010/02/27 16:53:36 erk Exp $
+// $Id: TimeManagement.cc,v 3.55 2010/03/14 14:38:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -369,10 +369,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break;
 
       default:
-	std::stringstream errorMsg;
         D.Out(pdExcept, "Unknown message type in executeFederateService.");
-	errorMsg << "Unknown message <" <<  msg.getName() << " in executeFederateService.";
-        throw RTIinternalError(errorMsg.str());
+        throw RTIinternalError(stringize() <<
+            "Unknown message <" <<  msg.getName() << "> in executeFederateService.");
     }
     G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
@@ -994,4 +993,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.54 2010/02/27 16:53:36 erk Exp $
+// $Id: TimeManagement.cc,v 3.55 2010/03/14 14:38:27 gotthardp Exp $

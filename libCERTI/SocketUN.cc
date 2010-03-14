@@ -26,7 +26,6 @@
 #include <cstdio>
 #include <cassert>
 
-#include <sstream>
 #include <string>
 #include <iostream>
 
@@ -275,13 +274,8 @@ SentBytesCount += total_sent ;
 //! error.
 void SocketUN::error(const char *msg) throw (NetworkError)
 {
- std::stringstream smsg;
-
- smsg << "SocketUN::error <"
- 	  << strerror(errno)
- 	  << "> msg = <"
- 	  << msg <<">";
- throw NetworkError(smsg.str());
+    throw NetworkError(stringize() <<
+        "SocketUN::error <" << strerror(errno) << "> msg = <" << msg <<">");
 }
 
 // ----------------------------------------------------------------------------

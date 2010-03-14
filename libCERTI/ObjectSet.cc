@@ -32,12 +32,10 @@
 
 // Standard
 #include <iostream>
-#include <sstream>
 
 using std::pair ;
 using std::cout ;
 using std::endl ;
-using std::ostringstream ;
 using std::string ;
 
 namespace certi {
@@ -103,9 +101,8 @@ ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
             return i->second->getHandle();
     }
 
-    std::stringstream msg;
-    msg << "No object instance with name <" << the_name;
-    throw ObjectNotKnown(msg.str());
+    throw ObjectNotKnown(stringize() <<
+        "No object instance with name <" << the_name);
 }
 
 // ----------------------------------------------------------------------------
@@ -159,9 +156,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
         object->setName(the_name);
     }
     else {
-        ostringstream tmp ;
-        tmp << "HLAobject_" << the_object ;
-        object->setName(tmp.str());
+        object->setName(stringize() << "HLAobject_" << the_object);
     }
 
     pair<ObjectHandle, Object *> tmp(the_object, object);
@@ -461,4 +456,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.28 2010/03/07 21:30:30 erk Exp $
+// $Id: ObjectSet.cc,v 3.29 2010/03/14 14:38:27 gotthardp Exp $

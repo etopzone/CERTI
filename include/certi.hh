@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.45 2010/03/07 21:30:31 erk Exp $
+// $Id: certi.hh,v 3.46 2010/03/14 14:38:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -108,6 +108,7 @@
 #define CERTI_DECODE_DOUBLE_FROM_UINT64BE(val)  (CERTI_UINT64_FROM_BE (*(uint64_t*)(val)))
 
 #include <string>
+#include <sstream>
 
 /**
  * @defgroup libCERTI The CERTI library.
@@ -162,6 +163,36 @@ const OrderType TIMESTAMP = 2 ;
 
 // Constants
 const int MAX_BACKLOG = 256 ;
+
+/**
+ * Helper class to simplify string construction. Implemented as
+ * a stringstream wrapper.
+ *
+ * For example:
+ * throw AttributeNotDefined(stringize() << "value: " << number);
+ */
+template<typename C>
+struct basic_stringize
+{
+  template<typename T>
+  basic_stringize<C> & operator << (const T& t)
+  {
+    m_s << t;
+    return *this;
+  }
+
+  // note: must not return reference
+  operator const std::basic_string<C>() const
+  {
+    return m_s.str();
+  }
+
+private:
+  std::basic_stringstream<C> m_s;
+};
+
+typedef basic_stringize<char> stringize;
+typedef basic_stringize<wchar_t> wstringize;
 
 } // namespace certi
 
@@ -268,4 +299,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.45 2010/03/07 21:30:31 erk Exp $
+// $Id: certi.hh,v 3.46 2010/03/14 14:38:27 gotthardp Exp $

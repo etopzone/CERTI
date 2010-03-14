@@ -86,7 +86,6 @@ SocketUDP::createConnection(const char *server_name, unsigned int port)
 {
 struct sockaddr_in sock_temp ;
 char localhost[4096] ;
-std::stringstream msg;
 struct hostent * hp_local;
 
 #ifdef _WIN32								//netDot
@@ -104,14 +103,12 @@ hp_local = NULL;
 gethostname(localhost, 4096);
 
 if ((hp_local = gethostbyname(localhost)) == NULL)
-	{
-		msg << "gethostbyname gave NULL answer for hostname <"
-			<< localhost
-			<< "> with error <"
-			<< strerror(errno)
-			<< ">";
-	   throw NetworkError(msg.str());
-	}
+    {
+        throw NetworkError(stringize()
+            << "gethostbyname gave NULL answer for hostname <"
+            << localhost
+            << "> with error <" << strerror(errno) << ">");
+    }
 
 	memcpy((char*)&sock_local.sin_addr,(char *)hp_local->h_addr,	hp_local->h_length);
 
@@ -119,21 +116,17 @@ if ((hp_local = gethostbyname(localhost)) == NULL)
 sock_local.sin_family = AF_INET;
 sock_local.sin_port = 0 ;
 
-if (!open())
-	{
-	msg << "Cannot Open Socket open gave error < "
-	    << 	strerror(errno)
-	    << ">";
-	throw NetworkError(msg.str());
-	}
+    if (!open())
+    {
+        throw NetworkError(stringize()
+            << "Cannot Open Socket open gave error < " << strerror(errno) << ">");
+    }
 
-if (!bind())
-	{
-	msg << "Cannot Bind Socket bind gave error < "
-		    << 	strerror(errno)
-		    << ">";
-	throw NetworkError(msg.str());
-	}
+    if (!bind())
+    {
+        throw NetworkError(stringize()
+            << "Cannot Bind Socket bind gave error < " << strerror(errno) << ">");
+    }
 
 // recuperation du port lie au socket _socket_udp
 getsockname(_socket_udp, (sockaddr *)&sock_temp, &taille);
@@ -151,7 +144,6 @@ SocketUDP::createUDPServer(unsigned int port)
   assert(!_est_init_udp);
 
   char localhost[MAXHOSTNAMELEN+1] ;
-  std::stringstream msg;
   struct hostent * hp_local=NULL;
 
   // Building Local Address
@@ -161,15 +153,12 @@ SocketUDP::createUDPServer(unsigned int port)
 
   hp_local = (struct hostent *) gethostbyname(localhost);
   if (NULL == hp_local)
-	{
-	 msg << "gethostbyname gave NULL answer for hostname <"
-	 			<< localhost
-	 			<< "> with error <"
-	 			<< strerror(errno)
-	 			<< ">";
-	 		//perror("SocketUDP: gethostbyname");
-	 	   throw NetworkError(msg.str());
-	}
+    {
+        throw NetworkError(stringize()
+            << "gethostbyname gave NULL answer for hostname <"
+            << localhost
+            << "> with error <" << strerror(errno) << ">");
+    }
 
    memcpy((char *) &sock_local.sin_addr,(char *)hp_local->h_addr, hp_local->h_length);
    sock_local.sin_family = hp_local->h_addrtype ;

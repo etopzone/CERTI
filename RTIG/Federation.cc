@@ -18,13 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.123 2010/03/07 21:30:30 erk Exp $
+// $Id: Federation.cc,v 3.124 2010/03/14 14:38:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 #include "NM_Classes.hh"
-#include <sstream>
 #include <cstring>
 #include <cerrno>
 #include <memory>
@@ -1437,9 +1436,8 @@ Federation::getFederate(const std::string& federate_name)
             return i->second;
     }
 
-    std::stringstream msg;
-    msg << "Federate <"<<federate_name<<"> not [yet] member of Federation <" << getName() <<">.";
-    throw FederateNotExecutionMember(msg.str());
+    throw FederateNotExecutionMember(stringize() <<
+        "Federate <"<<federate_name<<"> not [yet] member of Federation <" << getName() <<">.");
 }
 
 // ----------------------------------------------------------------------------
@@ -1589,9 +1587,7 @@ Federation::registerObject(FederateHandle federate,
         strname = object_name;
     } else {
         // create a name if necessary
-        std::stringstream ss;
-        ss << "HLAObject_" << new_id;
-        strname = ss.str();
+        strname = stringize() << "HLAObject_" << new_id;
     }
 
     // Register Object.
@@ -2398,9 +2394,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
         strname = object_name;
     } else {
         // create a name if necessary
-        std::stringstream ss;
-        ss << "HLAObject_" << object;
-        strname = ss.str();
+        strname = stringize() << "HLAObject_" << object;
     }
 
     root->registerObjectInstance(federate, class_handle, object, strname);
@@ -2582,5 +2576,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.123 2010/03/07 21:30:30 erk Exp $
+// $Id: Federation.cc,v 3.124 2010/03/14 14:38:27 gotthardp Exp $
 

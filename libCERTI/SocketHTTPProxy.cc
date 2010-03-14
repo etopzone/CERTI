@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.6 2010/03/07 18:23:39 erk Exp $
+// $Id: SocketHTTPProxy.cc,v 3.7 2010/03/14 14:38:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -184,10 +184,8 @@ int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
     int iCode = atoi(sCode);
     // the response code must be 2xx
     if (iCode < 200 || iCode >= 300) {
-        std::stringstream msg;
-        msg << "Proxy connection refused: " << response;
-        D.Out(pdDebug, "%s", msg.str().c_str());
-        throw NetworkError(msg.str().c_str());
+        throw NetworkError(stringize() <<
+            "Proxy connection refused: " << response);
     }
 
     // receive the rest of the HTTP response
@@ -253,4 +251,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.6 2010/03/07 18:23:39 erk Exp $
+// $Id: SocketHTTPProxy.cc,v 3.7 2010/03/14 14:38:27 gotthardp Exp $
