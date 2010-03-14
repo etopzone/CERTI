@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.7 2010/03/11 10:38:01 erk Exp $
+## $Id: GenMsgCXX.py,v 1.8 2010/03/14 15:29:12 gotthardp Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -553,7 +553,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
         stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (RTIinternalError) {\n"% creator)
         self.indent()
-        stream.write(self.getIndent()+"%s* msg;\n\n" % creator[0])
+        stream.write(self.getIndent()+"%s* msg = NULL;\n\n" % creator[0])
         stream.write(self.getIndent() + "switch (type) {\n")
         self.indent()
         for e in self.AST.eMessageType.values:
