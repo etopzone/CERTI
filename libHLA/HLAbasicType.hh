@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.6 2009/10/18 19:54:08 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.7 2010/03/14 17:35:20 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -93,10 +93,11 @@ struct __swap<T,2>
         union {
             uint16_t u16;
             T x;
-        } result;
-        result.u16 =
-            (*(uint16_t*)&x<<8 | *(uint16_t*)&x>>8);
-        return result.x;
+        } val, res;
+        val.x = x;
+        res.u16 =
+            (val.u16<<8 | val.u16>>8);
+        return res.x;
     }
 };
 
@@ -107,12 +108,13 @@ struct __swap<T,4>
         union {
             uint32_t u32;
             T x;
-        } result;
-        result.u32 =
-            (*(uint32_t*)&x<<24 | *(uint32_t*)&x>>24 |
-            (*(uint32_t*)&x & 0x0000ff00UL)<<8 |
-            (*(uint32_t*)&x & 0x00ff0000UL)>>8);
-        return result.x;
+        } val, res;
+        val.x = x;
+        res.u32 =
+            (val.u32<<24 | val.u32>>24 |
+            (val.u32 & 0x0000ff00UL)<<8 |
+            (val.u32 & 0x00ff0000UL)>>8);
+        return res.x;
     }
 };
 
@@ -123,16 +125,17 @@ struct __swap<T,8>
         union {
             uint64_t u64;
             T x;
-        } result;
-        result.u64 =
-            (*(uint64_t*)&x<<56 | *(uint64_t*)&x>>56 |
-            (*(uint64_t*)&x & 0x000000000000ff00ULL)<<40 |
-            (*(uint64_t*)&x & 0x0000000000ff0000ULL)<<24 |
-            (*(uint64_t*)&x & 0x00000000ff000000ULL)<< 8 |
-            (*(uint64_t*)&x & 0x000000ff00000000ULL)>> 8 |
-            (*(uint64_t*)&x & 0x0000ff0000000000ULL)>>24 |
-            (*(uint64_t*)&x & 0x00ff000000000000ULL)>>40);
-        return result.x;
+        } val, res;
+        val.x = x;
+        res.u64 =
+            (val.u64<<56 | val.u64>>56 |
+            (val.u64 & 0x000000000000ff00ULL)<<40 |
+            (val.u64 & 0x0000000000ff0000ULL)<<24 |
+            (val.u64 & 0x00000000ff000000ULL)<< 8 |
+            (val.u64 & 0x000000ff00000000ULL)>> 8 |
+            (val.u64 & 0x0000ff0000000000ULL)>>24 |
+            (val.u64 & 0x00ff000000000000ULL)>>40);
+        return res.x;
     }
 };
 
@@ -215,5 +218,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.6 2009/10/18 19:54:08 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.7 2010/03/14 17:35:20 gotthardp Exp $
 
