@@ -115,10 +115,10 @@ native EventRetractionHandle {
 // it won't appear in the generated factory method.
 // It's a convenient way to describe a structured native
 // message using "combine". 
-message EventRetraction {
-    required FederateHandle sendingFederate {default = 0}
-    required uint64         SN              {default = 0}
-}
+//message EventRetraction {
+//    required FederateHandle sendingFederate {default = 0}
+//    required uint64         SN              {default = 0}
+//}
 
 message NM_FOM_Dimension {
     required DimensionHandle handle {default=0}
@@ -221,7 +221,8 @@ message NM_Set_Attribute_Scope_Advisory_Switch : merge NetworkMessage {
 }
 
 message NM_Register_Federation_Synchronization_Point : merge NetworkMessage {    
-	required bool exists // tell whether if the synchronization set is specified or not    
+	required bool exists // tell whether if the synchronization set is specified or not
+	repeated FederateHandle federates // the federate set
 }
 
 message NM_Synchronization_Point_Registration_Succeeded : merge NetworkMessage {}
@@ -265,10 +266,12 @@ message NM_Federation_Restored : merge NetworkMessage {}
 message NM_Federation_Not_Restored : merge NetworkMessage {}
 
 message NM_Publish_Object_Class : merge NetworkMessage {
-	repeated AttributeHandle  attributes
+    required ObjectClassHandle  objectClass
+	repeated AttributeHandle    attributes
 }
 
-message NM_Unpublish_Object_Class : merge NetworkMessage {}
+message NM_Unpublish_Object_Class : merge NM_Publish_Object_Class {
+}
 
 message NM_Publish_Interaction_Class : merge NetworkMessage {
 	required InteractionClassHandle interactionClass // the interaction class
@@ -277,10 +280,12 @@ message NM_Publish_Interaction_Class : merge NetworkMessage {
 message NM_Unpublish_Interaction_Class : merge NM_Publish_Interaction_Class {}
 
 message NM_Subscribe_Object_Class : merge NetworkMessage {
-	repeated AttributeHandle attributes	
+	required ObjectClassHandle  objectClass
+	repeated AttributeHandle    attributes	
 }
 
-message NM_Unsubscribe_Object_Class : merge NM_Unpublish_Object_Class {}
+message NM_Unsubscribe_Object_Class : merge NM_Subscribe_Object_Class {
+}
 
 message NM_Subscribe_Interaction_Class : merge NM_Publish_Interaction_Class {}
 
@@ -320,14 +325,15 @@ message NM_Reflect_Attribute_Values : merge NetworkMessage {
 
 // HLA 1.3 §6.6
 message NM_Send_Interaction : merge NetworkMessage {
-	required InteractionClassHandle   interaction
+	required InteractionClassHandle   interactionClass
 	repeated ParameterHandle          parameters
 	repeated ParameterValue_t         values
+	required RegionHandle             region // FIXME check this....
 }
 
 // HLA 1.3 §6.7
 message NM_Receive_Interaction : merge NetworkMessage {
-	required InteractionClassHandle   interaction
+	required InteractionClassHandle   interactionClass
 	repeated ParameterHandle          parameters
 	repeated ParameterValue_t         values
 	optional EventRetractionHandle    event	
@@ -342,116 +348,124 @@ message NM_Delete_Object : merge NetworkMessage {
 // HLA 1.3 §6.9 Remove Object Instance
 message NM_Remove_Object : merge NetworkMessage {
 	required ObjectHandle           object
+	required ObjectClassHandle      objectClass
 	optional EventRetractionHandle  event
 }
 
-message NM_Change_Attribute_Transport_Type : merge NetworkMessage {}
+message NM_Change_Attribute_Transport_Type : merge NetworkMessage {
+	required ObjectHandle       object
+	repeated AttributeHandle    attributes
+	required TransportType      transport
+}
 
-message NM_Change_Attribute_Order_Type : merge NetworkMessage {}
+message NM_Change_Attribute_Order_Type : merge NetworkMessage {
+	required ObjectHandle       object
+	repeated AttributeHandle    attributes
+	required OrderType          order
+}
 
-message NM_Change_Interaction_Transport_Type : merge NetworkMessage {}
+message NM_Change_Interaction_Transport_Type : merge NetworkMessage {
+	required InteractionClassHandle interactionClass
+	required TransportType          transport
+}
 
-message NM_Change_Interaction_Order_Type : merge NetworkMessage {}
+message NM_Change_Interaction_Order_Type : merge NetworkMessage {
+	required InteractionClassHandle interactionClass
+	required OrderType              order
+}
 
 message NM_Request_Class_Attribute_Value_Update : merge NetworkMessage {
     required ObjectClassHandle objectClass
-    repeated AttributeHandle   handles
+    repeated AttributeHandle   attributes
 }
 
 message NM_Request_Object_Attribute_Value_Update : merge NetworkMessage {
-    required ObjectHandle object
-    repeated AttributeHandle handles
+    required ObjectHandle    object
+    repeated AttributeHandle attributes
 }
 
 message NM_Is_Attribute_Owned_By_Federate : merge NetworkMessage {
+    required ObjectHandle    object
     required AttributeHandle attribute
 }
 
-message NM_Query_Attribute_Ownership : merge NM_Is_Attribute_Owned_By_Federate {}
-
-message NM_Attribute_Is_Not_Owned : merge NM_Is_Attribute_Owned_By_Federate {}
-
-message NM_Inform_Attribute_Ownership : merge NM_Is_Attribute_Owned_By_Federate {}
-
-message NM_Negotiated_Attribute_Ownership_Divestiture : merge NetworkMessage {
+message NM_Query_Attribute_Ownership : merge NetworkMessage {
 	required ObjectHandle    object
-    repeated AttributeHandle attributes
+    required AttributeHandle attribute
 }
 
-message NM_Attribute_Ownership_Acquisition_Notification : merge NetworkMessage {
+message NM_Attribute_Is_Not_Owned : merge NetworkMessage {
+	required ObjectHandle    object
+	required AttributeHandle attribute
+}
+
+message NM_Inform_Attribute_Ownership : merge NetworkMessage {
+	required ObjectHandle    object
+	required AttributeHandle attribute
+}
+
+message NM_Attribute_Ownership_Base : merge NetworkMessage {
     required ObjectHandle    object
     repeated AttributeHandle attributes
 }
 
-message NM_Attribute_Ownership_Divestiture_Notification : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Negotiated_Attribute_Ownership_Divestiture : merge NM_Attribute_Ownership_Base {
+	
 }
 
-message NM_Request_Attribute_Ownership_Assumption : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Attribute_Ownership_Acquisition_Notification : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Attribute_Ownership_Unavailable : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Attribute_Ownership_Divestiture_Notification : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Attribute_Ownership_Acquisition_If_Available : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Request_Attribute_Ownership_Assumption : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Unconditional_Attribute_Ownership_Divestiture : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+// This is a base message which is used to 
+// define several Attribute_Ownership_XXX
+// since all these message contains the same fields
+message NM_Attribute_Ownership_Unavailable : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Attribute_Ownership_Acquisition : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Attribute_Ownership_Acquisition_If_Available : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Request_Attribute_Ownership_Release : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Unconditional_Attribute_Ownership_Divestiture : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Attribute_Ownership_Acquisition : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Attribute_Ownership_Release_Response : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Request_Attribute_Ownership_Release : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Cancel_Attribute_Ownership_Acquisition : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NetworkMessage {
-    required ObjectHandle    object
-    repeated AttributeHandle attributes
+message NM_Attribute_Ownership_Release_Response : merge NM_Attribute_Ownership_Base {
+}
+
+message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Attribute_Ownership_Base {
+}
+
+message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Attribute_Ownership_Base {
 }
 
 message NM_DDM_Base {
-	repeated AttributeHandle handles
+	repeated AttributeHandle attributes
 	required bool DDM_bool { default=false }	
 } 
 
 message NM_DDM_Create_Region : merge NetworkMessage {        
-	repeated AttributeHandle handles
+	repeated AttributeHandle attributes
 	required bool DDM_bool { default=false }
 	required SpaceHandle space
 	required RegionHandle region
 }
 
 message NM_DDM_Modify_Region : merge NetworkMessage {
-        repeated AttributeHandle handles
+    repeated AttributeHandle attributes
 	required bool DDM_bool { default=false }
 	required RegionHandle region
 }
@@ -461,42 +475,52 @@ message NM_DDM_Delete_Region : merge NetworkMessage {
 }
 
 message NM_DDM_Associate_Region : merge NetworkMessage {
-	repeated AttributeHandle handles
-	required bool DDM_bool { default=false }
-	required RegionHandle region
-	required ObjectHandle object
+	repeated AttributeHandle attributes
+	required bool DDM_bool   { default=false }
+	required RegionHandle    region
+	required ObjectHandle    object
 }
 
 message NM_DDM_Unassociate_Region : merge NetworkMessage {
-	repeated AttributeHandle handles
+	repeated AttributeHandle attributes
 	required RegionHandle    region
 	required ObjectHandle    object
 	required bool DDM_bool { default=false }
 }
 
 message NM_DDM_Register_Object : merge NetworkMessage {
-	repeated AttributeHandle handles
+	required ObjectClassHandle objectClass
+	repeated AttributeHandle   attributes
+	required RegionHandle      region
+	optional string            objectInstanceName
+	required ObjectHandle      object
 	required bool DDM_bool { default=false }
 }
 
 message NM_DDM_Subscribe_Attributes : merge NetworkMessage {
-	repeated AttributeHandle handles
+    required ObjectClassHandle objectClass
+    required RegionHandle      region
+	repeated AttributeHandle   attributes
 	required bool DDM_bool { default=false }
 }
 
 message NM_DDM_Unsubscribe_Attributes : merge NetworkMessage {
-	repeated AttributeHandle handles
+	required ObjectClassHandle objectClass
+    required RegionHandle      region
+	repeated AttributeHandle attributes
 	required bool DDM_bool { default=false }
 }
 
 message NM_DDM_Subscribe_Interaction : merge NetworkMessage {
-	repeated AttributeHandle handles
+    required InteractionClassHandle interactionClass 
+	required RegionHandle           region
 	required bool DDM_bool { default=false }
 }
 
 message NM_DDM_Unsubscribe_Interaction : merge NM_DDM_Subscribe_Interaction {}
 
-message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Value_Update {}
+message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Value_Update {
+}
 
 message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
 	required ObjectClassHandle objectClass
