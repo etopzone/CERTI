@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.9 2010/03/14 15:35:54 gotthardp Exp $
+## $Id: GenMsgCXX.py,v 1.10 2010/03/17 09:55:56 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -200,7 +200,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent())
                 stream.write("void set"+self.upperFirst(field.name)+"(const ")
                 stream.write(targetTypeName+"& new"+self.upperFirst(field.name)+", uint32_t rank)")
-                stream.write(" {"+field.name+"[rank]=new"+self.upperFirst(field.name)+";}\n")      
+                stream.write(" {"+field.name+"[rank]=new"+self.upperFirst(field.name)+";}\n")
+                
+                stream.write(self.getIndent())
+                stream.write("void remove"+self.upperFirst(field.name)+"(uint32_t rank)")
+                stream.write(" {"+field.name+".erase("+field.name+".begin() + rank);}\n")
+                     
             else:
                 stream.write(self.getIndent())
                 stream.write("const "+targetTypeName+"& get"+self.upperFirst(field.name)+"() const")
