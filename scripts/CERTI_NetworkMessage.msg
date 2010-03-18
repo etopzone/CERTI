@@ -190,7 +190,8 @@ message NM_Join_Federation_Execution : merge NetworkMessage {
 }
 
 // Resign from federation
-message NM_Resign_Federation_Execution : merge NetworkMessage {}
+message NM_Resign_Federation_Execution : merge NetworkMessage {
+}
 
 message NM_Set_Time_Regulating : merge NetworkMessage {
 	required onoff regulator
@@ -312,7 +313,8 @@ message NM_Discover_Object : merge NetworkMessage {
 message NM_Update_Attribute_Values : merge NetworkMessage {
 	required ObjectHandle             object
 	repeated AttributeHandle          attributes
-	repeated AttributeValue_t         values	
+	repeated AttributeValue_t         values
+	optional EventRetractionHandle    event	
 }
 
 // HLA 1.3 §6.5
@@ -452,16 +454,12 @@ message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Attribute_Ownership
 message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Attribute_Ownership_Base {
 }
 
-message NM_DDM_Base {
-	repeated AttributeHandle attributes
-	required bool DDM_bool { default=false }	
-} 
-
 message NM_DDM_Create_Region : merge NetworkMessage {        
 	repeated AttributeHandle attributes
 	required bool DDM_bool { default=false }
-	required SpaceHandle space
+	required SpaceHandle  space
 	required RegionHandle region
+	required uint32       nbExtents // FIXME not sure it must be here
 }
 
 message NM_DDM_Modify_Region : merge NetworkMessage {
