@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.59 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage.hh,v 3.60 2010/03/19 20:30:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -152,10 +152,23 @@ public:
 	NetworkMessage();
 	virtual ~NetworkMessage();
 
+	/**
+	 * Get the name of [the type of] the message.
+	 * @return the message type name.
+	 */
+	const char* getMessageName() const {return messageName;}
+	/**
+	 * Get the message type.
+	 * @return the type of the message
+	 */
 	const NetworkMessage::Message_T getType() const {return type;};
+
 	const TypeException getException() const {return exception;};
 	TypeException& getRefException() {return exception;};
-	void setException(const TypeException except) {exception=except;};
+	void setException(const TypeException e) {exception=e;};
+	void setException(const TypeException e, const std::string& reason)
+		{exception=e;exceptionReason=reason;};
+	const std::string& getExceptionReason(){return exceptionReason;};
 
 	/**
 	 * Serialize the message into a buffer
@@ -181,9 +194,6 @@ public:
 
 	EventRetractionHandle eventRetraction ; /* FIXME to be suppressed */
 
-	/** The name corresponding to message type */
-	const char* getMessageName() const {return messageName;}
-
 	/**
 	 * The federation handle 
 	 * the message is part of this federation activity
@@ -194,11 +204,6 @@ public:
 	 * the message is for this particular federate
 	 */
 	FederateHandle federate ;
-
-	/**
-	 * The exception reason (if the message carry one)
-	 */
-	std::string exceptionReason;
 
 protected:
 
@@ -226,6 +231,11 @@ protected:
 	 */
 	TypeException exception ;
 
+	/**
+	 * The exception reason (if the message carry one)
+	 */
+	std::string exceptionReason;
+
 private:
 
 };
@@ -238,4 +248,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.59 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage.hh,v 3.60 2010/03/19 20:30:55 erk Exp $

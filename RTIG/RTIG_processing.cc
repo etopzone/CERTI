@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.95 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG_processing.cc,v 3.96 2010/03/19 20:30:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -89,18 +89,15 @@ RTIG::processCreateFederation(Socket *link, NM_Create_Federation_Execution *req)
 	}
 	catch (CouldNotOpenFED e)
 	{
-		rep.setException(e_CouldNotOpenFED);
-		rep.exceptionReason=e._reason;
+		rep.setException(e_CouldNotOpenFED,e._reason);
 	}
 	catch (ErrorReadingFED e)
 	{
-		rep.setException(e_ErrorReadingFED);
-		rep.exceptionReason = e._reason ;
+		rep.setException(e_ErrorReadingFED,e._reason);
 	}
 	catch (FederationExecutionAlreadyExists e)
 	{
-		rep.setException(e_FederationExecutionAlreadyExists);
-		rep.exceptionReason =e._reason ;
+		rep.setException(e_FederationExecutionAlreadyExists,e._reason);
 	}
 #endif
 	// Prepare answer for RTIA : store NetworkMessage rep
@@ -167,10 +164,10 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 		G.Out(pdGendoc,"END ** JOIN FEDERATION (BAD) SERVICE **");
 		// Prepare answer about JoinFederationExecution
 		NM_Join_Federation_Execution rep ;
-		rep.setException(e_FederateAlreadyExecutionMember);
-		rep.exceptionReason = "Federate with same name has yet joined the federation";
+		rep.setException(e_FederateAlreadyExecutionMember,
+				"Federate with same name has yet joined the federation");
 
-		G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason.c_str());
+		G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.getExceptionReason().c_str());
 
 		rep.send(link,NM_msgBufSend);
 		return ;
@@ -276,18 +273,15 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 	{ printf("ERROR : %s  reason : %s\n",e._name,e._reason.c_str());
 	if (strcmp(e._name,"RTIinternalError")==0 )
 	{
-		rep.setException(e_RTIinternalError);
-		rep.exceptionReason = e._reason;
+		rep.setException(e_RTIinternalError,e._reason);
 	}
 	else if (strcmp(e._name,"FederationExecutionDoesNotExist")==0 )
 	{
-		rep.setException(e_FederationExecutionDoesNotExist);
-		rep.exceptionReason =e._reason;
+		rep.setException(e_FederationExecutionDoesNotExist,e._reason);
 	}
 	else if (strcmp(e._name,"FederatesCurrentlyJoined")==0 )
 	{
-		rep.setException(e_FederatesCurrentlyJoined);
-		rep.exceptionReason = "at least one federate joined";
+		rep.setException(e_FederatesCurrentlyJoined,"at least one federate joined");
 	}
 	}
 
@@ -1452,18 +1446,15 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 	}
 	catch (ObjectNotKnown e)
 	{
-		answer.setException(e_ObjectNotKnown);
-		answer.exceptionReason = e._reason ;
+		answer.setException(e_ObjectNotKnown,e._reason);
 	}
 	catch (FederationExecutionDoesNotExist e)
 	{
-		answer.setException(e_FederationExecutionDoesNotExist);
-		answer.exceptionReason = e._reason ;
+		answer.setException(e_FederationExecutionDoesNotExist,e._reason);
 	}
 	catch (RTIinternalError e)
 	{
-		answer.setException(e_RTIinternalError);
-		answer.exceptionReason = e._reason ;
+		answer.setException(e_RTIinternalError,e._reason);
 	}
 
 	answer.federate = request->federate ;
@@ -1476,4 +1467,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.95 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG_processing.cc,v 3.96 2010/03/19 20:30:55 erk Exp $

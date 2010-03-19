@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.83 2010/03/19 13:54:03 erk Exp $
+// $Id: FederationManagement.cc,v 3.84 2010/03/19 20:30:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -137,28 +137,28 @@ createFederationExecution(const std::string& theName,
             e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
-            throw CouldNotOpenFED (reponse->exceptionReason) ;
+            throw CouldNotOpenFED (reponse->getExceptionReason()) ;
             }           
         else if (reponse->getException() == e_FederationExecutionAlreadyExists)
             {
             e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
-            throw FederationExecutionAlreadyExists (reponse->exceptionReason) ;
+            throw FederationExecutionAlreadyExists (reponse->getExceptionReason()) ;
             }
         else if (reponse->getException() == e_ErrorReadingFED)
             {
             e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception ErrorReadingFED");
-            throw ErrorReadingFED (reponse->exceptionReason) ;
+            throw ErrorReadingFED (reponse->getExceptionReason()) ;
             }
         else
             {
             e = reponse->getException() ;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception RTIinternalError");
-            throw RTIinternalError (reponse->exceptionReason) ;
+            throw RTIinternalError (reponse->getExceptionReason()) ;
             D.Out(pdInit, "deja cree");
             }
         }
