@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.10 2010/03/17 09:55:56 erk Exp $
+## $Id: GenMsgCXX.py,v 1.11 2010/03/19 12:59:37 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -204,8 +204,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 
                 stream.write(self.getIndent())
                 stream.write("void remove"+self.upperFirst(field.name)+"(uint32_t rank)")
-                stream.write(" {"+field.name+".erase("+field.name+".begin() + rank);}\n")
-                     
+                stream.write(" {"+field.name+".erase("+field.name+".begin() + rank);}\n")                     
             else:
                 stream.write(self.getIndent())
                 stream.write("const "+targetTypeName+"& get"+self.upperFirst(field.name)+"() const")
@@ -217,13 +216,17 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 if field.qualifier == "optional":                                        
                     stream.write("\n")
                     self.indent();                    
-                    stream.write(self.getIndent()+"has%s=true;\n"%self.upperFirst(field.name))
+                    stream.write(self.getIndent()+"_has%s=true;\n"%self.upperFirst(field.name))
                     stream.write(self.getIndent()+field.name+"=new"+self.upperFirst(field.name)+";\n")                    
                     self.unIndent()
-                    stream.write(self.getIndent())                    
+                    stream.write(self.getIndent())         
                 else:
                     stream.write(field.name+"=new"+self.upperFirst(field.name)+";")
                 stream.write("}\n")
+                if field.qualifier == "optional":
+                    stream.write(self.getIndent())
+                    tmp = self.upperFirst(field.name)
+                    stream.write("bool has%s() {return _has%s;}\n"%(tmp,tmp))
             
     def writeDeclarationFieldStatement(self,stream,field):
         stream.write(self.getIndent())     
@@ -236,7 +239,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         # used to detect whether if the optional field has
         # been given or not.
         if field.qualifier == "optional":
-            stream.write(self.getIndent()+"bool has%s;\n" % self.upperFirst(field.name))
+            stream.write(self.getIndent()+"bool _has%s;\n" % self.upperFirst(field.name))
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
@@ -445,9 +448,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         indexField = ''
         if field.qualifier == "optional":
             stream.write(self.getIndent())
-            stream.write("msgBuffer.write_bool(has%s);\n" % self.upperFirst(field.name))
+            stream.write("msgBuffer.write_bool(_has%s);\n" % self.upperFirst(field.name))
             stream.write(self.getIndent())
-            stream.write("if (has%s) {\n" % self.upperFirst(field.name))
+            stream.write("if (_has%s) {\n" % self.upperFirst(field.name))
             self.indent()
         elif field.qualifier == "repeated":
             indexField = '[i]'
@@ -524,9 +527,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         indexField = ''
         if field.qualifier == "optional":
             stream.write(self.getIndent())
-            stream.write("has%s = msgBuffer.read_bool();\n" % self.upperFirst(field.name))
+            stream.write("_has%s = msgBuffer.read_bool();\n" % self.upperFirst(field.name))
             stream.write(self.getIndent())
-            stream.write("if (has%s) {\n" % self.upperFirst(field.name))
+            stream.write("if (_has%s) {\n" % self.upperFirst(field.name))
             self.indent()
         elif field.qualifier == "repeated":
             indexField = '[i]'
