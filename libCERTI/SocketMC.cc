@@ -195,7 +195,7 @@ SocketMC::sendMC(NetworkMessage *message)
     assert(_est_init_mc);
     assert(message != NULL);
 
-    message->send(this,MCMessageBuffer); // FXIME to be checked
+    message->send(this,MCMessageBuffer); // FIXME to be checked
     cnt = sendto(_socket_emetteur, (char *)message, TAILLE_MSG_RESEAU, 0,
                  (struct sockaddr *)&_sin_e, _sinlen_e);
 
@@ -212,7 +212,7 @@ SocketMC::receiveMC(NetworkMessage *message)
     int cnt ;
 
     assert(_est_init_mc);
-
+	// FIXME receive NetworkMessage with virtual constructor
     cnt = recvfrom(_socket_mc, (char *)message, TAILLE_MSG_RESEAU, 0,
                    (struct sockaddr *)&_sin, &_sinlen);
     if (cnt < 0) {
