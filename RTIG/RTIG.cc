@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.61 2009/11/24 19:11:38 erk Exp $
+// $Id: RTIG.cc,v 3.62 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -89,7 +89,7 @@ RTIG::~RTIG()
 Socket*
 RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
-    G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type (%s)",msg->getName());
+    G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type (%s)",msg->getMessageName());
     // This may throw a security error.
     if ( msg->getType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
        socketServer.checkMessage(link->returnSocket(), msg);
@@ -104,13 +104,13 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
         D.Out(pdDebug, "UpdateAttributeValue.");
         auditServer.setLevel(1);
-        processUpdateAttributeValues(link, msg);
+        processUpdateAttributeValues(link, static_cast<NM_Update_Attribute_Values*>(msg));
         break ;
 
       case NetworkMessage::SEND_INTERACTION:
         D.Out(pdTrace, "send interaction.");
         auditServer.setLevel(2);
-        processSendInteraction(link, msg);
+        processSendInteraction(link, static_cast<NM_Send_Interaction*>(msg));
         break ;
 
       case NetworkMessage::CLOSE_CONNEXION:
@@ -197,7 +197,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
 	Debug(D, pdTrace) << "requestAttributeValueUpdate" << endl ;
         auditServer.setLevel(6);
-        processRequestObjectAttributeValueUpdate(link, msg);
+        processRequestObjectAttributeValueUpdate(link, static_cast<NM_Request_Object_Attribute_Value_Update*>(msg));
         break ;
 
       case NetworkMessage::SET_TIME_REGULATING:
@@ -218,28 +218,28 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
         D.Out(pdTrace, "un/publishObjectClass.");
         auditServer.setLevel(7);
-        processPublishObjectClass(link, msg);
+        processPublishObjectClass(link,  static_cast<NM_Publish_Object_Class*>(msg));
         break ;
 
       case NetworkMessage::PUBLISH_INTERACTION_CLASS:
       case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
         D.Out(pdTrace, "un/publishInteractionClass.");
         auditServer.setLevel(7);
-        processPublishInteractionClass(link, msg);
+        processPublishInteractionClass(link, static_cast<NM_Publish_Interaction_Class*>(msg));
         break ;
 
       case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
       case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
         D.Out(pdTrace, "un/subscribeObjectClass.");
         auditServer.setLevel(7);
-        processSubscribeObjectClass(link, msg);
+        processSubscribeObjectClass(link, static_cast<NM_Subscribe_Object_Class*>(msg));
         break ;
 
       case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
       case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
         D.Out(pdTrace, "un/subscribeInteractionClass.");
         auditServer.setLevel(7);
-        processSubscribeInteractionClass(link, msg);
+        processSubscribeInteractionClass(link, static_cast<NM_Subscribe_Interaction_Class*>(msg));
         break ;
 
       case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
@@ -273,127 +273,127 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::REGISTER_OBJECT:
         D.Out(pdTrace, "registerObject.");
         auditServer.setLevel(6);
-        processRegisterObject(link, msg);
+        processRegisterObject(link,static_cast<NM_Register_Object*>(msg));
         break ;
 
       case NetworkMessage::DELETE_OBJECT:
         D.Out(pdTrace, "DeleteObject..");
         auditServer.setLevel(6);
-        processDeleteObject(link, msg);
+        processDeleteObject(link, static_cast<NM_Delete_Object*>(msg));
         break ;
 
       case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
         D.Out(pdTrace, "isAttributeOwnedByFederate..");
         auditServer.setLevel(2);
-        processAttributeOwnedByFederate(link, msg);
+        processAttributeOwnedByFederate(link, static_cast<NM_Is_Attribute_Owned_By_Federate*>(msg));
         break ;
 
       case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
         D.Out(pdTrace, "queryAttributeOwnership..");
         auditServer.setLevel(2);
-        processQueryAttributeOwnership(link, msg);
+        processQueryAttributeOwnership(link, static_cast<NM_Query_Attribute_Ownership*>(msg));
         break ;
 
       case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "negotiatedAttributeOwnershipDivestiture..");
         auditServer.setLevel(6);
-        processNegotiatedOwnershipDivestiture(link, msg);
+        processNegotiatedOwnershipDivestiture(link, static_cast<NM_Negotiated_Attribute_Ownership_Divestiture*>(msg));
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
         D.Out(pdTrace, "attributeOwnershipAcquisitionIfAvailable..");
         auditServer.setLevel(6);
-        processAcquisitionIfAvailable(link, msg);
+        processAcquisitionIfAvailable(link, static_cast<NM_Attribute_Ownership_Acquisition_If_Available*>(msg));
         break ;
 
       case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "unconditionalAttributeOwnershipDivestiture..");
         auditServer.setLevel(6);
-        processUnconditionalDivestiture(link, msg);
+        processUnconditionalDivestiture(link, static_cast<NM_Unconditional_Attribute_Ownership_Divestiture*>(msg));
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
         D.Out(pdTrace, "attributeOwnershipAcquisition..");
         auditServer.setLevel(6);
-        processOwnershipAcquisition(link, msg);
+        processOwnershipAcquisition(link, static_cast<NM_Attribute_Ownership_Acquisition*>(msg));
         break ;
 
       case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "cancelNegociatedAttributeOwnershipDivestiture..");
         auditServer.setLevel(6);
-        processCancelNegotiatedDivestiture(link, msg);
+        processCancelNegotiatedDivestiture(link, static_cast<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture*>(msg));
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
         D.Out(pdTrace, "attributeOwnershipReleaseResponse..");
         auditServer.setLevel(6);
-        processReleaseResponse(link, msg);
+        processReleaseResponse(link, static_cast<NM_Attribute_Ownership_Release_Response*>(msg));
         break ;
 
       case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
         D.Out(pdTrace, "cancelAttributeOwnershipAcquisition..");
         auditServer.setLevel(6);
-        processCancelAcquisition(link, msg);
+        processCancelAcquisition(link, static_cast<NM_Cancel_Attribute_Ownership_Acquisition*>(msg));
         break ;
 
       case NetworkMessage::DDM_CREATE_REGION:
         Debug(D, pdTrace) << "createRegion" << endl ;
         auditServer.setLevel(6);
-        processCreateRegion(link, msg);
+        processCreateRegion(link, static_cast<NM_DDM_Create_Region*>(msg));
         break ;
 
       case NetworkMessage::DDM_MODIFY_REGION:
 		Debug(D, pdTrace) << "modifyRegion" << endl ;
 		auditServer.setLevel(6);
-        processModifyRegion(link, msg);
+        processModifyRegion(link, static_cast<NM_DDM_Modify_Region*>(msg));
         break ;
 
       case NetworkMessage::DDM_DELETE_REGION:
         Debug(D, pdTrace) << "deleteRegion" << endl ;
         auditServer.setLevel(6);
-        processDeleteRegion(link, msg);
+        processDeleteRegion(link, static_cast<NM_DDM_Delete_Region*>(msg));
         break ;
 
       case NetworkMessage::DDM_REGISTER_OBJECT:
         Debug(D, pdTrace) << "registerObjectWithRegion" << endl ;
         auditServer.setLevel(6);
-        processRegisterObjectWithRegion(link, msg);
+        processRegisterObjectWithRegion(link, static_cast<NM_DDM_Register_Object*>(msg));
         break ;
 
       case NetworkMessage::DDM_ASSOCIATE_REGION:
 	Debug(D, pdTrace) << "associateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
-        processAssociateRegion(link, msg);
+        processAssociateRegion(link, static_cast<NM_DDM_Associate_Region*>(msg));
         break ;
 
       case NetworkMessage::DDM_UNASSOCIATE_REGION:
 	Debug(D, pdTrace) << "unassociateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
-        processUnassociateRegion(link, msg);
+        processUnassociateRegion(link, static_cast<NM_DDM_Unassociate_Region*>(msg));
         break ;
 
       case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
 	Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
-        processSubscribeAttributesWR(link, msg);
+        processSubscribeAttributesWR(link, static_cast<NM_DDM_Subscribe_Attributes*>(msg));
         break ;
 
       case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
 	Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
-        processUnsubscribeAttributesWR(link, msg);
+        processUnsubscribeAttributesWR(link, static_cast<NM_DDM_Unsubscribe_Attributes*>(msg));
         break ;
 
       case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
 	Debug(D, pdTrace) << "subscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
-        processSubscribeInteractionWR(link, msg);
+        processSubscribeInteractionWR(link, static_cast<NM_DDM_Subscribe_Interaction*>(msg));
         break ;
 
       case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
 	Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
-        processUnsubscribeInteractionWR(link, msg);
+        processUnsubscribeInteractionWR(link, static_cast<NM_DDM_Unsubscribe_Interaction*>(msg));
         break ;
 
       default:
@@ -1036,4 +1036,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.61 2009/11/24 19:11:38 erk Exp $
+// $Id: RTIG.cc,v 3.62 2010/03/19 13:54:03 erk Exp $

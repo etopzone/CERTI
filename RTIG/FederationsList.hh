@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.53 2010/03/07 21:30:30 erk Exp $
+// $Id: FederationsList.hh,v 3.54 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -109,7 +109,7 @@ public:
                                const std::string& the_label,
                                const std::string& the_tag,
                                unsigned short federate_setSize,
-                               std::vector <FederateHandle> &federate_set)
+                               const std::vector <FederateHandle> &federate_set)
         throw (FederationAlreadyPaused,
                FederationNotPaused,
                FederateNotExecutionMember,
@@ -129,7 +129,7 @@ public:
                                   const std::string& label,
                                   const std::string& tag,
                                   unsigned short federate_setSize,
-                                  std::vector <FederateHandle> &federate_set)
+                                  const std::vector <FederateHandle> &federate_set)
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
@@ -289,7 +289,7 @@ public:
     void publishObject(Handle theHandle,
                        FederateHandle theFederateHandle,
                        ObjectClassHandle theObjectHandle,
-                       std::vector <AttributeHandle> &theAttributeList,
+                       const std::vector <AttributeHandle> &theAttributeList,
                        uint16_t theListSize,
                        bool pub)
         throw (ObjectClassNotDefined,
@@ -304,7 +304,7 @@ public:
     void subscribeObject(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
-                         std::vector <AttributeHandle> &theAttributeList,
+                         const std::vector <AttributeHandle> &theAttributeList,
                          uint16_t theListSize)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
@@ -331,8 +331,8 @@ public:
     FederateHandle requestObjectOwner(Handle handle,
                                 FederateHandle federate,
                                 ObjectHandle id,
-                                std::vector <AttributeHandle> &attributes,
-                                 uint16_t list_size)
+                                const std::vector <AttributeHandle> &attributes,
+                                 uint32_t list_size)
         throw (ObjectNotKnown,
                FederationExecutionDoesNotExist,
                RTIinternalError);
@@ -367,8 +367,8 @@ public:
     void updateAttribute(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
-                         std::vector <AttributeHandle> &theAttributeList,
-                         std::vector <AttributeValue_t> &theValueList,
+                         const std::vector <AttributeHandle> &theAttributeList,
+                         const std::vector <AttributeValue_t> &theValueList,
                          uint16_t theListSize,
                          FederationTime theTime,
                          const std::string& theTag)
@@ -384,8 +384,8 @@ public:
     void updateAttribute(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
-                         std::vector <AttributeHandle> &theAttributeList,
-                         std::vector <AttributeValue_t> &theValueList,
+                         const std::vector <AttributeHandle> &theAttributeList,
+                         const std::vector <AttributeValue_t> &theValueList,
                          uint16_t theListSize,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
@@ -428,8 +428,8 @@ public:
     void updateParameter(Handle theFederation,
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
-                         std::vector <ParameterHandle> &theParameterList,
-                         std::vector <ParameterValue_t> &theValueList,
+                         const std::vector <ParameterHandle> &theParameterList,
+                         const std::vector <ParameterValue_t> &theValueList,
                          uint16_t theListSize,
                          FederationTime theTime,
 			 RegionHandle,
@@ -446,8 +446,8 @@ public:
     void updateParameter(Handle theFederation,
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
-                         std::vector <ParameterHandle> &theParameterList,
-                         std::vector <ParameterValue_t> &theValueList,
+                         const std::vector <ParameterHandle> &theParameterList,
+                         const std::vector <ParameterValue_t> &theValueList,
                          uint16_t theListSize,
 			 RegionHandle,
                          const std::string& theTag)
@@ -488,7 +488,7 @@ public:
     void negotiateDivestiture(Handle,
                               FederateHandle,
                               ObjectHandle,
-                              std::vector <AttributeHandle>&,
+                              const std::vector <AttributeHandle>&,
                               uint16_t,
                               const std::string& )
         throw (FederateNotExecutionMember,
@@ -503,7 +503,7 @@ public:
     void acquireIfAvailable(Handle,
                             FederateHandle,
                             ObjectHandle,
-                            std::vector <AttributeHandle>&,
+                            const std::vector <AttributeHandle>&,
                             uint16_t)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
@@ -519,7 +519,7 @@ public:
     void divest(Handle,
                 FederateHandle,
                 ObjectHandle,
-                std::vector <AttributeHandle>&,
+                const std::vector <AttributeHandle>&,
                 uint16_t)
         throw (ObjectNotKnown,
                AttributeNotDefined,
@@ -532,7 +532,7 @@ public:
     void acquire(Handle theHandle,
                  FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
-                 std::vector <AttributeHandle> &theAttributeList,
+                 const std::vector <AttributeHandle> &theAttributeList,
                  uint16_t theListSize,
                  const std::string& theTag)
         throw (ObjectNotKnown,
@@ -548,7 +548,7 @@ public:
     void cancelDivestiture(Handle theHandle,
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
-                           std::vector <AttributeHandle> &theAttributeList,
+                           const std::vector <AttributeHandle> &theAttributeList,
                            uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
@@ -562,7 +562,7 @@ public:
     AttributeHandleSet* respondRelease(Handle theHandle,
                                        FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
-                                       std::vector <AttributeHandle> &theAttributeList,
+                                       const std::vector <AttributeHandle> &theAttributeList,
                                        uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
@@ -576,7 +576,7 @@ public:
     void cancelAcquisition(Handle theHandle,
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
-                           std::vector <AttributeHandle> &theAttributeList,
+                           const std::vector <AttributeHandle> &theAttributeList,
                            uint16_t theListSize)
         throw (ObjectNotKnown,
                AttributeNotDefined,
@@ -602,7 +602,7 @@ public:
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
     void associateRegion(Handle, FederateHandle, ObjectHandle, RegionHandle,
-			 unsigned short, std::vector <AttributeHandle> &)
+			 unsigned short, const std::vector <AttributeHandle> &)
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError);
 
@@ -611,7 +611,7 @@ public:
 	       RestoreInProgress, RTIinternalError);
 
     void subscribeAttributesWR(Handle, FederateHandle, ObjectClassHandle,
-			       RegionHandle, unsigned short, std::vector <AttributeHandle> &)
+			       RegionHandle, unsigned short,const std::vector <AttributeHandle> &)
 	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
@@ -632,7 +632,7 @@ public:
 
     ObjectHandle registerObjectWithRegion(Handle, FederateHandle,
 					  ObjectClassHandle, ObjectName_t,
-					  RegionHandle, int, std::vector <AttributeHandle> &)
+					  RegionHandle, int, const std::vector <AttributeHandle> &)
 	throw (ObjectClassNotDefined, ObjectClassNotPublished,
 	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
 	       InvalidRegionContext, ObjectAlreadyRegistered,
@@ -661,4 +661,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.53 2010/03/07 21:30:30 erk Exp $
+// $Id: FederationsList.hh,v 3.54 2010/03/19 13:54:03 erk Exp $

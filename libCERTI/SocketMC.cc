@@ -195,6 +195,7 @@ SocketMC::sendMC(NetworkMessage *message)
     assert(_est_init_mc);
     assert(message != NULL);
 
+    message->send(this,MCMessageBuffer); // FXIME to be checked
     cnt = sendto(_socket_emetteur, (char *)message, TAILLE_MSG_RESEAU, 0,
                  (struct sockaddr *)&_sin_e, _sinlen_e);
 

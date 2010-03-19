@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.51 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.52 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -373,7 +373,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
 void
 ObjectClassSet::subscribe(FederateHandle federate,
                           ObjectClassHandle class_handle,
-                          std::vector <AttributeHandle> &attributes,
+                          const std::vector <AttributeHandle> &attributes,
                           int nb,
 			  const RTIRegion *region)
     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
@@ -392,8 +392,8 @@ ObjectClassSet::subscribe(FederateHandle federate,
 void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       Object* object,
-                                      std::vector <AttributeHandle> &attributes,
-                                      std::vector <AttributeValue_t> &values,
+                                      const std::vector <AttributeHandle> &attributes,
+                                      const std::vector <AttributeValue_t> &values,
                                       const FederationTime& time,
                                       const std::string& tag)
     throw (AttributeNotDefined,
@@ -415,7 +415,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
     // Broadcast ReflectAttributeValues message recursively
     current_class = object_class->getSuperclass();
 
-    while (current_class != 0) {
+    while (0!=current_class) {
         D.Out(pdProtocol,
               "Broadcasting RAV msg to parent class %d for instance %d.",
               current_class, object->getHandle());
@@ -435,8 +435,8 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
 void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       Object* object,
-                                      std::vector <AttributeHandle> &attributes,
-                                      std::vector <AttributeValue_t> &values,
+                                      const std::vector <AttributeHandle> &attributes,
+                                      const std::vector <AttributeValue_t> &values,
                                       const std::string& tag)
     throw (AttributeNotDefined,
            AttributeNotOwned,
@@ -478,7 +478,7 @@ void
 ObjectClassSet::
 negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         Object* object,
-                                        std::vector <AttributeHandle> &theAttributeList,
+                                        const std::vector <AttributeHandle> &theAttributeList,
                                         const std::string& theTag)
     throw (AttributeNotDefined,
            AttributeNotOwned,
@@ -521,7 +521,7 @@ void
 ObjectClassSet::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                          Object* object,
-                                         std::vector <AttributeHandle> &theAttributeList)
+                                         const std::vector <AttributeHandle> &theAttributeList)
     throw (ObjectClassNotPublished,
            AttributeNotDefined,
            AttributeNotPublished,
@@ -544,7 +544,7 @@ void
 ObjectClassSet::
 unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                            Object* object,
-                                           std::vector <AttributeHandle> &theAttributeList)
+                                           const std::vector <AttributeHandle> &theAttributeList)
     throw (AttributeNotDefined,
            AttributeNotOwned,
            RTIinternalError)
@@ -581,7 +581,7 @@ void
 ObjectClassSet::
 attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                               Object* object,
-                              std::vector <AttributeHandle> &theAttributeList,
+                              const std::vector <AttributeHandle> &theAttributeList,
                               const std::string& theTag)
     throw (ObjectClassNotPublished,
            AttributeNotDefined,
@@ -601,7 +601,7 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 AttributeHandleSet * ObjectClassSet::
 attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                   Object* object,
-                                  std::vector <AttributeHandle> &theAttributeList)
+                                  const std::vector <AttributeHandle> &theAttributeList)
     throw (AttributeNotDefined,
            AttributeNotOwned,
            FederateWasNotAskedToReleaseAttribute,
@@ -619,7 +619,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 void ObjectClassSet::
 cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                     Object* object,
-                                    std::vector <AttributeHandle> &theAttributeList)
+                                    const std::vector <AttributeHandle> &theAttributeList)
     throw (AttributeNotDefined,
            AttributeAlreadyOwned,
            AttributeAcquisitionWasNotRequested,
@@ -634,4 +634,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.51 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.52 2010/03/19 13:54:03 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.39 2010/02/27 16:53:36 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.40 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -85,7 +85,7 @@ public:
 	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
 			SecurityError);
 
-	void subscribe(FederateHandle, ObjectClassHandle, std::vector <AttributeHandle> &,
+	void subscribe(FederateHandle, ObjectClassHandle, const std::vector <AttributeHandle> &,
 			int theListSize, const RTIRegion * = 0)
 	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
 			SecurityError);
@@ -109,8 +109,8 @@ public:
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
                         Object* object,
-			std::vector <AttributeHandle> &theAttribArray,
-			std::vector <AttributeValue_t> &theValueArray,
+			const std::vector <AttributeHandle> &theAttribArray,
+			const std::vector <AttributeValue_t> &theValueArray,
 			const FederationTime& theTime,
 			const std::string& theUserTag)
 	throw (AttributeNotDefined, AttributeNotOwned,
@@ -118,8 +118,8 @@ public:
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
                         Object* object,
-			std::vector <AttributeHandle> &theAttribArray,
-			std::vector <AttributeValue_t> &theValueArray,
+			const std::vector <AttributeHandle> &theAttribArray,
+			const std::vector <AttributeValue_t> &theValueArray,
 			const std::string& theUserTag)
 	throw (AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError, InvalidObjectHandle);
@@ -128,7 +128,7 @@ public:
 	// Ownership Management
 	void negotiatedAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &,
+			const std::vector <AttributeHandle> &,
 			const std::string& theTag)
 	throw (AttributeNotDefined, AttributeNotOwned,
 			AttributeAlreadyBeingDivested, RTIinternalError);
@@ -136,33 +136,33 @@ public:
 
 	void attributeOwnershipAcquisitionIfAvailable(FederateHandle,
 			Object* object,
-			std::vector <AttributeHandle>&)
+			const std::vector <AttributeHandle>&)
 	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes,
 			AttributeAlreadyBeingAcquired, RTIinternalError);
 
 	void unconditionalAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
-			std::vector <AttributeHandle>&)
+			const std::vector <AttributeHandle>&)
 	throw (AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError);
 
 	void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList,
+			const std::vector <AttributeHandle> &theAttributeList,
 			const std::string& theTag)
 	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 
 	AttributeHandleSet *attributeOwnershipReleaseResponse(FederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &)
+			const std::vector <AttributeHandle> &)
 	throw (AttributeNotDefined, AttributeNotOwned,
 			FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
 	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList)
+			const std::vector <AttributeHandle> &theAttributeList)
 	throw (AttributeNotDefined, AttributeAlreadyOwned,
 			AttributeAcquisitionWasNotRequested, RTIinternalError);
 
@@ -182,4 +182,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.39 2010/02/27 16:53:36 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.40 2010/03/19 13:54:03 erk Exp $

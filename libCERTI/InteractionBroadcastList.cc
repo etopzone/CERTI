@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.14 2009/10/21 18:56:28 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.15 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -61,7 +61,7 @@ InteractionBroadcastList::addFederate(FederateHandle federate)
 /*! theMsg must have been allocated, and will be destroyed by the destructor.
   theMsg->NumeroFedere is added to the list, and its state is set as "Sent".
 */
-InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
+InteractionBroadcastList::InteractionBroadcastList(NM_Receive_Interaction *theMsg)
 {
 
     G.Out(pdGendoc,"enter InteractionBroadcastList::InteractionBroadcastList");
@@ -177,4 +177,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.14 2009/10/21 18:56:28 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.15 2010/03/19 13:54:03 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.31 2010/03/07 21:30:30 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.32 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -82,14 +82,13 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
     NM_Publish_Object_Class req ;    
-    req.objectClass     = theClassHandle ;
-    req.handleArraySize = attribArraySize ;
-    req.handleArray.resize(attribArraySize) ;
+    req.setObjectClass(theClassHandle);
+    req.setAttributesSize(attribArraySize);
     req.federation      = fm->_numero_federation ;
     req.federate        = fm->federate ;
 
     for (uint32_t i=0 ; i<attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     // Emission
     comm->sendMessage(&req);
@@ -133,7 +132,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.objectClass = theClassHandle ;
+    req.setObjectClass(theClassHandle);
 
     // Emission de la requete vers le RTIG
     comm->sendMessage(&req);
@@ -168,7 +167,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.interactionClass = theInteractionHandle ;
+    req.setInteractionClass(theInteractionHandle);
 
     comm->sendMessage(&req);    
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.federate));
@@ -198,7 +197,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 
     // Partie RTIG
     NM_Unpublish_Interaction_Class req;   
-    req.interactionClass = theInteractionHandle ;
+    req.setInteractionClass(theInteractionHandle);
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -227,12 +226,11 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     req.federation      = fm->_numero_federation ;
     req.federate        = fm->federate ;
-    req.objectClass     = theClassHandle ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObjectClass(theClassHandle);
+    req.setAttributesSize(attribArraySize);
 
     for (uint32_t i=0 ; i<attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     // Emission
     G.Out(pdGendoc,"                              =====> send S_O_C to RTIG");
@@ -262,7 +260,7 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     // Pas de Partie Locale pour les abonnements
 
     // Partie RTIG    
-    req.objectClass = theClassHandle ;
+    req.setObjectClass(theClassHandle);
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -299,7 +297,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
     }
 
     // Partie RTIG    
-    req.interactionClass = theClassHandle ;
+    req.setInteractionClass(theClassHandle);
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -335,7 +333,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
     }
 
     // Partie RTIG    
-    req.interactionClass = theClassHandle ;
+    req.setInteractionClass(theClassHandle);
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -484,4 +482,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.31 2010/03/07 21:30:30 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.32 2010/03/19 13:54:03 erk Exp $

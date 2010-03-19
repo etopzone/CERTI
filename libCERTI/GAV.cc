@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: GAV.cc,v 3.22 2010/03/07 21:30:30 erk Exp $
+// $Id: GAV.cc,v 3.23 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -281,7 +281,7 @@ AttributeHandleSet::remove(AttributeHandle h)
     if (isMember(h) == true)
         _set.remove(h);
     else
-        throw AttributeNotDefined("");
+        throw AttributeNotDefined(stringize() << "AttributeHandleSet::remove(AttributeHandle) Attribute <"<<h <<"> not member of the set");
 }
 
 // ----------------------------------------------------------------------------
@@ -351,7 +351,7 @@ FederateHandleSet::remove(FederateHandle h)
     if (isMember(h) == true)
         _set.remove(h);
     else
-        throw AttributeNotDefined("");
+        throw AttributeNotDefined(stringize() << "FederateHandleSet::remove(FederateHandle) Federate <"<<h <<"> not member of the set");
 }
 
 // ----------------------------------------------------------------------------
@@ -565,5 +565,5 @@ ParameterHandleValuePairSet::next(uint32_t) const
 
 } // namespace certi
 
-// $Id: GAV.cc,v 3.22 2010/03/07 21:30:30 erk Exp $
+// $Id: GAV.cc,v 3.23 2010/03/19 13:54:03 erk Exp $
 

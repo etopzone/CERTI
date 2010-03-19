@@ -22,6 +22,7 @@
 
 #include "Socket.hh"
 #include "NetworkMessage.hh"
+#include "MessageBuffer.hh"
 
 namespace certi {
 
@@ -64,6 +65,7 @@ private:
 	int timeoutMC(int, int);
 
 	int _num_msg ;
+	MessageBuffer   MCMessageBuffer;
 };
 
 } // namespace certi

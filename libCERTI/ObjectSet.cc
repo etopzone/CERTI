@@ -239,16 +239,19 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
 
         NetworkMessage *answer;
         if (oa->getOwner()) {
-        	answer = NM_Factory::create(NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP);
+        	NM_Inform_Attribute_Ownership* IAO = new NM_Inform_Attribute_Ownership();
+        	IAO->setObject(the_object);
+        	IAO->setAttribute(the_attribute);
+        	answer = IAO;
         } else {
-        	answer = NM_Factory::create(NetworkMessage::ATTRIBUTE_IS_NOT_OWNED);
+        	NM_Attribute_Is_Not_Owned* AINO = new NM_Attribute_Is_Not_Owned();
+        	AINO->setObject(the_object);
+        	AINO->setAttribute(the_attribute);
+        	answer = AINO;
         }
 
         answer->federation = server->federation();
         answer->setException(e_NO_EXCEPTION);
-        answer->object = the_object ;
-        answer->handleArray.resize(1) ;
-        answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
 
         sendToFederate(answer, the_federate);
@@ -327,7 +330,7 @@ ObjectSet::attributeOwnershipAcquisition(FederateHandle,
 void ObjectSet::
 cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                               ObjectHandle the_object,
-                                              std::vector <AttributeHandle> &the_attributes,
+                                              const std::vector <AttributeHandle> &the_attributes,
                                               uint16_t the_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -456,4 +459,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.29 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: ObjectSet.cc,v 3.30 2010/03/19 13:54:03 erk Exp $

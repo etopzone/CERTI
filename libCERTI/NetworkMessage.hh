@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.58 2010/03/07 21:30:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.59 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -44,7 +44,7 @@ namespace certi {
 
 /**
  * NetworkMessage is the base class used
- * for modelling message exchanged between RTIG and RTIA.
+ * for modeling message exchanged between RTIG and RTIA.
  * NetworkMessage is the base class of a class hierarchy.
  * Each specific message is a (direct of indirect)
  * daughter class of NetworkMessage.    
@@ -114,6 +114,7 @@ public:
 				QUERY_ATTRIBUTE_OWNERSHIP,
 				ATTRIBUTE_IS_NOT_OWNED,
 				INFORM_ATTRIBUTE_OWNERSHIP,
+				ATTRIBUTE_OWNERSHIP_BASE, /* NOT USED */
 				NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
 				ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
 				ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
@@ -138,7 +139,7 @@ public:
 				DDM_SUBSCRIBE_INTERACTION,
 				DDM_UNSUBSCRIBE_INTERACTION,
 				PROVIDE_ATTRIBUTE_VALUE_UPDATE,
-				GET_FED_FILE_SUPPRESSED,
+				/* GET_FED_FILE_SUPPRESSED, */
 				SET_CLASS_RELEVANCE_ADVISORY_SWITCH,
 				SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
 				SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH,
@@ -172,60 +173,16 @@ public:
 	 * Send a message buffer to the socket
 	 */
 	void send(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+
+	/**
+	 * Receive a message buffer from the socket
+	 */
 	void receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
-	// Parameter and Attribute Management
-	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
-	// ValueArray. If there are other parameter in the list, they are shifted
-	// one rank back.
-	// Ex: ParamArraySize = 3,
-	// ParamArray =[1, 2, 3], ValueArray =["Val1", "Val2", "Val3"]
-	//->removeParameter(1)
-	// ParamArraySize = 2,
-	// ParamArray =[1, 3], ValueArray =["Val1", "Val3"]
-	void removeParameter(uint16_t Rank);
-
-	// See RemoveParameter for explanations.
-	void removeAttribute(uint16_t Rank);
-
-	// Value Array Management
-
-	void setAHS(const std::vector <AttributeHandle> &, int);
-
-	void displayValueArray(char *);
-
-	int bestEffortPeer ;
-	unsigned long bestEffortAddress ;
-
-	int numberOfRegulators ;
-
-	/* NM_DDM_Base class fields */
-	SpaceHandle            space;
-	int32_t                nbExtents;
-	int32_t                region;
-	ObjectHandle           object;
-	ObjectClassHandle      objectClass;
-	InteractionClassHandle interactionClass;
-
-	unsigned long multicastAddress ;
-
-	void sizeValueArray(int size) ;
-
-	ObjectHandle firstId ;
-	ObjectHandle lastId ;
-
-	EventRetractionHandle eventRetraction ;
-
-	/* NM_WithHandleArray class specific fields */
-	uint16_t handleArraySize ;
-	std::vector <AttributeHandle> handleArray ;
-	std::vector <AttributeValue_t> valueArray ;
-
-	TransportType transport ;
-	OrderType order ;
+	EventRetractionHandle eventRetraction ; /* FIXME to be suppressed */
 
 	/** The name corresponding to message type */
-	const char* getName() const {return name;}
+	const char* getMessageName() const {return messageName;}
 
 	/**
 	 * The federation handle 
@@ -253,7 +210,7 @@ protected:
 	 * this as a plain char* because it won't be changed
 	 * it's thus cheaper to build than an std::string.
 	 */
-	const char* name;	
+	const char* messageName;
 
 	/** 
 	 * The network message type
@@ -281,4 +238,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.58 2010/03/07 21:30:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.59 2010/03/19 13:54:03 erk Exp $

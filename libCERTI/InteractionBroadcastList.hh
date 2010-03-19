@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
+// $Id: InteractionBroadcastList.hh,v 3.10 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_INTERACTION_BROADCAST_LIST_HH
@@ -26,6 +26,7 @@
 #include "certi.hh"
 #include "NetworkMessage.hh"
 #include "SecurityServer.hh"
+#include "NM_Classes.hh"
 
 #include <list>
 
@@ -48,7 +49,7 @@ public:
 class InteractionBroadcastList
 {
 public:
-    InteractionBroadcastList(NetworkMessage *theMsg);
+    InteractionBroadcastList(NM_Receive_Interaction *theMsg);
     ~InteractionBroadcastList();
 
     void clear();
@@ -59,7 +60,7 @@ public:
      * The Message to be broadcasted. This message must be allocated before
      * calling the constructor of the class, be is deleted by the destructor.
      */
-    NetworkMessage *message ;
+    NM_Receive_Interaction *message ;
 
 private:
     InteractionBroadcastLine *getLineWithFederate(FederateHandle theFederate);
@@ -72,4 +73,4 @@ private:
 
 #endif // CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
+// $Id: InteractionBroadcastList.hh,v 3.10 2010/03/19 13:54:03 erk Exp $

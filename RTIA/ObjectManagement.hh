@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.33 2010/03/07 21:30:30 erk Exp $
+// $Id: ObjectManagement.hh,v 3.34 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -72,8 +72,8 @@ public:
                         TypeException &e);
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                std::vector <AttributeHandle> &attribArray,
-                                std::vector <AttributeValue_t> &valueArray,
+                                const std::vector <AttributeHandle> &attribArray,
+                                const std::vector <AttributeValue_t> &valueArray,
                                 uint16_t attribArraySize,
                                 FederationTime theTime,
                                 const std::string& theTag,
@@ -81,8 +81,8 @@ public:
                                 TypeException &e);
 
    void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                std::vector <AttributeHandle> &attribArray,
-                                std::vector <AttributeValue_t> &valueArray,
+                                const std::vector <AttributeHandle> &attribArray,
+                                const std::vector <AttributeValue_t> &valueArray,
                                 uint16_t attribArraySize,
                                 const std::string& theTag,
                                 TypeException &e);
@@ -107,8 +107,8 @@ public:
                     TypeException &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
-                            std::vector <ParameterHandle> &paramArray,
-                            std::vector <ParameterValue_t> &valueArray,
+                            const std::vector <ParameterHandle> &paramArray,
+                            const std::vector <ParameterValue_t> &valueArray,
                             uint16_t paramArraySize,
                             FederationTime theTime,
                             const std::string& theTag,
@@ -116,8 +116,8 @@ public:
                             TypeException &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
-                            std::vector <ParameterHandle> &paramArray,
-                            std::vector <ParameterValue_t> &valueArray,
+                            const std::vector <ParameterHandle> &paramArray,
+                            const std::vector <ParameterValue_t> &valueArray,
                             uint16_t paramArraySize,
                             const std::string& theTag,
                             TypeException &e);
@@ -178,7 +178,7 @@ public:
                                       TypeException &e);
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
-                                      std::vector <AttributeHandle> &theAttributes,
+                                      const std::vector <AttributeHandle> &theAttributes,
                                       uint16_t attribArraySize,
                                      TypeException &e);
 
@@ -298,4 +298,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.33 2010/03/07 21:30:30 erk Exp $
+// $Id: ObjectManagement.hh,v 3.34 2010/03/19 13:54:03 erk Exp $

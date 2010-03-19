@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.49 2009/11/25 22:05:19 erk Exp $
+// $Id: RootObject.cc,v 3.50 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -364,19 +364,19 @@ RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
 {
         // The rounting spaces
         uint32_t routingSpaceCount = spaces.size();
-        message.setNumRoutingSpaces(routingSpaceCount);
+        message.setRoutingSpacesSize(routingSpaceCount);
         for (uint32_t i = 0; i < routingSpaceCount; ++i) {
                 const RoutingSpace& rs = spaces[i];
-                NM_FOM_Routing_Space& mrs = message.getRoutingSpace(i);
+                NM_FOM_Routing_Space& mrs = message.getRoutingSpaces(i);
 
-                mrs.setHandle(rs.getHandle());
+                mrs.setSpace(rs.getHandle());
                 mrs.setName(rs.getName());
 
                 uint32_t dimensionCount = rs.getDimensions().size();
-                mrs.setNumDimensions(dimensionCount);
+                mrs.setDimensionsSize(dimensionCount);
                 for (uint32_t j = 0; j < dimensionCount; ++j) {
                         const Dimension& d = rs.getDimensions()[j];
-                        NM_FOM_Dimension& md = mrs.getDimension(j);
+                        NM_FOM_Dimension& md = mrs.getDimensions(j);
 
                         md.setHandle(d.getHandle());
                         md.setName(d.getName());
@@ -384,17 +384,17 @@ RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
         }
 
         // The object classes
-        message.setNumObjectClasses(ObjectClasses->size());
+        message.setObjectClassesSize(ObjectClasses->size());
         uint32_t idx = 0;
         for (ObjectClassSet::handled_const_iterator i = ObjectClasses->handled_begin();
              i != ObjectClasses->handled_end(); ++i, ++idx) {
                 const ObjectClass* objectClass = i->second;
-                NM_FOM_Object_Class& moc = message.getObjectClass(idx);
+                NM_FOM_Object_Class& moc = message.getObjectClasses(idx);
 
                 moc.setHandle(objectClass->getHandle());
                 std::string name = objectClass->getName();
                 ObjectClassHandle superclassHandle = objectClass->getSuperclass();
-                moc.setSuperclassHandle(superclassHandle);
+                moc.setSuperClass(superclassHandle);
 
                 ObjectClass* parent = 0;
                 if (0 < superclassHandle) {
@@ -419,8 +419,8 @@ RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
 
                         const ObjectClassAttribute* attribute = j->second;
 
-                        moc.setNumAttributes(++jdx);
-                        NM_FOM_Attribute& ma = moc.getAttribute(jdx - 1);
+                        moc.setAttributesSize(++jdx);
+                        NM_FOM_Attribute& ma = moc.getAttributes(jdx - 1);
 
                         ma.setHandle(attribute->getHandle());
                         ma.setName(attribute->getName());
@@ -432,18 +432,18 @@ RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
 
 
         // The interaction classes
-        message.setNumInteractionClasses(Interactions->size());
+        message.setInteractionClassesSize(Interactions->size());
         idx = 0;
         for (InteractionSet::handled_const_iterator i = Interactions->handled_begin();
              i != Interactions->handled_end(); ++i, ++idx) {
                 Interaction* interactionClass = i->second;
-                NM_FOM_Interaction_Class& mic = message.getInteractionClass(idx);
+                NM_FOM_Interaction_Class& mic = message.getInteractionClasses(idx);
 
-                mic.setHandle(interactionClass->getHandle());
+                mic.setInteractionClass(interactionClass->getHandle());
                 std::string name = interactionClass->getName();
                 InteractionClassHandle superclassHandle = interactionClass->getSuperclass();
-                mic.setSuperclassHandle(superclassHandle);
-                mic.setSpaceHandle(interactionClass->getSpace());
+                mic.setSuperClass(superclassHandle);
+                mic.setSpace(interactionClass->getSpace());
                 mic.setOrder(interactionClass->order);
                 mic.setTransport(interactionClass->transport);
 
@@ -470,8 +470,8 @@ RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
                         if (parent && parent->hasParameter(parameter->getHandle()))
                                 continue;
 
-                        mic.setNumParameters(++jdx);
-                        NM_FOM_Parameter& mp = mic.getParameter(jdx - 1);
+                        mic.setParametersSize(++jdx);
+                        NM_FOM_Parameter& mp = mic.getParameters(jdx - 1);
 
                         mp.setHandle(parameter->getHandle());
                         mp.setName(parameter->getName());
@@ -483,17 +483,17 @@ void
 RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message)
 {
         // The number of routing space records to read
-        uint32_t routingSpaceCount = message.getNumRoutingSpaces();
+        uint32_t routingSpaceCount = message.getRoutingSpacesSize();
         for (uint32_t i = 0; i < routingSpaceCount; ++i) {
-                const NM_FOM_Routing_Space& mrs = message.getRoutingSpace(i);
+                const NM_FOM_Routing_Space& mrs = message.getRoutingSpaces(i);
 
                 RoutingSpace current;
-                current.setHandle(mrs.getHandle());
+                current.setHandle(mrs.getSpace());
                 current.setName(mrs.getName());
 
-                uint32_t dimensionCount = mrs.getNumDimensions();
+                uint32_t dimensionCount = mrs.getDimensionsSize();
                 for (uint32_t j = 0; j < dimensionCount; ++j) {
-                        const NM_FOM_Dimension& md = mrs.getDimension(j);
+                        const NM_FOM_Dimension& md = mrs.getDimensions(j);
 
                         Dimension dimension(md.getHandle());
                         dimension.setName(md.getName());
@@ -504,22 +504,22 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
         }
 
         // The number of object class records to read
-        uint32_t objectClassCount = message.getNumObjectClasses();
+        uint32_t objectClassCount = message.getObjectClassesSize();
         for (uint32_t i = 0; i < objectClassCount; ++i) {
-                const NM_FOM_Object_Class& moc = message.getObjectClass(i);
+                const NM_FOM_Object_Class& moc = message.getObjectClasses(i);
 
                 // add the object class to the root object
                 ObjectClass* current = new ObjectClass(moc.getName(), moc.getHandle());
                 ObjectClass* parent = 0;
-                ObjectClassHandle superclassHandle = moc.getSuperclassHandle();
+                ObjectClassHandle superclassHandle = moc.getSuperClass();
                 if (0 < superclassHandle) {
                         parent = getObjectClass(superclassHandle);
                 }
                 addObjectClass(current, parent);
 
-                uint32_t attributeCount = moc.getNumAttributes();
+                uint32_t attributeCount = moc.getAttributesSize();
                 for (uint32_t j = 0; j < attributeCount; ++j) {
-                        const NM_FOM_Attribute& ma = moc.getAttribute(j);
+                        const NM_FOM_Attribute& ma = moc.getAttributes(j);
 
                         // OrderType order = ma.getOrder();
                         // TransportType transport = ma.getTransport();
@@ -534,23 +534,23 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
         }
 
         // The number of interactions records to read
-        uint32_t interactionsCount = message.getNumInteractionClasses();
+        uint32_t interactionsCount = message.getInteractionClassesSize();
         for (uint32_t i = 0; i < interactionsCount; ++i) {
-                const NM_FOM_Interaction_Class& mic = message.getInteractionClass(i);
+                const NM_FOM_Interaction_Class& mic = message.getInteractionClasses(i);
 
-                Interaction* current = new Interaction(mic.getName(), mic.getHandle(), mic.getTransport(), mic.getOrder());
-                current->setSpace(mic.getSpaceHandle());
+                Interaction* current = new Interaction(mic.getName(), mic.getInteractionClass(), mic.getTransport(), mic.getOrder());
+                current->setSpace(mic.getSpace());
                 Interaction* parent = 0;
-                InteractionClassHandle superclassHandle = mic.getSuperclassHandle();
+                InteractionClassHandle superclassHandle = mic.getSuperClass();
                 if (0 < superclassHandle) {
                         parent = getInteractionClass(superclassHandle);
                 }
 
                 addInteractionClass(current, parent);
 
-                uint32_t parameterCount = mic.getNumParameters();
+                uint32_t parameterCount = mic.getParametersSize();
                 for (uint32_t j = 0; j < parameterCount; ++j) {
-                        const NM_FOM_Parameter& mp = mic.getParameter(j);
+                        const NM_FOM_Parameter& mp = mic.getParameters(j);
 
                         Parameter *parameter = new Parameter(mp.getName(), mp.getHandle());
                         current->addParameter(parameter);
@@ -560,4 +560,4 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.49 2009/11/25 22:05:19 erk Exp $
+// $Id: RootObject.cc,v 3.50 2010/03/19 13:54:03 erk Exp $

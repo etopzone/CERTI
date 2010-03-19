@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.32 2009/09/14 17:54:09 erk Exp $
+// $Id: RTIG.hh,v 3.33 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -91,38 +91,36 @@ private:
     void processFederateSaveStatus(Socket*, NetworkMessage*);
     void processRequestFederationRestore(Socket*, NetworkMessage*);
     void processFederateRestoreStatus(Socket*, NetworkMessage*);
-    void processPublishObjectClass(Socket*, NetworkMessage*);
-    void processSubscribeObjectClass(Socket*, NetworkMessage*);
-    void processUnpublishObjectClass(Socket*, NetworkMessage*);
-    void processUnsubscribeObjectClass(Socket*, NetworkMessage*);
-    void processPublishInteractionClass(Socket*, NetworkMessage*);
-    void processSubscribeInteractionClass(Socket*, NetworkMessage*);
+    void processPublishObjectClass(Socket*, NM_Publish_Object_Class*);
+    void processSubscribeObjectClass(Socket*, NM_Subscribe_Object_Class*);
+    void processPublishInteractionClass(Socket*, NM_Publish_Interaction_Class*);
+    void processSubscribeInteractionClass(Socket*, NM_Subscribe_Interaction_Class*);
     void processUnpublishInteractionClass(Socket*, NetworkMessage*);
     void processUnsubscribeInteractionClass(Socket*, NetworkMessage*msg);
-    void processRegisterObject(Socket*, NetworkMessage*);
-    void processUpdateAttributeValues(Socket*, NetworkMessage*);
-    void processSendInteraction(Socket*, NetworkMessage*);
-    void processDeleteObject(Socket*, NetworkMessage*);
-    void processQueryAttributeOwnership(Socket*, NetworkMessage*);
-    void processNegotiatedOwnershipDivestiture(Socket*, NetworkMessage*);
-    void processAcquisitionIfAvailable(Socket*, NetworkMessage*);
-    void processUnconditionalDivestiture(Socket*, NetworkMessage*);
-    void processOwnershipAcquisition(Socket*, NetworkMessage*);
-    void processCancelNegotiatedDivestiture(Socket*, NetworkMessage*);
-    void processAttributeOwnedByFederate(Socket*, NetworkMessage*);
-    void processReleaseResponse(Socket*, NetworkMessage*);
-    void processCancelAcquisition(Socket*, NetworkMessage*);
-    void processCreateRegion(Socket*, NetworkMessage*);
-    void processModifyRegion(Socket*, NetworkMessage*);
-    void processDeleteRegion(Socket*, NetworkMessage*);
-    void processAssociateRegion(Socket*, NetworkMessage*);
-    void processUnassociateRegion(Socket*, NetworkMessage*);
-    void processSubscribeAttributesWR(Socket*, NetworkMessage*);
-    void processUnsubscribeAttributesWR(Socket*, NetworkMessage*);
-    void processSubscribeInteractionWR(Socket*, NetworkMessage*);
-    void processUnsubscribeInteractionWR(Socket*, NetworkMessage*);
-    void processRegisterObjectWithRegion(Socket*, NetworkMessage*);
-    void processRequestObjectAttributeValueUpdate(Socket*, NetworkMessage*);
+    void processRegisterObject(Socket*, NM_Register_Object*);
+    void processUpdateAttributeValues(Socket*, NM_Update_Attribute_Values*);
+    void processSendInteraction(Socket*, NM_Send_Interaction*);
+    void processDeleteObject(Socket*, NM_Delete_Object*);
+    void processQueryAttributeOwnership(Socket*, NM_Query_Attribute_Ownership*);
+    void processNegotiatedOwnershipDivestiture(Socket*, NM_Negotiated_Attribute_Ownership_Divestiture*);
+    void processAcquisitionIfAvailable(Socket*, NM_Attribute_Ownership_Acquisition_If_Available*);
+    void processUnconditionalDivestiture(Socket*, NM_Unconditional_Attribute_Ownership_Divestiture*);
+    void processOwnershipAcquisition(Socket*, NM_Attribute_Ownership_Acquisition*);
+    void processCancelNegotiatedDivestiture(Socket*, NM_Cancel_Negotiated_Attribute_Ownership_Divestiture*);
+    void processAttributeOwnedByFederate(Socket*, NM_Is_Attribute_Owned_By_Federate*);
+    void processReleaseResponse(Socket*, NM_Attribute_Ownership_Release_Response*);
+    void processCancelAcquisition(Socket*, NM_Cancel_Attribute_Ownership_Acquisition*);
+    void processCreateRegion(Socket*, NM_DDM_Create_Region*);
+    void processModifyRegion(Socket*, NM_DDM_Modify_Region*);
+    void processDeleteRegion(Socket*, NM_DDM_Delete_Region*);
+    void processAssociateRegion(Socket*, NM_DDM_Associate_Region*);
+    void processUnassociateRegion(Socket*, NM_DDM_Unassociate_Region*);
+    void processSubscribeAttributesWR(Socket*, NM_DDM_Subscribe_Attributes*);
+    void processUnsubscribeAttributesWR(Socket*, NM_DDM_Unsubscribe_Attributes*);
+    void processSubscribeInteractionWR(Socket*, NM_DDM_Subscribe_Interaction*);
+    void processUnsubscribeInteractionWR(Socket*, NM_DDM_Unsubscribe_Interaction*);
+    void processRegisterObjectWithRegion(Socket*, NM_DDM_Register_Object*);
+    void processRequestObjectAttributeValueUpdate(Socket*, NM_Request_Object_Attribute_Value_Update*);
 
 private:
     int tcpPort ;
@@ -144,4 +142,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.32 2009/09/14 17:54:09 erk Exp $
+// $Id: RTIG.hh,v 3.33 2010/03/19 13:54:03 erk Exp $

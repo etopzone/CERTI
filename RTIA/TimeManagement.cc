@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.55 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: TimeManagement.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -165,8 +165,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::DISCOVER_OBJECT:
         try {
-            om->discoverObject(msg.object,
-                               msg.objectClass,
+        	NM_Discover_Object& DO=static_cast<NM_Discover_Object&>(msg);
+            om->discoverObject(DO.getObject(),
+                               DO.getObjectClass(),
                                msg.getLabel(),
                                msg.getDate(),
                                msg.eventRetraction,
@@ -181,20 +182,21 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
+    	  NM_Reflect_Attribute_Values& RAV = static_cast<NM_Reflect_Attribute_Values&>(msg);
           if (msg.isDated())
-             om->reflectAttributeValues(msg.object,
-                                        msg.handleArray,
-                                        msg.valueArray,
-                                        msg.handleArraySize,
+             om->reflectAttributeValues(RAV.getObject(),
+                                        RAV.getAttributes(),
+                                        RAV.getValues(),
+                                        RAV.getAttributesSize(),
                                         msg.getDate(),
                                         msg.getLabel(),
                                         msg.eventRetraction,
                                         msg.getRefException());
           else
-            om->reflectAttributeValues(msg.object,
-                                        msg.handleArray,
-                                        msg.valueArray,
-                                        msg.handleArraySize,
+            om->reflectAttributeValues(RAV.getObject(),
+                                        RAV.getAttributes(),
+                                        RAV.getValues(),
+                                        RAV.getAttributesSize(),
                                         msg.getLabel(),
                                         msg.getRefException());
           break ;
@@ -202,9 +204,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
       {
-      om->provideAttributeValueUpdate(msg.object,
-                                      msg.handleArray,
-                                      msg.handleArraySize,
+      NM_Provide_Attribute_Value_Update& PAVU = static_cast<NM_Provide_Attribute_Value_Update&>	(msg);
+      om->provideAttributeValueUpdate(PAVU.getObject(),
+                                      PAVU.getAttributes(),
+                                      PAVU.getAttributesSize(),
                                       msg.getRefException());
       break;
       }
@@ -212,29 +215,31 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
+    	  NM_Receive_Interaction& RI = static_cast<NM_Receive_Interaction&>(msg);
           if (msg.isDated())
-              om->receiveInteraction(msg.interactionClass,
-                                     msg.handleArray,
-                                     msg.valueArray,
-                                     msg.handleArraySize,
+              om->receiveInteraction(RI.getInteractionClass(),
+                                     RI.getParameters(),
+                                     RI.getValues(),
+                                     RI.getParametersSize(),
                                      msg.getDate(),
                                      msg.getLabel(),
                                      msg.eventRetraction,
                                      msg.getRefException());
           else
-              om->receiveInteraction(msg.interactionClass,
-                                     msg.handleArray,
-                                     msg.valueArray,
-                                     msg.handleArraySize,
+              om->receiveInteraction(RI.getInteractionClass(),
+                                     RI.getParameters(),
+                                     RI.getValues(),
+                                     RI.getParametersSize(),
                                      msg.getLabel(),
                                      msg.getRefException());
 
           break ;
       }
 
-      case NetworkMessage::REMOVE_OBJECT:
+      case NetworkMessage::REMOVE_OBJECT: {
+    	  NM_Remove_Object& RO=static_cast<NM_Remove_Object&>(msg);
           if (msg.isDated()) {
-        	om->removeObject(msg.object,
+        	om->removeObject(RO.getObject(),
                 		     msg.federate,
 				             msg.getDate(),
                          	 msg.getLabel(),
@@ -242,35 +247,40 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                          	 msg.getRefException());
 	  }
 	  else {
-        	om->removeObject(msg.object,
+        	om->removeObject(RO.getObject(),
                 		     msg.federate,
                          	 msg.getLabel(),
                          	 msg.getRefException());
 	  }
+      }
         break ;
 
-      case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP:
-
+      case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP: {
+    	 NM_Inform_Attribute_Ownership& IAO = static_cast<NM_Inform_Attribute_Ownership&>(msg);
         D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.federate);
 
-        owm->informAttributeOwnership(msg.object,
-                                      msg.handleArray[0],
+        owm->informAttributeOwnership(IAO.getObject(),
+                                      IAO.getAttribute(),
                                       msg.federate,
                                       msg.getRefException());
+      }
         break ;
 
-      case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED:
-        owm->attributeIsNotOwned(msg.object,
-                                 msg.handleArray[0],
+      case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED: {
+    	  NM_Attribute_Is_Not_Owned& AINO = static_cast<NM_Attribute_Is_Not_Owned&>(msg);
+        owm->attributeIsNotOwned(AINO.getObject(),
+                                 AINO.getAttribute(),
                                  msg.federate,
                                  msg.getRefException());
+      }
         break ;
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
           {
-        owm->requestAttributeOwnershipAssumption(msg.object,
-                                                 msg.handleArray,
-                                                 msg.handleArraySize,
+        NM_Request_Attribute_Ownership_Assumption& RAOA=static_cast<NM_Request_Attribute_Ownership_Assumption&>(msg);
+        owm->requestAttributeOwnershipAssumption(RAOA.getObject(),
+                                                 RAOA.getAttributes(),
+                                                 RAOA.getAttributesSize(),
                                                  msg.federate,
                                                  msg.getLabel(),
                                                  msg.getRefException());
@@ -279,9 +289,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
         {
-        owm->attributeOwnershipUnavailable(msg.object,
-                                           msg.handleArray,
-                                           msg.handleArraySize,
+        NM_Attribute_Ownership_Unavailable& AOU = static_cast<NM_Attribute_Ownership_Unavailable&>(msg);
+        owm->attributeOwnershipUnavailable(AOU.getObject(),
+                                           AOU.getAttributes(),
+                                           AOU.getAttributesSize(),
                                            msg.federate,
                                            msg.getRefException());
         break ;
@@ -289,9 +300,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
         {
-        owm->attributeOwnershipAcquisitionNotification(msg.object,
-                                                       msg.handleArray,
-                                                       msg.handleArraySize,
+        NM_Attribute_Ownership_Acquisition_Notification& AOAN = static_cast<NM_Attribute_Ownership_Acquisition_Notification&>(msg);
+        owm->attributeOwnershipAcquisitionNotification(AOAN.getObject(),
+                                                       AOAN.getAttributes(),
+                                                       AOAN.getAttributesSize(),
                                                        msg.federate,
                                                        msg.getRefException());
         break ;
@@ -299,18 +311,20 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         {
-        owm->attributeOwnershipDivestitureNotification(msg.object,
-                                                       msg.handleArray,
-                                                       msg.handleArraySize,
+        	NM_Attribute_Ownership_Divestiture_Notification& AODN = static_cast<NM_Attribute_Ownership_Divestiture_Notification&>(msg);
+        owm->attributeOwnershipDivestitureNotification(AODN.getObject(),
+                                                       AODN.getAttributes(),
+                                                       AODN.getAttributesSize(),
                                                        msg.getRefException());
         break ;
         }
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
         {
-        owm->requestAttributeOwnershipRelease(msg.object,
-                                              msg.handleArray,
-                                              msg.handleArraySize,
+        	NM_Request_Attribute_Ownership_Release& RAOR = static_cast<NM_Request_Attribute_Ownership_Release&>(msg);
+        owm->requestAttributeOwnershipRelease(RAOR.getObject(),
+                                              RAOR.getAttributes(),
+                                              RAOR.getAttributesSize(),
                                               msg.getLabel(),
                                               msg.getRefException());
         break ;
@@ -318,9 +332,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
         {
-        owm->confirmAttributeOwnershipAcquisitionCancellation(msg.object,
-                                                              msg.handleArray,
-                                                              msg.handleArraySize,
+        NM_Confirm_Attribute_Ownership_Acquisition_Cancellation& CAOAC= static_cast<NM_Confirm_Attribute_Ownership_Acquisition_Cancellation& >(msg);
+        owm->confirmAttributeOwnershipAcquisitionCancellation(CAOAC.getObject(),
+                                                              CAOAC.getAttributes(),
+                                                              CAOAC.getAttributesSize(),
                                                               msg.getRefException());
         break ;
         }
@@ -364,14 +379,16 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       case NetworkMessage::TIME_CONSTRAINED_ENABLED:
         this->timeConstrainedEnabled(msg.getDate(), msg.getRefException());
         break;
-      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
-	dm->startRegistrationForObjectClass(msg.objectClass, msg.getRefException());
+      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS: {
+    	  NM_Start_Registration_For_Object_Class& SRFOC = static_cast<NM_Start_Registration_For_Object_Class&>(msg);
+	dm->startRegistrationForObjectClass(SRFOC.getObjectClass(), msg.getRefException());
+      }
         break;
 
       default:
         D.Out(pdExcept, "Unknown message type in executeFederateService.");
         throw RTIinternalError(stringize() <<
-            "Unknown message <" <<  msg.getName() << "> in executeFederateService.");
+            "Unknown message <" <<  msg.getMessageName() << "> in executeFederateService.");
     }
     G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
@@ -993,4 +1010,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.55 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: TimeManagement.cc,v 3.56 2010/03/19 13:54:03 erk Exp $

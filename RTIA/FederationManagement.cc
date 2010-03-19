@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.82 2010/03/14 15:35:53 gotthardp Exp $
+// $Id: FederationManagement.cc,v 3.83 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -242,8 +242,8 @@ joinFederationExecution(const std::string& Federate,
         requete.setFederationName(Federation);
         requete.setFederateName(Federate);
 
-        requete.bestEffortAddress = comm->getAddress();
-        requete.bestEffortPeer = comm->getPort();
+        requete.setBestEffortAddress(comm->getAddress());
+        requete.setBestEffortPeer(comm->getPort());
 
         G.Out(pdGendoc,"joinFederationExecution====>send Message to RTIG");
 
@@ -269,7 +269,7 @@ joinFederationExecution(const std::string& Federate,
             comm->CreerSocketMC(reponse->AdresseMulticast, MC_PORT);
 #endif
 
-            nb = reponse->numberOfRegulators ;
+            nb = joinResponse->getNumberOfRegulators() ;
             for (i=0 ; i<nb ; i++) {
                 reponse.reset(comm->waitMessage(NetworkMessage::MESSAGE_NULL, 0));
                 assert(tm != NULL);
@@ -374,7 +374,7 @@ FederationManagement::registerSynchronization(const std::string& label,
         req.setLabel(label);
         req.setTag(tag);
         // no federates set so boolean must be false
-        req.setDoesNotExist();
+        req.setExists(false);
 
         G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
 
@@ -414,11 +414,10 @@ FederationManagement::registerSynchronization(const std::string& label,
         req.setLabel(label);
         req.setTag(tag);
         /* the synchronization point concerns a set of federate */
-        req.setExist();
-        req.handleArraySize = array_size ;
-        req.handleArray.resize(array_size) ;
+        req.setExists(true);
+        req.setFederatesSize(array_size);
         for ( int j=0 ; j < array_size ; j++)
-            req.handleArray[j] = fed_array[j] ;
+            req.setFederates(fed_array[j],j) ;
 
         G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
 

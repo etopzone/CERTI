@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.34 2010/03/07 21:30:30 erk Exp $
+// $Id: RTIA_network.cc,v 3.35 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,7 @@
 #include "InteractionSet.hh"
 #include "ObjectClass.hh"
 #include "ObjectClassSet.hh"
+#include "ObjectSet.hh"
 #include <assert.h>
 
 namespace certi {
@@ -65,7 +66,7 @@ NetworkMessage::Type msgType = msg->getType();
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
-          if (static_cast<NM_Set_Time_Regulating*>(msg)->isRegulator())
+          if (static_cast<NM_Set_Time_Regulating*>(msg)->isRegulatorOn())
               tm->insert(msg->federate, msg->getDate());
           else
               tm->remove(msg->federate);
@@ -101,10 +102,12 @@ NetworkMessage::Type msgType = msg->getType();
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
+    	  NM_Reflect_Attribute_Values *RAV = static_cast<NM_Reflect_Attribute_Values*>(msg);
           OrderType updateOrder  ;
 
+          //RAV->show(std::cerr);
           D.Out(pdTrace,
-                "Receving Message from RTIG, "
+                "Receiving Message from RTIG, "
                 "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES.");
 
          // It is important to note that several attributes may be updated at
@@ -127,11 +130,13 @@ NetworkMessage::Type msgType = msg->getType();
              {
              // Retrieve order type
              updateOrder = TIMESTAMP;
-
-             for (uint16_t i=0; i< msg->handleArraySize; ++i)
+             ObjectClassHandle och = rootObject->objects->getObjectClass(RAV->getObject());
+             //std::cerr << "FOUND och = " <<och << "  for object " << RAV->getObject() <<std::endl;
+             for (uint32_t i=0; i< RAV->getAttributesSize(); ++i)
                {
-                if (rootObject->ObjectClasses->getObjectFromHandle( msg->objectClass)
-                    ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
+            	// FIXME we need an object **CLASS** handle and not an **OBJECT* handle
+                //if (rootObject->ObjectClasses->getObjectFromHandle(RAV->getObject())
+            	 if (rootObject->ObjectClasses->getObjectFromHandle(och)->getAttribute(RAV->getAttributes(i))->order != TIMESTAMP)
                 {
                    updateOrder = RECEIVE;
                    break;
@@ -156,6 +161,8 @@ NetworkMessage::Type msgType = msg->getType();
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
+
+    	 NM_Receive_Interaction* RI = static_cast<NM_Receive_Interaction*>(msg);
          OrderType interactionOrder ;
 
          D.Out(pdTrace,
@@ -171,7 +178,7 @@ NetworkMessage::Type msgType = msg->getType();
              {
              // Retrieve order type
              interactionOrder = rootObject->Interactions->
-                getObjectFromHandle(msg->interactionClass)->order;
+                getObjectFromHandle(RI->getInteractionClass())->order;
              }
 
          // Decide which queue will be used
@@ -373,4 +380,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.34 2010/03/07 21:30:30 erk Exp $
+// $Id: RTIA_network.cc,v 3.35 2010/03/19 13:54:03 erk Exp $

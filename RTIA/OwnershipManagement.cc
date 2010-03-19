@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.23 2010/02/27 16:53:36 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.24 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -65,7 +65,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
+    req.setObject(theObject);
     req.setAttribute(theAttribute);
 
     D.Out(pdDebug, "Federate %u ", fm->federate);
@@ -100,10 +100,8 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(1) ;
-    req.handleArray[0] = theAttribute ;
-    req.handleArraySize = 1 ;
+    req.setObject(theObject);
+    req.setAttribute(theAttribute);
 
     D.Out(pdDebug, "Federate %u ", fm->federate);
 
@@ -130,12 +128,11 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     req.setLabel(theTag);
 
@@ -162,12 +159,11 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     D.Out(pdDebug, "CANCEL_NEGOTIATED_DIVESTITURE Federate %u ",
           fm->federate);
@@ -194,12 +190,11 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     D.Out(pdDebug, "AcquisitionIfAvailable Federate %u ", fm->federate);
 
@@ -224,12 +219,11 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     D.Out(pdDebug, "UNCONDITIONAL_DIVESTITURE Federate %u ",
           fm->federate);
@@ -256,12 +250,11 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     req.setLabel(theTag);
 
@@ -288,31 +281,30 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize) ;
 
     D.Out(pdDebug, "RELEASE_RESPONSE Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
+          theObject, req.getAttributesSize());
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
     }
 
 
     comm->sendMessage(&req);
 
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
-                      req.federate));
+    std::auto_ptr<NM_Attribute_Ownership_Release_Response> rep(static_cast<NM_Attribute_Ownership_Release_Response*>(comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
+                      req.federate)));
 
     e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
-        AttributeSet = new AttributeHandleSet(rep->handleArraySize);
+        AttributeSet = new AttributeHandleSet(rep->getAttributesSize());
 
-        for (int i = 0 ; i < rep->handleArraySize ; i++) {
-            AttributeSet->add(rep->handleArray[i]);
+        for (uint32_t i = 0 ; i < rep->getAttributesSize() ; i++) {
+            AttributeSet->add(rep->getAttributes(i));
         }
 
         return(AttributeSet);
@@ -334,12 +326,11 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
-    req.object = theObject ;
-    req.handleArray.resize(attribArraySize) ;
-    req.handleArraySize = attribArraySize ;
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+        req.setAttributes(attribArray[i],i) ;
 
     D.Out(pdDebug, "CANCEL_ACQUISITION Federate %u ", fm->federate);
 
@@ -510,4 +501,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.23 2010/02/27 16:53:36 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.24 2010/03/19 13:54:03 erk Exp $

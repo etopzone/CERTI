@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.13 2007/09/28 14:07:54 rousse Exp $
+// $Id: Billard.hh,v 3.14 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -61,9 +61,12 @@
 // Here no test. Comment next line if you want to test requestFederationSave
 #undef TEST_RFSP
 
+
+
 class Billard : public NullFederateAmbassador
 {
 public:
+
     Billard(std::string);
     virtual ~Billard() throw (RTI::FederateInternalError);
 
@@ -145,6 +148,36 @@ public:
 
     bool getCreator(){return creator;};
 
+    /**
+     * Helper class to simplify string construction. Implemented as
+     * a stringstream wrapper.
+     *
+     * For example:
+     * throw AttributeNotDefined(stringize() << "value: " << number);
+     */
+    template<typename C>
+    struct basic_stringize
+    {
+      template<typename T>
+      basic_stringize<C> & operator << (const T& t)
+      {
+        m_s << t;
+        return *this;
+      }
+
+      // note: must not return reference
+      operator const std::basic_string<C>() const
+      {
+        return m_s.str();
+      }
+
+    private:
+      std::basic_stringstream<C> m_s;
+    };
+
+    typedef basic_stringize<char> stringize;
+    typedef basic_stringize<wchar_t> wstringize;
+
 protected:
     virtual void getHandles();
  
@@ -186,4 +219,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.13 2007/09/28 14:07:54 rousse Exp $
+// $Id: Billard.hh,v 3.14 2010/03/19 13:54:03 erk Exp $

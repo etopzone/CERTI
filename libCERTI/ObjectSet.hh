@@ -138,7 +138,7 @@ public:
     void
     cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                   ObjectHandle the_object,
-                                                  std::vector <AttributeHandle> &,
+                                                  const std::vector <AttributeHandle> &,
                                                   uint16_t the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                AttributeDivestitureWasNotRequested, RTIinternalError);

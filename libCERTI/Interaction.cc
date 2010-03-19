@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.60 2010/03/07 21:30:30 erk Exp $
+// $Id: Interaction.cc,v 3.61 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -142,15 +142,15 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
 	G.Out(pdGendoc,"enter Interaction::broadcastInteractionMessage");
 
 	// 1. Set InteractionHandle to local class Handle.
-	ibList->message->interactionClass = handle ;
+	ibList->message->setInteractionClass(handle);
 
 	// 2. Update message Parameters list by removing child's Parameters.
-	for (int i = 0 ; i < ibList->message->handleArraySize ;) {
+	for (uint32_t i = 0 ; i < ibList->message->getParametersSize() ;) {
 		// If the Parameter is not in that class, remove it from the message.
-                if (hasParameter(ibList->message->handleArray[i])) {
+                if (hasParameter(ibList->message->getParameters(i))) {
 			++i;
                 } else {
-			ibList->message->removeParameter(i);
+			ibList->message->removeParameters(i);
                 }
 	}
 
@@ -398,8 +398,8 @@ throw (FederateNotPublishing, RTIinternalError, SecurityError)
  */
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
-		std::vector <ParameterHandle> &parameter_list,
-		std::vector <ParameterValue_t> &value_list,
+		const std::vector <ParameterHandle> &parameter_list,
+		const std::vector <ParameterValue_t> &value_list,
 		uint16_t list_size,
 		FederationTime time,
 		const RTIRegion *region,
@@ -419,21 +419,20 @@ throw (FederateNotPublishing,
 	// Prepare and Broadcast message for this class
 	InteractionBroadcastList *ibList = NULL ;
 	if (server != NULL) {
-		NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
+		NM_Receive_Interaction *answer = new NM_Receive_Interaction() ;
 		answer->setException (e_NO_EXCEPTION);
 		answer->federation = server->federation();
 		answer->federate = federate_handle ;
-		answer->interactionClass = handle ; // Interaction Class Handle
+		answer->setInteractionClass(handle) ; // Interaction Class Handle
 		answer->setDate(time);
 
 		answer->setLabel(the_tag);
 
-		answer->handleArraySize = list_size ;
-		answer->handleArray.resize(list_size) ;
-		answer->sizeValueArray(list_size);
+		answer->setParametersSize(list_size);
+		answer->setValuesSize(list_size) ;
 		for (int i = 0 ; i < list_size ; i++) {
-			answer->handleArray[i] = parameter_list[i] ;
-			answer->valueArray[i] = value_list[i];
+			answer->setParameters(parameter_list[i],i);
+			answer->setValues(value_list[i],i);
 		}
 
 		D.Out(pdProtocol, "Preparing broadcast list.");
@@ -459,8 +458,8 @@ throw (FederateNotPublishing,
  */
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
-		std::vector <ParameterHandle> &parameter_list,
-		std::vector <ParameterValue_t> &value_list,
+		const std::vector <ParameterHandle> &parameter_list,
+		const std::vector <ParameterValue_t> &value_list,
 		uint16_t list_size,
 		const RTIRegion *region,
 		const std::string& the_tag)
@@ -479,20 +478,19 @@ throw (FederateNotPublishing,
 	// Prepare and Broadcast message for this class
 	InteractionBroadcastList *ibList = NULL ;
 	if (server != NULL) {
-		NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
+		NM_Receive_Interaction *answer = new NM_Receive_Interaction();
 		answer->setException(e_NO_EXCEPTION);
 		answer->federation = server->federation();
 		answer->federate = federate_handle ;
-		answer->interactionClass = handle ; // Interaction Class Handle
+		answer->setInteractionClass(handle); // Interaction Class Handle
 		answer->setLabel(the_tag);
 
-		answer->handleArraySize = list_size ;
-		answer->handleArray.resize(list_size) ;
-		answer->sizeValueArray(list_size);
+		answer->setParametersSize(list_size);
+		answer->setValuesSize(list_size);
 
 		for (int i = 0 ; i < list_size ; i++) {
-			answer->handleArray[i] = parameter_list[i] ;
-			answer->valueArray[i] = value_list[i];
+			answer->setParameters(parameter_list[i],i);
+			answer->setValues(value_list[i],i);
 		}
 
 		D.Out(pdProtocol, "Preparing broadcast list.");
@@ -543,4 +541,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.60 2010/03/07 21:30:30 erk Exp $
+// $Id: Interaction.cc,v 3.61 2010/03/19 13:54:03 erk Exp $

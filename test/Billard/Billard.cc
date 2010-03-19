@@ -774,7 +774,8 @@ Billard::discoverObjectInstance(RTI::ObjectHandle theObject,
 {
     if (theObjectClass != BilleClassID) {
         D.Out(pdError, "Object of Unknown Class discovered.");
-        throw RTI::FederateInternalError("");
+        std::string msg = stringize() << "Unknown objectClass < "<<theObjectClass <<">";
+        throw RTI::FederateInternalError(msg.c_str());
     }
     
     bool already = false ;
@@ -785,7 +786,8 @@ Billard::discoverObjectInstance(RTI::ObjectHandle theObject,
 	}
     }
     if (!already) {
-	cout << "Discovered object " << theObject << endl ;
+
+	cout << "Discovered object handle = " << theObject <<", name = "<< rtiamb.getObjectInstanceName(theObject) <<endl ;
 	remote.push_back(Ball(theObject));
     }
 }

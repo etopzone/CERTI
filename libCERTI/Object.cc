@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.27 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: Object.cc,v 3.28 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -86,7 +86,7 @@ Object::getAttribute(AttributeHandle attributeHandle) const
     AttributeMap::const_iterator i = _attributeMap.find(attributeHandle);
     if (i == _attributeMap.end()) {
         throw AttributeNotDefined(stringize() <<
-            "Unknown attribute handle " << attributeHandle);
+            "Object::getAttribute(AttributeHandle) Unknown attribute handle <" << attributeHandle<<">");
     }
     return i->second;
 }
@@ -128,4 +128,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.27 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: Object.cc,v 3.28 2010/03/19 13:54:03 erk Exp $

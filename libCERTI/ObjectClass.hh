@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.52 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClass.hh,v 3.53 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -40,6 +40,7 @@ class    ObjectClassBroadcastList;
 #include "SecurityServer.hh"
 #include "Named.hh"
 #include "GAV.hh"
+#include "NM_Classes.hh"
 
 // Standard
 #include <map>
@@ -155,7 +156,7 @@ public:
 			bool PubOrUnpub)
 	throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-	bool subscribe(FederateHandle, std::vector <AttributeHandle> &, int, const RTIRegion *)
+	bool subscribe(FederateHandle, const std::vector <AttributeHandle> &, int, const RTIRegion *)
 	throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
 	void unsubscribe(FederateHandle, const RTIRegion *);
@@ -165,7 +166,7 @@ public:
 	ObjectClassBroadcastList *
 	negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                         Object* object,
-			std::vector <AttributeHandle> &theAttributeList,
+			const std::vector <AttributeHandle> &theAttributeList,
 			const std::string& theTag)
 			throw (AttributeNotDefined, AttributeNotOwned,
 					AttributeAlreadyBeingDivested, RTIinternalError);
@@ -174,7 +175,7 @@ public:
 	void
 	attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList)
+			const std::vector <AttributeHandle> &theAttributeList)
 	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes,
 			AttributeAlreadyBeingAcquired, RTIinternalError);
@@ -182,14 +183,14 @@ public:
 	ObjectClassBroadcastList *
 	unconditionalAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &)
+			const std::vector <AttributeHandle> &)
 			throw (AttributeNotDefined, AttributeNotOwned,
 					RTIinternalError);
 
 	void
 	attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList,
+			const std::vector <AttributeHandle> &theAttributeList,
 			const std::string& theTag)
 	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
@@ -197,13 +198,13 @@ public:
 	AttributeHandleSet *
 	attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList)
+			const std::vector <AttributeHandle> &theAttributeList)
 			throw (AttributeNotDefined, AttributeNotOwned,
 					FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
 	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			std::vector <AttributeHandle> &theAttributeList)
+			const std::vector <AttributeHandle> &theAttributeList)
 	throw (AttributeNotDefined, AttributeAlreadyOwned,
 			AttributeAcquisitionWasNotRequested, RTIinternalError);
 
@@ -249,14 +250,14 @@ public:
 			const Object * = NULL);
 
 	ObjectClassBroadcastList *
-	updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-			std::vector <AttributeValue_t> &, int, FederationTime, const std::string&)
+	updateAttributeValues(FederateHandle, Object *, const std::vector <AttributeHandle> &,
+			const std::vector <AttributeValue_t> &, int, FederationTime, const std::string&)
 			throw (AttributeNotDefined, AttributeNotOwned,
 					RTIinternalError, InvalidObjectHandle);
 
 	ObjectClassBroadcastList *
-	updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-			std::vector <AttributeValue_t> &, int, const std::string&)
+	updateAttributeValues(FederateHandle, Object *, const std::vector <AttributeHandle> &,
+			const std::vector <AttributeValue_t> &, int, const std::string&)
 			throw (AttributeNotDefined, AttributeNotOwned,
 					RTIinternalError, InvalidObjectHandle);
 
@@ -288,7 +289,7 @@ private:
 			Object* object,
 			FederateHandle theFederate,
 			const std::string& theTag,
-			NetworkMessage::Type type);
+			NM_Attribute_Ownership_Base& msg);
 
 	void sendMessage(NetworkMessage *msg, FederateHandle theDest);
 
@@ -342,4 +343,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.52 2010/02/27 16:53:35 erk Exp $
+// $Id: ObjectClass.hh,v 3.53 2010/03/19 13:54:03 erk Exp $

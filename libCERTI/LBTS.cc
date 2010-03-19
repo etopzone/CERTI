@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.16 2009/11/24 21:44:47 erk Exp $
+// $Id: LBTS.cc,v 3.17 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -119,7 +119,7 @@ LBTS::update(FederateHandle num_fed, FederationTime time)
     ClockSet::iterator it = clocks.find(num_fed);
 
     if (it == clocks.end())
-        throw RTIinternalError("LBTS: Federate not found.");
+        throw RTIinternalError(stringize() << "LBTS: Federate <" << num_fed << "> not found.");
 
     // Coherence test.
     if (it->second > time)
@@ -144,7 +144,7 @@ LBTS::remove(FederateHandle num_fed)
     ClockSet::iterator it = clocks.find(num_fed);
 
     if (it == clocks.end())
-        throw RTIinternalError("LBTS: Federate not found.");
+        throw RTIinternalError(stringize() << "LBTS: Federate <"<< num_fed << "not found.");
 
     clocks.erase(it);
     compute();
@@ -152,4 +152,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.16 2009/11/24 21:44:47 erk Exp $
+// $Id: LBTS.cc,v 3.17 2010/03/19 13:54:03 erk Exp $

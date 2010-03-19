@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.55 2009/11/24 19:11:37 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -39,12 +39,12 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	if ((type==NOT_USED) || (type==LAST)) {
 		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
-	D.Out(pdDebug, "Serialize <%s>", getName());
+	D.Out(pdDebug, "Serialize <%s>", getMessageName());
 	/* type of message */
 	msgBuffer.write_int32(type);
 	msgBuffer.write_int32(exception);
-	msgBuffer.write_int32(federate);
-	msgBuffer.write_int32(federation);
+	msgBuffer.write_uint32(federate);
+	msgBuffer.write_uint32(federation);
 	/*
 	 * "builtin" Optional part
 	 * The subclass may chose in the constructor the variable part.
@@ -72,12 +72,12 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	/* We serialize the common Network message part
 	 * ALL Network Messages will contain the following
 	 */
-	Debug(D, pdDebug) << "Deserialize <" << getName() << ">" << endl;
+	Debug(D, pdDebug) << "Deserialize <" << getMessageName() << ">" << endl;
 	/* deserialize common part */
 	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
 	exception   = static_cast<TypeException>(msgBuffer.read_int32());
-	federate    = msgBuffer.read_int32();
-	federation  = msgBuffer.read_int32();
+	federate    = msgBuffer.read_uint32();
+	federation  = msgBuffer.read_uint32();
 	/*
 	 * "builtin" Optional part
 	 * The subclass may chose in the constructor the variable part.
@@ -112,7 +112,7 @@ NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkErr
 	serialize(msgBuffer);
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName(),msgBuffer.size());
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
 	//msgBuffer.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 
@@ -151,4 +151,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.55 2009/11/24 19:11:37 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
