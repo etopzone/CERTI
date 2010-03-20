@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.10 2005/04/05 19:28:22 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.11 2010/03/20 20:43:55 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FEDERATE_LEVEL_LIST_HH
@@ -30,7 +30,7 @@
 
 namespace certi {
 
-class FederateLevelList
+class CERTI_EXPORT FederateLevelList
 {
 public:
     FederateLevelList();
@@ -51,4 +51,4 @@ protected:
 
 #endif // CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.10 2005/04/05 19:28:22 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.11 2010/03/20 20:43:55 gotthardp Exp $
