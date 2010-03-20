@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.10 2009/11/19 18:15:31 erk Exp $
+// $Id: Named.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
 #define LIBCERTI_NAMED_HH
+
+#include "certi.hh"
 
 #include <string>
 
@@ -38,7 +40,7 @@ namespace certi {
  * "IEEE Standard for Modeling and Simulation (M&S) High Level
  *  Architecture (HLA)—Object Model Template (OMT) Specification"
  */
-class Named
+class CERTI_EXPORT Named
 {
 public:
 	/**
@@ -130,4 +132,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.10 2009/11/19 18:15:31 erk Exp $
+// $Id: Named.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $

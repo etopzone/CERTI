@@ -44,7 +44,7 @@ typedef int SOCKET;
 
 namespace certi {
 
-class Socket
+class CERTI_EXPORT Socket
 {
 public:
 	typedef unsigned long ByteCount_t;
