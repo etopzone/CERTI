@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.35 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIA_network.cc,v 3.36 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,7 +43,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
-NetworkMessage::Type msgType = msg->getType();
+NetworkMessage::Type msgType = msg->getMessageType();
 
 	G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
@@ -380,4 +380,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.35 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIA_network.cc,v 3.36 2010/03/20 16:34:13 erk Exp $

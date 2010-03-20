@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.115 2010/03/14 15:35:54 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.116 2010/03/20 16:34:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -430,7 +430,7 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
 		}
 
 		// If the type is TICK_REQUEST, the __tick_kernel() has terminated.
-		if (vers_Fed->getType() == Message::TICK_REQUEST) {
+		if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
 			if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
 				// tick() may only throw exceptions defined in the HLA standard
 				// the RTIA is responsible for sending 'allowed' exceptions only
@@ -2988,4 +2988,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.115 2010/03/14 15:35:54 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.116 2010/03/20 16:34:14 erk Exp $

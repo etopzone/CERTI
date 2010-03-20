@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.96 2010/03/19 20:30:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.97 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -632,14 +632,14 @@ void
 RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
 	G.Out(pdGendoc,"enter RTIG::processFederateSaveStatus");
-	if (req->getType() == NetworkMessage::FEDERATE_SAVE_COMPLETE)
+	if (req->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE)
 		G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE COMPLETE SERVICE **");
 	else
 		G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **");
 
 	auditServer << "Federate " << req->federate << " save ended." ;
 
-	bool status = req->getType() == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
+	bool status = req->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
 	federations.federateSaveStatus(req->federation, req->federate, status);
 
 	G.Out(pdGendoc,"exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **");
@@ -668,7 +668,7 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 	G.Out(pdGendoc,"enter RTIG::processRequestFederateRestoreStatus");
 	auditServer << "Federate " << req->federate << " restore ended." ;
 
-	bool status = req->getType() == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
+	bool status = req->getMessageType() == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
 
 	federations.federateRestoreStatus(req->federation, req->federate, status);
 
@@ -681,7 +681,7 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 void
 RTIG::processPublishObjectClass(Socket *link, NM_Publish_Object_Class *req)
 {
-	bool pub = (req->getType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
+	bool pub = (req->getMessageType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
 	auditServer << "Publish Object Class = " << req->getObjectClass() << ", # of att. = "
 			<< req->getAttributesSize() ;
@@ -720,7 +720,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NM_Subscribe_Object_Class *req)
 	G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
 
 	std::vector <AttributeHandle> arrayVide ;
-	bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
+	bool sub = (req->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
 	auditServer << "Subscribe Object Class = " << req->getObjectClass()
 						<< ", # of att. = " << req->getAttributesSize() ;
@@ -760,7 +760,7 @@ RTIG::processPublishInteractionClass(Socket *link, NM_Publish_Interaction_Class 
 {
 	assert(link != NULL && req != NULL);
 
-	bool pub = (req->getType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
+	bool pub = (req->getMessageType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
 
 	auditServer << "Publish Interaction Class = " << req->getInteractionClass() ;
 	federations.publishInteraction(req->federation,
@@ -785,7 +785,7 @@ RTIG::processPublishInteractionClass(Socket *link, NM_Publish_Interaction_Class 
 void
 RTIG::processSubscribeInteractionClass(Socket *link, NM_Subscribe_Interaction_Class *req)
 {
-	bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
+	bool sub = (req->getMessageType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
 
 	auditServer << "Subscribe Interaction Class = " << req->getInteractionClass() ;
 	federations.subscribeInteraction(req->federation,
@@ -1467,4 +1467,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.96 2010/03/19 20:30:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.97 2010/03/20 16:34:13 erk Exp $

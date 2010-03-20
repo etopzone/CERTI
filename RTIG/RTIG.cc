@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.62 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG.cc,v 3.63 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,10 +91,10 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
     G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type (%s)",msg->getMessageName());
     // This may throw a security error.
-    if ( msg->getType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
+    if ( msg->getMessageType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
        socketServer.checkMessage(link->returnSocket(), msg);
 
-    switch(msg->getType()) {
+    switch(msg->getMessageType()) {
       case NetworkMessage::MESSAGE_NULL:
         D.Out(pdDebug, "Message Null.");
         auditServer.setLevel(0);
@@ -398,7 +398,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 
       default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        D.Out(pdError, "processMessageRecu: unknown type %u.", msg->getType());
+        D.Out(pdError, "processMessageRecu: unknown type %u.", msg->getMessageType());
         throw RTIinternalError("Unknown Message Type");
     }
     G.Out(pdGendoc,"exit  RTIG::chooseProcessingMethod");
@@ -568,10 +568,10 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
     msg = NM_Factory::receive(link);
 
     // Server Answer(only if an exception is raised)
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getType()));
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getMessageType()));
     rep->federate = msg->federate ;
 
-    auditServer.startLine(msg->federation, msg->federate, msg->getType());
+    auditServer.startLine(msg->federation, msg->federate, msg->getMessageType());
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -1036,4 +1036,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.62 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG.cc,v 3.63 2010/03/20 16:34:13 erk Exp $

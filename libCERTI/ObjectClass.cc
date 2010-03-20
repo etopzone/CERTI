@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.79 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClass.cc,v 3.80 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -110,8 +110,8 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
     G.Out(pdGendoc,"      ObjectClass::broadcastClassMessage handle=%d",handle);
 
     // 2. Update message attribute list by removing child's attributes.
-    if ((ocbList->getMsg()->getType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
-        (ocbList->getMsg()->getType() == NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+    if ((ocbList->getMsg()->getMessageType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
+        (ocbList->getMsg()->getMessageType() == NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
 
         for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
             // If the attribute is not in that class, remove it from the message.
@@ -125,7 +125,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
     }
 
     // 3. Add class/attributes subscribers to the list.
-    switch(ocbList->getMsg()->getType()) {
+    switch(ocbList->getMsg()->getMessageType()) {
       case NetworkMessage::DISCOVER_OBJECT:
       case NetworkMessage::REMOVE_OBJECT: {
           // For each federate, add it to list if at least one attribute has
@@ -1713,4 +1713,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.79 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClass.cc,v 3.80 2010/03/20 16:34:13 erk Exp $

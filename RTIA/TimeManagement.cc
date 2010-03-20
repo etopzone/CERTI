@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
+// $Id: TimeManagement.cc,v 3.57 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -125,12 +125,12 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
-  G.Out(pdGendoc,"enter TimeManagement::executeFederateService for type %d",msg.getType());
-  D.Out(pdRequest, "Execute federate service: Type %d.", msg.getType());
+  G.Out(pdGendoc,"enter TimeManagement::executeFederateService for type %d",msg.getMessageType());
+  D.Out(pdRequest, "Execute federate service: Type %d.", msg.getMessageType());
 
     _tick_state = TICK_NEXT;  // indicate the callback was processed
 
-    switch (msg.getType()) {
+    switch (msg.getMessageType()) {
 
       case NetworkMessage::FEDERATION_SYNCHRONIZED:
         try {
@@ -346,14 +346,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::FEDERATION_SAVED:
       case NetworkMessage::FEDERATION_NOT_SAVED: {
-          bool status = (msg.getType() == NetworkMessage::FEDERATION_SAVED) ? true : false ;
+          bool status = (msg.getMessageType() == NetworkMessage::FEDERATION_SAVED) ? true : false ;
           fm->federationSavedStatus(status);
       }
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED: {
-          bool status = (msg.getType() == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
+          bool status = (msg.getMessageType() == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
               ? true : false ;
           fm->requestFederationRestoreStatus(status, msg.getLabel(), msg.getTag());
       }
@@ -369,7 +369,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::FEDERATION_RESTORED:
       case NetworkMessage::FEDERATION_NOT_RESTORED: {
-          bool status = (msg.getType() == NetworkMessage::FEDERATION_RESTORED) ? true : false ;
+          bool status = (msg.getMessageType() == NetworkMessage::FEDERATION_RESTORED) ? true : false ;
           fm->federationRestoredStatus(status);
       }
         break ;
@@ -1010,4 +1010,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
+// $Id: TimeManagement.cc,v 3.57 2010/03/20 16:34:13 erk Exp $

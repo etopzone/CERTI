@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.32 2010/03/19 13:54:03 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.33 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -405,7 +405,7 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
 
     std::auto_ptr<Message>  rep(comm->receiveUN());
 
-    if (rep->getType() != req.getType()) {
+    if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept, "Unknown response type when waiting for "
               "START_REGISTRATION_FOR_OBJECT_CLASS.");
         throw RTIinternalError("");
@@ -450,7 +450,7 @@ turnInteractionsOn(InteractionClassHandle interaction,
     comm->sendUN(&req);
     std::auto_ptr<Message> rep(comm->receiveUN());
 
-    if (rep->getType() != req.getType()) {
+    if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_ON.");
         throw RTIinternalError("");
@@ -471,7 +471,7 @@ turnInteractionsOff(InteractionClassHandle interaction,
     comm->sendUN(&req);
     std::auto_ptr<Message> rep(comm->receiveUN());
 
-    if (rep->getType() != req.getType()) {
+    if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
         throw RTIinternalError("");
@@ -482,4 +482,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.32 2010/03/19 13:54:03 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.33 2010/03/20 16:34:13 erk Exp $

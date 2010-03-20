@@ -211,8 +211,17 @@ public:
     /** Default Message creator */
     Message();
 
-    /** The name corresponding to message type */
+    /**
+     * Get the name of [the type of] the message.
+     * @return the message type name.
+     */
     const char* getMessageName() const {return messageName;}
+
+    /**
+     * Get the message type.
+     * @return the type of the message
+     */
+    Type getMessageType() const { return type ; };
 
 	/**
 	 * Serialize the message into a buffer
@@ -241,8 +250,6 @@ public:
 	 * @param[out] msgBuffer the buffer were the read message will be written
 	 */
 	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
-
-    Type getType() const { return type ; };
 
     void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };

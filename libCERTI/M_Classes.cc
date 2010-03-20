@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 14 at 16:30:18 by the CERTI message generator
+// Generated on 2010 March Sat, 20 at 17:24:56 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -894,8 +894,8 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      msgBuffer.write_bool(hasObjectName);
-      if (hasObjectName) {
+      msgBuffer.write_bool(_hasObjectName);
+      if (_hasObjectName) {
          msgBuffer.write_string(objectName);
       }
    }
@@ -906,8 +906,8 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      hasObjectName = msgBuffer.read_bool();
-      if (hasObjectName) {
+      _hasObjectName = msgBuffer.read_bool();
+      if (_hasObjectName) {
          msgBuffer.read_string(objectName);
       }
    }
@@ -950,8 +950,8 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          msgBuffer.write_string(values[i]);
       }
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -972,8 +972,8 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          msgBuffer.read_string(values[i]);
       }
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1016,8 +1016,8 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1029,8 +1029,8 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1074,8 +1074,8 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          msgBuffer.write_string(values[i]);
       }
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1096,8 +1096,8 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          msgBuffer.read_string(values[i]);
       }
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1150,8 +1150,8 @@ namespace certi {
          msgBuffer.write_string(values[i]);
       }
       msgBuffer.write_uint32(region);
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1172,8 +1172,8 @@ namespace certi {
          msgBuffer.read_string(values[i]);
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1226,8 +1226,8 @@ namespace certi {
          msgBuffer.write_string(values[i]);
       }
       msgBuffer.write_uint32(region);
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1248,8 +1248,8 @@ namespace certi {
          msgBuffer.read_string(values[i]);
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1292,8 +1292,8 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1305,8 +1305,8 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -1370,8 +1370,8 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
       msgBuffer.write_string(objectName);
-      msgBuffer.write_bool(hasEventRetraction);
-      if (hasEventRetraction) {
+      msgBuffer.write_bool(_hasEventRetraction);
+      if (_hasEventRetraction) {
          eventRetraction.serialize(msgBuffer);
       }
    }
@@ -1383,8 +1383,8 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       msgBuffer.read_string(objectName);
-      hasEventRetraction = msgBuffer.read_bool();
-      if (hasEventRetraction) {
+      _hasEventRetraction = msgBuffer.read_bool();
+      if (_hasEventRetraction) {
          eventRetraction.deserialize(msgBuffer);
       }
    }
@@ -3135,8 +3135,8 @@ namespace certi {
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_uint32(object);
-      msgBuffer.write_bool(hasObjectInstanceName);
-      if (hasObjectInstanceName) {
+      msgBuffer.write_bool(_hasObjectInstanceName);
+      if (_hasObjectInstanceName) {
          msgBuffer.write_string(objectInstanceName);
       }
       uint32_t attributesSize = attributes.size();
@@ -3152,8 +3152,8 @@ namespace certi {
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
-      hasObjectInstanceName = msgBuffer.read_bool();
-      if (hasObjectInstanceName) {
+      _hasObjectInstanceName = msgBuffer.read_bool();
+      if (_hasObjectInstanceName) {
          msgBuffer.read_string(objectInstanceName);
       }
       uint32_t attributesSize = msgBuffer.read_uint32();
@@ -4790,7 +4790,7 @@ namespace certi {
       // receive generic message 
       msgGen.receive(stream,msgBuffer);
       // create specific message from type 
-      msg = M_Factory::create(msgGen.getType());
+      msg = M_Factory::create(msgGen.getMessageType());
       msgBuffer.assumeSizeFromReservedBytes();
       msg->deserialize(msgBuffer);
       return msg;

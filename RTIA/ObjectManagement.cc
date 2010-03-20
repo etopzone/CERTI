@@ -142,7 +142,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 		req.setLabel(theTag);
 
 		comm->sendMessage(&req);
-		std::auto_ptr<NM_Update_Attribute_Values> rep(static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getType(), req.federate)));
+		std::auto_ptr<NM_Update_Attribute_Values> rep(static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getMessageType(), req.federate)));
 		e = rep->getException() ;
 		evtrHandle = rep->getEvent();
 	}
@@ -199,7 +199,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 	req.setLabel(theTag);
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
+	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getMessageType(), req.federate));
 
 	e = rep->getException() ;
 	G.Out(pdGendoc,"exit  ObjectManagement::updateAttributeValues without time");

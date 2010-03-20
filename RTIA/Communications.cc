@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.37 2010/02/27 16:53:36 erk Exp $
+// $Id: Communications.cc,v 3.38 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -69,7 +69,7 @@ NetworkMessage* Communications::waitMessage(
 
     D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
 
-    while ((msg->getType() != type_msg) ||
+    while ((msg->getMessageType() != type_msg) ||
            ((numeroFedere != 0) && (msg->federate != numeroFedere))) {
         waitingList.push_back(msg);
         msg = NM_Factory::receive(socketTCP);
@@ -77,7 +77,7 @@ NetworkMessage* Communications::waitMessage(
     }
     
     assert(msg != NULL);
-    assert(msg->getType() == type_msg);
+    assert(msg->getMessageType() == type_msg);
     return msg;
 } /* end of waitMessage */
 
@@ -166,7 +166,7 @@ Communications::requestFederateService(Message *req)
     // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
     //               "type %d",req->type);
     assert(req != NULL);
-    D.Out(pdRequest, "Sending Request to Federate, Name %s, Type %d.", req->getMessageName(),req->getType());
+    D.Out(pdRequest, "Sending Request to Federate, Name %s, Type %d.", req->getMessageName(),req->getMessageType());
     req->send(socketUN, msgBufSend);
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
@@ -319,7 +319,7 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
 
         D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
 
-        if ((*i)->getType() == type_msg) {
+        if ((*i)->getMessageType() == type_msg) {
             // if numeroFedere != 0, verify that federateNumbers are similar
             if (((*i)->federate == numeroFedere) || (numeroFedere == 0)) {
             	*msg = *i;                                
@@ -358,4 +358,4 @@ Communications::receiveUN()
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.37 2010/02/27 16:53:36 erk Exp $
+// $Id: Communications.cc,v 3.38 2010/03/20 16:34:13 erk Exp $

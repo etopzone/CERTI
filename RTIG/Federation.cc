@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.125 2010/03/19 13:54:03 erk Exp $
+// $Id: Federation.cc,v 3.126 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -474,7 +474,7 @@ throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 			nullMessage.setDate(v[i].second);
 			D.Out(pdTerm,
 					"Sending NULL message(type %d) from %d to new federate.",
-					nullMessage.getType(), nullMessage.federate);
+					nullMessage.getMessageType(), nullMessage.federate);
 
 			nullMessage.send(tcp_link,NM_msgBufSend);
 		}
@@ -490,7 +490,7 @@ throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 				ASPMessage.setLabel((*i).first);
 				ASPMessage.setTag((*i).second);
 				D.Out(pdTerm, "Sending synchronization message %s (type %d)"
-						" to the new Federate.", (*i).first.c_str(), ASPMessage.getType());
+						" to the new Federate.", (*i).first.c_str(), ASPMessage.getMessageType());
 
 				ASPMessage.send(tcp_link,NM_msgBufSend);
 				federate.addSynchronizationLabel((*i).first);
@@ -2575,5 +2575,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.125 2010/03/19 13:54:03 erk Exp $
+// $Id: Federation.cc,v 3.126 2010/03/20 16:34:13 erk Exp $
 

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.60 2010/03/19 20:30:55 erk Exp $
+// $Id: NetworkMessage.hh,v 3.61 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -161,7 +161,7 @@ public:
 	 * Get the message type.
 	 * @return the type of the message
 	 */
-	const NetworkMessage::Message_T getType() const {return type;};
+	const NetworkMessage::Message_T getMessageType() const {return type;};
 
 	const TypeException getException() const {return exception;};
 	TypeException& getRefException() {return exception;};
@@ -248,4 +248,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.60 2010/03/19 20:30:55 erk Exp $
+// $Id: NetworkMessage.hh,v 3.61 2010/03/20 16:34:13 erk Exp $

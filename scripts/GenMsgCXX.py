@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.11 2010/03/19 12:59:37 erk Exp $
+## $Id: GenMsgCXX.py,v 1.12 2010/03/20 16:34:14 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -602,7 +602,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
         
         stream.write(self.getIndent()+"msg = ");
-        stream.write(self.AST.factory.name+"::"+self.AST.factory.creator[1]+"(msgGen.getType());\n")
+        stream.write(self.AST.factory.name+"::"+self.AST.factory.creator[1]+"(msgGen.getMessageType());\n")
         
         stream.write(self.getIndent()+"msgBuffer.assumeSizeFromReservedBytes();\n")    
         stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")

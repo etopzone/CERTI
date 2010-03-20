@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 14 at 16:30:18 by the CERTI message generator
+// Generated on 2010 March Sat, 20 at 17:25:05 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -346,6 +346,7 @@ namespace certi {
          const FederateHandle& getFederateSet(uint32_t rank) const {return federateSet[rank];}
          FederateHandle& getFederateSet(uint32_t rank) {return federateSet[rank];}
          void setFederateSet(const FederateHandle& newFederateSet, uint32_t rank) {federateSet[rank]=newFederateSet;}
+         void removeFederateSet(uint32_t rank) {federateSet.erase(federateSet.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -574,6 +575,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -649,6 +651,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          const bool& getActive() const {return active;}
          void setActive(const bool& newActive) {active=newActive;}
          // the show method
@@ -793,16 +796,17 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {
-            hasObjectName=true;
+            _hasObjectName=true;
             objectName=newObjectName;
          }
+         bool hasObjectName() {return _hasObjectName;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectName;
-         bool hasObjectName;
+         bool _hasObjectName;
       private:
    };
 
@@ -824,17 +828,20 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          uint32_t getValuesSize() const {return values.size();}
          void setValuesSize(uint32_t num) {values.resize(num);}
          const std::vector<AttributeValue_t>& getValues() const {return values;}
          const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
          AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         void removeValues(uint32_t rank) {values.erase(values.begin() + rank);}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -843,7 +850,7 @@ namespace certi {
          std::vector<AttributeHandle> attributes;
          std::vector<AttributeValue_t> values;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -863,9 +870,10 @@ namespace certi {
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -873,7 +881,7 @@ namespace certi {
          ObjectHandle object;
          std::string objectName;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -895,17 +903,20 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          uint32_t getValuesSize() const {return values.size();}
          void setValuesSize(uint32_t num) {values.resize(num);}
          const std::vector<AttributeValue_t>& getValues() const {return values;}
          const AttributeValue_t& getValues(uint32_t rank) const {return values[rank];}
          AttributeValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const AttributeValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         void removeValues(uint32_t rank) {values.erase(values.begin() + rank);}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -914,7 +925,7 @@ namespace certi {
          std::vector<AttributeHandle> attributes;
          std::vector<AttributeValue_t> values;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -934,19 +945,22 @@ namespace certi {
          const ParameterHandle& getParameters(uint32_t rank) const {return parameters[rank];}
          ParameterHandle& getParameters(uint32_t rank) {return parameters[rank];}
          void setParameters(const ParameterHandle& newParameters, uint32_t rank) {parameters[rank]=newParameters;}
+         void removeParameters(uint32_t rank) {parameters.erase(parameters.begin() + rank);}
          uint32_t getValuesSize() const {return values.size();}
          void setValuesSize(uint32_t num) {values.resize(num);}
          const std::vector<ParameterValue_t>& getValues() const {return values;}
          const ParameterValue_t& getValues(uint32_t rank) const {return values[rank];}
          ParameterValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         void removeValues(uint32_t rank) {values.erase(values.begin() + rank);}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -955,7 +969,7 @@ namespace certi {
          std::vector<ParameterValue_t> values;
          RegionHandle region;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -975,19 +989,22 @@ namespace certi {
          const ParameterHandle& getParameters(uint32_t rank) const {return parameters[rank];}
          ParameterHandle& getParameters(uint32_t rank) {return parameters[rank];}
          void setParameters(const ParameterHandle& newParameters, uint32_t rank) {parameters[rank]=newParameters;}
+         void removeParameters(uint32_t rank) {parameters.erase(parameters.begin() + rank);}
          uint32_t getValuesSize() const {return values.size();}
          void setValuesSize(uint32_t num) {values.resize(num);}
          const std::vector<ParameterValue_t>& getValues() const {return values;}
          const ParameterValue_t& getValues(uint32_t rank) const {return values[rank];}
          ParameterValue_t& getValues(uint32_t rank) {return values[rank];}
          void setValues(const ParameterValue_t& newValues, uint32_t rank) {values[rank]=newValues;}
+         void removeValues(uint32_t rank) {values.erase(values.begin() + rank);}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -996,7 +1013,7 @@ namespace certi {
          std::vector<ParameterValue_t> values;
          RegionHandle region;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -1016,9 +1033,10 @@ namespace certi {
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1026,7 +1044,7 @@ namespace certi {
          ObjectHandle object;
          std::string objectName;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -1063,9 +1081,10 @@ namespace certi {
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {
-            hasEventRetraction=true;
+            _hasEventRetraction=true;
             eventRetraction=newEventRetraction;
          }
+         bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1073,7 +1092,7 @@ namespace certi {
          ObjectHandle object;
          std::string objectName;
          EventRetraction eventRetraction;
-         bool hasEventRetraction;
+         bool _hasEventRetraction;
       private:
    };
 
@@ -1097,6 +1116,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1146,6 +1166,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1170,6 +1191,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1194,6 +1216,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1218,6 +1241,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1242,6 +1266,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1266,6 +1291,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1290,6 +1316,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1323,6 +1350,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1347,6 +1375,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1371,6 +1400,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1395,6 +1425,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1419,6 +1450,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1443,6 +1475,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1562,6 +1595,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1586,6 +1620,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1610,6 +1645,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1634,6 +1670,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1658,6 +1695,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1682,6 +1720,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1706,6 +1745,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1730,6 +1770,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -1758,6 +1799,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -2036,6 +2078,7 @@ namespace certi {
          const Extent& getExtentSet(uint32_t rank) const {return extentSet[rank];}
          Extent& getExtentSet(uint32_t rank) {return extentSet[rank];}
          void setExtentSet(const Extent& newExtentSet, uint32_t rank) {extentSet[rank]=newExtentSet;}
+         void removeExtentSet(uint32_t rank) {extentSet.erase(extentSet.begin() + rank);}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          // the show method
@@ -2063,6 +2106,7 @@ namespace certi {
          const Extent& getExtentSet(uint32_t rank) const {return extentSet[rank];}
          Extent& getExtentSet(uint32_t rank) {return extentSet[rank];}
          void setExtentSet(const Extent& newExtentSet, uint32_t rank) {extentSet[rank]=newExtentSet;}
+         void removeExtentSet(uint32_t rank) {extentSet.erase(extentSet.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -2102,22 +2146,24 @@ namespace certi {
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectInstanceName() const {return objectInstanceName;}
          void setObjectInstanceName(const std::string& newObjectInstanceName) {
-            hasObjectInstanceName=true;
+            _hasObjectInstanceName=true;
             objectInstanceName=newObjectInstanceName;
          }
+         bool hasObjectInstanceName() {return _hasObjectInstanceName;}
          uint32_t getAttributesSize() const {return attributes.size();}
          void setAttributesSize(uint32_t num) {attributes.resize(num);}
          const std::vector<AttributeHandle>& getAttributes() const {return attributes;}
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
          std::string objectInstanceName;
-         bool hasObjectInstanceName;
+         bool _hasObjectInstanceName;
          std::vector<AttributeHandle> attributes;// repeated RegionHandle      regions 
       private:
    };
@@ -2140,6 +2186,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -2190,6 +2237,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:
@@ -2286,6 +2334,7 @@ namespace certi {
          const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
          AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
+         void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
          virtual void show(std::ostream& out);
       protected:

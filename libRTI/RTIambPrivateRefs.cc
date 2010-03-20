@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.25 2010/03/07 18:23:39 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.26 2010/03/20 16:34:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -125,7 +125,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 	D.Out(pdDebug, "RTIA reply received.");
 
 
-	if (rep->getType() != req->getType()) {
+	if (rep->getMessageType() != req->getMessageType()) {
 		std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
 		throw RTI::RTIinternalError("RTIambPrivateRefs::executeService: "
 				"rep->type != req->type");
@@ -626,7 +626,7 @@ void
 RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 throw (RTI::RTIinternalError)
 {
-	switch (msg->getType()) {
+	switch (msg->getMessageType()) {
 
 	case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
 		try {
@@ -976,4 +976,4 @@ throw (RTI::RTIinternalError)
 	}
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.25 2010/03/07 18:23:39 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.26 2010/03/20 16:34:14 erk Exp $

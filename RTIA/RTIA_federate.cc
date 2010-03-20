@@ -100,15 +100,15 @@ throw (SaveInProgress, RestoreInProgress)
 void
 RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 {
-	G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->getType());
+	G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->getMessageType());
 
 	// Verify not in saving or restoring state.
 	// May throw SaveInProgress or RestoreInProgress
-	saveAndRestoreStatus(req->getType());
+	saveAndRestoreStatus(req->getMessageType());
 
 	e = e_NO_EXCEPTION ;
 
-	switch(req->getType()) {
+	switch(req->getMessageType()) {
 
 	case Message::CLOSE_CONNEXION:
 		D.Out(pdTrace,
@@ -238,7 +238,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 	case Message::FEDERATE_SAVE_NOT_COMPLETE: {
 		D.Out(pdTrace, "Receiving Message from Federate, type"
 				" FederateSave(Not)Complete.");
-		bool result = req->getType() == Message::FEDERATE_SAVE_COMPLETE ;
+		bool result = req->getMessageType() == Message::FEDERATE_SAVE_COMPLETE ;
 		if (result) {
 			G.Out(pdGendoc,"chooseFederateProcessing FEDERATE_SAVE_COMPLETE");
 		}
@@ -1244,10 +1244,10 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	default:
 		D.Out(pdExcept,
-				"Receiving Message from Federate, Unknown Type %d.", req->getType());
+				"Receiving Message from Federate, Unknown Type %d.", req->getMessageType());
 		throw RTIinternalError("");
 	}
-	stat.federateService(req->getType());
+	stat.federateService(req->getMessageType());
 	G.Out(pdGendoc,"exit  chooseFederateProcessing");
 } /* end of RTIA::chooseFederateProcessing */
 
@@ -1316,7 +1316,7 @@ RTIA::processOngoingTick() {
 void
 RTIA::initFederateProcessing(Message *req, Message* rep)
 {
-	if(req->getType() == Message::OPEN_CONNEXION) {
+	if(req->getMessageType() == Message::OPEN_CONNEXION) {
 		M_Open_Connexion *OCq, *OCr;
 		OCq = static_cast<M_Open_Connexion *>(req);
 		OCr = static_cast<M_Open_Connexion *>(rep);
@@ -1340,7 +1340,7 @@ RTIA::initFederateProcessing(Message *req, Message* rep)
 		rep->setException(e_RTIinternalError,
 			"RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
 	}
-	stat.federateService(req->getType());
+	stat.federateService(req->getMessageType());
 }
 
 void
@@ -1348,7 +1348,7 @@ RTIA::processFederateRequest(Message *req)
 {
 	/* use virtual constructor in order to build  *
 	 * appropriate answer message.                */
-	std::auto_ptr<Message> rep(M_Factory::create(req->getType()));
+	std::auto_ptr<Message> rep(M_Factory::create(req->getMessageType()));
 
 	G.Out(pdGendoc,"enter RTIA::processFederateRequest");
 
@@ -1377,7 +1377,7 @@ RTIA::processFederateRequest(Message *req)
 	}
 	// FIXME should
 	// catch (Exception &e) {
-	//  rep->setException(static_cast<TypeException>(e.getType()),e._reason);
+	//  rep->setException(static_cast<TypeException>(e.getMessageType()),e._reason);
 	catch (ArrayIndexOutOfBounds &e) {
 		D.Out(pdExcept, "Catched %s Exception.", e._name);
 		rep->setException(e_ArrayIndexOutOfBounds);
@@ -1709,9 +1709,9 @@ RTIA::processFederateRequest(Message *req)
 
 	delete req;
 
-	if (rep->getType() != Message::TICK_REQUEST &&
-		rep->getType() != Message::TICK_REQUEST_NEXT &&
-		rep->getType() != Message::TICK_REQUEST_STOP) {
+	if (rep->getMessageType() != Message::TICK_REQUEST &&
+		rep->getMessageType() != Message::TICK_REQUEST_NEXT &&
+		rep->getMessageType() != Message::TICK_REQUEST_STOP) {
 		// generic federate service acknowledgment
 		// the TICK_REQUEST confirmation is generated in processOngoingTick()
 		comm->sendUN(rep.get());

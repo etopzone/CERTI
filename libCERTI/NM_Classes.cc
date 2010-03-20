@@ -1,4 +1,4 @@
-// Generated on 2010 March Fri, 19 at 13:57:08 by the CERTI message generator
+// Generated on 2010 March Sat, 20 at 17:24:14 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -2912,7 +2912,7 @@ namespace certi {
       // receive generic message 
       msgGen.receive(stream,msgBuffer);
       // create specific message from type 
-      msg = NM_Factory::create(msgGen.getType());
+      msg = NM_Factory::create(msgGen.getMessageType());
       msgBuffer.assumeSizeFromReservedBytes();
       msg->deserialize(msgBuffer);
       return msg;

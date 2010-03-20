@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.29 2010/03/19 13:54:02 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.30 2010/03/20 16:34:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -206,7 +206,7 @@ throw (RTIinternalError)
 	/* Initialize specific pointer
 	 * FIXME : this is ugly and will be reworked
 	 * */
-	switch(msg->getType()) {
+	switch(msg->getMessageType()) {
 	case NetworkMessage::REMOVE_OBJECT:
 		msgRO = static_cast<NM_Remove_Object*>(msg);
 		break;
@@ -347,7 +347,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
 	G.Out(pdGendoc,"enter ObjectClassBroadcastList::sendPendingMessage");
-	switch (msg->getType()) {
+	switch (msg->getMessageType()) {
 
 	case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
 	case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
@@ -474,7 +474,7 @@ ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass) {
 	/* Initialize specific pointer
 	 * FIXME : this is ugly and will be reworked
 	 * */
-	switch(msg->getType()) {
+	switch(msg->getMessageType()) {
 	case NetworkMessage::REMOVE_OBJECT:
 		msgRO->setObjectClass(objectClass);
 		break;
@@ -501,4 +501,4 @@ ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass) {
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.29 2010/03/19 13:54:02 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.30 2010/03/20 16:34:13 erk Exp $
