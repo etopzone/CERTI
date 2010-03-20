@@ -409,7 +409,7 @@ ObjectSet::getObject(ObjectHandle the_object) const
     if (i != end())
         return i->second ;
 
-    throw ObjectNotKnown("Object not found in map set.");
+    throw ObjectNotKnown(stringize() << "Object <" << the_object << ">not found in map set.");
 }
 
 // ----------------------------------------------------------------------------
@@ -459,4 +459,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.30 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectSet.cc,v 3.31 2010/03/20 16:17:46 erk Exp $

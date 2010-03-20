@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.46 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage.cc,v 3.47 2010/03/20 16:17:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -39,7 +39,7 @@ NetworkMessage::NetworkMessage()
     : type(NOT_USED), exception(e_NO_EXCEPTION)
 {
     messageName        = "NetworkMessage (generic)";
-
+    exceptionReason    = "Not Assigned";
     federation         = 0 ;
     federate           = 0 ;
         
@@ -54,4 +54,4 @@ NetworkMessage::~NetworkMessage() {
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.46 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage.cc,v 3.47 2010/03/20 16:17:46 erk Exp $
