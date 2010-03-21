@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.47 2010/03/20 17:30:37 gotthardp Exp $
+// $Id: certi.hh,v 3.48 2010/03/21 18:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -27,6 +27,8 @@
     #ifdef _MSC_VER
         // Visual C++ does not support declarations using exceptions specification
         #pragma warning(disable: 4290)
+		#ifndef FAKED_INTTYPES_DEFINED
+		#define FAKED_INTTYPES_DEFINED
         typedef unsigned __int64        uint64_t;
         typedef __int64			 int64_t;
         typedef unsigned __int32	uint32_t;
@@ -35,6 +37,7 @@
         typedef __int16			 int16_t;
         typedef unsigned __int8	         uint8_t;
         typedef __int8			  int8_t;
+        #endif
         #ifdef _M_X64
            #define  CERTI_INT64_CONSTANT(val)  (val##L)
            #define  CERTI_INT64_FORMAT         "l"
@@ -301,4 +304,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.47 2010/03/20 17:30:37 gotthardp Exp $
+// $Id: certi.hh,v 3.48 2010/03/21 18:31:52 erk Exp $
