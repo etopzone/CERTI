@@ -4,12 +4,13 @@
 #include "Clock.hh"
 #include <time.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 /**
  * A Clock implemented using POSIX clock_xxxxx API.
  */
-class CERTI_EXPORT PosixClock : public Clock
+class HLA_EXPORT PosixClock : public Clock
 {
 public:
 	/**
@@ -46,5 +47,6 @@ private:
 	clockid_t       clockId;
 };
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */
 #endif /*POSIXCLOCK_HH_*/

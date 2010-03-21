@@ -20,12 +20,11 @@
 #ifndef CLOCK_HH_
 #define CLOCK_HH_
 
-
-
 #include <string>
-#include "certi.hh"
+#include "libhla.hh"
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 /**
  * An abstract Clock class.
@@ -37,7 +36,7 @@ namespace certi {
  * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html
  * or other hardware assisted clock like Pentium TSC.
  */
-class CERTI_EXPORT Clock
+class HLA_EXPORT Clock
 {
 public:
 	/**
@@ -100,6 +99,7 @@ protected:
 	std::string name;
 };
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */
 
 #endif /*CLOCK_HH_*/

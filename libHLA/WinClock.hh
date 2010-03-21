@@ -1,15 +1,16 @@
-#ifndef WinPerfClock_HH_
-#define WinPerfClock_HH_
+#ifndef WinClock_HH_
+#define WinClock_HH_
 
 #include "Clock.hh"
 
-namespace certi {
+namespace libhla {
+namespace clock {
 /**
  */
-class CERTI_EXPORT WinPerfClock : public Clock
+class HLA_EXPORT WinClock : public Clock
 {
 public:
-	WinPerfClock();
+	WinClock();
 	/**
 	 * Get the clock resolution in nano-seconds.
 	 * @return the clock resolution in nano-seconds
@@ -27,14 +28,15 @@ public:
 	 * @return the nano-seconds value 
 	 */
 	virtual double   tick2NanoSecond(const uint64_t ticks);
-	virtual ~WinPerfClock();
+	virtual ~WinClock();
 
 private:
 	/**
-	 * The WinPerfClock resolution in nano-seconds
+	 * The WinClock resolution in nano-seconds
 	 */
 	double resolution;
 
 };
-}
-#endif /*WinPerfClock_HH_*/
+} /* end namespace clock  */
+} /* end namespace libhla */
+#endif /*WinClock_HH_*/

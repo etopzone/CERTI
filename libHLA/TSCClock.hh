@@ -3,7 +3,8 @@
 
 #include "Clock.hh"
 
-namespace certi {
+namespace libhla {
+namespace clock {
 /**
  * The TSCClock is a Clock using the Time Stamp Counter
  * which may be found in Pentium-like processors
@@ -15,7 +16,7 @@ namespace certi {
  * used on mobile device.
  * If you want a more "robust" Clock class you may use PosixClock.
  */
-class CERTI_EXPORT TSCClock : public Clock
+class HLA_EXPORT TSCClock : public Clock
 {
 public:
 	TSCClock();
@@ -60,5 +61,7 @@ private:
 	double resolution;
 
 };
-}
+
+} /* end namespace clock  */
+} /* end namespace libhla */
 #endif /*TSCCLOCK_HH_*/

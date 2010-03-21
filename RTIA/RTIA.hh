@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.20 2010/03/14 15:35:53 gotthardp Exp $
+// $Id: RTIA.hh,v 3.21 2010/03/21 17:10:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -33,10 +33,9 @@
 #include "DeclarationManagement.hh"
 #include "DataDistribution.hh"
 #include "Statistics.hh"
+#include "Clock.hh"
 
 namespace certi {
-
-class Clock;
 
 namespace rtia {
 
@@ -84,7 +83,7 @@ private:
     OwnershipManagement *owm ;
     DeclarationManagement *dm ;
     DataDistribution *ddm ;
-    Clock* clock ;
+    libhla::clock::Clock* clock ;
     Statistics stat ;
 
     void saveAndRestoreStatus(Message::Type type)
@@ -132,4 +131,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.20 2010/03/14 15:35:53 gotthardp Exp $
+// $Id: RTIA.hh,v 3.21 2010/03/21 17:10:11 erk Exp $

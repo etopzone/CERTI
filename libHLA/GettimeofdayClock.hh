@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GettimeofdayClock.hh,v 4.1 2009/10/16 21:34:24 erk Exp $
+// $Id: GettimeofdayClock.hh,v 1.1 2010/03/21 17:10:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_GETTIMEOFDAYCLOCK_HH_
@@ -29,12 +29,13 @@
 #include "Clock.hh"
 #include <time.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 /**
  * A Clock implemented using gettimeofday.
  */
-class CERTI_EXPORT GettimeofdayClock : public Clock
+class HLA_EXPORT GettimeofdayClock : public Clock
 {
 public:
     /**
@@ -61,5 +62,6 @@ public:
     virtual ~GettimeofdayClock();
 };
 
-}
-#endif /*POSIXCLOCK_HH_*/
+} /* end of clock namespace */
+} /* and of libhla namespace */
+#endif /*CERTI_GETTIMEOFDAYCLOCK_HH_*/

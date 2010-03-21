@@ -20,16 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GettimeofdayClock.cc,v 4.1 2009/10/16 21:34:24 erk Exp $
+// $Id: GettimeofdayClock.cc,v 1.1 2010/03/21 17:10:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "GettimeofdayClock.hh"
 
 #include <sys/time.h>
+#include <iostream>
 
-#include "Exception.hh"
-
-namespace certi {
+namespace libhla {
+namespace clock {
 
 GettimeofdayClock::GettimeofdayClock() : Clock("GettimeofdayClock")
 {
@@ -43,7 +43,7 @@ GettimeofdayClock::getResolution() {
 uint64_t GettimeofdayClock::getCurrentTicksValue() {
     struct timeval tv;
     if (-1 == gettimeofday(&tv, 0))
-        throw RTIinternalError("Cannot get current timestamp!");
+        std::cerr << "Cannot get current timestamp!" << std::endl;
     /* convert struct timespec to number of micro-seconds */ 
     return tv.tv_sec*1000000 + tv.tv_usec;
 }
@@ -57,4 +57,5 @@ GettimeofdayClock::~GettimeofdayClock()
 {
 }
 
-}
+} /* end of clock namespace */
+} /* and of libhla namespace */

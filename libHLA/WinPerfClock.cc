@@ -1,7 +1,8 @@
 #include "WinPerfClock.hh"
 #include <windows.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 WinPerfClock::WinPerfClock() : Clock("WinPerfClock")
 {	
@@ -33,5 +34,5 @@ return resolution*ticks;
 WinPerfClock::~WinPerfClock()
 {
 }
-
-}
+} /* end namespace clock  */
+} /* end namespace libhla */

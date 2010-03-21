@@ -73,8 +73,6 @@ SET(CERTI_SUPPORT_SRCS
 AuditFile.cc AuditFile.hh
 AuditLine.cc AuditLine.hh
 BasicMessage.cc BasicMessage.hh
-Clock.cc Clock.hh
-ClockFactory.cc
 MessageBuffer.cc MessageBuffer.hh
 M_Classes.cc M_Classes.hh
 Message.cc Message_RW.cc Message.hh 
@@ -85,31 +83,6 @@ XmlParser.cc XmlParser.hh
 PrettyDebug.cc PrettyDebug.hh
 TreeNamedAndHandledSet.hh
 )
-
-IF (HAVE_POSIX_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
-           ${CERTI_SUPPORT_SRCS}
-           PosixClock.cc PosixClock.hh)              
-ENDIF(HAVE_POSIX_CLOCK)
-
-IF (HAVE_GETTIMEOFDAY)
-    SET(CERTI_SUPPORT_SRCS 
-           ${CERTI_SUPPORT_SRCS}
-           GettimeofdayClock.cc GettimeofdayClock.hh)              
-ENDIF(HAVE_GETTIMEOFDAY)
-
-IF (HAVE_TSC_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
-           ${CERTI_SUPPORT_SRCS}
-           TSCClock.cc TSCClock.hh)              
-ENDIF(HAVE_TSC_CLOCK)
-
-IF (HAVE_WIN_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
-           ${CERTI_SUPPORT_SRCS}
-           WinClock.cc WinClock.hh 
-           WinPerfClock.cc WinPerfClock.hh)              
-ENDIF(HAVE_WIN_CLOCK)
 
 SET(CERTI_SOCKET_SRCS
 SocketServer.cc
@@ -253,10 +226,6 @@ IF (MINGW)
     INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libCERTI.def
             DESTINATION lib)
 ENDIF (MINGW)
-
-IF (HAVE_POSIX_CLOCK)
-    TARGET_LINK_LIBRARIES(CERTI ${RT_LIBRARY})
-ENDIF (HAVE_POSIX_CLOCK)
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES VERSION 1.0.0 SOVERSION 1)
 

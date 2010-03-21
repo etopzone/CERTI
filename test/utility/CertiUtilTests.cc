@@ -32,35 +32,6 @@ using std::endl;
 #include <cstring>
 #include <cstdio>
 
-#include "Clock.hh"
-void clockTests(certi::Clock& aClock) {
-	uint64_t tick1;
-	uint64_t tick2;
-	cout << "Testing clock <" << aClock.getName() << "> BEGIN..." <<endl;
-	cout << "    Clock resolution is: " << aClock.getResolution() << " nano-seconds" <<endl;
-	tick1 = aClock.getCurrentTicksValue();
-	tick2 = aClock.getCurrentTicksValue();
-	cout << "    Tick1 = " << tick1 << endl;
-	cout << "    Tick2 = " << tick2 << endl;
-	cout << "    Delta = " << aClock.getDeltaNanoSecond(tick1,tick2) << " nano-seconds" <<endl;
-	cout << "Testing clock <" << aClock.getName() << "> END." <<endl;
-}
-#ifdef HAVE_TSC_CLOCK
-#include "TSCClock.hh"
-#endif
-#ifdef HAVE_POSIX_CLOCK
-#include "PosixClock.hh"
-#endif
-#ifdef HAVE_GETTIMEOFDAY
-#include "GettimeofdayClock.hh"
-#endif
-
-#ifdef HAVE_WIN_CLOCK
-#include "WinClock.hh"
-#include "WinPerfClock.hh"
-#endif
-
-
 void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	certi::MessageBuffer MsgBuf2;
 	std::string    stdstr = "a std:string";
@@ -247,19 +218,6 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 int
 main(int argc, char **argv)
 {
-#ifdef HAVE_POSIX_CLOCK
-	certi::PosixClock posixClk;
-#endif
-#ifdef HAVE_GETTIMEOFDAY
-        certi::GettimeofdayClock gettimeofdayClock;
-#endif
-#ifdef HAVE_TSC_CLOCK
-	certi::TSCClock   tscClk;
-#endif
-#ifdef HAVE_WIN_CLOCK
-	certi::WinClock       WinClk;
-	certi::WinPerfClock   WinPerfClk;
-#endif
 
 	certi::MessageBuffer MsgBuf;
 
@@ -275,23 +233,6 @@ main(int argc, char **argv)
 	cout << endl;
 	messageBufferTests(MsgBuf);
 
-#ifdef HAVE_TSC_CLOCK
-	clockTests(tscClk);
-#endif
-#ifdef HAVE_POSIX_CLOCK
-	clockTests(posixClk);
-#endif
-#ifdef HAVE_GETTIMEOFDAY
-	clockTests(gettimeofdayClock);
-#endif
-#ifdef HAVE_WIN_CLOCK
-	clockTests(WinClk);
-	clockTests(WinPerfClk);
-#endif
-
-	certi::Clock *myClock = certi::Clock::getBestClock () ;
-        clockTests(*myClock);
-        delete myClock ; 
 	cout << "CERTI Utility Test->END." <<endl;
     /* getchar(); */
 	return 0;

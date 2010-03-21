@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 TSCClock::TSCClock() : Clock("TSCClock")
 {
@@ -47,4 +48,5 @@ double TSCClock::getProcessorFrequency() {
 	  return freq;
 }
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */

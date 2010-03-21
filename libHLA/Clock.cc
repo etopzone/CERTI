@@ -18,7 +18,8 @@
 // ----------------------------------------------------------------------------
 
 #include "Clock.hh"
-namespace certi {
+namespace libhla {
+namespace clock {
 
 Clock::Clock(const std::string& newName)
 {
@@ -44,4 +45,5 @@ Clock::~Clock()
 {
 }
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */

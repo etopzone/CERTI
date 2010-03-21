@@ -35,7 +35,8 @@
 #include "WinPerfClock.hh"
 #endif
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
   Clock * Clock::getBestClock () {
 #ifdef _WIN32
@@ -62,4 +63,6 @@ namespace certi {
 #endif
 #endif
   } /* end of getBestClock */
-}
+
+} /* end namespace clock  */
+} /* end namespace libhla */

@@ -2,7 +2,8 @@
 
 #include <stdlib.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 PosixClock::PosixClock(clockid_t newClockId) : Clock("PosixClock")
 {
@@ -31,4 +32,5 @@ PosixClock::~PosixClock()
 {
 }
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */
