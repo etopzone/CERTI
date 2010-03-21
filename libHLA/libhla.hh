@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: libhla.hh,v 1.1 2010/03/21 17:10:10 erk Exp $
+// $Id: libhla.hh,v 1.2 2010/03/21 17:14:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBHLA_HH_INCLUDED
@@ -31,6 +31,7 @@ typedef unsigned __int16  uint16_t;
 typedef signed __int16    int16_t;
 typedef unsigned __int8   uint8_t;
 typedef signed __int8     int8_t;
+typedef short int         int_least16_t;
 #else
 #include <inttypes.h>
 #endif
