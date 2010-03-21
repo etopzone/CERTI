@@ -6,7 +6,6 @@
 namespace libhla {
 namespace clock {
 
-}
 /**
  */
 class HLA_EXPORT WinPerfClock : public Clock
