@@ -4,7 +4,8 @@
 #include <string.h>
 #include <time.h>
 
-namespace certi {
+namespace libhla {
+namespace clock {
 
 WinClock::WinClock() : Clock("WinClock")
 {	
@@ -18,7 +19,7 @@ double WinClock::getResolution()
 
 uint64_t WinClock::getCurrentTicksValue() 
 {
-  return static_cast<uint64_t>(clock());
+    return static_cast<uint64_t>(::clock());
 }
 	
 double WinClock::tick2NanoSecond(const uint64_t ticks) 
@@ -30,4 +31,5 @@ WinClock::~WinClock()
 {
 }
 
-}
+} /* end namespace clock  */
+} /* end namespace libhla */
