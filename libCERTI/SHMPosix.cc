@@ -1,6 +1,7 @@
 // SHM useful systems includes
 #include <sys/types.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 // Others Systems includes
