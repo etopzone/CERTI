@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.48 2010/03/21 18:31:52 erk Exp $
+// $Id: certi.hh,v 3.49 2010/03/22 16:34:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -25,8 +25,14 @@
     #define	STAT_FUNCTION         _stat
     #define	STAT_STRUCT           struct _stat
     #ifdef _MSC_VER
+        // MSVC Pragma
         // Visual C++ does not support declarations using exceptions specification
         #pragma warning(disable: 4290)
+        #pragma warning(disable: 4251)
+		#pragma message("MSVC specific - disabled pragma 4251 and 4290 (exception specification ignored)")
+	    #define _CRT_SECURE_NO_DEPRECATE
+		#pragma message("JvY - Used _CRT_SECURE_NO_DEPRECATE")
+
 		#ifndef FAKED_INTTYPES_DEFINED
 		#define FAKED_INTTYPES_DEFINED
         typedef unsigned __int64        uint64_t;
@@ -304,4 +310,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.48 2010/03/21 18:31:52 erk Exp $
+// $Id: certi.hh,v 3.49 2010/03/22 16:34:08 erk Exp $
