@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.98 2010/03/23 13:13:28 erk Exp $
+// $Id: RTIG_processing.cc,v 3.99 2010/03/23 13:15:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -210,7 +210,6 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 			federate.c_str(), num_federation, num_federe);
 
 	// Send answer
-	rep.show(std::cerr);
 	rep.send(link,NM_msgBufSend);
 
 	G.Out(pdGendoc,"exit RTIG::processJoinFederation");
@@ -1467,4 +1466,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.98 2010/03/23 13:13:28 erk Exp $
+// $Id: RTIG_processing.cc,v 3.99 2010/03/23 13:15:34 erk Exp $
