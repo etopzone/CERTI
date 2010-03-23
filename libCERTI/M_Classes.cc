@@ -1,4 +1,4 @@
-// Generated on 2010 March Sat, 20 at 17:24:56 by the CERTI message generator
+// Generated on 2010 March Tue, 23 at 08:59:23 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -882,6 +882,7 @@ namespace certi {
       this->type = Message::REGISTER_OBJECT_INSTANCE;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
+      _hasObjectName=false;
       //objectName= <no default value in message spec using builtin>
    }
 
@@ -928,6 +929,7 @@ namespace certi {
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1003,6 +1005,7 @@ namespace certi {
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1052,6 +1055,7 @@ namespace certi {
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1128,6 +1132,7 @@ namespace certi {
       //parameters= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1204,6 +1209,7 @@ namespace certi {
       //parameters= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1279,6 +1285,7 @@ namespace certi {
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -1357,6 +1364,7 @@ namespace certi {
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       //objectName= <no default value in message spec using builtin>
+      _hasEventRetraction=false;
       //eventRetraction= <no default value in message spec using builtin>
    }
 
@@ -3122,6 +3130,7 @@ namespace certi {
       this->type = Message::DDM_REGISTER_OBJECT;
       //objectClass= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
+      _hasObjectInstanceName=false;
       //objectInstanceName= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
    }

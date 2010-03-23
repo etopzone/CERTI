@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.12 2010/03/20 16:34:14 erk Exp $
+## $Id: GenMsgCXX.py,v 1.13 2010/03/23 08:12:39 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -435,9 +435,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         stream.write("#endif\n")
         
     def writeInitFieldStatement(self,stream,field):
+        if field.qualifier == "optional":
+            stream.write(self.getIndent())
+            stream.write("_has"+self.upperFirst(field.name)+"=false;\n")
         if field.hasDefaultValue():            
             stream.write(self.getIndent())
-            stream.write(field.name+"="+str(field.defaultValue)+";\n")
+            stream.write(field.name+"="+str(field.defaultValue)+";\n")        
         else:
             stream.write(self.getIndent())
             stream.write(self.commentLineBeginWith)

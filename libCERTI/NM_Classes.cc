@@ -1,4 +1,4 @@
-// Generated on 2010 March Sat, 20 at 17:24:14 by the CERTI message generator
+// Generated on 2010 March Tue, 23 at 08:56:31 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -1033,6 +1033,7 @@ namespace certi {
       this->messageName = "NM_Register_Object";
       this->type = NetworkMessage::REGISTER_OBJECT;
       //objectClass= <no default value in message spec using builtin>
+      _hasObjectName=false;
       //objectName= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
    }
@@ -1113,6 +1114,7 @@ namespace certi {
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
+      _hasEvent=false;
       //event= <no default value in message spec using builtin>
    }
 
@@ -1187,6 +1189,7 @@ namespace certi {
       //object= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
+      _hasEvent=false;
       //event= <no default value in message spec using builtin>
    }
 
@@ -1327,6 +1330,7 @@ namespace certi {
       //interactionClass= <no default value in message spec using builtin>
       //parameters= <no default value in message spec using builtin>
       //values= <no default value in message spec using builtin>
+      _hasEvent=false;
       //event= <no default value in message spec using builtin>
    }
 
@@ -1399,6 +1403,7 @@ namespace certi {
       this->messageName = "NM_Delete_Object";
       this->type = NetworkMessage::DELETE_OBJECT;
       //object= <no default value in message spec using builtin>
+      _hasEvent=false;
       //event= <no default value in message spec using builtin>
    }
 
@@ -1442,6 +1447,7 @@ namespace certi {
       this->type = NetworkMessage::REMOVE_OBJECT;
       //object= <no default value in message spec using builtin>
       //objectClass= <no default value in message spec using builtin>
+      _hasEvent=false;
       //event= <no default value in message spec using builtin>
    }
 
@@ -2281,6 +2287,7 @@ namespace certi {
       //objectClass= <no default value in message spec using builtin>
       //attributes= <no default value in message spec using builtin>
       //region= <no default value in message spec using builtin>
+      _hasObjectInstanceName=false;
       //objectInstanceName= <no default value in message spec using builtin>
       //object= <no default value in message spec using builtin>
       DDM_bool=false;
@@ -2567,8 +2574,11 @@ namespace certi {
 
    New_NetworkMessage::New_NetworkMessage() {
       type=0;
+      _hasDate=false;
       //date= <no default value in message spec using builtin>
+      _hasLabel=false;
       //label= <no default value in message spec using builtin>
+      _hasTag=false;
       //tag= <no default value in message spec using builtin>
    }
 
