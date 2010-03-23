@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.33 2010/03/20 16:34:13 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -84,8 +84,8 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     NM_Publish_Object_Class req ;    
     req.setObjectClass(theClassHandle);
     req.setAttributesSize(attribArraySize);
-    req.federation      = fm->_numero_federation ;
-    req.federate        = fm->federate ;
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
 
     for (uint32_t i=0 ; i<attribArraySize ; i++)
         req.setAttributes(attribArray[i],i) ;
@@ -94,7 +94,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Reception    
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
     G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass") ;
@@ -130,15 +130,15 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
     // Partie RTIG
     NM_Unpublish_Object_Class req ;
    
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation) ;
+    req.setFederate(fm->federate);
     req.setObjectClass(theClassHandle);
 
     // Emission de la requete vers le RTIG
     comm->sendMessage(&req);
 
     // On attend une reponse
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishObjectClass */
@@ -165,12 +165,12 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     // RTIG (may be non-local) request
     NM_Publish_Interaction_Class req ;
     
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation) ;
+    req.setFederate(fm->federate);
     req.setInteractionClass(theInteractionHandle);
 
     comm->sendMessage(&req);    
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of publishInteractionClass */
@@ -198,12 +198,12 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
     // Partie RTIG
     NM_Unpublish_Interaction_Class req;   
     req.setInteractionClass(theInteractionHandle);
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation) ;
+    req.setFederate(fm->federate);
 
     comm->sendMessage(&req);
     
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishInteractionClass */
@@ -224,8 +224,8 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
 
-    req.federation      = fm->_numero_federation ;
-    req.federate        = fm->federate ;
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
     req.setObjectClass(theClassHandle);
     req.setAttributesSize(attribArraySize);
 
@@ -239,7 +239,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     // Reception
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
-                      req.federate));
+                      req.getFederate()));
     G.Out(pdGendoc,"                              =====> received S_O_C from RTIG");
 
     e = rep->getException() ;
@@ -261,14 +261,14 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Partie RTIG    
     req.setObjectClass(theClassHandle);
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation) ;
+    req.setFederate(fm->federate);
 
     comm->sendMessage(&req);
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS,
-                      req.federate));
+                      req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unsubscribeObjectClassAttribute */
@@ -298,13 +298,13 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     // Partie RTIG    
     req.setInteractionClass(theClassHandle);
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
 
     comm->sendMessage(&req);
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SUBSCRIBE_INTERACTION_CLASS,
-		      req.federate));
+		      req.getFederate()));
 
     e = rep->getException() ;
 } /* end of subscribeInteractionClass */
@@ -334,14 +334,14 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     // Partie RTIG    
     req.setInteractionClass(theClassHandle);
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
 
     comm->sendMessage(&req);
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS,
-                      req.federate));
+                      req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unsubscribeInteractionClass */
@@ -355,8 +355,8 @@ setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
 
     e = e_NO_EXCEPTION ;
 
-    msg.federation = fm->_numero_federation ;
-    msg.federate = fm->federate ;
+    msg.setFederation(fm->_numero_federation);
+    msg.setFederate(fm->federate);
 
     if (state) {
         msg.classRelevanceAdvisorySwitchOn();
@@ -423,8 +423,8 @@ setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
 
     e = e_NO_EXCEPTION ;
 
-    msg.federation = fm->_numero_federation ;
-    msg.federate = fm->federate ;
+    msg.setFederation(fm->_numero_federation);
+    msg.setFederate(fm->federate);
 
     if (state) {
         msg.interactionRelevanceAdvisorySwitchOn();
@@ -482,4 +482,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.33 2010/03/20 16:34:13 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.34 2010/03/23 13:13:27 erk Exp $

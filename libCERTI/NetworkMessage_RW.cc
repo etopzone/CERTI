@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.57 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -43,26 +43,12 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	/* type of message */
 	msgBuffer.write_int32(type);
 	msgBuffer.write_int32(exception);
-	msgBuffer.write_uint32(federate);
-	msgBuffer.write_uint32(federation);
-	/*
-	 * "builtin" Optional part
-	 * The subclass may chose in the constructor the variable part.
-	 * isDated may be chosen on Message instance basis
-	 * (same message may Dated or Not Dated)
-	 */
-	msgBuffer.write_bool(_isDated);
-	if (_isDated) {
-		msgBuffer.write_double(date.getTime());
-		D.Out(pdDebug, "Sent Message date is  <%f>", date.getTime());
-	}
-	msgBuffer.write_bool(_isLabelled);
-	if (_isLabelled) {
-		msgBuffer.write_string(label);
-	}
-	msgBuffer.write_bool(_isTagged);
-	if (_isTagged) {
-		msgBuffer.write_string(tag);
+	if (exception != e_NO_EXCEPTION) {
+		msgBuffer.write_string(exceptionReason);
+	} else {
+		msgBuffer.write_uint32(federate);
+		msgBuffer.write_uint32(federation);
+		BasicMessage::serialize(msgBuffer);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::serialize");
 } /* end of serialize */
@@ -76,26 +62,12 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	/* deserialize common part */
 	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
 	exception   = static_cast<TypeException>(msgBuffer.read_int32());
-	federate    = msgBuffer.read_uint32();
-	federation  = msgBuffer.read_uint32();
-	/*
-	 * "builtin" Optional part
-	 * The subclass may chose in the constructor the variable part.
-	 * isDated may be chosen on Message instance basis
-	 * (same message may Dated or Not Dated)
-	 */
-	_isDated = msgBuffer.read_bool();
-	if (_isDated) {
-		date = msgBuffer.read_double();
-		D.Out(pdDebug, "Received Message date is  <%f>", date.getTime());
-	}
-	_isLabelled = msgBuffer.read_bool();
-	if (_isLabelled) {
-		msgBuffer.read_string(label);
-	}
-	_isTagged = msgBuffer.read_bool();
-	if (_isTagged) {
-		msgBuffer.read_string(tag);
+	if (exception != e_NO_EXCEPTION) {
+			msgBuffer.read_string(exceptionReason);
+	} else {
+			federate    = msgBuffer.read_uint32();
+			federation  = msgBuffer.read_uint32();
+			BasicMessage::deserialize(msgBuffer);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
 } /* end of deserialize */
@@ -151,4 +123,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.56 2010/03/19 13:54:03 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.57 2010/03/23 13:13:27 erk Exp $

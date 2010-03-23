@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.15 2010/03/19 13:54:03 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.16 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -72,10 +72,10 @@ InteractionBroadcastList::InteractionBroadcastList(NM_Receive_Interaction *theMs
     message = theMsg ;
 
     // Add reference of the sender(so it does not receive its own message).
-    if (message->federate != 0) {
+    if (message->getFederate() != 0) {
         InteractionBroadcastLine *firstLine ;
         firstLine =
-            new InteractionBroadcastLine(message->federate,
+            new InteractionBroadcastLine(message->getFederate(),
                                          InteractionBroadcastLine::sent);
         lines.push_front(firstLine);
     }
@@ -177,4 +177,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.15 2010/03/19 13:54:03 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.16 2010/03/23 13:13:27 erk Exp $

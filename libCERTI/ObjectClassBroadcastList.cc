@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.30 2010/03/20 16:34:13 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.31 2010/03/23 13:13:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -47,8 +47,8 @@ T* ObjectClassBroadcastList::createReducedMessage(T* msg, ObjectBroadcastLine *l
 
 	// Copy static informations.
 	reducedMessage->setException(msg->getException());
-	reducedMessage->federation = msg->federation ;
-	reducedMessage->federate = msg->federate ;
+	reducedMessage->setFederation(msg->getFederation());
+	reducedMessage->setFederate(msg->getFederate());
 	reducedMessage->setObject(msg->getObject());
 	if (msg->isDated()) {
 		reducedMessage->setDate(msg->getDate());
@@ -92,8 +92,8 @@ T* ObjectClassBroadcastList::createReducedMessageWithValue(T* msg, ObjectBroadca
 
 	// Copy static informations.
 	reducedMessage->setException(msg->getException());
-	reducedMessage->federation = msg->federation ;
-	reducedMessage->federate = msg->federate ;
+	reducedMessage->setFederation(msg->getFederation());
+	reducedMessage->setFederate(msg->getFederate());
 	reducedMessage->setObject(msg->getObject());
 	if (msg->isDated()) {
 		reducedMessage->setDate(msg->getDate());
@@ -228,8 +228,8 @@ throw (RTIinternalError)
 	}
 
 	// Add reference of the sender.
-	if (msg->federate != 0) {
-		firstLine = new ObjectBroadcastLine(msg->federate,ObjectBroadcastLine::sent);
+	if (msg->getFederate() != 0) {
+		firstLine = new ObjectBroadcastLine(msg->getFederate(),ObjectBroadcastLine::sent);
 		lines.push_front(firstLine);
 	}
 }
@@ -501,4 +501,4 @@ ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass) {
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.30 2010/03/20 16:34:13 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.31 2010/03/23 13:13:26 erk Exp $

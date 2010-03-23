@@ -250,9 +250,9 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         	answer = AINO;
         }
 
-        answer->federation = server->federation();
+        answer->setFederation(server->federation());
         answer->setException(e_NO_EXCEPTION);
-        answer->federate = oa->getOwner();
+        answer->setFederate(oa->getOwner());
 
         sendToFederate(answer, the_federate);
     }
@@ -459,4 +459,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.31 2010/03/20 16:17:46 erk Exp $
+// $Id: ObjectSet.cc,v 3.32 2010/03/23 13:13:27 erk Exp $

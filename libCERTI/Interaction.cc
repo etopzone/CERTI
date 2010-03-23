@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.61 2010/03/19 13:54:03 erk Exp $
+// $Id: Interaction.cc,v 3.62 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -421,8 +421,8 @@ throw (FederateNotPublishing,
 	if (server != NULL) {
 		NM_Receive_Interaction *answer = new NM_Receive_Interaction() ;
 		answer->setException (e_NO_EXCEPTION);
-		answer->federation = server->federation();
-		answer->federate = federate_handle ;
+		answer->setFederation(server->federation());
+		answer->setFederate(federate_handle);
 		answer->setInteractionClass(handle) ; // Interaction Class Handle
 		answer->setDate(time);
 
@@ -480,8 +480,8 @@ throw (FederateNotPublishing,
 	if (server != NULL) {
 		NM_Receive_Interaction *answer = new NM_Receive_Interaction();
 		answer->setException(e_NO_EXCEPTION);
-		answer->federation = server->federation();
-		answer->federate = federate_handle ;
+		answer->setFederation(server->federation());
+		answer->setFederate(federate_handle);
 		answer->setInteractionClass(handle); // Interaction Class Handle
 		answer->setLabel(the_tag);
 
@@ -541,4 +541,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.61 2010/03/19 13:54:03 erk Exp $
+// $Id: Interaction.cc,v 3.62 2010/03/23 13:13:27 erk Exp $

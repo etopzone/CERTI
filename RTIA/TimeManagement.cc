@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.57 2010/03/20 16:34:13 erk Exp $
+// $Id: TimeManagement.cc,v 3.58 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -106,8 +106,8 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
     heure_logique += _lookahead_courant ;
 
     if (heure_logique > lastNullMessageDate) {
-        msg.federation = fm->_numero_federation ;
-        msg.federate = fm->federate ;
+        msg.setFederation(fm->_numero_federation);
+        msg.setFederate(fm->federate);
         msg.setDate(heure_logique) ; // ? See 6 lines upper !
 
         comm->sendMessage(&msg);
@@ -240,7 +240,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
     	  NM_Remove_Object& RO=static_cast<NM_Remove_Object&>(msg);
           if (msg.isDated()) {
         	om->removeObject(RO.getObject(),
-                		     msg.federate,
+                		     msg.getFederate(),
 				             msg.getDate(),
                          	 msg.getLabel(),
                          	 msg.eventRetraction,
@@ -248,7 +248,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 	  }
 	  else {
         	om->removeObject(RO.getObject(),
-                		     msg.federate,
+                		     msg.getFederate(),
                          	 msg.getLabel(),
                          	 msg.getRefException());
 	  }
@@ -257,11 +257,11 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP: {
     	 NM_Inform_Attribute_Ownership& IAO = static_cast<NM_Inform_Attribute_Ownership&>(msg);
-        D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.federate);
+        D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.getFederate());
 
         owm->informAttributeOwnership(IAO.getObject(),
                                       IAO.getAttribute(),
-                                      msg.federate,
+                                      msg.getFederate(),
                                       msg.getRefException());
       }
         break ;
@@ -270,7 +270,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
     	  NM_Attribute_Is_Not_Owned& AINO = static_cast<NM_Attribute_Is_Not_Owned&>(msg);
         owm->attributeIsNotOwned(AINO.getObject(),
                                  AINO.getAttribute(),
-                                 msg.federate,
+                                 msg.getFederate(),
                                  msg.getRefException());
       }
         break ;
@@ -281,7 +281,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->requestAttributeOwnershipAssumption(RAOA.getObject(),
                                                  RAOA.getAttributes(),
                                                  RAOA.getAttributesSize(),
-                                                 msg.federate,
+                                                 msg.getFederate(),
                                                  msg.getLabel(),
                                                  msg.getRefException());
         break ;
@@ -293,7 +293,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->attributeOwnershipUnavailable(AOU.getObject(),
                                            AOU.getAttributes(),
                                            AOU.getAttributesSize(),
-                                           msg.federate,
+                                           msg.getFederate(),
                                            msg.getRefException());
         break ;
         }
@@ -304,7 +304,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->attributeOwnershipAcquisitionNotification(AOAN.getObject(),
                                                        AOAN.getAttributes(),
                                                        AOAN.getAttributesSize(),
-                                                       msg.federate,
+                                                       msg.getFederate(),
                                                        msg.getRefException());
         break ;
         }
@@ -364,7 +364,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break ;
 
       case NetworkMessage::INITIATE_FEDERATE_RESTORE:
-        fm->initiateFederateRestore(msg.getLabel(), msg.federate);
+        fm->initiateFederateRestore(msg.getLabel(), msg.getFederate());
         break ;
 
       case NetworkMessage::FEDERATION_RESTORED:
@@ -645,8 +645,8 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
     if (e == e_NO_EXCEPTION) {
         _est_contraint = etat ;
 
-        msg.federation = fm->_numero_federation ;
-        msg.federate = fm->federate ;
+        msg.setFederation(fm->_numero_federation);
+        msg.setFederate(fm->federate);
         if (etat) {
         	msg.constrainedOn();
         } else {
@@ -691,8 +691,8 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
     if (e == e_NO_EXCEPTION) {
         _est_regulateur = etat ;
 
-        msg.federation = fm->_numero_federation ;
-        msg.federate = fm->federate ;
+        msg.setFederation(fm->_numero_federation);
+        msg.setFederate(fm->federate);
         if (etat) {
         	msg.regulatorOn();
         	D.Out(pdDebug,
@@ -1010,4 +1010,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.57 2010/03/20 16:34:13 erk Exp $
+// $Id: TimeManagement.cc,v 3.58 2010/03/23 13:13:27 erk Exp $

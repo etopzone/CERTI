@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: DataDistribution.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -125,13 +125,13 @@ throw (SpaceNotDefined)
 	Debug(D, pdDebug) << "Start creating region in space " << space << "..." << endl ;
 	NM_DDM_Create_Region req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setSpace(space);
 	req.setNbExtents(nb_extents);
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NM_DDM_Create_Region> rep(static_cast<NM_DDM_Create_Region*>(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.federate)));
+	std::auto_ptr<NM_DDM_Create_Region> rep(static_cast<NM_DDM_Create_Region*>(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.getFederate())));
 	e = rep->getException();
 
 	if (e == e_NO_EXCEPTION) {
@@ -165,13 +165,13 @@ DataDistribution::modifyRegion(RegionHandle handle,
 	// Request to RTIG
 	NM_DDM_Modify_Region req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setRegion(handle) ;
 	req.setExtents(extents);
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.federate));
+	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.getFederate()));
 	e = rep->getException() ;
 
 	if (e == e_NO_EXCEPTION) {
@@ -195,12 +195,12 @@ throw (RegionNotKnown, RegionInUse)
 	// Request to RTIG
 	NM_DDM_Delete_Region req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setRegion(handle);
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.federate));
+	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.getFederate()));
 	e = rep->getException() ;
 
 	if (e == e_NO_EXCEPTION) {
@@ -231,8 +231,8 @@ throw (RegionNotKnown)
 
 	NM_DDM_Associate_Region req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setObject(object);
 	req.setRegion(region) ;
 
@@ -241,7 +241,7 @@ throw (RegionNotKnown)
 	}
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.federate));
+	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.getFederate()));
 
 	e = rep->getException() ;
 
@@ -261,8 +261,8 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 
 	NM_DDM_Register_Object req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setObjectClass(class_handle);
 	req.setTag(name);
 	for (uint32_t i=0;i<nb;++i) {
@@ -271,7 +271,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 	req.setRegions(regions);
 
 	comm->sendMessage(&req);
-	std::auto_ptr<NM_DDM_Register_Object> rep(static_cast<NM_DDM_Register_Object*>(comm->waitMessage(NetworkMessage::DDM_REGISTER_OBJECT,req.federate)));
+	std::auto_ptr<NM_DDM_Register_Object> rep(static_cast<NM_DDM_Register_Object*>(comm->waitMessage(NetworkMessage::DDM_REGISTER_OBJECT,req.getFederate())));
 	e = rep->getException() ;
 
 
@@ -306,14 +306,14 @@ throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
 
 	NM_DDM_Unassociate_Region req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setObject(object);
 	req.setRegion(region) ;
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNASSOCIATE_REGION,
-			req.federate));
+			req.getFederate()));
 
 	e = rep->getException() ;
 } /* end of unassociateRegion */
@@ -332,8 +332,8 @@ throw (RegionNotKnown)
 
 	NM_DDM_Subscribe_Attributes req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setObjectClass(obj_class);
 	req.setRegion(region);
 	for (uint32_t i=0;i<nb;++i) {
@@ -342,7 +342,7 @@ throw (RegionNotKnown)
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
-			req.federate));
+			req.getFederate()));
 
 	e = rep->getException() ;
 } /* end of subscribe */
@@ -360,14 +360,14 @@ throw (RegionNotKnown)
 
 	NM_DDM_Unsubscribe_Attributes req;
 
-	req.federation = fm->_numero_federation ;
-	req.federate = fm->federate ;
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 	req.setObjectClass(obj_class);
 	req.setRegion(region);
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
-			req.federate));
+			req.getFederate()));
 
 	e = rep->getException() ;
 } /* end of unsubscribeAttributes */
@@ -389,7 +389,7 @@ throw (RegionNotKnown)
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
-			req.federate));
+			req.getFederate()));
 
 	e = rep->getException() ;
 } /* end of subscribeInteraction */
@@ -411,11 +411,11 @@ throw (RegionNotKnown)
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage>  rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
-			req.federate));
+			req.getFederate()));
 
 	e = rep->getException() ;
 } /* end of unsubscribeInteraction */
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: DataDistribution.cc,v 3.34 2010/03/23 13:13:27 erk Exp $

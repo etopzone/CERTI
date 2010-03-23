@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.47 2010/03/20 16:17:46 erk Exp $
+// $Id: NetworkMessage.cc,v 3.48 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,8 +42,6 @@ NetworkMessage::NetworkMessage()
     exceptionReason    = "Not Assigned";
     federation         = 0 ;
     federate           = 0 ;
-        
-    date             = 0.0;
 
 } /* end of NetworkMessage() */
 
@@ -51,7 +49,13 @@ NetworkMessage::~NetworkMessage() {
 	
 }
 
+void NetworkMessage::show(std::ostream& out) {
+	out << "[NetworkMessage -Begin]" << std::endl;
+	out << " federation = " << federation << std::endl;
+	out << " federate   = " << federate << std::endl;
+	out << "[NetworkMessage -End]" << std::endl;
+} /* end of show */
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.47 2010/03/20 16:17:46 erk Exp $
+// $Id: NetworkMessage.cc,v 3.48 2010/03/23 13:13:27 erk Exp $

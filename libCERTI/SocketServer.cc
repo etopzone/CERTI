@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.18 2008/10/13 10:06:48 erk Exp $
+// $Id: SocketServer.cc,v 3.19 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -63,7 +63,7 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
 {
     // G.Out(pdGendoc,"enter SocketServer::checkMessage");
 
-    if ((message->federation == 0) && (message->federate == 0))
+    if ((message->getFederation() == 0) && (message->getFederate() == 0))
         {
         // G.Out(pdGendoc,"exit  SocketServer::checkMessage on return");
         return ;
@@ -71,12 +71,12 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
 
     Socket *socket ;
     try {
-        socket = getSocketLink(message->federation,
-                               message->federate);
+        socket = getSocketLink(message->getFederation(),
+                               message->getFederate());
     }
     catch (Exception &e) {
         // BUG: Should put a line in the Audit.
-        throw SecurityError("Message has a unknown origin.");
+        throw SecurityError(stringize() << "Message for federation <" <<  message->getFederation() << "> has a unknown origin federate <"<<message->getFederate() <<">.");
     }
 
     if (socket->returnSocket() != socket_number) {
@@ -342,4 +342,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.18 2008/10/13 10:06:48 erk Exp $
+// $Id: SocketServer.cc,v 3.19 2010/03/23 13:13:27 erk Exp $

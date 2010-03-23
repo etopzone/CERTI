@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.63 2010/03/20 16:34:13 erk Exp $
+// $Id: RTIG.cc,v 3.64 2010/03/23 13:13:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -138,15 +138,15 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 
       case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
         D.Out(pdTrace, "Federate no %u leaves federation no %u .",
-              msg->federate, msg->federation);
+              msg->getFederate(), msg->getFederation());
         auditServer.setLevel(9);
-        processResignFederation(link,msg->federation, msg->federate);
+        processResignFederation(link,msg->getFederation(), msg->getFederate());
         break ;
 
       case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
         D.Out(pdTrace,
               "Federation %u: registerFedSyncPoint from federate %u.",
-              msg->federation, msg->federate);
+              msg->getFederation(), msg->getFederate());
         auditServer.setLevel(8);
         processRegisterSynchronization(link, static_cast<NM_Register_Federation_Synchronization_Point*>(msg));
         break ;
@@ -154,20 +154,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
         D.Out(pdTrace,
               "Federation %u: synchronizationPointAchieved from federate %u.",
-              msg->federation, msg->federate);
+              msg->getFederation(), msg->getFederate());
         auditServer.setLevel(8);
         processSynchronizationAchieved(link, msg);
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_SAVE:
         D.Out(pdTrace, "Request federation save from federate %u.",
-              msg->federate);
+              msg->getFederate());
         auditServer.setLevel(8);
         processRequestFederationSave(link, msg);
         break ;
 
       case NetworkMessage::FEDERATE_SAVE_BEGUN:
-        D.Out(pdTrace, "Federate %u begun save.", msg->federate);
+        D.Out(pdTrace, "Federate %u begun save.", msg->getFederate());
         auditServer.setLevel(8);
         processFederateSaveBegun(link, msg);
         break ;
@@ -175,13 +175,13 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::FEDERATE_SAVE_COMPLETE:
       case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
         D.Out(pdTrace, "Federate %u save complete/not complete.",
-              msg->federate);
+              msg->getFederate());
         auditServer.setLevel(8);
         processFederateSaveStatus(link, msg);
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_RESTORE:
-        D.Out(pdTrace, "Federate %u request a restoration.", msg->federate);
+        D.Out(pdTrace, "Federate %u request a restoration.", msg->getFederate());
         auditServer.setLevel(8);
         processRequestFederationRestore(link, msg);
         break ;
@@ -189,7 +189,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::FEDERATE_RESTORE_COMPLETE:
       case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
         D.Out(pdTrace, "Federate %u restore complete/not complete.",
-              msg->federate);
+              msg->getFederate());
         auditServer.setLevel(8);
         processFederateRestoreStatus(link, msg);
         break ;
@@ -202,13 +202,13 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 
       case NetworkMessage::SET_TIME_REGULATING:
         D.Out(pdTrace, "SetTimeRegulating du federe %u(date=%f).",
-              msg->federate, msg->getDate().getTime());
+              msg->getFederate(), msg->getDate().getTime());
         auditServer.setLevel(8);
         processSetTimeRegulating(link, static_cast<NM_Set_Time_Regulating*>(msg));
         break ;
 
       case NetworkMessage::SET_TIME_CONSTRAINED:
-        D.Out(pdTrace, "SetTimeConstrained du federe %u.", msg->federate);
+        D.Out(pdTrace, "SetTimeConstrained du federe %u.", msg->getFederate());
         auditServer.setLevel(8);
 
         processSetTimeConstrained(link, static_cast<NM_Set_Time_Constrained*>(msg));
@@ -569,9 +569,9 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
 
     // Server Answer(only if an exception is raised)
     std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getMessageType()));
-    rep->federate = msg->federate ;
+    rep->setFederate(msg->getFederate());
 
-    auditServer.startLine(msg->federation, msg->federate, msg->getMessageType());
+    auditServer.startLine(msg->getFederation(), msg->getFederate(), msg->getMessageType());
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -1015,7 +1015,7 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
         rep->send(link,NM_msgBufSend);
         D.Out(pdExcept,
               "RTIG catched exception %d and sent it back to federate %d.",
-              rep->getException(), rep->federate);
+              rep->getException(), rep->getFederate());
     }
     G.Out(pdGendoc,"exit  RTIG::processIncomingMessage");
     return link ;
@@ -1036,4 +1036,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.63 2010/03/20 16:34:13 erk Exp $
+// $Id: RTIG.cc,v 3.64 2010/03/23 13:13:28 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.36 2010/03/20 16:34:13 erk Exp $
+// $Id: RTIA_network.cc,v 3.37 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
                 "Receving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
                 msg->getDate().getTime());
 
-          tm->update(msg->federate, msg->getDate());
+          tm->update(msg->getFederate(), msg->getDate());
           delete msg ;
           break ;
       }
@@ -67,9 +67,9 @@ NetworkMessage::Type msgType = msg->getMessageType();
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
           if (static_cast<NM_Set_Time_Regulating*>(msg)->isRegulatorOn())
-              tm->insert(msg->federate, msg->getDate());
+              tm->insert(msg->getFederate(), msg->getDate());
           else
-              tm->remove(msg->federate);
+              tm->remove(msg->getFederate());
           delete msg ;
           break ;
       }
@@ -370,7 +370,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           D.Out(pdTrace,
                 "Receving Message from RTIG, unknown type %d.", msgType);
           delete msg ;
-          throw RTIinternalError("Unknown Message type received from RTIG.");
+          throw RTIinternalError(stringize() << "Unknown Message type <" << msgType << "> received from RTIG.");
       }
     }
 
@@ -380,4 +380,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.36 2010/03/20 16:34:13 erk Exp $
+// $Id: RTIA_network.cc,v 3.37 2010/03/23 13:13:27 erk Exp $

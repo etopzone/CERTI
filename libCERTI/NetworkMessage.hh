@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.61 2010/03/20 16:34:13 erk Exp $
+// $Id: NetworkMessage.hh,v 3.62 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -176,6 +176,8 @@ public:
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
 
+	virtual void show(std::ostream& out);
+
 	/**
 	 * DeSerialize the message from a buffer
 	 * @param[in] msgBuffer the deserialization buffer
@@ -194,16 +196,12 @@ public:
 
 	EventRetractionHandle eventRetraction ; /* FIXME to be suppressed */
 
-	/**
-	 * The federation handle 
-	 * the message is part of this federation activity
-	 */
-	Handle federation ;
-	/** 
-	 * The federate handle
-	 * the message is for this particular federate
-	 */
-	FederateHandle federate ;
+	Handle getFederation() const {return federation;};
+	void setFederation(Handle federation) {this->federation=federation;};
+
+	FederateHandle getFederate() const {return federate;};
+	void setFederate(FederateHandle federate) {this->federate=federate;};
+
 
 protected:
 
@@ -236,6 +234,17 @@ protected:
 	 */
 	std::string exceptionReason;
 
+	/**
+	 * The federation handle
+	 * the message is part of this federation activity
+	 */
+	Handle federation ;
+	/**
+	 * The federate handle
+	 * the message is for this particular federate
+	 */
+	FederateHandle federate ;
+
 private:
 
 };
@@ -248,4 +257,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.61 2010/03/20 16:34:13 erk Exp $
+// $Id: NetworkMessage.hh,v 3.62 2010/03/23 13:13:27 erk Exp $
