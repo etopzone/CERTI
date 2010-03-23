@@ -74,11 +74,13 @@ void MessageBuffer::initialize() {
 MessageBuffer::MessageBuffer() {
 	initialize();
 	reallocate(DEFAULT_MESSAGE_BUFFER_SIZE);
+	memset(buffer,0,bufferMaxSize);
 } /* end of MessageBuffer::MessageBuffer() */
 
 MessageBuffer::MessageBuffer(uint32_t n) {
 	initialize();
 	reallocate(n);
+	memset(buffer,0,bufferMaxSize);
 } /* end of MessageBuffer::MessageBuffer(uint32_t) */
 
 /*
