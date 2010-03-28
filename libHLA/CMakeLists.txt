@@ -15,10 +15,16 @@ LIST(APPEND LIBHLA_EXPORTED_INCLUDES
 SOURCE_GROUP("Source Files\\Types1516" FILES ${LIBHLA_TYPES1516_SRCS})
 
 enable_language(C)
-SET(LIBHLA_HASH_SRCS sha1.c)
+SET(LIBHLA_HASH_SRCS sha1.c MurmurHash2A.cc)
 LIST(APPEND LIBHLA_EXPORTED_INCLUDES sha1.h)
 set_source_files_properties(sha1.c sha1.h PROPERTIES LANGUAGE "C")
 SOURCE_GROUP("Source Files\\Hash" FILES ${LIBHLA_HASH_SRCS})
+
+SET(LIBHLA_ALLOC_SRCS tlsf.c tlsf.h tlsf_target.h)
+LIST(APPEND LIBHLA_EXPORTED_INCLUDES tlsf.h)
+set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES LANGUAGE "C")
+set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES CFLAGS "-Wextra -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wno-long-long -Wstrict-aliasing=2")
+SOURCE_GROUP("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS})
 
 SET(LIBHLA_CLOCK_SRCS 
     Clock.cc
@@ -78,6 +84,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ADD_LIBRARY(HLA
     ${LIBHLA_TYPES1516_SRCS}    
     ${LIBHLA_HASH_SRCS}    
+    ${LIBHLA_ALLOC_SRCS}
     ${LIBHLA_CLOCK_SRCS}
     ${LIBHLA_IPC_SRCS}
     ${LIBHLA_EXPORTED_INCLUDES}
