@@ -18,7 +18,7 @@ SemaphoreWin32::~SemaphoreWin32() {}
 // Method : SemaphoreWin32::Create_Init(...)
 // ************************************************
 void SemaphoreWin32::Create_Init(const int initval, const std::string& New_Semname)
-                                 throw(certi::SemaphoreNotCreated) {
+                                 throw(SemaphoreNotCreated) {
 
 _hSemaphore = CreateSemaphore(
                       (LPSECURITY_ATTRIBUTES)NULL,             // security attributes
@@ -27,7 +27,7 @@ _hSemaphore = CreateSemaphore(
                       (LPCTSTR)(New_Semname.c_str()));         // named semaphore
 
  if (_hSemaphore == NULL){
-      throw(certi::SemaphoreNotCreated("CreateSemaphore() failed.")) ;
+      throw(SemaphoreNotCreated("CreateSemaphore() failed.")) ;
  }
  #ifdef DEBUG
  std::cout << "We create the semaphore identified by handle : " << _hSemaphore << " and name : " << New_Semname << std::endl ;
@@ -39,7 +39,7 @@ _hSemaphore = CreateSemaphore(
 // Method : SemaphoreWin32::Attach(...)
 // ************************************************
 void SemaphoreWin32::Attach(const std::string& New_Semname)
-                            throw(certi::SemaphoreNotOpen){
+                            throw(SemaphoreNotOpen){
 
 // Open the semaphore
 
@@ -54,7 +54,7 @@ void SemaphoreWin32::Attach(const std::string& New_Semname)
 
    if (_hSemaphore == NULL)
    {
-        throw(certi::SemaphoreNotOpen("OpenSemaphore() failed.")) ;
+        throw(SemaphoreNotOpen("OpenSemaphore() failed.")) ;
    }
 
 } // End of method : Attach(...)
@@ -64,7 +64,7 @@ void SemaphoreWin32::Attach(const std::string& New_Semname)
 // ************************************************
 
 void SemaphoreWin32::P()
-                    throw(certi::SemaphoreHandlingError) {
+                    throw(SemaphoreHandlingError) {
 
 #ifdef DEBUG
 std::cout << "Begin of Operation P for the semaphore identified by handle : " << _hSemaphore << std::endl ;
@@ -86,7 +86,7 @@ switch (dwRetCode)
 
           default:
              // Handle errors
-             throw(certi::SemaphoreHandlingError("WaitForSingleObject() failed.")) ;
+             throw(SemaphoreHandlingError("WaitForSingleObject() failed.")) ;
       }
 
 #ifdef DEBUG
@@ -101,7 +101,7 @@ std::cout << "End of Operation P for the semaphore identified by handle : " << _
 // ************************************************
 
 void SemaphoreWin32::V()
-                    throw(certi::SemaphoreHandlingError) {
+                    throw(SemaphoreHandlingError) {
 
 #ifdef DEBUG
 std::cout << "Begin of Operation V for the semaphore identified by handle : " << _hSemaphore << std::endl ;
@@ -115,7 +115,7 @@ BOOL WINAPI retcode ;
         NULL) ;       // not interested in previous count
 
   if (retcode == 0) {
-      throw(certi::SemaphoreHandlingError("ReleaseSemaphore() failed.")) ;
+      throw(SemaphoreHandlingError("ReleaseSemaphore() failed.")) ;
     }
 
 #ifdef DEBUG
@@ -128,7 +128,7 @@ std::cout << "End of Operation V for the semaphore identified by handle : " << _
 // Method : SemaphoreWin32::Delete
 // ************************************************
 void SemaphoreWin32::Delete()
-                    throw(certi::HandleNotClosed) {
+                    throw(HandleNotClosed) {
 
 BOOL WINAPI retcode ;
 
@@ -139,7 +139,7 @@ std::cout << "Destroy the semaphore identified by handle : " << _hSemaphore << s
 retcode = CloseHandle(_hSemaphore);
 
 if(retcode == 0)
-   throw(certi::HandleNotClosed("CloseHandle() failed.")) ;
+   throw(HandleNotClosed("CloseHandle() failed.")) ;
 } // End of Delete()
 
 } /* end namespace ipc  */
