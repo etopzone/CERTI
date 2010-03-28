@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: libhla.hh,v 1.3 2010/03/21 18:31:52 erk Exp $
+// $Id: libhla.hh,v 1.4 2010/03/28 12:24:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBHLA_HH_INCLUDED
@@ -91,6 +91,22 @@ private:
 typedef basic_stringize<char> stringize;
 typedef basic_stringize<wchar_t> wstringize;
 
+class HLA_EXPORT Exception
+{
+public:
+    const std::string _reason;
+    const char         *_name;
+
+    Exception(const std::string &reason)
+        : _reason(reason) { }
+    virtual ~Exception() { }
+};
+
+#define LIBHLA_EXCEPTION(A) \
+    class HLA_EXPORT A : public Exception { \
+    public: \
+        A(const std::string &reason) : Exception(reason) { _name = #A;} \
+};
 } // namespace libhla
 
 #endif // LIBHLA_HH_INCLUDED

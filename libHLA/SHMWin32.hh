@@ -18,10 +18,10 @@ class HLA_EXPORT SHMWin32 : public SHM {
     SHMWin32(const std::string& SHMName, const int SHMSize) ;
     ~SHMWin32() ;
 
-    void Open() throw(certi::SharedMemoryNotOpen) ;
-    void Attach() throw(certi::SharedMemoryNotAttached) ;
-    void Close() throw(certi::SharedMemoryNotClosed,
-                       certi::HandleNotClosed);
+    void Open() throw(SharedMemoryNotOpen) ;
+    void Attach() throw(SharedMemoryNotAttached) ;
+    void Close() throw(SharedMemoryNotClosed,
+                       HandleNotClosed);
 
 } ;
 } /* end namespace ipc  */

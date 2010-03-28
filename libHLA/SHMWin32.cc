@@ -34,7 +34,7 @@ SHMWin32::~SHMWin32() {}
 // ************************************************
 // Method : SHMWin32::Open()
 // ************************************************
-void SHMWin32::Open() throw(certi::SharedMemoryNotOpen) {
+void SHMWin32::Open() throw(SharedMemoryNotOpen) {
 
 int ret ;
 
@@ -47,7 +47,7 @@ int ret ;
                       (LPCTSTR)(_Name.c_str()));           // name of mapping object
 
     if (_hMapFile == NULL) {
-        throw(certi::SharedMemoryNotOpen("CreateFileMapping() failed.")) ;
+        throw(SharedMemoryNotOpen("CreateFileMapping() failed.")) ;
         }
 
 #ifdef DEBUG
@@ -59,7 +59,7 @@ std::cout <<  "Created shared memory object : " << _Name.c_str() << std::endl ;
 // ************************************************
 // Method : SHMWin32::Attach()
 // ************************************************
-void SHMWin32::Attach() throw(certi::SharedMemoryNotAttached) {
+void SHMWin32::Attach() throw(SharedMemoryNotAttached) {
 
 BOOL WINAPI retcode ;
 
@@ -72,7 +72,7 @@ _pBuf = (LPTSTR) MapViewOfFile(_hMapFile,
     if (_pBuf == NULL) {
         retcode=UnmapViewOfFile((PVOID)_pBuf);
         CloseHandle(_hMapFile);
-        throw(certi::SharedMemoryNotAttached("MapViewOfFile() failed.")) ;
+        throw(SharedMemoryNotAttached("MapViewOfFile() failed.")) ;
     }
 
     _Shm = (void *) _pBuf ;
@@ -82,8 +82,8 @@ _pBuf = (LPTSTR) MapViewOfFile(_hMapFile,
 // ************************************************
 // Method : SHMWin32::Close()
 // ************************************************
-void SHMWin32::Close() throw(certi::SharedMemoryNotClosed,
-                             certi::HandleNotClosed) {
+void SHMWin32::Close() throw(SharedMemoryNotClosed,
+                             HandleNotClosed) {
 
 BOOL WINAPI retcode ;
 
@@ -91,7 +91,7 @@ BOOL WINAPI retcode ;
    retcode=UnmapViewOfFile((PVOID)_pBuf);
 
 if (retcode == 0) {
-    throw(certi::SharedMemoryNotClosed("UnMapViewOfFile() failed.")) ;
+    throw(SharedMemoryNotClosed("UnMapViewOfFile() failed.")) ;
     }
 
 #ifdef DEBUG
@@ -102,7 +102,7 @@ std::cout <<  "Close SHM (UnmapViewOfFile) : " << _Name.c_str() << std::endl ;
    retcode = CloseHandle(_hMapFile);
 
 if(retcode == 0){
-   throw(certi::HandleNotClosed("CloseHandle() failed.")) ;
+   throw(HandleNotClosed("CloseHandle() failed.")) ;
    } // End of if
 
 } // End of Close()

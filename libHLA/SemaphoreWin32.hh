@@ -13,7 +13,6 @@
 #include <iostream>
 
 // Specifics includes
-#include "certi.hh"
 #include "Semaphore.hh"
 
 namespace libhla {
@@ -27,15 +26,15 @@ class HLA_EXPORT SemaphoreWin32 : public Semaphore {
     SemaphoreWin32() ;
     virtual ~SemaphoreWin32() ;
     void Create_Init(const int initval, const std::string& New_Semname)
-                     throw(certi::SemaphoreNotCreated) ;
+                     throw(SemaphoreNotCreated) ;
     void Attach(const std::string& New_Semname )
-                throw(certi::SemaphoreNotOpen) ;
+                throw(SemaphoreNotOpen) ;
     void P()
-         throw(certi::SemaphoreHandlingError) ;
+         throw(SemaphoreHandlingError) ;
     void V()
-         throw(certi::SemaphoreHandlingError) ;
+         throw(SemaphoreHandlingError) ;
     void Delete()
-         throw(certi::HandleNotClosed) ;
+         throw(HandleNotClosed) ;
 
 } ;
 } /* end namespace ipc  */
