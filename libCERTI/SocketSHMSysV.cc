@@ -1,4 +1,8 @@
 #include "SocketSHMSysV.hh"
+using libhla::ipc::Semaphore;
+using libhla::ipc::SHM;
+using libhla::ipc::SemaphoreSysV;
+using libhla::ipc::SHMSysV;
 
 // ************************************************
 // Constructor with args

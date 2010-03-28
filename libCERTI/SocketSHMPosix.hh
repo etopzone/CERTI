@@ -2,13 +2,9 @@
 #define SOCKET_SHM_POSIX_H
 
 // Specifics includes
-#include "SemaphorePosix.hh"
-#include "SHMPosix.hh"
 #include "SocketSHM.hh"
-#include "SHM.hh"
-#include "Semaphore.hh"
 
-class SocketSHMPosix : public SocketSHM {
+class CERTI_EXPORT SocketSHMPosix : public SocketSHM {
 private:   
 
 public :

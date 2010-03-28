@@ -17,7 +17,7 @@ std::cout << "Try to Connect..." << std::endl ;
 
 if(_Side == SHM_CS){
     try {
-       _Sem_full_SC->Attach(Semaphore::buildSemName(_Name+"_FULL_SC")) ;
+       _Sem_full_SC->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_FULL_SC")) ;
     }
     catch(certi::SharedMemoryNotAttached& e)
     {
@@ -25,7 +25,7 @@ if(_Side == SHM_CS){
         throw (certi::SocketNotConnected("Connect() failed."));
     }
     try {
-       _Sem_empty_SC->Attach(Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
+       _Sem_empty_SC->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
     }
     catch(certi::SharedMemoryNotAttached& e)
     {
@@ -35,7 +35,7 @@ if(_Side == SHM_CS){
   }
 else{
     try {
-       _Sem_full_CS->Attach(Semaphore::buildSemName(_Name+"_FULL_CS")) ;
+       _Sem_full_CS->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_FULL_CS")) ;
     }
     catch(certi::SharedMemoryNotAttached& e)
     {
@@ -43,7 +43,7 @@ else{
         throw (certi::SocketNotConnected("Connect() failed."));
     }
     try {
-       _Sem_empty_CS->Attach(Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
+       _Sem_empty_CS->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
     }
     catch(certi::SharedMemoryNotAttached& e)
     {

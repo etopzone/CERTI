@@ -1,12 +1,14 @@
 #ifndef SEMAPHORE_H
 #define SEMAPHORE_H
 
-#include "certi.hh"
-#include "Exception.hh"
 // Systems includes
 #include <string>
+#include "libhla.hh"
 
-class CERTI_EXPORT Semaphore {
+namespace libhla {
+namespace ipc {
+
+class HLA_EXPORT Semaphore {
 
 protected:
 
@@ -30,5 +32,7 @@ protected:
 	}
 
 } ;
+} /* end namespace ipc  */
+} /* end namespace libhla */
 
 #endif

@@ -1,6 +1,9 @@
 #include "SHMSysV.hh"
 #include "sha1.h"
 
+namespace libhla {
+namespace ipc {
+
 key_t SHMSysV::ntokUser(const char* name, int32_t user_specific_value) {
 
 key_t s_key ;
@@ -114,4 +117,5 @@ if(shmctl(_Id, IPC_RMID,0)){
 } // End of (_IsServer)
 
 } // End of Close()
-
+} /* end namespace ipc  */
+} /* end namespace libhla */

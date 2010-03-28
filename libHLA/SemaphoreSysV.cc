@@ -3,6 +3,9 @@
 #include <cstring>
 #include <cstdio>
 
+namespace libhla {
+namespace ipc {
+
 key_t SemaphoreSysV::ntokUser(const char* name, int32_t user_specific_value) {
 
 key_t s_key ;
@@ -173,3 +176,5 @@ if(semctl(_Sem_Id,0,IPC_RMID,0) == -1)
 
 } // End of Delete()
 
+} /* end namespace ipc  */
+} /* end namespace libhla */

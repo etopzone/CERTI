@@ -2,7 +2,11 @@
 #define SHM_H
 
 #include <string>
-#include "certi.hh"
+#include "libhla.hh"
+
+namespace libhla {
+namespace ipc {
+
 
 /**
  * A Shared Memory class.
@@ -10,7 +14,7 @@
  * segment. A shared memory segment is identified by its name and
  * has a size and a creator process.
  */
-class CERTI_EXPORT SHM {
+class HLA_EXPORT SHM {
 protected :
 	std::string _Name ;
 	int  _Size ;
@@ -52,5 +56,6 @@ public :
 	  return "/"+ShmName+"_shm";
 	}
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif

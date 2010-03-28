@@ -1,5 +1,7 @@
 #include "SemaphoreWin32.hh"
 
+namespace libhla {
+namespace ipc {
 // ************************************************
 // Constructor
 // ************************************************
@@ -140,3 +142,5 @@ if(retcode == 0)
    throw(certi::HandleNotClosed("CloseHandle() failed.")) ;
 } // End of Delete()
 
+} /* end namespace ipc  */
+} /* end namespace libhla */

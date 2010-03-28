@@ -2,11 +2,13 @@
 #define SOCKET_SHM_H
 
 #include <iostream>
+// libhla includes
+#include "Semaphore.hh"
+#include "SHM.hh"
 
 // Specifics includes
 #include "certi.hh"
-#include "Semaphore.hh"
-#include "SHM.hh"
+#include "Exception.hh"
 
 class CERTI_EXPORT SocketSHM {
 public :
@@ -36,12 +38,12 @@ protected :
     size_t _Size_Side ;
 
     /***** Server -->>> Customer ******/
-    SHM *_Shm_SC ;
-    Semaphore *_Sem_full_SC, *_Sem_empty_SC ;
+    libhla::ipc::SHM *_Shm_SC ;
+    libhla::ipc::Semaphore *_Sem_full_SC, *_Sem_empty_SC ;
 
     /***** Customer -->>> Server ******/
-    SHM *_Shm_CS ;
-    Semaphore *_Sem_full_CS, *_Sem_empty_CS ;
+    libhla::ipc::SHM *_Shm_CS ;
+    libhla::ipc::Semaphore *_Sem_full_CS, *_Sem_empty_CS ;
 
 }; // End of --> class SocketSHM
 

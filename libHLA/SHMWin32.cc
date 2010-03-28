@@ -12,6 +12,8 @@
 
 #include "SHMWin32.hh"
 
+namespace libhla {
+namespace ipc {
 // ************************************************
 // Constructor with args
 // ************************************************
@@ -104,4 +106,5 @@ if(retcode == 0){
    } // End of if
 
 } // End of Close()
-
+} /* end namespace ipc  */
+} /* end namespace libhla */

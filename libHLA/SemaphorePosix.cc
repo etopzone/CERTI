@@ -1,5 +1,8 @@
 #include "SemaphorePosix.hh"
 
+namespace libhla {
+namespace ipc {
+
 // ************************************************
 // Constructor
 // ************************************************
@@ -108,4 +111,5 @@ sem_close(_Sem) ;
 sem_destroy(_Sem) ;
 
 } // End of Delete()
-
+} /* end namespace ipc  */
+} /* end namespace libhla */

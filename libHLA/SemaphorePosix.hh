@@ -18,7 +18,10 @@
 #include "Semaphore.hh"
 #include <semaphore.h>
 
-class SemaphorePosix : public Semaphore {
+namespace libhla {
+namespace ipc {
+
+class HLA_EXPORT SemaphorePosix : public Semaphore {
     private :
     std::string _Semname ;
     sem_t *_Sem ;
@@ -33,5 +36,6 @@ class SemaphorePosix : public Semaphore {
     void Delete() ;
 
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif

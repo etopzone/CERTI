@@ -13,7 +13,8 @@
 #include <string.h>
 
 #include "SHMPosix.hh"
-
+namespace libhla {
+namespace ipc {
 // ************************************************
 // Constructor with args
 // ************************************************
@@ -116,4 +117,5 @@ if(munmap(_Shm, _Size)){
 }
 
 } // End of Close()
-
+} /* end namespace ipc  */
+} /* end namespace libhla */

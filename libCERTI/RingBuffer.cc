@@ -28,12 +28,21 @@
    #include "SocketSHMWin32.hh"
    #include "SemaphoreWin32.hh"
    #include "SHMWin32.hh"
+using libhla::ipc::SHMWin32;
+using libhla::ipc::SemaphoreWin32;
 #else
    #include "SemaphorePosix.hh"
    #include "SHMPosix.hh"
    #include "SemaphoreSysV.hh"
    #include "SHMSysV.hh"
+using libhla::ipc::SHMPosix;
+using libhla::ipc::SemaphorePosix;
+using libhla::ipc::SHMSysV;
+using libhla::ipc::SemaphoreSysV;
 #endif
+
+using libhla::ipc::SHM;
+using libhla::ipc::Semaphore;
 
 #include "RingBuffer.hh"
 

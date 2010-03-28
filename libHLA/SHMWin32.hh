@@ -3,10 +3,11 @@
 
 // Specifics includes
 #include "SHM.hh"
-#include "certi.hh"
-#include "Exception.hh"
 
-class CERTI_EXPORT SHMWin32 : public SHM {
+namespace libhla {
+namespace ipc {
+
+class HLA_EXPORT SHMWin32 : public SHM {
 
     private :
         HANDLE _hMapFile ;
@@ -23,5 +24,6 @@ class CERTI_EXPORT SHMWin32 : public SHM {
                        certi::HandleNotClosed);
 
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif

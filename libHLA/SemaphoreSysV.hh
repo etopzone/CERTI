@@ -1,38 +1,37 @@
-#ifndef SHM_SYSV_H
-#define SHM_SYSV_H
+#ifndef SEMAPHORESYSV_H
+#define SEMAPHORESYSV_H
 
-// SHMs useful systems includes
+// Semaphores usefull systems includes
 #include <sys/types.h>
 #include <sys/ipc.h> 
-#include <sys/shm.h>
+#include <sys/sem.h>
 
-// Others systems includes
-#include <fcntl.h>
-#include <math.h>
-#include <stdio.h>
+// Others systems includes 
 #include <unistd.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
-#include <string.h>
 
 // Specifics includes
-#include "SHM.hh"
+#include "Semaphore.hh"
 
-class SHMSysV : public SHM {
+namespace libhla {
+namespace ipc {
 
+class HLA_EXPORT SemaphoreSysV : public Semaphore {
     private :
-    int _Id ;  
-    key_t _Key ; 
-   
-    public :
-    SHMSysV(const std::string& SHMName, const int SHMSize, const bool True) ;
-    SHMSysV(const std::string& SHMName, const int SHMSize) ;  
-    ~SHMSysV() ;
-    void Open() ;
-    void Attach() ;
-    void Close() ;
+    int _Sem_Id ;
+    key_t _Sem_Key ;
 
-        /**
+    public :
+    SemaphoreSysV() ;
+    virtual ~SemaphoreSysV() ;
+    void Create_Init(const int initval, const std::string& New_Semname) ;
+    void Attach(const std::string& New_Semname ) ;
+    void P() ;
+    void V() ;
+    void Delete() ;
+
+    /**
      * Build a SysV IPC key from a name and user specific value.
      * The purpose of this function is to build a (quasi) unique
      * key from unique entry as ftok(3) do with existing file name.
@@ -62,7 +61,7 @@ class SHMSysV : public SHM {
     key_t
     static ntok(const char* name);
 
-
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif

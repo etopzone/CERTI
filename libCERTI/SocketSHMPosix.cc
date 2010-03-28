@@ -1,4 +1,11 @@
 #include "SocketSHMPosix.hh"
+#include "SemaphorePosix.hh"
+#include "SHMPosix.hh"
+
+using libhla::ipc::Semaphore;
+using libhla::ipc::SHM;
+using libhla::ipc::SemaphorePosix;
+using libhla::ipc::SHMPosix;
 
 // ************************************************
 // Constructor with args

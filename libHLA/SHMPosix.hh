@@ -4,7 +4,10 @@
 // Specifics includes
 #include "SHM.hh"
 
-class SHMPosix : public SHM {
+namespace libhla {
+namespace ipc {
+
+class HLA_EXPORT SHMPosix : public SHM {
 
     private :
     int _Id ;  // identifiant du segment memoire affecté dans la methode : Open()
@@ -19,5 +22,6 @@ class SHMPosix : public SHM {
     void Close() ;
 
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif

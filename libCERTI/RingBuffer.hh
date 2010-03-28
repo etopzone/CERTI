@@ -23,6 +23,9 @@
 #include <iostream>
 
 // Specifics includes
+#include "certi.hh"
+#include "Exception.hh"
+#include "libhla.hh"
 #include "SHM.hh"
 #include "Semaphore.hh"
 
@@ -60,20 +63,20 @@ protected :
     size_t _Size ;
 
     /***** Server -->>> Customer ******/
-    SHM *_Shm_SC ;
-    SHM *_Pw_Pr_SC ;
+    libhla::ipc::SHM *_Shm_SC ;
+    libhla::ipc::SHM *_Pw_Pr_SC ;
     // _Count_SC, _Write_SC, _Read_SC
     // int _Tab_SC[3] ;
     int* _Tab_SC ;
-    Semaphore *_Sem_SC ;
+    libhla::ipc::Semaphore *_Sem_SC ;
 
     /***** Customer -->>> Server ******/
-    SHM *_Shm_CS ;
-    SHM *_Pw_Pr_CS ;
+    libhla::ipc::SHM *_Shm_CS ;
+    libhla::ipc::SHM *_Pw_Pr_CS ;
     // _Count_CS, _Write_CS, _Read_CS
     // int _Tab_CS[3] ;
     int* _Tab_CS ;
-    Semaphore *_Sem_CS ;
+    libhla::ipc::Semaphore *_Sem_CS ;
 
 }; // End of --> class SocketSHM
 

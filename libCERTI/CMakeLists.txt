@@ -102,41 +102,25 @@ Socket.hh
 if (WIN32)
     include_directories(${CERTI_SOURCE_DIR}/libHLA)
     ADD_DEFINITIONS(-DDEBUG)
-    SET(CERTI_SHM_SRCS
-        SHM.hh SHMWin32.hh SHMWin32.cc)
-
-    SET(CERTI_SEMAPHORE_SRCS
-        Semaphore.hh SemaphoreWin32.hh SemaphoreWin32.cc)
 
     SET(CERTI_SOCKET_SHM_SRC
         SocketSHM.cc SocketSHM.hh
         SocketSHMWin32.cc SocketSHMWin32.hh
-	RingBuffer.cc RingBuffer.hh)
+	    RingBuffer.cc RingBuffer.hh)
 
-    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SOCKET_SHM_SRC})
 else(WIN32)
     include_directories(${CERTI_SOURCE_DIR}/libHLA)
     ADD_DEFINITIONS(-DDEBUG)
-
-    SET(CERTI_SHM_SRCS
-        SHM.hh
-        SHMPosix.cc SHMPosix.hh
-        SHMSysV.cc SHMSysV.hh)
-
-    SET(CERTI_SEMAPHORE_SRCS
-        Semaphore.hh
-        SemaphorePosix.cc SemaphorePosix.hh
-        SemaphoreSysV.cc SemaphoreSysV.hh
-        )
 
     SET(CERTI_SOCKET_SHM_SRC
         SocketSHM.cc SocketSHM.hh
         SocketSHMPosix.cc SocketSHMPosix.hh
         SocketSHMSysV.cc SocketSHMSysV.hh
-	RingBuffer.cc RingBuffer.hh
+	    RingBuffer.cc RingBuffer.hh
         )
 
-    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SOCKET_SHM_SRC})
 endif(WIN32)
 
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)

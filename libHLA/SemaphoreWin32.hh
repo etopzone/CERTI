@@ -16,8 +16,10 @@
 #include "certi.hh"
 #include "Semaphore.hh"
 
+namespace libhla {
+namespace ipc {
 
-class CERTI_EXPORT SemaphoreWin32 : public Semaphore {
+class HLA_EXPORT SemaphoreWin32 : public Semaphore {
     private :
         HANDLE WINAPI _hSemaphore;
 
@@ -36,5 +38,6 @@ class CERTI_EXPORT SemaphoreWin32 : public Semaphore {
          throw(certi::HandleNotClosed) ;
 
 } ;
-
+} /* end namespace ipc  */
+} /* end namespace libhla */
 #endif
