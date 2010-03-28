@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.13 2010/03/23 08:12:39 erk Exp $
+## $Id: GenMsgCXX.py,v 1.14 2010/03/28 16:07:43 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -411,8 +411,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             # begin public
             stream.write(self.getIndent()+"public:\n")            
             self.indent()            
-            stream.write(self.getIndent()+"static %s* %s(%s type) throw (RTIinternalError);\n"% self.AST.factory.creator)
-            stream.write(self.getIndent()+"static %s* %s(%s stream) throw (RTIinternalError);\n"% self.AST.factory.receiver)
+            stream.write(self.getIndent()+"static %s* %s(%s type) throw (NetworkError, NetworkSignal);\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"static %s* %s(%s stream) throw (NetworkError, NetworkSignal);\n"% self.AST.factory.receiver)
             self.unIndent()
             #end public
             #begin protected
@@ -571,7 +571,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             
     def writeFactoryCreator(self,stream):
         creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
-        stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (RTIinternalError) {\n"% creator)
+        stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (NetworkError, NetworkSignal) {\n"% creator)
         self.indent()
         stream.write(self.getIndent()+"%s* msg = NULL;\n\n" % creator[0])
         stream.write(self.getIndent() + "switch (type) {\n")
@@ -581,7 +581,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))                
             self.indent()
             if None==e.type:
-                stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
+                stream.write(self.getIndent()+"throw NetworkError(\"%s message type should not be used!!\");\n"%e.name)
             else:
                 stream.write(self.getIndent()+"msg = new %s();\n" % e.type)
             stream.write(self.getIndent()+"break;\n")
@@ -594,7 +594,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     
     def writeFactoryReceiver(self,stream):
         receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
-        stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (RTIinternalError) {\n"% receiver)
+        stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (NetworkError, NetworkSignal) {\n"% receiver)
         self.indent()
         stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
         stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
