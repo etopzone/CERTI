@@ -1,4 +1,4 @@
-// Generated on 2010 March Tue, 23 at 08:56:33 by the CERTI message generator
+// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -1889,8 +1889,8 @@ namespace certi {
 
    class CERTI_EXPORT NM_Factory {
       public:
-         static NetworkMessage* create(NM_Type type) throw (RTIinternalError);
-         static NetworkMessage* receive(NMStreamType stream) throw (RTIinternalError);
+         static NetworkMessage* create(NM_Type type) throw (NetworkError, NetworkSignal);
+         static NetworkMessage* receive(NMStreamType stream) throw (NetworkError, NetworkSignal);
       protected:
       private:
    };

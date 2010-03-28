@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.14 2010/02/27 16:53:36 erk Exp $
+// $Id: BasicMessage.hh,v 3.15 2010/03/28 16:08:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -27,6 +27,7 @@
 
 
 #include "MessageBuffer.hh"
+using libhla::MessageBuffer;
 #include "FedTimeD.hh"
 #include "BaseRegion.hh"
 #include "Extent.hh"
@@ -162,4 +163,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.14 2010/02/27 16:53:36 erk Exp $
+// $Id: BasicMessage.hh,v 3.15 2010/03/28 16:08:33 erk Exp $

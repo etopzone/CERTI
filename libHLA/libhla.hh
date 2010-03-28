@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: libhla.hh,v 1.4 2010/03/28 12:24:00 erk Exp $
+// $Id: libhla.hh,v 1.5 2010/03/28 16:08:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBHLA_HH_INCLUDED
@@ -52,6 +52,70 @@ typedef short int         int_least16_t;
 
 #include <string>
 #include <sstream>
+
+#define LIBHLA_UINT64_SWAP_LE_BE_CONSTANT(val)	((uint64_t) ( \
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00000000000000ffU)) << 56) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x000000000000ff00U)) << 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x0000000000ff0000U)) << 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00000000ff000000U)) <<  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x000000ff00000000U)) >>  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00ff000000000000U)) >> 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
+
+#ifdef HOST_IS_BIG_ENDIAN
+  #define LIBHLA_UINT64_SWAP_LE_BE(val) (LIBHLA_UINT64_SWAP_LE_BE_CONSTANT(val))
+  #define LIBHLA_UINT64_TO_BE(val)	   (val)
+  #define LIBHLA_UINT64_TO_LE(val)	   (LIBHLA_UINT64_SWAP_LE_BE (val))
+#else
+  #define LIBHLA_UINT64_SWAP_LE_BE(val) (LIBHLA_UINT64_SWAP_LE_BE_CONSTANT(val))
+  #define LIBHLA_UINT64_TO_BE(val)	   (LIBHLA_UINT64_SWAP_LE_BE (val))
+  #define LIBHLA_UINT64_TO_LE(val)      (val)
+#endif
+
+#define LIBHLA_UINT64_FROM_BE(val)	            (LIBHLA_UINT64_TO_BE(val))
+#define LIBHLA_UINT64_FROM_LE(val)	            (LIBHLA_UINT64_TO_LE(val))
+#define LIBHLA_ENCODE_DOUBLE_TO_UINT64BE(val)    (LIBHLA_UINT64_TO_BE   (*(uint64_t*)(val)))
+#define LIBHLA_DECODE_DOUBLE_FROM_UINT64BE(val)  (LIBHLA_UINT64_FROM_BE (*(uint64_t*)(val)))
+
+/*
+ * Basic bit swapping functions
+ */
+#define LIBHLA_UINT16_SWAP_BYTES(val)	((uint16_t) ( \
+    (((uint16_t) (val) & (uint16_t) 0x00ffU) << 8) |  \
+    (((uint16_t) (val) & (uint16_t) 0xff00U) >> 8)))
+
+#define LIBHLA_UINT32_SWAP_BYTES(val)	((uint32_t) (     \
+    (((uint32_t) (val) & (uint32_t) 0x000000ffU) << 24) | \
+    (((uint32_t) (val) & (uint32_t) 0x0000ff00U) <<  8) | \
+    (((uint32_t) (val) & (uint32_t) 0x00ff0000U) >>  8) | \
+    (((uint32_t) (val) & (uint32_t) 0xff000000U) >> 24)))
+
+#define LIBHLA_UINT64_SWAP_BYTES(val)	((uint64_t) (                   \
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00000000000000ffU)) << 56) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x000000000000ff00U)) << 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x0000000000ff0000U)) << 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00000000ff000000U)) <<  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x000000ff00000000U)) >>  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0x00ff000000000000U)) >> 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) LIBHLA_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 
 /**
  * @defgroup libHLA The libHLA library.

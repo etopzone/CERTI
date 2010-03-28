@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.99 2010/03/23 13:15:34 erk Exp $
+// $Id: RTIG_processing.cc,v 3.100 2010/03/28 16:08:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -70,7 +70,7 @@ RTIG::processCreateFederation(Socket *link, NM_Create_Federation_Execution *req)
 	if (com_mc == NULL) {
 		D.Out(pdExcept, "Unable to allocate Multicast socket.");
 		G.Out(pdGendoc,"exit  RTIG::processCreateFederation on exception RTIinternalError")
-        				throw RTIinternalError("Unable to allocate Multicast socket.");
+        								throw RTIinternalError("Unable to allocate Multicast socket.");
 	}
 
 	com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
@@ -251,6 +251,7 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 {
 	NM_Destroy_Federation_Execution rep ;
 
+	req->show(std::cerr);
 	std::string federation = req->getFederationName();
 
 	G.Out(pdGendoc,"enter RTIG::processDestroyFederation");
@@ -292,6 +293,7 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 	}
 	G.Out(pdGendoc,"processDestroyFederation===>write DFE to RTIA");
 
+	rep.show(std::cerr);
 	rep.send(link,NM_msgBufSend);
 
 	G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
@@ -722,7 +724,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NM_Subscribe_Object_Class *req)
 	bool sub = (req->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
 	auditServer << "Subscribe Object Class = " << req->getObjectClass()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.subscribeObject(req->getFederation(),
 			req->getFederate(),
@@ -843,7 +845,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NM_Update_Attribute_Values *req
 	G.Out(pdGendoc,"enter RTIG::processUpdateAttributeValues");
 
 	auditServer << "ObjID = " << req->getObject()
-					<< ", Date = " << req->getDate().getTime();
+									<< ", Date = " << req->getDate().getTime();
 
 	// Forward the call
 	if ( req->isDated() )
@@ -876,7 +878,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NM_Update_Attribute_Values *req
 	rep.setObject(req->getObject());
 	// Don't forget date, label and tag if provided in the request
 	if (req->isDated()) {
-	  rep.setDate(req->getDate());
+		rep.setDate(req->getDate());
 	}
 	if (req->isLabelled()) {
 		rep.setLabel(req->getLabel());
@@ -899,7 +901,7 @@ RTIG::processSendInteraction(Socket *link, NM_Send_Interaction *req)
 
 	// Building Value Array
 	auditServer << "IntID = " << req->getInteractionClass()
-					<< ", date = " << req->getDate().getTime();
+									<< ", date = " << req->getDate().getTime();
 	if ( req->isDated() )
 	{
 		federations.updateParameter(req->getFederation(),
@@ -1038,7 +1040,7 @@ void
 RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NM_Negotiated_Attribute_Ownership_Divestiture *req)
 {
 	auditServer << "Object = " <<  req->getObject()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 	federations.negotiateDivestiture(req->getFederation(),
 			req->getFederate(),
 			req->getObject(),
@@ -1063,7 +1065,7 @@ void
 RTIG::processAcquisitionIfAvailable(Socket *link, NM_Attribute_Ownership_Acquisition_If_Available *req)
 {
 	auditServer << "Object = " << req->getObject()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.acquireIfAvailable(req->getFederation(),
 			req->getFederate(),
@@ -1089,7 +1091,7 @@ void
 RTIG::processUnconditionalDivestiture(Socket *link, NM_Unconditional_Attribute_Ownership_Divestiture *req)
 {
 	auditServer << "Object = " << req->getObject()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.divest(req->getFederation(),
 			req->getFederate(),
@@ -1115,7 +1117,7 @@ void
 RTIG::processOwnershipAcquisition(Socket *link, NM_Attribute_Ownership_Acquisition *req)
 {
 	auditServer << "Object = " << req->getObject()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.acquire(req->getFederation(),
 			req->getFederate(),
@@ -1142,7 +1144,7 @@ void
 RTIG::processCancelNegotiatedDivestiture(Socket *link, NM_Cancel_Negotiated_Attribute_Ownership_Divestiture *req)
 {
 	auditServer << "Object = " << req->getObject()
-						<< ", # of att. = " << req->getAttributesSize() ;
+										<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.cancelDivestiture(req->getFederation(),
 			req->getFederate(),
@@ -1167,7 +1169,7 @@ void
 RTIG::processReleaseResponse(Socket *link, NM_Attribute_Ownership_Release_Response *req)
 {
 	auditServer << "Object = " << req->getObject()
-					<< ", # of att. = " << req->getAttributesSize() ;
+									<< ", # of att. = " << req->getAttributesSize() ;
 
 	AttributeHandleSet *attributes =
 			federations.respondRelease(req->getFederation(),
@@ -1199,7 +1201,7 @@ void
 RTIG::processCancelAcquisition(Socket *link, NM_Cancel_Attribute_Ownership_Acquisition *req)
 {
 	auditServer << "Object = " << req->getObject()
-					<< ", # of att. = " << req->getAttributesSize() ;
+									<< ", # of att. = " << req->getAttributesSize() ;
 
 	federations.cancelAcquisition(req->getFederation(),
 			req->getFederate(),
@@ -1466,4 +1468,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.99 2010/03/23 13:15:34 erk Exp $
+// $Id: RTIG_processing.cc,v 3.100 2010/03/28 16:08:34 erk Exp $

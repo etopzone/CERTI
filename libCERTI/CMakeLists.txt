@@ -1,3 +1,5 @@
+# LibCERTI now depends on libHLA
+include_directories(${CERTI_SOURCE_DIR}/libHLA)
 
 ##################################################################
 # Lib CERTI
@@ -73,7 +75,6 @@ SET(CERTI_SUPPORT_SRCS
 AuditFile.cc AuditFile.hh
 AuditLine.cc AuditLine.hh
 BasicMessage.cc BasicMessage.hh
-MessageBuffer.cc MessageBuffer.hh
 M_Classes.cc M_Classes.hh
 Message.cc Message_RW.cc Message.hh 
 NetworkMessage.cc NetworkMessage_RW.cc NetworkMessage.hh
@@ -99,8 +100,7 @@ GSSAPIHandler.hh
 Socket.hh
 )
 
-if (WIN32)
-    include_directories(${CERTI_SOURCE_DIR}/libHLA)
+if (WIN32)    
     ADD_DEFINITIONS(-DDEBUG)
 
     SET(CERTI_SOCKET_SHM_SRC
@@ -109,8 +109,7 @@ if (WIN32)
 	    RingBuffer.cc RingBuffer.hh)
 
     LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SOCKET_SHM_SRC})
-else(WIN32)
-    include_directories(${CERTI_SOURCE_DIR}/libHLA)
+else(WIN32)    
     ADD_DEFINITIONS(-DDEBUG)
 
     SET(CERTI_SOCKET_SHM_SRC

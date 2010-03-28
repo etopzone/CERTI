@@ -18,18 +18,19 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef LIBCERTI_MESSAGE_BUFFER_HH
-#define LIBCERTI_MESSAGE_BUFFER_HH
+#ifndef LIBHLA_MESSAGE_BUFFER_HH
+#define LIBHLA_MESSAGE_BUFFER_HH
 
-#include "certi.hh"
+#include "libhla.hh"
 #include <string>
 
 #define DEFAULT_MESSAGE_BUFFER_SIZE 255
 
-namespace certi {
+namespace libhla {
 
 /**
- * MessageBuffer is a class managing a byte buffer for Message exchange.
+ * MessageBuffer is a class managing a byte buffer for
+ * portable heterogeneous Message exchange.
  * It provides member functions to read and write basics types
  * [unsigned] int 8/16/32/64, float, double, byte etc...
  * The message buffer will encode the written [type] data with proper
@@ -37,9 +38,10 @@ namespace certi {
  * A message buffer handles heterogeneous write/read pair, in fact
  * it the central class for heterogeneity handling.
  * One must read from the buffer in the exact order the write was done.
- * MessageBuffer is dynamically sized.
+ * MessageBuffer is dynamically sized, however reallocation are
+ * only done when needed.
  */
-class CERTI_EXPORT MessageBuffer
+class HLA_EXPORT MessageBuffer
 {
 public:
 
@@ -66,6 +68,8 @@ public:
 	 * may be used to store the buffer size
 	 */ 
 	static const uint8_t reservedBytes;
+
+	LIBHLA_EXCEPTION(MessageBufferError)
 
 	/**
 	 * Default message buffer constructor.
@@ -144,6 +148,15 @@ public:
 	 */
 	void assumeSize(uint32_t size);
 	
+	/**
+	 * Assume that the underlying buffer has the size
+	 * specified by the reserved bytes header.
+	 * The method will checked the endianity of the buffer
+	 * from the first reserved byte and then assume that
+	 * the buffer has size specified by the following 4 bytes.
+	 * A reallocation of the underlying memory buffer will
+	 * be done if necessary.
+	 */
 	void assumeSizeFromReservedBytes();
 
 #define DECLARE_SIGNED(type)				\
@@ -279,6 +292,10 @@ datatype read_##type() {\
 		return *this;
 	}
 	
+	/**
+	 * Update the reserved bytes area.
+	 * @post the reserved bytes are up-to-date.
+	 */
 	void updateReservedBytes();
 	
 	/*
@@ -309,10 +326,19 @@ private:
 	uint32_t readOffset;	
 
 	void initialize();
+	/**
+	 * Reallocate the underlying buffer to size n.
+	 * Reallocation will be done only if it is necessary.
+	 */
 	void reallocate(uint32_t n);
+
+	/**
+	 * Update reserved bytes in order to indicate
+	 * the actual size of the buffer.
+	 */
 	void setSizeInReservedBytes(uint32_t n);
 };
 
-} // certi
+} // libhla
 
-#endif // LIBCERTI_MESSAGE_BUFFER_HH
+#endif // LIBHLA_MESSAGE_BUFFER_HH

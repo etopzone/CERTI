@@ -29,6 +29,22 @@ set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES CFLAGS "-Wext
 SOURCE_GROUP("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS})
 ENDIF (NOT WIN32)
 
+SET(LIBHLA_MB_SRCS MessageBuffer.cc MessageBuffer.hh)
+LIST(APPEND LIBHLA_EXPORTED_INCLUDES MessageBuffer.hh)
+
+SET(LIBHLA_MB_TEST_SRCS MessageBufferTests.cc)
+
+ADD_EXECUTABLE(MessageBufferTests ${LIBHLA_MB_TEST_SRCS})
+
+TARGET_LINK_LIBRARIES(MessageBufferTests HLA)
+
+INSTALL(TARGETS MessageBufferTests
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+
+ADD_TEST(LibHLA_MB_Tests MessageBufferTests)
+
 SET(LIBHLA_CLOCK_SRCS 
     Clock.cc
     ClockFactory.cc)
@@ -88,6 +104,7 @@ ADD_LIBRARY(HLA
     ${LIBHLA_TYPES1516_SRCS}    
     ${LIBHLA_HASH_SRCS}    
     ${LIBHLA_ALLOC_SRCS}
+    ${LIBHLA_MB_SRCS}
     ${LIBHLA_CLOCK_SRCS}
     ${LIBHLA_IPC_SRCS}
     ${LIBHLA_EXPORTED_INCLUDES}

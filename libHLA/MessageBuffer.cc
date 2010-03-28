@@ -20,16 +20,12 @@
 // ----------------------------------------------------------------------------
 
 #include "MessageBuffer.hh"
-#include "Exception.hh"
-#include "PrettyDebug.hh"
 #include <cassert>
 #include <iomanip>
 #include <cstring>
 #include <cstdio>
 
-namespace certi {
-
-static PrettyDebug D("MB","MB::");
+namespace libhla {
 
 const bool
 MessageBuffer::HostIsBigEndian() {
@@ -184,14 +180,14 @@ void MessageBuffer::setSizeInReservedBytes(uint32_t n) {
 	oldWR_Offset = writeOffset;
 	/* update size in reserved bytes */
 	writeOffset  = 1;
-	Debug(D, pdTrace) << "setSizeInReservedBytes(" << n << ")" << std::endl;
+	//std::cerr  << "setSizeInReservedBytes(" << n << ")" << std::endl;
 	write_uint32(n);
 	/* restore writeOffset */
 	writeOffset  = oldWR_Offset;
 } /* end of setSizeInReservedBytes */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
-	Debug(D, pdTrace) << "write_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "write_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
     	if (n >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (n-(bufferMaxSize-writeOffset))
@@ -206,7 +202,7 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 	if (n + readOffset > writeOffset) {
-		throw RTIinternalError(stringize()
+		throw MessageBufferError(stringize()
 			<< "read_uint8s::invalid read of size <" << n
 			<< "> inside a buffer of readable size <"
 			<< (int32_t)writeOffset-readOffset << "> (writeOffset="
@@ -215,14 +211,14 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 
 	memcpy(data, buffer+readOffset, n);
 	readOffset += n;
-        Debug(D, pdTrace) << "read_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr << "read_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-n);
 } /* end of MessageBuffer::read_uint8s(uint8_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
 	uint16_t an_uint16;
-        Debug(D, pdTrace) << "write_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "write_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -236,7 +232,7 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 		writeOffset += 2*n;
 	} else {
 		for (i=0; i<n; ++i) {
-			an_uint16 = CERTI_UINT16_SWAP_BYTES(data[i]);
+			an_uint16 = LIBHLA_UINT16_SWAP_BYTES(data[i]);
 			memcpy(buffer+writeOffset, &an_uint16, 2);
 			writeOffset += 2;
 		}
@@ -249,7 +245,7 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	uint16_t an_uint16;
 
 	if (2*n + readOffset > writeOffset) {
-		throw RTIinternalError(stringize()
+		throw MessageBufferError(stringize()
 			<< "read_uint16s::invalid read of size <" << 2*n
 			<< "> inside a buffer of readable size <"
 			<< (int32_t)writeOffset-readOffset << "> (writeOffset="
@@ -263,19 +259,19 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	} else {
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint16, buffer+readOffset,2);
-			data[i] = CERTI_UINT16_SWAP_BYTES(an_uint16);
+			data[i] = LIBHLA_UINT16_SWAP_BYTES(an_uint16);
 			readOffset += 2;
 		}
 	}
 	
-        Debug(D, pdTrace) << "read_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "read_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-2*n);
 } /* end of MessageBuffer::read_uint16s(uint16_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
 	uint32_t an_uint32;
-        Debug(D, pdTrace) << "write_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "write_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -289,7 +285,7 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 		writeOffset += 4*n;
 	} else {
 		for (i=0; i<n; ++i) {
-			an_uint32 = CERTI_UINT32_SWAP_BYTES(data[i]);
+			an_uint32 = LIBHLA_UINT32_SWAP_BYTES(data[i]);
 			memcpy(buffer+writeOffset,&an_uint32,4);
 			writeOffset += 4;
 		}
@@ -302,7 +298,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	uint32_t an_uint32;
 
 	if (4*n + readOffset > writeOffset) {
-		throw RTIinternalError(stringize()
+		throw MessageBufferError(stringize()
 			<< "read_uint32s::invalid read of size <" << 4*n
 			<< "> inside a buffer of readable size <"
 			<< (int32_t)writeOffset-readOffset << "> (writeOffset="
@@ -316,11 +312,11 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	} else {
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint32,buffer+readOffset,4);
-			data[i] = CERTI_UINT32_SWAP_BYTES(an_uint32);
+			data[i] = LIBHLA_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
 		}
 	}
-        Debug(D, pdTrace) << "read_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "read_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-4*n);
 } /* end of read_uint32s */
 
@@ -332,7 +328,7 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	} a_deux32;
 	uint32_t an_uint32;
 
-        Debug(D, pdTrace) << "write_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "write_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 
 	if ((8*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -347,10 +343,10 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	} else {
 		for (i=0; i<n; ++i) {
 			a_deux32.ui64 = data[i];
-			an_uint32 = CERTI_UINT32_SWAP_BYTES(a_deux32.ui32[1]);
+			an_uint32 = LIBHLA_UINT32_SWAP_BYTES(a_deux32.ui32[1]);
 			memcpy(buffer+writeOffset,&an_uint32,4);
 			writeOffset += 4;
-			an_uint32 = CERTI_UINT32_SWAP_BYTES(a_deux32.ui32[0]);
+			an_uint32 = LIBHLA_UINT32_SWAP_BYTES(a_deux32.ui32[0]);
 			memcpy(buffer+writeOffset,&an_uint32,4);
 			writeOffset += 4;
 		}
@@ -365,10 +361,10 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 			uint64_t    ui64;
 	} a_deux32;
 	uint32_t an_uint32;
-        Debug(D, pdTrace) << "read_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+	//std::cerr  << "read_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 
 	if (8*n + readOffset > writeOffset) {
-		throw RTIinternalError(stringize()
+		throw MessageBufferError(stringize()
 			<< "read_uint64s::invalid read of size <" << 4*n
 			<< "> inside a buffer of readable size <"
 			<< (int32_t)writeOffset-readOffset << "> (writeOffset="
@@ -382,11 +378,11 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	} else {
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint32,buffer+readOffset,4);
-			a_deux32.ui32[1] = CERTI_UINT32_SWAP_BYTES(an_uint32);
+			a_deux32.ui32[1] = LIBHLA_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
 
 			memcpy(&an_uint32,buffer+readOffset,4);
-			a_deux32.ui32[0] = CERTI_UINT32_SWAP_BYTES(an_uint32);
+			a_deux32.ui32[0] = LIBHLA_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
 
 			data[i] = a_deux32.ui64;
@@ -397,28 +393,28 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_floats(const float* data, uint32_t n) {
 	const uint32_t* data32;
-        Debug(D, pdTrace) << "write_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+        //std::cerr << "write_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data32 = reinterpret_cast<const uint32_t*>(data);	
 	return write_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::read_floats(float* data, uint32_t n) {
 	uint32_t* data32;
-        Debug(D, pdTrace) << "read_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+        //std::cerr << "read_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data32 = reinterpret_cast<uint32_t*>(data);
 	return read_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::write_doubles(const double* data, uint32_t n) {
 	const uint64_t* data64;
-        Debug(D, pdTrace) << "write_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+        //std::cerr << "write_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data64 = reinterpret_cast<const uint64_t*>(data);	
 	return write_uint64s(data64,n);	
 }
 
 int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 	uint64_t* data64;
-        Debug(D, pdTrace) << "read_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+       //std::cerr << "read_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data64 = reinterpret_cast<uint64_t*>(data);
 	return read_uint64s(data64,n);
 }
@@ -442,7 +438,7 @@ MessageBuffer::read_string(std::string& s)
     int32_t len = read_int32();
 
     if (len + readOffset > writeOffset) {
-        throw RTIinternalError(stringize()
+        throw MessageBufferError(stringize()
             << "read_string::invalid read of size <" << len
             << "> inside a buffer of readable size <"
             << (int32_t)writeOffset-readOffset << "> (writeOffset="

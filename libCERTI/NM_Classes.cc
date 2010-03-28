@@ -1,4 +1,4 @@
-// Generated on 2010 March Tue, 23 at 08:56:31 by the CERTI message generator
+// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -2629,12 +2629,12 @@ namespace certi {
       out << "(opt) tag =" << tag << " "       << std::endl;
       out << "[New_NetworkMessage -End]" << std::endl;   }
 
-   NetworkMessage* NM_Factory::create(NM_Type type) throw (RTIinternalError) {
+   NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError, NetworkSignal) {
       NetworkMessage* msg = NULL;
 
       switch (type) {
          case NetworkMessage::NOT_USED:
-            throw RTIinternalError("NOT_USED message type should not be used!!");
+            throw NetworkError("NOT_USED message type should not be used!!");
             break;
          case NetworkMessage::CLOSE_CONNEXION:
             msg = new NM_Close_Connexion();
@@ -2907,13 +2907,13 @@ namespace certi {
             msg = new NM_Stop_Registration_For_Object_Class();
             break;
          case NetworkMessage::LAST:
-            throw RTIinternalError("LAST message type should not be used!!");
+            throw NetworkError("LAST message type should not be used!!");
             break;
       } // end if switch (type)
       return msg;
    } /* end of NM_Factory::create */
 
-   NetworkMessage* NM_Factory::receive(NMStreamType stream) throw (RTIinternalError) {
+   NetworkMessage* NM_Factory::receive(NMStreamType stream) throw (NetworkError, NetworkSignal) {
       // FIXME This is not thread safe
       static MessageBuffer msgBuffer;
       NetworkMessage  msgGen;

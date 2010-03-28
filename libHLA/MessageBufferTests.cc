@@ -25,15 +25,14 @@ using std::cerr;
 using std::endl;
 
 #include "config.h"
-#include "PrettyDebug.hh"
 #include "MessageBuffer.hh"
 #include <cassert>
 #include <string>
 #include <cstring>
 #include <cstdio>
 
-void messageBufferTests(certi::MessageBuffer& MsgBuf) {
-	certi::MessageBuffer MsgBuf2;
+void messageBufferTests(libhla::MessageBuffer& MsgBuf) {
+	libhla::MessageBuffer MsgBuf2;
 	std::string    stdstr = "a std:string";
 	const char*   str = "a char* string";
 	uint8_t  u8   =  232;
@@ -133,38 +132,38 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	cout << "    Now reset buffer." << endl;
 	MsgBuf.reset();
 	cout << "    Re-write on buffer..." << endl;
-	MsgBuf.write_uint8(u8);  cout << "        Written <"; certi::MessageBuffer::show(&u8,1); cout << ">" << endl;
-	MsgBuf.write_uint16(u16);cout << "        Written <"; certi::MessageBuffer::show(&u16,2); cout << ">" << endl;
-	MsgBuf.write_uint32(u32);cout << "        Written <"; certi::MessageBuffer::show(&u32,4); cout << ">" << endl;
-	MsgBuf.write_uint64(u64);cout << "        Written <"; certi::MessageBuffer::show(&u64,8); cout << ">" << endl;
-	MsgBuf.write_int8(i8);cout << "        Written <"; certi::MessageBuffer::show(&i8,1); cout << ">" << endl;
-	MsgBuf.write_int16(i16);cout << "        Written <"; certi::MessageBuffer::show(&i16,2); cout << ">" << endl;
-	MsgBuf.write_int32(i32);cout << "        Written <"; certi::MessageBuffer::show(&i32,4); cout << ">" << endl;
-	MsgBuf.write_int64(i64);cout << "        Written <"; certi::MessageBuffer::show(&i64,8); cout << ">" << endl;
-	MsgBuf.write_float(f32);cout << "        Written <"; certi::MessageBuffer::show(&f32,4); cout << ">" << endl;
-	MsgBuf.write_double(d64);cout << "        Written <"; certi::MessageBuffer::show(&d64,8); cout << ">" << endl;
+	MsgBuf.write_uint8(u8);  cout << "        Written <"; libhla::MessageBuffer::show(&u8,1); cout << ">" << endl;
+	MsgBuf.write_uint16(u16);cout << "        Written <"; libhla::MessageBuffer::show(&u16,2); cout << ">" << endl;
+	MsgBuf.write_uint32(u32);cout << "        Written <"; libhla::MessageBuffer::show(&u32,4); cout << ">" << endl;
+	MsgBuf.write_uint64(u64);cout << "        Written <"; libhla::MessageBuffer::show(&u64,8); cout << ">" << endl;
+	MsgBuf.write_int8(i8);cout << "        Written <"; libhla::MessageBuffer::show(&i8,1); cout << ">" << endl;
+	MsgBuf.write_int16(i16);cout << "        Written <"; libhla::MessageBuffer::show(&i16,2); cout << ">" << endl;
+	MsgBuf.write_int32(i32);cout << "        Written <"; libhla::MessageBuffer::show(&i32,4); cout << ">" << endl;
+	MsgBuf.write_int64(i64);cout << "        Written <"; libhla::MessageBuffer::show(&i64,8); cout << ">" << endl;
+	MsgBuf.write_float(f32);cout << "        Written <"; libhla::MessageBuffer::show(&f32,4); cout << ">" << endl;
+	MsgBuf.write_double(d64);cout << "        Written <"; libhla::MessageBuffer::show(&d64,8); cout << ">" << endl;
 
 	cout << "    ...and assume it is ";
-	if (certi::MessageBuffer::HostIsBigEndian()) {
+	if (libhla::MessageBuffer::HostIsBigEndian()) {
 		cout << "Little Endian";
 		MsgBuf.assumeBufferIsLittleEndian();
 		cout << " whereas the host was big" << endl;
 	}
-	if (certi::MessageBuffer::HostIsLittleEndian()) {
+	if (libhla::MessageBuffer::HostIsLittleEndian()) {
 		cout << "Big Endian";
 		MsgBuf.assumeBufferIsBigEndian();
 		cout << " whereas the host was little" << endl;
 	}
-	MsgBuf.read_uint8(&vu8);   cout << "        Read  <"; certi::MessageBuffer::show(&vu8,1); cout << ">" << endl;
-	MsgBuf.read_uint16(&vu16); cout << "        Read <"; certi::MessageBuffer::show(&vu16,2); cout << ">" << endl;
-	MsgBuf.read_uint32(&vu32); cout << "        Read <"; certi::MessageBuffer::show(&vu32,4); cout << ">" << endl;
-	MsgBuf.read_uint64(&vu64); cout << "        Read <"; certi::MessageBuffer::show(&vu64,8); cout << ">" << endl;
-	MsgBuf.read_int8(&vi8);    cout << "        Read <"; certi::MessageBuffer::show(&vi8,1); cout << ">" << endl;
-	MsgBuf.read_int16(&vi16);  cout << "        Read <"; certi::MessageBuffer::show(&vi16,2); cout << ">" << endl;
-	MsgBuf.read_int32(&vi32);  cout << "        Read <"; certi::MessageBuffer::show(&vi32,4); cout << ">" << endl;
-	MsgBuf.read_int64(&vi64);  cout << "        Read <"; certi::MessageBuffer::show(&vi64,8); cout << ">" << endl;
-	MsgBuf.read_float(&vf32);  cout << "        Read <"; certi::MessageBuffer::show(&vf32,4); cout << ">" << endl;
-	MsgBuf.read_double(&vd64); cout << "        Read <"; certi::MessageBuffer::show(&vd64,8); cout << ">" << endl;
+	MsgBuf.read_uint8(&vu8);   cout << "        Read  <"; libhla::MessageBuffer::show(&vu8,1); cout << ">" << endl;
+	MsgBuf.read_uint16(&vu16); cout << "        Read <"; libhla::MessageBuffer::show(&vu16,2); cout << ">" << endl;
+	MsgBuf.read_uint32(&vu32); cout << "        Read <"; libhla::MessageBuffer::show(&vu32,4); cout << ">" << endl;
+	MsgBuf.read_uint64(&vu64); cout << "        Read <"; libhla::MessageBuffer::show(&vu64,8); cout << ">" << endl;
+	MsgBuf.read_int8(&vi8);    cout << "        Read <"; libhla::MessageBuffer::show(&vi8,1); cout << ">" << endl;
+	MsgBuf.read_int16(&vi16);  cout << "        Read <"; libhla::MessageBuffer::show(&vi16,2); cout << ">" << endl;
+	MsgBuf.read_int32(&vi32);  cout << "        Read <"; libhla::MessageBuffer::show(&vi32,4); cout << ">" << endl;
+	MsgBuf.read_int64(&vi64);  cout << "        Read <"; libhla::MessageBuffer::show(&vi64,8); cout << ">" << endl;
+	MsgBuf.read_float(&vf32);  cout << "        Read <"; libhla::MessageBuffer::show(&vf32,4); cout << ">" << endl;
+	MsgBuf.read_double(&vd64); cout << "        Read <"; libhla::MessageBuffer::show(&vd64,8); cout << ">" << endl;
 	delete[] vstr;
 
 	cout << "    Trying to overload the buffer..." <<endl;
@@ -219,21 +218,21 @@ int
 main(int argc, char **argv)
 {
 
-	certi::MessageBuffer MsgBuf;
+	libhla::MessageBuffer MsgBuf;
 
-	cout << "CERTI Utility Tests->BEGIN..."<< endl ;
+	cout << "LibHLA MessageBuffer Tests->BEGIN..."<< endl ;
 
 	cout << "    Host is ";
-	if (certi::MessageBuffer::HostIsBigEndian()) {
+	if (libhla::MessageBuffer::HostIsBigEndian()) {
 		cout << "Big Endian";
 	}
-	if (certi::MessageBuffer::HostIsLittleEndian()) {
+	if (libhla::MessageBuffer::HostIsLittleEndian()) {
 		cout << "Little Endian";
 	}
 	cout << endl;
 	messageBufferTests(MsgBuf);
 
-	cout << "CERTI Utility Test->END." <<endl;
+	cout << "LibHLA MessageBuffer Test->END." <<endl;
     /* getchar(); */
 	return 0;
 }

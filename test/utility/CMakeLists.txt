@@ -3,21 +3,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/libHLA
   )
 
-SET(CertiUtil_SRCS
-  CertiUtilTests.cc 
-  )
-
-ADD_EXECUTABLE(CertiUtilTests ${CertiUtil_SRCS})
-
-TARGET_LINK_LIBRARIES(CertiUtilTests CERTI RTI FedTime)
-
-INSTALL(TARGETS CertiUtilTests
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
-
-ADD_TEST(CertiUtilTests CertiUtilTests)
-
 ADD_EXECUTABLE(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)
 IF(WIN32)
     TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI HLA)

@@ -638,7 +638,7 @@ void
 Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTime,
 			 RTI::ObjectHandle id)
 {
-    certi::MessageBuffer buffer;
+    libhla::MessageBuffer buffer;
     RTI::ParameterHandleValuePairSet *parameterSet=NULL ;
 
     parameterSet = RTI::ParameterSetFactory::create(3);
@@ -700,7 +700,7 @@ void
 Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTime,
 		    RTI::ObjectHandle id)
 {    
-    certi::MessageBuffer buffer;
+    libhla::MessageBuffer buffer;
     RTI::AttributeHandleValuePairSet *attributeSet ;
 
     attributeSet = RTI::AttributeSetFactory::create(3);
@@ -844,7 +844,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
            RTI::InvalidFederationTime,
            RTI::FederateInternalError)
 {
-	certi::MessageBuffer buffer;
+	libhla::MessageBuffer buffer;
     RTI::ULong valueLength ;
     int dx1 = 0 ;
     int dy1 = 0 ;
@@ -915,7 +915,7 @@ Billard::reflectAttributeValues(
 {
     D.Out(pdTrace, "reflectAttributeValues with time");
 
-    certi::MessageBuffer buffer;
+    libhla::MessageBuffer buffer;
     float x1 = 0 ;
     float y1 = 0 ;
 
@@ -981,7 +981,7 @@ Billard::reflectAttributeValues(
 
     float x1 = 0 ;
     float y1 = 0 ;
-    certi::MessageBuffer buffer;
+    libhla::MessageBuffer buffer;
 
     RTI::ULong valueLength ;   
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.53 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClass.hh,v 3.54 2010/03/28 16:08:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -336,11 +336,11 @@ private:
 	 */
 	ObjectClassSet*   subClasses;
 	/* The message buffer used to send Network messages */
-	MessageBuffer NM_msgBufSend;
+	libhla::MessageBuffer NM_msgBufSend;
 };
 
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.53 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClass.hh,v 3.54 2010/03/28 16:08:33 erk Exp $
