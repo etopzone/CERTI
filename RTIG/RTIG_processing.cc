@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.100 2010/03/28 16:08:34 erk Exp $
+// $Id: RTIG_processing.cc,v 3.101 2010/03/29 07:56:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -251,7 +251,6 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 {
 	NM_Destroy_Federation_Execution rep ;
 
-	req->show(std::cerr);
 	std::string federation = req->getFederationName();
 
 	G.Out(pdGendoc,"enter RTIG::processDestroyFederation");
@@ -293,7 +292,6 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 	}
 	G.Out(pdGendoc,"processDestroyFederation===>write DFE to RTIA");
 
-	rep.show(std::cerr);
 	rep.send(link,NM_msgBufSend);
 
 	G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
@@ -1468,4 +1466,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.100 2010/03/28 16:08:34 erk Exp $
+// $Id: RTIG_processing.cc,v 3.101 2010/03/29 07:56:04 erk Exp $

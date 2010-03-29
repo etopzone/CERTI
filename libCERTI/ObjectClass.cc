@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.81 2010/03/23 13:13:27 erk Exp $
+// $Id: ObjectClass.cc,v 3.82 2010/03/29 07:56:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -748,7 +748,6 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    Socket *socket = NULL ;
 	    try {
 		socket = server->getSocketLink(federate);
-		message.show(std::cerr);
 		message.send(socket,NM_msgBufSend);
 	    }
 	    catch (RTIinternalError &e) {
@@ -1713,4 +1712,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.81 2010/03/23 13:13:27 erk Exp $
+// $Id: ObjectClass.cc,v 3.82 2010/03/29 07:56:04 erk Exp $
