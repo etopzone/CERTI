@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.31 2010/03/23 13:13:26 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.32 2010/03/29 17:52:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -75,7 +75,7 @@ T* ObjectClassBroadcastList::createReducedMessage(T* msg, ObjectBroadcastLine *l
 			++currentSize; ;
 			reducedMessage->setAttributesSize(currentSize);
 			// Copy Attribute Handle.
-			reducedMessage->setAttributes(currentAttrib,currentSize);
+			reducedMessage->setAttributes(currentAttrib,currentSize-1);
 		}
 	}
 	return reducedMessage;
@@ -117,14 +117,14 @@ T* ObjectClassBroadcastList::createReducedMessageWithValue(T* msg, ObjectBroadca
 		currentAttrib = msg->getAttributes(i);
 		if (line->state[currentAttrib] == ObjectBroadcastLine::waiting) {
 			// Update number of attributes in ReducedMessage.
-			++currentSize; ;
+			++currentSize;
 			reducedMessage->setAttributesSize(currentSize);
 			// Copy Attribute Handle.
-			reducedMessage->setAttributes(currentAttrib,currentSize);
+			reducedMessage->setAttributes(currentAttrib,currentSize-1);
 
 			reducedMessage->setValuesSize(currentSize);
 			// Copy Attribute Value.
-			reducedMessage->setValues(msg->getValues(i),currentSize);
+			reducedMessage->setValues(msg->getValues(i),currentSize-1);
 		}
 	}
 	return reducedMessage;
@@ -501,4 +501,4 @@ ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass) {
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.31 2010/03/23 13:13:26 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.32 2010/03/29 17:52:19 erk Exp $
