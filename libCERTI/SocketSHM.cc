@@ -19,7 +19,7 @@ if(_Side == SHM_CS){
     try {
        _Sem_full_SC->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_FULL_SC")) ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(libhla::ipc::SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::SocketNotConnected("Connect() failed."));
@@ -27,7 +27,7 @@ if(_Side == SHM_CS){
     try {
        _Sem_empty_SC->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(libhla::ipc::SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::SocketNotConnected("Connect() failed."));
@@ -37,7 +37,7 @@ else{
     try {
        _Sem_full_CS->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_FULL_CS")) ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(libhla::ipc::SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::SocketNotConnected("Connect() failed."));
@@ -45,7 +45,7 @@ else{
     try {
        _Sem_empty_CS->Attach(libhla::ipc::Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(libhla::ipc::SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::SocketNotConnected("Connect() failed."));
@@ -67,7 +67,7 @@ if(_Side == SHM_SC){
     try {
        _Sem_empty_SC->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
         std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("Send() failed.")) ;
@@ -78,7 +78,7 @@ if(_Side == SHM_SC){
     try {
        _Sem_full_SC->V() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
         std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("Send() failed.")) ;
@@ -88,7 +88,7 @@ else{
     try {
        _Sem_empty_CS->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
         std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("Send() failed.")) ;
@@ -99,7 +99,7 @@ else{
      try {
         _Sem_full_CS->V() ;
      }
-     catch(certi::SemaphoreHandlingError& e)
+     catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
      {
         std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("Send() failed.")) ;
@@ -125,7 +125,7 @@ if(_Side == SHM_SC){
     try {
        _Sem_full_CS->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("Receive() failed.")) ;
@@ -136,7 +136,7 @@ if(_Side == SHM_SC){
     try {
        _Sem_empty_CS->V() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("Receive() failed.")) ;
@@ -146,7 +146,7 @@ else{
     try {
        _Sem_full_SC->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("Receive() failed.")) ;
@@ -157,7 +157,7 @@ else{
     try {
        _Sem_empty_SC->V() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(libhla::ipc::Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("Receive() failed.")) ;
@@ -182,12 +182,12 @@ std::cout << "Try to Close..." << std::endl ;
 try {
    _Shm_SC->Close() ;
 }
-catch (certi::SharedMemoryNotClosed& e)
+catch (libhla::ipc::SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::SocketNotClosed("Close() failed.")) ;
 }
-catch (certi::HandleNotClosed& e)
+catch (libhla::ipc::SHM::HandleNotClosed& e)
 {
     std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::SocketNotClosed("Close() failed.")) ;
@@ -195,12 +195,12 @@ catch (certi::HandleNotClosed& e)
 try {
    _Shm_CS->Close() ;
 }
-catch (certi::SharedMemoryNotClosed& e)
+catch (libhla::ipc::SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::SocketNotClosed("Close() failed.")) ;
 }
-catch (certi::HandleNotClosed& e)
+catch (libhla::ipc::SHM::HandleNotClosed& e)
 {
     std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::SocketNotClosed("Close() failed.")) ;

@@ -95,7 +95,7 @@ if(_Side == BUFFER_SC){
     try {
        _Sem_SC->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_SC")) ;
     }
-    catch(certi::SemaphoreNotCreated& e)
+    catch(Semaphore::SemaphoreNotCreated& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -105,7 +105,7 @@ else{
     try {
        _Sem_CS->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_CS")) ;
     }
-    catch(certi::SemaphoreNotCreated& e)
+    catch(Semaphore::SemaphoreNotCreated& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -162,7 +162,7 @@ if(_Side == BUFFER_SC){
     try {
        _Shm_SC->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -170,7 +170,7 @@ if(_Side == BUFFER_SC){
     try {
        _Shm_SC->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -178,7 +178,7 @@ if(_Side == BUFFER_SC){
     try {
        _Pw_Pr_SC->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -186,7 +186,7 @@ if(_Side == BUFFER_SC){
     try {
        _Pw_Pr_SC->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -202,7 +202,7 @@ else{
     try {
        _Shm_CS->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -210,7 +210,7 @@ else{
     try {
        _Shm_CS->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -218,7 +218,7 @@ else{
     try {
        _Pw_Pr_CS->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -226,7 +226,7 @@ else{
     try {
        _Pw_Pr_CS->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
@@ -249,7 +249,7 @@ if(_Side == BUFFER_CS){
     try {
        _Sem_SC->Attach(Semaphore::buildSemName(_Name+"_BUFFER_SC")) ;
     }
-    catch(certi::SemaphoreNotOpen& e)
+    catch(Semaphore::SemaphoreNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -259,7 +259,7 @@ else{
     try {
        _Sem_CS->Attach(Semaphore::buildSemName(_Name+"_BUFFER_CS")) ;
     }
-    catch(certi::SemaphoreNotOpen& e)
+    catch(Semaphore::SemaphoreNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -270,7 +270,7 @@ if(_Side == BUFFER_CS){
     try {
        _Shm_SC->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -278,7 +278,7 @@ if(_Side == BUFFER_CS){
     try {
        _Shm_SC->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -286,7 +286,7 @@ if(_Side == BUFFER_CS){
     try {
        _Pw_Pr_SC->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -294,7 +294,7 @@ if(_Side == BUFFER_CS){
     try {
        _Pw_Pr_SC->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -311,7 +311,7 @@ else{
     try {
        _Shm_CS->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -319,7 +319,7 @@ else{
     try {
        _Shm_CS->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -327,7 +327,7 @@ else{
     try {
        _Pw_Pr_CS->Open() ;
     }
-    catch(certi::SharedMemoryNotOpen& e)
+    catch(SHM::SharedMemoryNotOpen& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -335,7 +335,7 @@ else{
     try {
        _Pw_Pr_CS->Attach() ;
     }
-    catch(certi::SharedMemoryNotAttached& e)
+    catch(SHM::SharedMemoryNotAttached& e)
     {
         std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
@@ -366,7 +366,7 @@ if(_Side == BUFFER_SC){
     try {
        _Sem_SC->Delete() ;
     }
-    catch(certi::HandleNotClosed& e)
+    catch(SHM::HandleNotClosed& e)
     {
         std::cout << "RingBuffer::~RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotDeleted("~RingBuffer() failed.")) ;;
@@ -376,7 +376,7 @@ else{
     try {
        _Sem_CS->Delete() ;
     }
-    catch(certi::HandleNotClosed& e)
+    catch(SHM::HandleNotClosed& e)
     {
         std::cout << "RingBuffer::~RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::RingBufferNotDeleted("~RingBuffer() failed.")) ;;
@@ -411,7 +411,7 @@ if(_Side == BUFFER_SC){
    try {
       _Sem_SC->P() ;
    }
-   catch(certi::SemaphoreHandlingError& e)
+   catch(Semaphore::SemaphoreHandlingError& e)
    {
         std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -427,7 +427,7 @@ if(_Side == BUFFER_SC){
        try {
         _Sem_SC->V() ;
        }
-       catch(certi::SemaphoreHandlingError& e)
+       catch(Semaphore::SemaphoreHandlingError& e)
        {
           std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
           throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -473,7 +473,7 @@ if(_Side == BUFFER_SC){
      try {
         _Sem_SC->V() ;
      }
-     catch(certi::SemaphoreHandlingError& e)
+     catch(Semaphore::SemaphoreHandlingError& e)
      {
         std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -483,7 +483,7 @@ else{
     try {
        _Sem_CS->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -499,7 +499,7 @@ else{
        try {
           _Sem_CS->V() ;
        }
-       catch(certi::SemaphoreHandlingError& e)
+       catch(Semaphore::SemaphoreHandlingError& e)
        {
           std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
           throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -546,7 +546,7 @@ else{
      try {
         _Sem_CS->V() ;
      }
-     catch(certi::SemaphoreHandlingError& e)
+     catch(Semaphore::SemaphoreHandlingError& e)
      {
         std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
         throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
@@ -579,7 +579,7 @@ if(_Side == BUFFER_SC){
     try {
        _Sem_CS->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
@@ -591,7 +591,7 @@ if(_Side == BUFFER_SC){
        try {
           _Sem_CS->V() ;
        }
-       catch(certi::SemaphoreHandlingError& e)
+       catch(Semaphore::SemaphoreHandlingError& e)
        {
           std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
           throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
@@ -653,7 +653,7 @@ if(_Side == BUFFER_SC){
      try {
      _Sem_CS->V() ;
      }
-     catch(certi::SemaphoreHandlingError& e)
+     catch(Semaphore::SemaphoreHandlingError& e)
      {
        std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
@@ -663,7 +663,7 @@ else{
     try {
        _Sem_SC->P() ;
     }
-    catch(certi::SemaphoreHandlingError& e)
+    catch(Semaphore::SemaphoreHandlingError& e)
     {
        std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
@@ -675,7 +675,7 @@ else{
        try {
          _Sem_SC->V() ;
        }
-       catch(certi::SemaphoreHandlingError& e)
+       catch(Semaphore::SemaphoreHandlingError& e)
        {
           std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
           throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;
@@ -733,7 +733,7 @@ else{
      try {
         _Sem_SC->V() ;
      }
-     catch(certi::SemaphoreHandlingError& e)
+     catch(Semaphore::SemaphoreHandlingError& e)
      {
        std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
        throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
@@ -754,12 +754,12 @@ void RingBuffer::Close()
 try {
    _Shm_SC->Close() ;
 }
-catch(certi::SharedMemoryNotClosed& e)
+catch(SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
 }
-catch(certi::HandleNotClosed& e)
+catch(SHM::HandleNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
@@ -767,12 +767,12 @@ catch(certi::HandleNotClosed& e)
 try {
    _Shm_CS->Close() ;
 }
-catch(certi::SharedMemoryNotClosed& e)
+catch(SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
 }
-catch(certi::HandleNotClosed& e)
+catch(SHM::HandleNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
@@ -780,12 +780,12 @@ catch(certi::HandleNotClosed& e)
 try {
    _Pw_Pr_SC->Close() ;
 }
-catch(certi::SharedMemoryNotClosed& e)
+catch(SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
 }
-catch(certi::HandleNotClosed& e)
+catch(SHM::HandleNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
@@ -793,12 +793,12 @@ catch(certi::HandleNotClosed& e)
 try {
    _Pw_Pr_CS->Close() ;
 }
-catch(certi::SharedMemoryNotClosed& e)
+catch(SHM::SharedMemoryNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
 }
-catch(certi::HandleNotClosed& e)
+catch(SHM::HandleNotClosed& e)
 {
     std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;

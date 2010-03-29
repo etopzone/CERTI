@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.9 2010/01/16 20:17:14 erk Exp $
+// $Id: Exception.hh,v 3.10 2010/03/29 18:24:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -105,13 +105,6 @@ typedef enum {
     e_SaveInProgress,
     e_SaveNotInitiated,
     e_SecurityError,
-    e_SharedMemoryNotOpen,
-    e_SharedMemoryNotAttached,
-    e_SharedMemoryNotClosed,
-    e_SemaphoreNotCreated,
-    e_SemaphoreNotOpen,
-    e_SemaphoreHandlingError,
-    e_HandleNotClosed,
     e_SocketNotConnected,
     e_MessageNotSent,
     e_MessageNotReceived,
@@ -287,17 +280,10 @@ CERTI_EXCEPTION(UnimplementedService)
 CERTI_EXCEPTION(UnknownLabel)
 CERTI_EXCEPTION(NetworkSignal)
 CERTI_EXCEPTION(NetworkError)
-CERTI_EXCEPTION(SharedMemoryNotOpen)
-CERTI_EXCEPTION(SharedMemoryNotAttached)
-CERTI_EXCEPTION(SharedMemoryNotClosed)
-CERTI_EXCEPTION(SemaphoreNotOpen)
-CERTI_EXCEPTION(SemaphoreHandlingError)
-CERTI_EXCEPTION(SemaphoreNotCreated)
 CERTI_EXCEPTION(SocketNotConnected)
 CERTI_EXCEPTION(MessageNotSent)
 CERTI_EXCEPTION(MessageNotReceived)
 CERTI_EXCEPTION(SocketNotClosed)
-CERTI_EXCEPTION(HandleNotClosed)
 CERTI_EXCEPTION(RingBufferNotCreated)
 CERTI_EXCEPTION(RingBufferNotClosed)
 CERTI_EXCEPTION(RingBufferNotDeleted)
@@ -313,4 +299,4 @@ CERTI_EXCEPTION(SocketSHMNotDeleted)
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.9 2010/01/16 20:17:14 erk Exp $
+// $Id: Exception.hh,v 3.10 2010/03/29 18:24:20 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.19 2010/01/16 20:17:14 erk Exp $
+// $Id: Exception.cc,v 3.20 2010/03/29 18:24:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -133,13 +133,6 @@ long certi::UnimplementedService::_type = certi::e_UnimplementedService ;
 long certi::UnknownLabel::_type = certi::e_UnknownLabel ;
 long certi::NetworkError::_type = certi::e_NetworkError ;
 long certi::NetworkSignal::_type = certi::e_NetworkSignal ;
-long certi::SharedMemoryNotOpen::_type = certi::e_SharedMemoryNotOpen ;
-long certi::SharedMemoryNotAttached::_type = certi::e_SharedMemoryNotAttached ;
-long certi::SharedMemoryNotClosed::_type = certi::e_SharedMemoryNotClosed ;
-long certi::HandleNotClosed::_type = certi::e_HandleNotClosed ;
-long certi::SemaphoreNotCreated::_type = certi::e_SemaphoreNotCreated ;
-long certi::SemaphoreNotOpen::_type = certi::e_SemaphoreNotOpen ;
-long certi::SemaphoreHandlingError::_type = certi::e_SemaphoreHandlingError ;
 long certi::SocketNotConnected::_type = certi::e_SocketNotConnected ;
 long certi::MessageNotSent::_type = certi::e_MessageNotSent ;
 long certi::MessageNotReceived::_type = certi::e_MessageNotReceived ;
@@ -179,4 +172,4 @@ const std::string certi::Exception::displayMe() const
     Debug(PD_Exception, pdExcept) << msg.str();
     return msg.str();
 }
-// $Id: Exception.cc,v 3.19 2010/01/16 20:17:14 erk Exp $
+// $Id: Exception.cc,v 3.20 2010/03/29 18:24:20 erk Exp $
