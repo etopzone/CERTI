@@ -1,6 +1,6 @@
 TODO list for the CERTI Message generator:
 
-0) Write the documentation (and may be BNF) for  
+0) Write the documentation (and may be BNF or ANTLR or Lex grammar) for  
    the CERTI Message specification language
 
 1) Modularize generator such that 
@@ -10,6 +10,8 @@ TODO list for the CERTI Message generator:
 2) Support variant for sequences (vector/list/queue/...)
 
 3) Explain the on-the-wire encoding scheme (i.e. MessageBuffer)
+   Document the CDR-like encoding used by the MessageBuffer
+   Justify the use of fixed-size encoding (not the default of Google proto buf.)   
 
 4) Add a display method for each message (C++ generator)
    or an helper method which may authorize
@@ -31,3 +33,6 @@ TODO list for the CERTI Message generator:
    
 9) May be it would be worth implementing a "clone" method.
    
+10) Add a "bounded" qualifier for "repeated" field such
+    that the buffer size may be statically bounded
+    or may be repeated[10]
