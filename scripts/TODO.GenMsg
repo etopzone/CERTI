@@ -36,3 +36,21 @@ TODO list for the CERTI Message generator:
 10) Add a "bounded" qualifier for "repeated" field such
     that the buffer size may be statically bounded
     or may be repeated[10]
+
+11) Run the set of python code through checker in order to prune
+    the source code quality
+    see: http://stackoverflow.com/questions/1318799/tool-to-enforce-python-code-style-standards
+    
+     reindent.py 
+     PyLint
+     epylint
+     epydoc
+     
+    Pylint: http://www.logilab.org/project/pylint
+	PyCheker: http://pychecker.sourceforge.net/
+	PyFlakes: http://divmod.org/trac/wiki/DivmodPyflakes
+
+	PylLint with PyDev (Eclipse)
+	http://pydev.org/manual_adv_pylint.html
+	PyLint with emacs:
+	http://atomized.org/2010/02/pep8-pylint-in-emacs/
