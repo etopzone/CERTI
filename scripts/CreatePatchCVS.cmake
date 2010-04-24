@@ -12,11 +12,11 @@ FIND_PROGRAM(CVS_COMMAND
              DOC "The command line cvs command")
 
 # TODO: -kk doesn't work, googling only reports a few unsolved problem reports.
-SET(CVS_DIFF_ARGS "diff -u")
+SET(CVS_DIFF_ARGS "-uN")
 MESSAGE(STATUS "CVS Patch:: Generating patch using CVS...")
-MESSAGE(STATUS "CVS Patch:: Using command     : ${CVS_COMMAND} ${CVS_DIFF_ARGS}")
+MESSAGE(STATUS "CVS Patch:: Using command     : ${CVS_COMMAND} diff ${CVS_DIFF_ARGS}")
 MESSAGE(STATUS "CVS Patch:: Rooted at Workdir : ${WDIR}")
-EXECUTE_PROCESS(COMMAND ${CVS_COMMAND} diff -u
+EXECUTE_PROCESS(COMMAND ${CVS_COMMAND} diff ${CVS_DIFF_ARGS}
                 OUTPUT_FILE ${ODIR}/patch.diff
                 RESULT_VARIABLE PATCHOK
                 WORKING_DIRECTORY ${WDIR}
