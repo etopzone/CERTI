@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.101 2010/03/29 07:56:04 erk Exp $
+// $Id: RTIG_processing.cc,v 3.102 2010/04/28 18:45:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -771,12 +771,19 @@ RTIG::processPublishInteractionClass(Socket *link, NM_Publish_Interaction_Class 
 			req->getFederation(),
 			req->getInteractionClass());
 
-	NM_Publish_Interaction_Class rep;
+	if (pub) {
+		NM_Publish_Interaction_Class rep;
+		rep.setFederate(req->getFederate());
+		rep.setInteractionClass(req->getInteractionClass());
 
-	rep.setFederate(req->getFederate());
-	rep.setInteractionClass(req->getInteractionClass());
+		rep.send(link,NM_msgBufSend); // send answer to RTIA
+	} else {
+		NM_Unpublish_Interaction_Class rep;
+		rep.setFederate(req->getFederate());
+		rep.setInteractionClass(req->getInteractionClass());
 
-	rep.send(link,NM_msgBufSend); // send answer to RTIA
+		rep.send(link,NM_msgBufSend); // send answer to RTIA
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -797,11 +804,19 @@ RTIG::processSubscribeInteractionClass(Socket *link, NM_Subscribe_Interaction_Cl
 			req->getFederation(),
 			req->getInteractionClass());
 
-	NM_Subscribe_Interaction_Class rep;
-	rep.setFederate(req->getFederate());
-	rep.setInteractionClass(req->getInteractionClass());
+	if (sub) {
+		NM_Subscribe_Interaction_Class rep;
+		rep.setFederate(req->getFederate());
+		rep.setInteractionClass(req->getInteractionClass());
 
-	rep.send(link,NM_msgBufSend); // send answer to RTIA
+		rep.send(link,NM_msgBufSend); // send answer to RTIA
+	} else {
+		NM_Unsubscribe_Interaction_Class rep;
+		rep.setFederate(req->getFederate());
+		rep.setInteractionClass(req->getInteractionClass());
+
+		rep.send(link,NM_msgBufSend); // send answer to RTIA
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -1466,4 +1481,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.101 2010/03/29 07:56:04 erk Exp $
+// $Id: RTIG_processing.cc,v 3.102 2010/04/28 18:45:42 erk Exp $
