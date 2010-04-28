@@ -174,7 +174,25 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		}
 		else {
 			// JOIN FAILED
-			throw FederateAlreadyExecutionMember("Federate yet joined or same name");
+			switch (e)
+			{
+			case e_FederateAlreadyExecutionMember: 
+				throw FederateAlreadyExecutionMember("Federate yet joined or same name");
+				break;
+			case e_FederationExecutionDoesNotExist:
+				throw FederationExecutionDoesNotExist("Federation doesn not yet exist");
+				break;
+			case e_SaveInProgress:
+				throw SaveInProgress("Save in progress");
+				break;
+			case e_RestoreInProgress:
+				throw RestoreInProgress("Restore in progress");
+				break;
+			case e_RTIinternalError:
+			default:
+				throw RTIinternalError("Internal error");
+				break;
+			}
 		}
 	}
 	break;
@@ -351,6 +369,19 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		dm->unsubscribeInteractionClass(UsICq->getInteractionClass(), e);
 	}
 	break ;
+
+	case Message::RESERVE_OBJECT_INSTANCE_NAME: {
+		M_Reserve_Object_Instance_Name *ROINq, *ROINr;
+		ROINq = static_cast<M_Reserve_Object_Instance_Name *>(req);
+		ROINr = static_cast<M_Reserve_Object_Instance_Name *>(rep);
+		
+		ROINr->setObjectName(ROINq->getObjectName());
+
+
+
+
+		break;
+	}
 
 	case Message::REGISTER_OBJECT_INSTANCE: {
 		M_Register_Object_Instance *ROIq, *ROIr;

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.15 2010/03/28 16:08:33 erk Exp $
+// $Id: BasicMessage.hh,v 3.16 2010/04/28 18:48:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -62,15 +62,27 @@ public:
 	 * Indicate if the message is Tagged or not
 	 */
 	bool isTagged() {return _isTagged;};
-	void setTag(const std::string& new_tag) {_isTagged = true; tag = new_tag;};
+	void setTag(const std::string& new_tag) 
+	{
+		_isTagged = true; 
+		tag = new_tag;
+		wTag = std::wstring(new_tag.begin(), new_tag.end());
+	};
 	const std::string& getTag() const {return this->tag;};
+	const std::wstring& getTagW() const { return this->wTag; }
 
 	/**
 	 * Indicate if the message is Labelled or not
 	 */
 	bool isLabelled() {return _isLabelled;};
-	void setLabel(const std::string& new_label) {_isLabelled = true; label = new_label;}
+	void setLabel(const std::string& new_label) 
+	{
+		_isLabelled = true; 
+		label = new_label;
+		wLabel = std::wstring(new_label.begin(), new_label.end());
+	}
 	const std::string& getLabel() const {return this->label;};
+	const std::wstring& getLabelW() const { return this->wLabel; }
 
 	void setExtents(const std::vector<Extent> &);
 	const std::vector<Extent> &getExtents() const ;
@@ -128,6 +140,7 @@ protected:
 	 * getter/setter.
 	 */
 	std::string tag;
+	std::wstring wTag;
 	/**
 	 * True is the message contains a tag
 	 * When a message is tagged the tag is transmitted
@@ -141,6 +154,7 @@ protected:
 	 * getter/setter.
 	 */
 	std::string label;
+	std::wstring wLabel;
 
 	/**
 	 * True is the message contains a label
@@ -163,4 +177,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.15 2010/03/28 16:08:33 erk Exp $
+// $Id: BasicMessage.hh,v 3.16 2010/04/28 18:48:30 erk Exp $

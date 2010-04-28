@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
+// Generated on 2010 April Wed, 28 at 20:22:38 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -4344,6 +4344,52 @@ namespace certi {
    M_Tick_Request_Stop::~M_Tick_Request_Stop() {
    }
 
+   M_Reserve_Object_Instance_Name::M_Reserve_Object_Instance_Name() {
+      this->messageName = "M_Reserve_Object_Instance_Name";
+      this->type = Message::RESERVE_OBJECT_INSTANCE_NAME;
+      //objectName= <no default value in message spec using builtin>
+   }
+
+   M_Reserve_Object_Instance_Name::~M_Reserve_Object_Instance_Name() {
+   }
+
+   void M_Reserve_Object_Instance_Name::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_string(objectName);
+   }
+
+   void M_Reserve_Object_Instance_Name::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      msgBuffer.read_string(objectName);
+   }
+
+   void M_Reserve_Object_Instance_Name::show(std::ostream& out) {
+      out << "[M_Reserve_Object_Instance_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectName = " << objectName << " "       << std::endl;
+      out << "[M_Reserve_Object_Instance_Name -End]" << std::endl;   }
+
+   M_Reserve_Object_Instance_Name_Succeeded::M_Reserve_Object_Instance_Name_Succeeded() {
+      this->messageName = "M_Reserve_Object_Instance_Name_Succeeded";
+      this->type = Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED;
+   }
+
+   M_Reserve_Object_Instance_Name_Succeeded::~M_Reserve_Object_Instance_Name_Succeeded() {
+   }
+
+   M_Reserve_Object_Instance_Name_Failed::M_Reserve_Object_Instance_Name_Failed() {
+      this->messageName = "M_Reserve_Object_Instance_Name_Failed";
+      this->type = Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED;
+   }
+
+   M_Reserve_Object_Instance_Name_Failed::~M_Reserve_Object_Instance_Name_Failed() {
+   }
+
    Message* M_Factory::create(M_Type type) throw (NetworkError, NetworkSignal) {
       Message* msg = NULL;
 
@@ -4782,6 +4828,15 @@ namespace certi {
             break;
          case Message::TICK_REQUEST_STOP:
             msg = new M_Tick_Request_Stop();
+            break;
+         case Message::RESERVE_OBJECT_INSTANCE_NAME:
+            msg = new M_Reserve_Object_Instance_Name();
+            break;
+         case Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+            msg = new M_Reserve_Object_Instance_Name_Succeeded();
+            break;
+         case Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+            msg = new M_Reserve_Object_Instance_Name_Failed();
             break;
          case Message::LAST:
             throw NetworkError("LAST message type should not be used!!");

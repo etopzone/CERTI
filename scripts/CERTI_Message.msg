@@ -782,6 +782,18 @@ message M_Tick_Request : merge Message {
 message M_Tick_Request_Next : merge Message {}
 message M_Tick_Request_Stop : merge Message {}
 
+// HLA 1516 - §6.2
+message M_Reserve_Object_Instance_Name : merge Message {
+    required string objectName
+}
+
+// HLA 1516 - §6.3
+message M_Reserve_Object_Instance_Name_Succeeded : merge M_Reserve_Object_Instance_Name {
+}
+
+message M_Reserve_Object_Instance_Name_Failed : merge M_Reserve_Object_Instance_Name {
+}
+
 native SocketUN {
     language CXX [#include "SocketUN.hh"]
 }

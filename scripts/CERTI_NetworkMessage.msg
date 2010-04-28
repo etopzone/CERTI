@@ -528,6 +528,18 @@ message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
 	required ObjectClassHandle objectClass
 }
 
+// HLA 1516 - §6.2
+message NM_Reserve_Object_Instance_Name : merge NetworkMessage {
+    required string objectName
+}
+
+// HLA 1516 - §6.3
+message NM_Reserve_Object_Instance_Name_Succeeded : merge NM_Reserve_Object_Instance_Name {
+}
+
+message NM_Reserve_Object_Instance_Name_Failed : merge NM_Reserve_Object_Instance_Name {
+}
+
 message New_NetworkMessage {
     required uint32          type  {default=0}
     //required string          name  {default="MessageBaseClass"}

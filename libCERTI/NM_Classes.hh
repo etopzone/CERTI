@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
+// Generated on 2010 April Wed, 28 at 20:22:37 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -141,6 +141,9 @@ namespace certi {
          NM_PROVIDE_ATTRIBUTE_VALUE_UPDATE, 
          NM_START_REGISTRATION_FOR_OBJECT_CLASS, 
          NM_STOP_REGISTRATION_FOR_OBJECT_CLASS, 
+         NM_RESERVE_OBJECT_INSTANCE_NAME, 
+         NM_RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, 
+         NM_RESERVE_OBJECT_INSTANCE_NAME_FAILED, 
          LAST 
       } CERTI_NetworkMessage_MessageType_t; //end of enum CERTI_NetworkMessage_MessageType 
    }
@@ -1844,6 +1847,41 @@ namespace certi {
          virtual void show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
+      private:
+   };
+   // HLA 1516 - §6.2
+   class CERTI_EXPORT NM_Reserve_Object_Instance_Name : public NetworkMessage {
+      public:
+         typedef NetworkMessage Super;
+         NM_Reserve_Object_Instance_Name();
+         virtual ~NM_Reserve_Object_Instance_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         // the show method
+         virtual void show(std::ostream& out);
+      protected:
+         std::string objectName;
+      private:
+   };
+   // HLA 1516 - §6.3
+   class CERTI_EXPORT NM_Reserve_Object_Instance_Name_Succeeded : public NM_Reserve_Object_Instance_Name {
+      public:
+         typedef NM_Reserve_Object_Instance_Name Super;
+         NM_Reserve_Object_Instance_Name_Succeeded();
+         virtual ~NM_Reserve_Object_Instance_Name_Succeeded();
+      protected:
+      private:
+   };
+
+   class CERTI_EXPORT NM_Reserve_Object_Instance_Name_Failed : public NM_Reserve_Object_Instance_Name {
+      public:
+         typedef NM_Reserve_Object_Instance_Name Super;
+         NM_Reserve_Object_Instance_Name_Failed();
+         virtual ~NM_Reserve_Object_Instance_Name_Failed();
+      protected:
       private:
    };
 

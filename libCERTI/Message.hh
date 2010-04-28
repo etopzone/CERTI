@@ -91,7 +91,7 @@ public:
         TURN_INTERACTIONS_OFF,
 
         // Object
-        REGISTER_OBJECT_INSTANCE,
+		REGISTER_OBJECT_INSTANCE,
         UPDATE_ATTRIBUTE_VALUES,
         DISCOVER_OBJECT_INSTANCE,
         REFLECT_ATTRIBUTE_VALUES,
@@ -203,7 +203,10 @@ public:
         TICK_REQUEST,
         TICK_REQUEST_NEXT,
         TICK_REQUEST_STOP,
-
+        RESERVE_OBJECT_INSTANCE_NAME, // HLA1516
+		RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516
+		RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516
+        
 	LAST // should be the "last" (not used)
     };
 
@@ -254,6 +257,7 @@ public:
     void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
+	std::wstring getExceptionReasonW() const { return std::wstring(exceptionReason.begin(), exceptionReason.end()); };
 
 protected:
     Type type ;

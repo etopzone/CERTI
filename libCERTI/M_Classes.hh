@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
+// Generated on 2010 April Wed, 28 at 20:22:38 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -198,6 +198,9 @@ namespace certi {
          M_TICK_REQUEST, 
          M_TICK_REQUEST_NEXT, 
          M_TICK_REQUEST_STOP, 
+         M_RESERVE_OBJECT_INSTANCE_NAME, 
+         M_RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, 
+         M_RESERVE_OBJECT_INSTANCE_NAME_FAILED, 
          LAST 
       } CERTI_Message_MessageType_t; //end of enum CERTI_Message_MessageType 
    }
@@ -2894,6 +2897,41 @@ namespace certi {
          typedef Message Super;
          M_Tick_Request_Stop();
          virtual ~M_Tick_Request_Stop();
+      protected:
+      private:
+   };
+   // HLA 1516 - §6.2
+   class CERTI_EXPORT M_Reserve_Object_Instance_Name : public Message {
+      public:
+         typedef Message Super;
+         M_Reserve_Object_Instance_Name();
+         virtual ~M_Reserve_Object_Instance_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         // the show method
+         virtual void show(std::ostream& out);
+      protected:
+         std::string objectName;
+      private:
+   };
+   // HLA 1516 - §6.3
+   class CERTI_EXPORT M_Reserve_Object_Instance_Name_Succeeded : public M_Reserve_Object_Instance_Name {
+      public:
+         typedef M_Reserve_Object_Instance_Name Super;
+         M_Reserve_Object_Instance_Name_Succeeded();
+         virtual ~M_Reserve_Object_Instance_Name_Succeeded();
+      protected:
+      private:
+   };
+
+   class CERTI_EXPORT M_Reserve_Object_Instance_Name_Failed : public M_Reserve_Object_Instance_Name {
+      public:
+         typedef M_Reserve_Object_Instance_Name Super;
+         M_Reserve_Object_Instance_Name_Failed();
+         virtual ~M_Reserve_Object_Instance_Name_Failed();
       protected:
       private:
    };

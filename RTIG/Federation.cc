@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.127 2010/03/23 13:13:28 erk Exp $
+// $Id: Federation.cc,v 3.128 2010/04/28 18:48:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -354,9 +354,9 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
 				delete parser ;
 			}
 			else {
-				cout << "nor fed nor xml" << endl ;
+				cout << "Compiled without XML support" << endl ;
 				G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-				throw CouldNotOpenFED("Incorrect FED file name : nor fed nor xml");
+				throw CouldNotOpenFED("Could not parse XML file. (Compiled without XML lib.)");
 			}
 		}
 	}
@@ -2575,5 +2575,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.127 2010/03/23 13:13:28 erk Exp $
+// $Id: Federation.cc,v 3.128 2010/04/28 18:48:31 erk Exp $
 

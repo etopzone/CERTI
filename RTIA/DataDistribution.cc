@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
+// $Id: DataDistribution.cc,v 3.35 2010/04/28 18:48:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -248,6 +248,21 @@ throw (RegionNotKnown)
 } /* end of associateRegion */
 
 // ----------------------------------------------------------------------------
+void 
+DataDistribution::reserveObjectName(const std::string &newObjName)
+{
+	NM_Reserve_Object_Instance_Name req;
+
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
+
+	req.setObjectName(newObjName);
+
+	comm->sendMessage(&req);
+	// JvY TODO: Finish handling on other side (and return path)
+}
+
+
 ObjectHandle
 DataDistribution::registerObject(ObjectClassHandle class_handle,
 		const std::string& name,
@@ -418,4 +433,4 @@ throw (RegionNotKnown)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
+// $Id: DataDistribution.cc,v 3.35 2010/04/28 18:48:31 erk Exp $

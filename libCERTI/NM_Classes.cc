@@ -1,4 +1,4 @@
-// Generated on 2010 March Sun, 28 at 18:01:32 by the CERTI message generator
+// Generated on 2010 April Wed, 28 at 20:22:37 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -2572,6 +2572,52 @@ namespace certi {
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << "[NM_Stop_Registration_For_Object_Class -End]" << std::endl;   }
 
+   NM_Reserve_Object_Instance_Name::NM_Reserve_Object_Instance_Name() {
+      this->messageName = "NM_Reserve_Object_Instance_Name";
+      this->type = NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME;
+      //objectName= <no default value in message spec using builtin>
+   }
+
+   NM_Reserve_Object_Instance_Name::~NM_Reserve_Object_Instance_Name() {
+   }
+
+   void NM_Reserve_Object_Instance_Name::serialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_string(objectName);
+   }
+
+   void NM_Reserve_Object_Instance_Name::deserialize(MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      msgBuffer.read_string(objectName);
+   }
+
+   void NM_Reserve_Object_Instance_Name::show(std::ostream& out) {
+      out << "[NM_Reserve_Object_Instance_Name -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " objectName = " << objectName << " "       << std::endl;
+      out << "[NM_Reserve_Object_Instance_Name -End]" << std::endl;   }
+
+   NM_Reserve_Object_Instance_Name_Succeeded::NM_Reserve_Object_Instance_Name_Succeeded() {
+      this->messageName = "NM_Reserve_Object_Instance_Name_Succeeded";
+      this->type = NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED;
+   }
+
+   NM_Reserve_Object_Instance_Name_Succeeded::~NM_Reserve_Object_Instance_Name_Succeeded() {
+   }
+
+   NM_Reserve_Object_Instance_Name_Failed::NM_Reserve_Object_Instance_Name_Failed() {
+      this->messageName = "NM_Reserve_Object_Instance_Name_Failed";
+      this->type = NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED;
+   }
+
+   NM_Reserve_Object_Instance_Name_Failed::~NM_Reserve_Object_Instance_Name_Failed() {
+   }
+
    New_NetworkMessage::New_NetworkMessage() {
       type=0;
       _hasDate=false;
@@ -2905,6 +2951,15 @@ namespace certi {
             break;
          case NetworkMessage::STOP_REGISTRATION_FOR_OBJECT_CLASS:
             msg = new NM_Stop_Registration_For_Object_Class();
+            break;
+         case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME:
+            msg = new NM_Reserve_Object_Instance_Name();
+            break;
+         case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+            msg = new NM_Reserve_Object_Instance_Name_Succeeded();
+            break;
+         case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+            msg = new NM_Reserve_Object_Instance_Name_Failed();
             break;
          case NetworkMessage::LAST:
             throw NetworkError("LAST message type should not be used!!");

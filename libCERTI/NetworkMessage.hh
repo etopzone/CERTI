@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.62 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage.hh,v 3.63 2010/04/28 18:48:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -146,6 +146,9 @@ public:
 				SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
 				START_REGISTRATION_FOR_OBJECT_CLASS,
 				STOP_REGISTRATION_FOR_OBJECT_CLASS,
+				RESERVE_OBJECT_INSTANCE_NAME, // HLA1516, only RTIA->RTIG
+				RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516, only RTIG->RTIA
+				RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516, only RTIG->RTIA
 				LAST
 	} Message_T;	
 
@@ -257,4 +260,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.62 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage.hh,v 3.63 2010/04/28 18:48:30 erk Exp $

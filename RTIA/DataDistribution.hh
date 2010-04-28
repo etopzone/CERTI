@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.19 2010/03/19 13:54:03 erk Exp $
+// $Id: DataDistribution.hh,v 3.20 2010/04/28 18:48:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -66,6 +66,8 @@ public:
 			 uint32_t, TypeException &)
 	throw (RegionNotKnown);
 
+	void reserveObjectName(const std::string &);
+
     ObjectHandle registerObject(ObjectClassHandle, const std::string&,
 				const std::vector <AttributeHandle> &, uint32_t,
 				const std::vector<RegionHandle>,
@@ -99,4 +101,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.19 2010/03/19 13:54:03 erk Exp $
+// $Id: DataDistribution.hh,v 3.20 2010/04/28 18:48:31 erk Exp $
