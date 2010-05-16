@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.4 2010/03/06 12:55:10 erk Exp $
+## $Id: GenMsgBase.py,v 1.5 2010/05/16 08:40:18 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -170,7 +170,11 @@ class MsgSpecGenerator(CodeGenerator):
         # Generate package 
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
-            stream.write("package %s\n\n" % self.AST.package.name)
+            stream.write("package %s\n" % self.AST.package.name)
+	# Generate version
+	if self.AST.hasVersion():
+	    self.writeComment(stream, self.AST.version)
+	    stream.write("version %d.%d\n" % self.AST.version.number)
 
         if not factoryOnly:
             # Generate native type
