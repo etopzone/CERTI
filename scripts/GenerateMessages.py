@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.36 2010/03/14 15:35:54 gotthardp Exp $
+## $Id: GenerateMessages.py,v 1.37 2010/05/16 08:29:00 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -481,7 +481,7 @@ def p_defined_type(p):
     # This kind of type should be checked
     # **after* the AST has been built entirely.
     # We cannot check it now because of the recursive nature of the parser.
-    p[0]=p[1]    
+    p[0]=p[1]
     
 def p_value(p):
     '''value : INTEGER_VALUE 
@@ -527,7 +527,7 @@ else:
     
 lexer.lineno = 1
 parser.AST = GenMsgAST.MessageAST(inputFile)
-parser.parse(msgFile.read(),lexer=lexer)
+parser.parse(msgFile.read(),lexer=lexer,tracking=True)
 parser.AST.messages.reverse()
 parser.AST.enums.reverse()
 parser.AST.natives.reverse()

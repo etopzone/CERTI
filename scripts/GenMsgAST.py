@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.6 2010/03/14 15:35:54 gotthardp Exp $
+## $Id: GenMsgAST.py,v 1.7 2010/05/16 08:29:00 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -487,15 +487,18 @@ class ASTChecker(object):
             if not AST.isDefined(f.typeid):
                 self.logger.fatal("The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)" % (f.typeid,msg.name,f.name))
                 self.logger.fatal(" --> Check lines (%d,%d)" % (f.linespan) + " of <%s>" % AST.name)                
-                return
+                return False
             else:
                 if (isinstance(f,MessageType.MessageField)):                   
                     f.typeid = AST.getType(f.typeid)
                 elif (isinstance(f,MessageType.CombinedField)):
-                    self.checkMessageFields(f,AST)
+                    if (not self.checkMessageFields(f,AST)):
+			return False
                 else:
                     self.logger.fatal("Unknown MessageField type %s" % f.str())
-                    
+		    return False
+        return True
+   
                 
     def check(self,AST):
         """
@@ -530,7 +533,8 @@ class ASTChecker(object):
                 enumval      = EnumType.EnumValue(msg.name.upper(),None)
                 enumval.type = msg.name
                 msgTypeEnumVals.append(enumval)
-            self.checkMessageFields(msg,AST)            
+            if not self.checkMessageFields(msg,AST):
+               return            
         enumval      = EnumType.EnumValue("LAST",None)
         enumval.type = None                                    
         msgTypeEnumVals.append(enumval)
