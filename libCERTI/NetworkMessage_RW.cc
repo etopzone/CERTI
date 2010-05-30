@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.57 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.58 2010/05/30 17:41:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -42,12 +42,12 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	D.Out(pdDebug, "Serialize <%s>", getMessageName());
 	/* type of message */
 	msgBuffer.write_int32(type);
+	msgBuffer.write_uint32(federate);
+	msgBuffer.write_uint32(federation);
 	msgBuffer.write_int32(exception);
 	if (exception != e_NO_EXCEPTION) {
 		msgBuffer.write_string(exceptionReason);
 	} else {
-		msgBuffer.write_uint32(federate);
-		msgBuffer.write_uint32(federation);
 		BasicMessage::serialize(msgBuffer);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::serialize");
@@ -61,12 +61,12 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	Debug(D, pdDebug) << "Deserialize <" << getMessageName() << ">" << endl;
 	/* deserialize common part */
 	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
+	federate    = msgBuffer.read_uint32();
+	federation  = msgBuffer.read_uint32();
 	exception   = static_cast<TypeException>(msgBuffer.read_int32());
 	if (exception != e_NO_EXCEPTION) {
 			msgBuffer.read_string(exceptionReason);
 	} else {
-			federate    = msgBuffer.read_uint32();
-			federation  = msgBuffer.read_uint32();
 			BasicMessage::deserialize(msgBuffer);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
@@ -123,4 +123,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.57 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.58 2010/05/30 17:41:06 erk Exp $
