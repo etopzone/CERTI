@@ -24,11 +24,11 @@ namespace
      size_t _size;
    public:
       MyEncodedLogicalTime(const void* data, size_t size) :
-        _value(data, size) 
+        _value(data, size)
       {
       }
       virtual ~MyEncodedLogicalTime() throw () {}
-    
+
       virtual void const * data() const
       {
          return _value.data();
@@ -51,7 +51,7 @@ namespace
       {
       }
       virtual ~MyEncodedLogicalTimeInterval() throw () {}
-    
+
       virtual void const * data() const
       {
          return _value.data();
@@ -94,7 +94,7 @@ void LogicalTimeDouble::setInitial()
    _value = 0;
 }
 
-bool LogicalTimeDouble::isInitial() const 
+bool LogicalTimeDouble::isInitial() const
 {
    return _value == 0;
 }
@@ -117,13 +117,14 @@ throw (rti1516::InvalidLogicalTime)
 		_value = p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
 rti1516::LogicalTime &
 LogicalTimeDouble::operator=(rti1516::LogicalTime const & value)
-throw (rti1516::InvalidLogicalTime) 
+throw (rti1516::InvalidLogicalTime)
 {
 	setTo(value);
 	return *this;
@@ -131,7 +132,7 @@ throw (rti1516::InvalidLogicalTime)
 
 LogicalTimeDouble &
 LogicalTimeDouble::operator=(LogicalTimeDouble const & value)
-throw (rti1516::InvalidLogicalTime) 
+throw (rti1516::InvalidLogicalTime)
 {
 	setTo(value);
 	return *this;
@@ -149,7 +150,8 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 		_value += p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTimeInterval(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTimeInterval(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -161,7 +163,8 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 		_value -= p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTimeInterval(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTimeInterval(L"Invalid LogicalTimeDouble");
 	}
 
 }
@@ -174,7 +177,8 @@ throw (rti1516::InvalidLogicalTime)
 		return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(_value - p._value));
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -186,7 +190,8 @@ throw (rti1516::InvalidLogicalTime)
 		return _value > p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -198,7 +203,8 @@ throw (rti1516::InvalidLogicalTime)
 		return _value < p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -210,7 +216,8 @@ throw (rti1516::InvalidLogicalTime)
 		return _value == p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -222,7 +229,8 @@ throw (rti1516::InvalidLogicalTime)
 		return _value >= p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -234,7 +242,8 @@ throw (rti1516::InvalidLogicalTime)
 		return _value <= p._value;
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -267,7 +276,8 @@ bool LogicalTimeDouble::operator==(LogicalTime const & lt_left) const
 		return (((left._value - 1000) < _value) && ((left._value + 1000) > _value));
 	} catch (std::bad_cast)
 	{
-		throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
+	    throw std::wstring(L"Invalid LogicalTimeDouble");
+		//throw rti1516::InvalidLogicalTime(L"Invalid LogicalTimeDouble");
 	}
 }
 
@@ -299,7 +309,7 @@ unsigned long LogicalTimeDouble::encodedLength() const
 	return 8L;
 }
 
-unsigned long LogicalTimeDouble::encode(void* buffer, unsigned long bufferSize) const 
+unsigned long LogicalTimeDouble::encode(void* buffer, unsigned long bufferSize) const
        throw (rti1516::CouldNotEncode)
 {
    unsigned char *buf = (unsigned char*)buffer;
@@ -413,7 +423,7 @@ LogicalTimeIntervalDouble::LogicalTimeIntervalDouble(int64_t value) :
    _value(value)
 {
 }
-   
+
 LogicalTimeIntervalDouble::~LogicalTimeIntervalDouble()
   throw ()
 {
@@ -461,12 +471,12 @@ void LogicalTimeIntervalDouble::setTo(rti1516::LogicalTimeInterval const & value
 	}
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > 
+std::auto_ptr< rti1516::LogicalTimeInterval >
 LogicalTimeIntervalDouble::subtract(rti1516::LogicalTimeInterval const & subtrahend) const
    throw (rti1516::InvalidLogicalTimeInterval)
 {
    const LogicalTimeIntervalDouble& p = dynamic_cast<const LogicalTimeIntervalDouble&>(subtrahend);
-   
+
    int64_t d = _value - p._value;
    if (d < 0) {
       d = -d;
@@ -552,13 +562,13 @@ rti1516::VariableLengthData LogicalTimeIntervalDouble::encode() const
    return varData;
 }
 
-unsigned long 
+unsigned long
 LogicalTimeIntervalDouble::encodedLength() const
 {
 	return 8L;
 }
-unsigned long 
-LogicalTimeIntervalDouble::encode(void* buffer, unsigned long bufferSize) const 
+unsigned long
+LogicalTimeIntervalDouble::encode(void* buffer, unsigned long bufferSize) const
 throw (rti1516::CouldNotEncode)
 {
 	if (bufferSize < 8L)
@@ -604,7 +614,7 @@ throw (rti1516::InternalError, rti1516::CouldNotDecode)
 }
 
 
-void 
+void
 LogicalTimeIntervalDouble::decode(void* buffer, unsigned long bufferSize)
 throw (rti1516::InternalError,
 	   rti1516::CouldNotDecode)

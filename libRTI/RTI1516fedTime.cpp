@@ -15,14 +15,16 @@ rti1516::LogicalTime &
 rti1516::LogicalTime::operator=(rti1516::LogicalTime const & value)
 throw (rti1516::InvalidLogicalTime)
 {
-	throw rti1516::InvalidLogicalTime(L"Operator should be overloaded");
+    throw std::wstring(L"Operator should be overloaded");
+	//throw rti1516::InvalidLogicalTime(L"Operator should be overloaded");
 }
 
 rti1516::LogicalTimeInterval &
 rti1516::LogicalTimeInterval::operator=(rti1516::LogicalTimeInterval const & value)
 throw (rti1516::InvalidLogicalTimeInterval)
 {
-	throw rti1516::InvalidLogicalTimeInterval(L"Operator should be overloaded");
+    throw std::wstring(L"Operator should be overloaded");
+	//throw rti1516::InvalidLogicalTimeInterval(L"Operator should be overloaded");
 }
 
 
@@ -47,7 +49,7 @@ RTI1516fedTime::RTI1516fedTime(const RTI1516fedTime &other)
 {
 }
 
-RTI1516fedTime::~RTI1516fedTime() 
+RTI1516fedTime::~RTI1516fedTime()
 throw ()
 {
 }
@@ -96,9 +98,9 @@ throw (rti1516::InvalidLogicalTime)
 		const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 		if (other == 0)
 		{
-#if defined(_WIN32) && defined(_MSC_VER)
-			//throw std::wstring(L"Different LogicalTime implementation");'
-			throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
+#if defined(_WIN32)
+			throw std::wstring(L"Different LogicalTime implementation");
+			//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
 #else
 			//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
 #endif
@@ -136,7 +138,7 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -157,7 +159,7 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -178,7 +180,7 @@ throw (rti1516::InvalidLogicalTime)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -197,7 +199,7 @@ throw (rti1516::InvalidLogicalTime)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -216,7 +218,7 @@ throw (rti1516::InvalidLogicalTime)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -236,7 +238,7 @@ throw (rti1516::InvalidLogicalTime)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -255,7 +257,7 @@ throw (rti1516::InvalidLogicalTime)
 	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
 	if (other == 0)
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Different LogicalTime implementation");
 #else
 		//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
@@ -269,7 +271,7 @@ throw (rti1516::InvalidLogicalTime)
 // Generates an encoded value that can be used to send
 // LogicalTimes to other federates in updates or interactions
 
-rti1516::VariableLengthData 
+rti1516::VariableLengthData
 RTI1516fedTime::encode() const
 {
 	throw std::wstring(L"rti1516::VariableLengthData not supported");
@@ -277,15 +279,15 @@ RTI1516fedTime::encode() const
 
 // Alternate encode for directly filling a buffer
 
-unsigned long 
+unsigned long
 RTI1516fedTime::encodedLength() const
 {
 	return sizeof(double);
 }
 
 
-unsigned long 
-RTI1516fedTime::encode(void* buffer, unsigned long bufferSize) const 
+unsigned long
+RTI1516fedTime::encode(void* buffer, unsigned long bufferSize) const
 throw (rti1516::CouldNotEncode)
 {
 	if (bufferSize >= sizeof(double))
@@ -300,7 +302,7 @@ throw (rti1516::CouldNotEncode)
 		return sizeof(double);
 	} else
 	{
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
 		throw std::wstring(L"Not enough space in buffer to encode RTI1516fedTime");
 #else
 		//throw rti1516::CouldNotEncode(L"Not enough space in buffer to encode RTI1516fedTime");
@@ -310,7 +312,7 @@ throw (rti1516::CouldNotEncode)
 
 // Decode encodedLogicalTime into self
 
-void 
+void
 RTI1516fedTime::decode(rti1516::VariableLengthData const &)
 throw (rti1516::InternalError,
 	   rti1516::CouldNotDecode)
@@ -324,7 +326,7 @@ throw (rti1516::InternalError,
 
 // Alternate decode that reads directly from a buffer
 
-void 
+void
 RTI1516fedTime::decode(void* buffer, unsigned long bufferSize)
 throw (rti1516::InternalError,
 	   rti1516::CouldNotDecode)
@@ -348,7 +350,7 @@ throw (rti1516::InternalError,
 }
 
 
-std::wstring 
+std::wstring
 RTI1516fedTime::toString() const
 {
 	std::wstringstream stream;
@@ -361,7 +363,7 @@ RTI1516fedTime::toString() const
 // Returns the name of the implementation, as needed by
 // createFederationExecution.
 
-std::wstring 
+std::wstring
 RTI1516fedTime::implementationName() const
 {
 	static std::wstring implName(L"certiFedTime1516");
@@ -650,7 +652,7 @@ throw (rti1516::InvalidLogicalTimeInterval)
 // Generates an encoded value that can be used to send
 // LogicalTimeIntervals to other federates in updates or interactions
 
-rti1516::VariableLengthData 
+rti1516::VariableLengthData
 RTI1516fedTimeInterval::encode() const
 {
 	throw std::wstring(L"rti1516::VariableLengthData not supported");
@@ -658,15 +660,15 @@ RTI1516fedTimeInterval::encode() const
 
 // Alternate encode for directly filling a buffer
 
-unsigned long 
+unsigned long
 RTI1516fedTimeInterval::encodedLength() const
 {
 	return sizeof(double);
 }
 
 
-unsigned long 
-RTI1516fedTimeInterval::encode(void* buffer, unsigned long bufferSize) const 
+unsigned long
+RTI1516fedTimeInterval::encode(void* buffer, unsigned long bufferSize) const
 throw (rti1516::CouldNotEncode)
 {
 	if (bufferSize >= sizeof(double))
@@ -691,7 +693,7 @@ throw (rti1516::CouldNotEncode)
 
 // Decode encodedValue into self
 
-void 
+void
 RTI1516fedTimeInterval::decode(rti1516::VariableLengthData const & encodedValue)
 throw (rti1516::InternalError, rti1516::CouldNotDecode)
 {
@@ -704,7 +706,7 @@ throw (rti1516::InternalError, rti1516::CouldNotDecode)
 
 // Alternate decode that reads directly from a buffer
 
-void 
+void
 RTI1516fedTimeInterval::decode(void* buffer, unsigned long bufferSize)
 throw (rti1516::InternalError, rti1516::CouldNotDecode)
 {
@@ -727,7 +729,7 @@ throw (rti1516::InternalError, rti1516::CouldNotDecode)
 }
 
 
-std::wstring 
+std::wstring
 RTI1516fedTimeInterval::toString() const
 {
 	std::wstringstream stream;
@@ -739,7 +741,7 @@ RTI1516fedTimeInterval::toString() const
 // Returns the name of the implementation, as needed by
 // createFederationExecution.
 
-std::wstring 
+std::wstring
 RTI1516fedTimeInterval::implementationName() const
 {
 	static std::wstring implName(L"certiFedTime1516");
@@ -786,7 +788,7 @@ throw (rti1516::InternalError)
 // Returns a LogicalTimeInterval with a value of "zero"
 
 std::auto_ptr< rti1516::LogicalTimeInterval >
-RTI1516fedTimeFactory::makeLogicalTimeInterval() 
+RTI1516fedTimeFactory::makeLogicalTimeInterval()
 throw (rti1516::InternalError)
 {
 	RTI1516fedTimeInterval *fedTimeInterval = new RTI1516fedTimeInterval(0);
@@ -796,7 +798,7 @@ throw (rti1516::InternalError)
 
 
 std::auto_ptr< rti1516::LogicalTimeInterval >
-RTI1516fedTimeFactory::makeLogicalTimeInterval(double timeInterval) 
+RTI1516fedTimeFactory::makeLogicalTimeInterval(double timeInterval)
 throw (rti1516::InternalError)
 {
 	RTI1516fedTimeInterval *fedTimeInterval = new RTI1516fedTimeInterval(timeInterval);
@@ -806,7 +808,7 @@ throw (rti1516::InternalError)
 
 
 
-std::auto_ptr< rti1516::LogicalTimeFactory > 
+std::auto_ptr< rti1516::LogicalTimeFactory >
 rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(std::wstring const & implementationName)
 {
 	RTI1516fedTimeFactory *fedTimeFactory = new RTI1516fedTimeFactory();

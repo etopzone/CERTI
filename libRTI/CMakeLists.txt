@@ -17,7 +17,7 @@ SET(RTI1516_LIB_SRCS
   RTI1516HandleFactory.cpp
   RTI1516HandleFactory.h
   )
-  
+
 SET(RTI1516_LIB_INCLUDE
    ${CMAKE_BINARY_DIR}/include/RTItypes.hh
    ../include/RTI/Enums.h
@@ -45,7 +45,7 @@ SET(RTI_LIB_SRCS
   RTItypesImp.cc
   RTItypesImp.hh
   )
-  
+
 SET(RTI_LIB_INCLUDE
    ../include/baseTypes.hh
    ../include/certi.hh
@@ -95,7 +95,7 @@ IF (MINGW)
 ENDIF (MINGW)
 
 ##################################################################
-# Lib FedTime 
+# Lib FedTime
 # A replacement lib FedTime may be provided by the user
 # CERTI is provided one. The lib FedTime depends on libRTI
 # since it inherits from the RTI::FedTime abstract class.
@@ -144,9 +144,14 @@ SET(FEDTIME1516_SRCS
     ../include/RTI/certiLogicalTimeFactory.h
     RTI1516fedTime.h
     RTI1516fedTime.cpp
-    LogicalTimeDouble.h
-    LogicalTimeDouble.cpp
+
 )
+IF (BUILD_WITH_EXTRA_LOGICAL_TIME)
+   LIST(APPEND FEDTIME1516_SRC
+        LogicalTimeDouble.h
+        LogicalTimeDouble.cpp
+        )
+ENDIF(BUILD_WITH_EXTRA_LOGICAL_TIME)
 
 SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME1516_SRCS})
 
@@ -155,7 +160,7 @@ ADD_LIBRARY(FedTime1516
 )
 
 # Correct line
-#TARGET_LINK_LIBRARIES(FedTime1516)
+TARGET_LINK_LIBRARIES(FedTime1516)
 # Incorrect line
 #TARGET_LINK_LIBRARIES(FedTime1516 RTI1516)
 

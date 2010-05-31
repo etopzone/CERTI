@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NameReservation.hh,v 3.1 2010/05/31 09:33:26 erk Exp $
+// $Id: NameReservation.hh,v 3.2 2010/05/31 13:14:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAME_RESERVATION_HH
@@ -52,5 +52,4 @@ public:
 };
 
 } // namespace certi
-
 #endif // LIBCERTI_NAME_RESERVATION_HH
