@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.58 2010/03/23 13:13:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.59 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -384,6 +384,19 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 	dm->startRegistrationForObjectClass(SRFOC.getObjectClass(), msg.getRefException());
       }
         break;
+
+	  case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED: 
+		  {
+			  NM_Reserve_Object_Instance_Name_Succeeded ROINS = static_cast<NM_Reserve_Object_Instance_Name_Succeeded&>(msg);
+			  om->nameReservationSucceeded(ROINS.getObjectName());
+		  }
+		  break;
+	  case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED: 
+		  {
+			  NM_Reserve_Object_Instance_Name_Failed ROINF = static_cast<NM_Reserve_Object_Instance_Name_Failed&>(msg);
+			  om->nameReservationFailed(ROINF.getObjectName());
+		  }
+		  break;
 
       default:
         D.Out(pdExcept, "Unknown message type in executeFederateService.");
@@ -1010,4 +1023,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.58 2010/03/23 13:13:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.59 2010/05/31 09:33:26 erk Exp $

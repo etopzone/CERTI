@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.20 2010/03/29 18:24:20 erk Exp $
+// $Id: Exception.cc,v 3.21 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -148,6 +148,8 @@ long certi::SocketSHMNotCreated::_type = certi::e_SocketSHMNotCreated ;
 long certi::SocketSHMNotOpen::_type = certi::e_SocketSHMNotOpen ;
 long certi::SocketSHMNotDeleted::_type = certi::e_SocketSHMNotDeleted ;
 
+long certi::IllegalName::_type = certi::e_IllegalName ;
+
 static PrettyDebug PD_Exception("CERTI_EXCEPTION",__FILE__);
 
 const std::string certi::Exception::displayMe() const
@@ -172,4 +174,4 @@ const std::string certi::Exception::displayMe() const
     Debug(PD_Exception, pdExcept) << msg.str();
     return msg.str();
 }
-// $Id: Exception.cc,v 3.20 2010/03/29 18:24:20 erk Exp $
+// $Id: Exception.cc,v 3.21 2010/05/31 09:33:26 erk Exp $

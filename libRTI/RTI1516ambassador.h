@@ -20,6 +20,17 @@ namespace rti1516
 	private:
 		RTI1516ambPrivateRefs* privateRefs ;
 
+		// Helper functions
+		template<typename T> void
+			assignAHSAndExecuteService(const rti1516::AttributeHandleSet &AHS, T &req, T &rep);
+		template<typename T> void
+			assignPHVMAndExecuteService(const rti1516::ParameterHandleValueMap &PHVM, T &req, T &rep);
+		template<typename T> void 
+			assignAHVMAndExecuteService(const rti1516::AttributeHandleValueMap &AHVM, T &req, T &rep);
+		// Helper function for CallBacks
+		bool __tick_kernel(bool, TickTime, TickTime)
+			throw (SpecifiedSaveLabelDoesNotExist, RTIinternalError);
+
 	protected:
 		RTI1516ambassador()
 			throw ();

@@ -1,7 +1,7 @@
 #include "RTI1516ambassador.h"
 #include <RTI/RangeBounds.h>
 
-#if not defined(_WIN32)
+#ifndef _WIN32
 #include <cstdlib>
 #include <cstring>
 #endif
@@ -13,6 +13,7 @@
 #include "RTI1516HandleFactory.h"
 #include "RTI1516fedTime.h"
 
+#include <algorithm>
 
 namespace {
 
@@ -23,48 +24,109 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 namespace rti1516
 {
+	/* Deletor Object */
+	template <class T>
+	struct Deletor {
+		void operator() (T* e) {delete e;};
+	};
+
 	/* Helper functions */
 	template<typename T>
 	void
-	assignPHVMToRequest(const rti1516::ParameterHandleValueMap &PHVM, T request) {
+	RTI1516ambassador::assignPHVMAndExecuteService(const rti1516::ParameterHandleValueMap &PHVM, T &req, T &rep) {
 
-		uint32_t size = PHVM.size();
-		request.setParametersSize(size);
-		request.setValuesSize(size);
-	
-		rti1516::ParameterHandleValueMap::const_iterator iter; 
-		int index = 0;
-		for (iter=PHVM.begin(); iter != PHVM.end(); ++iter) {
-			certi::ParameterHandle* certiHandle = (certi::ParameterHandle*) iter->first.encode().data();
-			request.setParameters(*certiHandle, index);
-
-			char* paramValue;
-			// TODO Fix memory leak!
-			paramValue = (char*)malloc(iter->second.size());
-			memcpy(paramValue, iter->second.data(), iter->second.size());
-			request.setValues(std::string(paramValue), index);
-			index++;
-		}
-	} 
-
-	template<typename T>
-	void
-	assignAHSToRequest(const rti1516::AttributeHandleSet &AHS, T request) {
-		request.setAttributesSize(AHS.size());
+		req.setParametersSize(PHVM.size());
+		req.setValuesSize(PHVM.size());
+		std::vector<certi::ParameterValue_t*> parameterValueVector;
+		parameterValueVector.resize(PHVM.size());
 		uint32_t i = 0;
-		for ( rti1516::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i)
+		for ( rti1516::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i)
 		{
-			request.setAttributes(AttributeHandleFriend::toCertiHandle(*it),i);
+			req.setParameters(ParameterHandleFriend::toCertiHandle(it->first),i);
+			char *buf = (char*) calloc(it->second.size() + 1, sizeof(char));
+			memcpy(buf, it->second.data(), it->second.size());
+			certi::ParameterValue_t* paramValue = new certi::ParameterValue_t(buf);
+			free(buf);
+			parameterValueVector[i] = paramValue;
+			req.setValues(*paramValue, i);  
+		}
+
+		try {
+			privateRefs->executeService(&req, &rep);
+		} catch (...) {
+			struct Deletor<certi::ParameterValue_t> paramValueDeletor;
+			//delete parameter values
+			std::for_each(parameterValueVector.begin(),parameterValueVector.end(),paramValueDeletor);
+			throw;
 		}
 	}
 
+	template<typename T>
+	void
+	RTI1516ambassador::assignAHVMAndExecuteService(const rti1516::AttributeHandleValueMap &AHVM, T &req, T &rep) {
+
+		req.setAttributesSize(AHVM.size());
+		req.setValuesSize(AHVM.size());
+		struct Deletor<certi::AttributeValue_t> attrValueDeletor;
+		std::vector<certi::AttributeValue_t*> attributeValueVector;
+		attributeValueVector.resize(AHVM.size());
+		uint32_t i = 0;
+		for ( rti1516::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i)
+		{
+			req.setAttributes(AttributeHandleFriend::toCertiHandle(it->first),i);
+			char *buf = (char*) calloc(it->second.size() + 1, sizeof(char));
+			memcpy(buf, it->second.data(), it->second.size());
+			certi::AttributeValue_t* attrValue = new certi::AttributeValue_t(buf);
+			free(buf);
+			attributeValueVector[i] = attrValue;
+			req.setValues(*attrValue, i);  
+		}
+
+		try {
+			privateRefs->executeService(&req, &rep);
+		} catch (...) {
+			//delete attribute values
+			std::for_each(attributeValueVector.begin(),attributeValueVector.end(),attrValueDeletor);
+			throw;
+		}
+
+		//delete attribute values
+		std::for_each(attributeValueVector.begin(),attributeValueVector.end(),attrValueDeletor);
+	}
+
+	template<typename T>
+	void
+	RTI1516ambassador::assignAHSAndExecuteService(const rti1516::AttributeHandleSet &AHS, T &req, T &rep) {
+		req.setAttributesSize(AHS.size());
+		struct Deletor<certi::AttributeHandle> attrHandleDeletor;
+		std::vector<certi::AttributeHandle*> attributeHandleVector;
+		attributeHandleVector.resize(AHS.size());
+		uint32_t i = 0;
+		for ( rti1516::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i)
+		{
+			certi::AttributeHandle certiHandle = AttributeHandleFriend::toCertiHandle(*it);
+			req.setAttributes(certiHandle,i);
+			attributeHandleVector[i] = &certiHandle;
+		}
+
+		try {
+			privateRefs->executeService(&req, &rep);
+		} catch (...) {
+			//delete attribute handles
+			std::for_each(attributeHandleVector.begin(),attributeHandleVector.end(),attrHandleDeletor);
+			throw;
+		}
+
+		//delete attribute handles
+		std::for_each(attributeHandleVector.begin(),attributeHandleVector.end(),attrHandleDeletor);
+	}
+
 	std::string varLengthDataAsString(VariableLengthData varLengthData) {
-		char* str;
-		// TODO Fix memory leak!
-		// TODO Fix loss of data after '\0' character
-		str = (char*)malloc(varLengthData.size());
-		memcpy(str, varLengthData.data(), varLengthData.size());
-		return std::string(str);
+		char *buf = (char*) calloc(varLengthData.size() + 1, sizeof(char));
+		memcpy(buf, varLengthData.data(), varLengthData.size());
+		std::string retVal(buf);
+		free(buf);
+		return retVal;
 	}
 
 	certi::TransportType toCertiTransportationType(rti1516::TransportationType theType) {
@@ -79,8 +141,6 @@ namespace rti1516
 	rti1516::OrderType toRTI1516OrderType(certi::OrderType theType) {
 		return (theType == certi::RECEIVE) ? rti1516::RECEIVE : rti1516::TIMESTAMP;
 	}
-		
-
 	/* end of Helper functions */
 
 	RTIambassador::RTIambassador() throw()
@@ -106,6 +166,82 @@ namespace rti1516
 		// after the response is received, the privateRefs->socketUn must not be used
 
 		delete privateRefs;
+	}
+
+		// ----------------------------------------------------------------------------
+	//! Generic callback evocation (CERTI extension).
+	/*! Blocks up to "minimum" seconds until a callback delivery and then evokes a
+	 *  single callback.
+	 *  @return true if additional callbacks pending, false otherwise
+	 */
+	bool RTI1516ambassador::__tick_kernel(bool multiple, TickTime minimum, TickTime maximum)
+	throw (rti1516::SpecifiedSaveLabelDoesNotExist,
+			rti1516::RTIinternalError)
+	{
+		M_Tick_Request vers_RTI;
+		std::auto_ptr<Message> vers_Fed(NULL);
+
+		// Request callback(s) from the local RTIA
+		vers_RTI.setMultiple(multiple);
+		vers_RTI.setMinTickTime(minimum);
+		vers_RTI.setMaxTickTime(maximum);
+
+		try {
+			vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
+		}
+		catch (NetworkError &e) {
+			std::stringstream msg;
+			msg << "NetworkError in tick() while sending TICK_REQUEST: " << e._reason;
+			std::wstring message(msg.str().begin(), msg.str().end());
+			throw RTIinternalError(message);
+		}
+
+		// Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
+		while (1) {
+			try {
+				vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
+			}
+			catch (NetworkError &e) {
+				std::stringstream msg;
+				msg << "NetworkError in tick() while receiving response: " << e._reason;
+				std::wstring message(msg.str().begin(), msg.str().end());
+				throw RTIinternalError(message);
+			}
+
+			// If the type is TICK_REQUEST, the __tick_kernel() has terminated.
+			if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
+				if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
+					// tick() may only throw exceptions defined in the HLA standard
+					// the RTIA is responsible for sending 'allowed' exceptions only
+					privateRefs->processException(vers_Fed.get());
+				}
+				return static_cast<M_Tick_Request*>(vers_Fed.get())->getMultiple();
+			}
+
+			try {
+				// Otherwise, the RTI calls a FederateAmbassador service.
+				privateRefs->callFederateAmbassador(vers_Fed.get());
+			}
+			catch (RTIinternalError) {
+				// RTIA awaits TICK_REQUEST_NEXT, terminate the tick() processing
+				privateRefs->sendTickRequestStop();
+				// ignore the response and re-throw the original exception
+				throw;
+			}
+
+			try {
+				// Request next callback from the RTIA
+				M_Tick_Request_Next tick_next;
+				tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
+			}
+			catch (NetworkError &e) {
+				std::stringstream msg;
+				msg << "NetworkError in tick() while sending TICK_REQUEST_NEXT: " << e._reason;
+
+				std::wstring message(msg.str().begin(), msg.str().end());
+				throw RTIinternalError(message);
+			}
+		} // while(1)
 	}
 
 	// 4.2
@@ -683,7 +819,6 @@ namespace rti1516
 		RestoreInProgress,
 		RTIinternalError)
 	{ 
-		/* TODO */ 
 		M_Reserve_Object_Instance_Name req, rep;
 
 		std::string objInstanceName(theObjectInstanceName.begin(), theObjectInstanceName.end());
@@ -754,18 +889,8 @@ namespace rti1516
 
 		req.setTag(varLengthDataAsString(theUserSuppliedTag));
 
-		req.setAttributesSize(theAttributeValues.size());
-		req.setValuesSize(theAttributeValues.size());
-		uint32_t i = 0;
-		for ( rti1516::AttributeHandleValueMap::const_iterator it = theAttributeValues.begin(); it != theAttributeValues.end(); it++, ++i)
-		{
-			req.setAttributes(AttributeHandleFriend::toCertiHandle(it->first),i);
-			certi::AttributeValue_t attrValue;
-			memcpy(&attrValue, it->second.data(), it->second.size());
-			req.setValues(attrValue, i);  
-		}
+		assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-		privateRefs->executeService(&req, &rep);
 		G.Out(pdGendoc,"exit  RTI1516ambassador::updateAttributeValues without time");
 	}
 
@@ -798,18 +923,8 @@ namespace rti1516
 
 		req.setTag(varLengthDataAsString(theUserSuppliedTag));
 		
-		req.setAttributesSize(theAttributeValues.size());
-		req.setValuesSize(theAttributeValues.size());
-		uint32_t i = 0;
-		for ( rti1516::AttributeHandleValueMap::const_iterator it = theAttributeValues.begin(); it != theAttributeValues.end(); it++, ++i)
-		{
-			req.setAttributes(AttributeHandleFriend::toCertiHandle(it->first),i);
-			certi::AttributeValue_t attrValue;
-			memcpy(&attrValue, it->second.data(), it->second.size());
-			req.setValues(attrValue, i);  
-		}
+		assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-		privateRefs->executeService(&req, &rep);
 		G.Out(pdGendoc,"return  RTI1516ambassador::updateAttributeValues with time");
 		certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
 		uint64_t serialNum = rep.getEventRetraction().getSN();
@@ -840,11 +955,9 @@ namespace rti1516
 		}
 
 		req.setTag(varLengthDataAsString(theUserSuppliedTag));
-
-		assignPHVMToRequest(theParameterValues,req);
-		
 		req.setRegion(0);
-		privateRefs->executeService(&req, &rep);
+		
+		assignPHVMAndExecuteService(theParameterValues, req, rep);
 	}
 
 	MessageRetractionHandle RTI1516ambassador::sendInteraction
@@ -874,12 +987,9 @@ namespace rti1516
 		}
 
 		req.setTag(varLengthDataAsString(theUserSuppliedTag));
-
-		assignPHVMToRequest(theParameterValues,req);
-		
 		req.setRegion(0);
-
-		privateRefs->executeService(&req, &rep);
+		
+		assignPHVMAndExecuteService(theParameterValues, req, rep);
 
 		certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
 		uint64_t serialNr = rep.getEventRetraction().getSN();
@@ -1052,9 +1162,8 @@ namespace rti1516
 		G.Out(pdGendoc,"enter RTI1516ambassador::requestClassAttributeValueUpdate");
 		req.setObjectClass(rti1516::ObjectClassHandleFriend::toCertiHandle(theClass));
 
-		assignAHSToRequest(theAttributes, req);
+		assignAHSAndExecuteService(theAttributes, req, rep);
 
-		privateRefs->executeService(&req, &rep);
 		G.Out(pdGendoc,"exit RTI1516ambassador::requestClassAttributeValueUpdate");
 	}
 
@@ -1215,9 +1324,8 @@ namespace rti1516
 		M_Attribute_Ownership_Release_Response req, rep ;
 
 		req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-		assignAHSToRequest(theAttributes, req);
 
-		privateRefs->executeService(&req, &rep);
+		assignAHSAndExecuteService(theAttributes, req, rep);
 
 		if (rep.getExceptionType() == e_NO_EXCEPTION) {
 			theDivestedAttributes.clear();
@@ -1343,6 +1451,7 @@ namespace rti1516
 		//req.setDate(certi_cast<RTIfedTime>()(theFederateTime).getTime());  //JRE: DATE IS NOT USED!
 		
 		//JRE: is dit wel goed?
+		//JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
 		double * lookAheadTime = (double*) theLookahead.encode().data();
 		req.setLookahead(*lookAheadTime);
 
@@ -1484,6 +1593,7 @@ namespace rti1516
 		RestoreInProgress,
 		RTIinternalError)
 	{ 
+		// JvY: Implementation copied from previous CERTI implementation, including immediate throw.
 		throw RTIinternalError(L"Unimplemented Service flushQueueRequest");
 		M_Flush_Queue_Request req, rep ;
 
@@ -1533,11 +1643,16 @@ namespace rti1516
 
 		privateRefs->executeService(&req, &rep);
 
+		//TODO JRE: goed testen of deze return value wel klopt!
+		certi::FederationTime fedTime = rep.getDate();
+		if (fedTime == NULL || fedTime.getTime() == 0) {
+			return false;
+		}	
+
+		// JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
 		certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
 
-		//TODO JRE: return value???
-		throw RTIinternalError(L"Unimplemented Service queryGALT");
-		return false;
+		return true;
 	}
 
 	// 8.17
@@ -1551,6 +1666,7 @@ namespace rti1516
 
 		privateRefs->executeService(&req, &rep);
 
+		// JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
 		certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
 	}
 
@@ -1566,11 +1682,15 @@ namespace rti1516
 
 		privateRefs->executeService(&req, &rep);
 
+		//TODO JRE: goed testen of deze return value wel klopt!
+		certi::FederationTime fedTime = rep.getDate();
+		if (fedTime == NULL || fedTime.getTime() == 0) {
+			return false;
+		}
+		// JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
 		certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
 
-		//TODO JRE: return value???
-		throw RTIinternalError(L"Unimplemented Service queryLITS");
-		return false;
+		return true;
 	}
 
 	// 8.19
@@ -1637,9 +1757,8 @@ namespace rti1516
 
 		req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 		req.setOrder(rti1516::toCertiOrderType(theType));
-		assignAHSToRequest(theAttributes, req);
 
-		privateRefs->executeService(&req, &rep);
+		assignAHSAndExecuteService(theAttributes, req, rep);
 	}
 
 	// 8.24
@@ -1967,9 +2086,7 @@ namespace rti1516
 		}
 
 		std::string nameString = rep.getClassName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		// Copy string to wstring.
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end()); 
 
 		//return hla_strdup(rep.getClassName());
 		return nameWString;
@@ -2047,8 +2164,7 @@ namespace rti1516
 		//return hla_strdup(rep.getAttributeName());
 
 		std::string nameString = rep.getAttributeName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2093,8 +2209,7 @@ namespace rti1516
 
 		//return hla_strdup(rep.getClassName());
 		std::string nameString = rep.getClassName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2159,8 +2274,7 @@ namespace rti1516
 
 		//return hla_strdup(rep.getParameterName());
 		std::string nameString = rep.getParameterName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2193,8 +2307,7 @@ namespace rti1516
 
 		//return hla_strdup(rep.getObjectInstanceName());
 		std::string nameString = rep.getObjectInstanceName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2229,8 +2342,7 @@ namespace rti1516
 		privateRefs->executeService(&req, &rep);
 		//return hla_strdup(rep.getDimensionName());
 		std::string nameString = rep.getDimensionName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2329,8 +2441,7 @@ namespace rti1516
 
 		//return hla_strdup(rep.getTransportationName());
 		std::string nameString = rep.getTransportationName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2365,8 +2476,7 @@ namespace rti1516
 		
 		//return hla_strdup(rep.getOrderingName());
 		std::string nameString = rep.getOrderingName();
-		std::wstring nameWString(nameString.length(), L' '); // Make room for characters
-		std::copy(nameString.begin(), nameString.end(), nameWString.begin());
+		std::wstring nameWString(nameString.begin(), nameString.end());
 
 		return nameWString;
 	}
@@ -2688,9 +2798,7 @@ namespace rti1516
 		throw (FederateNotExecutionMember,
 		RTIinternalError)
 	{ 
-		/* TODO */ 
-		// Copy here from the RTIambassador.cc:tick() (and related functions)
-		throw RTIinternalError(L"Not yet implemented");
+		return __tick_kernel(false, approximateMinimumTimeInSeconds, approximateMinimumTimeInSeconds);
 	}
 
 	// 10.38
@@ -2699,9 +2807,7 @@ namespace rti1516
 		throw (FederateNotExecutionMember,
 		RTIinternalError)
 	{ 
-		/* TODO */ 
-		// Copy here from the RTIambassador.cc:tick() (and related functions)
-		throw RTIinternalError(L"Not yet implemented");
+		return __tick_kernel(true, approximateMinimumTimeInSeconds, approximateMaximumTimeInSeconds);
 	}
 
 	// 10.39
@@ -2712,6 +2818,7 @@ namespace rti1516
 		RTIinternalError)
 	{ 
 		/* TODO */ 
+		throw RTIinternalError(L"Not yet implemented");
 	}
 
 	// 10.40
@@ -2722,6 +2829,7 @@ namespace rti1516
 		RTIinternalError)
 	{ 
 		/* TODO */ 
+		throw RTIinternalError(L"Not yet implemented");
 	}
 
 	FederateHandle RTI1516ambassador::decodeFederateHandle(

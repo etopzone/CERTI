@@ -413,6 +413,22 @@ ObjectSet::getObject(ObjectHandle the_object) const
 }
 
 // ----------------------------------------------------------------------------
+Object *
+ObjectSet::getObjectByName(const std::string &the_object_name) const
+{
+	std::map<ObjectHandle, Object *>::const_iterator i ;
+	for (i = begin(); i != end(); i++) {
+		if (i->second != 0 && 
+			i->second->getName() == the_object_name) 
+		{
+				return i->second;
+		}
+	}
+
+	return 0;
+}
+
+// ----------------------------------------------------------------------------
 //! sendToFederate.
 void
 ObjectSet::sendToFederate(NetworkMessage *msg,
@@ -459,4 +475,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.32 2010/03/23 13:13:27 erk Exp $
+// $Id: ObjectSet.cc,v 3.33 2010/05/31 09:33:26 erk Exp $

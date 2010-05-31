@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.1 2010/04/28 18:48:31 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.2 2010/05/31 09:33:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -709,6 +709,12 @@ RTI1516ambPrivateRefs::processException(Message *msg)
 		// JvY: Changed name of exception
 		throw rti1516::RTIinternalError(msg->getExceptionReasonW());
 	} break ;
+	
+	case e_IllegalName: {
+		D.Out(pdExcept, "Throwing e_IllegalName exception.");
+		throw rti1516::IllegalName(msg->getExceptionReasonW());
+	} break;
+
 
 	default: {
 		D.Out(pdExcept, "Throwing unknown exception !");
@@ -1172,9 +1178,31 @@ throw (rti1516::RTIinternalError)
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeConstrainedEnabled")
 		break ;
 
+	case Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+		try {
+			M_Reserve_Object_Instance_Name_Succeeded* ROINS = static_cast<M_Reserve_Object_Instance_Name_Succeeded *>(msg);
+			std::string objName_s(ROINS->getObjectName());
+			std::wstring objName_ws(objName_s.begin(), objName_s.end());
+
+			fed_amb->objectInstanceNameReservationSucceeded(objName_ws);
+		}
+		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"reserveObjectInstanceNameSucceeded")
+		break;
+		
+	case Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+		try {
+			M_Reserve_Object_Instance_Name_Failed* ROINS = static_cast<M_Reserve_Object_Instance_Name_Failed *>(msg);
+			std::string objName_s(ROINS->getObjectName());
+			std::wstring objName_ws(objName_s.begin(), objName_s.end());
+
+			fed_amb->objectInstanceNameReservationFailed(objName_ws);
+		}
+		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"reserveObjectInstanceNameFailed")
+		break;
+
 	default:
 		leave("RTI service requested by RTI is unknown.");
 	}
 }
 
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.1 2010/04/28 18:48:31 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.2 2010/05/31 09:33:25 erk Exp $

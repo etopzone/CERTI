@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.128 2010/04/28 18:48:31 erk Exp $
+// $Id: Federation.cc,v 3.129 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1559,6 +1559,47 @@ throw (ObjectClassNotDefined,
 	G.Out(pdGendoc,"exit  Federation::publishObject");
 		}
 
+
+void 
+Federation::reserveObjectInstanceName(FederateHandle theFederateHandle,
+	                           std::string newObjName)
+	throw (IllegalName,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError)
+{
+	Socket * socket ;
+	NetworkMessage *msg;
+
+	bool reservation_ok = false;
+
+	reservation_ok = root->reserveObjectInstanceName(theFederateHandle, newObjName);
+
+	if (reservation_ok)
+	{
+		msg = NM_Factory::create(NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED);
+		NM_Reserve_Object_Instance_Name_Succeeded *okMsg = dynamic_cast<NM_Reserve_Object_Instance_Name_Succeeded *>(msg);
+
+		okMsg->setObjectName(newObjName);
+		G.Out(pdGendoc,"             =====> send message R_O_I_N_S to federate %d",msg->getFederate());
+	} else {
+		msg = NM_Factory::create(NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED);
+		NM_Reserve_Object_Instance_Name_Failed *nokMsg = dynamic_cast<NM_Reserve_Object_Instance_Name_Failed *>(msg);
+
+		nokMsg->setObjectName(newObjName);
+		G.Out(pdGendoc,"             =====> send message R_O_I_N_F to federate %d",msg->getFederate());
+	}
+
+	msg->setFederation(handle);
+	msg->setFederate(theFederateHandle);
+	// send message.
+	socket = server->getSocketLink(msg->getFederate());
+	msg->send(socket,NM_msgBufSend);
+
+	delete msg;
+}
+
+
 // ----------------------------------------------------------------------------
 //! Adds a new object instance to federation.
 ObjectHandle
@@ -2575,5 +2616,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.128 2010/04/28 18:48:31 erk Exp $
+// $Id: Federation.cc,v 3.129 2010/05/31 09:33:26 erk Exp $
 

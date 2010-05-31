@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.54 2010/03/19 13:54:03 erk Exp $
+// $Id: FederationsList.hh,v 3.55 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -314,6 +314,15 @@ public:
                RestoreInProgress,
                SecurityError,
                RTIinternalError);
+
+	void reserveObjectInstanceName(Handle federationHandle,
+								   FederateHandle the_federate,
+								   std::string newObjName)
+		throw(IllegalName,
+		      FederateNotExecutionMember,
+		      SaveInProgress,
+		      RestoreInProgress,
+		      RTIinternalError);
 
     ObjectHandle registerObject(Handle theHandle,
                                 FederateHandle theFederateHandle,
@@ -661,4 +670,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.54 2010/03/19 13:54:03 erk Exp $
+// $Id: FederationsList.hh,v 3.55 2010/05/31 09:33:26 erk Exp $

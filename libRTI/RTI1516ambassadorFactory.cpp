@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-#if not defined(_WIN32)
+#ifndef _WIN32
 #include <csignal>
 #endif
 

@@ -31,6 +31,7 @@ SET(CERTI_OBJECT_SRCS
     ObjectClassSet.cc
     ObjectSet.cc
     Named.cc
+    NameReservation.cc
     Parameter.cc
     RootObject.cc
     Subscribable.cc
@@ -42,6 +43,7 @@ SET(CERTI_OBJECT_SRCS
     ObjectClassSet.hh
     ObjectSet.hh
     Named.hh
+    NameReservation.hh
     Parameter.hh
     RootObject.hh
     Subscribable.hh

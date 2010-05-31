@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.70 2010/03/19 13:54:03 erk Exp $
+// $Id: FederationsList.cc,v 3.71 2010/05/31 09:33:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1393,7 +1393,29 @@ FederationsList::requestObjectOwner(Handle federationHandle,
     return federation->requestObjectOwner(federate, id, attributes, list_size);
 }
 
+void
+FederationsList::reserveObjectInstanceName(Handle federationHandle,
+								           FederateHandle the_federate,
+								           std::string newObjName)
+		throw(IllegalName,
+		      FederateNotExecutionMember,
+		      SaveInProgress,
+		      RestoreInProgress,
+		      RTIinternalError)
+
+{
+    G.Out(pdGendoc,"enter FederationsList::reserveObjectInstanceName");
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = searchFederation(federationHandle);
+
+    federation->reserveObjectInstanceName(the_federate, newObjName);
+    G.Out(pdGendoc,"exit  FederationsList::federateRestoreStatus");
+}
+
+
+
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.70 2010/03/19 13:54:03 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.71 2010/05/31 09:33:25 erk Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.50 2010/03/19 13:54:03 erk Exp $
+// $Id: RootObject.cc,v 3.51 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -36,6 +36,7 @@
 #include "PrettyDebug.hh"
 #include "NM_Classes.hh"
 #include "helper.hh"
+#include "NameReservation.hh"
 
 #include <string>
 #include <stdio.h>
@@ -62,6 +63,7 @@ RootObject::RootObject(SecurityServer *security_server)
     /* this interaction class set is the root one */
     Interactions  = new InteractionSet(server,true);
     objects       = new ObjectSet(server);
+	reservedNames = new NameReservationSet();
 }
 
 RootObject::~RootObject()
@@ -69,6 +71,7 @@ RootObject::~RootObject()
     delete ObjectClasses ;
     delete Interactions ;
     delete objects ;
+	delete reservedNames ;
 }
 
 // ----------------------------------------------------------------------------
@@ -229,6 +232,45 @@ RootObject::getRegion(RegionHandle handle)
 }
 
 // ----------------------------------------------------------------------------
+bool
+RootObject::reserveObjectInstanceName(FederateHandle the_federate,
+									  const std::string &the_object_name)
+{
+	// Empty strings not allowed
+	if (the_object_name.size() <= 0)
+	{
+		return false;
+	}
+
+	// According to spec, the HLA prefix is reserved for RTI-internal objects.
+	if (the_object_name.compare(0, 3, "HLA") == 0)
+	{
+		return false;
+	}
+
+	// Name reservation clashes with registered object?
+	Object *object = objects->getObjectByName(the_object_name);
+	if (object != 0)
+	{
+		return false;
+	}
+
+	// Name reservation clashes with other reserved name?
+	NameReservationSet::const_iterator it = reservedNames->find(the_object_name);
+	if (it != reservedNames->end() )
+	{
+		return false;
+	}
+
+	// Make name reservation
+	NameReservation *nr = new NameReservation(the_federate, the_object_name);
+	std::pair<std::string, NameReservation *> nr_pair(the_object_name, nr);
+	reservedNames->insert(nr_pair);
+
+	return true;
+}
+
+// ----------------------------------------------------------------------------
 void
 RootObject::registerObjectInstance(FederateHandle the_federate,
                                    ObjectClassHandle the_class,
@@ -244,6 +286,17 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
           "Federate %d attempts to register instance %d in class %d.",
           the_federate, the_object, the_class);
 
+	NameReservationSet::iterator it = reservedNames->find(the_object_name);
+	if (it != reservedNames->end() )
+	{
+		const NameReservation *nr = it->second;
+		if (nr->getHandle() != the_federate)
+		{
+			throw ObjectAlreadyRegistered("The name was reserved by another federate.");
+		}
+	}
+
+
     Object *object ;
     object = objects->registerObjectInstance(the_federate, the_class,
                                              the_object, the_object_name);
@@ -258,6 +311,14 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
         objects->deleteObjectInstance(the_federate, the_object, "");
         throw;
     }
+
+	if (it != reservedNames->end() )
+	{
+		NameReservation *nr = it->second;
+		reservedNames->erase(it);
+		delete nr;
+	}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -560,4 +621,4 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.50 2010/03/19 13:54:03 erk Exp $
+// $Id: RootObject.cc,v 3.51 2010/05/31 09:33:26 erk Exp $

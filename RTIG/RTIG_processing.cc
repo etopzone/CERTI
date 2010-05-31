@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.102 2010/04/28 18:45:42 erk Exp $
+// $Id: RTIG_processing.cc,v 3.103 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -820,6 +820,21 @@ RTIG::processSubscribeInteractionClass(Socket *link, NM_Subscribe_Interaction_Cl
 }
 
 // ----------------------------------------------------------------------------
+// processReserveObjectInstanceName
+void 
+RTIG::processReserveObjectInstanceName(Socket *link, NM_Reserve_Object_Instance_Name *req)
+{
+	G.Out(pdGendoc,"enter RTIG::processReserveObjectInstanceName");
+	auditServer << "Reserve Object Name = " << req->getObjectName();
+
+	federations.reserveObjectInstanceName(	req->getFederation(), 
+											req->getFederate(), 
+											req->getObjectName());
+
+	G.Out(pdGendoc,"exit RTIG::processReserveObjectInstanceName");
+}
+
+// ----------------------------------------------------------------------------
 // processRegisterObject
 void
 RTIG::processRegisterObject(Socket *link, NM_Register_Object *req)
@@ -1481,4 +1496,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.102 2010/04/28 18:45:42 erk Exp $
+// $Id: RTIG_processing.cc,v 3.103 2010/05/31 09:33:26 erk Exp $

@@ -162,6 +162,8 @@ public:
     Object *getObject(ObjectHandle the_object) const
         throw (ObjectNotKnown);
 
+	Object *getObjectByName(const std::string &the_object_name) const;
+
 protected:    
     void sendToFederate(NetworkMessage *msg,
                         FederateHandle the_federate) const ;
@@ -172,6 +174,11 @@ protected:
 	typedef std::map<std::string,Object*,std::less<std::string> > Name2ObjectMap_t; 
 	typedef Handle2ObjectMap_t::const_iterator handledO_const_iterator; 
 	typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
+	/*
+	 * FIXME Erk --> those map are unused which is just a shame
+	 * this looks like unfinished work. ObjectSet should not inherit
+	 * from map<...> but include (and use) the two following maps
+	 */
 	Handle2ObjectMap_t OFromHandle;	
 	Name2ObjectMap_t   OFromName;
 	/* The message buffer used to send Network messages */

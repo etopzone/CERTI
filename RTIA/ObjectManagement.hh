@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.34 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectManagement.hh,v 3.35 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -241,6 +241,11 @@ public:
                       const uint16_t attribArraySize,
                       TypeException &e);
 
+	// 1516 - 6.3
+	void nameReservationSucceeded(const std::string &reservedName);
+	void nameReservationFailed(const std::string &reservedName);
+
+
     // RTI Support Services
     ObjectClassHandle getObjectClassHandle(const std::string& theName);
     const std::string& getObjectClassName(ObjectClassHandle);
@@ -298,4 +303,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.34 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectManagement.hh,v 3.35 2010/05/31 09:33:26 erk Exp $

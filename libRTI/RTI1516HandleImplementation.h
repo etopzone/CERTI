@@ -37,9 +37,6 @@ namespace rti1516
 	   virtual ~HandleImplementation()                                                
 		  throw();                                                  
 	                                                                
-	   virtual HandleImplementation &                                                 
-		  operator=(HandleImplementation const & rhs);                        
-	                                                                
 	   /* Indicates whether this handle is valid                 */ 
 	   virtual bool isValid() const;                                        
 	                                                                

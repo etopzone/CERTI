@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG.hh,v 3.34 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -97,6 +97,7 @@ private:
     void processSubscribeInteractionClass(Socket*, NM_Subscribe_Interaction_Class*);
     void processUnpublishInteractionClass(Socket*, NetworkMessage*);
     void processUnsubscribeInteractionClass(Socket*, NetworkMessage*msg);
+    void processReserveObjectInstanceName(Socket *link, NM_Reserve_Object_Instance_Name *req);
     void processRegisterObject(Socket*, NM_Register_Object*);
     void processUpdateAttributeValues(Socket*, NM_Update_Attribute_Values*);
     void processSendInteraction(Socket*, NM_Send_Interaction*);
@@ -142,4 +143,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: RTIG.hh,v 3.34 2010/05/31 09:33:26 erk Exp $

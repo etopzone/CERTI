@@ -1,3 +1,4 @@
+#include <sstream>
 #include <RTI/Handle.h>
 #include "RTI1516HandleImplementation.h"
 
@@ -104,8 +105,12 @@ namespace rti1516
 	}                                                            \
 	                                                             \
 	std::wstring HandleKind::toString() const                    \
-	{                                                            \
-		return L"";                                              \
+	{															\
+		if (_impl == NULL) return L"";							\
+		std::wstring implStr = _impl->toString();				\
+		std::wstringstream ss;									\
+		ss << #HandleKind << "_" << implStr;					\
+		return ss.str();                                        \
 	}                                                            \
 	                                                             \
 	const HandleKind##Implementation* HandleKind::getImplementation() const \

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.10 2010/03/29 18:24:20 erk Exp $
+// $Id: Exception.hh,v 3.11 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -150,7 +150,8 @@ typedef enum {
     e_TimeRegulationAlreadyEnabled,
     e_TimeRegulationWasNotEnabled,
     e_NetworkError,
-    e_NetworkSignal
+    e_NetworkSignal,
+	e_IllegalName //1516 only
 } TypeException ;
 
 class CERTI_EXPORT Exception
@@ -255,6 +256,9 @@ CERTI_EXCEPTION(UnableToPerformSave)
 CERTI_EXCEPTION(ValueCountExceeded)
 CERTI_EXCEPTION(ValueLengthExceeded)
 
+// RTI1516 Exceptions for use inside libCERTI
+CERTI_EXCEPTION(IllegalName)
+
 // Additional CERTI exceptions
 CERTI_EXCEPTION(FederateNotPublishing)
 CERTI_EXCEPTION(FederateNotSubscribing)
@@ -299,4 +303,4 @@ CERTI_EXCEPTION(SocketSHMNotDeleted)
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.10 2010/03/29 18:24:20 erk Exp $
+// $Id: Exception.hh,v 3.11 2010/05/31 09:33:26 erk Exp $

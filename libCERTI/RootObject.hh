@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.35 2009/11/25 22:05:19 erk Exp $
+// $Id: RootObject.hh,v 3.36 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -37,13 +37,14 @@ namespace certi {
 	class InteractionSet;
 	class RTIRegion;
 	class RoutingSpace;
-        class NM_Join_Federation_Execution;
+    class NM_Join_Federation_Execution;
 }  // namespace certi
 
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
 #include "RoutingSpace.hh"
+#include "NameReservation.hh"
 
 #include <vector>
 
@@ -106,6 +107,8 @@ public:
 	throw (RegionNotKnown, InvalidExtents);
 
     // Object Management
+	bool reserveObjectInstanceName(FederateHandle the_federate,
+								   const std::string &the_object_name);
     void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
                                 const std::string&)
         throw (InvalidObjectHandle,
@@ -167,6 +170,11 @@ public:
      */
     ObjectSet      *objects;
 
+	/**
+	 * The set of reserved names.
+	 */
+	NameReservationSet *reservedNames;
+
     /**
      * Serialize the federate object model into a message buffer.
      */
@@ -194,4 +202,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.35 2009/11/25 22:05:19 erk Exp $
+// $Id: RootObject.hh,v 3.36 2010/05/31 09:33:26 erk Exp $

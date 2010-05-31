@@ -9,6 +9,23 @@
 #ifndef RTI_SpecificConfig_h
 #define RTI_SpecificConfig_h
 
+#ifdef _MSC_VER
+#ifndef FAKED_INTTYPES_DEFINED
+#define FAKED_INTTYPES_DEFINED
+typedef unsigned __int64  uint64_t;
+typedef signed __int64    int64_t;
+typedef unsigned __int32  uint32_t;
+typedef signed __int32    int32_t;
+typedef unsigned __int16  uint16_t;
+typedef signed __int16    int16_t;
+typedef unsigned __int8   uint8_t;
+typedef signed __int8     int8_t;
+typedef short int         int_least16_t;
+#endif
+#else
+#include <inttypes.h>
+#endif
+
 #if defined(_WIN32)
 #if defined(_MSC_VER) && defined(RTI_DISABLE_WARNINGS)
 // disable warning about truncating template instantiation symbol names

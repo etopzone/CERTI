@@ -5,19 +5,6 @@
 #include <RTI/certiLogicalTimeInterval.h>
 #include <RTI/certiLogicalTimeFactory.h>
 
-// FIXME Eric-->Jeroen why do we need this here since
-// the export MACRO should be defined in SpecificConfig.h ?
-#if defined(_WIN32)
-   #if defined(BUILDING_FEDTIME)
-     // define the proper qualifiers to import/export symbols from/to DLL
-     #define RTI_EXPORT_FEDTIME __declspec(dllexport)
-   #else // !BUILDING_FEDTIME
-     #define RTI_EXPORT_FEDTIME __declspec(dllimport)
-   #endif // BUILDING_FEDTIME
-#else
-   #define RTI_EXPORT_FEDTIME
-#endif // _WIN32
-
 namespace rti1516 {
 	class VariableLengthData;
 }
@@ -94,6 +81,7 @@ public:
 
 	// Generates an encoded value that can be used to send
 	// LogicalTimes to other federates in updates or interactions
+	// Not implemented.
 	virtual
 		rti1516::VariableLengthData 
 		encode() const;
@@ -109,6 +97,7 @@ public:
 		throw (rti1516::CouldNotEncode);
 
 	// Decode encodedLogicalTime into self
+	// Not implemented.
 	virtual 
 		void 
 		decode(rti1516::VariableLengthData const & encodedLogicalTime)
@@ -227,6 +216,7 @@ public:
 
 	// Generates an encoded value that can be used to send
 	// LogicalTimeIntervals to other federates in updates or interactions
+	// Not implemented.
 	virtual 
 		rti1516::VariableLengthData 
 		encode() const;
@@ -242,6 +232,7 @@ public:
 		throw (rti1516::CouldNotEncode);
 
 	// Decode encodedValue into self
+	// Not implemented.
 	virtual 
 		void 
 		decode(rti1516::VariableLengthData const & encodedValue)

@@ -11,6 +11,21 @@
 
 #include "certi.hh"
 
+rti1516::LogicalTime &
+rti1516::LogicalTime::operator=(rti1516::LogicalTime const & value)
+throw (rti1516::InvalidLogicalTime)
+{
+	throw rti1516::InvalidLogicalTime(L"Operator should be overloaded");
+}
+
+rti1516::LogicalTimeInterval &
+rti1516::LogicalTimeInterval::operator=(rti1516::LogicalTimeInterval const & value)
+throw (rti1516::InvalidLogicalTimeInterval)
+{
+	throw rti1516::InvalidLogicalTimeInterval(L"Operator should be overloaded");
+}
+
+
 /////////////////////////////////////////////////////////////
 //------------------- RTI1516fedTime ----------------------//
 /////////////////////////////////////////////////////////////
@@ -82,7 +97,8 @@ throw (rti1516::InvalidLogicalTime)
 		if (other == 0)
 		{
 #if defined(_WIN32) && defined(_MSC_VER)
-			throw std::wstring(L"Different LogicalTime implementation");
+			//throw std::wstring(L"Different LogicalTime implementation");'
+			throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
 #else
 			//throw rti1516::InvalidLogicalTime(L"Different LogicalTime implementation");
 #endif

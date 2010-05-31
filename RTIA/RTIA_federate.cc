@@ -377,8 +377,9 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		
 		ROINr->setObjectName(ROINq->getObjectName());
 
+		ddm->reserveObjectName(ROINq->getObjectName(), e);
 
-
+		
 
 		break;
 	}
@@ -394,8 +395,11 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 				"Receiving Message from Federate, type RegisterObject.");
 
 		ROIr->setObject(om->registerObject(ROIq->getObjectClass(),
-				ROIq->getObjectName(),
-				date, heure, e));
+										   ROIq->getObjectName(),
+										   date, 
+										   heure, 
+										   e)
+						);
 		break ;
 	}
 
@@ -1196,7 +1200,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		tm->_tick_multiple = TRq->getMultiple();
 		tm->_tick_result   = false; // default return value
 
-		if (TRq->getMinTickTime() > 0.0) {
+		if (TRq->getMinTickTime() >= 0.0) {
 			tm->_tick_timeout = TRq->getMinTickTime();
 			tm->_tick_max_tick = TRq->getMaxTickTime();
 			tm->_tick_clock_start = clock->getCurrentTicksValue();

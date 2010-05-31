@@ -25,7 +25,7 @@ namespace rti1516
 		}
 
 		memcpy(&val, encodedValue.data(), size);
-		for(int i = 0; i < sizeof(val); i++)                  
+		for(uint32_t i = 0; i < sizeof(val); i++)
 		{      			
 			buf[size-i-1] = (char) val & 0xFF;           
 			val = val >> 8;                                      
@@ -46,15 +46,6 @@ namespace rti1516
 	: _value(ULONG_MAX)                                          
 	{                                                            
 		_value = rhs._value;                                     
-	}                                                            
-	                                                             
-	HandleImplementation & HandleImplementation::operator=(HandleImplementation const & rhs)                        
-	{                                                            
-		if (this != &rhs)                                        
-		{                                                        
-			_value = rhs._value;                                 
-		}                                                        
-		return *this;                                            
 	}                                                            
 	                                                             
 	/* Indicates whether this handle is valid                 */ 
@@ -90,7 +81,7 @@ namespace rti1516
 	                                                             
 		unsigned long val = _value;                              
 		char *buf = (char *) buffer;                             
-		for(int i = 0; i < sizeof(_value); i++)                  
+		for(uint32_t i = 0; i < sizeof(_value); i++)
 		{                                                        
 			buf[sizeof(_value)-i-1] = (char) val & 0xFF;           
 			val = val >> 8;                                      
@@ -195,7 +186,7 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(Var
 	memcpy(&val2, (ULong*)encodedValue.data() + 1 , size);
 	
 	// _value
-	for(int i = 0; i < sizeof(val1); i++)                  
+	for(uint32_t i = 0; i < sizeof(val1); i++)
 	{      			
 		buf1[size-i-1] = (char) val1 & 0xFF;           
 		val1 = val1 >> 8;                                      
@@ -206,7 +197,7 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(Var
 	_value = newValue;
 
 	// _serialNum
-	for(int i = 0; i < sizeof(val2); i++)                  
+	for(uint32_t i = 0; i < sizeof(val2); i++)
 	{      			
 		buf2[size-i-1] = (char) val2 & 0xFF;           
 		val2 = val2 >> 8;                                      
@@ -273,12 +264,12 @@ throw (CouldNotEncode)
 	unsigned long val = _value;    
 	unsigned long serialNum = _serialNum;      
 	char *buf = (char *) buffer;                             
-	for(int i = 0; i < sizeof(_value); i++)                  
+	for(uint32_t i = 0; i < sizeof(_value); i++)
 	{                                                        
 		buf[sizeof(_value)-i-1] = (char) val & 0xFF;           
 		val = val >> 8;                                      
 	}   
-	for(int i = 0; i < sizeof(_serialNum); i++)                  
+	for(uint32_t i = 0; i < sizeof(_serialNum); i++)
 	{                                                        
 		buf[sizeof(_value)+sizeof(_serialNum)-i-1] = (char) serialNum & 0xFF;           
 		serialNum = serialNum >> 8;                                      

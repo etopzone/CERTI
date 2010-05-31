@@ -1057,5 +1057,27 @@ turnUpdatesOffForObjectInstance(ObjectHandle theObject,
 	G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOffForObjectInstance");
 }
 
+// 1516 - 6.3
+void 
+ObjectManagement::nameReservationSucceeded(const std::string &reservedName)
+{
+	M_Reserve_Object_Instance_Name_Succeeded req;
+
+	req.setObjectName(reservedName);
+
+	comm->requestFederateService(&req);
+}
+
+void 
+ObjectManagement::nameReservationFailed(const std::string &reservedName)
+{
+	M_Reserve_Object_Instance_Name_Failed req;
+
+	req.setObjectName(reservedName);
+
+	comm->requestFederateService(&req);
+}
+
+
 }} // namespace certi/rtia
 
