@@ -63,8 +63,8 @@ throw (BadInitializationParameter,
 #if defined(RTIA_USE_TCP)
 	int port = p_ambassador->privateRefs->socketUn->listenUN();
 	if (port == -1) {
-		D.Out( pdError, "Cannot listen to RTIA connection. Abort." );
-		throw RTI::RTIinternalError( "Cannot listen to RTIA connection" );
+		D1516.Out( pdError, "Cannot listen to RTIA connection. Abort." );
+		throw rti1516::RTIinternalError(L"Cannot listen to RTIA connection" );
 	}
 #else
 	int pipeFd = p_ambassador->privateRefs->socketUn->socketpair();
@@ -194,11 +194,11 @@ throw (BadInitializationParameter,
 #endif
 
 #if defined(RTIA_USE_TCP)
-	if (privateRefs->socketUn->acceptUN(10*1000) == -1) {
+	if (p_ambassador->privateRefs->socketUn->acceptUN(10*1000) == -1) {
 #ifdef _WIN32
-		TerminateProcess(privateRefs->handle_RTIA, 0);
+		TerminateProcess(p_ambassdor->privateRefs->handle_RTIA, 0);
 #else
-		kill( privateRefs->pid_RTIA, SIGINT );
+		kill(p_ambassador->privateRefs->pid_RTIA, SIGINT );
 #endif
 		throw rti1516::RTIinternalError( wstringize() << "Cannot connect to RTIA" );
 	}
