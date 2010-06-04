@@ -196,7 +196,7 @@ throw (BadInitializationParameter,
 #if defined(RTIA_USE_TCP)
 	if (p_ambassador->privateRefs->socketUn->acceptUN(10*1000) == -1) {
 #ifdef _WIN32
-		TerminateProcess(p_ambassdor->privateRefs->handle_RTIA, 0);
+		TerminateProcess(p_ambassador->privateRefs->handle_RTIA, 0);
 #else
 		kill(p_ambassador->privateRefs->pid_RTIA, SIGINT );
 #endif

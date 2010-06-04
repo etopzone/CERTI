@@ -154,3 +154,4 @@ class MessageRetractionHandleImplementation : public HandleImplementation
 }
 
 #endif // RTI_HandleImplementation_h
+
