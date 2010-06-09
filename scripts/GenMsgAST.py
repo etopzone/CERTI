@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.8 2010/06/09 15:25:07 erk Exp $
+## $Id: GenMsgAST.py,v 1.9 2010/06/09 15:27:34 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -558,10 +558,10 @@ class ASTChecker(object):
 				   	  return           
                else:
                    lastMerge = AST.getRootMergeType(msg.merge)
-            
-            enumval      = EnumType.EnumValue(msg.name.upper(),None)            
-            enumval.type = msg.name
-            msgTypeEnumVals.append(enumval)		
+                               
+               enumval      = EnumType.EnumValue(msg.name.upper(),None)            
+               enumval.type = msg.name
+               msgTypeEnumVals.append(enumval)		
             if not self.checkMessageFields(msg,AST):
             	return 
 	
