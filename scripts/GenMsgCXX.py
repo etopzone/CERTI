@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.14 2010/03/28 16:07:43 erk Exp $
+## $Id: GenMsgCXX.py,v 1.15 2010/06/09 15:25:07 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -89,6 +89,21 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                'double'   : 'read_double',}
         self.__languageName="C++"
         self.replacePrefix = None
+        self.exportPrefix = ""
+        self.serializeBufferType = "libhla::MessageBuffer"
+        self.messageTypeGetter = "getType()"
+        self.exception = ["std::string"]
+
+    def getTargetTypeName(self,name):
+        if name in self.builtinTypeMap.keys():
+            return self.builtinTypeMap[name]
+        else:
+            t=self.AST.getType(name)
+        if isinstance(t,GenMsgAST.EnumType):
+            prefix=self.AST.name.split(".")[0]+"::"
+            return prefix+name
+        else:
+            return name
 
     def getRepresentationFor(self,name):
         for native in self.AST.natives:
@@ -240,6 +255,32 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         # been given or not.
         if field.qualifier == "optional":
             stream.write(self.getIndent()+"bool _has%s;\n" % self.upperFirst(field.name))
+	     
+    def generateEnum(self,stream,enum):
+        self.writeComment(stream, enum)
+        stream.write(self.getIndent())
+        stream.write("typedef enum %s {\n" % enum.name)
+        self.indent()
+        first = True
+        lastname = (enum.values[len(enum.values)-1]).name
+        for enumval in enum.values:
+            if first:
+                stream.write(self.getIndent())
+                stream.write("%s = %d, " % (enumval.name,enumval.value))                
+                first=False
+                self.writeComment(stream, enumval)
+            else:
+                stream.write(self.getIndent())
+            if (enumval.name==lastname):
+                stream.write("%s \n" % enumval.name)            
+            else:
+                stream.write("%s, " % enumval.name)            
+                self.writeComment(stream, enumval)
+                                            
+        self.unIndent()      
+        stream.write(self.getIndent())          
+        stream.write("} %s_t; " %  enum.name) 
+        stream.write(self.commentLineBeginWith + "end of enum %s \n" % enum.name)
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
@@ -309,31 +350,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
             # Generate enum
             lastname = ""
-            for enum in self.AST.enums:            
-                self.writeComment(stream, enum)
-                stream.write(self.getIndent())
-                stream.write("typedef enum %s {\n" % enum.name)
-                self.indent()
-                first = True
-                lastname = (enum.values[len(enum.values)-1]).name
-                for enumval in enum.values:
-                    if first:
-                        stream.write(self.getIndent())
-                        stream.write("%s = %d, " % (enumval.name,enumval.value))                
-                        first=False
-                        self.writeComment(stream, enumval)
-                    else:
-                        stream.write(self.getIndent())
-                        if (enumval.name==lastname):
-                            stream.write("%s \n" % enumval.name)		    
-                        else:
-                            stream.write("%s, " % enumval.name)		    
-                            self.writeComment(stream, enumval)                            
-                self.unIndent()      
-                stream.write(self.getIndent())          
-                stream.write("} %s_t; " %  enum.name) 
-                stream.write(self.commentLineBeginWith + "end of enum %s \n" % enum.name)
-            # close enum namespace            
+            for enum in self.AST.enums:
+                self.generateEnum(stream, enum)
+	        stream.write("\n")
+               
+            # close enum namespace
+	    
             self.unIndent()
             stream.write(self.getIndent())
             stream.write("}\n")
@@ -341,8 +363,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             # Generate message type
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
-                stream.write(self.getIndent())
-                stream.write("class CERTI_EXPORT %s" % msg.name)
+                stream.write(self.getIndent())                
+                stream.write("class %s %s" % (self.exportPrefix,msg.name))
                 if msg.hasMerge():
                     stream.write(" : public %s {\n" % msg.merge.name)
                     virtual = "virtual "
@@ -354,6 +376,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 # begin public
                 stream.write(self.getIndent()+"public:\n") 
                 self.indent()
+		
+		if msg.hasEnum():
+		    self.generateEnum(stream,msg.enum)
+		    stream.write("\n")
+		
+		    
                 if msg.hasMerge():
                    stream.write(self.getIndent()+"typedef %s Super;\n"%msg.merge.name)
                 # now write constructor/destructor
@@ -364,8 +392,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 # if we have some specific field
                 if len(msg.fields)>0:
                     # serialize/deserialize 
-                    stream.write(self.getIndent()+virtual+"void serialize(MessageBuffer& msgBuffer);\n")
-                    stream.write(self.getIndent()+virtual+"void deserialize(MessageBuffer& msgBuffer);\n")
+                    stream.write(self.getIndent()+virtual+"void serialize(%s& msgBuffer);\n" % (self.serializeBufferType))
+                    stream.write(self.getIndent()+virtual+"void deserialize(%s& msgBuffer);\n" % (self.serializeBufferType))
                     # specific getter/setter
                     stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
                     for field in msg.fields:
@@ -406,13 +434,24 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         # @todo
         if self.AST.hasFactory():             
             self.writeComment(stream, self.AST.factory)
-            stream.write(self.getIndent() + "class CERTI_EXPORT %s {\n" % self.AST.factory.name)
+            stream.write(self.getIndent() + "class %s %s {\n" % (self.exportPrefix,self.AST.factory.name))
             self.indent()
             # begin public
             stream.write(self.getIndent()+"public:\n")            
-            self.indent()            
-            stream.write(self.getIndent()+"static %s* %s(%s type) throw (NetworkError, NetworkSignal);\n"% self.AST.factory.creator)
-            stream.write(self.getIndent()+"static %s* %s(%s stream) throw (NetworkError, NetworkSignal);\n"% self.AST.factory.receiver)
+            self.indent()
+	    
+            stream.write(self.getIndent()+"static %s* %s(%s type) throw ("% self.AST.factory.creator)
+	    stream.write("%s" %(self.exception[0]))
+	    for exception in self.exception[1:]:
+	        stream.write(" ,%s" %(exception))
+	    stream.write("); \n")
+	    
+            stream.write(self.getIndent()+"static %s* %s(%s stream) throw ("% self.AST.factory.receiver)
+	    stream.write("%s" %(self.exception[0]))
+	    for exception in self.exception[1:]:
+	        stream.write(" ,%s" %(exception))
+	    stream.write("); \n")
+	    
             self.unIndent()
             #end public
             #begin protected
@@ -465,7 +504,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write("for (uint32_t i = 0; i < "+field.name+"Size; ++i) {\n")
             self.indent()
             
-        stream.write(self.getIndent())
+        stream.write(self.getIndent())        
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:
             if field.typeid.name in [m.name for m in self.AST.messages]:
@@ -571,17 +610,27 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             
     def writeFactoryCreator(self,stream):
         creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
-        stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (NetworkError, NetworkSignal) {\n"% creator)
+        stream.write(self.getIndent()+"%s* %s::%s(%s type) throw ("% creator)
+	stream.write("%s" %(self.exception[0]))
+	for exception in self.exception[1:]:
+	    stream.write(" ,%s" %(exception))
+	stream.write(") { \n")
+	
         self.indent()
         stream.write(self.getIndent()+"%s* msg = NULL;\n\n" % creator[0])
         stream.write(self.getIndent() + "switch (type) {\n")
         self.indent()
         for e in self.AST.eMessageType.values:
             if (None!=self.replacePrefix):                        
-                stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))                
+                stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name.replace(self.replacePrefix[0],"",1)))   
+            else:
+		stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name))
+	                 
             self.indent()
+	    
             if None==e.type:
-                stream.write(self.getIndent()+"throw NetworkError(\"%s message type should not be used!!\");\n"%e.name)
+		# we throw here the first exception of the list 
+                stream.write(self.getIndent()+"throw %s(\"%s message type should not be used!!\");\n"%(self.exception[0],e.name))
             else:
                 stream.write(self.getIndent()+"msg = new %s();\n" % e.type)
             stream.write(self.getIndent()+"break;\n")
@@ -594,10 +643,15 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     
     def writeFactoryReceiver(self,stream):
         receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
-        stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (NetworkError, NetworkSignal) {\n"% receiver)
+        stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw ("% receiver)
+        stream.write("%s" %(self.exception[0]))
+	for exception in self.exception[1:]:
+	    stream.write(" ,%s" %(exception))
+	stream.write(") { \n")
+	
         self.indent()
         stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
-        stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
+        stream.write(self.getIndent()+"static %s msgBuffer;\n" % (self.serializeBufferType))
         stream.write(self.getIndent()+"%s  msgGen;\n" % receiver[0])
         stream.write(self.getIndent()+"%s* msg;\n\n" % receiver[0])
         stream.write(self.getIndent()+self.commentLineBeginWith+" receive generic message \n")
@@ -605,7 +659,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
         
         stream.write(self.getIndent()+"msg = ");
-        stream.write(self.AST.factory.name+"::"+self.AST.factory.creator[1]+"(msgGen.getMessageType());\n")
+        stream.write(self.AST.factory.name+"::"+self.AST.factory.creator[1]+"(msgGen.%s);\n" %(self.messageTypeGetter))
         
         stream.write(self.getIndent()+"msgBuffer.assumeSizeFromReservedBytes();\n")    
         stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")
@@ -665,7 +719,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 # if we have some specific field
                 if len(msg.fields)>0:
                     # begin serialize method 
-                    stream.write(self.getIndent()+"void %s::serialize(MessageBuffer& msgBuffer) {\n" % msg.name)
+                    stream.write(self.getIndent()+"void %s::serialize(%s& msgBuffer) {\n" % (msg.name,self.serializeBufferType))
                     self.indent()
                     if msg.hasMerge():
                         stream.write(self.getIndent()+self.commentLineBeginWith)
@@ -679,7 +733,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # end serialize method
                     
                     # begin deserialize method
-                    stream.write(self.getIndent()+"void %s::deserialize(MessageBuffer& msgBuffer) {\n" % msg.name)
+                    stream.write(self.getIndent()+"void %s::deserialize(%s& msgBuffer) {\n" % (msg.name,self.serializeBufferType))
                     self.indent()
                     if msg.hasMerge():
                         stream.write(self.getIndent()+self.commentLineBeginWith)
@@ -730,7 +784,11 @@ class CXXCERTIMessageGenerator(CXXCERTIGenerator):
         super(CXXCERTIMessageGenerator,self).__init__(MessageAST)   
         self.replacePrefix = list()
         self.replacePrefix.append("M_")
-        self.replacePrefix.append("Message::")     
+        self.replacePrefix.append("Message::")
+        self.exportPrefix = "CERTI_EXPORT"   
+	self.serializeBufferType = "libhla::MessageBuffer"
+	self.messageTypeGetter = "getMessageType()"
+	self.exception = ["NetworkError","NetworkSignal"]
 
 class CXXCERTINetworkMessageGenerator(CXXCERTIGenerator):    
     """
@@ -746,3 +804,9 @@ class CXXCERTINetworkMessageGenerator(CXXCERTIGenerator):
         self.replacePrefix = list()
         self.replacePrefix.append("NM_")
         self.replacePrefix.append("NetworkMessage::")     
+        self.exportPrefix = "CERTI_EXPORT"
+        self.serializeBufferType = "libhla::MessageBuffer"
+	self.messageTypeGetter = "getMessageType()"
+	self.exception = ["NetworkError","NetworkSignal"]
+
+

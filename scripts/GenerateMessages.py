@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.37 2010/05/16 08:29:00 erk Exp $
+## $Id: GenerateMessages.py,v 1.38 2010/06/09 15:25:07 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -80,6 +80,7 @@ import GenMsgAST
 
 generatorBackends = dict()
 generatorBackends[GenMsgBase.MsgSpecGenerator.generatorName().lower()] = GenMsgBase.MsgSpecGenerator
+generatorBackends[GenMsgCXX.CXXCERTIGenerator.generatorName().lower()] = GenMsgCXX.CXXCERTIGenerator
 generatorBackends[GenMsgCXX.CXXCERTIMessageGenerator.generatorName().lower()] = GenMsgCXX.CXXCERTIMessageGenerator
 generatorBackends[GenMsgCXX.CXXCERTINetworkMessageGenerator.generatorName().lower()] = GenMsgCXX.CXXCERTINetworkMessageGenerator
 generatorBackends[GenMsgPython.PythonGenerator.generatorName().lower()] = GenMsgPython.PythonGenerator
@@ -440,7 +441,7 @@ def p_field_spec(p):
     if len(p)==5:
         p[0] = GenMsgAST.MessageType.MessageField(p[1],p[2],p[3],None)
         p[0].comment = p[4]
-        p[0].linespan = (p.linespan(1)[0],p.linespan(4)[1])
+        p[0].linespan = (p.linespan(1)[0],p.linespan(4)[1])	
     elif len(p)==7:
         p[4].reverse()
         p[0] = GenMsgAST.MessageType.CombinedField(p[2],p[4])

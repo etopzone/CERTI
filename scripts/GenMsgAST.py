@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.7 2010/05/16 08:29:00 erk Exp $
+## $Id: GenMsgAST.py,v 1.8 2010/06/09 15:25:07 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -99,7 +99,7 @@ class MessageAST(ASTElement):
     
     """
     def __init__(self,name):
-        super(MessageAST,self).__init__(name=name)
+        super(MessageAST,self).__init__(name=os.path.basename(name))
         self.__package            = None
         self.__version            = None
         self.__factory            = None
@@ -166,8 +166,21 @@ class MessageAST(ASTElement):
     def __getEnumTypes(self):
         return self.__enumTypes
     # pythonic getter/setter using properties   
-    enums = property(fget=__getEnumTypes,fset=None,fdel=None,doc=None)         
-        
+    enums = property(fget=__getEnumTypes,fset=None,fdel=None,doc=None)
+    
+    def getRootMergeType(self,msg):
+    	""" return the root merge type
+    	"""
+    	retval = None
+    	current = msg
+    	while retval==None:    	    		    
+    	 	if isinstance(current,MessageType):
+    		  	if current.hasMerge():
+    		 	  current=AST.getType(current.merge)
+    		 	else: 
+    		 	  retval = current
+    		else:
+    			retval = current    		
         
     def add(self,any):
         """ 
@@ -405,14 +418,18 @@ class MessageType(ASTElement):
     def __init__(self,name,fields,merge):
         super(MessageType,self).__init__(name=name)
         self.fields        = fields
-        self.merge         = merge                 
+        self.merge         = merge
+        self.enum          = None
     
     def __repr__(self):
         res = "message %s " % self.name
         return res
-        
+    
     def hasMerge(self):
         return self.merge != None
+    
+    def hasEnum(self):
+        return self.enum != None
     
     class CombinedField(ASTElement):
         def __init__(self,typeid,fields):
@@ -525,21 +542,41 @@ class ASTChecker(object):
         enumval = EnumType.EnumValue("NOT_USED",None)
         enumval.type = None
         msgTypeEnumVals = [enumval]
+        lastMerge = None
         for msg in AST.messages:
             # We do not generate the enum factory entry for a message
             # with no merge there is no possible factory for that
-            # kind of message. 
-            if msg.hasMerge():
-                enumval      = EnumType.EnumValue(msg.name.upper(),None)
-                enumval.type = msg.name
-                msgTypeEnumVals.append(enumval)
+            # kind of message.
+            # However some message types may merge from one another
+            # as soon as there is a "common" root merge type 
+            if msg.hasMerge():               
+               if (None!=lastMerge):
+               	   # recurse to find root merge               	                  	   
+                   if (lastMerge!=AST.getRootMergeType(msg.merge)):
+				   	  self.logger.error("Error: there is more than one merged type (%s != %s). You should use one merged type only" % (lastMerge, msg.merge))
+				   	  self.logger.fatal(" --> Check lines (%d,%d)" % (msg.linespan) + " of <%s>" % AST.name )
+				   	  return           
+               else:
+                   lastMerge = AST.getRootMergeType(msg.merge)
+            
+            enumval      = EnumType.EnumValue(msg.name.upper(),None)            
+            enumval.type = msg.name
+            msgTypeEnumVals.append(enumval)		
             if not self.checkMessageFields(msg,AST):
-               return            
+            	return 
+	
+	
+	
         enumval      = EnumType.EnumValue("LAST",None)
         enumval.type = None                                    
         msgTypeEnumVals.append(enumval)
-        AST.eMessageType = EnumType(AST.name.split(".")[0]+"_MessageType",msgTypeEnumVals) 
-        AST.add(AST.eMessageType)
+        AST.eMessageType = EnumType("MessageType",msgTypeEnumVals)
+	if lastMerge != None:
+            mergeClass=AST.getType(lastMerge)
+	    if isinstance(mergeClass,MessageType):
+                mergeClass.enum = AST.eMessageType
+	
+        
          
 
         # @todo
