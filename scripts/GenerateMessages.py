@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.38 2010/06/09 15:25:07 erk Exp $
+## $Id: GenerateMessages.py,v 1.39 2010/06/10 07:30:47 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -311,9 +311,19 @@ def p_version(p):
     p[0]=GenMsgAST.Version((p[2],p[4]))
 
 def p_factory(p):
-    '''factory : FACTORY ID LBRACE factory_creator factory_receiver RBRACE'''
-    p[0] = GenMsgAST.Factory(p[2],p[4],p[5])
-    p[0].linespan = (p.linespan(1)[0],p.linespan(6)[1])
+    '''factory : FACTORY ID LBRACE factory_creator factory_receiver RBRACE
+               | FACTORY ID LBRACE factory_creator RBRACE'''
+    
+    
+    if len(p)==7:
+	p[0] = GenMsgAST.Factory(p[2],p[4],p[5])
+        p[0].linespan = (p.linespan(1)[0],p.linespan(6)[1])
+	
+    elif len(p)==6:
+	p[0] = GenMsgAST.Factory(p[2],p[4])
+        p[0].linespan = (p.linespan(1)[0],p.linespan(5)[1])
+	
+    
 
 def p_factory_creator(p):
     '''factory_creator : FACTORY_CREATOR ID ID LPAREN ID RPAREN'''

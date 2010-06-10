@@ -17,7 +17,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.15 2010/06/09 15:25:07 erk Exp $
+## $Id: GenMsgCXX.py,v 1.16 2010/06/10 07:30:47 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -446,11 +446,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 	        stream.write(" ,%s" %(exception))
 	    stream.write("); \n")
 	    
-            stream.write(self.getIndent()+"static %s* %s(%s stream) throw ("% self.AST.factory.receiver)
-	    stream.write("%s" %(self.exception[0]))
-	    for exception in self.exception[1:]:
-	        stream.write(" ,%s" %(exception))
-	    stream.write("); \n")
+	    if self.AST.factory.hasFactoryReceiver():
+                stream.write(self.getIndent()+"static %s* %s(%s stream) throw ("% self.AST.factory.receiver)
+	        stream.write("%s" %(self.exception[0]))
+	        for exception in self.exception[1:]:
+	            stream.write(" ,%s" %(exception))
+	        stream.write("); \n")
 	    
             self.unIndent()
             #end public
@@ -703,6 +704,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent()+"this->messageName = \""+msg.name+"\";\n")
                     if (None!=self.replacePrefix):                    
                         stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace(self.replacePrefix[0],self.replacePrefix[1],1)+";\n")
+		    else:
+			stream.write(self.getIndent()+"this->type = "+msg.name.upper()+";\n")
                         
                 # Write init value if any was provided
                 if len(msg.fields)>0:
@@ -767,7 +770,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             # begin creator                                                      
             self.writeFactoryCreator(stream)
             # begin receiver
-            self.writeFactoryReceiver(stream)                                                            
+	    if self.AST.factory.hasFactoryReceiver():
+                self.writeFactoryReceiver(stream)                                                            
                         
         self.closeNamespaces(stream)
         
