@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.16 2010/04/28 18:48:30 erk Exp $
+// $Id: BasicMessage.hh,v 3.17 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -91,7 +91,7 @@ public:
 	void setRegions(const std::vector<RegionHandle> &);
 	const std::vector<RegionHandle> &getRegions() const ;
 
-	virtual void show(std::ostream& out);
+	virtual std::ostream& show(std::ostream& out);
 
 protected:
 	BasicMessage();
@@ -177,4 +177,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.16 2010/04/28 18:48:30 erk Exp $
+// $Id: BasicMessage.hh,v 3.17 2010/06/10 08:31:52 erk Exp $

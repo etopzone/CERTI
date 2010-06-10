@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.16 2010/02/27 16:53:36 erk Exp $
+// $Id: BasicMessage.cc,v 3.17 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -47,7 +47,7 @@ BasicMessage::~BasicMessage() {
 	
 } /* end of ~BasicMessage */
 
-void BasicMessage::show(std::ostream& out) {
+std::ostream& BasicMessage::show(std::ostream& out) {
 	out << "[BasicMessage -Begin]" << std::endl;
 	if (_isDated) {
 			out << "(opt) Date = " << date << std::endl;
@@ -65,6 +65,7 @@ void BasicMessage::show(std::ostream& out) {
 		out << "(opt) label = <not provided>" << std::endl;
 	}
 	out << "[BasicMessage -End]" << std::endl;
+	return out;
 } /* end of show */
 
 void
@@ -297,4 +298,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.16 2010/02/27 16:53:36 erk Exp $
+// $Id: BasicMessage.cc,v 3.17 2010/06/10 08:31:52 erk Exp $

@@ -1,4 +1,4 @@
-// Generated on 2010 April Wed, 28 at 20:22:38 by the CERTI message generator
+// Generated on 2010 June Thu, 10 at 10:24:31 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -35,23 +35,25 @@ namespace certi {
    EventRetraction::~EventRetraction() {
    }
 
-   void EventRetraction::serialize(MessageBuffer& msgBuffer) {
+   void EventRetraction::serialize(libhla::MessageBuffer& msgBuffer) {
       //Specific serialization code
       msgBuffer.write_uint32(sendingFederate);
       msgBuffer.write_uint64(SN);
    }
 
-   void EventRetraction::deserialize(MessageBuffer& msgBuffer) {
+   void EventRetraction::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Specific deserialization code
       sendingFederate = static_cast<FederateHandle>(msgBuffer.read_uint32());
       SN = msgBuffer.read_uint64();
    }
 
-   void EventRetraction::show(std::ostream& out) {
+   std::ostream& EventRetraction::show(std::ostream& out) {
       out << "[EventRetraction -Begin]" << std::endl;      //Specific show code
       out << " sendingFederate = " << sendingFederate << " "       << std::endl;
       out << " SN = " << SN << " "       << std::endl;
-      out << "[EventRetraction -End]" << std::endl;   }
+      out << "[EventRetraction -End]" << std::endl;
+      return out;
+   }
 
    M_Open_Connexion::M_Open_Connexion() {
       this->messageName = "M_Open_Connexion";
@@ -63,7 +65,7 @@ namespace certi {
    M_Open_Connexion::~M_Open_Connexion() {
    }
 
-   void M_Open_Connexion::serialize(MessageBuffer& msgBuffer) {
+   void M_Open_Connexion::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -71,7 +73,7 @@ namespace certi {
       msgBuffer.write_uint32(versionMinor);
    }
 
-   void M_Open_Connexion::deserialize(MessageBuffer& msgBuffer) {
+   void M_Open_Connexion::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -79,13 +81,15 @@ namespace certi {
       versionMinor = msgBuffer.read_uint32();
    }
 
-   void M_Open_Connexion::show(std::ostream& out) {
+   std::ostream& M_Open_Connexion::show(std::ostream& out) {
       out << "[M_Open_Connexion -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " versionMajor = " << versionMajor << " "       << std::endl;
       out << " versionMinor = " << versionMinor << " "       << std::endl;
-      out << "[M_Open_Connexion -End]" << std::endl;   }
+      out << "[M_Open_Connexion -End]" << std::endl;
+      return out;
+   }
 
    M_Close_Connexion::M_Close_Connexion() {
       this->messageName = "M_Close_Connexion";
@@ -105,7 +109,7 @@ namespace certi {
    M_Create_Federation_Execution::~M_Create_Federation_Execution() {
    }
 
-   void M_Create_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
+   void M_Create_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -113,7 +117,7 @@ namespace certi {
       msgBuffer.write_string(FEDid);
    }
 
-   void M_Create_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
+   void M_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -121,13 +125,15 @@ namespace certi {
       msgBuffer.read_string(FEDid);
    }
 
-   void M_Create_Federation_Execution::show(std::ostream& out) {
+   std::ostream& M_Create_Federation_Execution::show(std::ostream& out) {
       out << "[M_Create_Federation_Execution -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " federationName = " << federationName << " "       << std::endl;
       out << " FEDid = " << FEDid << " "       << std::endl;
-      out << "[M_Create_Federation_Execution -End]" << std::endl;   }
+      out << "[M_Create_Federation_Execution -End]" << std::endl;
+      return out;
+   }
 
    M_Destroy_Federation_Execution::M_Destroy_Federation_Execution() {
       this->messageName = "M_Destroy_Federation_Execution";
@@ -138,26 +144,28 @@ namespace certi {
    M_Destroy_Federation_Execution::~M_Destroy_Federation_Execution() {
    }
 
-   void M_Destroy_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
+   void M_Destroy_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_string(federationName);
    }
 
-   void M_Destroy_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
+   void M_Destroy_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       msgBuffer.read_string(federationName);
    }
 
-   void M_Destroy_Federation_Execution::show(std::ostream& out) {
+   std::ostream& M_Destroy_Federation_Execution::show(std::ostream& out) {
       out << "[M_Destroy_Federation_Execution -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " federationName = " << federationName << " "       << std::endl;
-      out << "[M_Destroy_Federation_Execution -End]" << std::endl;   }
+      out << "[M_Destroy_Federation_Execution -End]" << std::endl;
+      return out;
+   }
 
    M_Join_Federation_Execution::M_Join_Federation_Execution() {
       this->messageName = "M_Join_Federation_Execution";
@@ -170,7 +178,7 @@ namespace certi {
    M_Join_Federation_Execution::~M_Join_Federation_Execution() {
    }
 
-   void M_Join_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
+   void M_Join_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -179,7 +187,7 @@ namespace certi {
       msgBuffer.write_string(federateName);
    }
 
-   void M_Join_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
+   void M_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -188,14 +196,16 @@ namespace certi {
       msgBuffer.read_string(federateName);
    }
 
-   void M_Join_Federation_Execution::show(std::ostream& out) {
+   std::ostream& M_Join_Federation_Execution::show(std::ostream& out) {
       out << "[M_Join_Federation_Execution -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " federate = " << federate << " "       << std::endl;
       out << " federationName = " << federationName << " "       << std::endl;
       out << " federateName = " << federateName << " "       << std::endl;
-      out << "[M_Join_Federation_Execution -End]" << std::endl;   }
+      out << "[M_Join_Federation_Execution -End]" << std::endl;
+      return out;
+   }
 
    M_Resign_Federation_Execution::M_Resign_Federation_Execution() {
       this->messageName = "M_Resign_Federation_Execution";
@@ -206,26 +216,28 @@ namespace certi {
    M_Resign_Federation_Execution::~M_Resign_Federation_Execution() {
    }
 
-   void M_Resign_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
+   void M_Resign_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint16(resignAction);
    }
 
-   void M_Resign_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
+   void M_Resign_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
    }
 
-   void M_Resign_Federation_Execution::show(std::ostream& out) {
+   std::ostream& M_Resign_Federation_Execution::show(std::ostream& out) {
       out << "[M_Resign_Federation_Execution -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " resignAction = " << resignAction << " "       << std::endl;
-      out << "[M_Resign_Federation_Execution -End]" << std::endl;   }
+      out << "[M_Resign_Federation_Execution -End]" << std::endl;
+      return out;
+   }
 
    M_Register_Federation_Synchronization_Point::M_Register_Federation_Synchronization_Point() {
       this->messageName = "M_Register_Federation_Synchronization_Point";
@@ -236,7 +248,7 @@ namespace certi {
    M_Register_Federation_Synchronization_Point::~M_Register_Federation_Synchronization_Point() {
    }
 
-   void M_Register_Federation_Synchronization_Point::serialize(MessageBuffer& msgBuffer) {
+   void M_Register_Federation_Synchronization_Point::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -247,7 +259,7 @@ namespace certi {
       }
    }
 
-   void M_Register_Federation_Synchronization_Point::deserialize(MessageBuffer& msgBuffer) {
+   void M_Register_Federation_Synchronization_Point::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -258,7 +270,7 @@ namespace certi {
       }
    }
 
-   void M_Register_Federation_Synchronization_Point::show(std::ostream& out) {
+   std::ostream& M_Register_Federation_Synchronization_Point::show(std::ostream& out) {
       out << "[M_Register_Federation_Synchronization_Point -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -267,7 +279,9 @@ namespace certi {
          out << federateSet[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Register_Federation_Synchronization_Point -End]" << std::endl;   }
+      out << "[M_Register_Federation_Synchronization_Point -End]" << std::endl;
+      return out;
+   }
 
    M_Synchronization_Point_Registration_Failed::M_Synchronization_Point_Registration_Failed() {
       this->messageName = "M_Synchronization_Point_Registration_Failed";
@@ -382,26 +396,28 @@ namespace certi {
    M_Request_Federation_Restore_Failed::~M_Request_Federation_Restore_Failed() {
    }
 
-   void M_Request_Federation_Restore_Failed::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Federation_Restore_Failed::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_string(reason);
    }
 
-   void M_Request_Federation_Restore_Failed::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Federation_Restore_Failed::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       msgBuffer.read_string(reason);
    }
 
-   void M_Request_Federation_Restore_Failed::show(std::ostream& out) {
+   std::ostream& M_Request_Federation_Restore_Failed::show(std::ostream& out) {
       out << "[M_Request_Federation_Restore_Failed -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " reason = " << reason << " "       << std::endl;
-      out << "[M_Request_Federation_Restore_Failed -End]" << std::endl;   }
+      out << "[M_Request_Federation_Restore_Failed -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Federation_Restore_Succeeded::M_Request_Federation_Restore_Succeeded() {
       this->messageName = "M_Request_Federation_Restore_Succeeded";
@@ -420,26 +436,28 @@ namespace certi {
    M_Initiate_Federate_Restore::~M_Initiate_Federate_Restore() {
    }
 
-   void M_Initiate_Federate_Restore::serialize(MessageBuffer& msgBuffer) {
+   void M_Initiate_Federate_Restore::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(federate);
    }
 
-   void M_Initiate_Federate_Restore::deserialize(MessageBuffer& msgBuffer) {
+   void M_Initiate_Federate_Restore::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Initiate_Federate_Restore::show(std::ostream& out) {
+   std::ostream& M_Initiate_Federate_Restore::show(std::ostream& out) {
       out << "[M_Initiate_Federate_Restore -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " federate = " << federate << " "       << std::endl;
-      out << "[M_Initiate_Federate_Restore -End]" << std::endl;   }
+      out << "[M_Initiate_Federate_Restore -End]" << std::endl;
+      return out;
+   }
 
    M_Federate_Restore_Complete::M_Federate_Restore_Complete() {
       this->messageName = "M_Federate_Restore_Complete";
@@ -491,7 +509,7 @@ namespace certi {
    M_Publish_Object_Class::~M_Publish_Object_Class() {
    }
 
-   void M_Publish_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Publish_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -503,7 +521,7 @@ namespace certi {
       }
    }
 
-   void M_Publish_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Publish_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -515,7 +533,7 @@ namespace certi {
       }
    }
 
-   void M_Publish_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Publish_Object_Class::show(std::ostream& out) {
       out << "[M_Publish_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -525,7 +543,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Publish_Object_Class -End]" << std::endl;   }
+      out << "[M_Publish_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Unpublish_Object_Class::M_Unpublish_Object_Class() {
       this->messageName = "M_Unpublish_Object_Class";
@@ -536,26 +556,28 @@ namespace certi {
    M_Unpublish_Object_Class::~M_Unpublish_Object_Class() {
    }
 
-   void M_Unpublish_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Unpublish_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
    }
 
-   void M_Unpublish_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Unpublish_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Unpublish_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Unpublish_Object_Class::show(std::ostream& out) {
       out << "[M_Unpublish_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
-      out << "[M_Unpublish_Object_Class -End]" << std::endl;   }
+      out << "[M_Unpublish_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Publish_Interaction_Class::M_Publish_Interaction_Class() {
       this->messageName = "M_Publish_Interaction_Class";
@@ -566,26 +588,28 @@ namespace certi {
    M_Publish_Interaction_Class::~M_Publish_Interaction_Class() {
    }
 
-   void M_Publish_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Publish_Interaction_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Publish_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Publish_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Publish_Interaction_Class::show(std::ostream& out) {
+   std::ostream& M_Publish_Interaction_Class::show(std::ostream& out) {
       out << "[M_Publish_Interaction_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Publish_Interaction_Class -End]" << std::endl;   }
+      out << "[M_Publish_Interaction_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Unpublish_Interaction_Class::M_Unpublish_Interaction_Class() {
       this->messageName = "M_Unpublish_Interaction_Class";
@@ -596,26 +620,28 @@ namespace certi {
    M_Unpublish_Interaction_Class::~M_Unpublish_Interaction_Class() {
    }
 
-   void M_Unpublish_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Unpublish_Interaction_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Unpublish_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Unpublish_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Unpublish_Interaction_Class::show(std::ostream& out) {
+   std::ostream& M_Unpublish_Interaction_Class::show(std::ostream& out) {
       out << "[M_Unpublish_Interaction_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Unpublish_Interaction_Class -End]" << std::endl;   }
+      out << "[M_Unpublish_Interaction_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Subscribe_Object_Class_Attributes::M_Subscribe_Object_Class_Attributes() {
       this->messageName = "M_Subscribe_Object_Class_Attributes";
@@ -628,7 +654,7 @@ namespace certi {
    M_Subscribe_Object_Class_Attributes::~M_Subscribe_Object_Class_Attributes() {
    }
 
-   void M_Subscribe_Object_Class_Attributes::serialize(MessageBuffer& msgBuffer) {
+   void M_Subscribe_Object_Class_Attributes::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -641,7 +667,7 @@ namespace certi {
       msgBuffer.write_bool(active);
    }
 
-   void M_Subscribe_Object_Class_Attributes::deserialize(MessageBuffer& msgBuffer) {
+   void M_Subscribe_Object_Class_Attributes::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -654,7 +680,7 @@ namespace certi {
       active = msgBuffer.read_bool();
    }
 
-   void M_Subscribe_Object_Class_Attributes::show(std::ostream& out) {
+   std::ostream& M_Subscribe_Object_Class_Attributes::show(std::ostream& out) {
       out << "[M_Subscribe_Object_Class_Attributes -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -665,7 +691,9 @@ namespace certi {
       }
       out << std::endl;
       out << " active = " << active << " "       << std::endl;
-      out << "[M_Subscribe_Object_Class_Attributes -End]" << std::endl;   }
+      out << "[M_Subscribe_Object_Class_Attributes -End]" << std::endl;
+      return out;
+   }
 
    M_Unsubscribe_Object_Class::M_Unsubscribe_Object_Class() {
       this->messageName = "M_Unsubscribe_Object_Class";
@@ -676,26 +704,28 @@ namespace certi {
    M_Unsubscribe_Object_Class::~M_Unsubscribe_Object_Class() {
    }
 
-   void M_Unsubscribe_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Unsubscribe_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
    }
 
-   void M_Unsubscribe_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Unsubscribe_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Unsubscribe_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Unsubscribe_Object_Class::show(std::ostream& out) {
       out << "[M_Unsubscribe_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
-      out << "[M_Unsubscribe_Object_Class -End]" << std::endl;   }
+      out << "[M_Unsubscribe_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Subscribe_Interaction_Class::M_Subscribe_Interaction_Class() {
       this->messageName = "M_Subscribe_Interaction_Class";
@@ -706,26 +736,28 @@ namespace certi {
    M_Subscribe_Interaction_Class::~M_Subscribe_Interaction_Class() {
    }
 
-   void M_Subscribe_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Subscribe_Interaction_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Subscribe_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Subscribe_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Subscribe_Interaction_Class::show(std::ostream& out) {
+   std::ostream& M_Subscribe_Interaction_Class::show(std::ostream& out) {
       out << "[M_Subscribe_Interaction_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Subscribe_Interaction_Class -End]" << std::endl;   }
+      out << "[M_Subscribe_Interaction_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Unsubscribe_Interaction_Class::M_Unsubscribe_Interaction_Class() {
       this->messageName = "M_Unsubscribe_Interaction_Class";
@@ -736,26 +768,28 @@ namespace certi {
    M_Unsubscribe_Interaction_Class::~M_Unsubscribe_Interaction_Class() {
    }
 
-   void M_Unsubscribe_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Unsubscribe_Interaction_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Unsubscribe_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Unsubscribe_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Unsubscribe_Interaction_Class::show(std::ostream& out) {
+   std::ostream& M_Unsubscribe_Interaction_Class::show(std::ostream& out) {
       out << "[M_Unsubscribe_Interaction_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Unsubscribe_Interaction_Class -End]" << std::endl;   }
+      out << "[M_Unsubscribe_Interaction_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Start_Registration_For_Object_Class::M_Start_Registration_For_Object_Class() {
       this->messageName = "M_Start_Registration_For_Object_Class";
@@ -766,26 +800,28 @@ namespace certi {
    M_Start_Registration_For_Object_Class::~M_Start_Registration_For_Object_Class() {
    }
 
-   void M_Start_Registration_For_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Start_Registration_For_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
    }
 
-   void M_Start_Registration_For_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Start_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Start_Registration_For_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Start_Registration_For_Object_Class::show(std::ostream& out) {
       out << "[M_Start_Registration_For_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
-      out << "[M_Start_Registration_For_Object_Class -End]" << std::endl;   }
+      out << "[M_Start_Registration_For_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Stop_Registration_For_Object_Class::M_Stop_Registration_For_Object_Class() {
       this->messageName = "M_Stop_Registration_For_Object_Class";
@@ -796,26 +832,28 @@ namespace certi {
    M_Stop_Registration_For_Object_Class::~M_Stop_Registration_For_Object_Class() {
    }
 
-   void M_Stop_Registration_For_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Stop_Registration_For_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(objectClass);
    }
 
-   void M_Stop_Registration_For_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Stop_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Stop_Registration_For_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Stop_Registration_For_Object_Class::show(std::ostream& out) {
       out << "[M_Stop_Registration_For_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
-      out << "[M_Stop_Registration_For_Object_Class -End]" << std::endl;   }
+      out << "[M_Stop_Registration_For_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Turn_Interactions_On::M_Turn_Interactions_On() {
       this->messageName = "M_Turn_Interactions_On";
@@ -826,26 +864,28 @@ namespace certi {
    M_Turn_Interactions_On::~M_Turn_Interactions_On() {
    }
 
-   void M_Turn_Interactions_On::serialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Interactions_On::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Turn_Interactions_On::deserialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Interactions_On::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Turn_Interactions_On::show(std::ostream& out) {
+   std::ostream& M_Turn_Interactions_On::show(std::ostream& out) {
       out << "[M_Turn_Interactions_On -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Turn_Interactions_On -End]" << std::endl;   }
+      out << "[M_Turn_Interactions_On -End]" << std::endl;
+      return out;
+   }
 
    M_Turn_Interactions_Off::M_Turn_Interactions_Off() {
       this->messageName = "M_Turn_Interactions_Off";
@@ -856,26 +896,28 @@ namespace certi {
    M_Turn_Interactions_Off::~M_Turn_Interactions_Off() {
    }
 
-   void M_Turn_Interactions_Off::serialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Interactions_Off::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(interactionClass);
    }
 
-   void M_Turn_Interactions_Off::deserialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Interactions_Off::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Turn_Interactions_Off::show(std::ostream& out) {
+   std::ostream& M_Turn_Interactions_Off::show(std::ostream& out) {
       out << "[M_Turn_Interactions_Off -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
-      out << "[M_Turn_Interactions_Off -End]" << std::endl;   }
+      out << "[M_Turn_Interactions_Off -End]" << std::endl;
+      return out;
+   }
 
    M_Register_Object_Instance::M_Register_Object_Instance() {
       this->messageName = "M_Register_Object_Instance";
@@ -889,7 +931,7 @@ namespace certi {
    M_Register_Object_Instance::~M_Register_Object_Instance() {
    }
 
-   void M_Register_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Register_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -901,7 +943,7 @@ namespace certi {
       }
    }
 
-   void M_Register_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Register_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -913,14 +955,16 @@ namespace certi {
       }
    }
 
-   void M_Register_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Register_Object_Instance::show(std::ostream& out) {
       out << "[M_Register_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << "(opt) objectName =" << objectName << " "       << std::endl;
-      out << "[M_Register_Object_Instance -End]" << std::endl;   }
+      out << "[M_Register_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Update_Attribute_Values::M_Update_Attribute_Values() {
       this->messageName = "M_Update_Attribute_Values";
@@ -936,7 +980,7 @@ namespace certi {
    M_Update_Attribute_Values::~M_Update_Attribute_Values() {
    }
 
-   void M_Update_Attribute_Values::serialize(MessageBuffer& msgBuffer) {
+   void M_Update_Attribute_Values::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -958,7 +1002,7 @@ namespace certi {
       }
    }
 
-   void M_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
+   void M_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -980,7 +1024,7 @@ namespace certi {
       }
    }
 
-   void M_Update_Attribute_Values::show(std::ostream& out) {
+   std::ostream& M_Update_Attribute_Values::show(std::ostream& out) {
       out << "[M_Update_Attribute_Values -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -996,8 +1040,10 @@ namespace certi {
          out << values[i] << " " ;
       }
       out << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Update_Attribute_Values -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Update_Attribute_Values -End]" << std::endl;
+      return out;
+   }
 
    M_Discover_Object_Instance::M_Discover_Object_Instance() {
       this->messageName = "M_Discover_Object_Instance";
@@ -1012,7 +1058,7 @@ namespace certi {
    M_Discover_Object_Instance::~M_Discover_Object_Instance() {
    }
 
-   void M_Discover_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Discover_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1025,7 +1071,7 @@ namespace certi {
       }
    }
 
-   void M_Discover_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Discover_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1038,15 +1084,17 @@ namespace certi {
       }
    }
 
-   void M_Discover_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Discover_Object_Instance::show(std::ostream& out) {
       out << "[M_Discover_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Discover_Object_Instance -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Discover_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Reflect_Attribute_Values::M_Reflect_Attribute_Values() {
       this->messageName = "M_Reflect_Attribute_Values";
@@ -1062,7 +1110,7 @@ namespace certi {
    M_Reflect_Attribute_Values::~M_Reflect_Attribute_Values() {
    }
 
-   void M_Reflect_Attribute_Values::serialize(MessageBuffer& msgBuffer) {
+   void M_Reflect_Attribute_Values::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1084,7 +1132,7 @@ namespace certi {
       }
    }
 
-   void M_Reflect_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
+   void M_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1106,7 +1154,7 @@ namespace certi {
       }
    }
 
-   void M_Reflect_Attribute_Values::show(std::ostream& out) {
+   std::ostream& M_Reflect_Attribute_Values::show(std::ostream& out) {
       out << "[M_Reflect_Attribute_Values -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1122,8 +1170,10 @@ namespace certi {
          out << values[i] << " " ;
       }
       out << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Reflect_Attribute_Values -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Reflect_Attribute_Values -End]" << std::endl;
+      return out;
+   }
 
    M_Send_Interaction::M_Send_Interaction() {
       this->messageName = "M_Send_Interaction";
@@ -1139,7 +1189,7 @@ namespace certi {
    M_Send_Interaction::~M_Send_Interaction() {
    }
 
-   void M_Send_Interaction::serialize(MessageBuffer& msgBuffer) {
+   void M_Send_Interaction::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1161,7 +1211,7 @@ namespace certi {
       }
    }
 
-   void M_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
+   void M_Send_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1183,7 +1233,7 @@ namespace certi {
       }
    }
 
-   void M_Send_Interaction::show(std::ostream& out) {
+   std::ostream& M_Send_Interaction::show(std::ostream& out) {
       out << "[M_Send_Interaction -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1199,8 +1249,10 @@ namespace certi {
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Send_Interaction -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Send_Interaction -End]" << std::endl;
+      return out;
+   }
 
    M_Receive_Interaction::M_Receive_Interaction() {
       this->messageName = "M_Receive_Interaction";
@@ -1216,7 +1268,7 @@ namespace certi {
    M_Receive_Interaction::~M_Receive_Interaction() {
    }
 
-   void M_Receive_Interaction::serialize(MessageBuffer& msgBuffer) {
+   void M_Receive_Interaction::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1238,7 +1290,7 @@ namespace certi {
       }
    }
 
-   void M_Receive_Interaction::deserialize(MessageBuffer& msgBuffer) {
+   void M_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1260,7 +1312,7 @@ namespace certi {
       }
    }
 
-   void M_Receive_Interaction::show(std::ostream& out) {
+   std::ostream& M_Receive_Interaction::show(std::ostream& out) {
       out << "[M_Receive_Interaction -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1276,8 +1328,10 @@ namespace certi {
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Receive_Interaction -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Receive_Interaction -End]" << std::endl;
+      return out;
+   }
 
    M_Delete_Object_Instance::M_Delete_Object_Instance() {
       this->messageName = "M_Delete_Object_Instance";
@@ -1292,7 +1346,7 @@ namespace certi {
    M_Delete_Object_Instance::~M_Delete_Object_Instance() {
    }
 
-   void M_Delete_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Delete_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1305,7 +1359,7 @@ namespace certi {
       }
    }
 
-   void M_Delete_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Delete_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1318,15 +1372,17 @@ namespace certi {
       }
    }
 
-   void M_Delete_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Delete_Object_Instance::show(std::ostream& out) {
       out << "[M_Delete_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Delete_Object_Instance -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Delete_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Local_Delete_Object_Instance::M_Local_Delete_Object_Instance() {
       this->messageName = "M_Local_Delete_Object_Instance";
@@ -1337,26 +1393,28 @@ namespace certi {
    M_Local_Delete_Object_Instance::~M_Local_Delete_Object_Instance() {
    }
 
-   void M_Local_Delete_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Local_Delete_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(object);
    }
 
-   void M_Local_Delete_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Local_Delete_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Local_Delete_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Local_Delete_Object_Instance::show(std::ostream& out) {
       out << "[M_Local_Delete_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
-      out << "[M_Local_Delete_Object_Instance -End]" << std::endl;   }
+      out << "[M_Local_Delete_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Remove_Object_Instance::M_Remove_Object_Instance() {
       this->messageName = "M_Remove_Object_Instance";
@@ -1371,7 +1429,7 @@ namespace certi {
    M_Remove_Object_Instance::~M_Remove_Object_Instance() {
    }
 
-   void M_Remove_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Remove_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1384,7 +1442,7 @@ namespace certi {
       }
    }
 
-   void M_Remove_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Remove_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1397,15 +1455,17 @@ namespace certi {
       }
    }
 
-   void M_Remove_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Remove_Object_Instance::show(std::ostream& out) {
       out << "[M_Remove_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "(opt) eventRetraction =" << "FIXME inherited "       << std::endl;
-      out << "[M_Remove_Object_Instance -End]" << std::endl;   }
+      out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
+      out << "[M_Remove_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Change_Attribute_Transportation_Type::M_Change_Attribute_Transportation_Type() {
       this->messageName = "M_Change_Attribute_Transportation_Type";
@@ -1419,7 +1479,7 @@ namespace certi {
    M_Change_Attribute_Transportation_Type::~M_Change_Attribute_Transportation_Type() {
    }
 
-   void M_Change_Attribute_Transportation_Type::serialize(MessageBuffer& msgBuffer) {
+   void M_Change_Attribute_Transportation_Type::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1433,7 +1493,7 @@ namespace certi {
       }
    }
 
-   void M_Change_Attribute_Transportation_Type::deserialize(MessageBuffer& msgBuffer) {
+   void M_Change_Attribute_Transportation_Type::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1447,7 +1507,7 @@ namespace certi {
       }
    }
 
-   void M_Change_Attribute_Transportation_Type::show(std::ostream& out) {
+   std::ostream& M_Change_Attribute_Transportation_Type::show(std::ostream& out) {
       out << "[M_Change_Attribute_Transportation_Type -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1459,7 +1519,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Change_Attribute_Transportation_Type -End]" << std::endl;   }
+      out << "[M_Change_Attribute_Transportation_Type -End]" << std::endl;
+      return out;
+   }
 
    M_Change_Interaction_Transportation_Type::M_Change_Interaction_Transportation_Type() {
       this->messageName = "M_Change_Interaction_Transportation_Type";
@@ -1472,7 +1534,7 @@ namespace certi {
    M_Change_Interaction_Transportation_Type::~M_Change_Interaction_Transportation_Type() {
    }
 
-   void M_Change_Interaction_Transportation_Type::serialize(MessageBuffer& msgBuffer) {
+   void M_Change_Interaction_Transportation_Type::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1481,7 +1543,7 @@ namespace certi {
       msgBuffer.write_uint8(orderType);
    }
 
-   void M_Change_Interaction_Transportation_Type::deserialize(MessageBuffer& msgBuffer) {
+   void M_Change_Interaction_Transportation_Type::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1490,14 +1552,16 @@ namespace certi {
       orderType = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
-   void M_Change_Interaction_Transportation_Type::show(std::ostream& out) {
+   std::ostream& M_Change_Interaction_Transportation_Type::show(std::ostream& out) {
       out << "[M_Change_Interaction_Transportation_Type -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " transportationType = " << transportationType << " "       << std::endl;
       out << " orderType = " << orderType << " "       << std::endl;
-      out << "[M_Change_Interaction_Transportation_Type -End]" << std::endl;   }
+      out << "[M_Change_Interaction_Transportation_Type -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Object_Attribute_Value_Update::M_Request_Object_Attribute_Value_Update() {
       this->messageName = "M_Request_Object_Attribute_Value_Update";
@@ -1509,7 +1573,7 @@ namespace certi {
    M_Request_Object_Attribute_Value_Update::~M_Request_Object_Attribute_Value_Update() {
    }
 
-   void M_Request_Object_Attribute_Value_Update::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Object_Attribute_Value_Update::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1521,7 +1585,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Object_Attribute_Value_Update::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Object_Attribute_Value_Update::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1533,7 +1597,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Object_Attribute_Value_Update::show(std::ostream& out) {
+   std::ostream& M_Request_Object_Attribute_Value_Update::show(std::ostream& out) {
       out << "[M_Request_Object_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1543,7 +1607,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Request_Object_Attribute_Value_Update -End]" << std::endl;   }
+      out << "[M_Request_Object_Attribute_Value_Update -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Class_Attribute_Value_Update::M_Request_Class_Attribute_Value_Update() {
       this->messageName = "M_Request_Class_Attribute_Value_Update";
@@ -1555,7 +1621,7 @@ namespace certi {
    M_Request_Class_Attribute_Value_Update::~M_Request_Class_Attribute_Value_Update() {
    }
 
-   void M_Request_Class_Attribute_Value_Update::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Class_Attribute_Value_Update::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1567,7 +1633,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Class_Attribute_Value_Update::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Class_Attribute_Value_Update::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1579,7 +1645,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Class_Attribute_Value_Update::show(std::ostream& out) {
+   std::ostream& M_Request_Class_Attribute_Value_Update::show(std::ostream& out) {
       out << "[M_Request_Class_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1589,7 +1655,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Request_Class_Attribute_Value_Update -End]" << std::endl;   }
+      out << "[M_Request_Class_Attribute_Value_Update -End]" << std::endl;
+      return out;
+   }
 
    M_Provide_Attribute_Value_Update::M_Provide_Attribute_Value_Update() {
       this->messageName = "M_Provide_Attribute_Value_Update";
@@ -1601,7 +1669,7 @@ namespace certi {
    M_Provide_Attribute_Value_Update::~M_Provide_Attribute_Value_Update() {
    }
 
-   void M_Provide_Attribute_Value_Update::serialize(MessageBuffer& msgBuffer) {
+   void M_Provide_Attribute_Value_Update::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1613,7 +1681,7 @@ namespace certi {
       }
    }
 
-   void M_Provide_Attribute_Value_Update::deserialize(MessageBuffer& msgBuffer) {
+   void M_Provide_Attribute_Value_Update::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1625,7 +1693,7 @@ namespace certi {
       }
    }
 
-   void M_Provide_Attribute_Value_Update::show(std::ostream& out) {
+   std::ostream& M_Provide_Attribute_Value_Update::show(std::ostream& out) {
       out << "[M_Provide_Attribute_Value_Update -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1635,7 +1703,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Provide_Attribute_Value_Update -End]" << std::endl;   }
+      out << "[M_Provide_Attribute_Value_Update -End]" << std::endl;
+      return out;
+   }
 
    M_Attributes_In_Scope::M_Attributes_In_Scope() {
       this->messageName = "M_Attributes_In_Scope";
@@ -1647,7 +1717,7 @@ namespace certi {
    M_Attributes_In_Scope::~M_Attributes_In_Scope() {
    }
 
-   void M_Attributes_In_Scope::serialize(MessageBuffer& msgBuffer) {
+   void M_Attributes_In_Scope::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1659,7 +1729,7 @@ namespace certi {
       }
    }
 
-   void M_Attributes_In_Scope::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attributes_In_Scope::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1671,7 +1741,7 @@ namespace certi {
       }
    }
 
-   void M_Attributes_In_Scope::show(std::ostream& out) {
+   std::ostream& M_Attributes_In_Scope::show(std::ostream& out) {
       out << "[M_Attributes_In_Scope -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1681,7 +1751,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attributes_In_Scope -End]" << std::endl;   }
+      out << "[M_Attributes_In_Scope -End]" << std::endl;
+      return out;
+   }
 
    M_Attributes_Out_Of_Scope::M_Attributes_Out_Of_Scope() {
       this->messageName = "M_Attributes_Out_Of_Scope";
@@ -1693,7 +1765,7 @@ namespace certi {
    M_Attributes_Out_Of_Scope::~M_Attributes_Out_Of_Scope() {
    }
 
-   void M_Attributes_Out_Of_Scope::serialize(MessageBuffer& msgBuffer) {
+   void M_Attributes_Out_Of_Scope::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1705,7 +1777,7 @@ namespace certi {
       }
    }
 
-   void M_Attributes_Out_Of_Scope::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attributes_Out_Of_Scope::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1717,7 +1789,7 @@ namespace certi {
       }
    }
 
-   void M_Attributes_Out_Of_Scope::show(std::ostream& out) {
+   std::ostream& M_Attributes_Out_Of_Scope::show(std::ostream& out) {
       out << "[M_Attributes_Out_Of_Scope -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1727,7 +1799,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attributes_Out_Of_Scope -End]" << std::endl;   }
+      out << "[M_Attributes_Out_Of_Scope -End]" << std::endl;
+      return out;
+   }
 
    M_Turn_Updates_On_For_Object_Instance::M_Turn_Updates_On_For_Object_Instance() {
       this->messageName = "M_Turn_Updates_On_For_Object_Instance";
@@ -1739,7 +1813,7 @@ namespace certi {
    M_Turn_Updates_On_For_Object_Instance::~M_Turn_Updates_On_For_Object_Instance() {
    }
 
-   void M_Turn_Updates_On_For_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Updates_On_For_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1751,7 +1825,7 @@ namespace certi {
       }
    }
 
-   void M_Turn_Updates_On_For_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Updates_On_For_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1763,7 +1837,7 @@ namespace certi {
       }
    }
 
-   void M_Turn_Updates_On_For_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Turn_Updates_On_For_Object_Instance::show(std::ostream& out) {
       out << "[M_Turn_Updates_On_For_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1773,7 +1847,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Turn_Updates_On_For_Object_Instance -End]" << std::endl;   }
+      out << "[M_Turn_Updates_On_For_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Turn_Updates_Off_For_Object_Instance::M_Turn_Updates_Off_For_Object_Instance() {
       this->messageName = "M_Turn_Updates_Off_For_Object_Instance";
@@ -1785,7 +1861,7 @@ namespace certi {
    M_Turn_Updates_Off_For_Object_Instance::~M_Turn_Updates_Off_For_Object_Instance() {
    }
 
-   void M_Turn_Updates_Off_For_Object_Instance::serialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Updates_Off_For_Object_Instance::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1797,7 +1873,7 @@ namespace certi {
       }
    }
 
-   void M_Turn_Updates_Off_For_Object_Instance::deserialize(MessageBuffer& msgBuffer) {
+   void M_Turn_Updates_Off_For_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1809,7 +1885,7 @@ namespace certi {
       }
    }
 
-   void M_Turn_Updates_Off_For_Object_Instance::show(std::ostream& out) {
+   std::ostream& M_Turn_Updates_Off_For_Object_Instance::show(std::ostream& out) {
       out << "[M_Turn_Updates_Off_For_Object_Instance -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1819,7 +1895,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Turn_Updates_Off_For_Object_Instance -End]" << std::endl;   }
+      out << "[M_Turn_Updates_Off_For_Object_Instance -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Attribute_Ownership_Divestiture::M_Request_Attribute_Ownership_Divestiture() {
       this->messageName = "M_Request_Attribute_Ownership_Divestiture";
@@ -1839,7 +1917,7 @@ namespace certi {
    M_Request_Attribute_Ownership_Assumption::~M_Request_Attribute_Ownership_Assumption() {
    }
 
-   void M_Request_Attribute_Ownership_Assumption::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Assumption::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1851,7 +1929,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Assumption::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Assumption::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1863,7 +1941,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Assumption::show(std::ostream& out) {
+   std::ostream& M_Request_Attribute_Ownership_Assumption::show(std::ostream& out) {
       out << "[M_Request_Attribute_Ownership_Assumption -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1873,7 +1951,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Request_Attribute_Ownership_Assumption -End]" << std::endl;   }
+      out << "[M_Request_Attribute_Ownership_Assumption -End]" << std::endl;
+      return out;
+   }
 
    M_Negotiated_Attribute_Ownership_Divestiture::M_Negotiated_Attribute_Ownership_Divestiture() {
       this->messageName = "M_Negotiated_Attribute_Ownership_Divestiture";
@@ -1885,7 +1965,7 @@ namespace certi {
    M_Negotiated_Attribute_Ownership_Divestiture::~M_Negotiated_Attribute_Ownership_Divestiture() {
    }
 
-   void M_Negotiated_Attribute_Ownership_Divestiture::serialize(MessageBuffer& msgBuffer) {
+   void M_Negotiated_Attribute_Ownership_Divestiture::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1897,7 +1977,7 @@ namespace certi {
       }
    }
 
-   void M_Negotiated_Attribute_Ownership_Divestiture::deserialize(MessageBuffer& msgBuffer) {
+   void M_Negotiated_Attribute_Ownership_Divestiture::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1909,7 +1989,7 @@ namespace certi {
       }
    }
 
-   void M_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+   std::ostream& M_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
       out << "[M_Negotiated_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1919,7 +1999,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+      out << "[M_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Ownership_Divestiture_Notification::M_Attribute_Ownership_Divestiture_Notification() {
       this->messageName = "M_Attribute_Ownership_Divestiture_Notification";
@@ -1931,7 +2013,7 @@ namespace certi {
    M_Attribute_Ownership_Divestiture_Notification::~M_Attribute_Ownership_Divestiture_Notification() {
    }
 
-   void M_Attribute_Ownership_Divestiture_Notification::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Divestiture_Notification::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1943,7 +2025,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Divestiture_Notification::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Divestiture_Notification::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -1955,7 +2037,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Divestiture_Notification::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Divestiture_Notification::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Divestiture_Notification -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -1965,7 +2047,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Divestiture_Notification -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Divestiture_Notification -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Ownership_Acquisition_Notification::M_Attribute_Ownership_Acquisition_Notification() {
       this->messageName = "M_Attribute_Ownership_Acquisition_Notification";
@@ -1977,7 +2061,7 @@ namespace certi {
    M_Attribute_Ownership_Acquisition_Notification::~M_Attribute_Ownership_Acquisition_Notification() {
    }
 
-   void M_Attribute_Ownership_Acquisition_Notification::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition_Notification::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -1989,7 +2073,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition_Notification::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition_Notification::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2001,7 +2085,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition_Notification::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Acquisition_Notification::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Acquisition_Notification -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2011,7 +2095,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Acquisition_Notification -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Acquisition_Notification -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Attribute_Ownership_Acquisition::M_Request_Attribute_Ownership_Acquisition() {
       this->messageName = "M_Request_Attribute_Ownership_Acquisition";
@@ -2023,7 +2109,7 @@ namespace certi {
    M_Request_Attribute_Ownership_Acquisition::~M_Request_Attribute_Ownership_Acquisition() {
    }
 
-   void M_Request_Attribute_Ownership_Acquisition::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Acquisition::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2035,7 +2121,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Acquisition::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2047,7 +2133,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+   std::ostream& M_Request_Attribute_Ownership_Acquisition::show(std::ostream& out) {
       out << "[M_Request_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2057,7 +2143,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Request_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+      out << "[M_Request_Attribute_Ownership_Acquisition -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Attribute_Ownership_Release::M_Request_Attribute_Ownership_Release() {
       this->messageName = "M_Request_Attribute_Ownership_Release";
@@ -2069,7 +2157,7 @@ namespace certi {
    M_Request_Attribute_Ownership_Release::~M_Request_Attribute_Ownership_Release() {
    }
 
-   void M_Request_Attribute_Ownership_Release::serialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Release::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2081,7 +2169,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Release::deserialize(MessageBuffer& msgBuffer) {
+   void M_Request_Attribute_Ownership_Release::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2093,7 +2181,7 @@ namespace certi {
       }
    }
 
-   void M_Request_Attribute_Ownership_Release::show(std::ostream& out) {
+   std::ostream& M_Request_Attribute_Ownership_Release::show(std::ostream& out) {
       out << "[M_Request_Attribute_Ownership_Release -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2103,7 +2191,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Request_Attribute_Ownership_Release -End]" << std::endl;   }
+      out << "[M_Request_Attribute_Ownership_Release -End]" << std::endl;
+      return out;
+   }
 
    M_Query_Attribute_Ownership::M_Query_Attribute_Ownership() {
       this->messageName = "M_Query_Attribute_Ownership";
@@ -2115,7 +2205,7 @@ namespace certi {
    M_Query_Attribute_Ownership::~M_Query_Attribute_Ownership() {
    }
 
-   void M_Query_Attribute_Ownership::serialize(MessageBuffer& msgBuffer) {
+   void M_Query_Attribute_Ownership::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2123,7 +2213,7 @@ namespace certi {
       msgBuffer.write_uint32(attribute);
    }
 
-   void M_Query_Attribute_Ownership::deserialize(MessageBuffer& msgBuffer) {
+   void M_Query_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2131,13 +2221,15 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Query_Attribute_Ownership::show(std::ostream& out) {
+   std::ostream& M_Query_Attribute_Ownership::show(std::ostream& out) {
       out << "[M_Query_Attribute_Ownership -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
-      out << "[M_Query_Attribute_Ownership -End]" << std::endl;   }
+      out << "[M_Query_Attribute_Ownership -End]" << std::endl;
+      return out;
+   }
 
    M_Inform_Attribute_Ownership::M_Inform_Attribute_Ownership() {
       this->messageName = "M_Inform_Attribute_Ownership";
@@ -2150,7 +2242,7 @@ namespace certi {
    M_Inform_Attribute_Ownership::~M_Inform_Attribute_Ownership() {
    }
 
-   void M_Inform_Attribute_Ownership::serialize(MessageBuffer& msgBuffer) {
+   void M_Inform_Attribute_Ownership::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2159,7 +2251,7 @@ namespace certi {
       msgBuffer.write_uint32(federate);
    }
 
-   void M_Inform_Attribute_Ownership::deserialize(MessageBuffer& msgBuffer) {
+   void M_Inform_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2168,14 +2260,16 @@ namespace certi {
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Inform_Attribute_Ownership::show(std::ostream& out) {
+   std::ostream& M_Inform_Attribute_Ownership::show(std::ostream& out) {
       out << "[M_Inform_Attribute_Ownership -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
       out << " federate = " << federate << " "       << std::endl;
-      out << "[M_Inform_Attribute_Ownership -End]" << std::endl;   }
+      out << "[M_Inform_Attribute_Ownership -End]" << std::endl;
+      return out;
+   }
 
    M_Is_Attribute_Owned_By_Federate::M_Is_Attribute_Owned_By_Federate() {
       this->messageName = "M_Is_Attribute_Owned_By_Federate";
@@ -2187,7 +2281,7 @@ namespace certi {
    M_Is_Attribute_Owned_By_Federate::~M_Is_Attribute_Owned_By_Federate() {
    }
 
-   void M_Is_Attribute_Owned_By_Federate::serialize(MessageBuffer& msgBuffer) {
+   void M_Is_Attribute_Owned_By_Federate::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2195,7 +2289,7 @@ namespace certi {
       msgBuffer.write_uint32(attribute);
    }
 
-   void M_Is_Attribute_Owned_By_Federate::deserialize(MessageBuffer& msgBuffer) {
+   void M_Is_Attribute_Owned_By_Federate::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2203,13 +2297,15 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Is_Attribute_Owned_By_Federate::show(std::ostream& out) {
+   std::ostream& M_Is_Attribute_Owned_By_Federate::show(std::ostream& out) {
       out << "[M_Is_Attribute_Owned_By_Federate -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
-      out << "[M_Is_Attribute_Owned_By_Federate -End]" << std::endl;   }
+      out << "[M_Is_Attribute_Owned_By_Federate -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Is_Not_Owned::M_Attribute_Is_Not_Owned() {
       this->messageName = "M_Attribute_Is_Not_Owned";
@@ -2222,7 +2318,7 @@ namespace certi {
    M_Attribute_Is_Not_Owned::~M_Attribute_Is_Not_Owned() {
    }
 
-   void M_Attribute_Is_Not_Owned::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Is_Not_Owned::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2231,7 +2327,7 @@ namespace certi {
       msgBuffer.write_uint32(federate);
    }
 
-   void M_Attribute_Is_Not_Owned::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Is_Not_Owned::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2240,14 +2336,16 @@ namespace certi {
       federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Attribute_Is_Not_Owned::show(std::ostream& out) {
+   std::ostream& M_Attribute_Is_Not_Owned::show(std::ostream& out) {
       out << "[M_Attribute_Is_Not_Owned -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
       out << " federate = " << federate << " "       << std::endl;
-      out << "[M_Attribute_Is_Not_Owned -End]" << std::endl;   }
+      out << "[M_Attribute_Is_Not_Owned -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Owned_By_Rti::M_Attribute_Owned_By_Rti() {
       this->messageName = "M_Attribute_Owned_By_Rti";
@@ -2267,7 +2365,7 @@ namespace certi {
    M_Attribute_Ownership_Acquisition_If_Available::~M_Attribute_Ownership_Acquisition_If_Available() {
    }
 
-   void M_Attribute_Ownership_Acquisition_If_Available::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition_If_Available::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2279,7 +2377,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition_If_Available::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition_If_Available::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2291,7 +2389,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition_If_Available::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Acquisition_If_Available::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Acquisition_If_Available -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2301,7 +2399,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Acquisition_If_Available -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Acquisition_If_Available -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Ownership_Unavailable::M_Attribute_Ownership_Unavailable() {
       this->messageName = "M_Attribute_Ownership_Unavailable";
@@ -2313,7 +2413,7 @@ namespace certi {
    M_Attribute_Ownership_Unavailable::~M_Attribute_Ownership_Unavailable() {
    }
 
-   void M_Attribute_Ownership_Unavailable::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Unavailable::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2325,7 +2425,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Unavailable::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Unavailable::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2337,7 +2437,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Unavailable::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Unavailable::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Unavailable -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2347,7 +2447,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Unavailable -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Unavailable -End]" << std::endl;
+      return out;
+   }
 
    M_Unconditional_Attribute_Ownership_Divestiture::M_Unconditional_Attribute_Ownership_Divestiture() {
       this->messageName = "M_Unconditional_Attribute_Ownership_Divestiture";
@@ -2359,7 +2461,7 @@ namespace certi {
    M_Unconditional_Attribute_Ownership_Divestiture::~M_Unconditional_Attribute_Ownership_Divestiture() {
    }
 
-   void M_Unconditional_Attribute_Ownership_Divestiture::serialize(MessageBuffer& msgBuffer) {
+   void M_Unconditional_Attribute_Ownership_Divestiture::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2371,7 +2473,7 @@ namespace certi {
       }
    }
 
-   void M_Unconditional_Attribute_Ownership_Divestiture::deserialize(MessageBuffer& msgBuffer) {
+   void M_Unconditional_Attribute_Ownership_Divestiture::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2383,7 +2485,7 @@ namespace certi {
       }
    }
 
-   void M_Unconditional_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+   std::ostream& M_Unconditional_Attribute_Ownership_Divestiture::show(std::ostream& out) {
       out << "[M_Unconditional_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2393,7 +2495,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Unconditional_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+      out << "[M_Unconditional_Attribute_Ownership_Divestiture -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Ownership_Acquisition::M_Attribute_Ownership_Acquisition() {
       this->messageName = "M_Attribute_Ownership_Acquisition";
@@ -2405,7 +2509,7 @@ namespace certi {
    M_Attribute_Ownership_Acquisition::~M_Attribute_Ownership_Acquisition() {
    }
 
-   void M_Attribute_Ownership_Acquisition::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2417,7 +2521,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2429,7 +2533,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Acquisition::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2439,7 +2543,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Acquisition -End]" << std::endl;
+      return out;
+   }
 
    M_Cancel_Negotiated_Attribute_Ownership_Divestiture::M_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
       this->messageName = "M_Cancel_Negotiated_Attribute_Ownership_Divestiture";
@@ -2451,7 +2557,7 @@ namespace certi {
    M_Cancel_Negotiated_Attribute_Ownership_Divestiture::~M_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
    }
 
-   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::serialize(MessageBuffer& msgBuffer) {
+   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2463,7 +2569,7 @@ namespace certi {
       }
    }
 
-   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::deserialize(MessageBuffer& msgBuffer) {
+   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2475,7 +2581,7 @@ namespace certi {
       }
    }
 
-   void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
+   std::ostream& M_Cancel_Negotiated_Attribute_Ownership_Divestiture::show(std::ostream& out) {
       out << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2485,7 +2591,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;   }
+      out << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture -End]" << std::endl;
+      return out;
+   }
 
    M_Attribute_Ownership_Release_Response::M_Attribute_Ownership_Release_Response() {
       this->messageName = "M_Attribute_Ownership_Release_Response";
@@ -2497,7 +2605,7 @@ namespace certi {
    M_Attribute_Ownership_Release_Response::~M_Attribute_Ownership_Release_Response() {
    }
 
-   void M_Attribute_Ownership_Release_Response::serialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Release_Response::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2509,7 +2617,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Release_Response::deserialize(MessageBuffer& msgBuffer) {
+   void M_Attribute_Ownership_Release_Response::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2521,7 +2629,7 @@ namespace certi {
       }
    }
 
-   void M_Attribute_Ownership_Release_Response::show(std::ostream& out) {
+   std::ostream& M_Attribute_Ownership_Release_Response::show(std::ostream& out) {
       out << "[M_Attribute_Ownership_Release_Response -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2531,7 +2639,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Attribute_Ownership_Release_Response -End]" << std::endl;   }
+      out << "[M_Attribute_Ownership_Release_Response -End]" << std::endl;
+      return out;
+   }
 
    M_Cancel_Attribute_Ownership_Acquisition::M_Cancel_Attribute_Ownership_Acquisition() {
       this->messageName = "M_Cancel_Attribute_Ownership_Acquisition";
@@ -2543,7 +2653,7 @@ namespace certi {
    M_Cancel_Attribute_Ownership_Acquisition::~M_Cancel_Attribute_Ownership_Acquisition() {
    }
 
-   void M_Cancel_Attribute_Ownership_Acquisition::serialize(MessageBuffer& msgBuffer) {
+   void M_Cancel_Attribute_Ownership_Acquisition::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2555,7 +2665,7 @@ namespace certi {
       }
    }
 
-   void M_Cancel_Attribute_Ownership_Acquisition::deserialize(MessageBuffer& msgBuffer) {
+   void M_Cancel_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2567,7 +2677,7 @@ namespace certi {
       }
    }
 
-   void M_Cancel_Attribute_Ownership_Acquisition::show(std::ostream& out) {
+   std::ostream& M_Cancel_Attribute_Ownership_Acquisition::show(std::ostream& out) {
       out << "[M_Cancel_Attribute_Ownership_Acquisition -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2577,7 +2687,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Cancel_Attribute_Ownership_Acquisition -End]" << std::endl;   }
+      out << "[M_Cancel_Attribute_Ownership_Acquisition -End]" << std::endl;
+      return out;
+   }
 
    M_Confirm_Attribute_Ownership_Acquisition_Cancellation::M_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
       this->messageName = "M_Confirm_Attribute_Ownership_Acquisition_Cancellation";
@@ -2589,7 +2701,7 @@ namespace certi {
    M_Confirm_Attribute_Ownership_Acquisition_Cancellation::~M_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
    }
 
-   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::serialize(MessageBuffer& msgBuffer) {
+   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2601,7 +2713,7 @@ namespace certi {
       }
    }
 
-   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize(MessageBuffer& msgBuffer) {
+   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2613,7 +2725,7 @@ namespace certi {
       }
    }
 
-   void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::show(std::ostream& out) {
+   std::ostream& M_Confirm_Attribute_Ownership_Acquisition_Cancellation::show(std::ostream& out) {
       out << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2623,7 +2735,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation -End]" << std::endl;   }
+      out << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation -End]" << std::endl;
+      return out;
+   }
 
    M_Change_Attribute_Order_Type::M_Change_Attribute_Order_Type() {
       this->messageName = "M_Change_Attribute_Order_Type";
@@ -2637,7 +2751,7 @@ namespace certi {
    M_Change_Attribute_Order_Type::~M_Change_Attribute_Order_Type() {
    }
 
-   void M_Change_Attribute_Order_Type::serialize(MessageBuffer& msgBuffer) {
+   void M_Change_Attribute_Order_Type::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2651,7 +2765,7 @@ namespace certi {
       }
    }
 
-   void M_Change_Attribute_Order_Type::deserialize(MessageBuffer& msgBuffer) {
+   void M_Change_Attribute_Order_Type::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2665,7 +2779,7 @@ namespace certi {
       }
    }
 
-   void M_Change_Attribute_Order_Type::show(std::ostream& out) {
+   std::ostream& M_Change_Attribute_Order_Type::show(std::ostream& out) {
       out << "[M_Change_Attribute_Order_Type -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -2677,7 +2791,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Change_Attribute_Order_Type -End]" << std::endl;   }
+      out << "[M_Change_Attribute_Order_Type -End]" << std::endl;
+      return out;
+   }
 
    M_Change_Interaction_Order_Type::M_Change_Interaction_Order_Type() {
       this->messageName = "M_Change_Interaction_Order_Type";
@@ -2690,7 +2806,7 @@ namespace certi {
    M_Change_Interaction_Order_Type::~M_Change_Interaction_Order_Type() {
    }
 
-   void M_Change_Interaction_Order_Type::serialize(MessageBuffer& msgBuffer) {
+   void M_Change_Interaction_Order_Type::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -2699,7 +2815,7 @@ namespace certi {
       msgBuffer.write_uint8(order);
    }
 
-   void M_Change_Interaction_Order_Type::deserialize(MessageBuffer& msgBuffer) {
+   void M_Change_Interaction_Order_Type::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -2708,14 +2824,16 @@ namespace certi {
       order = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
-   void M_Change_Interaction_Order_Type::show(std::ostream& out) {
+   std::ostream& M_Change_Interaction_Order_Type::show(std::ostream& out) {
       out << "[M_Change_Interaction_Order_Type -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " transport = " << transport << " "       << std::endl;
       out << " order = " << order << " "       << std::endl;
-      out << "[M_Change_Interaction_Order_Type -End]" << std::endl;   }
+      out << "[M_Change_Interaction_Order_Type -End]" << std::endl;
+      return out;
+   }
 
    M_Enable_Time_Regulation::M_Enable_Time_Regulation() {
       this->messageName = "M_Enable_Time_Regulation";
@@ -2726,26 +2844,28 @@ namespace certi {
    M_Enable_Time_Regulation::~M_Enable_Time_Regulation() {
    }
 
-   void M_Enable_Time_Regulation::serialize(MessageBuffer& msgBuffer) {
+   void M_Enable_Time_Regulation::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_double(lookahead);
    }
 
-   void M_Enable_Time_Regulation::deserialize(MessageBuffer& msgBuffer) {
+   void M_Enable_Time_Regulation::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       lookahead = msgBuffer.read_double();
    }
 
-   void M_Enable_Time_Regulation::show(std::ostream& out) {
+   std::ostream& M_Enable_Time_Regulation::show(std::ostream& out) {
       out << "[M_Enable_Time_Regulation -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " lookahead = " << lookahead << " "       << std::endl;
-      out << "[M_Enable_Time_Regulation -End]" << std::endl;   }
+      out << "[M_Enable_Time_Regulation -End]" << std::endl;
+      return out;
+   }
 
    M_Disable_Time_Regulation::M_Disable_Time_Regulation() {
       this->messageName = "M_Disable_Time_Regulation";
@@ -2756,26 +2876,28 @@ namespace certi {
    M_Disable_Time_Regulation::~M_Disable_Time_Regulation() {
    }
 
-   void M_Disable_Time_Regulation::serialize(MessageBuffer& msgBuffer) {
+   void M_Disable_Time_Regulation::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_double(lookahead);
    }
 
-   void M_Disable_Time_Regulation::deserialize(MessageBuffer& msgBuffer) {
+   void M_Disable_Time_Regulation::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       lookahead = msgBuffer.read_double();
    }
 
-   void M_Disable_Time_Regulation::show(std::ostream& out) {
+   std::ostream& M_Disable_Time_Regulation::show(std::ostream& out) {
       out << "[M_Disable_Time_Regulation -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " lookahead = " << lookahead << " "       << std::endl;
-      out << "[M_Disable_Time_Regulation -End]" << std::endl;   }
+      out << "[M_Disable_Time_Regulation -End]" << std::endl;
+      return out;
+   }
 
    M_Enable_Time_Constrained::M_Enable_Time_Constrained() {
       this->messageName = "M_Enable_Time_Constrained";
@@ -2826,26 +2948,28 @@ namespace certi {
    M_Modify_Lookahead::~M_Modify_Lookahead() {
    }
 
-   void M_Modify_Lookahead::serialize(MessageBuffer& msgBuffer) {
+   void M_Modify_Lookahead::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_double(lookahead);
    }
 
-   void M_Modify_Lookahead::deserialize(MessageBuffer& msgBuffer) {
+   void M_Modify_Lookahead::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       lookahead = msgBuffer.read_double();
    }
 
-   void M_Modify_Lookahead::show(std::ostream& out) {
+   std::ostream& M_Modify_Lookahead::show(std::ostream& out) {
       out << "[M_Modify_Lookahead -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " lookahead = " << lookahead << " "       << std::endl;
-      out << "[M_Modify_Lookahead -End]" << std::endl;   }
+      out << "[M_Modify_Lookahead -End]" << std::endl;
+      return out;
+   }
 
    M_Query_Lookahead::M_Query_Lookahead() {
       this->messageName = "M_Query_Lookahead";
@@ -2856,26 +2980,28 @@ namespace certi {
    M_Query_Lookahead::~M_Query_Lookahead() {
    }
 
-   void M_Query_Lookahead::serialize(MessageBuffer& msgBuffer) {
+   void M_Query_Lookahead::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_double(lookahead);
    }
 
-   void M_Query_Lookahead::deserialize(MessageBuffer& msgBuffer) {
+   void M_Query_Lookahead::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       lookahead = msgBuffer.read_double();
    }
 
-   void M_Query_Lookahead::show(std::ostream& out) {
+   std::ostream& M_Query_Lookahead::show(std::ostream& out) {
       out << "[M_Query_Lookahead -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " lookahead = " << lookahead << " "       << std::endl;
-      out << "[M_Query_Lookahead -End]" << std::endl;   }
+      out << "[M_Query_Lookahead -End]" << std::endl;
+      return out;
+   }
 
    M_Retract::M_Retract() {
       this->messageName = "M_Retract";
@@ -2886,26 +3012,28 @@ namespace certi {
    M_Retract::~M_Retract() {
    }
 
-   void M_Retract::serialize(MessageBuffer& msgBuffer) {
+   void M_Retract::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       eventRetraction.serialize(msgBuffer);
    }
 
-   void M_Retract::deserialize(MessageBuffer& msgBuffer) {
+   void M_Retract::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       eventRetraction.deserialize(msgBuffer);
    }
 
-   void M_Retract::show(std::ostream& out) {
+   std::ostream& M_Retract::show(std::ostream& out) {
       out << "[M_Retract -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
-      out << " eventRetraction = " << "FIXME inherited "       << std::endl;
-      out << "[M_Retract -End]" << std::endl;   }
+      out << " eventRetraction = " << eventRetraction.show(out)      << std::endl;
+      out << "[M_Retract -End]" << std::endl;
+      return out;
+   }
 
    M_Request_Retraction::M_Request_Retraction() {
       this->messageName = "M_Request_Retraction";
@@ -3006,7 +3134,7 @@ namespace certi {
    M_Ddm_Create_Region::~M_Ddm_Create_Region() {
    }
 
-   void M_Ddm_Create_Region::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Create_Region::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3020,7 +3148,7 @@ namespace certi {
       msgBuffer.write_uint32(region);
    }
 
-   void M_Ddm_Create_Region::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Create_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3034,7 +3162,7 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Ddm_Create_Region::show(std::ostream& out) {
+   std::ostream& M_Ddm_Create_Region::show(std::ostream& out) {
       out << "[M_Ddm_Create_Region -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3045,7 +3173,9 @@ namespace certi {
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "[M_Ddm_Create_Region -End]" << std::endl;   }
+      out << "[M_Ddm_Create_Region -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Modify_Region::M_Ddm_Modify_Region() {
       this->messageName = "M_Ddm_Modify_Region";
@@ -3057,7 +3187,7 @@ namespace certi {
    M_Ddm_Modify_Region::~M_Ddm_Modify_Region() {
    }
 
-   void M_Ddm_Modify_Region::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Modify_Region::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3070,7 +3200,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Modify_Region::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Modify_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3083,7 +3213,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Modify_Region::show(std::ostream& out) {
+   std::ostream& M_Ddm_Modify_Region::show(std::ostream& out) {
       out << "[M_Ddm_Modify_Region -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3093,7 +3223,9 @@ namespace certi {
          out << "         //FIXME FIXME don't know how to serialize native field <extentSet> of type <Extent>";
       }
       out << std::endl;
-      out << "[M_Ddm_Modify_Region -End]" << std::endl;   }
+      out << "[M_Ddm_Modify_Region -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Delete_Region::M_Ddm_Delete_Region() {
       this->messageName = "M_Ddm_Delete_Region";
@@ -3104,26 +3236,28 @@ namespace certi {
    M_Ddm_Delete_Region::~M_Ddm_Delete_Region() {
    }
 
-   void M_Ddm_Delete_Region::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Delete_Region::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_uint32(region);
    }
 
-   void M_Ddm_Delete_Region::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Delete_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Ddm_Delete_Region::show(std::ostream& out) {
+   std::ostream& M_Ddm_Delete_Region::show(std::ostream& out) {
       out << "[M_Ddm_Delete_Region -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " region = " << region << " "       << std::endl;
-      out << "[M_Ddm_Delete_Region -End]" << std::endl;   }
+      out << "[M_Ddm_Delete_Region -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Register_Object::M_Ddm_Register_Object() {
       this->messageName = "M_Ddm_Register_Object";
@@ -3138,7 +3272,7 @@ namespace certi {
    M_Ddm_Register_Object::~M_Ddm_Register_Object() {
    }
 
-   void M_Ddm_Register_Object::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Register_Object::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3155,7 +3289,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Register_Object::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Register_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3172,7 +3306,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Register_Object::show(std::ostream& out) {
+   std::ostream& M_Ddm_Register_Object::show(std::ostream& out) {
       out << "[M_Ddm_Register_Object -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3184,7 +3318,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Ddm_Register_Object -End]" << std::endl;   }
+      out << "[M_Ddm_Register_Object -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Associate_Region::M_Ddm_Associate_Region() {
       this->messageName = "M_Ddm_Associate_Region";
@@ -3197,7 +3333,7 @@ namespace certi {
    M_Ddm_Associate_Region::~M_Ddm_Associate_Region() {
    }
 
-   void M_Ddm_Associate_Region::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Associate_Region::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3210,7 +3346,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Associate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3223,7 +3359,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Associate_Region::show(std::ostream& out) {
+   std::ostream& M_Ddm_Associate_Region::show(std::ostream& out) {
       out << "[M_Ddm_Associate_Region -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3234,7 +3370,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Ddm_Associate_Region -End]" << std::endl;   }
+      out << "[M_Ddm_Associate_Region -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Unassociate_Region::M_Ddm_Unassociate_Region() {
       this->messageName = "M_Ddm_Unassociate_Region";
@@ -3246,7 +3384,7 @@ namespace certi {
    M_Ddm_Unassociate_Region::~M_Ddm_Unassociate_Region() {
    }
 
-   void M_Ddm_Unassociate_Region::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unassociate_Region::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3254,7 +3392,7 @@ namespace certi {
       msgBuffer.write_uint32(region);
    }
 
-   void M_Ddm_Unassociate_Region::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unassociate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3262,13 +3400,15 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Ddm_Unassociate_Region::show(std::ostream& out) {
+   std::ostream& M_Ddm_Unassociate_Region::show(std::ostream& out) {
       out << "[M_Ddm_Unassociate_Region -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "[M_Ddm_Unassociate_Region -End]" << std::endl;   }
+      out << "[M_Ddm_Unassociate_Region -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Subscribe_Attributes::M_Ddm_Subscribe_Attributes() {
       this->messageName = "M_Ddm_Subscribe_Attributes";
@@ -3282,7 +3422,7 @@ namespace certi {
    M_Ddm_Subscribe_Attributes::~M_Ddm_Subscribe_Attributes() {
    }
 
-   void M_Ddm_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Subscribe_Attributes::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3296,7 +3436,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Subscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3310,7 +3450,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Subscribe_Attributes::show(std::ostream& out) {
+   std::ostream& M_Ddm_Subscribe_Attributes::show(std::ostream& out) {
       out << "[M_Ddm_Subscribe_Attributes -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3322,7 +3462,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Ddm_Subscribe_Attributes -End]" << std::endl;   }
+      out << "[M_Ddm_Subscribe_Attributes -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Unsubscribe_Attributes::M_Ddm_Unsubscribe_Attributes() {
       this->messageName = "M_Ddm_Unsubscribe_Attributes";
@@ -3334,7 +3476,7 @@ namespace certi {
    M_Ddm_Unsubscribe_Attributes::~M_Ddm_Unsubscribe_Attributes() {
    }
 
-   void M_Ddm_Unsubscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unsubscribe_Attributes::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3342,7 +3484,7 @@ namespace certi {
       msgBuffer.write_uint32(region);
    }
 
-   void M_Ddm_Unsubscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unsubscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3350,13 +3492,15 @@ namespace certi {
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Ddm_Unsubscribe_Attributes::show(std::ostream& out) {
+   std::ostream& M_Ddm_Unsubscribe_Attributes::show(std::ostream& out) {
       out << "[M_Ddm_Unsubscribe_Attributes -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " region = " << region << " "       << std::endl;
-      out << "[M_Ddm_Unsubscribe_Attributes -End]" << std::endl;   }
+      out << "[M_Ddm_Unsubscribe_Attributes -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Subscribe_Interaction::M_Ddm_Subscribe_Interaction() {
       this->messageName = "M_Ddm_Subscribe_Interaction";
@@ -3369,7 +3513,7 @@ namespace certi {
    M_Ddm_Subscribe_Interaction::~M_Ddm_Subscribe_Interaction() {
    }
 
-   void M_Ddm_Subscribe_Interaction::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Subscribe_Interaction::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3378,7 +3522,7 @@ namespace certi {
       msgBuffer.write_bool(passive);
    }
 
-   void M_Ddm_Subscribe_Interaction::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Subscribe_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3387,14 +3531,16 @@ namespace certi {
       passive = msgBuffer.read_bool();
    }
 
-   void M_Ddm_Subscribe_Interaction::show(std::ostream& out) {
+   std::ostream& M_Ddm_Subscribe_Interaction::show(std::ostream& out) {
       out << "[M_Ddm_Subscribe_Interaction -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " region = " << region << " "       << std::endl;
       out << " passive = " << passive << " "       << std::endl;
-      out << "[M_Ddm_Subscribe_Interaction -End]" << std::endl;   }
+      out << "[M_Ddm_Subscribe_Interaction -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Unsubscribe_Interaction::M_Ddm_Unsubscribe_Interaction() {
       this->messageName = "M_Ddm_Unsubscribe_Interaction";
@@ -3407,7 +3553,7 @@ namespace certi {
    M_Ddm_Unsubscribe_Interaction::~M_Ddm_Unsubscribe_Interaction() {
    }
 
-   void M_Ddm_Unsubscribe_Interaction::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unsubscribe_Interaction::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3416,7 +3562,7 @@ namespace certi {
       msgBuffer.write_bool(passive);
    }
 
-   void M_Ddm_Unsubscribe_Interaction::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Unsubscribe_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3425,14 +3571,16 @@ namespace certi {
       passive = msgBuffer.read_bool();
    }
 
-   void M_Ddm_Unsubscribe_Interaction::show(std::ostream& out) {
+   std::ostream& M_Ddm_Unsubscribe_Interaction::show(std::ostream& out) {
       out << "[M_Ddm_Unsubscribe_Interaction -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " region = " << region << " "       << std::endl;
       out << " passive = " << passive << " "       << std::endl;
-      out << "[M_Ddm_Unsubscribe_Interaction -End]" << std::endl;   }
+      out << "[M_Ddm_Unsubscribe_Interaction -End]" << std::endl;
+      return out;
+   }
 
    M_Ddm_Request_Update::M_Ddm_Request_Update() {
       this->messageName = "M_Ddm_Request_Update";
@@ -3445,7 +3593,7 @@ namespace certi {
    M_Ddm_Request_Update::~M_Ddm_Request_Update() {
    }
 
-   void M_Ddm_Request_Update::serialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Request_Update::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3458,7 +3606,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Request_Update::deserialize(MessageBuffer& msgBuffer) {
+   void M_Ddm_Request_Update::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3471,7 +3619,7 @@ namespace certi {
       }
    }
 
-   void M_Ddm_Request_Update::show(std::ostream& out) {
+   std::ostream& M_Ddm_Request_Update::show(std::ostream& out) {
       out << "[M_Ddm_Request_Update -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
@@ -3482,7 +3630,9 @@ namespace certi {
          out << attributes[i] << " " ;
       }
       out << std::endl;
-      out << "[M_Ddm_Request_Update -End]" << std::endl;   }
+      out << "[M_Ddm_Request_Update -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Object_Class_Handle::M_Get_Object_Class_Handle() {
       this->messageName = "M_Get_Object_Class_Handle";
@@ -3494,7 +3644,7 @@ namespace certi {
    M_Get_Object_Class_Handle::~M_Get_Object_Class_Handle() {
    }
 
-   void M_Get_Object_Class_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3502,7 +3652,7 @@ namespace certi {
       msgBuffer.write_string(className);
    }
 
-   void M_Get_Object_Class_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3510,13 +3660,15 @@ namespace certi {
       msgBuffer.read_string(className);
    }
 
-   void M_Get_Object_Class_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Object_Class_Handle::show(std::ostream& out) {
       out << "[M_Get_Object_Class_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " className = " << className << " "       << std::endl;
-      out << "[M_Get_Object_Class_Handle -End]" << std::endl;   }
+      out << "[M_Get_Object_Class_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Object_Class_Name::M_Get_Object_Class_Name() {
       this->messageName = "M_Get_Object_Class_Name";
@@ -3528,7 +3680,7 @@ namespace certi {
    M_Get_Object_Class_Name::~M_Get_Object_Class_Name() {
    }
 
-   void M_Get_Object_Class_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3536,7 +3688,7 @@ namespace certi {
       msgBuffer.write_string(className);
    }
 
-   void M_Get_Object_Class_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3544,13 +3696,15 @@ namespace certi {
       msgBuffer.read_string(className);
    }
 
-   void M_Get_Object_Class_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Object_Class_Name::show(std::ostream& out) {
       out << "[M_Get_Object_Class_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " className = " << className << " "       << std::endl;
-      out << "[M_Get_Object_Class_Name -End]" << std::endl;   }
+      out << "[M_Get_Object_Class_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Attribute_Handle::M_Get_Attribute_Handle() {
       this->messageName = "M_Get_Attribute_Handle";
@@ -3563,7 +3717,7 @@ namespace certi {
    M_Get_Attribute_Handle::~M_Get_Attribute_Handle() {
    }
 
-   void M_Get_Attribute_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3572,7 +3726,7 @@ namespace certi {
       msgBuffer.write_uint32(attribute);
    }
 
-   void M_Get_Attribute_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3581,14 +3735,16 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Attribute_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Attribute_Handle::show(std::ostream& out) {
       out << "[M_Get_Attribute_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " attributeName = " << attributeName << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
-      out << "[M_Get_Attribute_Handle -End]" << std::endl;   }
+      out << "[M_Get_Attribute_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Attribute_Name::M_Get_Attribute_Name() {
       this->messageName = "M_Get_Attribute_Name";
@@ -3601,7 +3757,7 @@ namespace certi {
    M_Get_Attribute_Name::~M_Get_Attribute_Name() {
    }
 
-   void M_Get_Attribute_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3610,7 +3766,7 @@ namespace certi {
       msgBuffer.write_uint32(attribute);
    }
 
-   void M_Get_Attribute_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3619,14 +3775,16 @@ namespace certi {
       attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Attribute_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Attribute_Name::show(std::ostream& out) {
       out << "[M_Get_Attribute_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " attributeName = " << attributeName << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
-      out << "[M_Get_Attribute_Name -End]" << std::endl;   }
+      out << "[M_Get_Attribute_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Interaction_Class_Handle::M_Get_Interaction_Class_Handle() {
       this->messageName = "M_Get_Interaction_Class_Handle";
@@ -3638,7 +3796,7 @@ namespace certi {
    M_Get_Interaction_Class_Handle::~M_Get_Interaction_Class_Handle() {
    }
 
-   void M_Get_Interaction_Class_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Class_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3646,7 +3804,7 @@ namespace certi {
       msgBuffer.write_string(className);
    }
 
-   void M_Get_Interaction_Class_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Class_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3654,13 +3812,15 @@ namespace certi {
       msgBuffer.read_string(className);
    }
 
-   void M_Get_Interaction_Class_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Interaction_Class_Handle::show(std::ostream& out) {
       out << "[M_Get_Interaction_Class_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " className = " << className << " "       << std::endl;
-      out << "[M_Get_Interaction_Class_Handle -End]" << std::endl;   }
+      out << "[M_Get_Interaction_Class_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Interaction_Class_Name::M_Get_Interaction_Class_Name() {
       this->messageName = "M_Get_Interaction_Class_Name";
@@ -3672,7 +3832,7 @@ namespace certi {
    M_Get_Interaction_Class_Name::~M_Get_Interaction_Class_Name() {
    }
 
-   void M_Get_Interaction_Class_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Class_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3680,7 +3840,7 @@ namespace certi {
       msgBuffer.write_string(className);
    }
 
-   void M_Get_Interaction_Class_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Class_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3688,13 +3848,15 @@ namespace certi {
       msgBuffer.read_string(className);
    }
 
-   void M_Get_Interaction_Class_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Interaction_Class_Name::show(std::ostream& out) {
       out << "[M_Get_Interaction_Class_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " className = " << className << " "       << std::endl;
-      out << "[M_Get_Interaction_Class_Name -End]" << std::endl;   }
+      out << "[M_Get_Interaction_Class_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Parameter_Handle::M_Get_Parameter_Handle() {
       this->messageName = "M_Get_Parameter_Handle";
@@ -3707,7 +3869,7 @@ namespace certi {
    M_Get_Parameter_Handle::~M_Get_Parameter_Handle() {
    }
 
-   void M_Get_Parameter_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Parameter_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3716,7 +3878,7 @@ namespace certi {
       msgBuffer.write_uint32(parameter);
    }
 
-   void M_Get_Parameter_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Parameter_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3725,14 +3887,16 @@ namespace certi {
       parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Parameter_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Parameter_Handle::show(std::ostream& out) {
       out << "[M_Get_Parameter_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " parameterName = " << parameterName << " "       << std::endl;
       out << " parameter = " << parameter << " "       << std::endl;
-      out << "[M_Get_Parameter_Handle -End]" << std::endl;   }
+      out << "[M_Get_Parameter_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Parameter_Name::M_Get_Parameter_Name() {
       this->messageName = "M_Get_Parameter_Name";
@@ -3745,7 +3909,7 @@ namespace certi {
    M_Get_Parameter_Name::~M_Get_Parameter_Name() {
    }
 
-   void M_Get_Parameter_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Parameter_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3754,7 +3918,7 @@ namespace certi {
       msgBuffer.write_uint32(parameter);
    }
 
-   void M_Get_Parameter_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Parameter_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3763,14 +3927,16 @@ namespace certi {
       parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Parameter_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Parameter_Name::show(std::ostream& out) {
       out << "[M_Get_Parameter_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " parameterName = " << parameterName << " "       << std::endl;
       out << " parameter = " << parameter << " "       << std::endl;
-      out << "[M_Get_Parameter_Name -End]" << std::endl;   }
+      out << "[M_Get_Parameter_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Object_Instance_Handle::M_Get_Object_Instance_Handle() {
       this->messageName = "M_Get_Object_Instance_Handle";
@@ -3782,7 +3948,7 @@ namespace certi {
    M_Get_Object_Instance_Handle::~M_Get_Object_Instance_Handle() {
    }
 
-   void M_Get_Object_Instance_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Instance_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3790,7 +3956,7 @@ namespace certi {
       msgBuffer.write_string(objectInstanceName);
    }
 
-   void M_Get_Object_Instance_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Instance_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3798,13 +3964,15 @@ namespace certi {
       msgBuffer.read_string(objectInstanceName);
    }
 
-   void M_Get_Object_Instance_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Object_Instance_Handle::show(std::ostream& out) {
       out << "[M_Get_Object_Instance_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " objectInstanceName = " << objectInstanceName << " "       << std::endl;
-      out << "[M_Get_Object_Instance_Handle -End]" << std::endl;   }
+      out << "[M_Get_Object_Instance_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Object_Instance_Name::M_Get_Object_Instance_Name() {
       this->messageName = "M_Get_Object_Instance_Name";
@@ -3816,7 +3984,7 @@ namespace certi {
    M_Get_Object_Instance_Name::~M_Get_Object_Instance_Name() {
    }
 
-   void M_Get_Object_Instance_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Instance_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3824,7 +3992,7 @@ namespace certi {
       msgBuffer.write_string(objectInstanceName);
    }
 
-   void M_Get_Object_Instance_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Instance_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3832,13 +4000,15 @@ namespace certi {
       msgBuffer.read_string(objectInstanceName);
    }
 
-   void M_Get_Object_Instance_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Object_Instance_Name::show(std::ostream& out) {
       out << "[M_Get_Object_Instance_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " object = " << object << " "       << std::endl;
       out << " objectInstanceName = " << objectInstanceName << " "       << std::endl;
-      out << "[M_Get_Object_Instance_Name -End]" << std::endl;   }
+      out << "[M_Get_Object_Instance_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Space_Handle::M_Get_Space_Handle() {
       this->messageName = "M_Get_Space_Handle";
@@ -3850,7 +4020,7 @@ namespace certi {
    M_Get_Space_Handle::~M_Get_Space_Handle() {
    }
 
-   void M_Get_Space_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Space_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3858,7 +4028,7 @@ namespace certi {
       msgBuffer.write_uint32(space);
    }
 
-   void M_Get_Space_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3866,13 +4036,15 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Space_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Space_Handle::show(std::ostream& out) {
       out << "[M_Get_Space_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " spaceName = " << spaceName << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
-      out << "[M_Get_Space_Handle -End]" << std::endl;   }
+      out << "[M_Get_Space_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Space_Name::M_Get_Space_Name() {
       this->messageName = "M_Get_Space_Name";
@@ -3884,7 +4056,7 @@ namespace certi {
    M_Get_Space_Name::~M_Get_Space_Name() {
    }
 
-   void M_Get_Space_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Space_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3892,7 +4064,7 @@ namespace certi {
       msgBuffer.write_uint32(space);
    }
 
-   void M_Get_Space_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Space_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3900,13 +4072,15 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Space_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Space_Name::show(std::ostream& out) {
       out << "[M_Get_Space_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " spaceName = " << spaceName << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
-      out << "[M_Get_Space_Name -End]" << std::endl;   }
+      out << "[M_Get_Space_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Dimension_Handle::M_Get_Dimension_Handle() {
       this->messageName = "M_Get_Dimension_Handle";
@@ -3919,7 +4093,7 @@ namespace certi {
    M_Get_Dimension_Handle::~M_Get_Dimension_Handle() {
    }
 
-   void M_Get_Dimension_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Dimension_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3928,7 +4102,7 @@ namespace certi {
       msgBuffer.write_uint32(dimension);
    }
 
-   void M_Get_Dimension_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Dimension_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3937,14 +4111,16 @@ namespace certi {
       dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Dimension_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Dimension_Handle::show(std::ostream& out) {
       out << "[M_Get_Dimension_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " dimensionName = " << dimensionName << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
       out << " dimension = " << dimension << " "       << std::endl;
-      out << "[M_Get_Dimension_Handle -End]" << std::endl;   }
+      out << "[M_Get_Dimension_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Dimension_Name::M_Get_Dimension_Name() {
       this->messageName = "M_Get_Dimension_Name";
@@ -3957,7 +4133,7 @@ namespace certi {
    M_Get_Dimension_Name::~M_Get_Dimension_Name() {
    }
 
-   void M_Get_Dimension_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Dimension_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -3966,7 +4142,7 @@ namespace certi {
       msgBuffer.write_uint32(dimension);
    }
 
-   void M_Get_Dimension_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Dimension_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -3975,14 +4151,16 @@ namespace certi {
       dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Dimension_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Dimension_Name::show(std::ostream& out) {
       out << "[M_Get_Dimension_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " dimensionName = " << dimensionName << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
       out << " dimension = " << dimension << " "       << std::endl;
-      out << "[M_Get_Dimension_Name -End]" << std::endl;   }
+      out << "[M_Get_Dimension_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Attribute_Space_Handle::M_Get_Attribute_Space_Handle() {
       this->messageName = "M_Get_Attribute_Space_Handle";
@@ -3995,7 +4173,7 @@ namespace certi {
    M_Get_Attribute_Space_Handle::~M_Get_Attribute_Space_Handle() {
    }
 
-   void M_Get_Attribute_Space_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Space_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4004,7 +4182,7 @@ namespace certi {
       msgBuffer.write_uint32(space);
    }
 
-   void M_Get_Attribute_Space_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Attribute_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4013,14 +4191,16 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Attribute_Space_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Attribute_Space_Handle::show(std::ostream& out) {
       out << "[M_Get_Attribute_Space_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " attribute = " << attribute << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
-      out << "[M_Get_Attribute_Space_Handle -End]" << std::endl;   }
+      out << "[M_Get_Attribute_Space_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Object_Class::M_Get_Object_Class() {
       this->messageName = "M_Get_Object_Class";
@@ -4032,7 +4212,7 @@ namespace certi {
    M_Get_Object_Class::~M_Get_Object_Class() {
    }
 
-   void M_Get_Object_Class::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4040,7 +4220,7 @@ namespace certi {
       msgBuffer.write_uint32(object);
    }
 
-   void M_Get_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4048,13 +4228,15 @@ namespace certi {
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Object_Class::show(std::ostream& out) {
+   std::ostream& M_Get_Object_Class::show(std::ostream& out) {
       out << "[M_Get_Object_Class -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectClass = " << objectClass << " "       << std::endl;
       out << " object = " << object << " "       << std::endl;
-      out << "[M_Get_Object_Class -End]" << std::endl;   }
+      out << "[M_Get_Object_Class -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Interaction_Space_Handle::M_Get_Interaction_Space_Handle() {
       this->messageName = "M_Get_Interaction_Space_Handle";
@@ -4066,7 +4248,7 @@ namespace certi {
    M_Get_Interaction_Space_Handle::~M_Get_Interaction_Space_Handle() {
    }
 
-   void M_Get_Interaction_Space_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Space_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4074,7 +4256,7 @@ namespace certi {
       msgBuffer.write_uint32(space);
    }
 
-   void M_Get_Interaction_Space_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Interaction_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4082,13 +4264,15 @@ namespace certi {
       space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
    }
 
-   void M_Get_Interaction_Space_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Interaction_Space_Handle::show(std::ostream& out) {
       out << "[M_Get_Interaction_Space_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " interactionClass = " << interactionClass << " "       << std::endl;
       out << " space = " << space << " "       << std::endl;
-      out << "[M_Get_Interaction_Space_Handle -End]" << std::endl;   }
+      out << "[M_Get_Interaction_Space_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Transportation_Handle::M_Get_Transportation_Handle() {
       this->messageName = "M_Get_Transportation_Handle";
@@ -4100,7 +4284,7 @@ namespace certi {
    M_Get_Transportation_Handle::~M_Get_Transportation_Handle() {
    }
 
-   void M_Get_Transportation_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Transportation_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4108,7 +4292,7 @@ namespace certi {
       msgBuffer.write_uint8(transportation);
    }
 
-   void M_Get_Transportation_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Transportation_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4116,13 +4300,15 @@ namespace certi {
       transportation = static_cast<TransportType>(msgBuffer.read_uint8());
    }
 
-   void M_Get_Transportation_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Transportation_Handle::show(std::ostream& out) {
       out << "[M_Get_Transportation_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " transportationName = " << transportationName << " "       << std::endl;
       out << " transportation = " << transportation << " "       << std::endl;
-      out << "[M_Get_Transportation_Handle -End]" << std::endl;   }
+      out << "[M_Get_Transportation_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Transportation_Name::M_Get_Transportation_Name() {
       this->messageName = "M_Get_Transportation_Name";
@@ -4134,7 +4320,7 @@ namespace certi {
    M_Get_Transportation_Name::~M_Get_Transportation_Name() {
    }
 
-   void M_Get_Transportation_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Transportation_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4142,7 +4328,7 @@ namespace certi {
       msgBuffer.write_uint8(transportation);
    }
 
-   void M_Get_Transportation_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Transportation_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4150,13 +4336,15 @@ namespace certi {
       transportation = static_cast<TransportType>(msgBuffer.read_uint8());
    }
 
-   void M_Get_Transportation_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Transportation_Name::show(std::ostream& out) {
       out << "[M_Get_Transportation_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " transportationName = " << transportationName << " "       << std::endl;
       out << " transportation = " << transportation << " "       << std::endl;
-      out << "[M_Get_Transportation_Name -End]" << std::endl;   }
+      out << "[M_Get_Transportation_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Ordering_Handle::M_Get_Ordering_Handle() {
       this->messageName = "M_Get_Ordering_Handle";
@@ -4168,7 +4356,7 @@ namespace certi {
    M_Get_Ordering_Handle::~M_Get_Ordering_Handle() {
    }
 
-   void M_Get_Ordering_Handle::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Ordering_Handle::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4176,7 +4364,7 @@ namespace certi {
       msgBuffer.write_uint8(ordering);
    }
 
-   void M_Get_Ordering_Handle::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Ordering_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4184,13 +4372,15 @@ namespace certi {
       ordering = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
-   void M_Get_Ordering_Handle::show(std::ostream& out) {
+   std::ostream& M_Get_Ordering_Handle::show(std::ostream& out) {
       out << "[M_Get_Ordering_Handle -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " orderingName = " << orderingName << " "       << std::endl;
       out << " ordering = " << ordering << " "       << std::endl;
-      out << "[M_Get_Ordering_Handle -End]" << std::endl;   }
+      out << "[M_Get_Ordering_Handle -End]" << std::endl;
+      return out;
+   }
 
    M_Get_Ordering_Name::M_Get_Ordering_Name() {
       this->messageName = "M_Get_Ordering_Name";
@@ -4202,7 +4392,7 @@ namespace certi {
    M_Get_Ordering_Name::~M_Get_Ordering_Name() {
    }
 
-   void M_Get_Ordering_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Get_Ordering_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4210,7 +4400,7 @@ namespace certi {
       msgBuffer.write_uint8(ordering);
    }
 
-   void M_Get_Ordering_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Get_Ordering_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4218,13 +4408,15 @@ namespace certi {
       ordering = static_cast<OrderType>(msgBuffer.read_uint8());
    }
 
-   void M_Get_Ordering_Name::show(std::ostream& out) {
+   std::ostream& M_Get_Ordering_Name::show(std::ostream& out) {
       out << "[M_Get_Ordering_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " orderingName = " << orderingName << " "       << std::endl;
       out << " ordering = " << ordering << " "       << std::endl;
-      out << "[M_Get_Ordering_Name -End]" << std::endl;   }
+      out << "[M_Get_Ordering_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Enable_Class_Relevance_Advisory_Switch::M_Enable_Class_Relevance_Advisory_Switch() {
       this->messageName = "M_Enable_Class_Relevance_Advisory_Switch";
@@ -4301,7 +4493,7 @@ namespace certi {
    M_Tick_Request::~M_Tick_Request() {
    }
 
-   void M_Tick_Request::serialize(MessageBuffer& msgBuffer) {
+   void M_Tick_Request::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
@@ -4310,7 +4502,7 @@ namespace certi {
       msgBuffer.write_double(maxTickTime);
    }
 
-   void M_Tick_Request::deserialize(MessageBuffer& msgBuffer) {
+   void M_Tick_Request::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
@@ -4319,14 +4511,16 @@ namespace certi {
       maxTickTime = msgBuffer.read_double();
    }
 
-   void M_Tick_Request::show(std::ostream& out) {
+   std::ostream& M_Tick_Request::show(std::ostream& out) {
       out << "[M_Tick_Request -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " multiple = " << multiple << " "       << std::endl;
       out << " minTickTime = " << minTickTime << " "       << std::endl;
       out << " maxTickTime = " << maxTickTime << " "       << std::endl;
-      out << "[M_Tick_Request -End]" << std::endl;   }
+      out << "[M_Tick_Request -End]" << std::endl;
+      return out;
+   }
 
    M_Tick_Request_Next::M_Tick_Request_Next() {
       this->messageName = "M_Tick_Request_Next";
@@ -4353,26 +4547,28 @@ namespace certi {
    M_Reserve_Object_Instance_Name::~M_Reserve_Object_Instance_Name() {
    }
 
-   void M_Reserve_Object_Instance_Name::serialize(MessageBuffer& msgBuffer) {
+   void M_Reserve_Object_Instance_Name::serialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::serialize(msgBuffer);
       //Specific serialization code
       msgBuffer.write_string(objectName);
    }
 
-   void M_Reserve_Object_Instance_Name::deserialize(MessageBuffer& msgBuffer) {
+   void M_Reserve_Object_Instance_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
       //Call mother class
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       msgBuffer.read_string(objectName);
    }
 
-   void M_Reserve_Object_Instance_Name::show(std::ostream& out) {
+   std::ostream& M_Reserve_Object_Instance_Name::show(std::ostream& out) {
       out << "[M_Reserve_Object_Instance_Name -Begin]" << std::endl;      //Call mother class
       Super::show(out);
       //Specific show code
       out << " objectName = " << objectName << " "       << std::endl;
-      out << "[M_Reserve_Object_Instance_Name -End]" << std::endl;   }
+      out << "[M_Reserve_Object_Instance_Name -End]" << std::endl;
+      return out;
+   }
 
    M_Reserve_Object_Instance_Name_Succeeded::M_Reserve_Object_Instance_Name_Succeeded() {
       this->messageName = "M_Reserve_Object_Instance_Name_Succeeded";
@@ -4390,7 +4586,7 @@ namespace certi {
    M_Reserve_Object_Instance_Name_Failed::~M_Reserve_Object_Instance_Name_Failed() {
    }
 
-   Message* M_Factory::create(M_Type type) throw (NetworkError, NetworkSignal) {
+   Message* M_Factory::create(M_Type type) throw (NetworkError ,NetworkSignal) { 
       Message* msg = NULL;
 
       switch (type) {
@@ -4845,9 +5041,9 @@ namespace certi {
       return msg;
    } /* end of M_Factory::create */
 
-   Message* M_Factory::receive(MStreamType stream) throw (NetworkError, NetworkSignal) {
+   Message* M_Factory::receive(MStreamType stream) throw (NetworkError ,NetworkSignal) { 
       // FIXME This is not thread safe
-      static MessageBuffer msgBuffer;
+      static libhla::MessageBuffer msgBuffer;
       Message  msgGen;
       Message* msg;
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -17,7 +18,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.10 2010/06/10 07:30:47 erk Exp $
+## $Id: GenMsgAST.py,v 1.11 2010/06/10 08:31:52 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -367,7 +368,7 @@ class NativeType(ASTElement):
     
     def __init__(self,name,lines):
         super(NativeType,self).__init__(name=name)
-        # store language line list in a dictionnary
+        # store language line list in a dictionary
         # in order to ease retrieval
         self.languages = dict()
         self.representation = None
@@ -380,6 +381,7 @@ class NativeType(ASTElement):
                     self.languages[l.name].append(l)
             else:
                 self.representation = l.representation
+        self.nbHeir	= 0
         
     def __repr__(self):
         return "native %s" % self.name
@@ -396,6 +398,9 @@ class NativeType(ASTElement):
 
     def getRepresentation(self):
         return self.representation
+       
+	def hasHeir(self):
+		return self.nbHeir > 0
      
     class LanguageLine(ASTElement):
         """ Represents a Language Line Value
@@ -426,6 +431,7 @@ class MessageType(ASTElement):
         self.fields        = fields
         self.merge         = merge
         self.enum          = None
+        self.nbHeir        = 0
     
     def __repr__(self):
         res = "message %s " % self.name
@@ -436,6 +442,9 @@ class MessageType(ASTElement):
     
     def hasEnum(self):
         return self.enum != None
+    
+    def hasHeir(self):
+    	return self.nbHeir > 0
     
     class CombinedField(ASTElement):
         def __init__(self,typeid,fields):
@@ -555,7 +564,9 @@ class ASTChecker(object):
             # kind of message.
             # However some message types may merge from one another
             # as soon as there is a "common" root merge type 
-            if msg.hasMerge():               
+            if msg.hasMerge():
+               parent = AST.getType(msg.merge)
+               parent.nbHeir += 1         
                if (None!=lastMerge):
                	   # recurse to find root merge               	                  	   
                    if (lastMerge!=AST.getRootMergeType(msg.merge)):

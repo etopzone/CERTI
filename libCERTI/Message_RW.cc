@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.41 2010/02/27 16:53:36 erk Exp $
+// $Id: Message_RW.cc,v 3.42 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Message.hh"
@@ -29,7 +29,7 @@ namespace certi {
 static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
 
-void Message::show(std::ostream& out) {
+std::ostream& Message::show(std::ostream& out) {
 	out << "[Message -Begin]" << std::endl;
 	out << "     type = " << type << std::endl;
 	out << "     exception = " << exception << std::endl;
@@ -39,6 +39,7 @@ void Message::show(std::ostream& out) {
 		BasicMessage::show(out);
 	}
 	out << "[Message -End]" << std::endl;
+	return out;
 } /* end of show */
 
 void Message::serialize(MessageBuffer& msgBuffer) {
@@ -145,4 +146,4 @@ Message::writeHandleArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.41 2010/02/27 16:53:36 erk Exp $
+// $Id: Message_RW.cc,v 3.42 2010/06/10 08:31:52 erk Exp $

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -17,7 +18,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.16 2010/06/10 07:30:47 erk Exp $
+## $Id: GenMsgCXX.py,v 1.17 2010/06/10 08:31:52 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -368,6 +369,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 if msg.hasMerge():
                     stream.write(" : public %s {\n" % msg.merge.name)
                     virtual = "virtual "
+                elif msg.hasHeir():
+                    stream.write(" {\n")
+                    virtual = "virtual "
                 else:
                     stream.write(" {\n")
                     virtual = ""
@@ -404,7 +408,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                             self.writeOneGetterSetter(stream,field)
                     # the show method
                     stream.write(self.getIndent()+self.commentLineBeginWith+" the show method\n")
-                    stream.write(self.getIndent()+virtual+"void show(std::ostream& out);\n")
+                    stream.write(self.getIndent()+virtual+"std::ostream& show(std::ostream& out);\n")
                                                     
                 self.unIndent()
                 # end public:
@@ -507,13 +511,20 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             
         stream.write(self.getIndent())        
         methodName = self.getSerializeMethodName(field.typeid.name)
-        if None == methodName:
+        if None == methodName: # field has no Serialize Method Name found in the map
+            # non native field case
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write(field.name+indexField+".serialize(msgBuffer);\n")
-            else:
+            # enum type field case (enum are serialized as uint32)
+            elif field.typeid.name in [m.name for m in self.AST.enums]:
+                methodName = self.getSerializeMethodName("uint32")
+                stream.write("msgBuffer."+methodName)
+                stream.write("("+field.name+indexField+");\n")
+	        # native field case  
+            else:	      
                 stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
                 stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to serialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
-        else:
+        else: # field has one Serialize Method Name found in the map
             stream.write("msgBuffer."+methodName)
             stream.write("("+field.name+indexField+");\n")
         
@@ -542,17 +553,22 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write("out << \" %s = \" " % field.name)
                    
         methodName = self.getSerializeMethodName(field.typeid.name)
-        if None == methodName:
-            if field.typeid.name in [m.name for m in self.AST.messages]:
-                stream.write("<< \"FIXME inherited \" ")
+        if None == methodName: # field has no Serialize Method Name found in the map
+            # non native field case
+            if field.typeid.name in [m.name for m in self.AST.messages]:                
+                stream.write("<< "+field.name+indexField+".show(out)")
+            # enum type field case (enum are serialized as uint32)
+            elif field.typeid.name in [m.name for m in self.AST.enums]:
+                stream.write("<< %s << \" \" " %(field.name+indexField))
                 
-                #stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")                
+                #stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n") 
+            # native field case 
             else:
                 stream.write("<< \"")
                 stream.write(self.getIndent()+self.commentLineBeginWith+"FIXME FIXME don't know how to serialize native field <%s> of type <%s>"%(field.name,field.typeid.name))
                 stream.write("\"")
                                             
-        else:            
+        else: # field has one Serialize Method Name found in the map                     
             stream.write("<< %s << \" \" " % (field.name+indexField))
         
         if field.qualifier == "optional":            
@@ -586,13 +602,21 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             
         stream.write(self.getIndent())
         methodName = self.getDeSerializeMethodName(field.typeid.name)
-        if None == methodName:
+        if None == methodName: # field has no Deserialize Method Name found in the map
+	     # non native field case
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write(field.name+indexField+".deserialize(msgBuffer);\n")
+            # enum type field case (enum are deserialized as uint32)
+            elif field.typeid.name in [m.name for m in self.AST.enums]:
+                targetTypeName = self.getTargetTypeName(field.typeid.name)
+                methodName = self.getDeSerializeMethodName("uint32")
+                # We should check if the uint32 value is in enum range before casting it into enumtype
+                stream.write(field.name+indexField+" = static_cast<"+targetTypeName+">(msgBuffer."+methodName+" ());\n")
+            # native field case
             else:
                 stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
                 stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to deserialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
-        else:
+        else: # field has one Deserialize Method Name found in the map
             if methodName == 'read_string':
                 stream.write("msgBuffer."+methodName+"("+field.name+indexField+");\n")
             else:
@@ -612,10 +636,10 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     def writeFactoryCreator(self,stream):
         creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
         stream.write(self.getIndent()+"%s* %s::%s(%s type) throw ("% creator)
-	stream.write("%s" %(self.exception[0]))
-	for exception in self.exception[1:]:
-	    stream.write(" ,%s" %(exception))
-	stream.write(") { \n")
+        stream.write("%s" %(self.exception[0]))
+        for exception in self.exception[1:]:
+            stream.write(" ,%s" %(exception))
+        stream.write(") { \n")
 	
         self.indent()
         stream.write(self.getIndent()+"%s* msg = NULL;\n\n" % creator[0])
@@ -749,7 +773,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent()+"}\n\n")
                     # end deserialize method
                     # begin show method
-                    stream.write(self.getIndent()+"void %s::show(std::ostream& out) {\n" % msg.name)
+                    stream.write(self.getIndent()+"std::ostream& %s::show(std::ostream& out) {\n" % msg.name)
                     self.indent()
                     stream.write(self.getIndent()+"out << \"[%s -Begin]\" << std::endl;" % msg.name)
                     if msg.hasMerge():
@@ -759,7 +783,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific show code\n")
                     self.applyToFields(stream, msg.fields, self.writeShowFieldStatement)                  
-                    stream.write(self.getIndent()+"out << \"[%s -End]\" << std::endl;" % msg.name)
+                    stream.write(self.getIndent()+"out << \"[%s -End]\" << std::endl;\n" % msg.name)
+                    stream.write(self.getIndent()+"return out;\n")
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n\n")
                     # end show method

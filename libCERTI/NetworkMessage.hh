@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.63 2010/04/28 18:48:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.64 2010/06/10 08:31:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -179,7 +179,7 @@ public:
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
 
-	virtual void show(std::ostream& out);
+	virtual std::ostream& show(std::ostream& out);
 
 	/**
 	 * DeSerialize the message from a buffer
@@ -260,4 +260,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.63 2010/04/28 18:48:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.64 2010/06/10 08:31:51 erk Exp $

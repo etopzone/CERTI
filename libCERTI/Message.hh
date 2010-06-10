@@ -232,7 +232,7 @@ public:
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
 
-	virtual void show(std::ostream& out);
+	virtual std::ostream& show(std::ostream& out);
 
 	/**
 	 * DeSerialize the message from a buffer

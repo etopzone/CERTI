@@ -1,4 +1,4 @@
-// Generated on 2010 April Wed, 28 at 20:22:38 by the CERTI message generator
+// Generated on 2010 June Thu, 10 at 10:24:31 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -51,158 +51,6 @@ namespace certi {
    namespace CERTI_Message {
       static const uint32_t versionMajor = 1;
       static const uint32_t versionMinor = 0;
-
-      typedef enum CERTI_Message_MessageType {
-         NOT_USED = 0, 
-         M_OPEN_CONNEXION, 
-         M_CLOSE_CONNEXION, 
-         M_CREATE_FEDERATION_EXECUTION, 
-         M_DESTROY_FEDERATION_EXECUTION, 
-         M_JOIN_FEDERATION_EXECUTION, 
-         M_RESIGN_FEDERATION_EXECUTION, 
-         M_REGISTER_FEDERATION_SYNCHRONIZATION_POINT, 
-         M_SYNCHRONIZATION_POINT_REGISTRATION_FAILED, 
-         M_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, 
-         M_ANNOUNCE_SYNCHRONIZATION_POINT, 
-         M_SYNCHRONIZATION_POINT_ACHIEVED, 
-         M_FEDERATION_SYNCHRONIZED, 
-         M_REQUEST_FEDERATION_SAVE, 
-         M_INITIATE_FEDERATE_SAVE, 
-         M_FEDERATE_SAVE_BEGUN, 
-         M_FEDERATE_SAVE_COMPLETE, 
-         M_FEDERATE_SAVE_NOT_COMPLETE, 
-         M_FEDERATION_SAVED, 
-         M_FEDERATION_NOT_SAVED, 
-         M_REQUEST_FEDERATION_RESTORE, 
-         M_REQUEST_FEDERATION_RESTORE_FAILED, 
-         M_REQUEST_FEDERATION_RESTORE_SUCCEEDED, 
-         M_INITIATE_FEDERATE_RESTORE, 
-         M_FEDERATE_RESTORE_COMPLETE, 
-         M_FEDERATE_RESTORE_NOT_COMPLETE, 
-         M_FEDERATION_RESTORED, 
-         M_FEDERATION_NOT_RESTORED, 
-         M_FEDERATION_RESTORE_BEGUN, 
-         M_PUBLISH_OBJECT_CLASS, 
-         M_UNPUBLISH_OBJECT_CLASS, 
-         M_PUBLISH_INTERACTION_CLASS, 
-         M_UNPUBLISH_INTERACTION_CLASS, 
-         M_SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES, 
-         M_UNSUBSCRIBE_OBJECT_CLASS, 
-         M_SUBSCRIBE_INTERACTION_CLASS, 
-         M_UNSUBSCRIBE_INTERACTION_CLASS, 
-         M_START_REGISTRATION_FOR_OBJECT_CLASS, 
-         M_STOP_REGISTRATION_FOR_OBJECT_CLASS, 
-         M_TURN_INTERACTIONS_ON, 
-         M_TURN_INTERACTIONS_OFF, 
-         M_REGISTER_OBJECT_INSTANCE, 
-         M_UPDATE_ATTRIBUTE_VALUES, 
-         M_DISCOVER_OBJECT_INSTANCE, 
-         M_REFLECT_ATTRIBUTE_VALUES, 
-         M_SEND_INTERACTION, 
-         M_RECEIVE_INTERACTION, 
-         M_DELETE_OBJECT_INSTANCE, 
-         M_LOCAL_DELETE_OBJECT_INSTANCE, 
-         M_REMOVE_OBJECT_INSTANCE, 
-         M_CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE, 
-         M_CHANGE_INTERACTION_TRANSPORTATION_TYPE, 
-         M_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, 
-         M_REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, 
-         M_PROVIDE_ATTRIBUTE_VALUE_UPDATE, 
-         M_ATTRIBUTES_IN_SCOPE, 
-         M_ATTRIBUTES_OUT_OF_SCOPE, 
-         M_TURN_UPDATES_ON_FOR_OBJECT_INSTANCE, 
-         M_TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE, 
-         M_REQUEST_ATTRIBUTE_OWNERSHIP_DIVESTITURE, 
-         M_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION, 
-         M_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, 
-         M_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION, 
-         M_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION, 
-         M_REQUEST_ATTRIBUTE_OWNERSHIP_ACQUISITION, 
-         M_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE, 
-         M_QUERY_ATTRIBUTE_OWNERSHIP, 
-         M_INFORM_ATTRIBUTE_OWNERSHIP, 
-         M_IS_ATTRIBUTE_OWNED_BY_FEDERATE, 
-         M_ATTRIBUTE_IS_NOT_OWNED, 
-         M_ATTRIBUTE_OWNED_BY_RTI, 
-         M_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE, 
-         M_ATTRIBUTE_OWNERSHIP_UNAVAILABLE, 
-         M_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE, 
-         M_ATTRIBUTE_OWNERSHIP_ACQUISITION, 
-         M_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, 
-         M_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE, 
-         M_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION, 
-         M_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION, 
-         M_CHANGE_ATTRIBUTE_ORDER_TYPE, 
-         M_CHANGE_INTERACTION_ORDER_TYPE, 
-         M_ENABLE_TIME_REGULATION, 
-         M_DISABLE_TIME_REGULATION, 
-         M_ENABLE_TIME_CONSTRAINED, 
-         M_DISABLE_TIME_CONSTRAINED, 
-         M_QUERY_LBTS, 
-         M_QUERY_FEDERATE_TIME, 
-         M_QUERY_MIN_NEXT_EVENT_TIME, 
-         M_MODIFY_LOOKAHEAD, 
-         M_QUERY_LOOKAHEAD, 
-         M_RETRACT, 
-         M_REQUEST_RETRACTION, 
-         M_TIME_ADVANCE_REQUEST, 
-         M_TIME_ADVANCE_REQUEST_AVAILABLE, 
-         M_NEXT_EVENT_REQUEST, 
-         M_NEXT_EVENT_REQUEST_AVAILABLE, 
-         M_FLUSH_QUEUE_REQUEST, 
-         M_TIME_ADVANCE_GRANT, 
-         M_ENABLE_ASYNCHRONOUS_DELIVERY, 
-         M_DISABLE_ASYNCHRONOUS_DELIVERY, 
-         M_TIME_REGULATION_ENABLED, 
-         M_TIME_CONSTRAINED_ENABLED, 
-         M_DDM_CREATE_REGION, 
-         M_DDM_MODIFY_REGION, 
-         M_DDM_DELETE_REGION, 
-         M_DDM_REGISTER_OBJECT, 
-         M_DDM_ASSOCIATE_REGION, 
-         M_DDM_UNASSOCIATE_REGION, 
-         M_DDM_SUBSCRIBE_ATTRIBUTES, 
-         M_DDM_UNSUBSCRIBE_ATTRIBUTES, 
-         M_DDM_SUBSCRIBE_INTERACTION, 
-         M_DDM_UNSUBSCRIBE_INTERACTION, 
-         M_DDM_REQUEST_UPDATE, 
-         M_GET_OBJECT_CLASS_HANDLE, 
-         M_GET_OBJECT_CLASS_NAME, 
-         M_GET_ATTRIBUTE_HANDLE, 
-         M_GET_ATTRIBUTE_NAME, 
-         M_GET_INTERACTION_CLASS_HANDLE, 
-         M_GET_INTERACTION_CLASS_NAME, 
-         M_GET_PARAMETER_HANDLE, 
-         M_GET_PARAMETER_NAME, 
-         M_GET_OBJECT_INSTANCE_HANDLE, 
-         M_GET_OBJECT_INSTANCE_NAME, 
-         M_GET_SPACE_HANDLE, 
-         M_GET_SPACE_NAME, 
-         M_GET_DIMENSION_HANDLE, 
-         M_GET_DIMENSION_NAME, 
-         M_GET_ATTRIBUTE_SPACE_HANDLE, 
-         M_GET_OBJECT_CLASS, 
-         M_GET_INTERACTION_SPACE_HANDLE, 
-         M_GET_TRANSPORTATION_HANDLE, 
-         M_GET_TRANSPORTATION_NAME, 
-         M_GET_ORDERING_HANDLE, 
-         M_GET_ORDERING_NAME, 
-         M_ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH, 
-         M_DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH, 
-         M_ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH, 
-         M_DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH, 
-         M_ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH, 
-         M_DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH, 
-         M_ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH, 
-         M_DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH, 
-         M_TICK_REQUEST, 
-         M_TICK_REQUEST_NEXT, 
-         M_TICK_REQUEST_STOP, 
-         M_RESERVE_OBJECT_INSTANCE_NAME, 
-         M_RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, 
-         M_RESERVE_OBJECT_INSTANCE_NAME_FAILED, 
-         LAST 
-      } CERTI_Message_MessageType_t; //end of enum CERTI_Message_MessageType 
    }
    // The EventRetraction is not inheriting from base "Message"
    // this is a plain message which may be used as field
@@ -214,15 +62,15 @@ namespace certi {
       public:
          EventRetraction();
          ~EventRetraction();
-         void serialize(MessageBuffer& msgBuffer);
-         void deserialize(MessageBuffer& msgBuffer);
+         void serialize(libhla::MessageBuffer& msgBuffer);
+         void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const FederateHandle& getSendingFederate() const {return sendingFederate;}
          void setSendingFederate(const FederateHandle& newSendingFederate) {sendingFederate=newSendingFederate;}
          const uint64_t& getSN() const {return SN;}
          void setSN(const uint64_t& newSN) {SN=newSN;}
          // the show method
-         void show(std::ostream& out);
+         std::ostream& show(std::ostream& out);
       protected:
          FederateHandle sendingFederate;
          uint64_t SN;
@@ -234,15 +82,15 @@ namespace certi {
          typedef Message Super;
          M_Open_Connexion();
          virtual ~M_Open_Connexion();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const uint32_t& getVersionMajor() const {return versionMajor;}
          void setVersionMajor(const uint32_t& newVersionMajor) {versionMajor=newVersionMajor;}
          const uint32_t& getVersionMinor() const {return versionMinor;}
          void setVersionMinor(const uint32_t& newVersionMinor) {versionMinor=newVersionMinor;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          uint32_t versionMajor;
          uint32_t versionMinor;
@@ -263,15 +111,15 @@ namespace certi {
          typedef Message Super;
          M_Create_Federation_Execution();
          virtual ~M_Create_Federation_Execution();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getFederationName() const {return federationName;}
          void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
          const std::string& getFEDid() const {return FEDid;}
          void setFEDid(const std::string& newFEDid) {FEDid=newFEDid;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string federationName;// the federation name
          std::string FEDid;// the Federation ID which is in fact a filename
@@ -283,13 +131,13 @@ namespace certi {
          typedef Message Super;
          M_Destroy_Federation_Execution();
          virtual ~M_Destroy_Federation_Execution();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getFederationName() const {return federationName;}
          void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string federationName;
       private:
@@ -300,8 +148,8 @@ namespace certi {
          typedef Message Super;
          M_Join_Federation_Execution();
          virtual ~M_Join_Federation_Execution();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
@@ -310,7 +158,7 @@ namespace certi {
          const std::string& getFederateName() const {return federateName;}
          void setFederateName(const std::string& newFederateName) {federateName=newFederateName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          FederateHandle federate;
          std::string federationName;
@@ -323,13 +171,13 @@ namespace certi {
          typedef Message Super;
          M_Resign_Federation_Execution();
          virtual ~M_Resign_Federation_Execution();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ResignAction& getResignAction() const {return resignAction;}
          void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ResignAction resignAction;
       private:
@@ -340,8 +188,8 @@ namespace certi {
          typedef Message Super;
          M_Register_Federation_Synchronization_Point();
          virtual ~M_Register_Federation_Synchronization_Point();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          uint32_t getFederateSetSize() const {return federateSet.size();}
          void setFederateSetSize(uint32_t num) {federateSet.resize(num);}
@@ -351,7 +199,7 @@ namespace certi {
          void setFederateSet(const FederateHandle& newFederateSet, uint32_t rank) {federateSet[rank]=newFederateSet;}
          void removeFederateSet(uint32_t rank) {federateSet.erase(federateSet.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::vector<FederateHandle> federateSet;// the set of Federate which will participate to this sync point.
       private:
@@ -479,13 +327,13 @@ namespace certi {
          typedef Message Super;
          M_Request_Federation_Restore_Failed();
          virtual ~M_Request_Federation_Restore_Failed();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getReason() const {return reason;}
          void setReason(const std::string& newReason) {reason=newReason;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string reason;
       private:
@@ -505,13 +353,13 @@ namespace certi {
          typedef Message Super;
          M_Initiate_Federate_Restore();
          virtual ~M_Initiate_Federate_Restore();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          FederateHandle federate;
       private:
@@ -567,8 +415,8 @@ namespace certi {
          typedef Message Super;
          M_Publish_Object_Class();
          virtual ~M_Publish_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -580,7 +428,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::vector<AttributeHandle> attributes;
@@ -592,13 +440,13 @@ namespace certi {
          typedef Message Super;
          M_Unpublish_Object_Class();
          virtual ~M_Unpublish_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -609,13 +457,13 @@ namespace certi {
          typedef Message Super;
          M_Publish_Interaction_Class();
          virtual ~M_Publish_Interaction_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -626,13 +474,13 @@ namespace certi {
          typedef Message Super;
          M_Unpublish_Interaction_Class();
          virtual ~M_Unpublish_Interaction_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -643,8 +491,8 @@ namespace certi {
          typedef Message Super;
          M_Subscribe_Object_Class_Attributes();
          virtual ~M_Subscribe_Object_Class_Attributes();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -658,7 +506,7 @@ namespace certi {
          const bool& getActive() const {return active;}
          void setActive(const bool& newActive) {active=newActive;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::vector<AttributeHandle> attributes;
@@ -671,13 +519,13 @@ namespace certi {
          typedef Message Super;
          M_Unsubscribe_Object_Class();
          virtual ~M_Unsubscribe_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -688,13 +536,13 @@ namespace certi {
          typedef Message Super;
          M_Subscribe_Interaction_Class();
          virtual ~M_Subscribe_Interaction_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -705,13 +553,13 @@ namespace certi {
          typedef Message Super;
          M_Unsubscribe_Interaction_Class();
          virtual ~M_Unsubscribe_Interaction_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -722,13 +570,13 @@ namespace certi {
          typedef Message Super;
          M_Start_Registration_For_Object_Class();
          virtual ~M_Start_Registration_For_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -739,13 +587,13 @@ namespace certi {
          typedef Message Super;
          M_Stop_Registration_For_Object_Class();
          virtual ~M_Stop_Registration_For_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
       private:
@@ -756,13 +604,13 @@ namespace certi {
          typedef Message Super;
          M_Turn_Interactions_On();
          virtual ~M_Turn_Interactions_On();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -773,13 +621,13 @@ namespace certi {
          typedef Message Super;
          M_Turn_Interactions_Off();
          virtual ~M_Turn_Interactions_Off();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
       private:
@@ -790,8 +638,8 @@ namespace certi {
          typedef Message Super;
          M_Register_Object_Instance();
          virtual ~M_Register_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -804,7 +652,7 @@ namespace certi {
          }
          bool hasObjectName() {return _hasObjectName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -818,8 +666,8 @@ namespace certi {
          typedef Message Super;
          M_Update_Attribute_Values();
          virtual ~M_Update_Attribute_Values();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -846,7 +694,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -862,8 +710,8 @@ namespace certi {
          typedef Message Super;
          M_Discover_Object_Instance();
          virtual ~M_Discover_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -878,7 +726,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -893,8 +741,8 @@ namespace certi {
          typedef Message Super;
          M_Reflect_Attribute_Values();
          virtual ~M_Reflect_Attribute_Values();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -921,7 +769,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -937,8 +785,8 @@ namespace certi {
          typedef Message Super;
          M_Send_Interaction();
          virtual ~M_Send_Interaction();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -965,7 +813,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::vector<ParameterHandle> parameters;
@@ -981,8 +829,8 @@ namespace certi {
          typedef Message Super;
          M_Receive_Interaction();
          virtual ~M_Receive_Interaction();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -1009,7 +857,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::vector<ParameterHandle> parameters;
@@ -1025,8 +873,8 @@ namespace certi {
          typedef Message Super;
          M_Delete_Object_Instance();
          virtual ~M_Delete_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -1041,7 +889,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -1056,13 +904,13 @@ namespace certi {
          typedef Message Super;
          M_Local_Delete_Object_Instance();
          virtual ~M_Local_Delete_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
       private:
@@ -1073,8 +921,8 @@ namespace certi {
          typedef Message Super;
          M_Remove_Object_Instance();
          virtual ~M_Remove_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -1089,7 +937,7 @@ namespace certi {
          }
          bool hasEventRetraction() {return _hasEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -1104,8 +952,8 @@ namespace certi {
          typedef Message Super;
          M_Change_Attribute_Transportation_Type();
          virtual ~M_Change_Attribute_Transportation_Type();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const TransportType& getTransportationType() const {return transportationType;}
          void setTransportationType(const TransportType& newTransportationType) {transportationType=newTransportationType;}
@@ -1121,7 +969,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          TransportType transportationType;
          OrderType orderType;
@@ -1135,8 +983,8 @@ namespace certi {
          typedef Message Super;
          M_Change_Interaction_Transportation_Type();
          virtual ~M_Change_Interaction_Transportation_Type();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -1145,7 +993,7 @@ namespace certi {
          const OrderType& getOrderType() const {return orderType;}
          void setOrderType(const OrderType& newOrderType) {orderType=newOrderType;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          TransportType transportationType;
@@ -1158,8 +1006,8 @@ namespace certi {
          typedef Message Super;
          M_Request_Object_Attribute_Value_Update();
          virtual ~M_Request_Object_Attribute_Value_Update();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1171,7 +1019,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1183,8 +1031,8 @@ namespace certi {
          typedef Message Super;
          M_Request_Class_Attribute_Value_Update();
          virtual ~M_Request_Class_Attribute_Value_Update();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -1196,7 +1044,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::vector<AttributeHandle> attributes;
@@ -1208,8 +1056,8 @@ namespace certi {
          typedef Message Super;
          M_Provide_Attribute_Value_Update();
          virtual ~M_Provide_Attribute_Value_Update();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1221,7 +1069,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1233,8 +1081,8 @@ namespace certi {
          typedef Message Super;
          M_Attributes_In_Scope();
          virtual ~M_Attributes_In_Scope();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1246,7 +1094,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1258,8 +1106,8 @@ namespace certi {
          typedef Message Super;
          M_Attributes_Out_Of_Scope();
          virtual ~M_Attributes_Out_Of_Scope();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1271,7 +1119,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1283,8 +1131,8 @@ namespace certi {
          typedef Message Super;
          M_Turn_Updates_On_For_Object_Instance();
          virtual ~M_Turn_Updates_On_For_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1296,7 +1144,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1308,8 +1156,8 @@ namespace certi {
          typedef Message Super;
          M_Turn_Updates_Off_For_Object_Instance();
          virtual ~M_Turn_Updates_Off_For_Object_Instance();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1321,7 +1169,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1342,8 +1190,8 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Assumption();
          virtual ~M_Request_Attribute_Ownership_Assumption();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1355,7 +1203,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1367,8 +1215,8 @@ namespace certi {
          typedef Message Super;
          M_Negotiated_Attribute_Ownership_Divestiture();
          virtual ~M_Negotiated_Attribute_Ownership_Divestiture();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1380,7 +1228,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1392,8 +1240,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Divestiture_Notification();
          virtual ~M_Attribute_Ownership_Divestiture_Notification();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1405,7 +1253,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1417,8 +1265,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition_Notification();
          virtual ~M_Attribute_Ownership_Acquisition_Notification();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1430,7 +1278,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1442,8 +1290,8 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Acquisition();
          virtual ~M_Request_Attribute_Ownership_Acquisition();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1455,7 +1303,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1467,8 +1315,8 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Release();
          virtual ~M_Request_Attribute_Ownership_Release();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1480,7 +1328,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1492,15 +1340,15 @@ namespace certi {
          typedef Message Super;
          M_Query_Attribute_Ownership();
          virtual ~M_Query_Attribute_Ownership();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1512,8 +1360,8 @@ namespace certi {
          typedef Message Super;
          M_Inform_Attribute_Ownership();
          virtual ~M_Inform_Attribute_Ownership();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1522,7 +1370,7 @@ namespace certi {
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1535,15 +1383,15 @@ namespace certi {
          typedef Message Super;
          M_Is_Attribute_Owned_By_Federate();
          virtual ~M_Is_Attribute_Owned_By_Federate();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1555,8 +1403,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Is_Not_Owned();
          virtual ~M_Attribute_Is_Not_Owned();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1565,7 +1413,7 @@ namespace certi {
          const FederateHandle& getFederate() const {return federate;}
          void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          AttributeHandle attribute;
@@ -1587,8 +1435,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition_If_Available();
          virtual ~M_Attribute_Ownership_Acquisition_If_Available();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1600,7 +1448,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1612,8 +1460,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Unavailable();
          virtual ~M_Attribute_Ownership_Unavailable();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1625,7 +1473,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1637,8 +1485,8 @@ namespace certi {
          typedef Message Super;
          M_Unconditional_Attribute_Ownership_Divestiture();
          virtual ~M_Unconditional_Attribute_Ownership_Divestiture();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1650,7 +1498,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1662,8 +1510,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Acquisition();
          virtual ~M_Attribute_Ownership_Acquisition();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1675,7 +1523,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1687,8 +1535,8 @@ namespace certi {
          typedef Message Super;
          M_Cancel_Negotiated_Attribute_Ownership_Divestiture();
          virtual ~M_Cancel_Negotiated_Attribute_Ownership_Divestiture();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1700,7 +1548,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1712,8 +1560,8 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Ownership_Release_Response();
          virtual ~M_Attribute_Ownership_Release_Response();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1725,7 +1573,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1737,8 +1585,8 @@ namespace certi {
          typedef Message Super;
          M_Cancel_Attribute_Ownership_Acquisition();
          virtual ~M_Cancel_Attribute_Ownership_Acquisition();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1750,7 +1598,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1762,8 +1610,8 @@ namespace certi {
          typedef Message Super;
          M_Confirm_Attribute_Ownership_Acquisition_Cancellation();
          virtual ~M_Confirm_Attribute_Ownership_Acquisition_Cancellation();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -1775,7 +1623,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::vector<AttributeHandle> attributes;
@@ -1787,8 +1635,8 @@ namespace certi {
          typedef Message Super;
          M_Change_Attribute_Order_Type();
          virtual ~M_Change_Attribute_Order_Type();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const TransportType& getTransport() const {return transport;}
          void setTransport(const TransportType& newTransport) {transport=newTransport;}
@@ -1804,7 +1652,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          TransportType transport;
          OrderType order;
@@ -1818,8 +1666,8 @@ namespace certi {
          typedef Message Super;
          M_Change_Interaction_Order_Type();
          virtual ~M_Change_Interaction_Order_Type();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -1828,7 +1676,7 @@ namespace certi {
          const OrderType& getOrder() const {return order;}
          void setOrder(const OrderType& newOrder) {order=newOrder;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          TransportType transport;
@@ -1841,13 +1689,13 @@ namespace certi {
          typedef Message Super;
          M_Enable_Time_Regulation();
          virtual ~M_Enable_Time_Regulation();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          double lookahead;
       private:
@@ -1858,13 +1706,13 @@ namespace certi {
          typedef Message Super;
          M_Disable_Time_Regulation();
          virtual ~M_Disable_Time_Regulation();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          double lookahead;
       private:
@@ -1920,13 +1768,13 @@ namespace certi {
          typedef Message Super;
          M_Modify_Lookahead();
          virtual ~M_Modify_Lookahead();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          double lookahead;
       private:
@@ -1937,13 +1785,13 @@ namespace certi {
          typedef Message Super;
          M_Query_Lookahead();
          virtual ~M_Query_Lookahead();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const double& getLookahead() const {return lookahead;}
          void setLookahead(const double& newLookahead) {lookahead=newLookahead;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          double lookahead;
       private:
@@ -1954,13 +1802,13 @@ namespace certi {
          typedef Message Super;
          M_Retract();
          virtual ~M_Retract();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const EventRetraction& getEventRetraction() const {return eventRetraction;}
          void setEventRetraction(const EventRetraction& newEventRetraction) {eventRetraction=newEventRetraction;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          EventRetraction eventRetraction;
       private:
@@ -2070,8 +1918,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Create_Region();
          virtual ~M_Ddm_Create_Region();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
@@ -2085,7 +1933,7 @@ namespace certi {
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          SpaceHandle space;// the routing space designator
          std::vector<Extent> extentSet;// the extent set    
@@ -2098,8 +1946,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Modify_Region();
          virtual ~M_Ddm_Modify_Region();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
@@ -2111,7 +1959,7 @@ namespace certi {
          void setExtentSet(const Extent& newExtentSet, uint32_t rank) {extentSet[rank]=newExtentSet;}
          void removeExtentSet(uint32_t rank) {extentSet.erase(extentSet.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          RegionHandle region;
          std::vector<Extent> extentSet;// the extent set
@@ -2123,13 +1971,13 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Delete_Region();
          virtual ~M_Ddm_Delete_Region();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          RegionHandle region;
       private:
@@ -2140,8 +1988,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Register_Object();
          virtual ~M_Ddm_Register_Object();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2161,7 +2009,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -2176,8 +2024,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Associate_Region();
          virtual ~M_Ddm_Associate_Region();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
@@ -2191,7 +2039,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          RegionHandle region;
@@ -2204,15 +2052,15 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unassociate_Region();
          virtual ~M_Ddm_Unassociate_Region();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          RegionHandle region;
@@ -2224,8 +2072,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Subscribe_Attributes();
          virtual ~M_Ddm_Subscribe_Attributes();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2242,7 +2090,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          RegionHandle region;
@@ -2256,15 +2104,15 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unsubscribe_Attributes();
          virtual ~M_Ddm_Unsubscribe_Attributes();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const RegionHandle& getRegion() const {return region;}
          void setRegion(const RegionHandle& newRegion) {region=newRegion;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          RegionHandle region;
@@ -2276,8 +2124,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Subscribe_Interaction();
          virtual ~M_Ddm_Subscribe_Interaction();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -2287,7 +2135,7 @@ namespace certi {
          void passiveOff() {passive = false;}
          bool isPassiveOn() const {return passive;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          RegionHandle region;
@@ -2300,8 +2148,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unsubscribe_Interaction();
          virtual ~M_Ddm_Unsubscribe_Interaction();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -2311,7 +2159,7 @@ namespace certi {
          void passiveOff() {passive = false;}
          bool isPassiveOn() const {return passive;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          RegionHandle region;
@@ -2324,8 +2172,8 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Request_Update();
          virtual ~M_Ddm_Request_Update();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2339,7 +2187,7 @@ namespace certi {
          void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
          void removeAttributes(uint32_t rank) {attributes.erase(attributes.begin() + rank);}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          RegionHandle region;
@@ -2352,15 +2200,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class_Handle();
          virtual ~M_Get_Object_Class_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const std::string& getClassName() const {return className;}
          void setClassName(const std::string& newClassName) {className=newClassName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::string className;
@@ -2372,15 +2220,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class_Name();
          virtual ~M_Get_Object_Class_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const std::string& getClassName() const {return className;}
          void setClassName(const std::string& newClassName) {className=newClassName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::string className;
@@ -2392,8 +2240,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Handle();
          virtual ~M_Get_Attribute_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2402,7 +2250,7 @@ namespace certi {
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::string attributeName;
@@ -2415,8 +2263,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Name();
          virtual ~M_Get_Attribute_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2425,7 +2273,7 @@ namespace certi {
          const AttributeHandle& getAttribute() const {return attribute;}
          void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          std::string attributeName;
@@ -2438,15 +2286,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Class_Handle();
          virtual ~M_Get_Interaction_Class_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          const std::string& getClassName() const {return className;}
          void setClassName(const std::string& newClassName) {className=newClassName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::string className;
@@ -2458,15 +2306,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Class_Name();
          virtual ~M_Get_Interaction_Class_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          const std::string& getClassName() const {return className;}
          void setClassName(const std::string& newClassName) {className=newClassName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::string className;
@@ -2478,8 +2326,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Parameter_Handle();
          virtual ~M_Get_Parameter_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -2488,7 +2336,7 @@ namespace certi {
          const ParameterHandle& getParameter() const {return parameter;}
          void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::string parameterName;
@@ -2501,8 +2349,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Parameter_Name();
          virtual ~M_Get_Parameter_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
@@ -2511,7 +2359,7 @@ namespace certi {
          const ParameterHandle& getParameter() const {return parameter;}
          void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          std::string parameterName;
@@ -2524,15 +2372,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Instance_Handle();
          virtual ~M_Get_Object_Instance_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectInstanceName() const {return objectInstanceName;}
          void setObjectInstanceName(const std::string& newObjectInstanceName) {objectInstanceName=newObjectInstanceName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::string objectInstanceName;
@@ -2544,15 +2392,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Instance_Name();
          virtual ~M_Get_Object_Instance_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          const std::string& getObjectInstanceName() const {return objectInstanceName;}
          void setObjectInstanceName(const std::string& newObjectInstanceName) {objectInstanceName=newObjectInstanceName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectHandle object;
          std::string objectInstanceName;
@@ -2564,15 +2412,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Space_Handle();
          virtual ~M_Get_Space_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getSpaceName() const {return spaceName;}
          void setSpaceName(const std::string& newSpaceName) {spaceName=newSpaceName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string spaceName;
          SpaceHandle space;
@@ -2584,15 +2432,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Space_Name();
          virtual ~M_Get_Space_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getSpaceName() const {return spaceName;}
          void setSpaceName(const std::string& newSpaceName) {spaceName=newSpaceName;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string spaceName;
          SpaceHandle space;
@@ -2604,8 +2452,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Dimension_Handle();
          virtual ~M_Get_Dimension_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getDimensionName() const {return dimensionName;}
          void setDimensionName(const std::string& newDimensionName) {dimensionName=newDimensionName;}
@@ -2614,7 +2462,7 @@ namespace certi {
          const DimensionHandle& getDimension() const {return dimension;}
          void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string dimensionName;
          SpaceHandle space;
@@ -2627,8 +2475,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Dimension_Name();
          virtual ~M_Get_Dimension_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getDimensionName() const {return dimensionName;}
          void setDimensionName(const std::string& newDimensionName) {dimensionName=newDimensionName;}
@@ -2637,7 +2485,7 @@ namespace certi {
          const DimensionHandle& getDimension() const {return dimension;}
          void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string dimensionName;
          SpaceHandle space;
@@ -2650,8 +2498,8 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Space_Handle();
          virtual ~M_Get_Attribute_Space_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
@@ -2660,7 +2508,7 @@ namespace certi {
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          AttributeHandle attribute;
@@ -2673,15 +2521,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class();
          virtual ~M_Get_Object_Class();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const ObjectClassHandle& getObjectClass() const {return objectClass;}
          void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
          const ObjectHandle& getObject() const {return object;}
          void setObject(const ObjectHandle& newObject) {object=newObject;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          ObjectClassHandle objectClass;
          ObjectHandle object;
@@ -2693,15 +2541,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Space_Handle();
          virtual ~M_Get_Interaction_Space_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
          void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
          const SpaceHandle& getSpace() const {return space;}
          void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          InteractionClassHandle interactionClass;
          SpaceHandle space;
@@ -2713,15 +2561,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Transportation_Handle();
          virtual ~M_Get_Transportation_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getTransportationName() const {return transportationName;}
          void setTransportationName(const std::string& newTransportationName) {transportationName=newTransportationName;}
          const TransportType& getTransportation() const {return transportation;}
          void setTransportation(const TransportType& newTransportation) {transportation=newTransportation;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string transportationName;
          TransportType transportation;
@@ -2733,15 +2581,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Transportation_Name();
          virtual ~M_Get_Transportation_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getTransportationName() const {return transportationName;}
          void setTransportationName(const std::string& newTransportationName) {transportationName=newTransportationName;}
          const TransportType& getTransportation() const {return transportation;}
          void setTransportation(const TransportType& newTransportation) {transportation=newTransportation;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string transportationName;
          TransportType transportation;
@@ -2753,15 +2601,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Ordering_Handle();
          virtual ~M_Get_Ordering_Handle();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getOrderingName() const {return orderingName;}
          void setOrderingName(const std::string& newOrderingName) {orderingName=newOrderingName;}
          const OrderType& getOrdering() const {return ordering;}
          void setOrdering(const OrderType& newOrdering) {ordering=newOrdering;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string orderingName;
          OrderType ordering;
@@ -2773,15 +2621,15 @@ namespace certi {
          typedef Message Super;
          M_Get_Ordering_Name();
          virtual ~M_Get_Ordering_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getOrderingName() const {return orderingName;}
          void setOrderingName(const std::string& newOrderingName) {orderingName=newOrderingName;}
          const OrderType& getOrdering() const {return ordering;}
          void setOrdering(const OrderType& newOrdering) {ordering=newOrdering;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string orderingName;
          OrderType ordering;
@@ -2865,8 +2713,8 @@ namespace certi {
          typedef Message Super;
          M_Tick_Request();
          virtual ~M_Tick_Request();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const bool& getMultiple() const {return multiple;}
          void setMultiple(const bool& newMultiple) {multiple=newMultiple;}
@@ -2875,7 +2723,7 @@ namespace certi {
          const double& getMaxTickTime() const {return maxTickTime;}
          void setMaxTickTime(const double& newMaxTickTime) {maxTickTime=newMaxTickTime;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          bool multiple;
          double minTickTime;
@@ -2906,13 +2754,13 @@ namespace certi {
          typedef Message Super;
          M_Reserve_Object_Instance_Name();
          virtual ~M_Reserve_Object_Instance_Name();
-         virtual void serialize(MessageBuffer& msgBuffer);
-         virtual void deserialize(MessageBuffer& msgBuffer);
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
          const std::string& getObjectName() const {return objectName;}
          void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
          // the show method
-         virtual void show(std::ostream& out);
+         virtual std::ostream& show(std::ostream& out);
       protected:
          std::string objectName;
       private:
@@ -2938,8 +2786,8 @@ namespace certi {
 
    class CERTI_EXPORT M_Factory {
       public:
-         static Message* create(M_Type type) throw (NetworkError, NetworkSignal);
-         static Message* receive(MStreamType stream) throw (NetworkError, NetworkSignal);
+         static Message* create(M_Type type) throw (NetworkError ,NetworkSignal); 
+         static Message* receive(MStreamType stream) throw (NetworkError ,NetworkSignal); 
       protected:
       private:
    };

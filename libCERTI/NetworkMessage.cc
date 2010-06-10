@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.48 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage.cc,v 3.49 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -49,13 +49,14 @@ NetworkMessage::~NetworkMessage() {
 	
 }
 
-void NetworkMessage::show(std::ostream& out) {
+std::ostream& NetworkMessage::show(std::ostream& out) {
 	out << "[NetworkMessage -Begin]" << std::endl;
 	out << " federation = " << federation << std::endl;
 	out << " federate   = " << federate << std::endl;
 	out << "[NetworkMessage -End]" << std::endl;
+	return out;
 } /* end of show */
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.48 2010/03/23 13:13:27 erk Exp $
+// $Id: NetworkMessage.cc,v 3.49 2010/06/10 08:31:52 erk Exp $
