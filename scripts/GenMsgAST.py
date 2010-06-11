@@ -18,7 +18,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.11 2010/06/10 08:31:52 erk Exp $
+## $Id: GenMsgAST.py,v 1.12 2010/06/11 07:47:33 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -164,24 +164,41 @@ class MessageAST(ASTElement):
     # pythonic getter/setter using properties      
     messages = property(fget=__getMessageTypes,fset=None,fdel=None,doc=None)
     
-    def __getEnumTypes(self):
+    def __getEnumTypes(self):    	    	
         return self.__enumTypes
     # pythonic getter/setter using properties   
     enums = property(fget=__getEnumTypes,fset=None,fdel=None,doc=None)
     
-    def getRootMergeType(self,msg):
-    	""" return the root merge type
+    def getRootMergeType(self,msg,verbose=0):
+    	""" 
+    	Return the root merge type of a message.
+    	
+    	The idea is to find the root of the merge chain of
+    	the provided message. 
+    	@param msg: the message for which we want to know the root merge type
+    	@type any: more precisely either C{NativeType} or C{MessageType} however
+    	           only C{MessageType} may lead to a real search of the root.
+    	@return: the C{MessageType} root merge type or msg if msg wasn't an instance of C{MessageType}
     	"""
     	retval = None
-    	current = msg
-    	while retval==None:    	    		    
+    	# msg may be a simple string not a type    	
+    	if (isinstance(msg,type(""))):
+    		current = self.getType(msg)
+    	else:
+    		current = msg
+    		
+    	while retval==None:
+    		if (verbose):
+    			print "current = %s, retval = %s" % (current,retval)
+    			print "type(current)=", type(current)    	    		    
     	 	if isinstance(current,MessageType):
     		  	if current.hasMerge():
-    		 	  current=AST.getType(current.merge)
+    		 	  current=self.getType(current.merge)
     		 	else: 
     		 	  retval = current
     		else:
-    			retval = current    		
+    			retval = current   
+        return retval
         
     def add(self,any):
         """ 
@@ -568,9 +585,11 @@ class ASTChecker(object):
                parent = AST.getType(msg.merge)
                parent.nbHeir += 1         
                if (None!=lastMerge):
-               	   # recurse to find root merge               	                  	   
-                   if (lastMerge!=AST.getRootMergeType(msg.merge)):
-				   	  self.logger.error("Error: there is more than one merged type (%s != %s). You should use one merged type only" % (lastMerge, msg.merge))
+               	   # recurse to find root merge
+               	   rootMerge = AST.getRootMergeType(msg.merge)             	                  	   
+                   if (lastMerge!=rootMerge):
+				   	  blah = AST.getRootMergeType(msg.merge,1)
+				   	  self.logger.error("Error: there is more than one merged type (%s != %s (root of %s)). You should use one merged type only" % (lastMerge,rootMerge,msg.merge))
 				   	  self.logger.fatal(" --> Check lines (%d,%d)" % (msg.linespan) + " of <%s>" % AST.name )
 				   	  return           
                else:

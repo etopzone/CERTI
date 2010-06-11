@@ -18,7 +18,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.17 2010/06/10 08:31:52 erk Exp $
+## $Id: GenMsgCXX.py,v 1.18 2010/06/11 07:47:33 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -272,11 +272,11 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                 self.writeComment(stream, enumval)
             else:
                 stream.write(self.getIndent())
-            if (enumval.name==lastname):
-                stream.write("%s \n" % enumval.name)            
-            else:
-                stream.write("%s, " % enumval.name)            
-                self.writeComment(stream, enumval)
+        if (enumval.name==lastname):
+          stream.write("%s \n" % enumval.name)            
+        else:
+          stream.write("%s, " % enumval.name)            
+          self.writeComment(stream, enumval)
                                             
         self.unIndent()      
         stream.write(self.getIndent())          
@@ -353,7 +353,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             lastname = ""
             for enum in self.AST.enums:
                 self.generateEnum(stream, enum)
-	        stream.write("\n")
+            stream.write("\n")
                
             # close enum namespace
 	    
