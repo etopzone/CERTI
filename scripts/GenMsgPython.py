@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 ## ----------------------------------------------------------------------------
 ## CERTI - HLA RunTime Infrastructure
 ## Copyright (C) 2002-2005  ONERA
@@ -17,27 +19,31 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgPython.py,v 1.2 2010/03/06 12:55:10 erk Exp $
+## $Id: GenMsgPython.py,v 1.3 2010/06/11 12:43:12 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
 The CERTI Message Generator.
 Python Backend Generator
 """
+
 import logging
-import GenMsgBase       
-                           
+import GenMsgBase
+
+
 class PythonGenerator(GenMsgBase.CodeGenerator):
+
     """
     This is a Python generator for C{MessageAST}.
     """
-    
+
     def generatorName(cls):
-        return "Python"    
+        return 'Python'
+
     generatorName = classmethod(generatorName)
-    
-    
-    def __init__(self,MessageAST):
-        super(PythonGenerator,self).__init__(MessageAST,"##")
+
+    def __init__(self, MessageAST):
+        super(PythonGenerator, self).__init__(MessageAST, '##')
+
+
         # Message builtin type to Python type
-        
