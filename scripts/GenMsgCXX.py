@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.19 2010/06/11 12:43:12 erk Exp $
+## $Id: GenMsgCXX.py,v 1.20 2010/06/18 13:34:28 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -334,7 +334,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             else:
                 stream.write(self.getIndent())
                 if enumval.name == lastname:
-                    stream.write('%s \n' % enumval.name)
+                    stream.write('%s ' % enumval.name)
+                    self.writeComment(stream, enumval)
+                    stream.write('\n')
                 else:
                     stream.write('%s, ' % enumval.name)
                     self.writeComment(stream, enumval)

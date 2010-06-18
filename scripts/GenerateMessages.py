@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.40 2010/06/11 12:43:12 erk Exp $
+## $Id: GenerateMessages.py,v 1.41 2010/06/18 13:34:28 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -651,9 +651,12 @@ def p_error(p):
         msg = "Syntax error at '%s' on line %d (token type is '%s')" \
             % (p.value, p.lineno, p.type)
     parserlogger.fatal(msg)
+    lexer.syntax = False
 
 
 # Build the PLY parser
+
+lexer.syntax = True
 
 parserlogger = logging.Logger('MessageParser')
 parserlogger.setLevel(logging.ERROR)
@@ -680,31 +683,35 @@ parser.parse(msgFile.read(), lexer=lexer, tracking=True)
 parser.AST.messages.reverse()
 parser.AST.enums.reverse()
 parser.AST.natives.reverse()
-msgFile.close()
-mainlogger.info('Parse succeeded %s' % parser.AST)
+if lexer.syntax:
+  msgFile.close()
+  mainlogger.info('Parse succeeded %s' % parser.AST)
 
-mainlogger.info('Checking AST properties....')
-checker = GenMsgAST.ASTChecker()
-checker.check(parser.AST)
-if parser.AST.checked:
-    mainlogger.info('AST properties checked Ok.')
+  mainlogger.info('Checking AST properties....')
+  checker = GenMsgAST.ASTChecker()
+  checker.check(parser.AST)
+  if parser.AST.checked:
+      mainlogger.info('AST properties checked Ok.')
+  else:
+      mainlogger.error('AST has error, generation step may produce invalid files!!!'
+                      )
+      sys.exit()
+
+  mainlogger.info('Generate %s from AST,...' % language)
+  generator = None
+  if language.lower() in generatorBackends.keys():
+      generator = generatorBackends[language.lower()](parser.AST)
+  elif language.lower() == 'none':
+      mainlogger.info('Nothing to generate for <%s>.' % language)
+      usage()
+  else:
+      mainlogger.error('Language <%s> is unknown' % language)
+      usage()
+
+  if generator != None:
+      generator.generate(output, gentype, factoryOnly)
+  mainlogger.info('Generate %s from AST, Done.' % language)
+  msgFile.close()
+
 else:
-    mainlogger.error('AST has error, generation step may produce invalid files!!!'
-                     )
-    sys.exit()
-
-mainlogger.info('Generate %s from AST,...' % language)
-generator = None
-if language.lower() in generatorBackends.keys():
-    generator = generatorBackends[language.lower()](parser.AST)
-elif language.lower() == 'none':
-    mainlogger.info('Nothing to generate for <%s>.' % language)
-    usage()
-else:
-    mainlogger.error('Language <%s> is unknown' % language)
-    usage()
-
-if generator != None:
-    generator.generate(output, gentype, factoryOnly)
-mainlogger.info('Generate %s from AST, Done.' % language)
-msgFile.close()
+  mainlogger.error('Syntax error: code cannot be generated')

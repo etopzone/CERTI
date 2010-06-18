@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.13 2010/06/11 12:43:12 erk Exp $
+## $Id: GenMsgAST.py,v 1.14 2010/06/18 13:34:28 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -44,14 +44,16 @@ class ASTElement(object):
     """
     The base class for all Abstract Syntax Tree element.
 
-    @param name: the name of the element
-    @type name: C{string}
-    @param comment: the comment attached to this element.
-                    may be C{None}
-    @type comment: C{CommentBlock}   
     """
 
     def __init__(self, name):
+        """
+        The class constructor
+
+        @param name: the name we want to give to the element
+        @type name: C{string}
+
+        """
         self.__name = name
         self.__comment = None
         self.__linespan = None
@@ -60,9 +62,20 @@ class ASTElement(object):
         self.logger.addHandler(stdoutHandler)
 
     def __getName(self):
+        """
+        Getter for __name
+        @return: the name of the C{ASTElement}
+
+        """
         return self.__name
 
     def __setName(self, name):
+        """
+        Setter for __name
+        @param name: the new name
+        @type name: C{string}
+
+        """
         self.__name = name
 
     # pythonic getter/setter using properties
@@ -71,12 +84,28 @@ class ASTElement(object):
                     doc='The name of the C{ASTElement}')
 
     def hasComment(self):
+        """
+        Tells if the C{ASTElement} has got a comment block or not
+        @return: TRUE if the C{ASTElement} has got a comment block and FALSE if not
+
+        """
         return self.__comment != None
 
     def __getComment(self):
+        """
+        Getter for __comment
+        @return: the comment block attached to the C{ASTElement}
+
+        """
         return self.__comment
 
     def __setComment(self, comment):
+        """
+        Setter for __comment
+        @param comment: the new comment block
+        @type comment: C{CommentBlock}
+    
+        """
         if isinstance(comment, type('')):
             pass
         else:
@@ -91,9 +120,17 @@ class ASTElement(object):
                        )
 
     def __getLinespan(self):
+        """
+        Getter for __linespan
+        @return: The line span of the C{ASTElement} in the original file
+        """
         return self.__linespan
 
     def __setLinespan(self, linespan):
+        """
+        Setter for __linespan
+        @param linespan: the new line span of the C{ASTElement} object
+        """
         self.__linespan = linespan
 
     # pythonic getter/setter using properties
@@ -113,19 +150,16 @@ class MessageAST(ASTElement):
     language including all the features represented by corresponding
     class field. Object instance of C{MessageAST} may be used by a 
     language generator in order to generate code for the target language.
-    
-    @param package: the package which the generated message will belong
-                    this will be used by the specific AST generator
-    @type package:  C{Package}                     
-    @param natives: the set of native types described in this
-                          C{MessageAST}
-    @type natives: C{set} of C{NativeType}
-    @param messages: the set of messages described in this C{MessageAST}
-    @type messages: C{set} of C{MessageType}          
+       
     
     """
 
     def __init__(self, name):
+        """
+        The class constructor
+        @param name: the name we want to give to the C{ASTElement} object
+        @type name: C{string}
+        """
         super(MessageAST, self).__init__(name=os.path.basename(name))
         self.__package = None
         self.__version = None
@@ -158,70 +192,122 @@ class MessageAST(ASTElement):
         self.logger.addHandler(stdoutHandler)
 
     def hasPackage(self):
+        """
+        Tells if the C{MessageAST} object has got a package or not
+        @return: TRUE if the C{MessageAST} has got a package and FALSE if not
+        """
         return self.__package != None
 
     def __getPackage(self):
+        """
+        Getter for __package
+        @return: the package of the C{MessageAST} object
+        """
         return self.__package
 
     def __setPackage(self, package):
+        """
+        Setter for __package
+        @param package: the new package for this C{MessageAST} object
+        @type package: C{Package}
+
+        """
         self.__package = package
 
     # pythonic getter/setter using properties
 
     package = property(fget=__getPackage, fset=__setPackage, fdel=None,
-                       doc=None)
+                         doc='The package which the generated message will belong to.This will be used by the specific AST generator')
 
     def hasVersion(self):
+        """
+        Tells if the C{MessageAST} object has got a version or not
+        @return: TRUE if the C{MessageAST} has got a version and FALSE if not
+        """
         return self.__version != None
 
     def __getVersion(self):
+        """
+        Getter for __version
+        @return: the version of the C{MessageAST} object
+        """
         return self.__version
 
     def __setVersion(self, version):
+        """
+        Setter for __version
+        @param version: the new version of the C{MessageAST} object
+        @type version: C{Version}
+        """
         self.__version = version
 
     # pythonic getter/setter using properties
 
     version = property(fget=__getVersion, fset=__setVersion, fdel=None,
-                       doc=None)
+                       doc='The version of the C{MessageAST} object')
 
     def hasFactory(self):
+        """
+        Tells if the C{MessageAST} object has got a factory or not
+        @return: TRUE if the C{MessageAST} has got a factory and FALSE if not
+        """
         return self.__factory != None
 
     def __getFactory(self):
+        """
+        Getter for __factory
+        @return: the factory of the C{MessageAST} object
+        """
         return self.__factory
 
     def __setFactory(self, factory):
+        """
+        Setter for factory
+        @param factory: the new factory of the C{MessageAST} object
+        @type factory: C{Factory}
+        """
         self.__factory = factory
 
     # pythonic getter/setter using properties
 
     factory = property(fget=__getFactory, fset=__setFactory, fdel=None,
-                       doc=None)
+                       doc='The factory of the C{MessageAST} object')
 
     def __getNativeTypes(self):
+        """
+        Getter for __nativeTypes
+        @return: All the native types in the message spécification
+        """
         return self.__nativeTypes
 
     # pythonic getter/setter using properties
 
     natives = property(fget=__getNativeTypes, fset=None, fdel=None,
-                       doc=None)
+                       doc='the set of native types described in this C{MessageAST}')
 
     def __getMessageTypes(self):
+        """
+        Getter for __messageTypes
+        @return: All the message types in the message specification
+        """
         return self.__messageTypes
 
     # pythonic getter/setter using properties
 
     messages = property(fget=__getMessageTypes, fset=None, fdel=None,
-                        doc=None)
+                        doc='the set of message types described in this C{MessageAST}')
 
     def __getEnumTypes(self):
+        """
+        Getter for __enumTypes
+        @return: All the enum types in the message specification
+        """
         return self.__enumTypes
 
     # pythonic getter/setter using properties
 
     enums = property(fget=__getEnumTypes, fset=None, fdel=None,
-                     doc=None)
+                     doc='the set of enum types described in this C{MessageAST}')
 
     def getRootMergeType(self, msg, verbose=0):
         """ 
@@ -230,7 +316,7 @@ class MessageAST(ASTElement):
     ....The idea is to find the root of the merge chain of
     ....the provided message. 
     ....@param msg: the message for which we want to know the root merge type
-    ....@type any: more precisely either C{NativeType} or C{MessageType} however
+    ....@type msg: Any -> more precisely either C{NativeType} or C{MessageType} however
     ....           only C{MessageType} may lead to a real search of the root.
     ....@return: the C{MessageType} root merge type or msg if msg wasn't an instance of C{MessageType}
     ...."""
@@ -359,6 +445,14 @@ class MessageAST(ASTElement):
         return self.getType(typename) != None
 
     def getType(self, typename):
+        """
+        Get the known type in the AST corresponding to a given typename. The returned type may be None if the given 
+        typename is not found in the AST.
+
+        @param typename: the typename for which we want to know the type
+        @type typename: C{string}
+        @return: the known type in the AST if found
+        """
         if isinstance(typename, type('')):
             if typename in self.__types.keys():
                 return self.__types[typename]
@@ -368,6 +462,10 @@ class MessageAST(ASTElement):
             return typename
 
     def __repr__(self):
+        """
+        Gives a representation of a C{MessageAST} object
+        @return: the representation of the C{MessageAST} object
+        """
         res = \
             'AST with <%d> native type(s), <%d> enum, <%d> message type(s)' \
             % (len(self.natives), len(self.enums), len(self.messages))
@@ -384,13 +482,18 @@ class CommentBlock(ASTElement):
     Represents a block of comment
     
     A C{CommentBlock} has lines which is a list of C{string}.
-    @param lines: the comments lines
-    @type lines: C{list} of C{string}  
+ 
     """
 
     def __init__(self, content, isAtEOL):
         """
-        C{CommentBlock} constructor
+        The class constructor
+
+        @param content: the initial comment line of the C{CommentBock} object
+        @type content: C{string}
+        @param isAtEOL: this boolean tells if the comment block is at the end of the line or not. If isAtEOL is TRUE that means 
+        that the comment block is optional.
+        @type isAtEOL: C{boolean}
         """
 
         super(CommentBlock, self).__init__(name='ANY Comment Block')
@@ -398,6 +501,10 @@ class CommentBlock(ASTElement):
         self.__isAtEOL = isAtEOL
 
     def __getisAtEOL(self):
+        """
+        Getter for __isAtEOL
+        @return: TRUE if the comment block is at the end of the line (e.g. is optional)
+        """
         return self.__isAtEOL
 
     # pythonic getter/setter using properties
@@ -417,9 +524,18 @@ class Package(ASTElement):
     """
 
     def __init__(self, name):
+        """
+        The class constructor
+        @param name: the name we want to give to the C{Package} object
+        @type name: C{string}
+        """
         super(Package, self).__init__(name)
 
     def __repr__(self):
+        """
+        Gives a representation of a C{Package} object
+        @return: the representation of the C{Package} object
+        """
         return 'package %s' % self.name
 
 
@@ -433,10 +549,19 @@ class Version(ASTElement):
     """
 
     def __init__(self, number):
+        """
+        The class constructor
+        @param number: the number we want to give to the C{Version} object
+
+        """
         super(Version, self).__init__(name='Version')
         self.number = number
 
     def __repr__(self):
+        """
+        Gives a representation of a C{Version} object
+        @return: the representation of the C{Version} object
+        """
         return 'version %d.%d' % self.number
 
 
@@ -445,27 +570,42 @@ class Factory(ASTElement):
     """
     Represents a factory.
     
-    A C{Factory} is anC{ASTElement} whose
+    A C{Factory} is a C{ASTElement} whose
     name is a C{string}.
     """
 
-    def __init__(
-        self,
-        name,
-        creator,
-        receiver=None,
-        ):
+    def __init__(self,name,creator,receiver=None):
+        """
+        The class constructor
+
+        @param name: the name we want to give to the factory
+        @type name: C{string}
+        @param creator: the creator of the factory
+        @param receiver: the receiver of the factory
+        """
         super(Factory, self).__init__(name)
         self.creator = creator
         self.receiver = receiver
 
     def hasFactoryCreator(self):
+        """
+        Tells if the factory has got a factory creator or not
+        @return: TRUE if the factory has got a factory creator and FALSE if not
+        """
         return self.creator != None
 
     def hasFactoryReceiver(self):
+        """
+        Tells if the factory has got a factory creator or not
+        @return: TRUE if the factory has got a factory creator and FALSE if not
+        """
         return self.receiver != None
 
     def __repr__(self):
+        """
+        Gives a representation of a C{Factory} object
+        @return: the representation of the C{Factory} object
+        """
         res = 'factory %s' % self.name
         res = res + ', creator = %s %s(%s)' % creator
         res = res + ', receiver = %s %s(%s)' % receiver
@@ -482,6 +622,12 @@ class NativeType(ASTElement):
     """
 
     def __init__(self, name, lines):
+        """
+        The class constructor
+        @param name: the name we want to give to the C{NativeType} object
+        @type name: C{string}
+        @param lines: the language or representation lines that we want to add to the native type
+        """
         super(NativeType, self).__init__(name=name)
 
         # store language line list in a dictionary
@@ -501,23 +647,51 @@ class NativeType(ASTElement):
         self.nbHeir = 0
 
     def __repr__(self):
+        """
+        Gives a representation of a C{NativeType} object
+        @return: the representation of the C{NativeType} object
+        """
         return 'native %s' % self.name
 
     def hasLanguage(self, language):
+        """
+        Tells if a given language is in the available languages
+        @param language: the language for which we want to know if it is available
+        @type language: C{string}
+        @return: TRUE if the given language is available and FALSE if not
+        """
         return language in self.languages.keys()
 
     def getLanguageLines(self, language):
+        """
+        Get the language lines corresponding to a given language
+        @param language: the language for which we want to get the language lines
+        @type language: C{string}
+        @return: the language lines corresponding to the given language
+        """
         if language in self.languages.keys():
             return self.languages[language]
 
     def hasRepresentation(self):
+        """
+        Tells if the C{NativeType} object has got a representation or not
+        @return: TRUE if the C{NativeType} object has got a representation and FALSE if not
+        """
         return self.representation != None
 
     def getRepresentation(self):
+        """
+        Get the representation of a C{NativeType} object
+        @return: the representation of the C{NativeType} object
+        """
         return self.representation
 
-        def hasHeir(self):
-            return self.nbHeir > 0
+    def hasHeir(self):
+        """
+        Tells if a C{NativeType} object has got at least one heir or not
+        @return: TRUE if the C{NativeType} object has got at least  one heir and FALSE if not
+        """
+        return self.nbHeir > 0
 
 
     class LanguageLine(ASTElement):
@@ -526,6 +700,14 @@ class NativeType(ASTElement):
         """
 
         def __init__(self, name, value):
+            """
+            The class constructor
+            @param name: the name we want to give to the language lines
+            @type name: C{string}
+            @param value: the value of the language line, e.g. what specific code has to be generated by the corresponding
+            backend
+            @type value: C{string}
+            """
             super(NativeType.LanguageLine, self).__init__(name=name)
             self.statement = value.strip('[]')
 
@@ -536,6 +718,11 @@ class NativeType(ASTElement):
         """
 
         def __init__(self, value):
+            """
+            The class constructor
+            @param value: the value of the representation line, e.g. how a field of this native type has to be serialized 
+            and deserialized. The value can be either 'combine' or a basic type.
+            """
             super(NativeType.RepresentationLine,
                   self).__init__(name='representation')
             self.representation = value
@@ -546,10 +733,6 @@ class MessageType(ASTElement):
     """ 
     Represents a message type.
     
-    @param fields: the fields of this C{MessageType}
-    @type fields: C{list} of C{MessageType.MessageField}
-    @param merge: the merger of this C{MessageType}
-    @type merge: a C{MessageType}  
     @param combine: a combined set of fields
     """
 
@@ -559,33 +742,87 @@ class MessageType(ASTElement):
         fields,
         merge,
         ):
+        """
+        The class constructor
+        @param name: the name we want to give to the C{MessageType} object
+        @type name: C{string}
+        @param merge: the merger of this C{MessageType}
+        @type merge: a C{MessageType}  
+        @param fields: the fields we want to describe in the C{MessageType} object
+        @type fields:  C{list} of C{MessageType.MessageField}
+        """
         super(MessageType, self).__init__(name=name)
         self.fields = fields
+        """
+        @ivar: the fields of this C{MessageType}
+        @type: C{list} of C{MessageType.MessageField}
+        """
         self.merge = merge
+        """ 
+        @ivar: the merger of this C{MessageType}
+        @type: a C{MessageType}  
+        """
+
         self.enum = None
-        self.nbHeir = 0
+        """
+        @ivar: the enum in which this C{MessageType} is stored. May be None if this C{MessageType} doesn't merge another type
+        """
+        self.nbHeir = 0 
+        """ 
+        @ivar: the number of heir of this C{MessageType} object
+        @type: C{int}
+        """
 
     def __repr__(self):
+        """
+        Gives a representation of a C{MessageType} object
+        @return: the representation of the C{MessageType} object
+        """
         res = 'message %s ' % self.name
         return res
 
     def hasMerge(self):
+        """
+        Tells if the C{MessageType} merges another type or not
+        @return: TRUE if the C{MessageType} merges another type and FALSE if not
+        """
         return self.merge != None
 
     def hasEnum(self):
+        """
+        Tells if the C{MessageType} is stored in an enum or not.
+        @return: TRUE if the C{MessageType} is stored in an enum and FALSE if not.
+        """
         return self.enum != None
 
     def hasHeir(self):
+        """
+        Tells if the C{MessageType} has got at least one heir or not
+        @return: TRUE if the C{MessageType} has got at least one heir and FALSE if not.
+        """
         return self.nbHeir > 0
 
 
     class CombinedField(ASTElement):
 
         def __init__(self, typeid, fields):
+            """
+            The class constructor
+            @param typeid: the type we want for the combined field
+            @param fields: the field we want for combined field
+            """
             super(MessageType.CombinedField,
                   self).__init__(name='Combined')
             self.typeid = typeid
+            """
+            @ivar: the type of the combined field
+            @type: a C{NativeType}
+            """
             self.fields = fields
+            """
+            @ivar: the fields of the combined field
+            @type: a C{set} of C{MessageField}
+            """
 
 
     class MessageField(ASTElement):
@@ -729,7 +966,7 @@ class ASTChecker(object):
                     rootMerge = AST.getRootMergeType(msg.merge)
                     if lastMerge != rootMerge:
                         blah = AST.getRootMergeType(msg.merge, 1)
-                        self.logger.error('Error: there is more than one merged type (%s != %s (root of %s)). You should use one merged type only'
+                        self.logger.error('Error: there is more than one root merged type (%s != %s (root of %s)). You should use one root merged type only'
                                  % (lastMerge, rootMerge, msg.merge))
                         self.logger.fatal(' --> Check lines (%d,%d)'
                                 % msg.linespan + ' of <%s>' % AST.name)
