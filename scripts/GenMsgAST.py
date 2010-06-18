@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.14 2010/06/18 13:34:28 erk Exp $
+## $Id: GenMsgAST.py,v 1.15 2010/06/18 14:28:59 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -351,7 +351,7 @@ class MessageAST(ASTElement):
         built the appropriate ASTElement sub-class.
         
         @param any: the object to be added to the tree
-        @type any: some sub-class of C{ASTElement}, see: G{ASTElement}
+        @type any: some sub-class of C{ASTElement}, see: G{classtree ASTElement}
           
         """
 
@@ -556,6 +556,10 @@ class Version(ASTElement):
         """
         super(Version, self).__init__(name='Version')
         self.number = number
+        """
+        @ivar: the number of the version
+        @type: a C{set} of two C{integer} values
+        """
 
     def __repr__(self):
         """
@@ -585,7 +589,16 @@ class Factory(ASTElement):
         """
         super(Factory, self).__init__(name)
         self.creator = creator
+        """
+        @ivar: the creator of the factory
+        @type: a C{set} of three C{string}
+        """
         self.receiver = receiver
+        """
+        @ivar: the receiver of the factory
+        @type: a C{set} of three C{string}
+        """
+
 
     def hasFactoryCreator(self):
         """
