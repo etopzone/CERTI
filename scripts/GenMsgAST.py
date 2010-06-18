@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.15 2010/06/18 14:28:59 erk Exp $
+## $Id: GenMsgAST.py,v 1.16 2010/06/18 15:25:12 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -55,9 +55,24 @@ class ASTElement(object):
 
         """
         self.__name = name
+        """
+        @ivar: the name of the C{ASTElement} object
+        @type: C{string}
+        """
         self.__comment = None
+        """
+        @ivar: the comment block attached to the C{ASTElement} object
+        @type: C{CommentBlock}
+        """
         self.__linespan = None
+        """
+        @ivar: the line span of this C{ASTElement} in the original file
+        """
         self.logger = logging.Logger('ASTElement')
+        """
+        @ivar: the logger attached to the C{ASTElement} object
+        @type: C{Logger} (the C{Logger} class is defined in the C{logging} Python module
+        """
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
 
@@ -162,11 +177,35 @@ class MessageAST(ASTElement):
         """
         super(MessageAST, self).__init__(name=os.path.basename(name))
         self.__package = None
+        """
+        @ivar: the package of the C{MessageAST} object
+        @type: C{Package}
+        """
         self.__version = None
+        """
+        @ivar: the version of the C{MessageAST} object
+        @type: C{Version}
+        """
         self.__factory = None
+        """
+        @ivar: the factory of the C{MessageAST} object
+        @type: C{Factory}
+        """
         self.__nativeTypes = []
+        """
+        @ivar: the native types of the C{MessageAST} object
+        @type: a C{set} of C{NativeType}
+        """
         self.__messageTypes = []
+        """
+        @ivar: the message types of the C{MessageAST} object
+        @type: a C{set} of C{MessageType}
+        """
         self.__enumTypes = []
+        """
+        @ivar: the enum types of the C{MessageAST} object
+        @type: a C{set} of C{EnumType}
+        """
 
         # The types dictionary is initialized with builtin types
 
@@ -186,8 +225,20 @@ class MessageAST(ASTElement):
             'float': ASTElement('float'),
             'double': ASTElement('double'),
             }
+        """
+        @ivar: the basic types of the C{MessageAST} object
+        @type: dictionary
+        """
         self.__ultimateElement = None
+        """
+        @ivar: the ultimate element of the C{MessageAST} object
+        @type: C{ASTElement}
+        """
         self.logger = logging.Logger('MessageAST')
+        """
+        @ivar: the logger attached to the C{MessageAST} object
+        @type: C{Logger} (the C{Logger} class is defined in the C{logging} Python module)
+        """
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
 
@@ -311,15 +362,15 @@ class MessageAST(ASTElement):
 
     def getRootMergeType(self, msg, verbose=0):
         """ 
-    ....Return the root merge type of a message.
-    ....
-    ....The idea is to find the root of the merge chain of
-    ....the provided message. 
-    ....@param msg: the message for which we want to know the root merge type
-    ....@type msg: Any -> more precisely either C{NativeType} or C{MessageType} however
-    ....           only C{MessageType} may lead to a real search of the root.
-    ....@return: the C{MessageType} root merge type or msg if msg wasn't an instance of C{MessageType}
-    ...."""
+        Return the root merge type of a message.
+    
+        The idea is to find the root of the merge chain of
+        the provided message. 
+        @param msg: the message for which we want to know the root merge type
+        @type msg: Any -> more precisely either C{NativeType} or C{MessageType} however
+                  only C{MessageType} may lead to a real search of the root.
+        @return: the C{MessageType} root merge type or msg if msg wasn't an instance of C{MessageType}
+        """
 
         retval = None
 
@@ -489,7 +540,7 @@ class CommentBlock(ASTElement):
         """
         The class constructor
 
-        @param content: the initial comment line of the C{CommentBock} object
+        @param content: the content of the C{CommentBock} object
         @type content: C{string}
         @param isAtEOL: this boolean tells if the comment block is at the end of the line or not. If isAtEOL is TRUE that means 
         that the comment block is optional.
@@ -498,7 +549,16 @@ class CommentBlock(ASTElement):
 
         super(CommentBlock, self).__init__(name='ANY Comment Block')
         self.lines = [content]
+        """
+        @ivar: the lines of the C{CommentBlock}
+        @type: a C{set} of C{string}
+        """
         self.__isAtEOL = isAtEOL
+        """
+        @ivar: this boolean tells if the comment block is at the end of the line or not. If isAtEOL is TRUE that means 
+        that the comment block is optional.
+        @type: C{boolean}
+        """
 
     def __getisAtEOL(self):
         """
@@ -599,7 +659,6 @@ class Factory(ASTElement):
         @type: a C{set} of three C{string}
         """
 
-
     def hasFactoryCreator(self):
         """
         Tells if the factory has got a factory creator or not
@@ -630,7 +689,7 @@ class NativeType(ASTElement):
     """ 
     Represents a native message type.
     
-    A C{NaptiveType} is a simple C{ASTElement} whose
+    A C{NativeType} is a simple C{ASTElement} whose
     name is the name the native type.
     """
 
@@ -647,7 +706,15 @@ class NativeType(ASTElement):
         # in order to ease retrieval
 
         self.languages = dict()
+        """
+        @ivar: the language line of the C{NativeType} object
+        @type: a C{set} of C{LanuageLine}
+        """
         self.representation = None
+        """
+        @ivar: the representation of the C{NativeType} object. It can be either 'combine' or a basic type.
+        @type: C{string} 
+        """
         for l in lines:
             if isinstance(l, NativeType.LanguageLine):
                 if l.name in self.languages.keys():
@@ -708,8 +775,8 @@ class NativeType(ASTElement):
 
 
     class LanguageLine(ASTElement):
-
-        """ Represents a Language Line Value
+        """ 
+        Represents a Language Line Value
         """
 
         def __init__(self, name, value):
@@ -723,11 +790,16 @@ class NativeType(ASTElement):
             """
             super(NativeType.LanguageLine, self).__init__(name=name)
             self.statement = value.strip('[]')
+            """
+            @ivar: the statement of the language line, e.g. what specific code has to be generated by the corresponding
+            backend
+            @type: C{string}
+            """
 
 
     class RepresentationLine(ASTElement):
-
-        """ Represents a Representation Line Value
+        """ 
+        Represents a Representation Line Value
         """
 
         def __init__(self, value):
@@ -739,6 +811,11 @@ class NativeType(ASTElement):
             super(NativeType.RepresentationLine,
                   self).__init__(name='representation')
             self.representation = value
+            """
+            @ivar: the representation that has to be used, e.g. how a field of this native type has to be serialized 
+            and deserialized. The representation can be either 'combine' or a basic type.
+            @type: C{string}
+            """
 
 
 class MessageType(ASTElement):
@@ -746,7 +823,6 @@ class MessageType(ASTElement):
     """ 
     Represents a message type.
     
-    @param combine: a combined set of fields
     """
 
     def __init__(
@@ -817,12 +893,15 @@ class MessageType(ASTElement):
 
 
     class CombinedField(ASTElement):
+        """
+        Represents a combined field
+        """
 
         def __init__(self, typeid, fields):
             """
             The class constructor
             @param typeid: the type we want for the combined field
-            @param fields: the field we want for combined field
+            @param fields: the field we want for the combined field
             """
             super(MessageType.CombinedField,
                   self).__init__(name='Combined')
@@ -839,8 +918,8 @@ class MessageType(ASTElement):
 
 
     class MessageField(ASTElement):
-
-        """ Represents a message field            
+        """ 
+        Represents a message field            
         """
 
         def __init__(
@@ -850,26 +929,66 @@ class MessageType(ASTElement):
             name,
             defaultValue=None,
             ):
+            """
+            The class constructor
+
+            @param qualifier: the qualifier (required/repeated/optional) we want for the field
+            @type qualifier: C{string}
+            @param typeid: the type we want for the field. It may be a basic type or a defined type.
+            @type typeid: C{string}
+            @param name: the name we want for the field
+            @type name: C{string}
+            @param defaultValue: the default value we want for the field. May be None.
+            @type defaultValue: depends on the type of the field
+            """
             super(MessageType.MessageField, self).__init__(name=name)
             self.qualifier = qualifier
+            """
+            @ivar: the qualifier of the C{MessageField}
+            @type: C{string}
+            """
             self.typeid = typeid
+            """
+            @ivar: the type of the C{MessageField}
+            @type: C{string}
+            """
             self.defaultValue = defaultValue
+            """
+            @ivar: the default value of the C{MessageField}
+            @type: the same type as the C{MessageField}
+            """
 
         def hasDefaultValue(self):
+            """
+            Tells if the C{MessageField} has got a default value or not
+            @return: TRUE if the C{MessageField} has got a default value and FALSE if not
+            """
             return self.defaultValue != None
 
 
 class EnumType(ASTElement):
-
-    """ Represents an enum type 
+    """ 
+    Represents an enum type 
     """
 
     def __init__(self, name, values):
+        """
+        The class constructor
+
+        @param name: the name we want for the enums
+        @type name: C{string}
+        @param values: the values we want for the enum
+        @type values: a C{set} of enum values (e.g. value-key pairs)
+        """
         super(EnumType, self).__init__(name=name)
 
         # rebuild dictionary with value from the list
 
         self.values = []
+        """
+        @ivar: the values of the enums
+        @type: a C{set} of enum values (e.g. value-key pairs)
+        """
         lastval = -1
         for val in values:
             if val.value == None:
@@ -881,6 +1000,10 @@ class EnumType(ASTElement):
                 lastval = val.value
 
     def __repr__(self):
+        """
+        Gives a representation of a C{EnumType} object
+        @return: the representation of the C{EnumType} object
+        """
         res = 'Enum %s {\n' % self.name
         for val in self.values:
             res = res + '  ' + str(val[0]) + ' = ' + str(val[1]) \
@@ -890,28 +1013,53 @@ class EnumType(ASTElement):
 
 
     class EnumValue(ASTElement):
-
-        """ Represents an Enum Value
+        """ 
+        Represents an Enum Value
         """
 
         def __init__(self, name, value):
+            """
+            The class constructor
+
+            @param name: the name we want for the C{EnumValue}
+            @type name: C{string}
+            @param value: the value we want for the C{EnumValue}
+            @type value: C{int}
+            """
             super(EnumType.EnumValue, self).__init__(name=name)
             self.value = value
+            """
+            @ivar: the value of the C{EnumValue} object
+            @type: C{int}
+            """
 
 
 class ASTChecker(object):
-
     """
     The Purpose of this class is to check AST properties. 
-        
     """
 
     def __init__(self):
+        """
+        The class constructor
+        """
         self.logger = logging.Logger('ASTChecker')
+        """
+        @ivar: The logger attached to the C{ASTChecker} object
+        @type: C{Logger} (this class is defined in the Python module C{logging})
+        """
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
 
     def checkMessageFields(self, msg, AST):
+        """
+        Checks the fields of a message
+
+        @param msg: the message for which we want to check the fields
+        @type msg: C{MessageType}
+        @param AST: the AST that contains the given message
+        @type AST: C{MessageAST}
+        """
         for f in msg.fields:
             if not AST.isDefined(f.typeid):
                 self.logger.fatal('The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)'
@@ -933,7 +1081,7 @@ class ASTChecker(object):
 
     def check(self, AST):
         """
-        Check the AST.
+        Checks the AST.
         
         @param AST: the AST to be checked
         @type AST: C{MessageAST}  
