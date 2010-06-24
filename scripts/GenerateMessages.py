@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.41 2010/06/18 13:34:28 erk Exp $
+## $Id: GenerateMessages.py,v 1.42 2010/06/24 14:07:04 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -28,8 +28,8 @@ The CERTI Message Generator.
 CERTI is an HLA RTI (High Level Architecture RunTime Infrastructure)
 which uses in its internal a lot of message based communication.
 Those messages:
-   should be as compact as possible in terms of memory consumption
-   should be easy to implement.
+   - should be as compact as possible in terms of memory consumption
+   - should be easy to implement.
 
 The CERTI developer team did develop a message specification language
 inspired from Google Protocol buffer. CERTI message have several

@@ -54,16 +54,17 @@ if (PYTHONINTERP_FOUND)
    
     # add a rule for epydoc if it is found
     find_program(EPYDOC_EXECUTABLE epydoc)
+    set(EPYDOC_COMMON_OPTS "--graph" "all" "--inheritance" "listed" "--parse-only" "-v" "--name" "CERTI")
     if (EPYDOC_EXECUTABLE)   
         add_custom_target(GenGenMessageDocPDF
            ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/MsgGen/pdf
-           COMMAND ${EPYDOC_EXECUTABLE} --pdf --output=${PROJECT_BINARY_DIR}/doc/MsgGen/pdf --name="CERTI-Message-Generator" ${MESSAGE_GENERATOR_SRC}           
+           COMMAND ${EPYDOC_EXECUTABLE} ${EPYDOC_COMMON_OPTS} --pdf --output=${PROJECT_BINARY_DIR}/doc/MsgGen/pdf ${MESSAGE_GENERATOR_SRC}           
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
            COMMENT "Generate CERTI Message generator documentation (PDF) with epydoc"   
            )
         add_custom_target(GenGenMessageDocHTML
            ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/MsgGen/html
-           COMMAND ${EPYDOC_EXECUTABLE} --html --output=${PROJECT_BINARY_DIR}/doc/MsgGen/html --name="CERTI-Message-Generator" ${MESSAGE_GENERATOR_SRC}           
+           COMMAND ${EPYDOC_EXECUTABLE} ${EPYDOC_COMMON_OPTS} --html --output=${PROJECT_BINARY_DIR}/doc/MsgGen/html ${MESSAGE_GENERATOR_SRC}           
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
            COMMENT "Generate CERTI Message generator documentation (PDF) with epydoc"   
            )        

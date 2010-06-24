@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.16 2010/06/18 15:25:12 erk Exp $
+## $Id: GenMsgAST.py,v 1.17 2010/06/24 14:07:05 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -40,10 +40,8 @@ stdoutHandler = logging.StreamHandler(sys.stdout)
 
 
 class ASTElement(object):
-
     """
     The base class for all Abstract Syntax Tree element.
-
     """
 
     def __init__(self, name):
@@ -52,8 +50,8 @@ class ASTElement(object):
 
         @param name: the name we want to give to the element
         @type name: C{string}
-
         """
+        
         self.__name = name
         """
         @ivar: the name of the C{ASTElement} object
