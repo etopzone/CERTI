@@ -4,6 +4,7 @@
 #define _POSIX_C_SOURCE 200112L
 #endif
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <Semaphore.hh>
 #include <fcntl.h>
 
