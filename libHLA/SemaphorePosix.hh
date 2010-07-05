@@ -1,21 +1,15 @@
 #ifndef SEMAPHORE_POSIX_H
 #define SEMAPHORE_POSIX_H
 
-// Posix Semaphores systems includes
-// Don't forget to add "-lrt" to compilation line
-#include <sys/types.h>
-#include <Semaphore.hh>
-#include <fcntl.h>
-
 // Others Systems includes
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <iostream>
 
 // Specifics includes
 #include "Semaphore.hh"
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200112L
+#endif
 #include <semaphore.h>
 
 namespace libhla {
