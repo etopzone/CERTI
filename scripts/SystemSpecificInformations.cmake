@@ -4,8 +4,10 @@
 # not as a standalone CMake script
 set(SPECIFIC_COMPILER_NAME "")
 set(SPECIFIC_SYSTEM_VERSION_NAME "")
+set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "")
 
 if(WIN32)
+    set(SPECIFIC_SYSTEM_PREFERED_PACKAGE "NSIS")
 # information taken from
 # http://www.codeguru.com/cpp/w-p/system/systeminformation/article.php/c8973/
 	# Win9x series
@@ -70,36 +72,41 @@ if(WIN32)
 	endif(MINGW)
 	IF (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
        set(SPECIFIC_SYSTEM_VERSION_NAME "${SPECIFIC_SYSTEM_VERSION_NAME}-x86_64")
-	endif(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+	endif(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")	
 endif(WIN32)
 
 if(UNIX)
   if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(SPECIFIC_SYSTEM_VERSION_NAME "${CMAKE_SYSTEM_NAME}")
+    set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "TGZ")
     if(EXISTS "/etc/issue")
       set(LINUX_NAME "")
       file(READ "/etc/issue" LINUX_ISSUE)
       # Fedora case
       if(LINUX_ISSUE MATCHES "Fedora")
         string(REGEX MATCH "release ([0-9]+)" FEDORA "${LINUX_ISSUE}")
-        set(LINUX_NAME "FC${CMAKE_MATCH_1}")        
+        set(LINUX_NAME "FC${CMAKE_MATCH_1}")  
+        set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "RPM")      
       endif(LINUX_ISSUE MATCHES "Fedora")
       # Ubuntu case
       if(LINUX_ISSUE MATCHES "Ubuntu")
         string(REGEX MATCH "buntu ([0-9]+\\.[0-9]+)" UBUNTU "${LINUX_ISSUE}")
         set(LINUX_NAME "Ubuntu_${CMAKE_MATCH_1}")        
+        set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "DEB")
       endif(LINUX_ISSUE MATCHES "Ubuntu")
       # Debian case
       if(LINUX_ISSUE MATCHES "Debian")
         string(REGEX MATCH "Debian .*ux ([a-zA-Z]*/?[a-zA-Z]*) .*" DEBIAN "${LINUX_ISSUE}")
         set(LINUX_NAME "Debian_${CMAKE_MATCH_1}")
-        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})        
+        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME}) 
+        set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "DEB")       
       endif(LINUX_ISSUE MATCHES "Debian")      
       # Open SuSE case
       if(LINUX_ISSUE MATCHES "SUSE")
         string(REGEX MATCH "SUSE  ([0-9]+\\.[0-9]+)" SUSE "${LINUX_ISSUE}")
         set(LINUX_NAME "openSUSE_${CMAKE_MATCH_1}")
-        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})        
+        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})   
+        set(SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR "RPM")     
       endif(LINUX_ISSUE MATCHES "SUSE")
       # Mandriva case
       # TODO      
