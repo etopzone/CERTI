@@ -1,4 +1,4 @@
-// Generated on 2010 June Thu, 10 at 10:24:31 by the CERTI message generator
+// Generated on 2010 August Mon, 09 at 16:30:14 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -723,12 +723,47 @@ namespace certi {
       return out;
    }
 
-   NM_Synchronization_Point_Registration_Succeeded::NM_Synchronization_Point_Registration_Succeeded() {
-      this->messageName = "NM_Synchronization_Point_Registration_Succeeded";
-      this->type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+   NM_Confirm_Synchronization_Point_Registration::NM_Confirm_Synchronization_Point_Registration() {
+      this->messageName = "NM_Confirm_Synchronization_Point_Registration";
+      this->type = NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION;
+      //successIndicator= <no default value in message spec using builtin>
+      _hasFailureReason=false;
+      //failureReason= <no default value in message spec using builtin>
    }
 
-   NM_Synchronization_Point_Registration_Succeeded::~NM_Synchronization_Point_Registration_Succeeded() {
+   NM_Confirm_Synchronization_Point_Registration::~NM_Confirm_Synchronization_Point_Registration() {
+   }
+
+   void NM_Confirm_Synchronization_Point_Registration::serialize(libhla::MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      msgBuffer.write_bool(successIndicator);
+      msgBuffer.write_bool(_hasFailureReason);
+      if (_hasFailureReason) {
+         msgBuffer.write_string(failureReason);
+      }
+   }
+
+   void NM_Confirm_Synchronization_Point_Registration::deserialize(libhla::MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      successIndicator = msgBuffer.read_bool();
+      _hasFailureReason = msgBuffer.read_bool();
+      if (_hasFailureReason) {
+         msgBuffer.read_string(failureReason);
+      }
+   }
+
+   std::ostream& NM_Confirm_Synchronization_Point_Registration::show(std::ostream& out) {
+      out << "[NM_Confirm_Synchronization_Point_Registration -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " successIndicator = " << successIndicator << " "       << std::endl;
+      out << "(opt) failureReason =" << failureReason << " "       << std::endl;
+      out << "[NM_Confirm_Synchronization_Point_Registration -End]" << std::endl;
+      return out;
    }
 
    NM_Announce_Synchronization_Point::NM_Announce_Synchronization_Point() {
@@ -2829,8 +2864,8 @@ namespace certi {
          case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
             msg = new NM_Register_Federation_Synchronization_Point();
             break;
-         case NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-            msg = new NM_Synchronization_Point_Registration_Succeeded();
+         case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+            msg = new NM_Confirm_Synchronization_Point_Registration();
             break;
          case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
             msg = new NM_Announce_Synchronization_Point();

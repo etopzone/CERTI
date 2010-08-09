@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.59 2010/05/31 09:33:26 erk Exp $
+// $Id: TimeManagement.cc,v 3.60 2010/08/09 14:51:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -142,9 +142,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         }
         break ;
 
-      case NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+      case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
         try {
-            fm->synchronizationPointRegistrationSucceeded(msg.getLabel());
+          NM_Confirm_Synchronization_Point_Registration& CSPR=static_cast<NM_Confirm_Synchronization_Point_Registration&>(msg);
+          if (CSPR.getSuccessIndicator()) {
+            fm->synchronizationPointRegistrationSucceeded(CSPR.getLabel());
+          } else {
+            fm->synchronizationPointRegistrationFailed(CSPR.getLabel());
+          }
         }
         catch (RTIinternalError &e) {
             cout << "RTIA:RTIinternalError in synchronizationPointRegistration"
@@ -1023,4 +1028,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.59 2010/05/31 09:33:26 erk Exp $
+// $Id: TimeManagement.cc,v 3.60 2010/08/09 14:51:45 erk Exp $

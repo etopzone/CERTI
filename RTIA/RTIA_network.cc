@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.37 2010/03/23 13:13:27 erk Exp $
+// $Id: RTIA_network.cc,v 3.38 2010/08/09 14:51:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -74,9 +74,9 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::SYNCHRONIZATION_"
-              "POINT_REGISTRATION_SUCCEEDED.");
+      case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+        D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::CONFIRM_"
+              "SYNCHRONIZATION_POINT_REGISTRATION.");
 
         queues->insertLastCommand(msg);
         break ;
@@ -380,4 +380,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.37 2010/03/23 13:13:27 erk Exp $
+// $Id: RTIA_network.cc,v 3.38 2010/08/09 14:51:45 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.103 2010/05/31 09:33:26 erk Exp $
+// $Id: RTIG_processing.cc,v 3.104 2010/08/09 14:51:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -520,57 +520,67 @@ void
 RTIG::processRegisterSynchronization(Socket *link, NM_Register_Federation_Synchronization_Point *req)
 {
 
-	G.Out(pdGendoc,"BEGIN ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
-	G.Out(pdGendoc,"enter RTIG::processRegisterSynchronization");
+  G.Out(pdGendoc,"BEGIN ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
+  G.Out(pdGendoc,"enter RTIG::processRegisterSynchronization");
 
-	auditServer << "Label \"" << req->getLabel() << "\" registered. Tag is \""
-			<< req->getTag() << "\"" ;
+  auditServer << "Label \"" << req->getLabel() << "\" registered. Tag is \""
+      << req->getTag() << "\"" ;
 
-	// boolean true means a federates set exists
-	if ( req->getExists() ) {
-		federations.manageSynchronization(req->getFederation(),
-				req->getFederate(),
-				true,
-				req->getLabel(),
-				req->getTag(),
-				req->getFederatesSize(),
-				req->getFederates());
-	}
-	else {
-		federations.manageSynchronization(req->getFederation(),
-				req->getFederate(),
-				true,
-				req->getLabel(),
-				req->getTag());
-	}
-	D.Out(pdTerm, "Federation %u is now synchronizing.", req->getFederation());
+  /* prepare answer to be sent to RTIA */
+  NM_Confirm_Synchronization_Point_Registration rep;
+  rep.setFederate(req->getFederate());
+  rep.setFederation(req->getFederation());
+  rep.setLabel(req->getLabel());
 
-	// send synchronizationPointRegistrationSucceeded() to federate.
-	NM_Synchronization_Point_Registration_Succeeded rep ;
-	rep.setFederate(req->getFederate());
-	rep.setFederation(req->getFederation());
-	rep.setLabel(req->getLabel());
+  try {
+    // boolean true means a federates set exists
+    if ( req->getExists() ) {
+      federations.manageSynchronization(req->getFederation(),
+          req->getFederate(),
+          true,
+          req->getLabel(),
+          req->getTag(),
+          req->getFederatesSize(),
+          req->getFederates());
+    }
+    else {
+      federations.manageSynchronization(req->getFederation(),
+          req->getFederate(),
+          true,
+          req->getLabel(),
+          req->getTag());
+    }
+    // send synchronizationPointRegistrationSucceeded() to federate.
+    rep.setSuccessIndicator(true);
+  } catch (RTIinternalError &e) {
+    /* the registration did fail */
+    rep.setSuccessIndicator(false);
+  }
+  D.Out(pdTerm, "Federation %u is now synchronizing.", req->getFederation());
 
-	G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
+  G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
+  rep.send(link,NM_msgBufSend);
 
-	rep.send(link,NM_msgBufSend);
-
-	// boolean true means a federates set exists
-	if ( req->getExists() )
-		federations.broadcastSynchronization(req->getFederation(),
-				req->getFederate(),
-				req->getLabel(),
-				req->getTag(),
-				req->getFederatesSize(),
-				req->getFederates());
-	else
-		federations.broadcastSynchronization(req->getFederation(),
-				req->getFederate(),
-				req->getLabel(),
-				req->getTag());
-
-	G.Out(pdGendoc,"exit  RTIG::processRegisterSynchronization");
-	G.Out(pdGendoc,"END   ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
+  // proceed with the broadcast iff registration was successful
+  if (rep.getSuccessIndicator()) {
+    // boolean true means a federates set exists
+    if ( req->getExists() ) {
+      federations.broadcastSynchronization(req->getFederation(),
+          req->getFederate(),
+          req->getLabel(),
+          req->getTag(),
+          req->getFederatesSize(),
+          req->getFederates());
+    }
+    else {
+      federations.broadcastSynchronization(req->getFederation(),
+          req->getFederate(),
+          req->getLabel(),
+          req->getTag());
+    }
+  }
+  G.Out(pdGendoc,"exit  RTIG::processRegisterSynchronization");
+  G.Out(pdGendoc,"END   ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
 
 }
 
@@ -1496,4 +1506,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.103 2010/05/31 09:33:26 erk Exp $
+// $Id: RTIG_processing.cc,v 3.104 2010/08/09 14:51:45 erk Exp $

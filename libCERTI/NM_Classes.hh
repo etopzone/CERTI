@@ -1,4 +1,4 @@
-// Generated on 2010 June Thu, 10 at 10:24:31 by the CERTI message generator
+// Generated on 2010 August Mon, 09 at 16:30:13 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -48,6 +48,7 @@ namespace certi {
    namespace CERTI_NetworkMessage {
       static const uint32_t versionMajor = 1;
       static const uint32_t versionMinor = 0;
+
    }
    // The EventRetraction is not inheriting from base "Message"
    // this is a plain message which may be used as field
@@ -491,13 +492,30 @@ namespace certi {
          std::vector<FederateHandle> federates;// the federate set
       private:
    };
-
-   class CERTI_EXPORT NM_Synchronization_Point_Registration_Succeeded : public NetworkMessage {
+   // HLA 1.3    - §4.7
+   // IEEE-1516  - §4.7
+   class CERTI_EXPORT NM_Confirm_Synchronization_Point_Registration : public NetworkMessage {
       public:
          typedef NetworkMessage Super;
-         NM_Synchronization_Point_Registration_Succeeded();
-         virtual ~NM_Synchronization_Point_Registration_Succeeded();
+         NM_Confirm_Synchronization_Point_Registration();
+         virtual ~NM_Confirm_Synchronization_Point_Registration();
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const bool& getSuccessIndicator() const {return successIndicator;}
+         void setSuccessIndicator(const bool& newSuccessIndicator) {successIndicator=newSuccessIndicator;}
+         const std::string& getFailureReason() const {return failureReason;}
+         void setFailureReason(const std::string& newFailureReason) {
+            _hasFailureReason=true;
+            failureReason=newFailureReason;
+         }
+         bool hasFailureReason() {return _hasFailureReason;}
+         // the show method
+         virtual std::ostream& show(std::ostream& out);
       protected:
+         bool successIndicator;// the success indicator true=successful
+         std::string failureReason;// [IEEE-1516] the failure reason.
+         bool _hasFailureReason;
       private:
    };
 

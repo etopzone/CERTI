@@ -226,7 +226,12 @@ message NM_Register_Federation_Synchronization_Point : merge NetworkMessage {
 	repeated FederateHandle federates // the federate set
 }
 
-message NM_Synchronization_Point_Registration_Succeeded : merge NetworkMessage {}
+// HLA 1.3    - §4.7
+// IEEE-1516  - §4.7
+message NM_Confirm_Synchronization_Point_Registration : merge NetworkMessage {
+   required bool   successIndicator // the success indicator true=successful
+   optional string failureReason    // [IEEE-1516] the failure reason.
+}
 
 message NM_Announce_Synchronization_Point : merge NetworkMessage {}
 

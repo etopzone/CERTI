@@ -1,4 +1,4 @@
-// Generated on 2010 June Thu, 10 at 10:24:31 by the CERTI message generator
+// Generated on 2010 August Mon, 09 at 16:30:14 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -51,6 +51,7 @@ namespace certi {
    namespace CERTI_Message {
       static const uint32_t versionMajor = 1;
       static const uint32_t versionMinor = 0;
+
    }
    // The EventRetraction is not inheriting from base "Message"
    // this is a plain message which may be used as field
