@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.36 2010/05/31 09:33:26 erk Exp $
+// $Id: DataDistribution.cc,v 3.37 2010/08/09 07:05:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -409,6 +409,8 @@ throw (RegionNotKnown)
 
 	req.setInteractionClass(int_class);
 	req.setRegion(region);
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
@@ -431,6 +433,8 @@ throw (RegionNotKnown)
 
 	req.setInteractionClass(int_class);
 	req.setRegion(region);
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
 
 	comm->sendMessage(&req);
 	std::auto_ptr<NetworkMessage>  rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
@@ -441,4 +445,4 @@ throw (RegionNotKnown)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.36 2010/05/31 09:33:26 erk Exp $
+// $Id: DataDistribution.cc,v 3.37 2010/08/09 07:05:47 erk Exp $
