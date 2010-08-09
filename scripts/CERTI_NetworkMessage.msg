@@ -545,6 +545,10 @@ message NM_Reserve_Object_Instance_Name_Succeeded : merge NM_Reserve_Object_Inst
 message NM_Reserve_Object_Instance_Name_Failed : merge NM_Reserve_Object_Instance_Name {
 }
 
+message NM_Message_Null_Prime : merge NetworkMessage {
+   required FederationTime timestamp
+}
+
 message New_NetworkMessage {
     required uint32          type  {default=0}
     //required string          name  {default="MessageBaseClass"}
@@ -552,8 +556,6 @@ message New_NetworkMessage {
     optional string          label 
     optional string          tag
 }
-
-
 
 native NMStreamType {
     language CXX [typedef Socket* NMStreamType;]

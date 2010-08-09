@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.16 2009/11/19 18:15:29 erk Exp $
+// $Id: Federate.hh,v 3.17 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
@@ -46,6 +46,8 @@ public:
     bool isRegulator() const { return regulator ; };
     void setConstrained(bool c) { constrained = c ; };
     void setRegulator(bool r) { regulator = r ; };
+    void setIsUsingNERx(bool unx) { usingNERx = unx;};
+    const bool isUsingNERx() {return usingNERx;};
 
     /**
      * Sets the ClassRelevanceAdvisorySwitch of the federate to the value of 
@@ -112,7 +114,11 @@ public:
     void setSaving(bool s) { saving = s ; };
     void setRestoring(bool r) { restoring = r ; };
 
-    void addSynchronizationLabel(const std::string&) throw (RTIinternalError);
+    /**
+     *  Add a synchronization label to federate.
+     *  @param[in] label the synchronization label to be added
+     */
+    void addSynchronizationLabel(const std::string& label) throw (RTIinternalError);
     void removeSynchronizationLabel(const std::string&) throw (RTIinternalError);
     bool isSynchronizationLabel(const std::string&) const ;
 
@@ -124,6 +130,16 @@ private:
     */
     bool regulator ;
     bool constrained ; //!< = false by default.
+    /**
+     * If the federate is currently using NER or NERA in order to advance time.
+     * Initialized to be false.
+     * Will be set to true whenever NULL PRIME Message is received from
+     * the concerned federate (i.e. from its RTIA). Note that NULL PRIME
+     * message are sent iff federate has zero lookahead.
+     * Will be set to false whenever a NULL Message is received from
+     * the concerned federate.
+     */
+    bool usingNERx;
 
     bool cras ; //!< = class relevance advisory switch -> true  by default.
     bool iras ; //!< = interaction relevance advisory siwtch -> true  by default.
@@ -141,4 +157,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.16 2009/11/19 18:15:29 erk Exp $
+// $Id: Federate.hh,v 3.17 2010/08/09 18:24:07 erk Exp $

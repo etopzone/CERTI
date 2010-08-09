@@ -71,7 +71,7 @@ ENDIF(RTIA_USE_TCP)
 
 IF (NOT CMAKE_BUILD_TYPE)
    MESSAGE(STATUS "No build type selected, default to Debug")
-   SET(CMAKE_BUILD_TYPE "Debug")               
+   SET(CMAKE_BUILD_TYPE "Debug")
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "debug library postfix, usually d on windows")
@@ -434,6 +434,11 @@ SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CM
 
 INCLUDE(CPack)
 INCLUDE(UsePackageBackup)
+
+# The UseRPMTools and UseDebian thing
+# are obsolete since CPack 2.6.0 which has
+# builtin support for RPM and DEB.
+# We may get rid of those sooner or later
 INCLUDE(UseRPMTools)
 IF(RPMTools_FOUND)
   RPMTools_ADD_RPM_TARGETS(certi)
@@ -443,9 +448,8 @@ IF (DEBIAN_FOUND)
   ADD_DEBIAN_TARGETS(certi)
 ENDIF(DEBIAN_FOUND)
 
- ## Patch generating target
-# The custom target is using a cmake script which in turn
-# use execute_process,
+## Patch generating target
+# The custom target is using a cmake script which in turn use execute_process,
 # this way we may find a flexible way to build the patch
 ADD_CUSTOM_TARGET(patch
                   COMMAND ${CMAKE_COMMAND} -DWDIR:PATH=${CMAKE_SOURCE_DIR} -DODIR:PATH=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/scripts/CreatePatchCVS.cmake

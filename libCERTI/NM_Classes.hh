@@ -1,4 +1,4 @@
-// Generated on 2010 August Mon, 09 at 16:30:13 by the CERTI message generator
+// Generated on 2010 August Mon, 09 at 18:13:03 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -1802,6 +1802,23 @@ namespace certi {
          NM_Reserve_Object_Instance_Name_Failed();
          virtual ~NM_Reserve_Object_Instance_Name_Failed();
       protected:
+      private:
+   };
+
+   class CERTI_EXPORT NM_Message_Null_Prime : public NetworkMessage {
+      public:
+         typedef NetworkMessage Super;
+         NM_Message_Null_Prime();
+         virtual ~NM_Message_Null_Prime();
+         virtual void serialize(libhla::MessageBuffer& msgBuffer);
+         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const FederationTime& getTimestamp() const {return timestamp;}
+         void setTimestamp(const FederationTime& newTimestamp) {timestamp=newTimestamp;}
+         // the show method
+         virtual std::ostream& show(std::ostream& out);
+      protected:
+         FederationTime timestamp;
       private:
    };
 

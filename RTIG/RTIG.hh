@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.34 2010/05/31 09:33:26 erk Exp $
+// $Id: RTIG.hh,v 3.35 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -84,6 +84,7 @@ private:
     void processSetTimeRegulating(Socket*, NM_Set_Time_Regulating *msg);
     void processSetTimeConstrained(Socket*, NM_Set_Time_Constrained *msg);
     void processMessageNull(NetworkMessage*);
+    void processMessageNullPrime(NM_Message_Null_Prime* msg);
     void processRegisterSynchronization(Socket*, NM_Register_Federation_Synchronization_Point*);
     void processSynchronizationAchieved(Socket*, NetworkMessage*);
     void processRequestFederationSave(Socket*, NetworkMessage*);
@@ -127,6 +128,7 @@ private:
     int tcpPort ;
     int udpPort ;
     int verboseLevel ;
+    FederationTime NullPrimeTime;
     HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
@@ -143,4 +145,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.34 2010/05/31 09:33:26 erk Exp $
+// $Id: RTIG.hh,v 3.35 2010/08/09 18:24:07 erk Exp $

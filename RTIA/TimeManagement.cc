@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.60 2010/08/09 14:51:45 erk Exp $
+// $Id: TimeManagement.cc,v 3.61 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -117,6 +117,33 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
     else {
         D.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
               heure_logique.getTime(), lastNullMessageDate.getTime());
+    }
+}
+
+void TimeManagement::sendNullPrimeMessage(FederationTime heure_logique)
+{
+    NM_Message_Null_Prime msg ;
+
+    msg.setDate(heure_logique);
+
+    /*
+     * We cannot send null prime in the past of
+     *  - the last NULL message
+     *  - the last NULL PRIME message
+     */
+
+    if ((heure_logique > lastNullMessageDate) || (heure_logique > lastNullPrimeMessageDate)) {
+        msg.setFederation(fm->_numero_federation);
+        msg.setFederate(fm->federate);
+        msg.setDate(heure_logique) ; // ? See 6 lines upper !
+
+        comm->sendMessage(&msg);
+        lastNullPrimeMessageDate = heure_logique ;
+        D.Out(pdDebug, "NULL PRIME message sent (Time = %f).", heure_logique.getTime()) ;
+    }
+    else {
+        D.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
+              heure_logique.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
     }
 }
 
@@ -1028,4 +1055,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.60 2010/08/09 14:51:45 erk Exp $
+// $Id: TimeManagement.cc,v 3.61 2010/08/09 18:24:07 erk Exp $

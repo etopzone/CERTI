@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.104 2010/08/09 14:51:45 erk Exp $
+// $Id: RTIG_processing.cc,v 3.105 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -513,6 +513,29 @@ RTIG::processMessageNull(NetworkMessage *msg)
 				msg->getDate());
 	} catch (Exception &e) {}
 }
+
+void
+RTIG::processMessageNullPrime(NM_Message_Null_Prime *msg)
+{
+  /* this is the first NULL PRIME message we receive */
+  if (NullPrimeTime.isZero()) {
+    NullPrimeTime = msg->getDate();
+  }
+
+  /*
+   * Update the NullPrimeDate of the concerned federate.
+   */
+
+  /*
+   * Now check whether if the RTIG should send
+   * an anonymous NULL message.
+   */
+  if (NullPrimeTime > msg->getDate()) {
+    NullPrimeTime = msg->getDate();
+    NM_Message_Null msg;
+    msg.setDate(NullPrimeTime);
+  }
+} /* end of processMessageNullPrime */
 
 // ----------------------------------------------------------------------------
 //! processRegisterSynchronization.
@@ -1506,4 +1529,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.104 2010/08/09 14:51:45 erk Exp $
+// $Id: RTIG_processing.cc,v 3.105 2010/08/09 18:24:07 erk Exp $

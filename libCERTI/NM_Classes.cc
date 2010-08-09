@@ -1,4 +1,4 @@
-// Generated on 2010 August Mon, 09 at 16:30:14 by the CERTI message generator
+// Generated on 2010 August Mon, 09 at 18:13:03 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -2753,6 +2753,40 @@ namespace certi {
    NM_Reserve_Object_Instance_Name_Failed::~NM_Reserve_Object_Instance_Name_Failed() {
    }
 
+   NM_Message_Null_Prime::NM_Message_Null_Prime() {
+      this->messageName = "NM_Message_Null_Prime";
+      this->type = NetworkMessage::MESSAGE_NULL_PRIME;
+      //timestamp= <no default value in message spec using builtin>
+   }
+
+   NM_Message_Null_Prime::~NM_Message_Null_Prime() {
+   }
+
+   void NM_Message_Null_Prime::serialize(libhla::MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::serialize(msgBuffer);
+      //Specific serialization code
+      // FIXME FIXME FIXME
+      // don't know how to serialize native field <timestamp> of type <FederationTime>
+   }
+
+   void NM_Message_Null_Prime::deserialize(libhla::MessageBuffer& msgBuffer) {
+      //Call mother class
+      Super::deserialize(msgBuffer);
+      //Specific deserialization code
+      // FIXME FIXME FIXME
+      // don't know how to deserialize native field <timestamp> of type <FederationTime>
+   }
+
+   std::ostream& NM_Message_Null_Prime::show(std::ostream& out) {
+      out << "[NM_Message_Null_Prime -Begin]" << std::endl;      //Call mother class
+      Super::show(out);
+      //Specific show code
+      out << " timestamp = " << "      //FIXME FIXME don't know how to serialize native field <timestamp> of type <FederationTime>"      << std::endl;
+      out << "[NM_Message_Null_Prime -End]" << std::endl;
+      return out;
+   }
+
    New_NetworkMessage::New_NetworkMessage() {
       type=0;
       _hasDate=false;
@@ -3097,6 +3131,9 @@ namespace certi {
             break;
          case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
             msg = new NM_Reserve_Object_Instance_Name_Failed();
+            break;
+         case NetworkMessage::MESSAGE_NULL_PRIME:
+            msg = new NM_Message_Null_Prime();
             break;
          case NetworkMessage::LAST:
             throw NetworkError("LAST message type should not be used!!");

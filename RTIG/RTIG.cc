@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.64 2010/03/23 13:13:28 erk Exp $
+// $Id: RTIG.cc,v 3.65 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -68,6 +68,12 @@ RTIG::RTIG()
     udpPort = atoi(udp_port_s);
 
     federations.setVerboseLevel(verboseLevel);
+    /*
+     * Initialize NullPrimeTime to zero, this way
+     * when the first NULL Prime message is received
+     * NullPrimeTime will have a "true" initial value.
+     */
+    NullPrimeTime.setZero();
 }
 
 // ----------------------------------------------------------------------------
@@ -1036,4 +1042,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.64 2010/03/23 13:13:28 erk Exp $
+// $Id: RTIG.cc,v 3.65 2010/08/09 18:24:07 erk Exp $
