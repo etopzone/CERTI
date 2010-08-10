@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.105 2010/08/09 18:24:07 erk Exp $
+// $Id: RTIG_processing.cc,v 3.106 2010/08/10 08:45:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -575,9 +575,10 @@ RTIG::processRegisterSynchronization(Socket *link, NM_Register_Federation_Synchr
     }
     // send synchronizationPointRegistrationSucceeded() to federate.
     rep.setSuccessIndicator(true);
-  } catch (RTIinternalError &e) {
+  } catch (Exception &e) {
     /* the registration did fail */
     rep.setSuccessIndicator(false);
+    rep.setFailureReason(std::string(e._name) + ":" + std::string(e._reason));
   }
   D.Out(pdTerm, "Federation %u is now synchronizing.", req->getFederation());
 
@@ -1529,4 +1530,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.105 2010/08/09 18:24:07 erk Exp $
+// $Id: RTIG_processing.cc,v 3.106 2010/08/10 08:45:46 erk Exp $

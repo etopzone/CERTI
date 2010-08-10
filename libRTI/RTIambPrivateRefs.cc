@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.26 2010/03/20 16:34:14 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.27 2010/08/10 08:45:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -635,6 +635,13 @@ throw (RTI::RTIinternalError)
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("synchronizationPointRegistrationSucceeded")
 		break ;
 
+	case Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
+		try {
+			fed_amb->synchronizationPointRegistrationFailed((msg->getLabel()).c_str());
+		}
+		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("synchronizationPointRegistrationFailed")
+		break ;
+
 	case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
 		try {
 			fed_amb->announceSynchronizationPoint((msg->getLabel()).c_str(),(msg->getTag()).c_str());
@@ -976,4 +983,4 @@ throw (RTI::RTIinternalError)
 	}
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.26 2010/03/20 16:34:14 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.27 2010/08/10 08:45:46 erk Exp $

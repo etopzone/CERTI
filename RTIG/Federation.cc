@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.130 2010/08/09 18:24:07 erk Exp $
+// $Id: Federation.cc,v 3.131 2010/08/10 08:45:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1004,7 +1004,7 @@ throw (FederateNotExecutionMember,
 	// Verify label does not already exists
 	std::map<std::string, std::string>::const_iterator i = synchronizationLabels.find(label);
 	if (i != synchronizationLabels.end()) {
-		throw FederationAlreadyPaused(""); // Label already pending.
+		throw FederationAlreadyPaused("Label already pending"); // Label already pending.
 	}
 
 	// If not already in pending labels, insert to list.
@@ -2616,5 +2616,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.130 2010/08/09 18:24:07 erk Exp $
+// $Id: Federation.cc,v 3.131 2010/08/10 08:45:46 erk Exp $
 
