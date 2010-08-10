@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.61 2010/08/09 18:24:07 erk Exp $
+// $Id: TimeManagement.cc,v 3.62 2010/08/10 16:34:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -570,6 +570,7 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
 
         _avancee_en_cours = NER ;
         date_avancee = heure_logique ;
+        sendNullPrimeMessage(heure_logique);
         D.Out(pdTrace, "NextEventRequest accepted.");
     }
     else {
@@ -602,6 +603,7 @@ TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
         _avancee_en_cours = NERA ;
         date_avancee = heure_logique ;
+        sendNullPrimeMessage(heure_logique);
         D.Out(pdTrace, "NextEventRequestAvailable accepted.");
     }
     else {
@@ -999,8 +1001,9 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
-        if (_est_regulateur)
+        if (_est_regulateur) {
             sendNullMessage(logical_time);
+        }
 
         _avancee_en_cours = TAR ;
         date_avancee = logical_time ;
@@ -1038,8 +1041,9 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
 
-        if (_est_regulateur)
+        if (_est_regulateur) {
             sendNullMessage(logical_time);
+        }
 
         _avancee_en_cours = TARA ;
         date_avancee = logical_time ;
@@ -1055,4 +1059,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.61 2010/08/09 18:24:07 erk Exp $
+// $Id: TimeManagement.cc,v 3.62 2010/08/10 16:34:10 erk Exp $

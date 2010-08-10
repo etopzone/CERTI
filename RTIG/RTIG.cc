@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.65 2010/08/09 18:24:07 erk Exp $
+// $Id: RTIG.cc,v 3.66 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -68,12 +68,6 @@ RTIG::RTIG()
     udpPort = atoi(udp_port_s);
 
     federations.setVerboseLevel(verboseLevel);
-    /*
-     * Initialize NullPrimeTime to zero, this way
-     * when the first NULL Prime message is received
-     * NullPrimeTime will have a "true" initial value.
-     */
-    NullPrimeTime.setZero();
 }
 
 // ----------------------------------------------------------------------------
@@ -101,11 +95,17 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
        socketServer.checkMessage(link->returnSocket(), msg);
 
     switch(msg->getMessageType()) {
-      case NetworkMessage::MESSAGE_NULL:
-        D.Out(pdDebug, "Message Null.");
-        auditServer.setLevel(0);
-        processMessageNull(msg);
-        break ;
+    case NetworkMessage::MESSAGE_NULL:
+    	D.Out(pdDebug, "Message Null.");
+    	auditServer.setLevel(0);
+    	processMessageNull(msg,false);
+    	break ;
+
+    case NetworkMessage::MESSAGE_NULL_PRIME:
+    	D.Out(pdDebug, "Message Null.");
+    	auditServer.setLevel(0);
+    	processMessageNullPrime(static_cast<NM_Message_Null_Prime*>(msg));
+    	break ;
 
       case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
         D.Out(pdDebug, "UpdateAttributeValue.");
@@ -1042,4 +1042,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.65 2010/08/09 18:24:07 erk Exp $
+// $Id: RTIG.cc,v 3.66 2010/08/10 16:34:09 erk Exp $

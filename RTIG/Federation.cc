@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.131 2010/08/10 08:45:46 erk Exp $
+// $Id: Federation.cc,v 3.132 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -361,6 +361,7 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
 		}
 	}
 
+	minNERx.setZero();
 	G.Out(pdGendoc,"exit Federation::Federation");
 
 }
@@ -733,7 +734,7 @@ throw (FederateNotExecutionMember,
 	msg.regulatorOn();
 	msg.setDate(time);
 
-	this->broadcastAnyMessage(&msg, 0);
+	this->broadcastAnyMessage(&msg, 0,false);
 }
 
 void
@@ -742,18 +743,54 @@ Federation::getFOM(NM_Join_Federation_Execution& objectModelData)
 	root->convertToSerializedFOM(objectModelData);
 }
 
-// ----------------------------------------------------------------------------
-//! Broadcast 'msg' to all Federate except the specified one
+bool
+Federation::updateLastNERxForFederate(FederateHandle federate, FederationTime date)
+throw (FederateNotExecutionMember) {
+	bool retval = false;
+	FederationTime newMin;
+	Federate& f = getFederate(federate);
+
+	f.setLastNERxValue(date);
+	newMin = computeMinNERx();
+	if (newMin > minNERx) {
+		if (!minNERx.isZero()) {
+			retval = true;
+		}
+		minNERx = newMin;
+	}
+	return retval;
+} /* end of updateLastNERxForFederate */
+
+FederationTime
+Federation::computeMinNERx() {
+	FederationTime retval;
+	retval.setZero();
+	HandleFederateMap::iterator i = _handleFederateMap.begin();
+
+	for (++i; i != _handleFederateMap.end(); ++i) {
+		if (i->second.isUsingNERx()) {
+			if (retval.isZero()) {
+				retval = i->second.getLastNERxValue();
+			} else {
+				if (retval > (i->second.getLastNERxValue())) {
+					retval = i->second.getLastNERxValue();
+				}
+			}
+		}
+	}
+	return retval;
+} /* end of getMinimumNERx */
+
 void
 Federation::broadcastAnyMessage(NetworkMessage *msg,
-		FederateHandle except_federate)
+		FederateHandle except_federate, bool anonymous)
 {
 	Socket *socket = NULL ;
 
 	// Broadcast the message 'msg' to all Federates in the Federation
 	// except to Federate whose Handle is 'Except_Federate'.
 	for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-		if (i->first != except_federate) {
+		if (anonymous || (i->first != except_federate)) {
 			try {
 #ifdef HLA_USES_UDP
 				socket = server->getSocketLink(i->second.getHandle(), BEST_EFFORT);
@@ -1096,7 +1133,7 @@ throw (RTIinternalError)
 
 	G.Out(pdGendoc,"      broadcastSynchronization is calling broadcastAnyMessage for all federates");
 
-	broadcastAnyMessage(&msg, 0);
+	broadcastAnyMessage(&msg, 0,false);
 
 	G.Out(pdGendoc,"exit  Federation::broadcastSynchronization");
 
@@ -1173,7 +1210,7 @@ throw (FederateNotExecutionMember, SaveInProgress)
 
 	G.Out(pdGendoc,"      requestFederationSave====>broadcast I_F_S to all");
 
-	broadcastAnyMessage(&msg, 0);
+	broadcastAnyMessage(&msg, 0, false);
 
 	G.Out(pdGendoc,"exit  Federation::requestFederationSave with time");
 }
@@ -1211,7 +1248,7 @@ throw (FederateNotExecutionMember, SaveInProgress)
 	G.Out(pdGendoc,"                  requestFederationSave====>broadcast I_F_S"
 			" to all");
 
-	broadcastAnyMessage(&msg, 0);
+	broadcastAnyMessage(&msg, 0, false);
 
 	G.Out(pdGendoc,"exit  Federation::requestFederationSave without time");
 }
@@ -1263,7 +1300,7 @@ throw (FederateNotExecutionMember)
 	msg->setFederate(the_federate);
 	msg->setFederation(handle);
 
-	broadcastAnyMessage(msg.get(), 0);
+	broadcastAnyMessage(msg.get(), 0,false);
 
 	G.Out(pdGendoc,"            =======> broadcast F_S or F_N_S");
 
@@ -1356,7 +1393,7 @@ throw (FederateNotExecutionMember)
 
 	G.Out(pdGendoc,"             =====> broadcast message F_R_B");
 
-	broadcastAnyMessage(msg, 0);
+	broadcastAnyMessage(msg, 0, false);
 	delete msg ;
 
 	// For each federate, send an initiateFederateRestore with correct handle.
@@ -1405,7 +1442,7 @@ throw (FederateNotExecutionMember)
 	msg->setFederate(the_federate);
 	msg->setFederation(handle);
 
-	broadcastAnyMessage(msg.get(), 0);
+	broadcastAnyMessage(msg.get(), 0, false);
 
 	// Reinitialize state.
 	restoreStatus = true ;
@@ -1720,7 +1757,7 @@ throw (FederateNotExecutionMember,
 	msg.setFederate(federate_handle);
 	msg.regulatorOff();
 
-	broadcastAnyMessage(&msg, 0);
+	broadcastAnyMessage(&msg, 0, false);
 		}
 
 // ----------------------------------------------------------------------------
@@ -1767,7 +1804,7 @@ throw (FederateNotExecutionMember,
 	msg.setFederate(federate_handle);
 	msg.setLabel(label);
 
-	broadcastAnyMessage(&msg, 0);
+	broadcastAnyMessage(&msg, 0, false);
 
 	D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label.c_str());
 
@@ -1986,29 +2023,38 @@ throw (FederateNotExecutionMember,
 //! Update the current time of a regulator federate.
 void
 Federation::updateRegulator(FederateHandle federate_handle,
-		FederationTime time)
+		FederationTime time, bool anonymous)
 throw (FederateNotExecutionMember,
 		RTIinternalError)
 		{
-	// It may throw FederateNotExecutionMember
-	Federate &federate = getFederate(federate_handle);
 
-	if (!federate.isRegulator()) {
-		D.Out(pdExcept, "Federate %d is not a regulator.", federate_handle);
-		throw RTIinternalError("Time regulation not enabled.");
+	/* if it is an anonymous update (from NULL PRIME message)
+	 * no need to check federate.
+	 */
+	if (!anonymous) {
+		// It may throw FederateNotExecutionMember
+		Federate &federate = getFederate(federate_handle);
+
+		if (!federate.isRegulator()) {
+			D.Out(pdExcept, "Federate %d is not a regulator.", federate_handle);
+			throw RTIinternalError("Time regulation not enabled.");
+		}
+
+		D.Out(pdTerm, "Federation %d: Federate %d's new time is %f.",
+				handle, federate_handle, time.getTime());
+
+		regulators.update(federate_handle, time);
 	}
-
-	D.Out(pdTerm, "Federation %d: Federate %d's new time is %f.",
-			handle, federate_handle, time.getTime());
-
-	regulators.update(federate_handle, time);
 
 	NM_Message_Null msg ;
 	msg.setFederation(handle);
-	msg.setFederate(federate_handle);
+	if (anonymous) {
+		msg.setFederate(0);
+	} else {
+		msg.setFederate(federate_handle);
+	}
 	msg.setDate(time);
-
-	broadcastAnyMessage(&msg, federate_handle);
+	broadcastAnyMessage(&msg, federate_handle, anonymous);
 }
 
 // ----------------------------------------------------------------------------
@@ -2616,5 +2662,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.131 2010/08/10 08:45:46 erk Exp $
+// $Id: Federation.cc,v 3.132 2010/08/10 16:34:09 erk Exp $
 

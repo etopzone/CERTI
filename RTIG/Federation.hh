@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.66 2010/05/31 09:33:26 erk Exp $
+// $Id: Federation.hh,v 3.67 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -156,7 +156,7 @@ public:
                RestoreInProgress,
                RTIinternalError); // includes Time Regulation already enabled.
 
-    void updateRegulator(FederateHandle theHandle, FederationTime theTime)
+    void updateRegulator(FederateHandle theHandle, FederationTime theTime, bool anonymous)
         throw (FederateNotExecutionMember,
                RTIinternalError);
 
@@ -654,10 +654,32 @@ public:
 
     void getFOM(NM_Join_Federation_Execution& objectModelData);
 
+    /**
+     * Update the last NERx message date for the concerned federate.
+     * @param[in] federate the handle of the federate for which we want to update NERx time.
+     * @param[in] date the new NERx date for the specified federate.
+     */
+    bool updateLastNERxForFederate(FederateHandle federate, FederationTime date) throw (FederateNotExecutionMember);
+
+    /**
+     * Compute the minimum of all NERx messsage date
+     * for all Federates using NERx messages.
+     * @return the minimum if at least one federate is using NERx, 0 otherwise
+     */
+    FederationTime computeMinNERx();
+
+    /**
+     * Get the (precomputed) minimum of all NERx messsage date
+     * for all Federates using NERx messages.
+     * @return the minimum if at least one federate is using NERx, 0 otherwise
+     */
+    FederationTime getMinNERx() const {return minNERx;};
 
 private:
-    // Private methods
-    void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
+    /**
+     * Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
+     */
+    void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except, bool anonymous);
 
     void broadcastSomeMessage(NetworkMessage *msg, FederateHandle Except,
                        const std::vector <FederateHandle> &fede_array, uint32_t nbfed);
@@ -670,7 +692,6 @@ private:
 
     // Private attributes
     typedef std::map<FederateHandle, Federate> HandleFederateMap;
-
     HandleFederateMap _handleFederateMap;
     bool saveInProgress ;
     bool restoreInProgress ;
@@ -678,6 +699,11 @@ private:
     bool restoreStatus ; //!< True if restoring was correctly done.
     int  verboseLevel ;
     std::string saveLabel ; //!< The label associated with the save request.
+
+    /**
+     * The minimum NERx timestamp for this federation
+     */
+    FederationTime minNERx;
 
 #ifdef HAVE_XML
     xmlDocPtr doc ; // FIXME: should not be an attribute
@@ -690,4 +716,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.66 2010/05/31 09:33:26 erk Exp $
+// $Id: Federation.hh,v 3.67 2010/08/10 16:34:09 erk Exp $

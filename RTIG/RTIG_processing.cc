@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.106 2010/08/10 08:45:46 erk Exp $
+// $Id: RTIG_processing.cc,v 3.107 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -502,7 +502,7 @@ RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
 // ----------------------------------------------------------------------------
 //! processMessageNull.
 void
-RTIG::processMessageNull(NetworkMessage *msg)
+RTIG::processMessageNull(NetworkMessage *msg, bool anonymous)
 {
 	auditServer << "Date " << msg->getDate().getTime();
 
@@ -510,31 +510,26 @@ RTIG::processMessageNull(NetworkMessage *msg)
 	try {
 		federations.updateRegulator(msg->getFederation(),
 				msg->getFederate(),
-				msg->getDate());
+				msg->getDate(), anonymous);
 	} catch (Exception &e) {}
 }
 
 void
 RTIG::processMessageNullPrime(NM_Message_Null_Prime *msg)
 {
-  /* this is the first NULL PRIME message we receive */
-  if (NullPrimeTime.isZero()) {
-    NullPrimeTime = msg->getDate();
-  }
+	/*
+	 * Update the NullPrimeDate of the concerned federate.
+	 * and check the result in order to decide whether
+	 * if the RTIG should send an anonymous NULL message or not
+	 */
+	if (federations.handleMessageNullPrime(msg->getFederation(), msg->getFederate(), msg->getDate())) {
+		NM_Message_Null nmsg;
+		nmsg.setDate(federations.getNullPrimeValue(msg->getFederation()));
+		nmsg.setFederation(msg->getFederation());
+		nmsg.setFederate(0);
+		processMessageNull(&nmsg,true);
+	}
 
-  /*
-   * Update the NullPrimeDate of the concerned federate.
-   */
-
-  /*
-   * Now check whether if the RTIG should send
-   * an anonymous NULL message.
-   */
-  if (NullPrimeTime > msg->getDate()) {
-    NullPrimeTime = msg->getDate();
-    NM_Message_Null msg;
-    msg.setDate(NullPrimeTime);
-  }
 } /* end of processMessageNullPrime */
 
 // ----------------------------------------------------------------------------
@@ -1530,4 +1525,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.106 2010/08/10 08:45:46 erk Exp $
+// $Id: RTIG_processing.cc,v 3.107 2010/08/10 16:34:09 erk Exp $

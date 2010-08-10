@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.71 2010/05/31 09:33:25 erk Exp $
+// $Id: FederationsList.cc,v 3.72 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -475,12 +475,12 @@ FederationsList::registerObject(Handle federationHandle,
     return(federation->registerObject(federate, object_class, name));
 }
 
-// ----------------------------------------------------------------------------
-// updateRegulator
+
 void
-FederationsList::updateRegulator(Handle federationHandle,
+FederationsList::updateRegulator(FederationHandle federationHandle,
                                  FederateHandle federate,
-                                 FederationTime time)
+                                 FederationTime time,
+                                 bool anonymous)
     throw (FederationExecutionDoesNotExist,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -488,7 +488,7 @@ FederationsList::updateRegulator(Handle federationHandle,
     // It may throw FederationExecutionDoesNotExist.
     Federation *federation = searchFederation(federationHandle);
 
-    federation->updateRegulator(federate, time);
+    federation->updateRegulator(federate, time, anonymous);
 }
 
 // ----------------------------------------------------------------------------
@@ -1413,9 +1413,23 @@ FederationsList::reserveObjectInstanceName(Handle federationHandle,
     G.Out(pdGendoc,"exit  FederationsList::federateRestoreStatus");
 }
 
+bool
+FederationsList::handleMessageNullPrime(FederationHandle federation, FederateHandle federate, FederationTime date)
+{
+   Federation* fed = searchFederation(federation);
 
+   return fed->updateLastNERxForFederate(federate,date);
+} /* end of handleMessageNullPrime */
+
+FederationTime
+FederationsList::getNullPrimeValue(FederationHandle federation)
+{
+   Federation* fed = searchFederation(federation);
+
+   return fed->getMinNERx();
+} /* end of handleMessageNullPrime */
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.71 2010/05/31 09:33:25 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.72 2010/08/10 16:34:09 erk Exp $
 

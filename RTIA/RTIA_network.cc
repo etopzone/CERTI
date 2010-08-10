@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.38 2010/08/09 14:51:45 erk Exp $
+// $Id: RTIA_network.cc,v 3.39 2010/08/10 16:34:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,9 +52,10 @@ NetworkMessage::Type msgType = msg->getMessageType();
       case NetworkMessage::MESSAGE_NULL:
       {
           D.Out(pdTrace,
-                "Receving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
+                "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
                 msg->getDate().getTime());
 
+          //msg->show(std::cout);
           tm->update(msg->getFederate(), msg->getDate());
           delete msg ;
           break ;
@@ -380,4 +381,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.38 2010/08/09 14:51:45 erk Exp $
+// $Id: RTIA_network.cc,v 3.39 2010/08/10 16:34:10 erk Exp $

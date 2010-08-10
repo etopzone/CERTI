@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.17 2010/08/09 18:24:07 erk Exp $
+// $Id: Federate.hh,v 3.18 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
@@ -24,6 +24,7 @@
 
 #include "certi.hh"
 #include "Exception.hh"
+#include "FedTimeD.hh"
 
 #include <vector>
 #include <string>
@@ -47,7 +48,9 @@ public:
     void setConstrained(bool c) { constrained = c ; };
     void setRegulator(bool r) { regulator = r ; };
     void setIsUsingNERx(bool unx) { usingNERx = unx;};
-    const bool isUsingNERx() {return usingNERx;};
+    bool isUsingNERx() const {return usingNERx;};
+    const FederationTime getLastNERxValue() const {return lastNERxValue;};
+    void setLastNERxValue(const FederationTime t) {lastNERxValue=t; usingNERx=true;};
 
     /**
      * Sets the ClassRelevanceAdvisorySwitch of the federate to the value of 
@@ -140,6 +143,10 @@ private:
      * the concerned federate.
      */
     bool usingNERx;
+    /**
+     * The last NERx timestamp value received for this federate.
+     */
+    FederationTime lastNERxValue;
 
     bool cras ; //!< = class relevance advisory switch -> true  by default.
     bool iras ; //!< = interaction relevance advisory siwtch -> true  by default.
@@ -157,4 +164,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.17 2010/08/09 18:24:07 erk Exp $
+// $Id: Federate.hh,v 3.18 2010/08/10 16:34:09 erk Exp $

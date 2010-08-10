@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.55 2010/05/31 09:33:26 erk Exp $
+// $Id: FederationsList.hh,v 3.56 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -251,9 +251,13 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void updateRegulator(Handle theHandle,
+    /**
+     *  updateRegulator
+     */
+    void updateRegulator(FederationHandle theHandle,
                          FederateHandle theFederateHandle,
-                         FederationTime heure_logique)
+                         FederationTime heure_logique,
+                         bool anonymous)
         throw (FederationExecutionDoesNotExist,
                FederateNotExecutionMember,
                RTIinternalError);
@@ -650,6 +654,22 @@ public:
 
     void setVerboseLevel(int theVerboseLevel) { this->verboseLevel = theVerboseLevel ; }
 
+    /**
+     * Handle a Null Prime message.
+     * @param[in] federation the federation handle
+     * @param[in] federate the handle of the federate which is sending a NULL PRIME message.
+     * @param[in] date the date of the NULL PRIME message
+     * @return True is the NULL PRIME message changed the minNERx of the federation
+     *         False otherwise.
+     */
+    bool handleMessageNullPrime(FederationHandle federation, FederateHandle federate, FederationTime date);
+
+    /**
+     * Get the Null Prime value of the specified federation
+     * @param[in] federation
+     * @return the Null Prime value of the federation
+     */
+    FederationTime getNullPrimeValue(FederationHandle federation);
 private:
     /**
      * Search federation from handle.
@@ -670,4 +690,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.55 2010/05/31 09:33:26 erk Exp $
+// $Id: FederationsList.hh,v 3.56 2010/08/10 16:34:09 erk Exp $

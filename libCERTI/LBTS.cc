@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.17 2010/03/19 13:54:03 erk Exp $
+// $Id: LBTS.cc,v 3.18 2010/08/10 16:34:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -115,25 +115,38 @@ void
 LBTS::update(FederateHandle num_fed, FederationTime time)
 {
     D.Out(pdDebug, "LBTS.update: Updating federate %d(%f).", num_fed, time.getTime());
+    ClockSet::iterator it;
+    ClockSet::iterator itend = clocks.end();
 
-    ClockSet::iterator it = clocks.find(num_fed);
-
-    if (it == clocks.end())
-        throw RTIinternalError(stringize() << "LBTS: Federate <" << num_fed << "> not found.");
-
-    // Coherence test.
-    if (it->second > time)
-        D.Out(pdDebug,
-              "LBTS.update: federate %u, new time lower than oldest one.",
-              num_fed);
-    else {
-        D.Out(pdDebug, "before LBTS.update: federate %u, old time %f.",
-              it->first, it->second.getTime());
-        it->second = time ;
-        D.Out(pdDebug, "after LBTS.update: federate %u, new time %f.",
-              it->first, it->second.getTime());
-        compute();
+    /* num fed will be 0 if it is an 'anonymous' Null Message */
+    if (num_fed!=0) {
+    	it = clocks.find(num_fed);
+    	if (it == clocks.end()) {
+    		throw RTIinternalError(stringize() << "LBTS: Federate <" << num_fed << "> not found.");
+    	} else {
+    		itend = it;
+    	}
+    } else {
+    	it = clocks.begin();
     }
+
+    do {
+    	// Coherence test.
+    	if (it->second > time)
+    		D.Out(pdDebug,
+    				"LBTS.update: federate %u, new time lower than oldest one.",
+    				num_fed);
+    	else {
+    		D.Out(pdDebug, "before LBTS.update: federate %u, old time %f.",
+    				it->first, it->second.getTime());
+    		it->second = time ;
+    		D.Out(pdDebug, "after LBTS.update: federate %u, new time %f.",
+    				it->first, it->second.getTime());
+    	}
+    	if (it!=itend) ++it;
+    } while (it!=itend);
+    /* now update LBTS */
+	compute();
 }
 
 // ----------------------------------------------------------------------------
@@ -152,4 +165,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.17 2010/03/19 13:54:03 erk Exp $
+// $Id: LBTS.cc,v 3.18 2010/08/10 16:34:09 erk Exp $

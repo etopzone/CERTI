@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.49 2010/03/22 16:34:08 erk Exp $
+// $Id: certi.hh,v 3.50 2010/08/10 16:34:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -141,6 +141,7 @@ typedef Handle   ParameterHandle;
 typedef Handle   ObjectHandle;
 typedef Handle   DimensionHandle;
 typedef Handle   FederateHandle;
+typedef Handle   FederationHandle;
 typedef Handle   OrderType;
 typedef Handle   SpaceHandle;
 typedef Handle   TransportType;
@@ -310,4 +311,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.49 2010/03/22 16:34:08 erk Exp $
+// $Id: certi.hh,v 3.50 2010/08/10 16:34:10 erk Exp $
