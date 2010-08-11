@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.86 2010/03/23 13:15:35 erk Exp $
+// $Id: FederationManagement.cc,v 3.87 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -79,7 +79,7 @@ FederationManagement::~FederationManagement()
 	//			sleep(1);
           //  destroyFederationExecution(_nom_federation, e);
        // }
-        cout << "RTIA: Federate destroyed" << endl ;
+    Debug(D,pdDebug) << "RTIA: Federate destroyed" << std::endl ;
     //}
     
     G.Out(pdGendoc,"exit  ~FederationManagement");

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.24 2010/08/09 18:24:07 erk Exp $
+// $Id: TimeManagement.hh,v 3.25 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -39,9 +39,6 @@
 
 // Standard libraries
 #include <iostream>
-
-using std::cout ;
-using std::endl ;
 
 namespace certi {
 namespace rtia {
@@ -76,7 +73,14 @@ public:
     // Advance Time Methods
     void nextEventRequest(FederationTime heure_logique, TypeException &e);
     void nextEventRequestAvailable(FederationTime heure_logique, TypeException &e);
+
+    /**
+     * Federate calls either nextEventRequest or timeAdvanceRequest to determine
+     * which time to attain. It then calls tick() until a timeAdvanceGrant is
+     * made.
+     */
     bool tick(TypeException &e);
+
     void timeAdvanceRequest(FederationTime heure_logique, TypeException &e);
     void timeAdvanceRequestAvailable(FederationTime heure_logique, TypeException &e);
     bool testValidTime(FederationTime theTime);
@@ -115,15 +119,40 @@ public:
     bool _asynchronous_delivery ;
 
 private:
-    // Methods
+
+    /**
+     * Main time advancing method.
+     * This method is called by tick().
+     *  Calls are dispatched between timeAdvance and nextEventAdvance
+     *  depending on current time advancing method.
+     */
     void advance(bool &msg_restant, TypeException &e);
+
+    /**
+     * This method is called by @ref advance which is called by tick. This call is
+     * done only if request type does correspond. It delivers TSO messages to
+     * federate and if no messages are available, delivers a TimeAdvanceGrant.
+     */
     void timeAdvance(bool &msg_restant, TypeException &e);
+    /**
+     * This method is called by @ref advance which is called by tick. This call
+     * is done only if request type does correspond. It delivers TSO messages to
+     * federate and if no messages are available, delivers a TimeAdvanceGrant.
+     */
     void nextEventAdvance(bool &msg_restant, TypeException &e);
+
     void timeAdvanceGrant(FederationTime, TypeException &);
     void flushQueueRequest(FederationTime, TypeException &);
     bool executeFederateService(NetworkMessage &msg);
-    void sendNullMessage(FederationTime heure_logique);
-    void sendNullPrimeMessage(FederationTime heure_logique);
+    /**
+     * Send a null message to RTIG containing Logicaal Time + Lookahead.
+     * This is the Null Message Algorithm from Chandy-Misra-Bryant
+     * see e.g.
+     *  http://www.cs.utexas.edu/users/misra/scannedPdf.dir/DistrSimulation.pdf
+     *  @param[in] logicalTime the logical time of the NULL message to be sent
+     */
+    void sendNullMessage(FederationTime logicalTime);
+    void sendNullPrimeMessage(FederationTime logicalTime);
     void timeRegulationEnabled(FederationTime, TypeException &e);
     void timeConstrainedEnabled(FederationTime, TypeException &e);
 
@@ -156,4 +185,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.24 2010/08/09 18:24:07 erk Exp $
+// $Id: TimeManagement.hh,v 3.25 2010/08/11 16:45:14 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.18 2010/08/10 16:34:09 erk Exp $
+// $Id: LBTS.cc,v 3.19 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -36,22 +36,17 @@ namespace certi {
 static PrettyDebug D("LBTS", __FILE__);
 
 // ----------------------------------------------------------------------------
-/** Constructor.  LBTS is set to infinite in case of constrained
-  federate without any regulating federate.
-*/
+/** Constructor.  */
 LBTS::LBTS()
     : MyFederateNumber(0)
 {
   _LBTS.setPositiveInfinity();
 }
 
-// ----------------------------------------------------------------------------
 LBTS::~LBTS()
 {
 }
 
-// ----------------------------------------------------------------------------
-//! Compute the LBTS.
 void
 LBTS::compute()
 {
@@ -68,16 +63,13 @@ LBTS::compute()
                 _LBTS = hl ;
         }
     }
-}
+} /* end of compute */
 
-// ----------------------------------------------------------------------------
-/** Check if a federate exists
- */
 bool
 LBTS::exists(FederateHandle federate) const
 {
     return clocks.find(federate) != clocks.end();
-}
+} /* end of exists */
 
 // ----------------------------------------------------------------------------
 /** Get all the federate handle and time in a list of pairs
@@ -110,19 +102,22 @@ LBTS::insert(FederateHandle num_fed, FederationTime time)
 }
 
 // ----------------------------------------------------------------------------
-//! update a federate
 void
-LBTS::update(FederateHandle num_fed, FederationTime time)
+LBTS::update(FederateHandle federateHandle, FederationTime time)
 {
-    D.Out(pdDebug, "LBTS.update: Updating federate %d(%f).", num_fed, time.getTime());
+    D.Out(pdDebug, "LBTS.update: Updating federate %d (time=%f).", federateHandle, time.getTime());
     ClockSet::iterator it;
     ClockSet::iterator itend = clocks.end();
 
-    /* num fed will be 0 if it is an 'anonymous' Null Message */
-    if (num_fed!=0) {
-    	it = clocks.find(num_fed);
+    /*
+     * num fed will be 0 if it is an 'anonymous' Null Message
+     * which was sent because some Null Prime Message were
+     * sent after NERx (NMRx) calls.
+     */
+    if (federateHandle!=0) {
+    	it = clocks.find(federateHandle);
     	if (it == clocks.end()) {
-    		throw RTIinternalError(stringize() << "LBTS: Federate <" << num_fed << "> not found.");
+    		throw RTIinternalError(stringize() << "LBTS: Federate <" << federateHandle << "> not found.");
     	} else {
     		itend = it;
     	}
@@ -134,20 +129,17 @@ LBTS::update(FederateHandle num_fed, FederationTime time)
     	// Coherence test.
     	if (it->second > time)
     		D.Out(pdDebug,
-    				"LBTS.update: federate %u, new time lower than oldest one.",
-    				num_fed);
+    				"LBTS.update: federate-%u, new time lower than oldest one.",federateHandle);
     	else {
-    		D.Out(pdDebug, "before LBTS.update: federate %u, old time %f.",
-    				it->first, it->second.getTime());
+    		D.Out(pdDebug, "LBTS.update: federate-%u, time %f --> %f (old-->new)",
+    				it->first, it->second.getTime(),time.getTime());
     		it->second = time ;
-    		D.Out(pdDebug, "after LBTS.update: federate %u, new time %f.",
-    				it->first, it->second.getTime());
     	}
     	if (it!=itend) ++it;
     } while (it!=itend);
     /* now update LBTS */
 	compute();
-}
+} /* end of update */
 
 // ----------------------------------------------------------------------------
 //! Remove a federate
@@ -165,4 +157,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.18 2010/08/10 16:34:09 erk Exp $
+// $Id: LBTS.cc,v 3.19 2010/08/11 16:45:14 erk Exp $

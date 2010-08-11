@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.107 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG_processing.cc,v 3.108 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -527,6 +527,7 @@ RTIG::processMessageNullPrime(NM_Message_Null_Prime *msg)
 		nmsg.setDate(federations.getNullPrimeValue(msg->getFederation()));
 		nmsg.setFederation(msg->getFederation());
 		nmsg.setFederate(0);
+		//nmsg.show(std::cout);
 		processMessageNull(&nmsg,true);
 	}
 
@@ -1525,4 +1526,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.107 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG_processing.cc,v 3.108 2010/08/11 16:45:14 erk Exp $

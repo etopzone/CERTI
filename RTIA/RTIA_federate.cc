@@ -1034,7 +1034,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Get_Object_Class *GOCq,*GOCr;
 		GOCq = static_cast<M_Get_Object_Class *>(req);
 		GOCr = static_cast<M_Get_Object_Class *>(rep);
-		Debug(D, pdTrace) << "Message from Federate: getObjectClass" << endl ;
+		Debug(D, pdTrace) << "Message from Federate: getObjectClass" << std::endl ;
 		GOCr->setObjectClass(om->getObjectClass(GOCq->getObject()));
 	}
 	break ;
@@ -1043,7 +1043,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Get_Transportation_Handle *GTHq,*GTHr;
 		GTHr = static_cast<M_Get_Transportation_Handle*>(rep);
 		GTHq = static_cast<M_Get_Transportation_Handle*>(req);
-		Debug(D, pdTrace) << "Message from Federate: getTransportationHandle" << endl ;
+		Debug(D, pdTrace) << "Message from Federate: getTransportationHandle" << std::endl ;
 		GTHr->setTransportation(om->getTransportationHandle(GTHq->getTransportationName()));
 	}
 	break ;
@@ -1052,7 +1052,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Get_Transportation_Name *GTNq,*GTNr;
 		GTNr = static_cast<M_Get_Transportation_Name*>(rep);
 		GTNq = static_cast<M_Get_Transportation_Name*>(req);
-		Debug(D, pdTrace) << "Message from Federate: getTransportationName" << endl ;
+		Debug(D, pdTrace) << "Message from Federate: getTransportationName" << std::endl ;
 		GTNr->setTransportationName(om->getTransportationName(GTNq->getTransportation()));
 	}
 	break ;
@@ -1061,7 +1061,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Get_Ordering_Handle *GOHq,*GOHr;
 		GOHr = static_cast<M_Get_Ordering_Handle*>(rep);
 		GOHq = static_cast<M_Get_Ordering_Handle*>(req);
-		Debug(D, pdTrace) << "Message from Federate: getOrderingHandle" << endl ;
+		Debug(D, pdTrace) << "Message from Federate: getOrderingHandle" << std::endl ;
 		GOHr->setOrdering(om->getOrderingHandle(GOHq->getOrderingName()));
 	}
 	break ;
@@ -1070,7 +1070,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Get_Ordering_Name *GONq,*GONr;
 		GONr = static_cast<M_Get_Ordering_Name*>(rep);
 		GONq = static_cast<M_Get_Ordering_Name*>(req);
-		Debug(D, pdTrace) << "Message from Federate: getOrderingName" << endl ;
+		Debug(D, pdTrace) << "Message from Federate: getOrderingName" << std::endl ;
 		GONr->setOrderingName(om->getOrderingName(GONq->getOrdering()));
 	}
 	break ;
@@ -1079,7 +1079,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Ddm_Create_Region *DDMCRq,*DDMCRr;
 		DDMCRr = static_cast<M_Ddm_Create_Region*>(rep);
 		DDMCRq = static_cast<M_Ddm_Create_Region*>(req);
-		Debug(D, pdTrace) << "Receiving Message from Federate: CreateRegion" << endl ;
+		Debug(D, pdTrace) << "Receiving Message from Federate: CreateRegion" << std::endl ;
 		DDMCRr->setRegion(ddm->createRegion(DDMCRq->getSpace(), DDMCRq->getExtentSetSize(), e));
 		DDMCRr->setExtentSetSize(rootObject->getRoutingSpace(DDMCRq->getSpace()).size());
 	}
@@ -1088,7 +1088,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 	case Message::DDM_MODIFY_REGION: {
 		M_Ddm_Modify_Region *DDMMRq;
 		DDMMRq = static_cast<M_Ddm_Modify_Region*>(rep);
-		Debug(D, pdTrace) << "Receiving Message from Federate: Modify Region" << endl ;
+		Debug(D, pdTrace) << "Receiving Message from Federate: Modify Region" << std::endl ;
 		ddm->modifyRegion(DDMMRq->getRegion(), DDMMRq->getExtents(), e);
 	}
 		break ;
@@ -1096,7 +1096,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 	case Message::DDM_DELETE_REGION: {
 		M_Ddm_Delete_Region *DDMDRq;
 				DDMDRq = static_cast<M_Ddm_Delete_Region*>(rep);
-		Debug(D, pdTrace) << "Receiving Message from Federate: DeleteRegion" << endl ;
+		Debug(D, pdTrace) << "Receiving Message from Federate: DeleteRegion" << std::endl ;
 		ddm->deleteRegion(DDMDRq->getRegion(), e);
 	}
 		break ;
@@ -1106,7 +1106,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		DDMARq = static_cast<M_Ddm_Associate_Region*>(req);
 
 		Debug(D, pdTrace) << "Receiving Message from Federate: Associate Region"
-				<< endl ;
+				<< std::endl ;
 		ddm->associateRegion(DDMARq->getObject(), DDMARq->getRegion(),
 				DDMARq->getAttributes(), DDMARq->getAttributesSize(), e);
 	}
@@ -1117,7 +1117,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		DDMROq = static_cast<M_Ddm_Register_Object*>(req);
 		DDMROr = static_cast<M_Ddm_Register_Object*>(rep);
 		Debug(D, pdTrace) << "Receiving Message from Federate: Register with Region"
-				<< endl ;
+				<< std::endl ;
 		DDMROr->setObject(ddm->registerObject(DDMROq->getObjectClass(),
 				DDMROq->getObjectInstanceName(),
 				DDMROq->getAttributes(),
@@ -1131,7 +1131,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Ddm_Unassociate_Region *DDMURq;
 		DDMURq = static_cast<M_Ddm_Unassociate_Region*>(req);
 
-		Debug(D, pdTrace) << "Receiving Message from Federate: Unassociate Region" << endl ;
+		Debug(D, pdTrace) << "Receiving Message from Federate: Unassociate Region" << std::endl ;
 		ddm->unassociateRegion(DDMURq->getObject(), DDMURq->getRegion(), e);
 	}
 	break ;
@@ -1140,7 +1140,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Ddm_Subscribe_Attributes *DDMSAq;
 		DDMSAq = static_cast<M_Ddm_Subscribe_Attributes*>(req);
 		Debug(D, pdTrace) << "Receiving Message from Federate: Subscribe Attributes"
-				<< endl ;
+				<< std::endl ;
 		ddm->subscribe(DDMSAq->getObjectClass(), DDMSAq->getRegion(),
 				DDMSAq->getAttributes(), DDMSAq->getAttributesSize(), e);
 	}
@@ -1151,7 +1151,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		DDMUAq = static_cast<M_Ddm_Unsubscribe_Attributes*>(req);
 
 		Debug(D, pdTrace) << "Receiving Message from Federate: Unsubscribe class "
-				<< DDMUAq->getObjectClass() << endl ;
+				<< DDMUAq->getObjectClass() << std::endl ;
 		ddm->unsubscribeAttributes(DDMUAq->getObjectClass(), DDMUAq->getRegion(), e);
 	}
 	break ;
@@ -1160,7 +1160,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Ddm_Subscribe_Interaction* DSIq;
 				DSIq = static_cast<M_Ddm_Subscribe_Interaction* >(req);
 		Debug(D, pdTrace) << "Receiving Message from Federate: Subscribe Interaction"
-		<< endl ;
+		<< std::endl ;
 		ddm->subscribeInteraction(DSIq->getInteractionClass(),
 				DSIq->getRegion(), e);
 	}
@@ -1170,7 +1170,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		M_Ddm_Unsubscribe_Interaction* DUIq;
 		DUIq = static_cast<M_Ddm_Unsubscribe_Interaction* >(req);
 		Debug(D, pdTrace) << "Receiving Message from Federate: Unsubscribe Interaction"
-				<< endl ;
+				<< std::endl ;
 		ddm->unsubscribeInteraction(DUIq->getInteractionClass(),
 				DUIq->getRegion(), e);
 	}
@@ -1293,8 +1293,10 @@ RTIA::processOngoingTick() {
 	while (1) {
 		switch (tm->_tick_state) {
 		case TimeManagement::TICK_BLOCKING:
-			/* blocking tick() waits for an event to come:
-			 *   try to evoke a single callback
+			/*
+			 * blocking tick() waits for an event to come:
+			 * try to evoke a single callback
+			 * the tm->tick(exc) will update _tick_state
 			 */
 			tm->_tick_result = tm->tick(exc);
 			// if a callback has not been evoked
@@ -1303,16 +1305,14 @@ RTIA::processOngoingTick() {
 			// else goto TICK_NEXT
 
 		case TimeManagement::TICK_NEXT:
-			/* a callback was evoked
-			 *   decide how to continue
-			 */
+			/* a callback was evoked decide how to continue */
 			if (tm->_tick_result &&
 					tm->_tick_multiple &&
 					1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick)
 				tm->_tick_state = TimeManagement::TICK_CALLBACK;
 			else
 				tm->_tick_state = TimeManagement::TICK_RETURN;
-
+            /* unconditionnal return */
 			return;
 
 		case TimeManagement::TICK_CALLBACK:
@@ -1679,11 +1679,13 @@ RTIA::processFederateRequest(Message *req)
 		rep->setException(e_RestoreNotRequested);
 	}
 	catch (RTIinternalError &e) {
-		cout << "RTIA sends InternalError to Fed., " ;
-		if (!e._reason.empty())
-			cout << "reason : " << e._reason << endl ;
-		else
-			cout << "no reason given." << endl ;
+		Debug(D,pdError) << "RTIA sends InternalError to Fed., " ;
+		if (!e._reason.empty()) {
+			Debug(D,pdError) << "reason : " << e._reason << std::endl ;
+		}
+		else {
+			Debug(D,pdError) << "no reason given." << std::endl ;
+		}
 		D.Out(pdExcept, "Catched %s Exception.", e._name);
 		rep->setException(e_RTIinternalError);
 	}

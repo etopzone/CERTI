@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.132 2010/08/10 16:34:09 erk Exp $
+// $Id: Federation.cc,v 3.133 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -751,11 +751,11 @@ throw (FederateNotExecutionMember) {
 	Federate& f = getFederate(federate);
 
 	f.setLastNERxValue(date);
+	Debug(D,pdDebug) << "Federate <"<<f.getName()<<"> has new NERx value="<<date.getTime() << std::endl;
 	newMin = computeMinNERx();
 	if (newMin > minNERx) {
-		if (!minNERx.isZero()) {
-			retval = true;
-		}
+		Debug(D,pdDebug) << "New minNERx =" << newMin << std::endl;
+		retval = true;
 		minNERx = newMin;
 	}
 	return retval;
@@ -764,11 +764,14 @@ throw (FederateNotExecutionMember) {
 FederationTime
 Federation::computeMinNERx() {
 	FederationTime retval;
+	uint32_t       nbFed;
 	retval.setZero();
-	HandleFederateMap::iterator i = _handleFederateMap.begin();
+	HandleFederateMap::iterator i;
+	nbFed = 0;
 
-	for (++i; i != _handleFederateMap.end(); ++i) {
+	for (i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
 		if (i->second.isUsingNERx()) {
+			++nbFed;
 			if (retval.isZero()) {
 				retval = i->second.getLastNERxValue();
 			} else {
@@ -778,8 +781,15 @@ Federation::computeMinNERx() {
 			}
 		}
 	}
+
+	/* the minimum is different from 0 iff more than 2 federate use NERx */
+	if (nbFed<2) {
+		retval.setZero();
+	}
+
+	Debug(D,pdDebug) << "computeMinNERx ="<<retval.getTime() << std::endl;
 	return retval;
-} /* end of getMinimumNERx */
+} /* end of computeMinNERx */
 
 void
 Federation::broadcastAnyMessage(NetworkMessage *msg,
@@ -2662,5 +2672,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.132 2010/08/10 16:34:09 erk Exp $
+// $Id: Federation.cc,v 3.133 2010/08/11 16:45:14 erk Exp $
 

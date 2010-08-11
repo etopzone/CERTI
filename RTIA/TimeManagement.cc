@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.62 2010/08/10 16:34:10 erk Exp $
+// $Id: TimeManagement.cc,v 3.63 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,9 +40,6 @@ const double epsilon2 = 1.0e-4 ;
 }
 
 // ----------------------------------------------------------------------------
-/*! This method is called by tick(). Calls are dispatched between timeAdvance
-  and nextEventAdvance.
-*/
 void
 TimeManagement::advance(bool &msg_restant, TypeException &e)
 {
@@ -97,34 +94,36 @@ TimeManagement::TimeManagement(Communications *GC,
 }
 
 // ----------------------------------------------------------------------------
-//! Send a null message to RTIG containing Local Time + Lookahead.
-void TimeManagement::sendNullMessage(FederationTime heure_logique)
+
+void TimeManagement::sendNullMessage(FederationTime logicalTime)
 {
     NM_Message_Null msg ;
 
-    msg.setDate(heure_logique);
-    heure_logique += _lookahead_courant ;
+    msg.setDate(logicalTime);
+    // Chandy-Misra NMA indicates that NULL message timestamp
+    // must be logical time + lookahead
+    logicalTime += _lookahead_courant ;
 
-    if (heure_logique > lastNullMessageDate) {
+    if (logicalTime > lastNullMessageDate) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
-        msg.setDate(heure_logique) ; // ? See 6 lines upper !
+        msg.setDate(logicalTime);
 
         comm->sendMessage(&msg);
-        lastNullMessageDate = heure_logique ;
-        D.Out(pdDebug, "NULL message sent (Time = %f).", heure_logique.getTime()) ;
+        lastNullMessageDate = logicalTime ;
+        D.Out(pdDebug, "NULL message sent (Time = %f).", logicalTime.getTime()) ;
     }
     else {
         D.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
-              heure_logique.getTime(), lastNullMessageDate.getTime());
+              logicalTime.getTime(), lastNullMessageDate.getTime());
     }
-}
+} /* end of sendNullMessage */
 
-void TimeManagement::sendNullPrimeMessage(FederationTime heure_logique)
+void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
 {
     NM_Message_Null_Prime msg ;
 
-    msg.setDate(heure_logique);
+    msg.setDate(logicalTime);
 
     /*
      * We cannot send null prime in the past of
@@ -132,18 +131,18 @@ void TimeManagement::sendNullPrimeMessage(FederationTime heure_logique)
      *  - the last NULL PRIME message
      */
 
-    if ((heure_logique > lastNullMessageDate) || (heure_logique > lastNullPrimeMessageDate)) {
+    if ((logicalTime > lastNullMessageDate) || (logicalTime > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
-        msg.setDate(heure_logique) ; // ? See 6 lines upper !
+        msg.setDate(logicalTime) ; // ? See 6 lines upper !
 
         comm->sendMessage(&msg);
-        lastNullPrimeMessageDate = heure_logique ;
-        D.Out(pdDebug, "NULL PRIME message sent (Time = %f).", heure_logique.getTime()) ;
+        lastNullPrimeMessageDate = logicalTime ;
+        D.Out(pdDebug, "NULL PRIME message sent (Time = %f).", logicalTime.getTime()) ;
     }
     else {
         D.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
-              heure_logique.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
+              logicalTime.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
     }
 }
 
@@ -164,8 +163,8 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
             fm->federationSynchronized(msg.getLabel());
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in federationSynchronized." << endl ;
-            throw e ;
+            Debug(D,pdError) << "RTIA:RTIinternalError in federationSynchronized." << std::endl ;
+            throw e;
         }
         break ;
 
@@ -179,8 +178,8 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           }
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in synchronizationPointRegistration"
-                "Succeeded." << endl ;
+        	Debug(D,pdError) << "RTIA:RTIinternalError in synchronizationPointRegistration"
+                "Succeeded." << std::endl ;
             throw e ;
         }
         break ;
@@ -190,7 +189,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
             fm->announceSynchronizationPoint(msg.getLabel(), msg.getTag());
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in announceSynchronizationPoint." << endl ;
+        	Debug(D,pdError) << "RTIA:RTIinternalError in announceSynchronizationPoint." << std::endl ;
             throw e ;
         }
         break ;
@@ -207,7 +206,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in discoverObject." << endl ;
+        	Debug(D,pdError) << "RTIA:RTIinternalError in discoverObject." << std::endl ;
             throw e ;
         }
         break ;
@@ -462,10 +461,7 @@ TimeManagement::flushQueueRequest(FederationTime heure_logique,
 }
 
 // ----------------------------------------------------------------------------
-/*! nextEventAdvance is called by advance which is called by tick. This call
-  is done only if request type does correspond. It delivers TSO messages to
-  federate and if no messages are available, delivers a TimeAdvanceGrant.
-*/
+
 void
 TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
 {
@@ -488,6 +484,9 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
         else
             date_min = date_avancee ;
 
+        Debug(D,pdDebug) << "TM::nextEventAdvance - date avancee="<< date_avancee.getTime()
+        		<< " date min=" << date_min.getTime() << " LBTS = " << _LBTS.getTime() << std::endl;
+
         if (date_min < _LBTS) {
             // nextEventRequest is done because either a TSO message
             // can be delivered or no message with lower value than
@@ -505,12 +504,14 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
             // 'date_min' (1 by 1).
             msg = queues->giveTsoMessage(date_min, msg_donne, msg_restant);
             if (msg_donne) {
+            	Debug(D,pdDebug) << "TM::nextEventAdvance - MSG :" << msg->getMessageName() << std::endl;
                 // Send message back to federate.
                 executeFederateService(*msg);
                 delete msg ;
             }
             else {
                 // Advance current time up to 'date_min'.
+            	Debug(D,pdDebug) << "TM::nextEventAdvance - TAG to" << date_min.getTime() << std::endl;
                 timeAdvanceGrant(date_min, e);
                 _avancee_en_cours = PAS_D_AVANCEE ;
             }
@@ -536,11 +537,11 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
         _avancee_en_cours = PAS_D_AVANCEE ;
     }
 G.Out(pdGendoc," exit  TimeManagement::nextEventAdvance");
-}
+} /* nextEventAdvance */
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::nextEventRequest(FederationTime heure_logique,
+TimeManagement::nextEventRequest(FederationTime logicalTime,
                                  TypeException &e)
 {
     e = e_NO_EXCEPTION ;
@@ -550,7 +551,7 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_TimeAdvanceAlreadyInProgress ;
 
-    if (heure_logique < _heure_courante)
+    if (logicalTime < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
 //    This is check may be overkill because
@@ -569,14 +570,14 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
         }
 
         _avancee_en_cours = NER ;
-        date_avancee = heure_logique ;
-        sendNullPrimeMessage(heure_logique);
+        date_avancee = logicalTime ;
+        sendNullPrimeMessage(logicalTime);
         D.Out(pdTrace, "NextEventRequest accepted.");
     }
     else {
         D.Out(pdExcept, "NextEventRequest refused (exception = %d).", e);
     }
-}
+} /* end of nextEventRequest */
 
 // ----------------------------------------------------------------------------
 void
@@ -602,14 +603,14 @@ TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
     if (e == e_NO_EXCEPTION) {
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
         _avancee_en_cours = NERA ;
-        date_avancee = heure_logique ;
+        date_avancee = heure_logique;
         sendNullPrimeMessage(heure_logique);
         D.Out(pdTrace, "NextEventRequestAvailable accepted.");
     }
     else {
         D.Out(pdExcept, "NextEventRequestAvailable refused (exception = %d).", e);
     }
-}
+} /* end of nextEventRequestAvailable */
 
 // ----------------------------------------------------------------------------
 FederationTime
@@ -657,7 +658,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
         e = e_InvalidLookahead ;
 
     if (lookahead == epsilon2) {
-    	cout << "Bad value of lookahead due to a zero lookahead implementation trick" << endl;
+    	Debug(D,pdError) << "Bad value of lookahead due to a zero lookahead implementation trick" << std::endl;
     	e = e_RTIinternalError ;
     }
 
@@ -816,10 +817,6 @@ TimeManagement::testValidTime(FederationTime theTime)
 }
 
 // ----------------------------------------------------------------------------
-/*! Federate calls either nextEventRequest or timeAdvanceRequest to determine
-  which time to attain. It then calls tick() until a timeAdvanceGrant is
-  made.
-*/
 bool
 TimeManagement::tick(TypeException &e)
 {
@@ -854,7 +851,7 @@ TimeManagement::tick(TypeException &e)
             executeFederateService(*msg);
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError thrown in tick (execute)." << endl ;
+        	Debug(D,pdError) << "RTIA:RTIinternalError thrown in tick (execute)." << std::endl ;
             throw e ;
         }
     }
@@ -867,7 +864,7 @@ TimeManagement::tick(TypeException &e)
             advance(msg_restant, e);
         }
         catch (RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError thrown in tick (Advance)." << endl ;
+        	Debug(D,pdError) << "RTIA:RTIinternalError thrown in tick (Advance)." << std::endl ;
             throw e ;
         }
     }
@@ -879,10 +876,6 @@ TimeManagement::tick(TypeException &e)
 }
 
 // ----------------------------------------------------------------------------
-/*! timeAdvance is called by advance which is called by tick. This call is
-  done only if request type does correspond. It delivers TSO messages to
-  federate and if no messages are available, delivers a TimeAdvanceGrant.
-*/
 void
 TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
 {
@@ -1059,4 +1052,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.62 2010/08/10 16:34:10 erk Exp $
+// $Id: TimeManagement.cc,v 3.63 2010/08/11 16:45:14 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.33 2010/03/21 17:10:11 erk Exp $
+// $Id: RTIA.cc,v 3.34 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -83,7 +83,7 @@ void
 RTIA::displayStatistics()
 {
     if (stat.display()) {
-        cout << stat ;
+        std::cout << stat ;
     }
 }
 
@@ -177,4 +177,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.33 2010/03/21 17:10:11 erk Exp $
+// $Id: RTIA.cc,v 3.34 2010/08/11 16:45:14 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.10 2009/11/24 21:44:47 erk Exp $
+// $Id: LBTS.hh,v 3.11 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
@@ -33,22 +33,49 @@
 
 namespace certi {
 
+/**
+ * The Lower Bound on TimeStamp class.
+ */
 class CERTI_EXPORT LBTS
 {
 public:
     typedef std::pair<FederateHandle, FederationTime> FederateClock ;
 
+    /**
+     * LBTS constructor.
+     * LBTS is set to infinite in case of constrained
+     * federate without any regulating federate.
+     * @post LBTS is set to positive infinite.
+     */
     LBTS();
+
+    /**
+     * LBTS Destructor.
+     */
     ~LBTS();
 
+    /**
+     *  Compute the LBTS from the federate clocks value.
+     */
     void compute();
+
+    /**
+     * Check if a federate exists
+     */
     bool exists(FederateHandle) const ;
     void get(std::vector<FederateClock> &) const ;
     void insert(FederateHandle num_fed, FederationTime the_time);
     void remove(FederateHandle num_fed);
     void setFederate(FederateHandle handle) { MyFederateNumber = handle ; };
     size_t size() const { return clocks.size(); };
-    void update(FederateHandle num_fed, FederationTime the_time);
+
+    /**
+     * Update the logical time of one federate.
+     * @param[in] federateHandle the handle of the federate whose logical
+     *            time will be updated. The handle may be 0 meaning that
+     *            this is an "anonymous" update for everyone.
+     */
+    void update(FederateHandle federateHandle, FederationTime logicalTime);
 
 protected:
     FederationTime _LBTS ;
@@ -64,4 +91,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.10 2009/11/24 21:44:47 erk Exp $
+// $Id: LBTS.hh,v 3.11 2010/08/11 16:45:14 erk Exp $
