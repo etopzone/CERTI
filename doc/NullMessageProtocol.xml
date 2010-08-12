@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>// Place global declarations here.
+const int nbFederates    = 3;
+typedef int[0,nbFederates-1] RangeFederateId;
+const int MaxMsgFIFOSize = 5;
+const int MaxSimulationTime = 15;
+
+// Synchronization channel used to send/receive messages
+chan msg[nbFederates][nbFederates];
+
+// Timestamps of the corresponding send/receive messages
+int  msgTimestamp[nbFederates][nbFederates];
+
+// Null message channel
+broadcast chan nullMsg[nbFederates];
+int            nullMsgTimestamp[nbFederates];
+</declaration><template><name x="5" y="5">Federate</name><parameter>const RangeFederateId id, const int nbFederates, const int initialLk</parameter><declaration>// Place local declarations here.
+
+// Array of clocks representing the local time of me and other federates
+int Clocks[nbFederates];
+
+// 
+int lookahead = initialLk;
+
+// Lower Bound on Time Stamp now called GALT 
+int   LBTS=0; 
+
+// number of message in Timestamped FIFO 
+int   nbMsg;
+int   FIFOMsgTimestamp[MaxMsgFIFOSize];
+
+void clearFIFO() {
+   int i;
+   nbMsg = 0;
+   for (i=0;i&lt;MaxMsgFIFOSize;++i) {
+       FIFOMsgTimestamp[i] = 0;
+   }
+}
+
+void resetClocks() {
+  int i;
+  for (i=0;i&lt;nbFederates;++i) {
+      Clocks[i] = 0;
+  }
+}
+
+void addToFIFO(int ts) {
+   int i,j;
+   ++nbMsg;
+   // insert in order
+   i = 0;
+   while (FIFOMsgTimestamp[i]&gt;ts) ++i;
+   for (j=nbMsg-1;j&gt;i;--j) {
+      FIFOMsgTimestamp[j] = FIFOMsgTimestamp[j-1];
+   }
+   FIFOMsgTimestamp[i]=ts;
+}
+
+
+void popFromFIFO() {
+   --nbMsg;
+}
+
+void updateLBTS(int federate, int ts) {
+     int i;
+     int t;
+     
+     Clocks[federate] = ts;
+
+     LBTS = Clocks[0];
+     if (id==0) Clocks[1];
+
+     for (i=0;i&lt;nbFederates; ++i) {
+        if(i!=id) {
+          t = Clocks[i];
+          if (t &lt; LBTS) {
+             LBTS = t;
+          }
+        }
+     }
+}
+</declaration><location id="id0" x="208" y="-48"><name x="240" y="-56">Process</name></location><location id="id1" x="-168" y="-56"><name x="-144" y="-64">Wait</name></location><location id="id2" x="-608" y="-56"><name x="-624" y="-96">Init</name></location><init ref="id2"/><transition><source ref="id1"/><target ref="id1"/><label kind="select" x="-228" y="-101">senderId: RangeFederateId</label><label kind="synchronisation" x="-512" y="-176">nullMsg[senderId]?</label><label kind="assignment" x="-648" y="-200">updateLBTS(senderId,nullMsgTimestamp[senderId])</label><nail x="-344" y="-104"/><nail x="-376" y="-168"/><nail x="-216" y="-128"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="select" x="-216" y="152">srcId: RangeFederateId</label><label kind="guard" x="-264" y="136">(srcId != id) and (nbMsg &lt; MaxMsgFIFOSize)</label><label kind="synchronisation" x="-192" y="120">msg[srcId][id]?</label><label kind="assignment" x="-256" y="168">addToFIFO(msgTimestamp[srcId][id])</label><nail x="-104" y="56"/><nail x="-112" y="120"/><nail x="-176" y="120"/><nail x="-184" y="64"/></transition><transition><source ref="id0"/><target ref="id0"/><label kind="guard" x="64" y="-208">FIFOMsgTimestamp[nbMsg-1] &lt; (Clocks[id]+lookahead)</label><label kind="assignment" x="176" y="-232">popFromFIFO()</label><nail x="168" y="-136"/><nail x="200" y="-184"/><nail x="256" y="-184"/><nail x="280" y="-120"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="select" x="-312" y="-280">destId: RangeFederateId, timestamp: int</label><label kind="guard" x="-456" y="-264">destId != id and (timestamp &gt; (Clocks[id]+lookahead)) and (timestamp &lt; MaxSimulationTime)</label><label kind="synchronisation" x="-208" y="-248">msg[id][destId]!</label><label kind="assignment" x="-304" y="-296">msgTimestamp[id][destId]=timestamp</label><nail x="-184" y="-160"/><nail x="-168" y="-200"/><nail x="-128" y="-200"/><nail x="-112" y="-160"/></transition><transition><source ref="id0"/><target ref="id1"/><label kind="synchronisation" x="0" y="16">nullMsg[id]!</label><label kind="assignment" x="-88" y="32">nullMsgTimestamp[id]=Clocks[id]+lookahead</label><nail x="104" y="8"/><nail x="-32" y="8"/></transition><transition><source ref="id1"/><target ref="id0"/><label kind="guard" x="0" y="-136">nbMsg &gt; 0</label><label kind="assignment" x="-24" y="-152">Clocks[id]=LBTS</label><nail x="-48" y="-112"/><nail x="72" y="-112"/></transition><transition><source ref="id2"/><target ref="id1"/><label kind="assignment" x="-568" y="-40">resetClocks(), clearFIFO()</label></transition></template><system>// Place template instantiations here.
+
+Federate0 = Federate(0,nbFederates,3);
+Federate1 = Federate(1,nbFederates,3);
+Federate2 = Federate(2,nbFederates,3);
+
+// List one or more processes to be composed into a system.
+system Federate0, Federate1, Federate2;
+</system></nta>
