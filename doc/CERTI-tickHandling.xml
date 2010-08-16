@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>// Place global declarations here.
+const int nbFederate = 2;
+typedef int[0,nbFederate-1] RangeFederate;
+
+chan rq[RangeFederate];
+chan rqNext[RangeFederate];
+chan rqStop[RangeFederate];</declaration><template><name x="5" y="5">RTIA_Tick</name><parameter>int FedRank</parameter><declaration>// Place local declarations here.
+bool multiple=false;
+bool result=false;
+
+int timeout =0; // 0 means timeout is not used
+int maxTicks=0; // 0 means maxTicks is not used
+
+</declaration><location id="id0" x="0" y="-464"><name x="-42" y="-494">TICK_NEXT</name></location><location id="id1" x="-352" y="-160"><name x="-408" y="-136">TICK_CALLBACK</name></location><location id="id2" x="-320" y="-480"><name x="-376" y="-512">TICK_BLOCKING</name></location><location id="id3" x="8" y="-168"><name x="-30" y="-130">TICK_RETURN</name></location><location id="id4" x="-600" y="-296"><name x="-632" y="-328">NO_TICK</name></location><init ref="id4"/><transition><source ref="id0"/><target ref="id3"/><label kind="guard" x="8" y="-336">!(result==true)</label></transition><transition><source ref="id0"/><target ref="id1"/><label kind="guard" x="-168" y="-416">result==true</label></transition><transition><source ref="id2"/><target ref="id3"/></transition><transition><source ref="id1"/><target ref="id3"/></transition><transition><source ref="id4"/><target ref="id1"/><label kind="synchronisation" x="-552" y="-232">rq[FedRank]?</label><label kind="assignment" x="-544" y="-208">result=false</label></transition><transition><source ref="id4"/><target ref="id2"/><label kind="synchronisation" x="-552" y="-416">rq[FedRank]?</label><label kind="assignment" x="-552" y="-432">result=false</label></transition></template><template><name>Request</name><declaration>bool multiple;
+int  minTickTime;
+int  maxTickTime;</declaration><location id="id5" x="0" y="0"></location><init ref="id5"/></template><template><name>RequestNext</name><location id="id6" x="0" y="0"></location><init ref="id6"/></template><template><name>RequestStop</name><location id="id7" x="0" y="0"></location><init ref="id7"/></template><system>// Place template instantiations here.
+RTIA_Tick1 = RTIA_Tick(1);
+RTIA_Tick2 = RTIA_Tick(2);
+
+// List one or more processes to be composed into a system.
+system RTIA_Tick1, RTIA_Tick2, Request, RequestNext, RequestStop;</system></nta>
