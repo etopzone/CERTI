@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.63 2010/08/11 16:45:14 erk Exp $
+// $Id: TimeManagement.cc,v 3.64 2010/08/16 15:26:02 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -99,7 +99,6 @@ void TimeManagement::sendNullMessage(FederationTime logicalTime)
 {
     NM_Message_Null msg ;
 
-    msg.setDate(logicalTime);
     // Chandy-Misra NMA indicates that NULL message timestamp
     // must be logical time + lookahead
     logicalTime += _lookahead_courant ;
@@ -123,19 +122,15 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
 {
     NM_Message_Null_Prime msg ;
 
-    msg.setDate(logicalTime);
-
     /*
      * We cannot send null prime in the past of
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-
     if ((logicalTime > lastNullMessageDate) || (logicalTime > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
-        msg.setDate(logicalTime) ; // ? See 6 lines upper !
-
+        msg.setDate(logicalTime) ;
         comm->sendMessage(&msg);
         lastNullPrimeMessageDate = logicalTime ;
         D.Out(pdDebug, "NULL PRIME message sent (Time = %f).", logicalTime.getTime()) ;
@@ -144,7 +139,7 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
         D.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
               logicalTime.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
     }
-}
+} /* end of sendNullPrimeMessage */
 
 // ----------------------------------------------------------------------------
 //! Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
@@ -565,14 +560,15 @@ TimeManagement::nextEventRequest(FederationTime logicalTime,
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
         if (_lookahead_courant == 0.0) {
-           _lookahead_courant == epsilon2 ;
+           _lookahead_courant = epsilon2 ;
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
+           D.Out(pdDebug,"NER: with ZERO LK, lk=%f",_lookahead_courant.getTime());
         }
 
         _avancee_en_cours = NER ;
         date_avancee = logicalTime ;
         sendNullPrimeMessage(logicalTime);
-        D.Out(pdTrace, "NextEventRequest accepted.");
+        D.Out(pdTrace, "NextEventRequest accepted (lk=%f,date_avance=%f.)",_lookahead_courant.getTime(),date_avancee.getTime());
     }
     else {
         D.Out(pdExcept, "NextEventRequest refused (exception = %d).", e);
@@ -672,7 +668,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 
         D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant.getTime());
     }
-}
+} /* end of setLookahead */
 
 // ----------------------------------------------------------------------------
 void
@@ -1052,4 +1048,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.63 2010/08/11 16:45:14 erk Exp $
+// $Id: TimeManagement.cc,v 3.64 2010/08/16 15:26:02 erk Exp $
