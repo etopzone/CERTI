@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.64 2010/08/16 15:26:02 erk Exp $
+// $Id: TimeManagement.cc,v 3.65 2010/08/17 06:47:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -121,7 +121,7 @@ void TimeManagement::sendNullMessage(FederationTime logicalTime)
 void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
 {
     NM_Message_Null_Prime msg ;
-
+#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
     /*
      * We cannot send null prime in the past of
      *  - the last NULL message
@@ -139,6 +139,7 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
         D.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
               logicalTime.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
     }
+#endif
 } /* end of sendNullPrimeMessage */
 
 // ----------------------------------------------------------------------------
@@ -1048,4 +1049,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.64 2010/08/16 15:26:02 erk Exp $
+// $Id: TimeManagement.cc,v 3.65 2010/08/17 06:47:38 erk Exp $
