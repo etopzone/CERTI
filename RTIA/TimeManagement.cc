@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.65 2010/08/17 06:47:38 erk Exp $
+// $Id: TimeManagement.cc,v 3.66 2010/08/17 07:59:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -483,7 +483,9 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
         Debug(D,pdDebug) << "TM::nextEventAdvance - date avancee="<< date_avancee.getTime()
         		<< " date min=" << date_min.getTime() << " LBTS = " << _LBTS.getTime() << std::endl;
 
-        if (date_min < _LBTS) {
+        if ((date_min < _LBTS)||
+        	((date_min <= _LBTS) && (_avancee_en_cours == NERA))
+            ) {
             // nextEventRequest is done because either a TSO message
             // can be delivered or no message with lower value than
             // expected time is avail.
@@ -662,7 +664,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
     if (e == e_NO_EXCEPTION) {
         _lookahead_courant = lookahead ;
 
-        // On previent les autres en leur envoyant un message nul qui contient
+        // On previent les autres en leur envoyant un message NULL qui contient
         // notre temps local + le Lookahead.
         if (_est_regulateur)
             sendNullMessage(_heure_courante);
@@ -1049,4 +1051,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.65 2010/08/17 06:47:38 erk Exp $
+// $Id: TimeManagement.cc,v 3.66 2010/08/17 07:59:11 erk Exp $
