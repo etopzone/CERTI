@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>// Place global declarations here.
 const int nbFederates    = 3;
 typedef int[0,nbFederates-1] RangeFederateId;
-const int MaxMsgFIFOSize = 5;
+const int MaxMsgFIFOSize = 2;
 const int MaxMsgSendForEachSimStep = 2;
 
-const int MaxSimulationTime = 15;
+const int NumberOffStepForLiveLock = 15 ;
+
+const int MaxSimulationTime = 20;
 typedef int[0,MaxSimulationTime] RangeSimulationTime;
 
 // Synchronization channel used to send/receive messages
@@ -16,16 +18,22 @@ int  msgTimestamp[nbFederates][nbFederates];
 // Null message channel
 broadcast chan nullMsg[nbFederates];
 int            nullMsgTimestamp[nbFederates];
-</declaration><template><name x="5" y="5">Federate</name><parameter>const RangeFederateId id, const int nbFederates, const int initialLk</parameter><declaration>// Place local declarations here.
 
-// Array of clocks representing the local time of me and other federates
+// Channel to detect LiveLock of Federation
+chan LiveLockDetected[nbFederates] ;
+</declaration><template><name x="5" y="5">Federate</name><parameter>const RangeFederateId id, const int nbFederates, const int initialLk</parameter><declaration>// Place local declarations here for the Federate template.
+
+// Array of clocks representing the local time of me and the evaluation of local time for other federates
 int Clocks[nbFederates];
 
-// 
+// lookahead parameter usefull for Null Message Algorithm [Chandy&amp;Misra]
 int lookahead = initialLk;
 
 // Lower Bound on Time Stamp now called GALT 
 int   LBTS=0; 
+
+// Flag to known how many step are pass without any modification of LBTS
+int StepWithoutLBTSchange =0;
 
 // number of message in Timestamped FIFO 
 int   nbMsgIn = 0;
@@ -37,21 +45,24 @@ int   FIFOMsgTimestamp[MaxMsgFIFOSize];
 // Variable for know if all msg with timestamp less than localtime + lookahead are cossuming during the simulation process
 int AllMsgConsuming = 1;
 
+// Initialize each FIFO with 0 timestamp for each federate
 void clearFIFO() {
    int i;
    nbMsgIn = 0;
    for (i=0;i&lt;MaxMsgFIFOSize;++i) {
        FIFOMsgTimestamp[i] = 0 ;
-   }
-}
+       }
+} // End of clearFIFO()
 
+// Set all clocks to zero (me and others)
 void resetClocks() {
   int i;
   for (i=0;i&lt;nbFederates;++i) {
       Clocks[i] = 0;
-  }
-}
+      }
+} // End of resetClocks()
 
+// Adding one element to the receip FIFO file and sorting it by greater timestamp first
 void addToFIFO(int ts) {
    int i,j;
    ++nbMsgIn;
@@ -59,30 +70,32 @@ void addToFIFO(int ts) {
    i = 0;
    while (FIFOMsgTimestamp[i]&gt;ts) ++i;
    for (j=nbMsgIn-1;j&gt;i;--j) {
-      FIFOMsgTimestamp[j] = FIFOMsgTimestamp[j-1];
-   }
+       FIFOMsgTimestamp[j] = FIFOMsgTimestamp[j-1];
+       }
    FIFOMsgTimestamp[i]=ts;
-}
+} // End of addToFIFO(int ts)
 
-
+// Consuming the first element from FIFO file
 void popFromFIFO() {
          FIFOMsgTimestamp[nbMsgIn-1] = 0;
          nbMsgIn--;
          if (nbMsgIn == 0) AllMsgConsuming = 1;
-}
+} // End of popFromFIFO()
 
+// Checking if FIFO contains another element to be treated on each simulation step
 void checkFIFO() { 
          if (FIFOMsgTimestamp[nbMsgIn-1] &lt;= (Clocks[id] + lookahead)) AllMsgConsuming = 0;
-         else AllMsgConsuming = 1;
-              
-}
+         else AllMsgConsuming = 1;           
+} // End of checkFIFO()
         
-
+// Updating the Lower Bound Time Step for each Null Message receving by the federate
 void updateLBTS(int federate, int ts) {
      int i;
      int t;
+     int LBTS_tmp;
      
      Clocks[federate] = ts;
+     LBTS_tmp = LBTS ;
 
      LBTS = Clocks[0];
      if (id==0) LBTS = Clocks[1];
@@ -95,17 +108,52 @@ void updateLBTS(int federate, int ts) {
           }
         }
      }
-}
-</declaration><location id="id0" x="784" y="-48"><name x="752" y="-88">Terminate</name></location><location id="id1" x="208" y="-48"><name x="136" y="-56">Process</name></location><location id="id2" x="-168" y="-56"><name x="-144" y="-64">Wait</name></location><location id="id3" x="-608" y="-56"><name x="-624" y="-96">Init</name></location><init ref="id3"/><transition><source ref="id0"/><target ref="id0"/><nail x="912" y="-16"/><nail x="936" y="32"/><nail x="896" y="40"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="576" y="-216">nbMsgIn != 0</label><label kind="assignment" x="580" y="-234">checkFIFO()</label><nail x="436" y="-210"/><nail x="540" y="-234"/><nail x="580" y="-210"/><nail x="524" y="-178"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="select" x="320" y="64">senderId: RangeFederateId</label><label kind="synchronisation" x="352" y="80">nullMsg[senderId]?</label><label kind="assignment" x="304" y="96">updateLBTS(senderId,nullMsgTimestamp[senderId])</label><nail x="320" y="0"/><nail x="400" y="56"/><nail x="320" y="80"/></transition><transition><source ref="id1"/><target ref="id0"/><label kind="guard" x="304" y="-48">(Clocks[id] &gt;= MaxSimulationTime )  and (nbMsgIn ==0)</label><label kind="synchronisation" x="448" y="-32">nullMsg[id]!</label><label kind="assignment" x="352" y="-16">nullMsgTimestamp[id] = MaxSimulationTime</label></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-616" y="-216">senderId: RangeFederateId</label><label kind="synchronisation" x="-576" y="-184">nullMsg[senderId]?</label><label kind="assignment" x="-712" y="-200">updateLBTS(senderId,nullMsgTimestamp[senderId])</label><nail x="-424" y="-136"/><nail x="-440" y="-176"/><nail x="-344" y="-176"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-344" y="168">srcId: RangeFederateId</label><label kind="guard" x="-392" y="152">(srcId != id) and (nbMsgIn &lt; MaxMsgFIFOSize)</label><label kind="synchronisation" x="-320" y="136">msg[srcId][id]?</label><label kind="assignment" x="-384" y="184">addToFIFO(msgTimestamp[srcId][id])</label><nail x="-232" y="64"/><nail x="-248" y="136"/><nail x="-288" y="136"/><nail x="-304" y="64"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="192" y="-328">(nbMsgIn !=0)  and (AllMsgConsuming == 0)</label><label kind="assignment" x="328" y="-344">popFromFIFO()</label><label kind="comments">FIFOMsgTimestamp[nbMsgIn-1] &lt;= (Clocks[id]+lookahead)
+    if (LBTS == LBTS_tmp) ++StepWithoutLBTSchange;
+    else StepWithoutLBTSchange = 0;
+} // End of updateLBTS(int federate, int ts)
+</declaration><location id="id0" x="912" y="-56"><name x="880" y="-96">Terminate</name></location><location id="id1" x="336" y="-56"><name x="264" y="-64">Process</name></location><location id="id2" x="-168" y="-56"><name x="-144" y="-64">Wait</name></location><location id="id3" x="-608" y="-56"><name x="-624" y="-96">Init</name></location><init ref="id3"/><transition><source ref="id0"/><target ref="id0"/><nail x="968" y="0"/><nail x="864" y="0"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="376" y="248">StepWithoutLBTSchange &gt;= NumberOffStepForLiveLock</label><label kind="synchronisation" x="488" y="232">LiveLockDetected[id]!</label><nail x="480" y="96"/><nail x="576" y="216"/><nail x="512" y="216"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="guard" x="-432" y="248">StepWithoutLBTSchange &gt;= NumberOffStepForLiveLock</label><label kind="synchronisation" x="-344" y="232">LiveLockDetected[id]!</label><nail x="-296" y="168"/><nail x="-288" y="224"/><nail x="-232" y="232"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="624" y="-200">nbMsgIn != 0</label><label kind="assignment" x="632" y="-216">checkFIFO()</label><nail x="548" y="-182"/><nail x="604" y="-198"/><nail x="624" y="-176"/><nail x="584" y="-136"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="select" x="608" y="96">senderId: RangeFederateId</label><label kind="synchronisation" x="632" y="112">nullMsg[senderId]?</label><label kind="assignment" x="544" y="128">updateLBTS(senderId,nullMsgTimestamp[senderId])</label><nail x="616" y="48"/><nail x="688" y="88"/><nail x="608" y="88"/></transition><transition><source ref="id1"/><target ref="id0"/><label kind="guard" x="480" y="-48">(Clocks[id] &gt;= MaxSimulationTime )  and (nbMsgIn ==0)</label><label kind="synchronisation" x="624" y="-32">nullMsg[id]!</label><label kind="assignment" x="528" y="-16">nullMsgTimestamp[id] = MaxSimulationTime</label></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-616" y="-216">senderId: RangeFederateId</label><label kind="synchronisation" x="-576" y="-184">nullMsg[senderId]?</label><label kind="assignment" x="-712" y="-200">updateLBTS(senderId,nullMsgTimestamp[senderId])</label><nail x="-424" y="-136"/><nail x="-440" y="-176"/><nail x="-344" y="-176"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-560" y="120">srcId: RangeFederateId</label><label kind="guard" x="-624" y="104">(srcId != id) and (nbMsgIn &lt; MaxMsgFIFOSize)</label><label kind="synchronisation" x="-536" y="88">msg[srcId][id]?</label><label kind="assignment" x="-600" y="136">addToFIFO(msgTimestamp[srcId][id])</label><nail x="-424" y="80"/><nail x="-528" y="80"/><nail x="-472" y="24"/><nail x="-344" y="0"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="304" y="-320">(nbMsgIn !=0)  and (AllMsgConsuming == 0)</label><label kind="assignment" x="392" y="-336">popFromFIFO()</label><label kind="comments">FIFOMsgTimestamp[nbMsgIn-1] &lt;= (Clocks[id]+lookahead)
 
 J'ai enlevé cette partie car cela faisait une erreur lorsque nbMsgIn etait egual à 0
 
-Normalement le checkFIFO() resous le probleme</label><nail x="264" y="-240"/><nail x="280" y="-280"/><nail x="336" y="-272"/><nail x="320" y="-240"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-472" y="-360">destId: RangeFederateId, timestamp: RangeSimulationTime</label><label kind="guard" x="-592" y="-344">destId != id and (timestamp &gt; (Clocks[id]+lookahead)) and (timestamp &lt;= MaxSimulationTime)</label><label kind="synchronisation" x="-352" y="-328">msg[id][destId]!</label><label kind="assignment" x="-456" y="-376">msgTimestamp[id][destId]=timestamp</label><nail x="-288" y="-232"/><nail x="-272" y="-288"/><nail x="-224" y="-288"/><nail x="-216" y="-232"/></transition><transition><source ref="id1"/><target ref="id2"/><label kind="guard" x="-40" y="48">(AllMsgConsuming == 1) and (Clocks[id] &lt; MaxSimulationTime )</label><label kind="synchronisation" x="-8" y="16">nullMsg[id]!</label><label kind="assignment" x="-120" y="32">nullMsgTimestamp[id]=Clocks[id]+lookahead</label><nail x="104" y="8"/><nail x="-32" y="8"/></transition><transition><source ref="id2"/><target ref="id1"/><label kind="assignment" x="-24" y="-152">Clocks[id]=LBTS</label><nail x="-48" y="-112"/><nail x="72" y="-112"/></transition><transition><source ref="id3"/><target ref="id2"/><label kind="assignment" x="-568" y="-40">resetClocks(), clearFIFO()</label></transition></template><system>// Place template instantiations here.
+Normalement le checkFIFO() resous le probleme</label><nail x="384" y="-248"/><nail x="408" y="-288"/><nail x="464" y="-280"/><nail x="448" y="-240"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="select" x="-472" y="-352">destId: RangeFederateId, timestamp: RangeSimulationTime</label><label kind="guard" x="-592" y="-336">destId != id and (timestamp &gt; (Clocks[id]+lookahead)) and (timestamp &lt;= MaxSimulationTime)</label><label kind="synchronisation" x="-352" y="-320">msg[id][destId]!</label><label kind="assignment" x="-456" y="-368">msgTimestamp[id][destId]=timestamp</label><nail x="-288" y="-232"/><nail x="-288" y="-288"/><nail x="-248" y="-288"/><nail x="-216" y="-232"/></transition><transition><source ref="id1"/><target ref="id2"/><label kind="guard" x="-120" y="40">(AllMsgConsuming == 1) and (Clocks[id] &lt; MaxSimulationTime )</label><label kind="synchronisation" x="40" y="8">nullMsg[id]!</label><label kind="assignment" x="-72" y="24">nullMsgTimestamp[id]=Clocks[id]+lookahead</label><nail x="216" y="8"/><nail x="-64" y="8"/></transition><transition><source ref="id2"/><target ref="id1"/><label kind="assignment" x="24" y="-136">Clocks[id]=LBTS</label><nail x="-64" y="-112"/><nail x="216" y="-112"/></transition><transition><source ref="id3"/><target ref="id2"/><label kind="assignment" x="-512" y="-48">resetClocks(), clearFIFO()</label></transition></template><template><name>Observant</name><declaration>// Place local declarations here for the Observateur template.
+int            nullMsgFromEachFed[nbFederates];
+int            LiveLockFromEachFed[nbFederates];
+int FlagForFederationLiveLock = 0 ;
 
-Federate0 = Federate(0,nbFederates,3);
-Federate1 = Federate(1,nbFederates,3);
-Federate2 = Federate(2,nbFederates,3);
+// Place for functions usefull in updates
+void initialiseNullMessageWatchDog() {
+  int i;
+  for (i=0;i&lt;nbFederates;++i) {
+      nullMsgFromEachFed[i] = 0;
+      }
+} // End of initialiseNullMessage()
+
+void updateNullMessageWatchDog(int federate) {
+++nullMsgFromEachFed[federate];
+} // End of updateNullMessage(int federate)
+
+void initialiseLiveLockWatchDog() {
+  int i;
+  for (i=0;i&lt;nbFederates;++i) {
+      LiveLockFromEachFed[i] = 0;
+      }
+} // End of initialiseLiveLockWatchDog()
+
+void updateLiveLockWatchDog(int federate) {
+int i;
+++LiveLockFromEachFed[federate];
+for (i=0; i&lt;nbFederates;++i) {
+     if (i==0) FlagForFederationLiveLock = 1;
+     if (LiveLockFromEachFed[i] != 0 &amp;&amp; FlagForFederationLiveLock ==1) FlagForFederationLiveLock = 1;
+     else FlagForFederationLiveLock = 0;
+    }
+} // End of updateNullMessage(int federate)</declaration><location id="id4" x="64" y="-192"><name x="-48" y="-232">FederationLiveLocked</name></location><location id="id5" x="-64" y="0"><name x="-74" y="-30">Look</name></location><location id="id6" x="-584" y="0"></location><init ref="id6"/><transition><source ref="id5"/><target ref="id5"/><label kind="select" x="344" y="120">FederateLiveLockedId:RangeFederateId</label><label kind="synchronisation" x="344" y="136">LiveLockDetected[FederateLiveLockedId]?</label><label kind="assignment" x="328" y="152">updateLiveLockWatchDog(FederateLiveLockedId)</label><nail x="292" y="80"/><nail x="324" y="144"/><nail x="300" y="216"/><nail x="228" y="192"/></transition><transition><source ref="id4"/><target ref="id4"/><nail x="176" y="-256"/><nail x="224" y="-200"/><nail x="216" y="-152"/></transition><transition><source ref="id5"/><target ref="id4"/><label kind="guard" x="-140" y="-126">FlagForFederationLiveLock == 1</label></transition><transition><source ref="id5"/><target ref="id5"/><label kind="select" x="-176" y="248">senderId: RangeFederateId</label><label kind="synchronisation" x="-152" y="264">nullMsg[senderId]?</label><label kind="assignment" x="-208" y="280">updateNullMessageWatchDog(senderId)</label><nail x="-72" y="184"/><nail x="-72" y="240"/><nail x="-120" y="240"/><nail x="-168" y="184"/></transition><transition><source ref="id6"/><target ref="id5"/><label kind="assignment" x="-512" y="0">initialiseNullMessageWatchDog(),
+initialiseLiveLockWatchDog()</label></transition></template><system>// Place template instantiations here.
+
+Federate0 = Federate(0,nbFederates,1);
+Federate1 = Federate(1,nbFederates,0);
+Federate2 = Federate(2,nbFederates,2);
 
 // List one or more processes to be composed into a system.
-system Federate0, Federate1, Federate2;
+system Federate0, Federate1, Federate2, Observant;
 </system></nta>
