@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.11 2010/08/11 16:45:14 erk Exp $
+// $Id: LBTS.hh,v 3.12 2010/08/18 15:33:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
@@ -59,6 +59,9 @@ public:
      */
     void compute();
 
+    /** Return the current LBTS value */
+    FederationTime getLBTSValue() const {return _LBTS;};
+
     /**
      * Check if a federate exists
      */
@@ -91,4 +94,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.11 2010/08/11 16:45:14 erk Exp $
+// $Id: LBTS.hh,v 3.12 2010/08/18 15:33:18 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.133 2010/08/11 16:45:14 erk Exp $
+// $Id: Federation.cc,v 3.134 2010/08/18 15:33:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -757,6 +757,18 @@ throw (FederateNotExecutionMember) {
 		Debug(D,pdDebug) << "New minNERx =" << newMin << std::endl;
 		retval = true;
 		minNERx = newMin;
+		/* if a new Min is found then we shall reset the NERx status of NERing federates
+		 * whose lastNERx value is equal to the new Min found.
+		 * Rationale: an Anonymous NULL MESSAGE dated with newMin will be sent to them.
+		 */
+		for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+			if ((i->second.isUsingNERx()) &&
+			    (i->second.getLastNERxValue()==newMin)) {
+				//i->second.setLastNERxValue(FedTime(0.0)); // not needed
+				i->second.setIsUsingNERx(false);
+				Debug(D,pdDebug) << "Federate <" << i->second.getName() <<"> not NERing anymore." <<  std::endl;
+			}
+		}
 	}
 	return retval;
 } /* end of updateLastNERxForFederate */
@@ -765,22 +777,28 @@ FederationTime
 Federation::computeMinNERx() {
 	FederationTime retval;
 	uint32_t       nbFed;
+	LBTS           NER_regulators;
+	std::vector<LBTS::FederateClock> clocks;
 	retval.setZero();
-	HandleFederateMap::iterator i;
 	nbFed = 0;
+	regulators.get(clocks);
 
-	for (i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-		if (i->second.isUsingNERx()) {
-			++nbFed;
-			if (retval.isZero()) {
-				retval = i->second.getLastNERxValue();
-			} else {
-				if (retval > (i->second.getLastNERxValue())) {
-					retval = i->second.getLastNERxValue();
-				}
-			}
+	/* Build a set of clocks */
+	for (std::vector<LBTS::FederateClock>::iterator it = clocks.begin(); it!=clocks.end(); ++it) {
+		FederateHandle h=it->first;
+		HandleFederateMap::iterator f = _handleFederateMap.find(h);
+		if (f->second.isUsingNERx()) {
+			nbFed++;
+			NER_regulators.insert(h,f->second.getLastNERxValue());
+		} else {
+			NER_regulators.insert(h,it->second);
 		}
 	}
+
+	/* compute the new NERx LBTS (minimum) */
+	NER_regulators.compute();
+	retval = NER_regulators.getLBTSValue();
+	Debug(D,pdDebug) << "MinNERx =" << retval.getTime() << std::endl;
 
 	/* the minimum is different from 0 iff more than 2 federate use NERx */
 	if (nbFed<2) {
@@ -2050,9 +2068,8 @@ throw (FederateNotExecutionMember,
 			throw RTIinternalError("Time regulation not enabled.");
 		}
 
-		D.Out(pdTerm, "Federation %d: Federate %d's new time is %f.",
+		D.Out(pdDebug, "Federation %d: Federate %d's new time is %f.",
 				handle, federate_handle, time.getTime());
-
 		regulators.update(federate_handle, time);
 	}
 
@@ -2672,5 +2689,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.133 2010/08/11 16:45:14 erk Exp $
+// $Id: Federation.cc,v 3.134 2010/08/18 15:33:18 erk Exp $
 
