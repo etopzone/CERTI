@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.12 2010/08/18 15:33:18 erk Exp $
+// $Id: LBTS.hh,v 3.13 2010/08/19 10:50:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
@@ -63,7 +63,8 @@ public:
     FederationTime getLBTSValue() const {return _LBTS;};
 
     /**
-     * Check if a federate exists
+     * Check if a federate exists.
+     * @return true is the corresponding federate exists.
      */
     bool exists(FederateHandle) const ;
     void get(std::vector<FederateClock> &) const ;
@@ -80,9 +81,22 @@ public:
      */
     void update(FederateHandle federateHandle, FederationTime logicalTime);
 
+    /**
+     * Return true is the last call to update was done with an "anonymous"
+     * federate handle. I.e. was the consequence of the NULL PRIME message
+     * algorithm.
+     */
+    bool hasReceivedAnonymousUpdate() const {return anonymousUpdateReceived;};
+
+    /**
+     * The reception of anonymous update have been taken into account.
+     */
+    void resetAnonymousUpdate() {anonymousUpdateReceived=false;};
+
 protected:
     FederationTime _LBTS ;
     FederateHandle MyFederateNumber ;
+    bool           anonymousUpdateReceived;
 
 private:
     typedef std::map<FederateHandle, FederationTime> ClockSet ;
@@ -94,4 +108,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.12 2010/08/18 15:33:18 erk Exp $
+// $Id: LBTS.hh,v 3.13 2010/08/19 10:50:19 erk Exp $

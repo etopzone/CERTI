@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.25 2010/08/11 16:45:14 erk Exp $
+// $Id: TimeManagement.hh,v 3.26 2010/08/19 10:50:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -123,8 +123,8 @@ private:
     /**
      * Main time advancing method.
      * This method is called by tick().
-     *  Calls are dispatched between timeAdvance and nextEventAdvance
-     *  depending on current time advancing method.
+     * Calls are dispatched between timeAdvance (TAR/TARA) and nextEventAdvance (NER/NERA)
+     * depending on current time advancing method.
      */
     void advance(bool &msg_restant, TypeException &e);
 
@@ -141,8 +141,12 @@ private:
      */
     void nextEventAdvance(bool &msg_restant, TypeException &e);
 
-    void timeAdvanceGrant(FederationTime, TypeException &);
-    void flushQueueRequest(FederationTime, TypeException &);
+    /**
+     * Once every messages has been delivered to federate, logical time can be
+     * advanced and send a timeAdvanceGrant to federate.
+     */
+    void timeAdvanceGrant(FederationTime, TypeException& e);
+    void flushQueueRequest(FederationTime, TypeException& e);
     bool executeFederateService(NetworkMessage &msg);
     /**
      * Send a null message to RTIG containing Logicaal Time + Lookahead.
@@ -185,4 +189,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.25 2010/08/11 16:45:14 erk Exp $
+// $Id: TimeManagement.hh,v 3.26 2010/08/19 10:50:22 erk Exp $

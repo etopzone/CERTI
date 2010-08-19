@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.134 2010/08/18 15:33:18 erk Exp $
+// $Id: Federation.cc,v 3.135 2010/08/19 10:50:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -757,13 +757,13 @@ throw (FederateNotExecutionMember) {
 		Debug(D,pdDebug) << "New minNERx =" << newMin << std::endl;
 		retval = true;
 		minNERx = newMin;
-		/* if a new Min is found then we shall reset the NERx status of NERing federates
-		 * whose lastNERx value is equal to the new Min found.
+		/* if a new Min is found then we shall reset the NERx status of ALL NERing federates
 		 * Rationale: an Anonymous NULL MESSAGE dated with newMin will be sent to them.
+		 *            after that a NERing Federate which remains in its NERing loop should
+		 *            send a new NULL PRIME message.
 		 */
 		for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-			if ((i->second.isUsingNERx()) &&
-			    (i->second.getLastNERxValue()==newMin)) {
+			if (i->second.isUsingNERx()) {
 				//i->second.setLastNERxValue(FedTime(0.0)); // not needed
 				i->second.setIsUsingNERx(false);
 				Debug(D,pdDebug) << "Federate <" << i->second.getName() <<"> not NERing anymore." <<  std::endl;
@@ -2689,5 +2689,5 @@ throw (ObjectNotKnown)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.134 2010/08/18 15:33:18 erk Exp $
+// $Id: Federation.cc,v 3.135 2010/08/19 10:50:22 erk Exp $
 

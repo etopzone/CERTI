@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.66 2010/08/17 07:59:11 erk Exp $
+// $Id: TimeManagement.cc,v 3.67 2010/08/19 10:50:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -515,11 +515,22 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
             }
         }
         else { // date_min < _LBTS
-
             // Federate can't advance up to expected time but up to LBTS. Other
             // federates are informed and no TSO message are sent.
-            if (_est_regulateur)
+            if (_est_regulateur) {
+            	/* The following NULL message is part of the classical CMB NULL MESSAGE algorithm */
                 sendNullMessage(_LBTS);
+                /**
+                 * The following NULL PRIME message is part of SN NULL MESSAGE PRIME algorithm
+                 * This message is sent because we did receive some anonymous NULL message
+                 * in the past and we are still NERing so RTIG may be interested (again)
+                 * in our wanted advance time.
+                 */
+                if (hasReceivedAnonymousUpdate()) {
+                	Debug(D,pdDebug) << "TM::nextEventAdvance - (re)sending NULL PRIME" << std::endl;
+                	sendNullPrimeMessage(date_avancee);
+                }
+            }
         }
     }
 
@@ -931,9 +942,6 @@ G.Out(pdGendoc," exit  TimeManagement::timeAdvance");
 }
 
 // ----------------------------------------------------------------------------
-/*! Once every messages has been delivered to federate, logical time can be
-  advanced and send a timeAdvanceGrant to federate.
-*/
 void
 TimeManagement::timeAdvanceGrant(FederationTime logical_time,
                                  TypeException &e)
@@ -953,7 +961,9 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     comm->requestFederateService(&req);
 
     _heure_courante = logical_time ;
-}
+    /* reset the sending of NULL PRIME message whenever we get TAG */
+    resetAnonymousUpdate();
+} /* timeAdvanceGrant */
 
 // ----------------------------------------------------------------------------
 /*! Either nextEventRequest or timeAdvanceRequest is called by federate to
@@ -1051,4 +1061,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.66 2010/08/17 07:59:11 erk Exp $
+// $Id: TimeManagement.cc,v 3.67 2010/08/19 10:50:22 erk Exp $

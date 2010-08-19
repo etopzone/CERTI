@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.19 2010/08/11 16:45:14 erk Exp $
+// $Id: LBTS.cc,v 3.20 2010/08/19 10:50:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -40,6 +40,7 @@ static PrettyDebug D("LBTS", __FILE__);
 LBTS::LBTS()
     : MyFederateNumber(0)
 {
+  anonymousUpdateReceived = false;
   _LBTS.setPositiveInfinity();
 }
 
@@ -122,6 +123,7 @@ LBTS::update(FederateHandle federateHandle, FederationTime time)
     		itend = it;
     	}
     } else {
+    	anonymousUpdateReceived = true;
     	it = clocks.begin();
     }
 
@@ -133,7 +135,7 @@ LBTS::update(FederateHandle federateHandle, FederationTime time)
     	else {
     		D.Out(pdDebug, "LBTS.update: federate-%u, time %f --> %f (old-->new)",
     				it->first, it->second.getTime(),time.getTime());
-    		it->second = time ;
+    		it->second = time;
     	}
     	if (it!=itend) ++it;
     } while (it!=itend);
@@ -157,4 +159,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.19 2010/08/11 16:45:14 erk Exp $
+// $Id: LBTS.cc,v 3.20 2010/08/19 10:50:22 erk Exp $
