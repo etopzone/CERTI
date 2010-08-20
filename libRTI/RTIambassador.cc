@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.116 2010/03/20 16:34:14 erk Exp $
+// $Id: RTIambassador.cc,v 3.117 2010/08/20 14:51:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -478,6 +478,46 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist, RTI::ConcurrentAccessAttempted,
 		{
 	return __tick_kernel(RTI_TRUE, minimum, maximum);
 		}
+
+#ifdef CERTI_REALTIME_EXTENSIONS
+// ----------------------------------------------------------------------------
+void 
+RTI::RTIambassador::setPriorityforRTIAProcess(int priority, unsigned int sched_type)
+    throw(RTIinternalError) {
+
+#ifdef _WIN32
+   throw RTIinternalError("Not Implemented on Windows");
+#else
+   struct sched_param sparm ;
+   int cr ;
+
+   sparm.sched_priority =  priority ;
+   cr = sched_setscheduler(privateRefs->pid_RTIA,sched_type,&sparm);
+   if (cr !=0) {
+      throw RTIinternalError("RTIA process changing priority did not work");
+      if (errno==EPERM) {
+	 throw RTIinternalError("The calling process has no SU permission for that") ;
+	 }
+      else if (errno==ESRCH){
+	 throw RTIinternalError( "The process id does not exist") ;
+	 }
+      throw RTIinternalError( "Unknown policy specified") ;
+      }
+#endif
+} 
+
+// ----------------------------------------------------------------------------
+void 
+RTI::RTIambassador::setAffinityforRTIAProcess(cpu_set_t mask)
+    throw(RTIinternalError) {
+#ifdef _WIN32
+   throw RTIinternalError("Not Implemented on Windows");
+#else
+if (sched_setaffinity(privateRefs->pid_RTIA, sizeof(cpu_set_t), &mask))
+    throw RTIinternalError( "RTIA process Error : sched_setaffinity") ;
+#endif  
+}
+#endif
 
 // ----------------------------------------------------------------------------
 //! Get Region Token.
@@ -2988,4 +3028,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.116 2010/03/20 16:34:14 erk Exp $
+// $Id: RTIambassador.cc,v 3.117 2010/08/20 14:51:48 erk Exp $

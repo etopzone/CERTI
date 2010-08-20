@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.6 2010/03/07 18:23:40 erk Exp $
+// $Id: RTIambServices.hh,v 3.7 2010/08/20 14:51:52 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -496,6 +496,26 @@ Boolean __tick_kernel(Boolean, TickTime, TickTime)
 Boolean tick(TickTime, TickTime)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
+#ifdef CERTI_REALTIME_EXTENSIONS
+/** 
+ * Set Priority for RTIA Process (CERTI Real-time extension).
+ * @param priority the priority needed for RTIA process (from 0 to 99 on linux system)
+ * @param schedPolicy the scheduling policy needed for RTIA process
+ *           - SCHED_FIFO or SCHED_RR on Linux system
+ * @warning This is a non-standard extension of the HLA 1.3 API.
+ */
+void setPriorityforRTIAProcess(int priority, unsigned int schedPolicy)
+    throw(RTIinternalError) ;
+
+/** 
+ * Set Processor Mask affinity for RTIA Process (CERTI Real-time extension).
+ * @param mask the mask to be applied for RTIA process (depend on available number of processors)
+ * @warning This is a non-standard extension of the HLA 1.3 API.
+ */
+void setAffinityforRTIAProcess(cpu_set_t mask)
+    throw(RTIinternalError) ;
+#endif
+
 RTIambassador()
     throw (MemoryExhausted, RTIinternalError);
 
@@ -508,4 +528,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.6 2010/03/07 18:23:40 erk Exp $
+// $Id: RTIambServices.hh,v 3.7 2010/08/20 14:51:52 erk Exp $
