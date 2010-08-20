@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.82 2010/03/29 07:56:04 erk Exp $
+// $Id: ObjectClass.cc,v 3.83 2010/08/20 15:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -739,7 +739,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    message.setFederation(server->federation());
 	    message.setFederate(federate);
 	    message.setException(e_NO_EXCEPTION) ;
-	    message.setObjectClass(super_handle);
+	    message.setObjectClass(i->second->getClass());
 	    message.setObject(i->second->getHandle());
 	    message.setLabel(i->second->getName());
 	    //BUG FIXME strange!!
@@ -1712,4 +1712,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.82 2010/03/29 07:56:04 erk Exp $
+// $Id: ObjectClass.cc,v 3.83 2010/08/20 15:15:32 erk Exp $
