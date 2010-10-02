@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.36 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG.hh,v 3.37 2010/10/02 13:20:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -123,6 +123,7 @@ private:
     void processUnsubscribeInteractionWR(Socket*, NM_DDM_Unsubscribe_Interaction*);
     void processRegisterObjectWithRegion(Socket*, NM_DDM_Register_Object*);
     void processRequestObjectAttributeValueUpdate(Socket*, NM_Request_Object_Attribute_Value_Update*);
+	void processRequestClassAttributeValueUpdate(Socket*, NM_Request_Class_Attribute_Value_Update*);
 
 private:
     int tcpPort ;
@@ -144,4 +145,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.36 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG.hh,v 3.37 2010/10/02 13:20:37 erk Exp $

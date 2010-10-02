@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.35 2010/05/31 09:33:26 erk Exp $
+// $Id: ObjectManagement.hh,v 3.36 2010/10/02 13:20:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -177,6 +177,11 @@ public:
                                       uint32_t attribArraySize,
                                       TypeException &e);
 
+	void requestClassAttributeValueUpdate(ObjectClassHandle theClass,
+										  const std::vector <AttributeHandle> &attribs,
+										  uint32_t attribArraySize,
+										  TypeException &e);
+
     void provideAttributeValueUpdate(ObjectHandle theObject,
                                       const std::vector <AttributeHandle> &theAttributes,
                                       uint16_t attribArraySize,
@@ -303,4 +308,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.35 2010/05/31 09:33:26 erk Exp $
+// $Id: ObjectManagement.hh,v 3.36 2010/10/02 13:20:42 erk Exp $

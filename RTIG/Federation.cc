@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.135 2010/08/19 10:50:22 erk Exp $
+// $Id: Federation.cc,v 3.136 2010/10/02 13:20:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2687,7 +2687,57 @@ throw (ObjectNotKnown)
 
 }
 
+void 
+Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
+								ObjectClassHandle theClassHandle,
+								const std::vector <AttributeHandle> &theAttributeList,
+								uint32_t theListSize)
+		throw ( ObjectClassNotDefined, 
+				RTIinternalError)
+{
+	G.Out(pdGendoc,"enter Federation::requestClassAttributeValueUpdate");
+
+	// get object class 
+	ObjectClass* oClass = root->getObjectClass(theClassHandle);
+	if(!oClass) {
+		throw ObjectClassNotDefined(certi::stringize() << "ObjectClassHandle <"<<theClassHandle<<"> is unknown.");
+	}
+
+	// send PAVU for all objects of this class
+	ObjectClass::HandleObjectMap instances = oClass->getClassInstances();
+	for( ObjectClass::HandleObjectMap::const_iterator it =
+		 instances.begin(); it != instances.end(); ++it )
+	{
+		FederateHandle theOwnerHandle = it->second->getOwner();
+
+		NM_Provide_Attribute_Value_Update mess ;
+
+		// Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
+		mess.setFederate(theFederateHandle);
+		mess.setObject(it->first);
+		mess.setAttributesSize(theListSize) ;
+		for (uint32_t i = 0 ; i < theListSize ; ++i)
+		{
+			mess.setAttributes(theAttributeList[i],i) ;
+		}
+
+		// JYR : BUG if getSocketLink return NULL means
+		// owner federate has been killed and so rtig don't crash
+		// better development needed
+		if ( server->getSocketLink(theOwnerHandle) == NULL )
+		{
+			throw RTIinternalError ( "Owner federate killed" ) ;
+		}
+
+		mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
+
+		G.Out(pdGendoc,"            requestClassAttributeValueUpdate ===> write PAVU to RTIA %d"
+			,theOwnerHandle);
+		G.Out(pdGendoc,"exit  Federation::requestClassAttributeValueUpdate");
+	}
+}
+
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.135 2010/08/19 10:50:22 erk Exp $
+// $Id: Federation.cc,v 3.136 2010/10/02 13:20:42 erk Exp $
 

@@ -688,6 +688,35 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 
 } /* end of requestObjectAttributeValueUpdate */
 
+// ----------------------------------------------------------------------------
+//! requestClassAttributeValueUpdate
+void 
+ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
+		const std::vector <AttributeHandle> &attribs,
+		uint32_t attribArraySize,
+		TypeException &e)
+{
+	NM_Request_Class_Attribute_Value_Update req;
+	
+	G.Out(pdGendoc,"enter ObjectManagement::requestClassAttributeValueUpdate");
+	
+	req.setObjectClass(theClass);
+	req.setFederation(fm->_numero_federation);
+	req.setFederate(fm->federate);
+	req.setAttributesSize(attribArraySize);
+	
+	for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
+		req.setAttributes(attribs[i],i) ;
+	}
+
+	comm->sendMessage(&req);
+	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
+			req.getFederate()));
+	e = rep->getException() ;
+
+	G.Out(pdGendoc,"exit  ObjectManagement::requestClassAttributeValueUpdate");
+
+} /* end of requestClassAttributeValueUpdate */
 
 // --------------------------------------
 // -- 4.15 provideAttributeValueUpdate --

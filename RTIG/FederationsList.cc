@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.72 2010/08/10 16:34:09 erk Exp $
+// $Id: FederationsList.cc,v 3.73 2010/10/02 13:20:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1393,6 +1393,25 @@ FederationsList::requestObjectOwner(Handle federationHandle,
     return federation->requestObjectOwner(federate, id, attributes, list_size);
 }
 
+// ----------------------------------------------------------------------------
+// requestClassAttribute
+void 
+FederationsList::requestClassAttributeValueUpdate(Handle federationHandle,
+							    FederateHandle federate,
+								ObjectClassHandle classHandle,
+								const std::vector <AttributeHandle> &attributes,
+								uint32_t list_size)
+		throw (ObjectClassNotDefined,
+			   FederationExecutionDoesNotExist,
+               RTIinternalError)
+{
+	G.Out(pdGendoc,"into FederationsList::requestClassAttributeValueUpdate");
+
+	Federation *federation = searchFederation(federationHandle);
+
+	return federation->requestClassAttributeValueUpdate(federate, classHandle, attributes, list_size);
+}
+
 void
 FederationsList::reserveObjectInstanceName(Handle federationHandle,
 								           FederateHandle the_federate,
@@ -1431,5 +1450,5 @@ FederationsList::getNullPrimeValue(FederationHandle federation)
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.72 2010/08/10 16:34:09 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.73 2010/10/02 13:20:41 erk Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.68 2010/08/18 15:33:18 erk Exp $
+// $Id: Federation.hh,v 3.69 2010/10/02 13:20:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -304,6 +304,13 @@ public:
                                 const std::vector <AttributeHandle> &theAttributeList,
                                 uint16_t theListSize)
         throw (ObjectNotKnown);
+	
+	void requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
+								ObjectClassHandle theClassHandle,
+								const std::vector <AttributeHandle> &theAttributeList,
+								uint32_t theListSize)
+		throw ( ObjectClassNotDefined, 
+				RTIinternalError);
 
     /**
      * Subscribes attributes to an object class. After subscription, attribute 
@@ -716,4 +723,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.68 2010/08/18 15:33:18 erk Exp $
+// $Id: Federation.hh,v 3.69 2010/10/02 13:20:42 erk Exp $

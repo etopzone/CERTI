@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.108 2010/08/11 16:45:14 erk Exp $
+// $Id: RTIG_processing.cc,v 3.109 2010/10/02 13:20:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1524,6 +1524,47 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 	G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 }
 
+// ----------------------------------------------------------------------------
+// processRequestClassAttributeValueUpdate
+void
+RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Attribute_Value_Update *request)
+{
+	NM_Request_Class_Attribute_Value_Update answer;
+
+	G.Out(pdGendoc,"enter RTIG::processRequestClassAttributeValueUpdate");
+	G.Out(pdGendoc,"BEGIN ** REQUEST CLASS ATTRIBUTE VALUE UPDATE **");
+
+	answer.setException(e_NO_EXCEPTION);
+	try
+	{
+		federations.requestClassAttributeValueUpdate(request->getFederation(),
+				request->getFederate(),
+				request->getObjectClass(),
+				request->getAttributes(),
+				request->getAttributesSize());
+	}
+	catch (ObjectClassNotDefined e)
+	{
+		answer.setException(e_ObjectClassNotDefined,e._reason);
+	}
+	catch (FederationExecutionDoesNotExist e)
+	{
+		answer.setException(e_FederationExecutionDoesNotExist,e._reason);
+	}
+	catch (RTIinternalError e)
+	{
+		answer.setException(e_RTIinternalError,e._reason);
+	}
+	
+	answer.setFederate(request->getFederate());
+	answer.setObjectClass(request->getObjectClass());
+
+	answer.send(link,NM_msgBufSend); // Send answer to RTIA
+
+	G.Out(pdGendoc,"exit  RTIG::processRequestClassAttributeValueUpdate");
+	G.Out(pdGendoc,"END   ** REQUEST CLASS  ATTRIBUTE VALUE UPDATE **");
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.108 2010/08/11 16:45:14 erk Exp $
+// $Id: RTIG_processing.cc,v 3.109 2010/10/02 13:20:41 erk Exp $

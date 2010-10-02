@@ -580,9 +580,15 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 	break ;
 
 	case Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE: {
-		std::cout<<"request class attribute value update not yet implemented in chooseFederateProcessing"
-				<<std::endl;
-		e = e_UnimplementedService ;
+		M_Request_Class_Attribute_Value_Update* RCAVUq;
+		RCAVUq = static_cast<M_Request_Class_Attribute_Value_Update *>(req);
+
+		D.Out(pdTrace,"Receiving Message from Federate, type "
+				"RequestClassAttributeValueUpadate.");
+		om->requestClassAttributeValueUpdate(RCAVUq->getObjectClass(),
+				RCAVUq->getAttributes(),
+				RCAVUq->getAttributesSize(),
+				e);
 	}
 	break ;
 

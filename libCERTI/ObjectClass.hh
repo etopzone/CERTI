@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.54 2010/03/28 16:08:33 erk Exp $
+// $Id: ObjectClass.hh,v 3.55 2010/10/02 13:20:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -274,6 +274,8 @@ public:
 	//! This Object help to find a TCPLink from a Federate Handle.
 	SecurityServer *server ;
 
+	const HandleObjectMap& getClassInstances(void) const
+		{ return _handleObjectMap; }
 private:
 	/*
 	 * private default constructor with no code
@@ -309,21 +311,26 @@ private:
 
 	// Attributes
 	const ObjectClassHandle handle ;
-	FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
+
+	/**
+	 * greatest subscriber handle
+	 */
+	FederateHandle maxSubscriberHandle ;
+
 	/**
 	 * The security level ID attached to this object class.
 	 * default level for non inherited attributes.
 	 */
 	SecurityLevelID securityLevelId ;
 
-        /**
-         * All attributes, indexed by handle.
-         */
-        HandleClassAttributeMap _handleClassAttributeMap;        
+    /**
+     * All attributes, indexed by handle.
+     */
+    HandleClassAttributeMap _handleClassAttributeMap;
 
-        /**
-         * All objects of this class, indexed by handle.
-         */
+    /**
+     * All objects of this class, indexed by handle.
+     */
 	HandleObjectMap _handleObjectMap;
 
 	/**
@@ -331,10 +338,12 @@ private:
 	 * 0 if they aren't any.
 	 */
 	ObjectClassHandle superClass;
+
 	/**
 	 * The set of object classes sub classes of this object class
 	 */
 	ObjectClassSet*   subClasses;
+
 	/* The message buffer used to send Network messages */
 	libhla::MessageBuffer NM_msgBufSend;
 };
@@ -343,4 +352,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.54 2010/03/28 16:08:33 erk Exp $
+// $Id: ObjectClass.hh,v 3.55 2010/10/02 13:20:42 erk Exp $

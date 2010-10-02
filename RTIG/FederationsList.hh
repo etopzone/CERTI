@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.56 2010/08/10 16:34:09 erk Exp $
+// $Id: FederationsList.hh,v 3.57 2010/10/02 13:20:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -348,6 +348,15 @@ public:
                                  uint32_t list_size)
         throw (ObjectNotKnown,
                FederationExecutionDoesNotExist,
+               RTIinternalError);
+	
+	void requestClassAttributeValueUpdate(Handle theHandle,
+								FederateHandle federate,
+								ObjectClassHandle classHandle,
+								const std::vector <AttributeHandle> &attributes,
+								uint32_t list_size)
+		throw (ObjectClassNotDefined,
+			   FederationExecutionDoesNotExist,
                RTIinternalError);
 
     void destroyObject(Handle theHandle,
@@ -690,4 +699,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.56 2010/08/10 16:34:09 erk Exp $
+// $Id: FederationsList.hh,v 3.57 2010/10/02 13:20:42 erk Exp $

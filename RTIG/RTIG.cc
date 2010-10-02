@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.66 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG.cc,v 3.67 2010/10/02 13:20:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -201,9 +201,15 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-	Debug(D, pdTrace) << "requestAttributeValueUpdate" << endl ;
-        auditServer.setLevel(6);
+		D.Out(pdTrace, "RequestAttributeValueUpdate.)");
+		auditServer.setLevel(6);
         processRequestObjectAttributeValueUpdate(link, static_cast<NM_Request_Object_Attribute_Value_Update*>(msg));
+        break ;
+
+	  case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+		D.Out(pdTrace, "RequestClassAttributeValueUpdate.)");
+		auditServer.setLevel(6);
+        processRequestClassAttributeValueUpdate(link, static_cast<NM_Request_Class_Attribute_Value_Update*>(msg));
         break ;
 
       case NetworkMessage::SET_TIME_REGULATING:
@@ -1042,4 +1048,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.66 2010/08/10 16:34:09 erk Exp $
+// $Id: RTIG.cc,v 3.67 2010/10/02 13:20:39 erk Exp $
