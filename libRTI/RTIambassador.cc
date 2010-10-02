@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.117 2010/08/20 14:51:48 erk Exp $
+// $Id: RTIambassador.cc,v 3.118 2010/10/02 13:19:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -47,6 +47,15 @@
 #include <cerrno>
 #include <typeinfo>
 #include <memory>
+
+#ifdef CERTI_REALTIME_EXTENSIONS
+#ifdef _WIN32
+#error "CERTI Realtime extensions are not currently supported on Windows"
+#else
+#include <sched.h>
+#include <sys/mman.h>
+#endif
+#endif
 
 using std::cout ;
 using std::cerr ;
@@ -3028,4 +3037,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.117 2010/08/20 14:51:48 erk Exp $
+// $Id: RTIambassador.cc,v 3.118 2010/10/02 13:19:43 erk Exp $
