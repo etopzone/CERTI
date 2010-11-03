@@ -17,7 +17,7 @@ SOURCE_GROUP("Source Files\\Types1516" FILES ${LIBHLA_TYPES1516_SRCS})
 enable_language(C)
 SET(LIBHLA_HASH_SRCS sha1.c MurmurHash2A.cc)
 LIST(APPEND LIBHLA_EXPORTED_INCLUDES sha1.h)
-set_source_files_properties(sha1.c sha1.h PROPERTIES LANGUAGE "C")
+set_source_files_properties(sha1.c PROPERTIES LANGUAGE "C")
 SOURCE_GROUP("Source Files\\Hash" FILES ${LIBHLA_HASH_SRCS})
 
 # Currently TLSF does not compile as-is on WIN32
