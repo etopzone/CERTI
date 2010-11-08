@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.118 2010/10/02 13:19:43 erk Exp $
+// $Id: RTIambassador.cc,v 3.119 2010/11/08 15:30:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -1919,6 +1919,9 @@ throw (RTI::FederateNotExecutionMember,
 		{
 	M_Query_Lookahead req, rep ;
 
+	// Set Lookahead to a stupid value in the query
+	// in order to avoid uninitiliazed value
+	req.setLookahead(-1.0);
 	privateRefs->executeService(&req, &rep);
 
 	certi_cast<RTIfedTime>()(theTime) = rep.getLookahead();
@@ -3037,4 +3040,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.118 2010/10/02 13:19:43 erk Exp $
+// $Id: RTIambassador.cc,v 3.119 2010/11/08 15:30:41 erk Exp $
