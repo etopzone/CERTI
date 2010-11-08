@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.39 2010/08/10 16:34:10 erk Exp $
+// $Id: RTIA_network.cc,v 3.40 2010/11/08 15:31:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,9 +95,27 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
       case NetworkMessage::DISCOVER_OBJECT:
       {
-          D.Out(pdTrace, "Receving Message from RTIG, "
-                "type NetworkMessage::DISCOVER_OBJECT.");
+    	  NM_Discover_Object* DO = static_cast<NM_Discover_Object*>(msg);
+          D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::DISCOVER_OBJECT.");
           queues->insertFifoMessage(msg);
+          	 /* FIXME
+          	 *
+          	 * discoverObject tries to auto-registrate a discovered object instance,
+          	 * if the object is already discovered through a previous invocation of
+          	 * discoverObject the exception ObjectAlreadyRegistered is raised.
+          	 *
+          	 * This behavior needs further investigation.
+          	 * Is it useful to call registerObjectInstance within a federate service?
+          	 */
+
+          	try {
+          		// Adding discovered object in federate internal object list.
+          		// We MUST update RootObject here
+          		rootObject->registerObjectInstance(fm->federate, DO->getObjectClass(), DO->getObject(),DO->getLabel());
+          	}
+          	catch (ObjectAlreadyRegistered) {
+          	}
+
       }
       break;
 
@@ -131,6 +149,8 @@ NetworkMessage::Type msgType = msg->getMessageType();
              {
              // Retrieve order type
              updateOrder = TIMESTAMP;
+             // FIXME we may inspect rootObject for an unknown object which has
+             // (not yet) been discovered...because DiscoverObject is a RO message
              ObjectClassHandle och = rootObject->objects->getObjectClass(RAV->getObject());
              //std::cerr << "FOUND och = " <<och << "  for object " << RAV->getObject() <<std::endl;
              for (uint32_t i=0; i< RAV->getAttributesSize(); ++i)
@@ -381,4 +401,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.39 2010/08/10 16:34:10 erk Exp $
+// $Id: RTIA_network.cc,v 3.40 2010/11/08 15:31:34 erk Exp $
