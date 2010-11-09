@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.136 2010/10/02 13:20:42 erk Exp $
+// $Id: Federation.cc,v 3.137 2010/11/09 22:24:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2650,7 +2650,7 @@ FederateHandle
 Federation::requestObjectOwner(FederateHandle theFederateHandle,
 		ObjectHandle theObject,
 		const std::vector <AttributeHandle> &theAttributeList,
-		uint16_t theListSize)
+		uint32_t theListSize)
 throw (ObjectNotKnown)
 {
 	FederateHandle theOwnerHandle ;
@@ -2665,7 +2665,7 @@ throw (ObjectNotKnown)
 	mess.setFederate(theFederateHandle);
 	mess.setObject(theObject);
 	mess.setAttributesSize(theListSize) ;
-	for (int i = 0 ; i < theListSize ; i++)
+	for (uint32_t i = 0 ; i < theListSize ; ++i)
 	{
 		mess.setAttributes(theAttributeList[i],i) ;
 	}
@@ -2739,5 +2739,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.136 2010/10/02 13:20:42 erk Exp $
+// $Id: Federation.cc,v 3.137 2010/11/09 22:24:26 erk Exp $
 

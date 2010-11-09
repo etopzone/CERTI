@@ -712,7 +712,7 @@ ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 void
 ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
 		const std::vector <AttributeHandle> &the_attributes,
-		uint16_t attribArraySize,
+		uint32_t attribArraySize,
 		TypeException &)
 {
 	M_Provide_Attribute_Value_Update req;
@@ -720,8 +720,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
 	G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
 	req.setObject(the_object);
 	req.setAttributesSize(attribArraySize);
-
-	for (int i = 0 ; i < attribArraySize ; i++) {
+	for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
 		req.setAttributes(the_attributes[i],i);
 	}
 

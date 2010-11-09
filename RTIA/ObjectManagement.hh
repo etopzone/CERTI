@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.36 2010/10/02 13:20:42 erk Exp $
+// $Id: ObjectManagement.hh,v 3.37 2010/11/09 22:24:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -184,7 +184,7 @@ public:
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
                                       const std::vector <AttributeHandle> &theAttributes,
-                                      uint16_t attribArraySize,
+                                      uint32_t attribArraySize,
                                      TypeException &e);
 
     void retract(EventRetractionHandle theHandle, TypeException &e);
@@ -308,4 +308,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.36 2010/10/02 13:20:42 erk Exp $
+// $Id: ObjectManagement.hh,v 3.37 2010/11/09 22:24:44 erk Exp $

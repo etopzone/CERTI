@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.69 2010/10/02 13:20:42 erk Exp $
+// $Id: Federation.hh,v 3.70 2010/11/09 22:24:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -302,7 +302,7 @@ public:
     FederateHandle requestObjectOwner(FederateHandle theFederateHandle,
                                 ObjectHandle theObject,
                                 const std::vector <AttributeHandle> &theAttributeList,
-                                uint16_t theListSize)
+                                uint32_t theListSize)
         throw (ObjectNotKnown);
 	
 	void requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
@@ -723,4 +723,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.69 2010/10/02 13:20:42 erk Exp $
+// $Id: Federation.hh,v 3.70 2010/11/09 22:24:26 erk Exp $
