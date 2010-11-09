@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.27 2010/08/10 08:45:46 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.28 2010/11/09 22:25:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,7 @@
 #include "M_Classes.hh"
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 namespace {
 static PrettyDebug D("LIBRTI", __FILE__);
@@ -834,11 +835,10 @@ throw (RTI::RTIinternalError)
 	case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 		try {
 			M_Provide_Attribute_Value_Update* PAVU = static_cast<M_Provide_Attribute_Value_Update *>(msg);
-			RTI::AttributeHandleSet *attributeSet =
-					new AttributeHandleSetImp(PAVU->getAttributes());
+			std::auto_ptr<RTI::AttributeHandleSet> attributeSet(
+					new AttributeHandleSetImp(PAVU->getAttributes()));
 
-			fed_amb->provideAttributeValueUpdate(PAVU->getObject(),*attributeSet);
-			delete attributeSet ;
+			fed_amb->provideAttributeValueUpdate(PAVU->getObject(),*attributeSet);			
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("provideAttributeValueUpdate")
 		break ;
@@ -983,4 +983,4 @@ throw (RTI::RTIinternalError)
 	}
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.27 2010/08/10 08:45:46 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.28 2010/11/09 22:25:38 erk Exp $
