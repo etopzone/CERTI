@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.8 2010/02/07 01:00:44 erk Exp $
+// $Id: tokens.ll,v 3.9 2010/11/09 12:43:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"
@@ -47,8 +47,15 @@ std::string arg ;
 OrderType order ;
 TransportType transport ;
 int line_number ;
+std::string federationname_arg;
+std::string federatename_arg;
 std::string timestamp_arg;
-
+std::string spacename_arg;
+std::string dimensionname_arg;
+std::string objectclassname_arg;
+std::string attributename_arg;
+std::string interactionclassname_arg;
+std::string parametername_arg;
 }}
 
 int yyerror(const char *);
@@ -77,7 +84,7 @@ ident   [A-Za-z_][-A-Za-z0-9_\.]*
 	return ORDER ;
 }
 [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp] {
-        certi::fedparser::timestamp_arg = std::string(yytext) ;	
+    certi::fedparser::timestamp_arg = std::string(yytext) ;	
 	certi::fedparser::order = certi::TIMESTAMP ;
 	return TIMESTAMP_TOKEN ;
 }

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.8 2008/10/21 10:55:37 erk Exp $
+// $Id: syntax.yy,v 3.9 2010/11/09 12:43:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -35,7 +35,16 @@ namespace fedparser {
 extern std::string arg ;
 extern const char *fed_filename ;
 extern int line_number ;
+extern std::string federationname_arg;
+extern std::string federatename_arg;
 extern std::string timestamp_arg;
+extern std::string spacename_arg ;
+extern std::string dimensionname_arg;
+extern std::string objectclassname_arg;
+extern std::string attributename_arg;
+extern std::string interactionclassname_arg;
+extern std::string parametername_arg;
+
 }}
 
 int yylex();
@@ -80,7 +89,8 @@ fed:
 	R_PAR ;
 
 federation:
-	FEDERATION STRING { certi::fedparser::addFederation(); }
+	FEDERATION STRING { certi::fedparser::federationname_arg =  certi::fedparser::arg;
+	                    certi::fedparser::addFederation(); }
 	R_PAR ;
 
 fed_version:
@@ -96,7 +106,8 @@ federate_list:
 	| federate_list federate ;
 
 federate:
-	FEDERATE STRING { certi::fedparser::startFederate(); }
+	FEDERATE STRING { certi::fedparser::federatename_arg =  certi::fedparser::arg;
+	                  certi::fedparser::startFederate(); }
 	STRING { certi::fedparser::endFederate(); }
 	R_PAR ;
 
@@ -114,9 +125,15 @@ space_list:
 	| space_list space ;
 
 space:
-	SPACE STRING { certi::fedparser::startSpace(); }
+	SPACE STRING { certi::fedparser::spacename_arg =  certi::fedparser::arg;
+	               certi::fedparser::startSpace(); }
 	opt_dimension_list { certi::fedparser::endSpace(); }
 	R_PAR ;
+
+opt_space_name:
+	STRING { certi::fedparser::spacename_arg =  certi::fedparser::arg;
+	         certi::fedparser::checkSpaceName(); }
+	| ;
 
 opt_dimension_list:
 	dimension_list
@@ -127,7 +144,8 @@ dimension_list:
 	| dimension_list dimension ;
 
 dimension:
-	DIMENSION STRING { certi::fedparser::addDimension(); }
+	DIMENSION STRING { certi::fedparser::dimensionname_arg =  certi::fedparser::arg;
+	                   certi::fedparser::addDimension(); }
 	R_PAR ;
 
 objects:
@@ -144,7 +162,8 @@ object_class_list:
 	| object_class_list object_class ;
 
 object_class:
-	CLASS STRING { certi::fedparser::startObject(); }
+	CLASS STRING { certi::fedparser::objectclassname_arg =  certi::fedparser::arg;
+	               certi::fedparser::startObject(); }
 	object_class_items { certi::fedparser::endObject(); }
 	R_PAR ;
 
@@ -160,23 +179,39 @@ object_class_items:
 attribute_list:
 	attribute
 	| attribute_list attribute ;
-
+	
 attribute:
-	ATTRIBUTE TIMESTAMP_TOKEN TRANSPORT ORDER { certi::fedparser::arg = certi::fedparser::timestamp_arg; 
-	                                            certi::fedparser::addAttribute(); }
+      attribute_named_ts
+    | attribute_prefix attribute_ro
+    | attribute_prefix attribute_ts;
+    
+attribute_named_ts:
+	ATTRIBUTE TIMESTAMP_TOKEN
+	{ certi::fedparser::attributename_arg = certi::fedparser::timestamp_arg;} 
+	TRANSPORT ORDER opt_space_name 	                                            
+	{ certi::fedparser::addAttribute(); }
 	R_PAR ;
 
-attribute:
-	ATTRIBUTE STRING TRANSPORT TIMESTAMP_TOKEN { certi::fedparser::addAttribute(); }
+attribute_prefix:
+	ATTRIBUTE STRING
+	{ certi::fedparser::attributename_arg = certi::fedparser::arg;}
+	TRANSPORT;
+	
+attribute_ts:
+	TIMESTAMP_TOKEN opt_space_name 
+	{ certi::fedparser::addAttribute(); }	
 	R_PAR ;
 
-attribute:
-	ATTRIBUTE STRING TRANSPORT ORDER { certi::fedparser::addAttribute(); }
+attribute_ro:
+    ORDER opt_space_name 
+	{ certi::fedparser::addAttribute(); }
 	R_PAR ;
 
 interactions:
-	INTERACTIONS { certi::fedparser::startInteractions(); }
-	opt_interaction_class_list { certi::fedparser::end(); }
+	INTERACTIONS 
+	{ certi::fedparser::startInteractions(); }
+	opt_interaction_class_list 
+	{ certi::fedparser::end(); }
 	R_PAR ;
 
 opt_interaction_class_list:
@@ -186,15 +221,28 @@ opt_interaction_class_list:
 interaction_class_list:
 	interaction_class
 	| interaction_class_list interaction_class ;
-
+	
 interaction_class:
-	CLASS STRING TRANSPORT TIMESTAMP_TOKEN { certi::fedparser::startInteraction(); }
-	interaction_class_items { certi::fedparser::endInteraction(); }
+    interaction_class_prefix interaction_class_ts
+    | interaction_class_prefix interaction_class_ro;
+
+interaction_class_prefix:
+	CLASS STRING
+	{ certi::fedparser::interactionclassname_arg = certi::fedparser::arg;}
+	TRANSPORT;
+
+interaction_class_ts:	
+	TIMESTAMP_TOKEN opt_space_name 
+	{ certi::fedparser::startInteraction(); }
+	interaction_class_items 
+	{ certi::fedparser::endInteraction(); }
 	R_PAR ;
 
-interaction_class:
-	CLASS STRING TRANSPORT ORDER { certi::fedparser::startInteraction(); }
-	interaction_class_items { certi::fedparser::endInteraction(); }
+interaction_class_ro:
+	ORDER opt_space_name 
+	{ certi::fedparser::startInteraction(); }
+	interaction_class_items 
+	{ certi::fedparser::endInteraction(); }
 	R_PAR ;
 
 interaction_class_items:	
@@ -211,12 +259,15 @@ parameter_list:
 	| parameter_list parameter ;
 
 parameter:
-	PARAMETER TIMESTAMP_TOKEN {certi::fedparser::arg = certi::fedparser::timestamp_arg; 
-	                           certi::fedparser::addParameter(); }
+	PARAMETER TIMESTAMP_TOKEN 
+	{certi::fedparser::parametername_arg = certi::fedparser::timestamp_arg; 
+	 certi::fedparser::addParameter(); }
 	R_PAR ;
 
 parameter:
-	PARAMETER STRING { certi::fedparser::addParameter(); }
+	PARAMETER STRING 
+	{ certi::fedparser::parametername_arg = certi::fedparser::arg;
+	  certi::fedparser::addParameter(); }
 	R_PAR ;
 
 interaction_security_level:

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.7 2009/11/19 18:15:30 erk Exp $
+// $Id: fed.hh,v 3.8 2010/11/09 12:43:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _FED_HH
@@ -54,6 +54,7 @@ void startObject();
 void startObjects();
 void startSpace();
 void startSpaces();
+void checkSpaceName();
 
 void addAttribute();
 void addDimension();
@@ -74,4 +75,4 @@ void endSpace();
 }
 
 #endif // _FED_HH
-// $Id: fed.hh,v 3.7 2009/11/19 18:15:30 erk Exp $
+// $Id: fed.hh,v 3.8 2010/11/09 12:43:30 erk Exp $
