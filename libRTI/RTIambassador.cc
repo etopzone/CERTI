@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.120 2010/11/10 11:41:10 erk Exp $
+// $Id: RTIambassador.cc,v 3.121 2010/11/10 11:51:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -119,7 +119,7 @@ throw (RTI::RTIinternalError)
 
 template<typename T>
 void
-assignAHVToRequest(const std::vector<RTI::AttributeHandle>& AHV, T request) {
+assignAHVToRequest(const std::vector<RTI::AttributeHandle>& AHV, T& request) {
 	request.setAttributesSize(AHV.size());
 	for (uint32_t i=0;i<AHV.size();++i) {
 		request.setAttributes(AHV[i],i);
@@ -128,7 +128,7 @@ assignAHVToRequest(const std::vector<RTI::AttributeHandle>& AHV, T request) {
 
 template<typename T>
 void
-assignAHVPSToRequest(const std::vector<std::pair<RTI::AttributeHandle, AttributeValue_t> >& AHVPSv, T request) {
+assignAHVPSToRequest(const std::vector<std::pair<RTI::AttributeHandle, AttributeValue_t> >& AHVPSv, T& request) {
 
 	uint32_t size = AHVPSv.size();
 	request.setAttributesSize(size);
@@ -143,7 +143,7 @@ assignAHVPSToRequest(const std::vector<std::pair<RTI::AttributeHandle, Attribute
 
 template<typename T>
 void
-assignPHVPSToRequest(const std::vector<std::pair<RTI::ParameterHandle, ParameterValue_t> > &PHVPSv, T request) {
+assignPHVPSToRequest(const std::vector<std::pair<RTI::ParameterHandle, ParameterValue_t> > &PHVPSv, T& request) {
 
 	uint32_t size = PHVPSv.size();
 	request.setParametersSize(size);
@@ -3035,4 +3035,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.120 2010/11/10 11:41:10 erk Exp $
+// $Id: RTIambassador.cc,v 3.121 2010/11/10 11:51:53 erk Exp $
