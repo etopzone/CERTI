@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.7 2010/08/20 14:51:52 erk Exp $
+// $Id: RTIambServices.hh,v 3.8 2010/11/10 11:41:11 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -134,12 +134,29 @@ EventRetractionHandle updateAttributeValues(ObjectHandle, const AttributeHandleV
 	   FederateNotExecutionMember, ConcurrentAccessAttempted, SaveInProgress,
 	   RestoreInProgress, RTIinternalError);
 
-void updateAttributeValues(ObjectHandle, const AttributeHandleValuePairSet &, const char *)
+/**
+ * Realization of the Update Attribute Values (without time) service (HLA 1.3).
+ *  Provide current values to the federation for instance attributes owned by
+ *  the federate.
+ *   @param object     Object instance designator
+ *   @param attributes Set of attribute designator and value pairs
+ *   @param tag        User supplied tag
+ */
+void updateAttributeValues(ObjectHandle object, const AttributeHandleValuePairSet& attributes, const char * tag)
     throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-EventRetractionHandle sendInteraction(InteractionClassHandle, const ParameterHandleValuePairSet &,
-				      const FedTime &, const char *)
+/**
+ * Send Interaction with time
+ * This service (HLA 1.3) send an interaction into the federation.
+ * As the federation time argument is supplied, an event retraction designator is returned.
+ * @param interactionClassHandle Interaction class designator
+ * @param parameters Set of interaction parameters designator and value pairs
+ * @param time Federation time
+ * @param tag User-supplied tag
+ */
+EventRetractionHandle sendInteraction(InteractionClassHandle interactionClassHandle, const ParameterHandleValuePairSet& parameters,
+				      const FedTime& time, const char * tag)
     throw (InteractionClassNotDefined, InteractionClassNotPublished, InteractionParameterNotDefined,
 	   InvalidFederationTime, FederateNotExecutionMember, ConcurrentAccessAttempted, SaveInProgress,
 	   RestoreInProgress, RTIinternalError);
@@ -528,4 +545,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.7 2010/08/20 14:51:52 erk Exp $
+// $Id: RTIambServices.hh,v 3.8 2010/11/10 11:41:11 erk Exp $

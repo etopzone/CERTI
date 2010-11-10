@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.119 2010/11/08 15:30:41 erk Exp $
+// $Id: RTIambassador.cc,v 3.120 2010/11/10 11:41:10 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -1113,10 +1113,13 @@ throw (RTI::ObjectNotKnown,
 	const std::vector<AttributeHandleValuePair_t>& AHVPS = certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs();
 	req.setObject(theObject);
 	req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
-	if ( theTag == NULL) {
-		throw RTI::RTIinternalError ("Calling updateAttributeValues with Tag NULL");
+	/*
+	 * Tolerate NULL tag (DMSO RTI-NG behavior)
+	 * by not transmitting the tag in the CERTI message.
+	 */
+	if ( theTag != NULL) {
+		req.setTag(theTag);
 	}
-	req.setTag(theTag);
 	req.setAttributesSize(AHVPS.size());
 	req.setValuesSize(AHVPS.size());
 	for (uint32_t i=0;i<AHVPS.size();++i) {
@@ -1132,15 +1135,6 @@ throw (RTI::ObjectNotKnown,
 		}
 
 // ----------------------------------------------------------------------------
-// Update Attribute Values without time
-/** Realization of the Create Federation Execution federation management service
-    without time (HLA 1.3).
-    Provide current values to the federation for instance attributes owned by
-    the federate.
-    @param theObject     Object instance designator
-    @param theAttributes Set of attribute designator and value pairs
-    @param theTag        User supplied tag
- */
 void
 RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 		const AttributeHandleValuePairSet& theAttributes,
@@ -1154,11 +1148,13 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	const std::vector<AttributeHandleValuePair_t>& AHVPS = certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs();
 
 	req.setObject(the_object);
-	if ( theTag == NULL)
-	{
-		throw RTI::RTIinternalError ("Calling updateAttributeValues with Tag NULL");
+	/*
+	 * Tolerate NULL tag (DMSO RTI-NG behavior)
+	 * by not transmitting the tag in the CERTI message.
+	 */
+	if ( theTag != NULL) {
+		req.setTag(theTag);
 	}
-	req.setTag(theTag);
 	req.setAttributesSize(AHVPS.size());
 	req.setValuesSize(AHVPS.size());
 	for (uint32_t i=0;i<AHVPS.size();++i) {
@@ -1170,14 +1166,6 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 		}
 
 // ----------------------------------------------------------------------------
-/** Send Interaction with time
-    This service (HLA 1.3) send an interaction into the federation.
-    As the federation time argument is supplied, an event retraction designator is returned.
-    @param theInteraction Interaction class designator
-    @param theParameters Set of interaction parameters designator and value pairs
-    @param theTime Federation time
-    @param theTag User-supplied tag
- */
 RTI::EventRetractionHandle
 RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 		const ParameterHandleValuePairSet& theParameters,
@@ -1197,10 +1185,14 @@ throw (RTI::InteractionClassNotDefined,
 	RTI::EventRetractionHandle    eventRetraction;
 	req.setInteractionClass(theInteraction);
 	req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
-	if (theTag == NULL) {
-		throw RTI::RTIinternalError ("Calling sendInteraction with Tag NULL") ;
+	/*
+	 * Tolerate NULL tag (DMSO RTI-NG behavior)
+	 * by not transmitting the tag in the CERTI message.
+	 */
+	if ( theTag != NULL) {
+		req.setTag(theTag);
 	}
-	req.setTag(std::string(theTag));
+
 	assignPHVPSToRequest(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs(),req);
 	req.setRegion(0);
 
@@ -1233,15 +1225,18 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	M_Send_Interaction req, rep ;
 
 	req.setInteractionClass(theInteraction);
-	if (theTag == NULL)
-	{
-		throw RTI::RTIinternalError ("Calling sendIntercation with Tag NULL") ;
+	/*
+	 * Tolerate NULL tag (DMSO RTI-NG behavior)
+	 * by not transmitting the tag in the CERTI message.
+	 */
+	if ( theTag != NULL) {
+		req.setTag(theTag);
 	}
-	req.setTag(std::string(theTag));
+
 	assignPHVPSToRequest(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs(),req);
 	req.setRegion(0);
 	privateRefs->executeService(&req, &rep);
-		}
+}
 
 // ----------------------------------------------------------------------------
 /** Delete Object with time
@@ -3040,4 +3035,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.119 2010/11/08 15:30:41 erk Exp $
+// $Id: RTIambassador.cc,v 3.120 2010/11/10 11:41:10 erk Exp $
