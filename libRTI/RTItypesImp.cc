@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.7 2010/03/07 19:07:25 erk Exp $
+// $Id: RTItypesImp.cc,v 3.8 2010/11/10 08:18:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -184,7 +184,7 @@ AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<RTI::AttributeHan
 
 AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<certi::AttributeHandle> &val)
 {
-   _set.reserve(val.size());
+   _set.resize(val.size());
    std::copy(val.begin(), val.end(), _set.begin());
 }
 
@@ -565,4 +565,4 @@ void RegionImp::commit()
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.7 2010/03/07 19:07:25 erk Exp $
+// $Id: RTItypesImp.cc,v 3.8 2010/11/10 08:18:47 erk Exp $
