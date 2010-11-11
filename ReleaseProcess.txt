@@ -75,7 +75,7 @@ CERTI releases should be done with the following steps:
 9) Tests your packages or ask for help to test them
    on certi-devel
    Fix packaging trouble if any and move the previous tag 
-   if any commit occured.
+   if any commit occurred.
 
 10) Digitally sign the packages you made and put them
     in the download area:
