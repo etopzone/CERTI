@@ -50,7 +50,8 @@ if(WIN32)
 
     # Compilers
 	# taken from http://predef.sourceforge.net/precomp.html#sec34
-	IF (MSVC)
+     if (MSVC)
+       set(SPECIFIC_COMPILER_NAME "MSVC-Unknown-${MSVC_VERSION}")
        if(MSVC_VERSION EQUAL 1200)
 	     set(SPECIFIC_COMPILER_NAME "MSVC-6.0")
        endif(MSVC_VERSION EQUAL 1200)
@@ -66,7 +67,10 @@ if(WIN32)
        if(MSVC_VERSION EQUAL 1500)
 	     set(SPECIFIC_COMPILER_NAME "MSVC-9.0-2008") #Visual Studio 2008
        endif(MSVC_VERSION EQUAL 1500)
-	endif(MSVC)
+       if(MSVC_VERSION EQUAL 1600)
+	     set(SPECIFIC_COMPILER_NAME "MSVC-10.0-2010") #Visual Studio 2010
+       endif(MSVC_VERSION EQUAL 1600)
+     endif(MSVC)
 	IF (MINGW)
 	   set(SPECIFIC_COMPILER_NAME "MinGW")
 	endif(MINGW)
