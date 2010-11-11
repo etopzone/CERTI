@@ -1,0 +1,11 @@
+if (@MSVC@)
+  # FIXME We have to find way to evaluate CMAKE_CFG_INTDIR at cpack time
+  # or generate this current file at build time
+  # message("CMAKE_CFG_INTDIR=${CMAKE_CFG_INTDIR}")
+  set(PACKAGE_TYPE "NotSet")
+  include(@CERTI_BINARY_DIR@/PackageType.cmake OPTIONAL)
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${PACKAGE_TYPE}-${CPACK_SYSTEM_NAME}")
+else(@MSVC@)
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-@CMAKE_BUILD_TYPE@-${CPACK_SYSTEM_NAME}")
+endif(@MSVC@)
+

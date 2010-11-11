@@ -1,0 +1,6 @@
+
+if(@MSVC@)
+   get_filename_component(PACKAGE_TYPE "@CMAKE_CFG_INTDIR@" NAME)
+else(@MSVC@)
+   set(PACKAGE_TYPE "@CMAKE_BUILD_TYPE@")
+endif(@MSVC@)
