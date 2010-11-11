@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.33 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.34 2010/11/11 12:02:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketTCP.hh"
@@ -29,6 +29,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 using std::cout ;
 using std::endl ;
@@ -577,4 +580,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.33 2010/03/14 14:38:27 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.34 2010/11/11 12:02:05 erk Exp $
