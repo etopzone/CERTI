@@ -381,8 +381,15 @@ IF (WIN32)
               COMMAND ${CPACK_COMMAND} -G ZIP --config CPackSourceConfig.cmake
               COMMENTS "Build a ZIP file containing the source")
 
-    # NSIS installer specific part
+    # If this is a debug build
+    # we should include debug runtime libs too
+    IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        SET(CMAKE_INSTALL_DEBUG_LIBRARIES "Yes")
+    ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Install Runtime Libraries
     INCLUDE(InstallRequiredSystemLibraries)
+    
+    # NSIS installer specific part
     SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
     SET(CPACK_NSIS_CREATE_ICONS "
 	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\RTIG.lnk\\\" \\\"$INSTDIR\\\\bin\\\\RTIG.exe\\\"
