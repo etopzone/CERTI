@@ -1,9 +1,14 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.8 2010/11/10 11:41:11 erk Exp $
+// $Id: RTIambServices.hh,v 3.9 2010/11/11 11:05:03 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
-// Federation Management -------------------
+
+/**
+ * @defgroup HLA13_FederationManagement Federation Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
 
 void createFederationExecution(const char *executionName, const char *FEDid)
     throw (FederationExecutionAlreadyExists, CouldNotOpenFED, ErrorReadingFED,
@@ -81,7 +86,13 @@ void federateRestoreNotComplete()
     throw (RestoreNotRequested, FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RTIinternalError);
 
-// Declaration Management -------------------
+/** @} end group HLA13_FederationManagement */
+
+/**
+ * @defgroup HLA13_DeclarationManagement Declaration Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
 
 void publishObjectClass(ObjectClassHandle, const AttributeHandleSet &)
     throw (ObjectClassNotDefined, AttributeNotDefined, OwnershipAcquisitionPending,
@@ -117,7 +128,14 @@ void unsubscribeInteractionClass(InteractionClassHandle)
     throw (InteractionClassNotDefined, InteractionClassNotSubscribed, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-// Object Management -------------------
+/** @} end group HLA13_DeclarationManagement */
+
+/**
+ * @defgroup HLA13_ObjectManagement Object Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
+
 
 ObjectHandle registerObjectInstance(ObjectClassHandle, const char *)
     throw (ObjectClassNotDefined, ObjectClassNotPublished, ObjectAlreadyRegistered,
@@ -196,7 +214,13 @@ void requestClassAttributeValueUpdate(ObjectClassHandle, const AttributeHandleSe
     throw (ObjectClassNotDefined, AttributeNotDefined, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-// Ownership Management -------------------
+/** @} end group HLA13_ObjectManagement */
+
+/**
+ * @defgroup HLA13_OwnershipManagement Ownership Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
 
 void unconditionalAttributeOwnershipDivestiture(ObjectHandle, const AttributeHandleSet &)
     throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned, FederateNotExecutionMember,
@@ -240,7 +264,14 @@ Boolean isAttributeOwnedByFederate(ObjectHandle, AttributeHandle)
     throw (ObjectNotKnown, AttributeNotDefined, FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
-// Time Management -------------------
+/** @} end group HLA13_OwnershipManagement */
+
+/**
+ * @defgroup HLA13_TimeManagement Time Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
+
 
 void enableTimeRegulation(const FedTime &, const FedTime &)
     throw (TimeRegulationAlreadyEnabled, EnableTimeRegulationPending, TimeAdvanceAlreadyInProgress,
@@ -327,7 +358,14 @@ void changeInteractionOrderType(InteractionClassHandle, OrderingHandle)
 	   FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
-// Data Distribution Management -------------------
+/** @} end group HLA13_TimeManagement */
+
+/**
+ * @defgroup HLA13_DataDistributionManagement Data Distribution Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
+
 
 Region *createRegion(SpaceHandle, ULong)
     throw (SpaceNotDefined, InvalidExtents, FederateNotExecutionMember, ConcurrentAccessAttempted,
@@ -397,7 +435,13 @@ void requestClassAttributeValueUpdateWithRegion(ObjectClassHandle, const Attribu
     throw (ObjectClassNotDefined, AttributeNotDefined, RegionNotKnown, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-// Support Services -------------------
+/** @} end group HLA13_DataDistributionManagement */
+
+/**
+ * @defgroup HLA13_SupportService Support Service
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
 
 ObjectClassHandle getObjectClassHandle(const char *)
     throw (NameNotFound, FederateNotExecutionMember, ConcurrentAccessAttempted, RTIinternalError);
@@ -469,34 +513,180 @@ OrderingHandle getOrderingHandle(const char *)
 char *getOrderingName(OrderingHandle)
     throw (InvalidOrderingHandle, FederateNotExecutionMember, ConcurrentAccessAttempted, RTIinternalError);
 
+/**
+ * Sets the ClassRelevanceAdvisory (CRA) switch to true. The switch
+ * state is hold on the RTIG side. That's why the message
+ * ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the CRA switch is true. This causes a delivery of the
+ * federate service startRegistrationForObjectClass to a publisher
+ * if there are any new subscribers for the federates published object
+ * classes. If there are no more subscribers a publisher gets the
+ * federate service stopRegistrationForObjectClass.
+ *
+ * By disabling the CRA switch the federate is no longer informed by
+ * subscriptions to its published object classes, i.e. the federate
+ * services startRegistrationForObjectClass and
+ * stopRegistrationForObjectClass respectively are not invoked.
+ * @see disableClassRelevanceAdvisorySwitch()
+ */
 void enableClassRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the ClassRelevanceAdvisory (CRA) switch to false. The switch
+ * state is hold on the RTIG side. That's why the message
+ * DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the CRA switch is true. This causes a delivery of the
+ * federate service startRegistrationForObjectClass to a publisher
+ * if there are any new subscribers for the federates published object
+ * classes. If there are no more subscribers a publisher gets the
+ * federate service stopRegistrationForObjectClass.
+ * @see enableClassRelevanceAdvisorySwitch()
+ *
+ * By disabling the CRA switch the federate is no longer informed by
+ * subscriptions to its published object classes, i.e. the federate
+ * services startRegistrationForObjectClass and
+ * stopRegistrationForObjectClass respectively are not invoked.
+ */
 void disableClassRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the AttributeRelevanceAdvisory (ARA) switch to true. The switch
+ * state is hold on the RTIG side. That's why the message
+ * ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ARA switch is false. When enabling the ARA switch
+ * the federate is informed by the federate service
+ * turnUpdatesOnForObjectInstance of new object instances within remote
+ * federates actively subscribed to its published attributes. If there
+ * are no active subscribers for a set of instance-attributes the federate
+ * receives the federate service turnUpdatesOffForObjectInstance.
+ *
+ * By disabling the ARA switch the federate is no longer informed by
+ * subscriptions to its published attributes, i.e. the federate
+ * services turnUpdatesOnForObjectInstance and
+ * turnUpdatesOffForObjectInstance respectively are not invoked.
+ * @see disableAttributeRelevanceAdvisorySwitch()
+ */
 void enableAttributeRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the AttributeRelevanceAdvisory (ARA) switch to false. The switch
+ * state is hold on the RTIG side. That's why the message
+ * DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ARA switch is false. When enabling the ARA switch
+ * the federate is informed by the federate service
+ * turnUpdatesOnForObjectInstance of new object instances within remote
+ * federates actively subscribed to its published attributes. If there
+ * are no active subscribers for a set of instance-attributes the federate
+ * receives the federate service turnUpdatesOffForObjectInstance.
+ * @see enableAttributeRelevanceAdvisorySwitch()
+ *
+ * By disabling the ARA switch the federate is no longer informed by
+ * subscriptions to its published attributes, i.e. the federate
+ * services turnUpdatesOnForObjectInstance and
+ * turnUpdatesOffForObjectInstance respectively are not invoked.
+ */
 void disableAttributeRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the AttributeScopeAdvisory (ASA) switch to true. The switch state
+ * is hold on the RTIG side. That's why the message
+ * ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ASA switch is false. When enabling the ASA switch
+ * the federate is informed by the federate services
+ * attributesInScope and attributesOutScope respectively of discovered
+ * or registrated but not owned attribute-instances intersecting or
+ * leaving its subscription regions.
+ *
+ * By disabling the ASA switch the federate is no longer informed of
+ * changes in attribute-instance scope, i.e. the federate
+ * services attributesInScope and attributesOutScope respectively are
+ * not invoked.
+ * @see disableAttributeScopeAdvisorySwitch()
+ */
 void enableAttributeScopeAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the AttributeScopeAdvisory (ASA) switch to false. The switch state
+ * is hold on the RTIG side. That's why the message
+ * DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ASA switch is false. When enabling the ASA switch
+ * the federate is informed by the federate services
+ * attributesInScope and attributesOutScope respectively of discovered
+ * or registrated but not owned attribute-instances intersecting or
+ * leaving its subscription regions.
+ * @see enableAttributeScopeAdvisorySwitch()
+ *
+ * By disabling the ASA switch the federate is no longer informed of
+ * changes in attribute-instance scope, i.e. the federate
+ * services attributesInScope and attributesOutScope respectively are
+ * not invoked.
+ */
 void disableAttributeScopeAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the InteractionRelevanceAdvisory (IRA) switch to true. The switch
+ * state is hold on the RTIG side. That's why the message
+ * ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the IRA switch is true. This causes a delivery of the
+ * federate service turnInteractionsOn to a publisher if there are
+ * any new subscribers for the federates published interaction
+ * classes. If there are no more subscribers a publisher gets the
+ * federate service turnInteractionsOff().
+ *
+ * By disabling the IRA switch the federate is no longer informed by
+ * subscriptions to its published interaction classes, i.e. the federate
+ * services turnInteractionsOn and turnInteractionsOff respectively are
+ * not invoked.
+ * @see disableInteractionRelevanceAdvisorySwitch()
+ */
 void enableInteractionRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Sets the InteractionRelevanceAdvisory (IRA) switch to false. The switch
+ * state is hold on the RTIG side. That's why the message
+ * DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the IRA switch is true. This causes a delivery of the
+ * federate service turnInteractionsOn to a publisher if there are
+ * any new subscribers for the federates published interaction
+ * classes. If there are no more subscribers a publisher gets the
+ * federate service turnInteractionsOff().
+ * @see enableInteractionRelevanceAdvisorySwitch()
+ *
+ * By disabling the IRA switch the federate is no longer informed by
+ * subscriptions to its published interaction classes, i.e. the federate
+ * services turnInteractionsOn and turnInteractionsOff respectively are
+ * not invoked.
+ */
 void disableInteractionRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
@@ -513,7 +703,15 @@ Boolean __tick_kernel(Boolean, TickTime, TickTime)
 Boolean tick(TickTime, TickTime)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
+/** @} end group HLA13_SupportService */
+
 #ifdef CERTI_REALTIME_EXTENSIONS
+/**
+ * @defgroup CERTI_RealtimeManagement Real-time Management
+ * @ingroup  HLA13_RTI_Ambassador
+ * @{
+ */
+
 /** 
  * Set Priority for RTIA Process (CERTI Real-time extension).
  * @param priority the priority needed for RTIA process (from 0 to 99 on linux system)
@@ -531,6 +729,8 @@ void setPriorityforRTIAProcess(int priority, unsigned int schedPolicy)
  */
 void setAffinityforRTIAProcess(cpu_set_t mask)
     throw(RTIinternalError) ;
+
+/** @} end group CERTI_RealtimeManagement */
 #endif
 
 RTIambassador()
@@ -545,4 +745,6 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.8 2010/11/10 11:41:11 erk Exp $
+
+
+// $Id: RTIambServices.hh,v 3.9 2010/11/11 11:05:03 erk Exp $
