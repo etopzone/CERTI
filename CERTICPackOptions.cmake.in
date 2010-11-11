@@ -1,3 +1,5 @@
+# Only mangle package name if binary package
+if (@CPACK_GENERATOR@)
 if (@MSVC@)
   # FIXME We have to find way to evaluate CMAKE_CFG_INTDIR at cpack time
   # or generate this current file at build time
@@ -8,4 +10,4 @@ if (@MSVC@)
 else(@MSVC@)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-@CMAKE_BUILD_TYPE@-${CPACK_SYSTEM_NAME}")
 endif(@MSVC@)
-
+endif(@CPACK_GENERATOR@)
