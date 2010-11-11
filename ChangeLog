@@ -1,4 +1,1679 @@
-2009-10-21 12:57  tag CERTI-3_3_3
+2010-11-11 18:22  tag CERTI-3_4_0
+
+2010-11-11 18:22  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.7, CERTI-3_4_0): Add
+	  MSVC 2010 version
+
+2010-11-11 18:13  erk
+
+	* CERTICPackOptions.cmake.in (1.1), CMakeLists.txt (1.91),
+	  scripts/GeneratePackageType.cmake (1.1),
+	  scripts/PackageType.cmake.in (1.1) (utags: CERTI-3_4_0): Add some
+	  CMake script in order to ease the build of different package
+	  types.
+
+2010-11-11 16:41  erk
+
+	* CMakeLists.txt (1.90): Try to handling generated package name in
+	  a better way	 - with makefile generator we can know
+	  Debug/Release     at configure time	- whereas with Visual
+	  Studio (or any multi-config IDE) we can't
+
+2010-11-11 13:42  erk
+
+	* CMakeLists.txt (1.89): Prepare 3.4.0 release
+
+2010-11-11 13:42  erk
+
+	* ReleaseProcess.txt (1.8, CERTI-3_4_0): Fix some remaining "tsp"
+	  references
+
+2010-11-11 13:33  erk
+
+	* CMakeLists.txt (1.88): Fix bug #25465 : windows debug dlls
+	  required
+
+2010-11-11 13:07  erk
+
+	* AUTHORS (3.13, CERTI-3_4_0): Add Michael Raab as contributor
+
+2010-11-11 13:02  erk
+
+	* libCERTI/SocketTCP.cc (3.34, CERTI-3_4_0): Try a fix for AIX 5.2
+	  compile
+
+2010-11-11 12:05  erk
+
+	* include/RTIambServices.hh (3.9), libRTI/RTIambassador.cc (3.122)
+	  (utags: CERTI-3_4_0): Begin Standard API doc improvement
+
+2010-11-10 12:51  erk
+
+	* libRTI/RTIambassador.cc (3.121): the assignXXXXToRequest template
+	  should definitely use reference and not plain value.	Fix from
+	  Michael Raab.
+
+2010-11-10 12:41  erk
+
+	* libRTI/RTIambassador.cc (3.120), include/RTIambServices.hh (3.8):
+	  Tolerate NULL user supplied tag for UAV and SI this way we shuold
+	  support the legacy behavior of RTI-NG.
+
+2010-11-10 09:18  erk
+
+	* libRTI/RTItypesImp.cc (3.8, CERTI-3_4_0): Fix bug trying to copy
+	  to unallocated set.  reserve does not allocate memory, resize
+	  does.
+
+2010-11-09 23:25  erk
+
+	* libRTI/RTIambPrivateRefs.cc (3.28, CERTI-3_4_0): auto_ptr should
+	  be better than explicit delete.
+
+2010-11-09 23:24  erk
+
+	* RTIG/Federation.cc (3.137), RTIG/Federation.hh (3.70),
+	  RTIA/ObjectManagement.cc (3.73), RTIA/ObjectManagement.hh (3.37)
+	  (utags: CERTI-3_4_0): Fix some wrong int size.
+
+2010-11-09 13:43  erk
+
+	* libCERTI/: fed.cc (3.23), fed.hh (3.8), tokens.ll (3.9),
+	  syntax.yy (3.9) (utags: CERTI-3_4_0): Update fed parser in order
+	  to parse LevelOne.fed file without error.  Parsing is now OK but
+	  RoutingSpace needs some more semantic handling.  shoud fix bug
+	  #28832 : CERTI's FED file parser not fully HLA 1.3 compliant
+
+2010-11-08 16:31  erk
+
+	* RTIA/: ObjectManagement.cc (3.72), RTIA_network.cc (3.40,
+	  CERTI-3_4_0): Try a fix for bug #31551 : Error during
+	  multi-federate startup which seems the same as issue reported by
+	  Michael Raab.
+
+2010-11-08 16:30  erk
+
+	* libRTI/RTIambassador.cc (3.119): Initialized Lookahead to a dummy
+	  value in the request in order to avoid serialization trouble
+
+2010-11-08 14:04  erk
+
+	* CMakeLists.txt (1.87): More ignore file for source package
+
+2010-11-03 23:17  erk
+
+	* libHLA/CMakeLists.txt (1.13, CERTI-3_4_0): Fix CMake VS2010
+	  generator bug Should not tag a header as "C source file".
+
+2010-11-02 19:23  erk
+
+	* libRTI/CMakeLists.txt (1.19, CERTI-3_4_0): Relative path seems to
+	  bother Visual Studio 2010 generator
+
+2010-10-02 15:20  erk
+
+	* RTIG/RTIG.hh (3.37, CERTI-3_4_0), RTIG/RTIG.cc (3.67,
+	  CERTI-3_4_0), RTIG/FederationsList.cc (3.73, CERTI-3_4_0),
+	  RTIG/RTIG_processing.cc (3.109, CERTI-3_4_0),
+	  RTIA/ObjectManagement.cc (3.71), RTIA/ObjectManagement.hh (3.36),
+	  RTIA/RTIA_federate.cc (3.111, CERTI-3_4_0), RTIG/Federation.cc
+	  (3.136), RTIG/Federation.hh (3.69), RTIG/FederationsList.hh
+	  (3.57, CERTI-3_4_0), libCERTI/ObjectClass.hh (3.55, CERTI-3_4_0):
+	  Merge patch from Michael RAAB.  This is the implementation of:
+	  task #8387, requestClassAttributeValueUpdate
+
+2010-10-02 15:19  erk
+
+	* libRTI/RTIambassador.cc (3.118): Protect CERTI_REALTIME extension
+	  for the Windows case.
+
+2010-08-20 17:15  erk
+
+	* libCERTI/ObjectClass.cc (3.83, CERTI-3_4_0): Fix bug #30825 :
+	  Simple subscriber get invalid object class handle
+
+2010-08-20 16:51  erk
+
+	* libRTI/RTIambassador.cc (3.117), CMakeLists.txt (1.86),
+	  include/RTIambServices.hh (3.7): Merge a modified version of
+	  patch task #10454 : Real Time modifications for CERTI
+
+	  This is optionally compiled depending on CMake OPTION
+	  CERTI_REALTIME_EXTENSIONS (default = OFF)
+
+2010-08-20 14:45  jbchaudron
+
+	* doc/NullMessageProtocol.xml (1.6, CERTI-3_4_0):
+	  Update for FederationLiveLocked State For Observer Template
+
+2010-08-19 12:50  erk
+
+	* libCERTI/LBTS.hh (3.13, CERTI-3_4_0), RTIA/TimeManagement.cc
+	  (3.67, CERTI-3_4_0), RTIA/TimeManagement.hh (3.26, CERTI-3_4_0),
+	  RTIG/Federation.cc (3.135), libCERTI/LBTS.cc (3.20, CERTI-3_4_0):
+	  Update of the NULL PRIME message protocol hopefully this last
+	  makes this new time advance protocol robust.	Ready for testing.
+
+2010-08-18 17:33  erk
+
+	* RTIG/Federation.cc (3.134), RTIG/Federation.hh (3.68),
+	  libCERTI/LBTS.hh (3.12): Update of the NULL PRIME message
+	  protocol Should be in better shape now (need testing...)
+
+2010-08-17 16:57  jbchaudron
+
+	* doc/NullMessageProtocol.xml (1.5):
+	  Updating the Live Lock detection by reducing the number of
+	  synchronization needed between each federate templates
+
+2010-08-17 15:59  jbchaudron
+
+	* doc/NullMessageProtocol.xml (1.4):
+	  Adding Live Lock Detection example: federation with zero
+	  lookahead paradigm
+
+2010-08-17 09:59  erk
+
+	* RTIA/TimeManagement.cc (3.66): NERA (or NMRA) just as TARA should
+	  authorize to go up to the LBTS, LBTS INCLUDED on the contrary NER
+	  just as TAR should authorize to go up to the LBTS, LBTS EXCLUDED.
+
+	  see §8.x.z of HLA 1.3 or IEEE-1516 documents
+
+2010-08-17 08:47  erk
+
+	* CMakeLists.txt (1.85), RTIA/TimeManagement.cc (3.65): Make the
+	  NULL PRIME message use optionnal (need formal validation)
+
+2010-08-16 17:26  erk
+
+	* RTIA/TimeManagement.cc (3.64): Stupid bug fixed.  NER (zero lk
+	  case) was doing a test (==) instead of assignment (=) !!!
+
+2010-08-16 10:48  jbchaudron
+
+	* doc/NullMessageProtocol.xml (1.3):
+	  First UPPAAL model working for Null Messages Algorithm
+
+2010-08-16 08:17  erk
+
+	* doc/CERTI-tickHandling.xml (1.1, CERTI-3_4_0): Beginning
+	  (unfinished) UPPAAL model for investigating tick handling
+
+2010-08-14 14:59  erk
+
+	* doc/NullMessageProtocol.xml (1.2): Modifs de JBC du 13/08/2010
+
+2010-08-12 18:25  erk
+
+	* doc/NullMessageProtocol.xml (1.1): Uppaal Model of NULL Message
+	  protocol
+
+2010-08-11 18:45  erk
+
+	* RTIA/FederationManagement.cc (3.87, CERTI-3_4_0), RTIA/RTIA.cc
+	  (3.34, CERTI-3_4_0), RTIA/RTIA_federate.cc (3.110),
+	  RTIA/TimeManagement.cc (3.63), RTIA/TimeManagement.hh (3.25),
+	  RTIG/Federation.cc (3.133), RTIG/RTIG_processing.cc (3.108),
+	  libCERTI/LBTS.cc (3.19), libCERTI/LBTS.hh (3.11),
+	  libCERTI/NetworkMessage.cc (3.51, CERTI-3_4_0): Third set of
+	  modifications for the NULL PRIME idea.  (to be continued -
+	  unfinished) Should be close to OK no, but we need to modify
+	  lookahead as in the zero-lookahead case by Fujimoto modification
+	  of CMB
+
+2010-08-10 18:34  erk
+
+	* RTIG/Federate.hh (3.18, CERTI-3_4_0), RTIG/Federation.cc (3.132),
+	  RTIG/Federation.hh (3.67), RTIG/FederationsList.cc (3.72),
+	  RTIG/FederationsList.hh (3.56), RTIG/RTIG.cc (3.66), RTIG/RTIG.hh
+	  (3.36), RTIG/RTIG_processing.cc (3.107), libCERTI/LBTS.cc (3.18),
+	  libCERTI/NetworkMessage.cc (3.50), RTIA/RTIA_network.cc (3.39),
+	  RTIA/TimeManagement.cc (3.62), include/certi.hh (3.50,
+	  CERTI-3_4_0): Second set of modifications for the NULL PRIME
+	  idea.  (to be continued - unfinished)
+
+2010-08-10 10:45  erk
+
+	* RTIG/Federation.cc (3.131), RTIG/RTIG_processing.cc (3.106),
+	  libRTI/RTIambPrivateRefs.cc (3.27): Fix of bug 30349: RTIA
+	  (RTIA_network.cc) does not handle some message
+	  (NM_Register_Federation_Synchronization_Point) sent by RTIG.
+
+	  the first try was incomplete, this one should be better
+
+2010-08-09 20:24  erk
+
+	* CMakeLists.txt (1.84), RTIA/TimeManagement.cc (3.61),
+	  RTIA/TimeManagement.hh (3.24), RTIG/Federate.cc (3.19,
+	  CERTI-3_4_0), RTIG/Federate.hh (3.17), RTIG/Federation.cc
+	  (3.130), RTIG/RTIG.cc (3.65), RTIG/RTIG.hh (3.35),
+	  RTIG/RTIG_processing.cc (3.105), libCERTI/M_Classes.cc (3.14,
+	  CERTI-3_4_0), libCERTI/M_Classes.hh (3.14, CERTI-3_4_0),
+	  libCERTI/NM_Classes.cc (3.29, CERTI-3_4_0),
+	  libCERTI/NM_Classes.hh (3.23, CERTI-3_4_0),
+	  libCERTI/NetworkMessage.hh (3.66, CERTI-3_4_0),
+	  scripts/CERTI_NetworkMessage.msg (1.22, CERTI-3_4_0): Beginning
+	  of work for the NULL PRIME idea from Pierre [SIRON] (to be
+	  continued)
+
+2010-08-09 16:51  erk
+
+	* RTIA/RTIA_network.cc (3.38), RTIA/Statistics.cc (3.24,
+	  CERTI-3_4_0), RTIA/TimeManagement.cc (3.60),
+	  RTIG/RTIG_processing.cc (3.104), libCERTI/M_Classes.cc (3.13),
+	  libCERTI/M_Classes.hh (3.13), libCERTI/NM_Classes.cc (3.28),
+	  libCERTI/NM_Classes.hh (3.22), libCERTI/NetworkMessage.hh (3.65),
+	  scripts/CERTI_NetworkMessage.msg (1.21): Fix bug #30349: RTIA
+	  (RTIA_network.cc) does not handle some message
+	  (NM_Register_Federation_Synchronization_Point) sent by RTIG.
+
+2010-08-09 09:05  erk
+
+	* RTIA/DataDistribution.cc (3.37, CERTI-3_4_0): fix bug #30712 :
+	  [un]subscribeInteraction with region send incomplete message
+
+2010-07-22 09:12  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.6): Add
+	  SPECIFIC_SYSTEM_PREFERED_CPACK_GENERATOR
+
+2010-07-11 17:16  erk
+
+	* CMakeLists.txt (1.83): Add license to RPM header.  Build
+	  relocatable package if possible (and if CPackRPM supports it)
+
+2010-07-05 19:46  erk
+
+	* libHLA/SemaphorePosix.cc (1.3, CERTI-3_4_0): Blind fix try for
+	  Solaris compile error. (part 2) Added _POSIX_C_SOURCE definition.
+
+2010-07-05 19:45  erk
+
+	* libHLA/: SHMPosix.cc (1.2, CERTI-3_4_0), SHMSysV.hh (1.2,
+	  CERTI-3_4_0), SemaphorePosix.cc (1.2), SemaphorePosix.hh (1.2,
+	  CERTI-3_4_0): Blind fix try for Solaris compile error.  Added
+	  _POSIX_C_SOURCE definition.
+
+2010-06-24 16:07  erk
+
+	* scripts/: GenerateMessages.py (1.42), CMakeLists.txt (1.2),
+	  GenMsgAST.py (1.17) (utags: CERTI-3_4_0): Update for epydoc
+	  generation
+
+2010-06-24 15:19  erk
+
+	* CMakeLists.txt (1.82), myCERTI_env.csh.in (3.5),
+	  myCERTI_env.sh.in (1.7), scripts/CMakeLists.txt (1.1),
+	  scripts/myCERTI_env.csh.in (1.1, CERTI-3_4_0),
+	  scripts/myCERTI_env.sh.in (1.1, CERTI-3_4_0): - Move all scripts
+	  in scripts subdir, modify main CMakeLists.txt accordingly and
+	  create a new scripts/CMakeLists.txt
+
+	  - Add some optional CMake target for	   * regenerating CERTI
+	  [Network] Message from spec	  * generating Message Generator
+	  doc with epydoc
+
+2010-06-18 17:25  erk
+
+	* scripts/GenMsgAST.py (1.16): Merge from Lucas ALBA work  -
+	  enhance embedded python documentation using epydoc (patch 2)
+	  Last merge was buggy...
+
+2010-06-18 16:28  erk
+
+	* scripts/GenMsgAST.py (1.15): Merge from Lucas ALBA work  -
+	  enhance embedded python documentation using epydoc (patch 2)
+
+2010-06-18 15:34  erk
+
+	* scripts/: GenMsgAST.py (1.14), GenMsgCXX.py (1.20, CERTI-3_4_0),
+	  GenerateMessages.py (1.41): Merge from Lucas ALBA work  - enhance
+	  embedded python documention using epydoc
+
+2010-06-11 14:43  erk
+
+	* scripts/: GenMsgAST.py (1.13), GenMsgBase.py (1.6, CERTI-3_4_0),
+	  GenMsgCXX.py (1.19), GenMsgJava.py (1.4, CERTI-3_4_0),
+	  GenMsgPython.py (1.3, CERTI-3_4_0), GenerateMessages.py (1.40):
+	  Merge from Lucas ALBA work  - tidy up python sources with
+	  PythonTidy	http://pypi.python.org/pypi/PythonTidy/
+
+2010-06-11 09:47  erk
+
+	* scripts/: GenMsgAST.py (1.12), GenMsgCXX.py (1.18): Merge from
+	  Lucas ALBA work  - fix enum generation
+
+	  Fix getMessageRootType
+
+2010-06-10 10:31  erk
+
+	* libCERTI/NM_Classes.hh (3.21), libCERTI/NetworkMessage.hh (3.64),
+	  libCERTI/BasicMessage.cc (3.17, CERTI-3_4_0),
+	  libCERTI/BasicMessage.hh (3.17, CERTI-3_4_0),
+	  libCERTI/M_Classes.cc (3.12), libCERTI/M_Classes.hh (3.12),
+	  libCERTI/Message.hh (3.65, CERTI-3_4_0), libCERTI/Message_RW.cc
+	  (3.42, CERTI-3_4_0), libCERTI/NM_Classes.cc (3.27),
+	  libCERTI/NetworkMessage.cc (3.49), scripts/GenMsgAST.py (1.11),
+	  scripts/GenMsgCXX.py (1.17): Merge from Lucas ALBA work  -
+	  improve show method in order to show enum and message fields.   -
+	  Need to make show return std::ostream& thus modifies native
+	  classes : BasicMessage, Message, NetworkMessage
+
+2010-06-10 09:30  erk
+
+	* scripts/: GenMsgAST.py (1.10), GenMsgCXX.py (1.16),
+	  GenerateMessages.py (1.39): Merge from Lucas ALBA work  - make
+	  receiver optional
+
+2010-06-09 17:27  erk
+
+	* scripts/GenMsgAST.py (1.9): Fix from previous commit Forget a
+	  stupid indent...!!
+
+2010-06-09 17:25  erk
+
+	* scripts/: GenMsgAST.py (1.8), GenMsgCXX.py (1.15),
+	  GenerateMessages.py (1.38): Merge from Lucas ALBA work First set
+	  of modifications   - improve error messages	- improve types
+	  included in the factory
+
+2010-06-04 23:01  gotthardp
+
+	* libRTI/: RTI1516HandleImplementation.h (1.3),
+	  RTI1516ambassadorFactory.cpp (1.4) (utags: CERTI-3_4_0): Fixed
+	  windows' errors and warnings.
+
+2010-06-02 08:55  erk
+
+	* libRTI/RTI1516ambassadorFactory.cpp (1.3): Merge patch from Petr.
+	  Fix compilation error when RTIA_USE_TCP on Unix/Linux.  bug
+	  #30028 : RTI1516ambassadorFactory.cpp build error
+
+2010-05-31 16:12  erk
+
+	* libRTI/CMakeLists.txt (1.18): RTI1516fedTime needs to be exported
+	  in order to be used by federate
+
+2010-05-31 15:58  erk
+
+	* libHLA/tlsf.c (1.2, CERTI-3_4_0): Use unamed variadadic macro
+	  There is still a warning due to -pedantic
+
+2010-05-31 15:14  erk
+
+	* libCERTI/NameReservation.hh (3.2, CERTI-3_4_0),
+	  libRTI/CMakeLists.txt (1.17), libRTI/LogicalTimeDouble.cpp (1.2,
+	  CERTI-3_4_0), libRTI/RTI1516fedTime.cpp (1.3, CERTI-3_4_0): Fix
+	  WIndows MinGW build after Jeroen Merge
+
+2010-05-31 14:29  erk
+
+	* include/RTI/: Enums.h (1.2), Exception.h (1.2),
+	  FederateAmbassador.h (1.2), Handle.h (1.2), LogicalTime.h (1.2),
+	  LogicalTimeFactory.h (1.2), LogicalTimeInterval.h (1.2),
+	  NullFederateAmbassador.h (1.2), RTI1516.h (1.2), RTIambassador.h
+	  (1.2), RTIambassadorFactory.h (1.2), RangeBounds.h (1.2),
+	  SpecificConfig.h (1.4), Typedefs.h (1.2), VariableLengthData.h
+	  (1.2) (utags: CERTI-3_4_0): Restore appropriate line-endings
+
+2010-05-31 13:58  erk
+
+	* libRTI/: CMakeLists.txt (1.16), LogicalTimeDouble.cpp (1.1),
+	  LogicalTimeDouble.h (1.1, CERTI-3_4_0): Add LogicalTimeDouble as
+	  an alternate 1516 LogicalFedTime.  Fix COMPILE_FLAGS in
+	  CMakeLists.txt in order to make them work with both MSVC and
+	  MinGW.  -DA,B should be -DA -DB
+
+2010-05-31 11:33  erk
+
+	* RTIG/FederationsList.cc (3.71), libRTI/RTI1516Handle.cpp (1.2,
+	  CERTI-3_4_0), libRTI/RTI1516HandleImplementation.cpp (1.2,
+	  CERTI-3_4_0), libRTI/RTI1516HandleImplementation.h (1.2),
+	  libRTI/RTI1516ambPrivateRefs.cpp (1.2, CERTI-3_4_0),
+	  libRTI/RTI1516ambassador.cpp (1.2, CERTI-3_4_0),
+	  libRTI/RTI1516ambassador.h (1.2, CERTI-3_4_0),
+	  libRTI/RTI1516ambassadorFactory.cpp (1.2),
+	  libRTI/RTI1516fedTime.cpp (1.2), libRTI/RTI1516fedTime.h (1.2,
+	  CERTI-3_4_0), RTIA/DataDistribution.cc (3.36),
+	  RTIA/DataDistribution.hh (3.21, CERTI-3_4_0),
+	  RTIA/ObjectManagement.cc (3.70), RTIA/ObjectManagement.hh (3.35),
+	  RTIA/RTIA_federate.cc (3.109), RTIA/Statistics.cc (3.23),
+	  RTIA/TimeManagement.cc (3.59), RTIG/Federation.cc (3.129),
+	  RTIG/Federation.hh (3.66), RTIG/FederationsList.hh (3.55),
+	  RTIG/RTIG.hh (3.34), RTIG/RTIG_processing.cc (3.103),
+	  include/RTI/SpecificConfig.h (1.3), libCERTI/CMakeLists.txt
+	  (1.36, CERTI-3_4_0), libCERTI/Exception.cc (3.21, CERTI-3_4_0),
+	  libCERTI/Exception.hh (3.11, CERTI-3_4_0),
+	  libCERTI/NameReservation.cc (3.1, CERTI-3_4_0),
+	  libCERTI/NameReservation.hh (3.1), libCERTI/ObjectSet.cc (3.33,
+	  CERTI-3_4_0), libCERTI/ObjectSet.hh (3.18, CERTI-3_4_0),
+	  libCERTI/RootObject.cc (3.51, CERTI-3_4_0),
+	  libCERTI/RootObject.hh (3.36, CERTI-3_4_0): Merge-in (with
+	  modification) the IEEE1516 work of May 27th from Jeroen.  This
+	  check-in does not include the STATIC lib trick.
+
+2010-05-30 19:41  erk
+
+	* libCERTI/NetworkMessage_RW.cc (3.58, CERTI-3_4_0): Always write
+	  federate ID and federation ID even if the message contains an
+	  exception.  This is no big deal since this is already an
+	  exceptionnal condition Should fix bug #29560 :
+	  rtia::Communications::waitMessage hangs when receiving an
+	  exception message
+
+	  Solution proposed by Jeroen.
+
+2010-05-16 10:40  erk
+
+	* scripts/GenMsgBase.py (1.5): Merge from Lucas Add verison to
+	  Message Spec
+
+2010-05-16 10:29  erk
+
+	* scripts/: GenMsgAST.py (1.7), GenerateMessages.py (1.37): Merge
+	  from Lucas Improve Error Checking
+
+2010-05-03 19:14  erk
+
+	* scripts/FindRTI.cmake (1.13, CERTI-3_4_0): Include IEEE1516
+	  libraries discovery
+
+2010-04-28 20:48  erk
+
+	* libCERTI/BasicMessage.hh (3.16), libCERTI/M_Classes.cc (3.11),
+	  libCERTI/M_Classes.hh (3.11), libCERTI/Message.hh (3.64),
+	  libCERTI/NM_Classes.cc (3.26), libCERTI/NM_Classes.hh (3.20),
+	  libCERTI/NetworkMessage.hh (3.63), libRTI/CMakeLists.txt (1.15),
+	  libRTI/RTI1516Handle.cpp (1.1), libRTI/RTI1516HandleFactory.cpp
+	  (1.1, CERTI-3_4_0), libRTI/RTI1516HandleFactory.h (1.1,
+	  CERTI-3_4_0), libRTI/RTI1516HandleImplementation.cpp (1.1),
+	  libRTI/RTI1516HandleImplementation.h (1.1),
+	  libRTI/RTI1516ambPrivateRefs.h (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516ambTime.cpp (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516ambassador.cpp (1.1), libRTI/RTI1516ambassador.h
+	  (1.1), libRTI/RTI1516ambassadorFactory.cpp (1.1),
+	  libRTI/RTI1516exception.cpp (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516fedAmbassador.cpp (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516fedTime.cpp (1.1), libRTI/RTI1516fedTime.h (1.1),
+	  libRTI/RTI1516variableLengthData.cpp (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516variableLengthDataImplementation.h (1.1,
+	  CERTI-3_4_0), RTIA/DataDistribution.cc (3.35),
+	  RTIA/DataDistribution.hh (3.20), RTIA/RTIA_federate.cc (3.108),
+	  RTIG/Federation.cc (3.128), include/RTI/certiLogicalTime.h (1.1,
+	  CERTI-3_4_0), include/RTI/certiLogicalTimeFactory.h (1.1,
+	  CERTI-3_4_0), include/RTI/certiLogicalTimeInterval.h (1.1,
+	  CERTI-3_4_0), include/RTI/certiRTI1516.h (1.1, CERTI-3_4_0),
+	  libRTI/RTI1516ambPrivateRefs.cpp (1.1), scripts/CERTI_Message.msg
+	  (1.17, CERTI-3_4_0), scripts/CERTI_NetworkMessage.msg (1.20):
+	  Merge from Jeroen IEEE-1516 work see
+	  https://savannah.nongnu.org/task/index.php?10290 This is the
+	  first merge, libRTI1516 should be building on Linux and Win32.
+	  This is preliminary work but create/join/resign/destroy works.
+
+2010-04-28 20:45  erk
+
+	* RTIG/RTIG_processing.cc (3.102): Merge from Jeroen IEEE-1516 work
+	  Fix publish/subscribe interaction bug
+
+2010-04-24 15:49  erk
+
+	* scripts/CreatePatchCVS.cmake (1.5, CERTI-3_4_0): Small fixes
+	  -N for new files (even if it doesn't seem to work properly)
+	  effectively use "CVS_DIFF_ARGS"
+
+2010-04-05 12:17  erk
+
+	* scripts/TODO.GenMsg (1.5, CERTI-3_4_0): Enrich some more TODOs
+
+2010-04-04 22:25  erk
+
+	* scripts/TODO.GenMsg (1.4): Update TODO list
+
+2010-04-04 20:27  gotthardp
+
+	* libCERTI/CMakeLists.txt (1.35), libHLA/CMakeLists.txt (1.12): Bug
+	  #24904: libCERTI and libHLA binaries use CERTI version number.
+
+2010-04-04 15:28  gotthardp
+
+	* libCERTI/SocketSHMWin32.cc (1.4, CERTI-3_4_0): Fixed Windows
+	  build errors.
+
+2010-03-29 20:24  erk
+
+	* libCERTI/: Exception.cc (3.20), Exception.hh (3.10),
+	  RingBuffer.cc (3.3, CERTI-3_4_0), SocketSHM.cc (3.3,
+	  CERTI-3_4_0): Suppress CERTI_EXCEPTION now declared within libhla
+
+2010-03-29 19:52  erk
+
+	* libCERTI/ObjectClassBroadcastList.cc (3.32, CERTI-3_4_0): Should
+	  fix bug #29371: vector subscript out of range in NM_Messages
+
+2010-03-29 09:56  erk
+
+	* RTIG/RTIG_processing.cc (3.101), libCERTI/ObjectClass.cc (3.82):
+	  Suppress forgotten msg.show traces.
+
+2010-03-28 18:08  erk
+
+	* libCERTI/BasicMessage.hh (3.15), libCERTI/CMakeLists.txt (1.34),
+	  libCERTI/M_Classes.cc (3.10), libCERTI/M_Classes.hh (3.10),
+	  libCERTI/MessageBuffer.cc (3.21), libCERTI/MessageBuffer.hh
+	  (3.10), libCERTI/NM_Classes.cc (3.25), libCERTI/NM_Classes.hh
+	  (3.19), libCERTI/ObjectClass.hh (3.54), libHLA/CMakeLists.txt
+	  (1.11), libHLA/MessageBuffer.cc (1.1, CERTI-3_4_0),
+	  libHLA/MessageBuffer.hh (1.1, CERTI-3_4_0),
+	  libHLA/MessageBufferTests.cc (1.1, CERTI-3_4_0), libHLA/libhla.hh
+	  (1.5, CERTI-3_4_0), RTIG/CMakeLists.txt (1.8, CERTI-3_4_0),
+	  RTIG/RTIG_processing.cc (3.100), test/Billard/Billard.cc (3.45,
+	  CERTI-3_4_0), test/Billard/CMakeLists.txt (1.9, CERTI-3_4_0),
+	  test/utility/CMakeLists.txt (1.7, CERTI-3_4_0),
+	  test/utility/CertiUtilTests.cc (1.19): Move MessageBuffer from
+	  libCERTI to libHLA.
+
+2010-03-28 18:07  erk
+
+	* scripts/: genallmsg.sh (1.1, CERTI-3_4_0), GenMsgCXX.py (1.14):
+	  The virtual constructor generated by the message should launch
+	  appropriate exception.
+
+2010-03-28 15:51  erk
+
+	* libHLA/CMakeLists.txt (1.10): Do not compile TLSF on Win32, at
+	  least for now...
+
+2010-03-28 15:36  erk
+
+	* libHLA/: CMakeLists.txt (1.9), COPYING.MurmurHash2A (1.1,
+	  CERTI-3_4_0), COPYING.tlsf (1.1, CERTI-3_4_0), LGPL-2.1.tlsf
+	  (1.1, CERTI-3_4_0), MurmurHash2A.cc (1.1, CERTI-3_4_0), tlsf.c
+	  (1.1), tlsf.h (1.1, CERTI-3_4_0), tlsf_target.h (1.1,
+	  CERTI-3_4_0): Prepare the usage of
+
+	   - TLSF allocator (Embbeded CERTI target)
+	   - MurmurHash2A for simple non-cryptographic Hash
+
+2010-03-28 14:36  erk
+
+	* libCERTI/SocketSHMWin32.cc (1.3), libHLA/SemaphoreWin32.cc (1.2,
+	  CERTI-3_4_0): Update Win32 compile Exception defined fro Win32
+	  classes was still in certi:: moved to libhla::ipc::XXXX instead.
+
+2010-03-28 14:24  erk
+
+	* libHLA/: CMakeLists.txt (1.8), SHM.hh (1.2, CERTI-3_4_0),
+	  SHMWin32.cc (1.2, CERTI-3_4_0), SHMWin32.hh (1.2, CERTI-3_4_0),
+	  Semaphore.hh (1.2, CERTI-3_4_0), SemaphoreWin32.hh (1.2,
+	  CERTI-3_4_0), libhla.hh (1.4): Remove reference to
+	  certi::Exception move new exception in concerned libhla::ipc
+	  classes
+
+2010-03-28 13:42  erk
+
+	* libCERTI/CMakeLists.txt (1.33), libCERTI/RingBuffer.cc (3.2),
+	  libCERTI/RingBuffer.hh (3.2, CERTI-3_4_0), libCERTI/SHM.hh (3.2),
+	  libCERTI/SHMPosix.cc (3.3), libCERTI/SHMPosix.hh (3.2),
+	  libCERTI/SHMSysV.cc (3.2), libCERTI/SHMSysV.hh (3.2),
+	  libCERTI/SHMWin32.cc (1.4), libCERTI/SHMWin32.hh (1.3),
+	  libCERTI/Semaphore.hh (3.2), libCERTI/SemaphorePosix.cc (3.2),
+	  libCERTI/SemaphorePosix.hh (3.2), libCERTI/SemaphoreSysV.cc
+	  (3.3), libCERTI/SemaphoreSysV.hh (3.2),
+	  libCERTI/SemaphoreWin32.cc (3.2), libCERTI/SemaphoreWin32.hh
+	  (3.2), libCERTI/SocketSHM.cc (3.2), libCERTI/SocketSHM.hh (3.2,
+	  CERTI-3_4_0), libCERTI/SocketSHMPosix.cc (3.2, CERTI-3_4_0),
+	  libCERTI/SocketSHMPosix.hh (3.2, CERTI-3_4_0),
+	  libCERTI/SocketSHMSysV.cc (3.2, CERTI-3_4_0),
+	  libHLA/CMakeLists.txt (1.7), libHLA/SHM.hh (1.1),
+	  libHLA/SHMPosix.cc (1.1), libHLA/SHMPosix.hh (1.1, CERTI-3_4_0),
+	  libHLA/SHMSysV.cc (1.1, CERTI-3_4_0), libHLA/SHMSysV.hh (1.1),
+	  libHLA/SHMWin32.cc (1.1), libHLA/SHMWin32.hh (1.1),
+	  libHLA/Semaphore.hh (1.1), libHLA/SemaphorePosix.cc (1.1),
+	  libHLA/SemaphorePosix.hh (1.1), libHLA/SemaphoreSysV.cc (1.1,
+	  CERTI-3_4_0), libHLA/SemaphoreWin32.hh (1.1),
+	  libHLA/SemaphoreSysV.hh (1.1, CERTI-3_4_0),
+	  libHLA/SemaphoreWin32.cc (1.1), test/utility/CMakeLists.txt
+	  (1.6): Move SHM and Semaphore basic classes to libHLA
+
+2010-03-23 14:15  erk
+
+	* RTIG/RTIG_processing.cc (3.99), RTIA/FederationManagement.cc
+	  (3.86): I did forget to suppress show debug call
+
+2010-03-23 14:13  erk
+
+	* libCERTI/ObjectClassBroadcastList.cc (3.31),
+	  RTIA/Communications.cc (3.39, CERTI-3_4_0),
+	  RTIA/DataDistribution.cc (3.34), RTIA/DeclarationManagement.cc
+	  (3.34, CERTI-3_4_0), RTIA/FederationManagement.cc (3.85),
+	  RTIA/ObjectManagement.cc (3.69), RTIA/OwnershipManagement.cc
+	  (3.25, CERTI-3_4_0), RTIA/RTIA_network.cc (3.37),
+	  RTIA/TimeManagement.cc (3.58), libCERTI/Interaction.cc (3.62,
+	  CERTI-3_4_0), libCERTI/InteractionBroadcastList.cc (3.16,
+	  CERTI-3_4_0), libCERTI/NetworkMessage.cc (3.48),
+	  libCERTI/NetworkMessage.hh (3.62), libCERTI/NetworkMessage_RW.cc
+	  (3.57), libCERTI/ObjectClass.cc (3.81), libCERTI/ObjectSet.cc
+	  (3.32), libCERTI/SocketServer.cc (3.19, CERTI-3_4_0),
+	  RTIG/Federation.cc (3.127), RTIG/RTIG.cc (3.64),
+	  RTIG/RTIG_processing.cc (3.98): Replace direct access to
+	  NetworkMessage member with getter/setter NetworkMessage is now
+	  almost clean
+
+	  Fix double send of (date/tag/label) in NetworkMessage
+
+2010-03-23 09:12  erk
+
+	* libCERTI/M_Classes.cc (3.9), libCERTI/M_Classes.hh (3.9),
+	  libCERTI/NM_Classes.cc (3.24), libCERTI/NM_Classes.hh (3.18),
+	  scripts/GenMsgCXX.py (1.13): Stupid mistake.	optional field was
+	  sometimes send/received because _hasXXXX were not initialized
+
+2010-03-23 09:11  erk
+
+	* libCERTI/MessageBuffer.cc (3.20): Memset to 0 in order to please
+	  valgrind
+
+2010-03-22 17:34  erk
+
+	* include/certi.hh (3.49): Integrate modification from Jeroen for
+	  MSVC compilation
+
+2010-03-22 17:15  erk
+
+	* libCERTI/SHMPosix.cc (3.2): Missing include breaks compilation on
+	  FreeBSD
+
+2010-03-21 19:31  erk
+
+	* include/certi.hh (3.48), libHLA/libhla.hh (1.3): Avoid multiple
+	  define with MSVC
+
+2010-03-21 19:06  gotthardp
+
+	* libHLA/WinClock.cc (1.2, CERTI-3_4_0): Fixed build error under
+	  Visual Studio.
+
+2010-03-21 18:14  erk
+
+	* libHLA/libhla.hh (1.2): Add missing type
+
+2010-03-21 18:14  erk
+
+	* libHLA/WinPerfClock.hh (1.2, CERTI-3_4_0): Fix typo.
+
+2010-03-21 18:10  erk
+
+	* libCERTI/CMakeLists.txt (1.32), libCERTI/Clock.cc (4.6),
+	  libCERTI/Clock.hh (4.11), libCERTI/ClockFactory.cc (4.3),
+	  libCERTI/GettimeofdayClock.cc (4.2),
+	  libCERTI/GettimeofdayClock.hh (4.2), libCERTI/PosixClock.cc
+	  (4.5), libCERTI/PosixClock.hh (4.5), libCERTI/TSCClock.cc (4.5),
+	  libCERTI/TSCClock.hh (4.4), libCERTI/WinClock.cc (4.3),
+	  libCERTI/WinClock.hh (4.2), libCERTI/WinPerfClock.cc (4.3),
+	  libCERTI/WinPerfClock.hh (4.2), libHLA/CMakeLists.txt (1.6),
+	  libHLA/Clock.cc (1.1, CERTI-3_4_0), libHLA/Clock.hh (1.1,
+	  CERTI-3_4_0), libHLA/ClockFactory.cc (1.1, CERTI-3_4_0),
+	  libHLA/GettimeofdayClock.cc (1.1, CERTI-3_4_0),
+	  libHLA/GettimeofdayClock.hh (1.1, CERTI-3_4_0),
+	  libHLA/HLAbuffer.hh (1.11, CERTI-3_4_0), libHLA/PosixClock.cc
+	  (1.1, CERTI-3_4_0), libHLA/PosixClock.hh (1.1, CERTI-3_4_0),
+	  libHLA/TSCClock.cc (1.1, CERTI-3_4_0), libHLA/TSCClock.hh (1.1,
+	  CERTI-3_4_0), libHLA/TestClocks.cc (1.1, CERTI-3_4_0),
+	  libHLA/WinClock.cc (1.1), libHLA/WinClock.hh (1.1, CERTI-3_4_0),
+	  libHLA/WinPerfClock.cc (1.1, CERTI-3_4_0), libHLA/WinPerfClock.hh
+	  (1.1), libHLA/libhla.hh (1.1), libHLA/sha1.h (1.4, CERTI-3_4_0),
+	  RTIA/CMakeLists.txt (1.9, CERTI-3_4_0), RTIA/RTIA.cc (3.33),
+	  RTIA/RTIA.hh (3.21, CERTI-3_4_0), test/utility/CertiUtilTests.cc
+	  (1.18): Moving Clock classes to libHLA
+
+2010-03-20 21:43  gotthardp
+
+	* libCERTI/FederateLevelList.hh (3.11, CERTI-3_4_0): Fixed some
+	  Visual Studio warnings.
+
+2010-03-20 18:30  gotthardp
+
+	* include/certi.hh (3.47), libCERTI/AuditLine.hh (3.11,
+	  CERTI-3_4_0), libCERTI/Named.hh (3.11, CERTI-3_4_0),
+	  libCERTI/Socket.hh (3.19, CERTI-3_4_0): Fixed some Visual Studio
+	  warnings.
+
+2010-03-20 17:34  erk
+
+	* RTIA/Communications.cc (3.38), RTIA/DeclarationManagement.cc
+	  (3.33), RTIA/ObjectManagement.cc (3.68), RTIA/RTIA_federate.cc
+	  (3.107), RTIA/RTIA_network.cc (3.36), RTIA/TimeManagement.cc
+	  (3.57), RTIG/Federation.cc (3.126), RTIG/RTIG.cc (3.63),
+	  RTIG/RTIG_processing.cc (3.97), libCERTI/M_Classes.cc (3.8),
+	  libCERTI/M_Classes.hh (3.8), libCERTI/Message.hh (3.63),
+	  libCERTI/NM_Classes.cc (3.23), libCERTI/NM_Classes.hh (3.17),
+	  libCERTI/NetworkMessage.hh (3.61), libCERTI/ObjectClass.cc
+	  (3.80), libCERTI/ObjectClassAttribute.cc (3.38, CERTI-3_4_0),
+	  libCERTI/ObjectClassBroadcastList.cc (3.30),
+	  libRTI/RTIambPrivateRefs.cc (3.26), libRTI/RTIambassador.cc
+	  (3.116), scripts/GenMsgCXX.py (1.12): getType --> getMessageType
+	  which is more consistent (and will help to merge network and
+	  non-network message)
+
+2010-03-20 17:17  erk
+
+	* libCERTI/: NetworkMessage.cc (3.47), ObjectSet.cc (3.31): More
+	  valuable exception message
+
+2010-03-19 21:32  erk
+
+	* libCERTI/SocketMC.cc (3.22, CERTI-3_4_0): Add FIXME for multicast
+	  (MC is clearly not working now)
+
+2010-03-19 21:30  erk
+
+	* RTIA/FederationManagement.cc (3.84), RTIG/RTIG_processing.cc
+	  (3.96), libCERTI/NetworkMessage.hh (3.60): ExceptionReason should
+	  be private
+
+2010-03-19 14:54  erk
+
+	* libCERTI/ObjectClassBroadcastList.cc (3.29),
+	  RTIA/DataDistribution.cc (3.33), RTIA/DataDistribution.hh (3.19),
+	  RTIA/DeclarationManagement.cc (3.32),
+	  RTIA/FederationManagement.cc (3.83), RTIA/ObjectManagement.cc
+	  (3.67), RTIA/ObjectManagement.hh (3.34),
+	  RTIA/OwnershipManagement.cc (3.24), RTIA/RTIA_network.cc (3.35),
+	  RTIA/TimeManagement.cc (3.56), RTIG/Federation.cc (3.125),
+	  RTIG/Federation.hh (3.65), RTIG/FederationsList.cc (3.70),
+	  RTIG/FederationsList.hh (3.54), RTIG/RTIG.cc (3.62), RTIG/RTIG.hh
+	  (3.33), RTIG/RTIG_processing.cc (3.95), libCERTI/GAV.cc (3.23,
+	  CERTI-3_4_0), libCERTI/Interaction.cc (3.61),
+	  libCERTI/Interaction.hh (3.42, CERTI-3_4_0),
+	  libCERTI/InteractionBroadcastList.cc (3.15),
+	  libCERTI/InteractionBroadcastList.hh (3.10, CERTI-3_4_0),
+	  libCERTI/InteractionSet.cc (3.33, CERTI-3_4_0),
+	  libCERTI/InteractionSet.hh (3.28, CERTI-3_4_0), libCERTI/LBTS.cc
+	  (3.17), libCERTI/NM_Classes.cc (3.22), libCERTI/NM_Classes.hh
+	  (3.16), libCERTI/NetworkMessage.cc (3.46),
+	  libCERTI/NetworkMessage.hh (3.59), libCERTI/NetworkMessage_RW.cc
+	  (3.56), libCERTI/Object.cc (3.28, CERTI-3_4_0),
+	  libCERTI/ObjectClass.cc (3.79), libCERTI/ObjectClass.hh (3.53),
+	  libCERTI/ObjectClassAttribute.cc (3.37),
+	  libCERTI/ObjectClassBroadcastList.hh (3.11, CERTI-3_4_0),
+	  libCERTI/ObjectClassSet.cc (3.52, CERTI-3_4_0),
+	  libCERTI/ObjectClassSet.hh (3.40, CERTI-3_4_0),
+	  libCERTI/ObjectSet.cc (3.30), libCERTI/ObjectSet.hh (3.17),
+	  libCERTI/RootObject.cc (3.50), libCERTI/SocketMC.cc (3.21),
+	  libCERTI/SocketMC.hh (3.16, CERTI-3_4_0), test/Billard/Billard.cc
+	  (3.44), test/Billard/Billard.hh (3.14, CERTI-3_4_0): Big
+	  NetworkMessage rework hopefully working :-) Tester wanted.
+
+	  Now NM_Classes.hh/.cc may be fully regenerated from
+	  CERTI_NetworkMessage.msg.
+
+2010-03-19 13:59  erk
+
+	* scripts/GenMsgCXX.py (1.11): Add hasXXXX fro optional field XXXX
+
+2010-03-18 18:06  erk
+
+	* scripts/CERTI_NetworkMessage.msg (1.19): One more commit.  Now
+	  (with forthcoming patch) everything is compiling again but...
+	  Not everything is working properly.
+
+2010-03-17 10:56  erk
+
+	* scripts/CERTI_NetworkMessage.msg (1.18): More NetworkMessage
+	  update but ...  not finished [yet]
+
+2010-03-17 10:55  erk
+
+	* scripts/GenMsgCXX.py (1.10): Add remove method for repeated
+	  fields
+
+2010-03-14 18:35  gotthardp
+
+	* libHLA/HLAbasicType.hh (1.7, CERTI-3_4_0): Bugfix: be more robust
+	  against unwanted optimizations.
+
+2010-03-14 17:05  gotthardp
+
+	* include/.cvsignore (1.3), scripts/.cvsignore (1.1) (utags:
+	  CERTI-3_4_0): Updated .cvsignore files
+
+2010-03-14 16:35  gotthardp
+
+	* RTIA/FederationManagement.cc (3.82), RTIA/FederationManagement.hh
+	  (3.31, CERTI-3_4_0), RTIA/RTIA.cc (3.32), RTIA/RTIA.hh (3.20),
+	  RTIA/RTIA_federate.cc (3.106), RTIA/Statistics.cc (3.22),
+	  libCERTI/M_Classes.cc (3.7), libCERTI/M_Classes.hh (3.7),
+	  libCERTI/Message.hh (3.62), libRTI/RTIambassador.cc (3.115),
+	  scripts/CERTI_Message.msg (1.16),
+	  scripts/CERTI_NetworkMessage.msg (1.17), scripts/GenMsgAST.py
+	  (1.6), scripts/GenMsgCXX.py (1.9), scripts/GenerateMessages.py
+	  (1.36): Bug #24854: Implemented protocol compatibility checks for
+	  the Federate--RTIA channel.
+
+2010-03-14 16:29  gotthardp
+
+	* scripts/GenMsgCXX.py (1.8): Bugfix: ‘msg’ may be used
+	  uninitialized in this function
+
+2010-03-14 15:38  gotthardp
+
+	* RTIA/TimeManagement.cc (3.55), RTIG/Federation.cc (3.124),
+	  include/certi.hh (3.46), libCERTI/MessageBuffer.cc (3.19),
+	  libCERTI/Object.cc (3.27), libCERTI/ObjectSet.cc (3.29),
+	  libCERTI/SocketHTTPProxy.cc (3.7, CERTI-3_4_0),
+	  libCERTI/SocketTCP.cc (3.33), libCERTI/SocketUDP.cc (3.29,
+	  CERTI-3_4_0), libCERTI/SocketUN.cc (3.36, CERTI-3_4_0): Patch
+	  #7119: stringstream wrapper for error message construction
+
+2010-03-14 13:06  gotthardp
+
+	* libCERTI/: CMakeLists.txt (1.31), PrettyDebEx.cc (4.10): Removed
+	  unused PrettyDebEx.cc
+
+2010-03-11 13:13  erk
+
+	* scripts/GenMsgJava.py (1.3): Small update of Java generator for
+	  showing how to detect "combined" field The current generator is
+	  not working yet...  There is some missing representation and/or
+	  combine for some types in Java
+
+2010-03-11 11:39  erk
+
+	* scripts/CERTI_NetworkMessage.msg (1.16): First set of
+	  modifications.  The spec is better but ...  the re-generated C++
+	  file may not be checked-in because many classes still uses
+	  publicly shared data from NetworkMessage we will get rid of
+	  this...
+
+2010-03-11 11:38  erk
+
+	* scripts/: CERTI_Message.msg (1.15), GenMsgCXX.py (1.7): Avoid
+	  enum message name clash. in C++ use namespace.
+
+2010-03-11 11:37  erk
+
+	* scripts/TODO.GenMsg (1.3): More TODOs...
+
+2010-03-08 13:52  erk
+
+	* scripts/GenMsgAST.py (1.5): Enhance error handling
+
+2010-03-08 13:51  erk
+
+	* scripts/CERTI_NetworkMessage.msg (1.15): First update for
+	  NetworkMessage specs in order to be able to regenerate
+	  NM_Classes.[hh|cc] from it entirely.	Intermediate commit (not
+	  working [yet])
+
+2010-03-08 12:35  erk
+
+	* libCERTI/M_Classes.cc (3.6), libCERTI/M_Classes.hh (3.6),
+	  scripts/CERTI_Message.msg (1.14): Simplifies the enable/disable
+	  messages no boolean OnOff field is needed
+
+2010-03-08 12:34  erk
+
+	* scripts/GenerateMessages.py (1.35): display usage if language is
+	  unknown
+
+2010-03-07 23:15  erk
+
+	* test/utility/CertiUtilTests.cc (1.17): Missing <cstdio>
+
+2010-03-07 22:30  erk
+
+	* RTIA/DeclarationManagement.cc (3.31), RTIA/ObjectManagement.cc
+	  (3.66), RTIA/ObjectManagement.hh (3.33), RTIA/RTIA_network.cc
+	  (3.34), RTIG/Federation.cc (3.123), RTIG/Federation.hh (3.64),
+	  RTIG/FederationsList.cc (3.69), RTIG/FederationsList.hh (3.53),
+	  libCERTI/BaseRegion.cc (3.6, CERTI-3_4_0), libCERTI/BaseRegion.hh
+	  (3.3, CERTI-3_4_0), libCERTI/Dimension.cc (3.9, CERTI-3_4_0),
+	  libCERTI/Dimension.hh (3.10, CERTI-3_4_0), libCERTI/Extent.cc
+	  (3.14, CERTI-3_4_0), libCERTI/Extent.hh (3.12, CERTI-3_4_0),
+	  libCERTI/FedRegion.cc (3.6, CERTI-3_4_0), libCERTI/FedRegion.hh
+	  (3.5, CERTI-3_4_0), libCERTI/GAV.cc (3.22), libCERTI/GAV.hh
+	  (3.16, CERTI-3_4_0), libCERTI/Interaction.cc (3.60),
+	  libCERTI/Interaction.hh (3.41), libCERTI/InteractionSet.cc
+	  (3.32), libCERTI/InteractionSet.hh (3.27),
+	  libCERTI/NetworkMessage.cc (3.45), libCERTI/NetworkMessage.hh
+	  (3.58), libCERTI/ObjectClass.cc (3.78),
+	  libCERTI/ObjectClassBroadcastList.cc (3.28),
+	  libCERTI/ObjectSet.cc (3.28), libCERTI/ObjectSet.hh (3.16),
+	  include/certi.hh (3.45): Suppress ULong UShort types and use
+	  stdint "normalized" types: uint32_t / uint16_t etc...
+
+2010-03-07 20:07  erk
+
+	* libRTI/RTItypesImp.cc (3.7): Typo correction
+
+2010-03-07 19:46  erk
+
+	* libCERTI/M_Classes.cc (3.5), libCERTI/M_Classes.hh (3.5),
+	  scripts/GenMsgCXX.py (1.6): Spurious double_t
+
+2010-03-07 19:23  erk
+
+	* libCERTI/Extent.cc (3.13), libCERTI/M_Classes.cc (3.4),
+	  libCERTI/M_Classes.hh (3.4), libCERTI/Message.cc (3.68,
+	  CERTI-3_4_0), libCERTI/Message.hh (3.61),
+	  libCERTI/MessageBuffer.cc (3.18), libCERTI/PrettyDebEx.cc (4.9),
+	  libCERTI/SemaphoreSysV.cc (3.2), libCERTI/SocketHTTPProxy.cc
+	  (3.6), libCERTI/SocketMC.cc (3.20), libCERTI/SocketTCP.cc (3.32),
+	  libCERTI/SocketUN.cc (3.35), libRTI/RTIambPrivateRefs.cc (3.25),
+	  libRTI/RTIambassador.cc (3.114), libRTI/RTItypes.cc (1.6,
+	  CERTI-3_4_0), libRTI/RTItypesImp.cc (3.6), libRTI/RTItypesImp.hh
+	  (3.5, CERTI-3_4_0), RTIA/FederationManagement.cc (3.81),
+	  RTIA/FederationManagement.hh (3.30), RTIA/ObjectManagement.cc
+	  (3.65), RTIA/RTIA_federate.cc (3.105), RTIA/TimeManagement.hh
+	  (3.23), include/RTIambServices.hh (3.6), include/certi.hh (3.44),
+	  libCERTI/NetworkMessage.hh (3.57), libCERTI/SocketUDP.cc (3.28):
+	  RTI.hh MUST NOT be included in certi.hh this may created unwanted
+	  libCERTI-->libRTI dependency.
+
+2010-03-07 19:22  erk
+
+	* scripts/TODO.GenMsg (1.2): Update TODO
+
+2010-03-07 19:22  erk
+
+	* scripts/: GenMsgAST.py (1.4), GenMsgCXX.py (1.5),
+	  GenerateMessages.py (1.34): Handle messages which are not meant
+	  to be send on their own (alone).  However they may appear as a
+	  field of to-be-sent message.
+
+	  Those message are easy to filter out since they do not merge from
+	  a base message.  As such they may not be created by the factory.
+
+2010-03-07 19:19  erk
+
+	* scripts/: NW_MessageType.ods (1.3), NW_MessageType.txt (1.4):
+	  Suppress obsolete files
+
+2010-03-07 19:19  erk
+
+	* scripts/CERTI_Message.msg (1.13): Refine CERTI Message.
+	  Concerning C++ specificities for natives their shouldn't be any
+	  libRTI includes referenced here because since Message are part of
+	  libCERTI it would create a libCERTI-->libRTI dependency which
+	  leads to circular dependencies since libRTI-->libCERTI is here
+	  too.
+
+	  This may not be a problem for java binding but this is definitely
+	  a problem for C++ (we did face such problems on Windows once and
+	  it was  not pleasant to solve just stay away from that)
+
+2010-03-06 13:55  erk
+
+	* scripts/: GenMsgAST.py (1.3), GenMsgBase.py (1.4), GenMsgCXX.py
+	  (1.4), GenMsgJava.py (1.2), GenMsgPython.py (1.2),
+	  GenerateMessages.py (1.33): More modular backend generator Add an
+	  example with the C++ Message/NetworkMessage Generators
+
+2010-03-05 19:15  erk
+
+	* scripts/: CERTI_Message.msg (1.12), GenMsgAST.py (1.2),
+	  GenMsgBase.py (1.3), GenMsgCXX.py (1.3): Handle native message
+	  with multiple [same] language line Handle native message with no
+	  language line at all
+
+2010-03-05 14:57  erk
+
+	* scripts/: CERTI_Message.msg (1.11), GenMsgAST.py (1.1),
+	  GenMsgBase.py (1.2), GenMsgCXX.py (1.2), GenerateMessages.py
+	  (1.32): Update Message Generator in order to handle native
+	  "combined" types.
+
+2010-03-04 10:28  erk
+
+	* scripts/: GenMsgBase.py (1.1), GenMsgCXX.py (1.1), GenMsgJava.py
+	  (1.1), GenMsgPython.py (1.1), GenerateMessages.py (1.31): Begin
+	  Message Generator modularization Now one can write/maintain
+	  generator backend in an independant manner
+
+2010-03-01 17:44  erk
+
+	* RTIG/RTIG_processing.cc (3.94), libRTI/RTIambassador.cc (3.113),
+	  RTIG/Federation.cc (3.122), RTIA/RTIA_federate.cc (3.104),
+	  include/RTIambServices.hh (3.5): Minor refactoring
+
+2010-02-28 19:54  erk
+
+	* include/certi.hh (3.43), libRTI/CMakeLists.txt (1.14),
+	  libRTI/RTIfedTime.cc (3.2, CERTI-3_4_0), libRTI/TestFedTime.cc
+	  (3.1, CERTI-3_4_0): Fix bug: CERTI - Bugs: bug #29028, FedTime
+	  encoding and decoding...
+
+2010-02-27 17:53  erk
+
+	* libCERTI/Extent.hh (3.11), libCERTI/Interaction.cc (3.59),
+	  libCERTI/Interaction.hh (3.40), libCERTI/InteractionSet.cc
+	  (3.31), libCERTI/InteractionSet.hh (3.26), libCERTI/M_Classes.cc
+	  (3.3), libCERTI/M_Classes.hh (3.3), libCERTI/Message.cc (3.67),
+	  libCERTI/ObjectClass.cc (3.77), libCERTI/ObjectClass.hh (3.52),
+	  libCERTI/ObjectClassSet.cc (3.51), RTIA/Communications.cc (3.37),
+	  RTIA/Communications.hh (3.19, CERTI-3_4_0),
+	  RTIA/DataDistribution.cc (3.32), RTIA/DataDistribution.hh (3.18),
+	  RTIA/DeclarationManagement.cc (3.30),
+	  RTIA/DeclarationManagement.hh (3.11, CERTI-3_4_0),
+	  RTIA/FederationManagement.cc (3.80), RTIA/FederationManagement.hh
+	  (3.29), RTIA/ObjectManagement.cc (3.64), RTIA/ObjectManagement.hh
+	  (3.32), RTIA/OwnershipManagement.cc (3.23),
+	  RTIA/OwnershipManagement.hh (3.10, CERTI-3_4_0), RTIA/RTIA.hh
+	  (3.19), RTIA/RTIA_federate.cc (3.103), RTIA/TimeManagement.cc
+	  (3.54), RTIA/main.cc (3.28, CERTI-3_4_0),
+	  libCERTI/BasicMessage.cc (3.16), libCERTI/BasicMessage.hh (3.14),
+	  libCERTI/CMakeLists.txt (1.30), libCERTI/Extent.cc (3.12),
+	  libCERTI/Message.hh (3.60), libCERTI/Message_R.cc (3.40),
+	  libCERTI/Message_RW.cc (3.41), libCERTI/Message_W.cc (3.43),
+	  libCERTI/ObjectClassSet.hh (3.39), libRTI/RTIambPrivateRefs.cc
+	  (3.24), libRTI/RTIambassador.cc (3.112): Rework the
+	  RTIA<->Federate message layer in order to use message
+	  specification and message generator.	Beware: Big Update!!
+
+2010-02-27 17:45  erk
+
+	* scripts/: CERTI_Message.msg (1.10), GenerateMessages.py (1.30),
+	  TODO.GenMsg (1.1): Update CERTI Message specifications
+	  (RTIA<-->Federate) This specification contains all what is needed
+	  to get rid of old Message stuff and use generated one.
+
+2010-02-07 11:39  tag dev_Before_RTIA_MessageUpdate
+
+2010-02-07 11:39  gotthardp
+
+	* include/certi.hh (3.42, dev_Before_RTIA_MessageUpdate): Added
+	  missing typedefs for Visual Studio.
+
+2010-02-07 02:00  erk
+
+	* libCERTI/tokens.ll (3.8, dev_Before_RTIA_MessageUpdate): Partial
+	  fix for bug #28832 : CERTI's FED file parser can not parse minus
+	  sign in names minus is Ok but it seems that postfixed space name
+	  are not :-(
+
+2010-02-07 01:19  erk
+
+	* RTIG/Federation.hh (3.63), libCERTI/Message_R.cc (3.39),
+	  libCERTI/Message_W.cc (3.42) (utags:
+	  dev_Before_RTIA_MessageUpdate): Merge in patch from Andrej in
+	  order to ease testing of certi java bindings
+
+2010-02-07 00:52  erk
+
+	* scripts/CreatePatchCVS.cmake (1.4,
+	  dev_Before_RTIA_MessageUpdate): Update.  cvs returns 0 when the
+	  diff content is void whereas it returns 1 when diff content is
+	  NOT void
+
+2010-02-07 00:40  erk
+
+	* scripts/CreatePatchCVS.cmake (1.3): Update Create patch rule
+
+2010-02-06 22:02  erk
+
+	* libCERTI/: M_Classes.cc (3.2), M_Classes.hh (3.2) (utags:
+	  dev_Before_RTIA_MessageUpdate): Freshly generated M_Classes*
+	  files with update generator and minor manual update
+
+2010-02-06 20:01  erk
+
+	* scripts/: GenerateMessages.py (1.29), CERTI_Message.msg (1.9)
+	  (utags: dev_Before_RTIA_MessageUpdate): Update C++ generator.
+	  Near to complete CERTI Message specifications
+
+2010-02-04 09:16  erk
+
+	* scripts/GenerateMessages.py (1.28): Merge-in preliminary Java
+	  generator from Andrej
+
+2010-02-03 12:59  erk
+
+	* scripts/CERTI_Message.msg (1.8): Moving forward to a complete
+	  Message spec... + 1
+
+2010-02-03 11:38  erk
+
+	* scripts/CERTI_Message.msg (1.7): Moving forward to a complete
+	  Message spec...
+
+2010-02-02 23:14  erk
+
+	* scripts/: GenerateMessages.py (1.27), CERTI_Message.msg (1.6):
+	  Update CERTI Message specs
+
+2010-02-01 15:06  erk
+
+	* libRTI/CMakeLists.txt (1.13, dev_Before_RTIA_MessageUpdate):
+	  RTItypes.hh is now generated so should be taken from build dir
+	  and not in source.
+
+2010-01-31 14:34  erk
+
+	* scripts/CERTI_Message.msg (1.5): Update CERTI Message specs
+
+2010-01-31 00:14  erk
+
+	* libCERTI/Message_RW.cc (3.40, dev_Before_RTIA_MessageUpdate): Add
+	  a [yet] uncompiled file in the end this file will replace both
+	  Message_W.cc and Message_R.cc
+
+2010-01-31 00:13  erk
+
+	* scripts/: CERTI_Message.msg (1.4), GenerateMessages.py (1.26):
+	  Update RTIA message specification
+
+2010-01-30 19:41  erk
+
+	* libCERTI/: BasicMessage.cc (3.15, dev_Before_RTIA_MessageUpdate),
+	  BasicMessage.hh (3.13, dev_Before_RTIA_MessageUpdate),
+	  CMakeLists.txt (1.29, dev_Before_RTIA_MessageUpdate),
+	  M_Classes.cc (3.1), M_Classes.hh (3.1), Message.hh (3.59,
+	  dev_Before_RTIA_MessageUpdate), NetworkMessage.cc (3.44,
+	  dev_Before_RTIA_MessageUpdate), NetworkMessage.hh (3.56,
+	  dev_Before_RTIA_MessageUpdate), SocketUN.hh (3.21, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate): Next step for cleaner "Message".
+	  M_Classes.* contains (mostly) generated code which compiles fine
+	  but is not used yet.	Trying to push back commonalities between
+	  NetworkMessage and Message into BasicMessage.
+
+2010-01-30 19:19  erk
+
+	* scripts/: GenerateMessages.py (1.25), CERTI_Message.msg (1.3),
+	  CERTI_NetworkMessage.msg (1.14, dev_Before_RTIA_MessageUpdate):
+	  Update Message Spec and C++ generator
+
+2010-01-30 16:24  erk
+
+	* libCERTI/Message.hh (3.58), libCERTI/Message.cc (3.66,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/NetworkMessage.hh
+	  (3.55), scripts/CERTI_Message.msg (1.2): First set of pruning for
+	  making Message class easy to generated using Message generator
+
+2010-01-24 18:10  gotthardp
+
+	* libHLA/sha1.h (1.3, dev_Before_RTIA_MessageUpdate): Add missing
+	  type for MS VS.
+
+2010-01-23 22:20  gotthardp
+
+	* scripts/FindRTI.cmake (1.12, dev_Before_RTIA_MessageUpdate):
+	  Search also in Visual Studio build directories.
+
+2010-01-23 21:27  gotthardp
+
+	* test/utility/Main_SocketSHM.cc (1.3, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate): Fixed build error.
+
+2010-01-23 21:11  gotthardp
+
+	* libCERTI/SHMWin32.cc (1.3, dev_Before_RTIA_MessageUpdate): Fixed
+	  header names causing build errors in MSVS9.
+
+2010-01-23 20:05  gotthardp
+
+	* scripts/FindRTI.cmake (1.11): Bugfix of the previous commit.
+
+2010-01-23 18:12  gotthardp
+
+	* CMakeLists.txt (1.81, dev_Before_RTIA_MessageUpdate): Indicate
+	  debug/release in the installer filename.
+
+2010-01-23 12:24  gotthardp
+
+	* CMakeLists.txt (1.80), scripts/FindRTI.cmake (1.10): Support both
+	  debug and release libraries.
+
+2010-01-20 13:57  erk
+
+	* libCERTI/: SHMWin32.cc (1.2), SHMWin32.hh (1.2,
+	  dev_Before_RTIA_MessageUpdate): Add missing Win32  files from SHM
+	  new gen merge
+
+2010-01-18 10:41  gotthardp
+
+	* libCERTI/: Message_R.cc (3.38), Message_W.cc (3.41): Use the
+	  proper encoding functions when transmitting doubles.
+
+2010-01-16 22:45  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.5,
+	  dev_Before_RTIA_MessageUpdate): Add openSUSE case
+
+2010-01-16 21:17  erk
+
+	* libCERTI/CMakeLists.txt (1.28), libCERTI/Exception.cc (3.19,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Exception.hh (3.9,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/RingBuffer.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/RingBuffer.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SHM.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SHMPosix.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SHMPosix.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SHMSysV.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SHMSysV.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Semaphore.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphorePosix.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphorePosix.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphoreSysV.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphoreSysV.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphoreWin32.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SemaphoreWin32.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHM.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHM.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHMPosix.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHMPosix.hh (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHMSysV.cc (3.1,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketSHMSysV.hh (3.1,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libHLA/CMakeLists.txt (1.5, dev_Before_RTIA_MessageUpdate),
+	  libHLA/sha1.c (1.2, CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libHLA/sha1.h (1.2), test/utility/CMakeLists.txt (1.5,
+	  dev_Before_RTIA_MessageUpdate), test/utility/Main_SocketSHM.cc
+	  (1.2), test/utility/SharedStruct.hh (1.2, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate): Merge-in the
+	  br_CERTI_SHM_NEWGEN_dev branch The merged code is not ready nor
+	  finalized but since it is NOT used by default I'd rather merge in
+	  now before discrepancy between the branch and HEAD is too big.
+
+2010-01-16 20:44  erk
+
+	* CMakeLists.txt (1.79): Comment the CMP003 policy choice.  Add
+	  message for defaulted to Debug build
+
+2010-01-16 17:34  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.4): Update for Debian
+	  distros
+
+2010-01-15 17:50  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.3): Fix regex typo
+	  for Ubuntu
+
+2010-01-15 17:18  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.2): Update
+	  SystemSpecificInformations for some linux systems
+
+2010-01-15 16:07  erk
+
+	* libCERTI/Socket.hh (3.18, dev_Before_RTIA_MessageUpdate): Avoid
+	  warning on Windows+MinGW
+
+2010-01-15 16:06  erk
+
+	* CMakeLists.txt (1.78), scripts/SystemSpecificInformations.cmake
+	  (1.1): Improve generated (binary) package name.
+
+2009-12-03 15:36  erk
+
+	* CMakeLists.txt (1.77): Add missing CPACK_PACKAGE_CONTACT which is
+	  mandatory for building debian package with CPack DEB
+
+2009-11-25 23:05  erk
+
+	* RTIA/FederationManagement.cc (3.79,
+	  dev_Before_RTIA_MessageUpdate), RTIG/Federation.cc (3.121,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/NetworkMessage.hh
+	  (3.54), libCERTI/RootObject.cc (3.49,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/RootObject.hh (3.35,
+	  dev_Before_RTIA_MessageUpdate): Cosmetic changes after patch
+	  #6939: Send object model information as binary encoding rename
+	  getFOM/setFOM methods.  re-add GET_FED_FILE_SUPPRESSED enum value
+	  where GET_FED_FILE was for compatibility purpose.  We should
+	  suppress that later or keep it in order to be able to reject the
+	  oldish message type.
+
+2009-11-25 22:48  erk
+
+	* libCERTI/SocketMC.hh (3.15, dev_Before_RTIA_MessageUpdate):
+	  Should fix the mingw build.  The new compile error was due to
+	  patch #7000: Fewer win32 defines which removes oldish winsock.h
+	  include for up to date winsock2.h.  The mingw trick is now
+	  obsolete
+
+2009-11-25 22:07  erk
+
+	* scripts/: GenerateMessages.py (1.24), CERTI_NetworkMessage.msg
+	  (1.13): Check-in improvement patch from Mathias patch #6999:
+	  Improving the network messages scripts
+
+2009-11-24 22:44  erk
+
+	* RTIG/Federate.cc (3.18, dev_Before_RTIA_MessageUpdate),
+	  RTIG/Federation.cc (3.120), RTIG/Federation.hh (3.62),
+	  libCERTI/HandleManager.hh (3.8, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/LBTS.cc (3.16,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/LBTS.hh (3.10,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Message.cc (3.65),
+	  libCERTI/Message.hh (3.57), libCERTI/ObjectClass.cc (3.76,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SecureTCPSocket.hh
+	  (3.10, CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/Socket.hh (3.17), libCERTI/SocketMC.cc (3.19,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketMC.hh (3.14),
+	  libCERTI/SocketTCP.cc (3.31, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/SocketTCP.hh (3.24, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketUDP.cc (3.27,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SocketUDP.hh (3.14,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), libCERTI/SocketUN.cc
+	  (3.34, dev_Before_RTIA_MessageUpdate), libCERTI/SocketUN.hh
+	  (3.20), libCERTI/WinPerfClock.cc (4.2,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/tokens.ll (3.7),
+	  RTIA/Communications.cc (3.36, dev_Before_RTIA_MessageUpdate),
+	  RTIA/DeclarationManagement.cc (3.29,
+	  dev_Before_RTIA_MessageUpdate), RTIA/ObjectManagement.cc (3.63,
+	  dev_Before_RTIA_MessageUpdate), RTIA/OwnershipManagement.cc
+	  (3.22, dev_Before_RTIA_MessageUpdate), RTIA/TimeManagement.hh
+	  (3.22, dev_Before_RTIA_MessageUpdate), RTIA/main.cc (3.27,
+	  dev_Before_RTIA_MessageUpdate), include/RTI.hh (3.17,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), include/certi.hh
+	  (3.41), include/RTI/SpecificConfig.h (1.2,
+	  dev_Before_RTIA_MessageUpdate), libRTI/RTIambPrivateRefs.cc
+	  (3.23, dev_Before_RTIA_MessageUpdate),
+	  libRTI/RTIambPrivateRefs.hh (3.10, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libRTI/RTIambassador.cc (3.111,
+	  dev_Before_RTIA_MessageUpdate), test/Billard/Billard.cc (3.43,
+	  dev_Before_RTIA_MessageUpdate), test/Billard/main.cc (3.26,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate): Check-in clean-up
+	  patch from Mathias patch #7000: Fewer win32 defines
+
+2009-11-24 20:11  erk
+
+	* libCERTI/MessageBuffer.cc (3.17, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/MessageBuffer.hh (3.9, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/Message_R.cc (3.37), libCERTI/NM_Classes.cc (3.21,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/NetworkMessage.cc
+	  (3.43), libCERTI/NetworkMessage.hh (3.53),
+	  libCERTI/NetworkMessage_RW.cc (3.55,
+	  dev_Before_RTIA_MessageUpdate), RTIG/RTIG.cc (3.61,
+	  dev_Before_RTIA_MessageUpdate): Check-in clean-up patch from
+	  Mathias patch #6997: Save some malloc/free pairs for the payload
+
+2009-11-24 19:54  erk
+
+	* RTIG/: Federation.cc (3.119), Federation.hh (3.61): Check-in
+	  complexity enhancement patch from Mathias patch #6996: Use a
+	  std::map for storing the federates in RTIG
+
+2009-11-24 17:45  erk
+
+	* libCERTI/MessageBuffer.hh (3.8): Check-in clean-up patch from
+	  Mathias patch #6998: Fix a preprocessor warning
+
+2009-11-24 17:39  erk
+
+	* libCERTI/: Interaction.cc (3.58, dev_Before_RTIA_MessageUpdate),
+	  ObjectClass.cc (3.75), ObjectClass.hh (3.51,
+	  dev_Before_RTIA_MessageUpdate), ObjectClassAttribute.cc (3.36,
+	  dev_Before_RTIA_MessageUpdate), ObjectClassAttribute.hh (3.28,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), Parameter.cc (3.12,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), Parameter.hh (3.9,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), RootObject.cc
+	  (3.48), Subscribable.cc (3.10, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), Subscribable.hh (3.9,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), XmlParser.cc (3.33,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), fed.cc (3.22,
+	  dev_Before_RTIA_MessageUpdate): Check-in clean-up patch from
+	  Mathias patch #6994: No implicit attribute handle allocation
+
+2009-11-23 13:16  erk
+
+	* libCERTI/HandleManager.hh (3.7): Add reference to IEEE-1516.1
+	  document which indicates that handles should be unique
+	  (federation execution-wide)
+
+2009-11-23 08:34  erk
+
+	* RTIG/Federation.cc (3.118), libCERTI/ObjectClass.cc (3.74),
+	  libCERTI/ObjectClass.hh (3.50), libCERTI/ObjectClassSet.cc (3.50,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/ObjectClassSet.hh (3.38,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/RootObject.cc (3.47):
+	  Check-in clean-up and perf enhancement patch from Mathias patch
+	  #6995: improved object pointer lookup in the RootObject
+
+2009-11-21 22:18  erk
+
+	* libCERTI/: ObjectClass.cc (3.73), ObjectClass.hh (3.49),
+	  ObjectClassSet.cc (3.49): Check-in [performance improvement]
+	  patch from Mathias patch #6990: Use std::map for looking up
+	  objects by handle
+
+2009-11-21 22:00  erk
+
+	* RTIG/RTIG_processing.cc (3.93, dev_Before_RTIA_MessageUpdate),
+	  RTIA/TimeManagement.cc (3.53, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/NetworkMessage.cc (3.42), libCERTI/NetworkMessage.hh
+	  (3.52): Check-in [performance improvement] patch from Mathias
+	  patch #6991: Avoid now unneeded copying of attribute/parameter
+	  values
+
+2009-11-21 16:13  erk
+
+	* libCERTI/: Interaction.cc (3.57), Interaction.hh (3.39,
+	  dev_Before_RTIA_MessageUpdate), RootObject.cc (3.46): Check-in
+	  [improvement] patch from Mathias patch #6987: Use a std::map to
+	  store the interaction parameter indexed by handle (second patch)
+
+2009-11-21 15:47  erk
+
+	* CMakeLists.txt (1.76): Small fix.  CPACK_PACKAGE_NAME may be
+	  derived from PACKAGE_NAME
+
+2009-11-21 15:46  erk
+
+	* RTIG/Federation.cc (3.117), libCERTI/ObjectClass.cc (3.72),
+	  libCERTI/ObjectClass.hh (3.48), libCERTI/RootObject.cc (3.45):
+	  Check-in clean-up patch from Mathias patch #6986: Use a std::map
+	  to store the class attributes indexed by handle (second -2 patch)
+
+2009-11-20 23:43  erk
+
+	* RTIG/: FederationsList.cc (3.68), FederationsList.hh (3.52)
+	  (utags: dev_Before_RTIA_MessageUpdate): Suppress unecessary
+	  checkHandle mehtod.  Handles provided to RTIG should be valid
+	  and/or checked *BEFORE* going to FederationList methods.  Those
+	  call generates unecessary overhead.
+
+2009-11-20 20:43  erk
+
+	* RTIG/: FederationsList.cc (3.67), FederationsList.hh (3.51),
+	  RTIG_processing.cc (3.92): Check-in clean-up patch from Mathias
+	  patch #6988: Use std::map for looking up federations in rtig
+
+2009-11-20 18:33  erk
+
+	* libCERTI/: ObjectAttribute.cc (3.19, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), ObjectAttribute.hh (3.19,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), ObjectClass.cc
+	  (3.71): Check-in clean-up patch from Mathias patch #6985: Use
+	  std::set for ObjectAttribute::ownerCandidates
+
+2009-11-20 17:31  erk
+
+	* RTIA/: FederationManagement.cc (3.78), FederationManagement.hh
+	  (3.28, dev_Before_RTIA_MessageUpdate): Check-in clean-up patch
+	  from Mathias patch #6984: Use a std::set for the sync labels in
+	  rtia.
+
+2009-11-19 19:15  erk
+
+	* RTIG/Federate.cc (3.17), RTIG/Federate.hh (3.16,
+	  dev_Before_RTIA_MessageUpdate), RTIG/Federation.cc (3.116),
+	  RTIG/Federation.hh (3.60), RTIG/FederationsList.cc (3.66),
+	  RTIG/FederationsList.hh (3.50), RTIG/RTIG.cc (3.60),
+	  RTIG/RTIG_processing.cc (3.91), RTIA/DataDistribution.cc (3.31,
+	  dev_Before_RTIA_MessageUpdate), RTIA/DataDistribution.hh (3.17,
+	  dev_Before_RTIA_MessageUpdate), RTIA/FederationManagement.cc
+	  (3.77), RTIA/FederationManagement.hh (3.27),
+	  RTIA/ObjectManagement.cc (3.62), RTIA/ObjectManagement.hh (3.31,
+	  dev_Before_RTIA_MessageUpdate), RTIA/OwnershipManagement.cc
+	  (3.21), RTIA/OwnershipManagement.hh (3.9,
+	  dev_Before_RTIA_MessageUpdate), RTIA/RTIA_federate.cc (3.102,
+	  dev_Before_RTIA_MessageUpdate), RTIA/Statistics.cc (3.21,
+	  dev_Before_RTIA_MessageUpdate), RTIA/TimeManagement.cc (3.52),
+	  libCERTI/Interaction.cc (3.56), libCERTI/Interaction.hh (3.38),
+	  libCERTI/InteractionSet.hh (3.25, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/NetworkMessage.cc (3.41), libCERTI/ObjectAttribute.hh
+	  (3.18), libCERTI/ObjectClass.cc (3.70), libCERTI/ObjectClass.hh
+	  (3.47), libCERTI/ObjectClassAttribute.hh (3.27),
+	  libCERTI/Parameter.cc (3.11), libCERTI/RoutingSpace.cc (3.16,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/RoutingSpace.hh (3.12, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SecurityLevel.hh (3.12,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/SecurityServer.cc (3.18, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SecurityServer.hh (3.12,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), libCERTI/fed.hh
+	  (3.7, dev_Before_RTIA_MessageUpdate), libCERTI/helper.hh (3.2,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/AuditFile.cc (3.12, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/AuditLine.hh (3.10,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/InteractionSet.cc (3.30,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Message.cc (3.64),
+	  libCERTI/MessageBuffer.cc (3.16), libCERTI/Named.hh (3.10,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/NetworkMessage.hh
+	  (3.51), libCERTI/ObjectClassSet.cc (3.48),
+	  libCERTI/ObjectClassSet.hh (3.37), libCERTI/ObjectSet.cc (3.27,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/ObjectSet.hh (3.15,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Parameter.hh (3.8),
+	  libCERTI/SocketUDP.cc (3.26), libCERTI/Subscribable.hh (3.8),
+	  libCERTI/TreeNamedAndHandledSet.hh (1.10, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/XmlParser.cc (3.32),
+	  libCERTI/AuditFile.hh (3.11, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/AuditLine.cc (3.12,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate), libCERTI/Clock.cc
+	  (4.5, dev_Before_RTIA_MessageUpdate), libCERTI/Clock.hh (4.10,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Message.hh (3.56),
+	  libCERTI/Message_R.cc (3.36), libCERTI/Named.cc (3.10,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/ObjectClassAttribute.cc (3.35), libCERTI/RootObject.cc
+	  (3.44), libCERTI/RootObject.hh (3.34), libCERTI/SocketUN.cc
+	  (3.33), libRTI/RTIambPrivateRefs.cc (3.22),
+	  libRTI/RTIambassador.cc (3.110): Check-in clean-up patch from
+	  Mathias patch #6982: Consequent usage of std::string and
+	  references of that in function arguments
+
+2009-11-18 19:50  erk
+
+	* RTIA/FederationManagement.cc (3.76), RTIA/FederationManagement.hh
+	  (3.26), RTIA/RTIA.cc (3.31, dev_Before_RTIA_MessageUpdate),
+	  RTIA/RTIA_federate.cc (3.101), RTIA/Statistics.cc (3.20),
+	  RTIG/Federation.cc (3.115), RTIG/Federation.hh (3.59),
+	  RTIG/FederationsList.cc (3.65), RTIG/FederationsList.hh (3.49),
+	  RTIG/RTIG_processing.cc (3.90), libCERTI/Interaction.cc (3.55),
+	  libCERTI/Interaction.hh (3.37), libCERTI/ObjectClass.cc (3.69),
+	  libCERTI/ObjectClass.hh (3.46), libCERTI/RoutingSpace.hh (3.11),
+	  scripts/CERTI_NetworkMessage.msg (1.12),
+	  scripts/GenerateMessages.py (1.23), scripts/NW_MessageType.txt
+	  (1.3, dev_Before_RTIA_MessageUpdate), libCERTI/NM_Classes.cc
+	  (3.20), libCERTI/NM_Classes.hh (3.15,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/NetworkMessage.hh
+	  (3.50), libCERTI/ObjectClassAttribute.cc (3.34),
+	  libCERTI/PrettyDebEx.cc (4.8, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/RootObject.cc (3.43), libCERTI/RootObject.hh (3.33):
+	  Merge-in patch #6939: Send object model information as binary
+	  encoding from Mathias There are some improvement to to after this
+	  patch but the overall idea is OK.
+
+2009-11-04 11:36  erk
+
+	* ReleaseProcess.txt (1.7, dev_Before_RTIA_MessageUpdate): Add more
+	  information about Savannah monitoring
+
+2009-10-23 16:56  erk
+
+	* scripts/: certi-cdash (1.1), certi-ctest.cmake (1.1), runtest.sh
+	  (1.1) (utags: CERTI-3_4_0, dev_Before_RTIA_MessageUpdate): Add
+	  CERTI ctest sample script.  + auxiliary cron scripts.
+
+	  this is a preliminary linux example.
+
+2009-10-23 08:26  erk
+
+	* CMakeLists.txt (1.75): Merge in patch #6962 : Add include
+	  directory for the moved header Missing INCLUDE_DIRECTORY
+
+2009-10-22 17:33  erk
+
+	* include/: CMakeLists.txt (1.5, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), RTItypes.hh (3.21),
+	  RTItypes.hh.cmake (1.1, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate): Fix bug #27780 : RTI_VERSION
+
+2009-10-21 22:13  erk
+
+	* libCERTI/MessageBuffer.cc (3.15): Merge in patch #6954: Logging
+	  system improovements, cleanup
+	  0004-Use-the-Debug-macro-in-MessageBuffer.patch
+
+2009-10-21 22:04  erk
+
+	* RTIG/Federation.cc (3.114), RTIG/FederationsList.cc (3.64),
+	  RTIG/RTIG_processing.cc (3.89), RTIG/RTIG.cc (3.59), RTIG/main.cc
+	  (3.22, CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/BasicMessage.cc (3.14), libCERTI/DebugOStream.hh (4.4),
+	  libCERTI/Exception.cc (3.18), libCERTI/Extent.cc (3.11,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Interaction.cc (3.54),
+	  libCERTI/Message_R.cc (3.35), libCERTI/NetworkMessage_RW.cc
+	  (3.54), libCERTI/ObjectClass.cc (3.68),
+	  libCERTI/ObjectClassAttribute.cc (3.33),
+	  libCERTI/ObjectClassSet.cc (3.47), libCERTI/PrettyDebug.hh (4.8,
+	  CERTI-3_4_0, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/SecurityServer.cc (3.17), libCERTI/Subscribable.cc
+	  (3.9), libCERTI/XmlParser.cc (3.31), libRTI/RTIambPrivateRefs.cc
+	  (3.21), libRTI/RTIambassador.cc (3.109), libRTI/RTItypes.cc (1.5,
+	  dev_Before_RTIA_MessageUpdate), test/Billard/Billard.cc (3.42),
+	  test/Billard/BillardDDM.cc (3.22, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), test/Billard/main.cc (3.25),
+	  RTIA/DataDistribution.cc (3.30), RTIA/RTIA_federate.cc (3.100):
+	  Merge in patch #6954: Logging system improovements, cleanup
+	  0003-Replace-PrettyDebug-operator-usage-erk1.patch
+
+2009-10-21 21:51  erk
+
+	* libCERTI/: PrettyDebug.cc (4.10, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), PrettyDebug.hh (4.7),
+	  DebugOStream.hh (4.3), PrettyDebEx.cc (4.7): Merge in patch
+	  #6954: Logging system improovements, cleanup
+	  0002-Rework-PrettyDebug-erk1.patch
+
+2009-10-21 20:56  erk
+
+	* RTIA/Communications.cc (3.35), RTIA/DeclarationManagement.cc
+	  (3.28), RTIA/FederationManagement.cc (3.75), RTIA/RTIA.cc (3.30),
+	  RTIA/TimeManagement.hh (3.21), libCERTI/BasicMessage.cc (3.13),
+	  libCERTI/GAV.cc (3.21, dev_Before_RTIA_MessageUpdate),
+	  libCERTI/GSSAPIHandler.cc (3.8, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/Interaction.cc (3.53),
+	  libCERTI/InteractionBroadcastList.cc (3.14,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/InteractionSet.cc
+	  (3.29), libCERTI/LBTS.cc (3.15), libCERTI/ObjectAttribute.cc
+	  (3.18), libCERTI/ObjectClass.cc (3.67),
+	  libCERTI/ObjectClassAttribute.cc (3.32),
+	  libCERTI/ObjectClassBroadcastList.cc (3.27,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/ObjectSet.cc (3.26),
+	  libCERTI/PrettyDebug.hh (4.6), libCERTI/RootObject.cc (3.42),
+	  libCERTI/SecureTCPSocket.cc (3.13, CERTI-3_4_0,
+	  dev_Before_RTIA_MessageUpdate), libCERTI/SecurityServer.cc
+	  (3.16), libCERTI/SocketTCP.cc (3.30), libCERTI/SocketUDP.cc
+	  (3.25), libCERTI/SocketUN.cc (3.32), libCERTI/SocketUN.hh (3.19),
+	  libCERTI/XmlParser.cc (3.30), libCERTI/fed.cc (3.21),
+	  test/Billard/Billard.cc (3.41), test/Billard/main.cc (3.24),
+	  RTIA/DataDistribution.cc (3.29), RTIA/OwnershipManagement.cc
+	  (3.20), RTIA/RTIA_federate.cc (3.99), RTIA/RTIA_network.cc (3.33,
+	  dev_Before_RTIA_MessageUpdate), RTIG/RTIG.cc (3.58),
+	  RTIG/RTIG_processing.cc (3.88), libRTI/RTIambassador.cc (3.108):
+	  Merge in patch #6954: Logging system improovements, cleanup
+	  0001-replace-pdCDebug-with-PrettyDebug.patch
+
+2009-10-21 13:10  erk
+
+	* CMakeLists.txt (1.74): Go to CERTI 3.4.0
+
+2009-10-21 13:09  erk
+
+	* ReleaseProcess.txt (1.6): Explain noredirect check
 
 2009-10-21 12:57  erk
 
