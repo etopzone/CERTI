@@ -21,7 +21,7 @@ CERTI releases should be done with the following steps:
     - checked Done or ReadyToTest tasks
       close them and fix the Release.
 
-3) Edit tsp/CMakeLists.txt
+3) Edit certi/CMakeLists.txt
    and bump the version to the right number with
    [example for certi-3.2.5]
 
@@ -30,8 +30,8 @@ CERTI releases should be done with the following steps:
    SET(PACKAGE_VERSION_PATCH "5")
 
 4) commit the modified files
-   tsp/CMakeLists.txt
-   with a meaningfull comment saying you are preparing a CERTI version
+   certi/CMakeLists.txt
+   with a meaningful comment saying you are preparing a CERTI version
 
 5) Do a fresh checkout somewhere
    Build certi from your pristine source tree
