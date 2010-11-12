@@ -30,6 +30,8 @@
 
 #ifdef _WIN32
 #include "SocketTCP.hh"
+#else
+#include <unistd.h>
 #endif
 
 #include <iostream>

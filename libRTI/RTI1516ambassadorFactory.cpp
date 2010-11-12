@@ -8,6 +8,7 @@
 #include <cstring>
 #ifndef _WIN32
 #include <csignal>
+#include <unistd.h>
 #endif
 
 #include "PrettyDebug.hh"

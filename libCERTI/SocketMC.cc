@@ -24,6 +24,7 @@
 # include "SocketTCP.hh"
 #else
 # include <arpa/inet.h>
+# include <unistd.h>
 #endif
 
 #include <cassert>

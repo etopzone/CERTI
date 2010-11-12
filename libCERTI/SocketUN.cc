@@ -28,6 +28,9 @@
 
 #include <string>
 #include <iostream>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 using std::string ;
 using std::cout ;
