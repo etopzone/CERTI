@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.87 2010/08/11 16:45:14 erk Exp $
+// $Id: FederationManagement.cc,v 3.88 2010/11/15 13:15:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -325,11 +325,11 @@ FederationManagement::resignFederationExecution(ResignAction,
         _numero_federation = 0 ;
         federate = 0 ;
         G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
-        }
+	}
     else
-        {    
+	{    
         G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution on exception");
-        }
+	}
 }
 
 // Resigns if we are still member, call this before we throw away all the rtia members

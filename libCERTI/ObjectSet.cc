@@ -421,11 +421,27 @@ ObjectSet::getObjectByName(const std::string &the_object_name) const
 		if (i->second != 0 && 
 			i->second->getName() == the_object_name) 
 		{
-				return i->second;
+			return i->second;
 		}
 	}
 
 	return 0;
+}
+
+// ----------------------------------------------------------------------------
+void
+ObjectSet::getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& ownedObjectInstances)
+{
+
+	ownedObjectInstances.clear();
+	std::map<ObjectHandle, Object *>::const_iterator i ;
+	for (i = begin(); i != end(); ++i) {
+		if (i->second != 0 && 
+			i->second->getOwner() == the_federate) 
+		{
+			ownedObjectInstances.push_back(i->first);
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -475,4 +491,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.33 2010/05/31 09:33:26 erk Exp $
+// $Id: ObjectSet.cc,v 3.34 2010/11/15 13:15:46 erk Exp $

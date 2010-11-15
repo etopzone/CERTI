@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.51 2010/05/31 09:33:26 erk Exp $
+// $Id: RootObject.cc,v 3.52 2010/11/15 13:15:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -407,8 +407,15 @@ RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle th
     G.Out(pdGendoc,"into RootObject::requestObjectOwner");
 
     return(objects->requestObjectOwner(theFederateHandle, theObject));
-
 }
+
+// ----------------------------------------------------------------------------
+// getAllObjectInstancesFromFederate
+void
+RootObject::getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles)
+{
+	objects->getAllObjectInstancesFromFederate(the_federate,handles);
+} /* end of getAllObjectInstancesFromFederate */
 
 void
 RootObject::addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC) {
@@ -621,4 +628,4 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.51 2010/05/31 09:33:26 erk Exp $
+// $Id: RootObject.cc,v 3.52 2010/11/15 13:15:46 erk Exp $

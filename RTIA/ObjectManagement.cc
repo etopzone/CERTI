@@ -498,6 +498,23 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 } /* end of deleteObject */
 
 // ----------------------------------------------------------------------------
+
+void 
+ObjectManagement::deleteAllObjects(TypeException &e)
+{
+	std::vector<ObjectHandle> ownedObjectInstances;
+
+	rootObject->getAllObjectInstancesFromFederate(fm->federate, ownedObjectInstances);
+		
+	for(std::vector<ObjectHandle>::iterator it  = ownedObjectInstances.begin();
+	    it != ownedObjectInstances.end();
+	    ++it)
+	{
+		this->deleteObject((*it), "", e);
+	}
+} /* end of deleteAllObjects */
+
+// ----------------------------------------------------------------------------
 //! removeObject with time
 void
 ObjectManagement::removeObject(ObjectHandle the_object,

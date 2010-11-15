@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.36 2010/05/31 09:33:26 erk Exp $
+// $Id: RootObject.hh,v 3.37 2010/11/15 13:15:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -136,6 +136,9 @@ public:
     Object *getObject(ObjectHandle);
     ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
 						  AttributeHandle);
+	
+	void
+	getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
 
     /**
      * Add an object class to the ObjectRoot
@@ -202,4 +205,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.36 2010/05/31 09:33:26 erk Exp $
+// $Id: RootObject.hh,v 3.37 2010/11/15 13:15:46 erk Exp $

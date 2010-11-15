@@ -163,6 +163,9 @@ public:
         throw (ObjectNotKnown);
 
 	Object *getObjectByName(const std::string &the_object_name) const;
+	
+	void
+	getAllObjectInstancesFromFederate(FederateHandle the_federate,std::vector<ObjectHandle>& handles);
 
 protected:    
     void sendToFederate(NetworkMessage *msg,

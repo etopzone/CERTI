@@ -201,6 +201,23 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		RFEq = static_cast<M_Resign_Federation_Execution *>(req);
 		D.Out(pdTrace,
 				"Receiving Message from Federate, type ResignFederation.");
+		
+		switch( RFEq->getResignAction() )
+		{
+		case RELEASE_ATTRIBUTES:
+			// TODO: Add attribute handling here
+			break;
+		case DELETE_OBJECTS:
+			om->deleteAllObjects(e);
+			break;
+		case DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES:
+			// TODO: Add attribute handling here
+			om->deleteAllObjects(e);
+			break;
+		case NO_ACTION:
+		    // NOTHING to DO
+		    break;
+		}
 
 		fm->resignFederationExecution(RFEq->getResignAction(), e);
 	}
