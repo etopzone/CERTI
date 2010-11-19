@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.9 2010/11/11 11:05:03 erk Exp $
+// $Id: RTIambServices.hh,v 3.10 2010/11/19 20:32:26 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -691,16 +691,53 @@ void disableInteractionRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted,
 	   SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Evoke callback (HLA1.3).
+ * Non-blocking callback evocation, returns immediately with or without 1 callback.
+ * If CERTI has been compiled in HLA13NG_LIBRTI mode then tick
+ * may evoke 0 or multiple callbacks (may even be infinite).
+ * If CERTI has been compiled in LEGACY_LIBRTI mode then tick
+ * may evoke 0 or at most 1 callback.
+ * @return Always returns false.
+ */
 Boolean tick()
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
+/**
+ * Blocking callback evocation (CERTI extension).
+ * Blocks until a callback delivery and then evokes a single callback.
+ * Waits until a callback delivery, be careful.
+ * @return true if additional callbacks pending, false otherwise
+ * @warning This is a non-standard extension of the HLA 1.3/IEEE-1516 API.
+ */
 Boolean tick2()
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
-Boolean __tick_kernel(Boolean, TickTime, TickTime)
+/**
+ * Generic callback evocation (CERTI extension).
+ * Blocks up to "minimum" seconds until a callback delivery
+ * and then evokes either single (multiple==false) or
+ * multiple (multiple==true) callback(s).
+ * @param[in] multiple if false will only evoke a single callback
+ *                     if true may evoke multiple
+ * @param[in] minimum the minimum amount of time spent in the tick call.
+ * @param[in] maximum the maximum amount of time spent in the tick call.
+ * @return true if additional callbacks pending, false otherwise
+ * @warning This is a non-standard extension of the HLA 1.3/IEEE-1516 API.
+ */
+Boolean __tick_kernel(Boolean multiple, TickTime minimum, TickTime maximum)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
-Boolean tick(TickTime, TickTime)
+/**
+ * Evoke multiple callbacks (HLA1.3).
+ * Blocks up to "minimum" seconds until a callback delivery, then evokes
+ * multiple callbacks until no callback is pending, or until "maximum"
+ * duration is reached.
+ * @param[in] minimum the minimum amount of time spent in the tick call.
+ * @param[in] maximum the maximum amount of time spent in the tick call.
+ * @return true if additional callbacks pending, false otherwise
+ */
+Boolean tick(TickTime minimum, TickTime maximum)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
 /** @} end group HLA13_SupportService */
@@ -747,4 +784,4 @@ Region *getRegion(RegionToken)
 
 
 
-// $Id: RTIambServices.hh,v 3.9 2010/11/11 11:05:03 erk Exp $
+// $Id: RTIambServices.hh,v 3.10 2010/11/19 20:32:26 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.122 2010/11/11 11:05:04 erk Exp $
+// $Id: RTIambassador.cc,v 3.123 2010/11/19 20:32:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -358,10 +358,6 @@ throw (RTI::RTIinternalError)
 }
 
 // ----------------------------------------------------------------------------
-//! Evoke callback (HLA1.3).
-/*! Non-blocking callback evocation, returns immediately with or without 1 callback.
- *  @return Always returns false.
- */
 RTI::Boolean
 RTI::RTIambassador::tick()
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
@@ -380,12 +376,6 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
 		}
 
 // ----------------------------------------------------------------------------
-//! Evoke callback (CERTI extension).
-/*! Blocks until a callback delivery and then evokes a single callback.
- *  Waits until a callback delivery, be careful.
- *  @return true if additional callbacks pending, false otherwise
- *  @warning This is a non-standard extension of the HLA 1.3 API.
- */
 RTI::Boolean
 RTI::RTIambassador::tick2()
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
@@ -397,12 +387,6 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
 		}
 
 // ----------------------------------------------------------------------------
-//! Generic callback evocation (CERTI extension).
-/*! Blocks up to "minimum" seconds until a callback delivery and then evokes a
- *  single callback.
- *  @return true if additional callbacks pending, false otherwise
- *  @warning This is a non-standard extension of the HLA 1.3 API.
- */
 RTI::Boolean
 RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickTime maximum)
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
@@ -474,12 +458,6 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
 		}
 
 // ----------------------------------------------------------------------------
-//! Evoke multiple callbacks (HLA1.3).
-/*! Blocks up to "minimum" seconds until a callback delivery, then envokes
- *  multiple callbacks until no callback is pending, or until "maximum"
- *  duration is reached.
- *  @return true if additional callbacks pending, false otherwise
- */
 RTI::Boolean
 RTI::RTIambassador::tick(TickTime minimum, TickTime maximum)
 throw (RTI::SpecifiedSaveLabelDoesNotExist, RTI::ConcurrentAccessAttempted,
@@ -2888,4 +2866,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.122 2010/11/11 11:05:04 erk Exp $
+// $Id: RTIambassador.cc,v 3.123 2010/11/19 20:32:26 erk Exp $

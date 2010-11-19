@@ -1224,10 +1224,10 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		tm->_tick_result   = false; // default return value
 
 		if (TRq->getMinTickTime() >= 0.0) {
-			tm->_tick_timeout = TRq->getMinTickTime();
-			tm->_tick_max_tick = TRq->getMaxTickTime();
+			tm->_tick_timeout     = TRq->getMinTickTime();
+			tm->_tick_max_tick    = TRq->getMaxTickTime();
 			tm->_tick_clock_start = clock->getCurrentTicksValue();
-			tm->_tick_state = TimeManagement::TICK_BLOCKING;
+			tm->_tick_state       = TimeManagement::TICK_BLOCKING;
 		}
 		else {
 			tm->_tick_state = TimeManagement::TICK_CALLBACK;
