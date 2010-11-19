@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.26 2010/08/19 10:50:22 erk Exp $
+// $Id: TimeManagement.hh,v 3.27 2010/11/19 13:12:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -46,11 +46,11 @@ namespace rtia {
 class OwnershipManagement ;
 
 typedef enum {
-    PAS_D_AVANCEE=1,
-    TAR, // TimeAdvanceRequest
-    NER, // NextEventRequest
-    TARA, // TimeAdvanceRequestAvailable
-    NERA // NextEventRequestAvailable
+    PAS_D_AVANCEE=1, /*!< No time advancing request pending */
+    TAR,             /*!< TimeAdvanceRequest pending        */
+    NER,             /*!< NextEventRequest                  */
+    TARA,            /*!< TimeAdvanceRequestAvailable       */
+    NERA             /*!< NextEventRequestAvailable         */
 } TypeAvancee ;
 
 typedef enum {
@@ -59,6 +59,11 @@ typedef enum {
     AFTER_TARA_OR_NERA
 } TypeGrantedState ;
 
+/**
+ * The [distrbuted] time management class.
+ * This class is instantiated in CERTI LRC (RTIA) and maintains
+ * local view of LBTS and other time management related data and services.
+ */
 class TimeManagement : public LBTS
 {
 public:
@@ -78,6 +83,7 @@ public:
      * Federate calls either nextEventRequest or timeAdvanceRequest to determine
      * which time to attain. It then calls tick() until a timeAdvanceGrant is
      * made.
+     * @param[out] e exception which may have occurred during tick
      */
     bool tick(TypeException &e);
 
@@ -103,19 +109,41 @@ public:
     bool requestContraintState() { return _est_contraint ; };
     bool requestRegulateurState() { return _est_regulateur ; };
 
-    // Attribute
+    /**
+     * The different tick state values.
+     * The @tick method is the method that will be called
+     * inside LRC (RTIA) whenever the federate is calling
+     * one the tick/evoke method in libRTI:
+     *    - tick()
+     *    - tick2()
+     *    - tick(minTime,maxTime)
+     */
     enum {
-        NO_TICK,
-        TICK_BLOCKING,
-        TICK_NEXT,
-        TICK_CALLBACK,
-        TICK_RETURN
+        NO_TICK,        /*!< No tick request received from federate */
+        TICK_BLOCKING,  /*!< A 'blocking' tick request has been received */
+        TICK_NEXT,      /*!< This is the continuation state of a previous
+                             (blocking with timeout) tick request */
+        TICK_CALLBACK,  /*!< Time management needs to treat a Callback */
+        TICK_RETURN     /*!< Time management will terminate the tick call
+                             because of an error in a callback or because this is the end
+                             (timeout)
+                         */
     } _tick_state;
+
+    /**
+     * This is true if the federate requested the LRC to
+     * try to handle multiple callback in the allowed
+     * amount of time tick(minTime,maxTime)
+     */
     bool _tick_multiple;  // process multiple callbacks
     bool _tick_result;  // tick() return value
+
     TickTime _tick_timeout;
     TickTime _tick_max_tick;
     uint64_t _tick_clock_start;
+    /**
+     * Is asynchronous delivery enabled/disabled.
+     */
     bool _asynchronous_delivery ;
 
 private:
@@ -189,4 +217,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.26 2010/08/19 10:50:22 erk Exp $
+// $Id: TimeManagement.hh,v 3.27 2010/11/19 13:12:11 erk Exp $
