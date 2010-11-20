@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.67 2010/08/19 10:50:22 erk Exp $
+// $Id: TimeManagement.cc,v 3.68 2010/11/20 16:39:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -830,32 +830,38 @@ TimeManagement::testValidTime(FederationTime theTime)
 bool
 TimeManagement::tick(TypeException &e)
 {
-    bool msg_donne = false ;
-    bool msg_restant = false ;
+	// Becomes true if there is message to give back to the federate
+    bool oneMsgToHandle   = false;
+    // When oneMsgToHandle==true, then msg_restant becomes true if there is more message to handle
+    bool moreMsgToHandle = false;
+
     NetworkMessage *msg = NULL ;
 
     G.Out(pdGendoc," enter TimeManagement::tick");
-    // Note: While msg_donne = RTI::RTI_FALSE, msg_restant doesn't matter.
+    // Note: While msg_donne = false, msg_restant doesn't matter.
 
     // 1st try, give a command message. (requestPause, etc.)
-    msg = queues->giveCommandMessage(msg_donne, msg_restant);
+    msg = queues->giveCommandMessage(oneMsgToHandle, moreMsgToHandle);
 
     // 2nd try, give a FIFO message. (discoverObject, etc.)
-    if (!msg_donne){
-        if ( _asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE) || (! _est_contraint)) {
+    if (!oneMsgToHandle) {
+        if ( _asynchronous_delivery              ||
+        	(_avancee_en_cours != PAS_D_AVANCEE) ||
+        	(! _est_contraint)) {
         	D.Out(pdDebug,"FIFO message to be delivered async_deliver=%d, _avancee=%d, constrained=%d",
         	        		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
           // to exclude the case not asynchronous_delivery and
           // not time advancing for a constrained federate
-          msg = queues->giveFifoMessage(msg_donne, msg_restant);
-        } else {
+          msg = queues->giveFifoMessage(oneMsgToHandle, moreMsgToHandle);
+        }
+        else {
           D.Out(pdDebug,"FIFO message skipped async_deliver=%d, _avancee=%d, constrained=%d",
         		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
         }
     }
 
-    // If message exists, send it to federate.
-    if (msg_donne) {
+    // If message exists, send it to the federate.
+    if (oneMsgToHandle) {
         D.Out(pdDebug, "TickRequest being processed, Message to send.");
         try {
             executeFederateService(*msg);
@@ -865,13 +871,12 @@ TimeManagement::tick(TypeException &e)
             throw e ;
         }
     }
-
     // No message: we try to send TSO messages.
     // Messages to be sent depends on asked advance type.
     else {
         D.Out(pdDebug, "TickRequest being processed, advance called.");
         try {
-            advance(msg_restant, e);
+            advance(moreMsgToHandle, e);
         }
         catch (RTIinternalError &e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError thrown in tick (Advance)." << std::endl ;
@@ -882,8 +887,8 @@ TimeManagement::tick(TypeException &e)
     delete msg ;
 
     G.Out(pdGendoc," exit  TimeManagement::tick");
-    return msg_restant ;
-}
+    return moreMsgToHandle;
+} /* end of tick */
 
 // ----------------------------------------------------------------------------
 void
@@ -1061,4 +1066,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.67 2010/08/19 10:50:22 erk Exp $
+// $Id: TimeManagement.cc,v 3.68 2010/11/20 16:39:28 erk Exp $

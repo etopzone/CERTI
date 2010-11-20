@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>// ---------------------------------------------
-// Global constant
+// Global constant or types
 // ---------------------------------------------
 const   int nbFederate = 2;
 typedef int[1,nbFederate] FederateRange;
+
+typedef int[0,1] BoolRange;
+typedef int[0,10] MinTimeRange;
+typedef int[0,10] MaxTimeRange;
 
 // ---------------------------------------------
 // Global communication channels (synchro)
@@ -20,7 +24,7 @@ chan Tick_rqStop[FederateRange];
 bool multiple[FederateRange] = {false, false};
 
 // Is there more callbacks to handle?
-bool result[FederateRange]   = {false, false};
+bool moreMsg[FederateRange]   = {false, false};
 
 // Does current tick has minTime
 int minTime[FederateRange] = {0,0}; 
@@ -42,18 +46,15 @@ int maxTime[FederateRange]= {0,0};
 clock h;
 
 // The number of callback to be processed
-int nbCallbacks=0;</declaration><location id="id0" x="0" y="-480"><name x="-42" y="-510">TICK_NEXT</name></location><location id="id1" x="-352" y="-160"><name x="-408" y="-136">TICK_CALLBACK</name></location><location id="id2" x="-344" y="-480"><name x="-368" y="-464">TICK_BLOCKING</name></location><location id="id3" x="8" y="-168"><name x="-30" y="-130">TICK_RETURN</name></location><location id="id4" x="-600" y="-312"><name x="-632" y="-344">NO_TICK</name></location><init ref="id4"/><transition><source ref="id1"/><target ref="id0"/><label kind="assignment" x="-360" y="-344">result[FedRank]=true, h=0</label></transition><transition><source ref="id2"/><target ref="id2"/><label kind="guard" x="-424" y="-592">h &lt;= minTime[FedRank]</label><nail x="-392" y="-544"/><nail x="-336" y="-568"/><nail x="-288" y="-536"/></transition><transition><source ref="id2"/><target ref="id0"/><label kind="assignment" x="-192" y="-504">h=0</label></transition><transition><source ref="id1"/><target ref="id3"/></transition><transition><source ref="id4"/><target ref="id1"/><label kind="synchronisation" x="-592" y="-208">Tick_rq[FedRank]?</label><label kind="assignment" x="-600" y="-192">result[FedRank]=false</label></transition><transition><source ref="id4"/><target ref="id2"/><label kind="guard" x="-640" y="-472">minTime[FedRank] &gt;= 0</label><label kind="synchronisation" x="-632" y="-448">Tick_rq[FedRank]?</label><label kind="assignment" x="-664" y="-424">result[FedRank]=false, h=0</label></transition></template><template><name>libRTI</name><parameter>FederateRange FedRank</parameter><declaration>// libRTI is the library linked with the Federate
-typedef int[0,1] BoolRange;
-typedef int[0,10] MinRange;
-typedef int[0,10] MaxRange;
+int nbCallbacks=0;</declaration><location id="id0" x="128" y="-480"><name x="86" y="-510">TICK_NEXT</name></location><location id="id1" x="-352" y="-160"><name x="-408" y="-136">TICK_CALLBACK</name></location><location id="id2" x="-344" y="-480"><name x="-368" y="-464">TICK_BLOCKING</name></location><location id="id3" x="128" y="-160"><name x="90" y="-122">TICK_RETURN</name></location><location id="id4" x="-600" y="-312"><name x="-632" y="-344">NO_TICK</name></location><init ref="id4"/><transition><source ref="id0"/><target ref="id3"/><label kind="guard" x="68" y="-350">h &gt;= maxTime[FedRank]</label></transition><transition><source ref="id0"/><target ref="id1"/><label kind="guard" x="-416" y="-376">multiple[FedRank] and h &lt; maxTime[FedRank]</label><nail x="-64" y="-408"/><nail x="-240" y="-288"/></transition><transition><source ref="id1"/><target ref="id0"/><label kind="assignment" x="-112" y="-280">moreMsg[FedRank]=true</label><nail x="-176" y="-248"/><nail x="0" y="-368"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="guard" x="-424" y="-592">h &lt;= minTime[FedRank]</label><nail x="-392" y="-544"/><nail x="-336" y="-568"/><nail x="-288" y="-536"/></transition><transition><source ref="id2"/><target ref="id0"/><label kind="select" x="-264" y="-544">timeAdvance : BoolRange, fedCallback: BoolRange</label><label kind="guard" x="-216" y="-528">timeAdvance &gt; 0 or fedCallback &gt; 0</label><label kind="assignment" x="-240" y="-512">nbCallbacks++, moreMsg[FedRank]=true</label></transition><transition><source ref="id1"/><target ref="id3"/></transition><transition><source ref="id4"/><target ref="id1"/><label kind="synchronisation" x="-592" y="-208">Tick_rq[FedRank]?</label><label kind="assignment" x="-640" y="-184">moreMsg[FedRank]=false, h=0</label></transition><transition><source ref="id4"/><target ref="id2"/><label kind="guard" x="-640" y="-472">minTime[FedRank] &gt;= 0</label><label kind="synchronisation" x="-632" y="-448">Tick_rq[FedRank]?</label><label kind="assignment" x="-664" y="-424">moreMsg[FedRank]=false, h=0</label></transition></template><template><name>libRTI</name><parameter>FederateRange FedRank</parameter><declaration>// libRTI is the library linked with the Federate
 
 void
-buildTickMessageContent(BoolRange mult, MinRange min, MaxRange max) 
+buildTickMessageContent(BoolRange mult, MinTimeRange min, MaxTimeRange max) 
 {
    multiple[FedRank] = mult ? true : false;
    minTime[FedRank]  = min;
    maxTime[FedRank]  = min + max;
-}</declaration><location id="id5" x="248" y="56"><name x="238" y="26">HANDLE_CALLBACK</name></location><location id="id6" x="88" y="-192"><name x="40" y="-224">TICKING</name></location><location id="id7" x="-320" y="48"><name x="-400" y="8">NOT_TICKING</name></location><init ref="id7"/><transition><source ref="id5"/><target ref="id6"/><label kind="synchronisation" x="248" y="-168">Tick_rqNext[FedRank]!</label><nail x="272" y="-88"/><nail x="208" y="-184"/></transition><transition><source ref="id5"/><target ref="id7"/><label kind="synchronisation" x="-112" y="64">Tick_rqStop[FedRank]!</label></transition><transition><source ref="id6"/><target ref="id5"/></transition><transition><source ref="id6"/><target ref="id7"/><label kind="synchronisation" x="-144" y="-40">Tick_rq[FedRank]?</label><nail x="-72" y="-64"/><nail x="-176" y="-32"/></transition><transition><source ref="id7"/><target ref="id6"/><label kind="select" x="-408" y="-224">selmult : BoolRange, min : MinRange, max : MaxRange</label><label kind="synchronisation" x="-304" y="-208">Tick_rq[FedRank]!</label><label kind="assignment" x="-376" y="-192">buildTickMessageContent(selmult,min,max)</label><nail x="-224" y="-96"/><nail x="-120" y="-136"/></transition></template><system>// Place template instantiations here.
+}</declaration><location id="id5" x="248" y="56"><name x="238" y="26">HANDLE_CALLBACK</name></location><location id="id6" x="88" y="-192"><name x="40" y="-224">TICKING</name></location><location id="id7" x="-320" y="48"><name x="-400" y="8">NOT_TICKING</name></location><init ref="id7"/><transition><source ref="id5"/><target ref="id6"/><label kind="synchronisation" x="248" y="-168">Tick_rqNext[FedRank]!</label><nail x="272" y="-88"/><nail x="208" y="-184"/></transition><transition><source ref="id5"/><target ref="id7"/><label kind="synchronisation" x="-112" y="64">Tick_rqStop[FedRank]!</label></transition><transition><source ref="id6"/><target ref="id5"/></transition><transition><source ref="id6"/><target ref="id7"/><label kind="synchronisation" x="-144" y="-40">Tick_rq[FedRank]?</label><nail x="-72" y="-64"/><nail x="-176" y="-32"/></transition><transition><source ref="id7"/><target ref="id6"/><label kind="select" x="-456" y="-224">selmult : BoolRange, min : MinTimeRange, max : MaxTimeRange</label><label kind="synchronisation" x="-304" y="-208">Tick_rq[FedRank]!</label><label kind="assignment" x="-376" y="-192">buildTickMessageContent(selmult,min,max)</label><nail x="-224" y="-96"/><nail x="-120" y="-136"/></transition></template><system>// Place template instantiations here.
 // We instantiate 2 federates (libRTIs) with their corresponding RTIAs
 libRTI_1 = libRTI(1);
 libRTI_2 = libRTI(2);

@@ -1331,11 +1331,13 @@ RTIA::processOngoingTick() {
 			/* a callback was evoked decide how to continue */
 			if (tm->_tick_result &&
 					tm->_tick_multiple &&
-					1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick)
+					1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick) {
 				tm->_tick_state = TimeManagement::TICK_CALLBACK;
-			else
+			}
+			else {
 				tm->_tick_state = TimeManagement::TICK_RETURN;
-            /* unconditionnal return */
+			}
+            /* Unconditional return */
 			return;
 
 		case TimeManagement::TICK_CALLBACK:
