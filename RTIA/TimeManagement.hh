@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.27 2010/11/19 13:12:11 erk Exp $
+// $Id: TimeManagement.hh,v 3.28 2010/11/20 16:52:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -80,10 +80,14 @@ public:
     void nextEventRequestAvailable(FederationTime heure_logique, TypeException &e);
 
     /**
-     * Federate calls either nextEventRequest or timeAdvanceRequest to determine
+     * Try to deliver some message to the federate (command or FIFO)
+     * and then try to advance time and deliver TSO messages.
+     * The method will call either @ref advance which in turn
+     * will call @ref nextEventAdvance or @ref timeAdvance to determine
      * which time to attain. It then calls tick() until a timeAdvanceGrant is
      * made.
      * @param[out] e exception which may have occurred during tick
+     * @return true if there is more message for the federate to handle
      */
     bool tick(TypeException &e);
 
@@ -106,8 +110,8 @@ public:
     FederationTimeDelta requestLookahead();
     FederationTime requestMinNextEventTime();
     FederationTime requestLBTS() { return _LBTS ; };
-    bool requestContraintState() { return _est_contraint ; };
-    bool requestRegulateurState() { return _est_regulateur ; };
+    bool requestContraintState() { return _is_constrained ; };
+    bool requestRegulateurState() { return _is_regulating ; };
 
     /**
      * The different tick state values.
@@ -150,9 +154,11 @@ private:
 
     /**
      * Main time advancing method.
-     * This method is called by tick().
+     * This method is called by @ref tick().
      * Calls are dispatched between timeAdvance (TAR/TARA) and nextEventAdvance (NER/NERA)
      * depending on current time advancing method.
+     * @param[out] msg_restant
+     * @param[out] e exception will be updated to
      */
     void advance(bool &msg_restant, TypeException &e);
 
@@ -162,6 +168,7 @@ private:
      * federate and if no messages are available, delivers a TimeAdvanceGrant.
      */
     void timeAdvance(bool &msg_restant, TypeException &e);
+
     /**
      * This method is called by @ref advance which is called by tick. This call
      * is done only if request type does correspond. It delivers TSO messages to
@@ -174,7 +181,16 @@ private:
      * advanced and send a timeAdvanceGrant to federate.
      */
     void timeAdvanceGrant(FederationTime, TypeException& e);
+
+    /**
+     * Not implemented.
+     */
     void flushQueueRequest(FederationTime, TypeException& e);
+
+    /**
+     * Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
+     * @param[in] msg the message to be handled.
+     */
     bool executeFederateService(NetworkMessage &msg);
     /**
      * Send a null message to RTIG containing Logicaal Time + Lookahead.
@@ -206,10 +222,10 @@ private:
     TypeGrantedState _type_granted_state ; 
 
     // Federate Data
-    FederationTime _heure_courante ;
+    FederationTime      _heure_courante ;
     FederationTimeDelta _lookahead_courant ;
-    bool _est_regulateur ;
-    bool _est_contraint ;
+    bool _is_regulating;
+    bool _is_constrained;
 
 };
 
@@ -217,4 +233,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.27 2010/11/19 13:12:11 erk Exp $
+// $Id: TimeManagement.hh,v 3.28 2010/11/20 16:52:44 erk Exp $

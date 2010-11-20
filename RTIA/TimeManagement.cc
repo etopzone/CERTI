@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.68 2010/11/20 16:39:28 erk Exp $
+// $Id: TimeManagement.cc,v 3.69 2010/11/20 16:52:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -62,7 +62,7 @@ TimeManagement::advance(bool &msg_restant, TypeException &e)
                                      // cas d'attente active pendant
                                      // une pause.
     }
-}
+} /* advance */
 
 // ----------------------------------------------------------------------------
 //! Constructor.
@@ -89,14 +89,13 @@ TimeManagement::TimeManagement(Communications *GC,
 
     _heure_courante = 0.0 ;
     _lookahead_courant = 0.0 ;
-    _est_regulateur = false ;
-    _est_contraint = false ;
-}
+    _is_regulating = false ;
+    _is_constrained = false ;
+} /* end of TimeManagement */
 
 // ----------------------------------------------------------------------------
-
-void TimeManagement::sendNullMessage(FederationTime logicalTime)
-{
+void
+TimeManagement::sendNullMessage(FederationTime logicalTime) {
     NM_Message_Null msg ;
 
     // Chandy-Misra NMA indicates that NULL message timestamp
@@ -118,8 +117,8 @@ void TimeManagement::sendNullMessage(FederationTime logicalTime)
     }
 } /* end of sendNullMessage */
 
-void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
-{
+void
+TimeManagement::sendNullPrimeMessage(FederationTime logicalTime) {
     NM_Message_Null_Prime msg ;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
     /*
@@ -143,10 +142,9 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logicalTime)
 } /* end of sendNullPrimeMessage */
 
 // ----------------------------------------------------------------------------
-//! Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
 bool
-TimeManagement::executeFederateService(NetworkMessage &msg)
-{
+TimeManagement::executeFederateService(NetworkMessage &msg) {
+
   G.Out(pdGendoc,"enter TimeManagement::executeFederateService for type %d",msg.getMessageType());
   D.Out(pdRequest, "Execute federate service: Type %d.", msg.getMessageType());
 
@@ -432,14 +430,12 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
     }
     G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
-}
+} /* executeFederateService */
 
 // ----------------------------------------------------------------------------
-//! Not implemented.
 void
 TimeManagement::flushQueueRequest(FederationTime heure_logique,
-                                  TypeException &e)
-{
+                                  TypeException &e) {
     e = e_NO_EXCEPTION ;
 
     // Verifications
@@ -457,7 +453,6 @@ TimeManagement::flushQueueRequest(FederationTime heure_logique,
 }
 
 // ----------------------------------------------------------------------------
-
 void
 TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
 {
@@ -470,7 +465,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
     G.Out(pdGendoc," enter TimeManagement::nextEventAdvance");
     msg_restant = false ;
 
-    if (_est_contraint) {
+    if (_is_constrained) {
 
         // Select lower value between expected time and first TSO message time.
         queues->nextTsoDate(TSOPresent, dateTSO);
@@ -495,7 +490,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
             date_avancee = date_min ;
 
             // If federate is regulating, inform other federate we advanced.
-            if (_est_regulateur)
+            if (_is_regulating)
                 sendNullMessage(date_min);
 
             // Deliver to federate every TSO messages with time
@@ -517,7 +512,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
         else { // date_min < _LBTS
             // Federate can't advance up to expected time but up to LBTS. Other
             // federates are informed and no TSO message are sent.
-            if (_est_regulateur) {
+            if (_is_regulating) {
             	/* The following NULL message is part of the classical CMB NULL MESSAGE algorithm */
                 sendNullMessage(_LBTS);
                 /**
@@ -538,7 +533,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
 
         // In this case, federate can advance freely. Moreover, there must be no
         // message in TSO list.
-        if (_est_regulateur)
+        if (_is_regulating)
             sendNullMessage(date_avancee);
 
         timeAdvanceGrant(date_avancee, e);
@@ -677,7 +672,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 
         // On previent les autres en leur envoyant un message NULL qui contient
         // notre temps local + le Lookahead.
-        if (_est_regulateur)
+        if (_is_regulating)
             sendNullMessage(_heure_courante);
 
         D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant.getTime());
@@ -694,14 +689,14 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 
     // Verifications
 
-    if (_est_contraint == etat)
+    if (_is_constrained == etat)
         e = e_RTIinternalError ;
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_RTIinternalError ;
 
     if (e == e_NO_EXCEPTION) {
-        _est_contraint = etat ;
+        _is_constrained = etat ;
 
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
@@ -734,7 +729,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 
     // Verifications
 
-    if (_est_regulateur == etat) {
+    if (_is_regulating == etat) {
         e = e_RTIinternalError ;
         D.Out(pdRegister,
               "erreur e_RTIinternalError : federe deja regulateur");
@@ -747,7 +742,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 
     // Si aucune erreur, prevenir le RTIG et devenir regulateur.
     if (e == e_NO_EXCEPTION) {
-        _est_regulateur = etat ;
+        _is_regulating = etat ;
 
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
@@ -847,16 +842,16 @@ TimeManagement::tick(TypeException &e)
     if (!oneMsgToHandle) {
         if ( _asynchronous_delivery              ||
         	(_avancee_en_cours != PAS_D_AVANCEE) ||
-        	(! _est_contraint)) {
+        	(! _is_constrained)) {
         	D.Out(pdDebug,"FIFO message to be delivered async_deliver=%d, _avancee=%d, constrained=%d",
-        	        		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
+        	        		  _asynchronous_delivery,_avancee_en_cours,_is_constrained);
           // to exclude the case not asynchronous_delivery and
           // not time advancing for a constrained federate
           msg = queues->giveFifoMessage(oneMsgToHandle, moreMsgToHandle);
         }
         else {
           D.Out(pdDebug,"FIFO message skipped async_deliver=%d, _avancee=%d, constrained=%d",
-        		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
+        		  _asynchronous_delivery,_avancee_en_cours,_is_constrained);
         }
     }
 
@@ -900,7 +895,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
     G.Out(pdGendoc," enter TimeManagement::timeAdvance");
     msg_restant = false ;
 
-    if (_est_contraint) {
+    if (_is_constrained) {
         // give a TSO message.
         if (_LBTS.isPositiveInfinity())
            D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee.getTime());
@@ -1008,7 +1003,7 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
-        if (_est_regulateur) {
+        if (_is_regulating) {
             sendNullMessage(logical_time);
         }
 
@@ -1048,7 +1043,7 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
 
-        if (_est_regulateur) {
+        if (_is_regulating) {
             sendNullMessage(logical_time);
         }
 
@@ -1066,4 +1061,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.68 2010/11/20 16:39:28 erk Exp $
+// $Id: TimeManagement.cc,v 3.69 2010/11/20 16:52:44 erk Exp $
