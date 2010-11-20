@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.17 2009/11/24 21:44:48 erk Exp $
+// $Id: RTI.hh,v 3.18 2010/11/20 18:10:12 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -49,6 +49,9 @@ public:
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 
+	/**
+	 * RTI (RunTime Infrastructure) Ambassador class.
+	 */
     class RTI_EXPORT RTIambassador
     {
     public:
@@ -58,6 +61,9 @@ public:
 	RTIambPrivateRefs* privateRefs ;
     };
 
+    /**
+     * Federate Ambassador class.
+     */
     class RTI_EXPORT FederateAmbassador
     {
     public:

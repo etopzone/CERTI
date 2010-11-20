@@ -24,6 +24,9 @@ namespace rti1516
 
 namespace rti1516
 {
+  /**
+   * RTI (RunTime Infrastructure) Ambassador class.
+   */
   class RTI_EXPORT RTIambassador
   {
   protected:
@@ -35,6 +38,11 @@ namespace rti1516
       ~RTIambassador();
     // throw ()
 
+    /**
+     * @defgroup IEEE1516_FederationManagement Federation Management
+     * @ingroup  IEEE1516_RTI_Ambassador
+     * @{
+     */
     // 4.2
     virtual void createFederationExecution
     (std::wstring const & federationExecutionName,
@@ -171,6 +179,8 @@ namespace rti1516
       throw (FederateNotExecutionMember,
              SaveInProgress,
              RTIinternalError) = 0;
+
+    /** @} end group IEEE1516_FederationManagement */
 
     /////////////////////////////////////
     // Declaration Management Services //
