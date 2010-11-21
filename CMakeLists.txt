@@ -136,9 +136,9 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
   # we may add -Wextra if we want gcc to _really_ scream
   set(CXXSTD "c++98")
-  if (CMAKE_SYSTEM_MATCHES "SunOS")
+  if (CMAKE_SYSTEM MATCHES "SunOS")
      set(CXXSTD "gnu++98")    
-  endif(CMAKE_SYSTEM_MATCHES "SunOS")
+  endif(CMAKE_SYSTEM MATCHES "SunOS")
   # we need gnu++98 for long long and uint64 definition on some architecture 
   # (e.g. Solaris 8 + gcc 3.4.x)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
