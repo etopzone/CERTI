@@ -21,10 +21,10 @@ INCLUDE(CheckLibraryExists)
 
 # Test 32/64 bits 
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
-   message(STATUS "Host is a 64 bits") 
+   message(STATUS "Host is 64 bits") 
    add_definitions(-DHOST_IS_64BITS)
 else("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
-   message(STATUS "Host is a 32 bits")
+   message(STATUS "Host is 32 bits")
 endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
 # Test Endianess
 INCLUDE(TestBigEndian)
@@ -135,7 +135,13 @@ IF(CMAKE_COMPILER_IS_GNUCC)
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
   # we may add -Wextra if we want gcc to _really_ scream
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -ansi -Wall -Woverloaded-virtual -Wno-unused-function")
+  set(CXXSTD "c++98")
+  if (CMAKE_SYSTEM_MATCHES "SunOS")
+     set(CXXSTD "gnu++98")    
+  endif(CMAKE_SYSTEM_MATCHES "SunOS")
+  # we need gnu++98 for long long and uint64 definition on some architecture 
+  # (e.g. Solaris 8 + gcc 3.4.x)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
 
