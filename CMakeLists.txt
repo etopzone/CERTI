@@ -19,10 +19,21 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 
+# Test 32/64 bits 
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+   message(STATUS "Host is a 64 bits") 
+   add_definitions(-DHOST_IS_64BITS)
+else("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+   message(STATUS "Host is a 32 bits")
+endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+# Test Endianess
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
 IF(BIG_ENDIAN)
+   message(STATUS "Host is Big Endian")
    ADD_DEFINITIONS(-DHOST_IS_BIG_ENDIAN)
+ELSE(BIG_ENDIAN)
+   message(STATUS "Host is Little Endian")
 ENDIF(BIG_ENDIAN)
 
 # default behaviour is to build library as shared on all platform
