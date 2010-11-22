@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.34 2010/08/11 16:45:14 erk Exp $
+// $Id: RTIA.cc,v 3.35 2010/11/22 14:56:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -156,8 +156,9 @@ RTIA::execute() {
             break ;
           case 1:
             processNetworkMessage(msg_tcp_udp);
-            if (tm->_tick_state == TimeManagement::TICK_BLOCKING)
+            if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {
                 processOngoingTick();
+            }
             break ;
           case 2:
             processFederateRequest(msg_un);
@@ -177,4 +178,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.34 2010/08/11 16:45:14 erk Exp $
+// $Id: RTIA.cc,v 3.35 2010/11/22 14:56:53 erk Exp $

@@ -100,7 +100,7 @@ throw (SaveInProgress, RestoreInProgress)
 void
 RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 {
-	G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->getMessageType());
+	G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for msg <%s> (type=%d)",req->getMessageName(), req->getMessageType());
 
 	// Verify not in saving or restoring state.
 	// May throw SaveInProgress or RestoreInProgress
@@ -1217,7 +1217,8 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		TRq = static_cast<M_Tick_Request *>(req);
 		// called when tick() is invoked
 		if (tm->_tick_state != TimeManagement::NO_TICK) {
-			throw RTIinternalError("TICK_REQUEST cannot be called recursively");
+
+			throw RTIinternalError(stringize() << "TICK_REQUEST cannot be called recursively (state=" << static_cast<int>(tm->_tick_state) <<")");
 		}
 
 		tm->_tick_multiple = TRq->getMultiple();
@@ -1302,7 +1303,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	default:
 		D.Out(pdExcept,
-				"Receiving Message from Federate, Unknown Type %d.", req->getMessageType());
+				"Receiving Message from Federate, Unknown Type %s/%d.", req->getMessageName(), req->getMessageType());
 		throw RTIinternalError("");
 	}
 	stat.federateService(req->getMessageType());
@@ -1329,10 +1330,12 @@ RTIA::processOngoingTick() {
 
 		case TimeManagement::TICK_NEXT:
 			/* a callback was evoked decide how to continue */
-			if (tm->_tick_result &&
-					tm->_tick_multiple &&
-					1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick) {
-				tm->_tick_state = TimeManagement::TICK_CALLBACK;
+			if (tm->_tick_result   &&
+				tm->_tick_multiple &&
+				1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick) {
+
+
+			    tm->_tick_state = TimeManagement::TICK_CALLBACK;
 			}
 			else {
 				tm->_tick_state = TimeManagement::TICK_RETURN;
