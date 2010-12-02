@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.123 2010/11/19 20:32:26 erk Exp $
+// $Id: RTIambassador.cc,v 3.124 2010/12/02 07:31:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -208,6 +208,12 @@ throw (RTI::MemoryExhausted, RTI::RTIinternalError)
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 	ZeroMemory( &pi, sizeof(pi) );
+	/*
+	 * Avoid displaying console window
+	 * when running RTIA.
+	 */
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
 
 #if !defined(RTIA_USE_TCP)
 	SOCKET newPipeFd;
@@ -2866,4 +2872,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.123 2010/11/19 20:32:26 erk Exp $
+// $Id: RTIambassador.cc,v 3.124 2010/12/02 07:31:19 erk Exp $
