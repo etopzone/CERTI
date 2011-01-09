@@ -283,7 +283,7 @@ ENDIF (LIBXML2_FOUND)
 IF (NOT FORCE_NO_X11)
     FIND_PACKAGE(X11)
 ELSE(NOT FORCE_NO_X11)
-    MESSAGE(STATUS "FORCE_NO_X11 OPTION has been  set: Billard Test Application will not have GUI.")
+    MESSAGE(STATUS "FORCE_NO_X11 OPTION has been set: only Billard Test Application with no GUI will be built.")
     SET(X11_FOUND 0)
 ENDIF(NOT FORCE_NO_X11)
 
@@ -351,10 +351,6 @@ IF (X11_FOUND)
 ELSE (X11_FOUND)
   SET(X_DISPLAY_MISSING 1)
 ENDIF (X11_FOUND)
-
-IF(X_DISPLAY_MISSING)
-  MESSAGE(STATUS "Some X11 header were not found: Billard Test Application will not have GUI.")
-ENDIF(X_DISPLAY_MISSING)
 
 ################ LEX YACC Check ####################
 FIND_PACKAGE(LexYacc)

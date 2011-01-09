@@ -1,13 +1,22 @@
-
 # FIXME I do not remember why this should be static?
 # on non WINDOWS platform
-IF (WIN32 AND MINGW)
-    ADD_LIBRARY(graph graph_c.cc)
-ELSE(WIN32 AND MINGW)
-    ADD_LIBRARY(graph STATIC graph_c.cc)
-ENDIF(WIN32 AND MINGW)
+set(BESTATIC "")
+if (WIN32 AND MINGW)
+    set(BESTATIC "STATIC")
+endif(WIN32 AND MINGW)
 
-INSTALL(TARGETS graph
+add_library(graph-nogui ${BESTATIC} graph_c.cc)
+set_target_properties(graph-nogui PROPERTIES COMPILE_FLAGS "-DX_DISPLAY_MISSING=1")
+
+install(TARGETS graph-nogui
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
+    
+if (NOT X11_DISPLAY_MISSING)
+   add_library(graph ${BESTATIC} graph_c.cc)
+   install(TARGETS graph
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+endif(NOT X11_DISPLAY_MISSING)

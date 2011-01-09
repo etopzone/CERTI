@@ -96,9 +96,6 @@
 /* Version number of package */
 #cmakedefine VERSION "@PACKAGE_VERSION@"
 
-/* Define to 1 if the X Window System is missing or not being used. */
-#cmakedefine X_DISPLAY_MISSING 1
-
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
    `char[]'. */
 #cmakedefine YYTEXT_POINTER 1
