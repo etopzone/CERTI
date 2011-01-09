@@ -70,7 +70,17 @@
 \endverbatim
  * - Debian/Ubuntu Linux
 \verbatim
- apt-get install libxml2-devel
+ apt-get install libxml2-dev
+\endverbatim
+ *
+ * X11 (optionally, to enable billard example with a graphical animation)
+ * - Fedora Linux
+\verbatim
+yum install libX11-devel
+\endverbatim
+ * - Debian/Ubuntu Linux
+\verbatim
+apt-get install libx11-dev
 \endverbatim
  *
  * \section certi_unix_build Building CERTI on Unix with Makefile generator
@@ -84,7 +94,7 @@
  *     this should create a certi-\<version\>-Source directory
  * </li>
 \verbatim
- tar zxvf certi-3.2.4-Source.tar.gz
+ tar zxvf certi-3.4.0-Source.tar.gz
  ... wait for tar ending ...
 \endverbatim
  * <li>Prepare separate build directory and run CMake
@@ -169,4 +179,4 @@
  *  
  */
 
-// $Id: build.dox,v 3.2 2008/10/27 10:26:50 erk Exp $
+// $Id: build.dox,v 3.3 2011/01/09 18:19:52 erk Exp $
