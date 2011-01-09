@@ -34,7 +34,7 @@
  * CMake 
  * - Windows installer
  *   - http://www.cmake.org/HTML/Download.html
- * - Fedora Linux
+ * - RedHat/Fedora/CentOS Linux
 \verbatim
  yum install cmake
 \endverbatim
@@ -48,7 +48,7 @@
  *   - http://gnuwin32.sourceforge.net/packages/flex.htm
  *   - http://gnuwin32.sourceforge.net/packages/bison.htm
  *   - http://gnuwin32.sourceforge.net/packages/m4.htm
- * - Fedora Linux
+ * - RedHat/Fedora/CentOS Linux
 \verbatim
  yum install flex bison
 \endverbatim
@@ -64,7 +64,7 @@
  * libxml2 (optionally, to enable federation save and restore)
  * - Windows installer
  *   - http://www.zlatkovic.com/libxml.en.html
- * - Fedora Linux
+ * - RedHat/Fedora/CentOS Linux
 \verbatim
  yum install libxml2-devel
 \endverbatim
@@ -74,13 +74,17 @@
 \endverbatim
  *
  * X11 (optionally, to enable billard example with a graphical animation)
- * - Fedora Linux
+ * - RedHat/Fedora/CentOS Linux
 \verbatim
 yum install libX11-devel
 \endverbatim
+ * - Older RedHat/Fedora/CentOS Linux
+\verbatim
+yum install xorg-x11-xbitmaps
+\endverbatim
  * - Debian/Ubuntu Linux
 \verbatim
-apt-get install libx11-dev
+apt-get install libx11-dev xbitmaps
 \endverbatim
  *
  * \section certi_unix_build Building CERTI on Unix with Makefile generator
@@ -179,4 +183,4 @@ apt-get install libx11-dev
  *  
  */
 
-// $Id: build.dox,v 3.3 2011/01/09 18:19:52 erk Exp $
+// $Id: build.dox,v 3.4 2011/01/09 18:30:45 erk Exp $
