@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.137 2010/11/09 22:24:26 erk Exp $
+// $Id: Federation.cc,v 3.138 2011/01/11 12:29:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -72,6 +72,7 @@ namespace rtig {
 
 static PrettyDebug D("FEDERATION", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug DNULL("RTIG_NULLMSG","[RTIG NULL MSG]");
 
 /**
  * \defgroup certi_FOM_FileSearch CERTI FOM file search algorithm
@@ -2081,8 +2082,10 @@ throw (FederateNotExecutionMember,
 		msg.setFederate(federate_handle);
 	}
 	msg.setDate(time);
+	DNULL.Out(pdDebug,"Snd NULL MSG (Federate=%d, Time = %f)",
+	                    msg.getFederate(), msg.getDate().getTime());
 	broadcastAnyMessage(&msg, federate_handle, anonymous);
-}
+} /* end of updateRegulator */
 
 // ----------------------------------------------------------------------------
 // isOwner (isAttributeOwnedByFederate)
@@ -2739,5 +2742,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.137 2010/11/09 22:24:26 erk Exp $
+// $Id: Federation.cc,v 3.138 2011/01/11 12:29:40 erk Exp $
 

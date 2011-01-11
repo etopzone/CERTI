@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.109 2010/10/02 13:20:41 erk Exp $
+// $Id: RTIG_processing.cc,v 3.110 2011/01/11 12:29:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,6 +38,7 @@ namespace rtig {
 
 static PrettyDebug D("RTIG", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug DNULL("RTIG_NULLMSG","[RTIG NULL MSG]");
 
 // ----------------------------------------------------------------------------
 //! Creates a new federation.
@@ -499,24 +500,26 @@ RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
 	G.Out(pdGendoc,"exit RTIG::processSetTimeConstrained");
 }
 
-// ----------------------------------------------------------------------------
-//! processMessageNull.
 void
 RTIG::processMessageNull(NetworkMessage *msg, bool anonymous)
 {
 	auditServer << "Date " << msg->getDate().getTime();
 
+	DNULL.Out(pdDebug, "Rcv NULL MSG (Federate=%d, Time = %f)",
+	        msg->getFederate(), msg->getDate().getTime()) ;
 	// Catch all exceptions because RTIA does not expect an answer anyway.
 	try {
 		federations.updateRegulator(msg->getFederation(),
 				msg->getFederate(),
 				msg->getDate(), anonymous);
 	} catch (Exception &e) {}
-}
+} /* end of processMessageNull */
 
 void
 RTIG::processMessageNullPrime(NM_Message_Null_Prime *msg)
 {
+    DNULL.Out(pdDebug, "Rcv NULL PRIME MSG (Federate=%d, Time = %f)",
+                msg->getFederate(), msg->getDate().getTime()) ;
 	/*
 	 * Update the NullPrimeDate of the concerned federate.
 	 * and check the result in order to decide whether
@@ -1567,4 +1570,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.109 2010/10/02 13:20:41 erk Exp $
+// $Id: RTIG_processing.cc,v 3.110 2011/01/11 12:29:40 erk Exp $

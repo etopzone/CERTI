@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.69 2010/11/20 16:52:44 erk Exp $
+// $Id: TimeManagement.cc,v 3.70 2011/01/11 12:29:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,8 +33,10 @@ namespace rtia {
 
 namespace {
 
-PrettyDebug D("RTIA_TM", __FILE__);
+PrettyDebug D("RTIA_TM", "[RTIA TM] ");
 static PrettyDebug G("GENDOC",__FILE__) ;
+static PrettyDebug DNULL("RTIA_NULLMSG","[RTIA NULL MSG] ");
+
 const double epsilon2 = 1.0e-4 ;
 
 }
@@ -109,10 +111,10 @@ TimeManagement::sendNullMessage(FederationTime logicalTime) {
 
         comm->sendMessage(&msg);
         lastNullMessageDate = logicalTime ;
-        D.Out(pdDebug, "NULL message sent (Time = %f).", logicalTime.getTime()) ;
+        DNULL.Out(pdDebug, "NULL message sent (Time = %f).", logicalTime.getTime()) ;
     }
     else {
-        D.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
+        DNULL.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
               logicalTime.getTime(), lastNullMessageDate.getTime());
     }
 } /* end of sendNullMessage */
@@ -132,10 +134,10 @@ TimeManagement::sendNullPrimeMessage(FederationTime logicalTime) {
         msg.setDate(logicalTime) ;
         comm->sendMessage(&msg);
         lastNullPrimeMessageDate = logicalTime ;
-        D.Out(pdDebug, "NULL PRIME message sent (Time = %f).", logicalTime.getTime()) ;
+        DNULL.Out(pdDebug, "NULL PRIME message sent (Time = %f).", logicalTime.getTime()) ;
     }
     else {
-        D.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
+        DNULL.Out(pdExcept, "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
               logicalTime.getTime(), lastNullMessageDate.getTime(), lastNullPrimeMessageDate.getTime());
     }
 #endif
@@ -1061,4 +1063,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.69 2010/11/20 16:52:44 erk Exp $
+// $Id: TimeManagement.cc,v 3.70 2011/01/11 12:29:40 erk Exp $

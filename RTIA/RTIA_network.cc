@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.40 2010/11/08 15:31:34 erk Exp $
+// $Id: RTIA_network.cc,v 3.41 2011/01/11 12:29:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,8 +35,9 @@
 namespace certi {
 namespace rtia {
 
-static PrettyDebug D("RTIA", "(RTIA net) ");
+static PrettyDebug D("RTIA", "[RTIA net] ");
 static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug DNULL("RTIA_NULLMSG","[RTIA NULL MSG] ");
 
 // ----------------------------------------------------------------------------
 //! RTIA processes a message coming from network.
@@ -56,6 +57,8 @@ NetworkMessage::Type msgType = msg->getMessageType();
                 msg->getDate().getTime());
 
           //msg->show(std::cout);
+          DNULL.Out(pdDebug, "NULL message received (Federate=%d, Time = %f)",
+                            msg->getFederate(), msg->getDate().getTime()) ;
           tm->update(msg->getFederate(), msg->getDate());
           delete msg ;
           break ;
@@ -401,4 +404,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.40 2010/11/08 15:31:34 erk Exp $
+// $Id: RTIA_network.cc,v 3.41 2011/01/11 12:29:40 erk Exp $
