@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.17 2010/06/10 08:31:52 erk Exp $
+// $Id: BasicMessage.cc,v 3.18 2011/01/18 13:26:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -123,11 +123,11 @@ void BasicMessage::deserialize(MessageBuffer& msgBuffer) {
 	}
 	_isLabelled = msgBuffer.read_bool();
 	if (_isLabelled) {
-		msgBuffer.read_string(label);
+		setLabel(msgBuffer.read_string());
 	}
 	_isTagged = msgBuffer.read_bool();
 	if (_isTagged) {
-		msgBuffer.read_string(tag);
+	    setTag(msgBuffer.read_string());
 	}
 } /* end of deserialize */
 
@@ -298,4 +298,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.17 2010/06/10 08:31:52 erk Exp $
+// $Id: BasicMessage.cc,v 3.18 2011/01/18 13:26:21 erk Exp $

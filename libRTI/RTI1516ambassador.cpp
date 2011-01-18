@@ -122,10 +122,7 @@ namespace rti1516
 	}
 
 	std::string varLengthDataAsString(VariableLengthData varLengthData) {
-		char *buf = (char*) calloc(varLengthData.size() + 1, sizeof(char));
-		memcpy(buf, varLengthData.data(), varLengthData.size());
-		std::string retVal(buf);
-		free(buf);
+		std::string retVal( (char*)varLengthData.data(), varLengthData.size() );
 		return retVal;
 	}
 
