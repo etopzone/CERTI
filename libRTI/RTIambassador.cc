@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.124 2010/12/02 07:31:19 erk Exp $
+// $Id: RTIambassador.cc,v 3.125 2011/01/31 11:34:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -1065,16 +1065,6 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 
 // ----------------------------------------------------------------------------
 // Update Attribute Values with time
-/** Realization of the Create Federation Execution federation management service
-    with time (HLA 1.3).
-    Provide current values to the federation for instance attributes owned by
-    the federate.
-    Un event retraction designator is returned.
-    @param theObject     Object instance designator
-    @param theAttributes Set of attribute designator and value pairs
-    @param theTime       Federation time
-    @param theTag        User supplied tag
- */
 RTI::EventRetractionHandle
 RTI::RTIambassador::
 updateAttributeValues(ObjectHandle theObject,
@@ -1223,13 +1213,6 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 }
 
 // ----------------------------------------------------------------------------
-/** Delete Object with time
-    This service (HLA 1.3) deletes an object instance.
-    As the federation time argument is supplied, an event retraction designator is returned.
-    @param theObject Object designator
-    @param theTime Federation time
-    @param theTag user supplied tag
- */
 RTI::EventRetractionHandle
 RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 		const RTI::FedTime& theTime,
@@ -1262,11 +1245,6 @@ throw (RTI::ObjectNotKnown,
 		}
 
 // ----------------------------------------------------------------------------
-/** Delete Object without time
-    This service (HLA 1.3) deletes an object instance.
-    @param theObject Object designator
-    @param theTag user supplied tag
- */
 void
 RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 		const char *theTag)
@@ -2872,4 +2850,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.124 2010/12/02 07:31:19 erk Exp $
+// $Id: RTIambassador.cc,v 3.125 2011/01/31 11:34:53 erk Exp $

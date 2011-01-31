@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.10 2010/11/19 20:32:26 erk Exp $
+// $Id: RTIambServices.hh,v 3.11 2011/01/31 11:34:53 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -146,6 +146,14 @@ ObjectHandle registerObjectInstance(ObjectClassHandle)
     throw (ObjectClassNotDefined, ObjectClassNotPublished, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Update Attribute Values (with time) service (HLA 1.3, §6.4).
+ * Provide current values to the federation for instance attributes owned by
+ * the federate.
+ * @param[in] object     Object instance designator
+ * @param[in] attributes Set of attribute designator and value pairs
+ * @param[in] tag        User supplied tag
+ */
 EventRetractionHandle updateAttributeValues(ObjectHandle, const AttributeHandleValuePairSet &,
 					    const FedTime &, const char *)
     throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned, InvalidFederationTime,
@@ -153,12 +161,12 @@ EventRetractionHandle updateAttributeValues(ObjectHandle, const AttributeHandleV
 	   RestoreInProgress, RTIinternalError);
 
 /**
- * Realization of the Update Attribute Values (without time) service (HLA 1.3).
- *  Provide current values to the federation for instance attributes owned by
- *  the federate.
- *   @param object     Object instance designator
- *   @param attributes Set of attribute designator and value pairs
- *   @param tag        User supplied tag
+ * Update Attribute Values (without time) service (HLA 1.3, §6.4).
+ * Provide current values to the federation for instance attributes owned by
+ * the federate.
+ * @param[in] object     Object instance designator
+ * @param[in] attributes Set of attribute designator and value pairs
+ * @param[in] tag        User supplied tag
  */
 void updateAttributeValues(ObjectHandle object, const AttributeHandleValuePairSet& attributes, const char * tag)
     throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned, FederateNotExecutionMember,
@@ -184,10 +192,24 @@ void sendInteraction(InteractionClassHandle, const ParameterHandleValuePairSet &
 	   FederateNotExecutionMember, ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress,
 	   RTIinternalError);
 
+/**
+ * Delete Object with time
+ * This service (HLA 1.3, §6.8) deletes an object instance.
+ * As the federation time argument is supplied, an event retraction designator is returned.
+ * @param theObject Object designator
+ * @param theTime Federation time
+ * @param theTag user supplied tag
+ */
 EventRetractionHandle deleteObjectInstance(ObjectHandle, const FedTime &, const char *)
     throw (ObjectNotKnown, DeletePrivilegeNotHeld, InvalidFederationTime, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
 
+/**
+ * Delete Object without time
+ * This service (HLA 1.3) deletes an object instance.
+ * @param theObject Object designator
+ * @param theTag user supplied tag
+ */
 void deleteObjectInstance(ObjectHandle, const char *)
     throw (ObjectNotKnown, DeletePrivilegeNotHeld, FederateNotExecutionMember,
 	   ConcurrentAccessAttempted, SaveInProgress, RestoreInProgress, RTIinternalError);
@@ -784,4 +806,4 @@ Region *getRegion(RegionToken)
 
 
 
-// $Id: RTIambServices.hh,v 3.10 2010/11/19 20:32:26 erk Exp $
+// $Id: RTIambServices.hh,v 3.11 2011/01/31 11:34:53 erk Exp $
