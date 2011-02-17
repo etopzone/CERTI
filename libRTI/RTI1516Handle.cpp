@@ -88,20 +88,19 @@ namespace rti1516
 	/* handles to other federates in updates or interactions. */ \
 	VariableLengthData HandleKind::encode() const                \
 	{                                                            \
-		VariableLengthData c;                                    \
-		return c;                                                \
+		return _impl->encode();                                  \
 	}                                                            \
 	                                                             \
 	/* Alternate encode for directly filling a buffer         */ \
 	unsigned long HandleKind::encodedLength() const              \
 	{                                                            \
-	    return 0;                                                \
+		return _impl->encodedLength();                           \
 	}                                                            \
 	unsigned long HandleKind::encode(                            \
 	void* buffer, unsigned long bufferSize) const                \
 	throw (CouldNotEncode)                                       \
 	{                                                            \
-		return 0L;                                               \
+		return _impl->encode( buffer, bufferSize );              \
 	}                                                            \
 	                                                             \
 	std::wstring HandleKind::toString() const                    \
