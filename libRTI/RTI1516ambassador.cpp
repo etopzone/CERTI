@@ -37,28 +37,13 @@ namespace rti1516
 
 		req.setParametersSize(PHVM.size());
 		req.setValuesSize(PHVM.size());
-		std::vector<certi::ParameterValue_t*> parameterValueVector;
-		parameterValueVector.resize(PHVM.size());
 		uint32_t i = 0;
 		for ( rti1516::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i)
 		{
 			req.setParameters(ParameterHandleFriend::toCertiHandle(it->first),i);
-			char *buf = (char*) calloc(it->second.size() + 1, sizeof(char));
-			memcpy(buf, it->second.data(), it->second.size());
-			certi::ParameterValue_t* paramValue = new certi::ParameterValue_t(buf);
-			free(buf);
-			parameterValueVector[i] = paramValue;
-			req.setValues(*paramValue, i);  
+			req.setValues(certi::ParameterValue_t( (char*)it->second.data(), it->second.size() ), i);
 		}
-
-		try {
-			privateRefs->executeService(&req, &rep);
-		} catch (...) {
-			struct Deletor<certi::ParameterValue_t> paramValueDeletor;
-			//delete parameter values
-			std::for_each(parameterValueVector.begin(),parameterValueVector.end(),paramValueDeletor);
-			throw;
-		}
+		privateRefs->executeService(&req, &rep);
 	}
 
 	template<typename T>
@@ -67,58 +52,26 @@ namespace rti1516
 
 		req.setAttributesSize(AHVM.size());
 		req.setValuesSize(AHVM.size());
-		struct Deletor<certi::AttributeValue_t> attrValueDeletor;
-		std::vector<certi::AttributeValue_t*> attributeValueVector;
-		attributeValueVector.resize(AHVM.size());
 		uint32_t i = 0;
 		for ( rti1516::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i)
 		{
 			req.setAttributes(AttributeHandleFriend::toCertiHandle(it->first),i);
-			char *buf = (char*) calloc(it->second.size() + 1, sizeof(char));
-			memcpy(buf, it->second.data(), it->second.size());
-			certi::AttributeValue_t* attrValue = new certi::AttributeValue_t(buf);
-			free(buf);
-			attributeValueVector[i] = attrValue;
-			req.setValues(*attrValue, i);  
+			req.setValues(certi::AttributeValue_t( (char*)it->second.data(),it->second.size() ), i);
 		}
-
-		try {
-			privateRefs->executeService(&req, &rep);
-		} catch (...) {
-			//delete attribute values
-			std::for_each(attributeValueVector.begin(),attributeValueVector.end(),attrValueDeletor);
-			throw;
-		}
-
-		//delete attribute values
-		std::for_each(attributeValueVector.begin(),attributeValueVector.end(),attrValueDeletor);
+		privateRefs->executeService(&req, &rep);
 	}
 
 	template<typename T>
 	void
 	RTI1516ambassador::assignAHSAndExecuteService(const rti1516::AttributeHandleSet &AHS, T &req, T &rep) {
 		req.setAttributesSize(AHS.size());
-		struct Deletor<certi::AttributeHandle> attrHandleDeletor;
-		std::vector<certi::AttributeHandle*> attributeHandleVector;
-		attributeHandleVector.resize(AHS.size());
 		uint32_t i = 0;
 		for ( rti1516::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i)
 		{
 			certi::AttributeHandle certiHandle = AttributeHandleFriend::toCertiHandle(*it);
 			req.setAttributes(certiHandle,i);
-			attributeHandleVector[i] = &certiHandle;
 		}
-
-		try {
-			privateRefs->executeService(&req, &rep);
-		} catch (...) {
-			//delete attribute handles
-			std::for_each(attributeHandleVector.begin(),attributeHandleVector.end(),attrHandleDeletor);
-			throw;
-		}
-
-		//delete attribute handles
-		std::for_each(attributeHandleVector.begin(),attributeHandleVector.end(),attrHandleDeletor);
+		privateRefs->executeService(&req, &rep);
 	}
 
 	std::string varLengthDataAsString(VariableLengthData varLengthData) {
