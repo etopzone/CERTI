@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.2 2010/05/31 09:33:25 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.3 2011/02/18 11:25:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,7 @@
 #include <RTI/certiLogicalTimeInterval.h>
 #include <RTI/certiLogicalTimeFactory.h>
 #include "RTI1516HandleFactory.h"
+#include "RTI1516fedTime.h"
 
 #include "PrettyDebug.hh"
 #include "M_Classes.hh"
@@ -893,7 +894,7 @@ throw (rti1516::RTIinternalError)
 				certi::FederateHandle certiHandle = RAV->getEventRetraction().getSendingFederate();
 				rti1516::MessageRetractionHandle event = rti1516::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+				std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 				fed_amb->reflectAttributeValues(instance, //ObjectInstanceHandle
 						*attributes,							  //AttributeHandleValueMap &
@@ -932,7 +933,7 @@ throw (rti1516::RTIinternalError)
 				certi::FederateHandle certiHandle = RI->getEventRetraction().getSendingFederate();
 				rti1516::MessageRetractionHandle event = rti1516::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+				std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 				fed_amb->receiveInteraction(
 						interactionHandle,						// InteractionClassHandle
@@ -972,7 +973,7 @@ throw (rti1516::RTIinternalError)
 				certi::FederateHandle certiHandle = ROI->getEventRetraction().getSendingFederate();
 				rti1516::MessageRetractionHandle event = rti1516::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+				std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 				fed_amb->removeObjectInstance(
 						instance,
@@ -1156,7 +1157,7 @@ throw (rti1516::RTIinternalError)
 
 	case Message::TIME_ADVANCE_GRANT:
 		try {
-			std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+			std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 			fed_amb->timeAdvanceGrant(*fedTime);
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeAdvanceGrant")
@@ -1164,7 +1165,7 @@ throw (rti1516::RTIinternalError)
 
 	case Message::TIME_REGULATION_ENABLED:
 		try {
-			std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+			std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 			fed_amb->timeRegulationEnabled(*fedTime);
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeRegulationEnabled")
@@ -1172,7 +1173,7 @@ throw (rti1516::RTIinternalError)
 
 	case Message::TIME_CONSTRAINED_ENABLED:
 		try {
-			std::auto_ptr < rti1516::LogicalTime > fedTime = getLogicalTime();
+			std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 			fed_amb->timeConstrainedEnabled(*fedTime);
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeConstrainedEnabled")
@@ -1205,4 +1206,4 @@ throw (rti1516::RTIinternalError)
 	}
 }
 
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.2 2010/05/31 09:33:25 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.3 2011/02/18 11:25:39 erk Exp $
