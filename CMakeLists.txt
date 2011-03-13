@@ -386,8 +386,13 @@ SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
 
 # Handle CPack-generator specific configuration
 ADD_CUSTOM_TARGET(PACKAGE_TYPE
-		  COMMAND ${CMAKE_COMMAND} -DSRCDIR="${CERTI_SOURCE_DIR}" -DDSTDIR="${CERTI_BINARY_DIR}" -DMSVC=${MSVC} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_CFG_INTDIR=${CMAKE_CFG_INTDIR} -P ${CERTI_SOURCE_DIR}/scripts/GeneratePackageType.cmake)
-		   
+       COMMAND ${CMAKE_COMMAND} 
+                 -DSRCDIR="${CERTI_SOURCE_DIR}"
+                 -DDSTDIR="${CERTI_BINARY_DIR}"
+                 -DMSVC=${MSVC} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} 
+                 -DCMAKE_CFG_INTDIR=${CMAKE_CFG_INTDIR}
+                 -P ${CERTI_SOURCE_DIR}/scripts/GeneratePackageType.cmake)
+
 CONFIGURE_FILE("${CERTI_SOURCE_DIR}/CERTICPackOptions.cmake.in"
                "${CERTI_BINARY_DIR}/CERTICPackOptions.cmake" @ONLY)
 SET(CPACK_PROJECT_CONFIG_FILE "${CERTI_BINARY_DIR}/CERTICPackOptions.cmake")
@@ -452,17 +457,17 @@ ENDIF (WIN32)
 
 include(SystemSpecificInformations)
 
-IF (SPECIFIC_COMPILER_NAME)
-    SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME}-${SPECIFIC_COMPILER_NAME})
-ELSE (SPECIFIC_COMPILER_NAME)
-    SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME})
+IF(SPECIFIC_COMPILER_NAME)
+  SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME}-${SPECIFIC_COMPILER_NAME})
+ELSE(SPECIFIC_COMPILER_NAME)
+  SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME})
 ENDIF(SPECIFIC_COMPILER_NAME)
 
 # Avoid putting BUILDIR inside source package (simple case)
 IF ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
-     SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*")
+   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*")
 ELSE ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
-     SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*;${CMAKE_BINARY_DIR}/*")
+   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*;${CMAKE_BINARY_DIR}/*")
 ENDIF ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
 
 SET(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
