@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.83 2010/08/20 15:15:32 erk Exp $
+// $Id: ObjectClass.cc,v 3.84 2011/03/25 19:28:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -112,7 +112,6 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
     // 2. Update message attribute list by removing child's attributes.
     if ((ocbList->getMsg()->getMessageType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
         (ocbList->getMsg()->getMessageType() == NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
-
         for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
             // If the attribute is not in that class, remove it from the message.
             if (hasAttribute(ocbList->getMsgRAV()->getAttributes(attr))) {
@@ -1225,7 +1224,6 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
            RTIinternalError)
 {
     // Pre-conditions checking
-
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (unsigned index = 0 ; index < theAttributeList.size() ; index++)
         getAttribute(theAttributeList[index]);
@@ -1241,12 +1239,13 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     int compteur_assumption = 0 ;
     int compteur_acquisition = 0 ;
-    NM_Request_Attribute_Ownership_Assumption *AnswerAssumption = NULL ;
+    NM_Unconditional_Attribute_Ownership_Divestiture *AnswerAssumption = NULL ;
     ObjectClassBroadcastList *List = NULL ;
     FederateHandle NewOwner ;
-
+    
     if (server != NULL) {
-        AnswerAssumption = new NM_Request_Attribute_Ownership_Assumption();
+      
+        AnswerAssumption = new NM_Unconditional_Attribute_Ownership_Divestiture();
         AnswerAssumption->setAttributesSize(theAttributeList.size());
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
@@ -1286,7 +1285,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 compteur_assumption++ ;
             }
         }
-
+	
         if (compteur_assumption != 0) {
             AnswerAssumption->setFederation(server->federation());
             AnswerAssumption->setFederate(theFederateHandle);
@@ -1306,7 +1305,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         }
         else
             delete AnswerAssumption ;
-
+	
         if (compteur_acquisition != 0) {
         	NM_Attribute_Ownership_Acquisition_Notification AOAN;
             diffusionAcquisition->size =compteur_acquisition ;
@@ -1712,4 +1711,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.83 2010/08/20 15:15:32 erk Exp $
+// $Id: ObjectClass.cc,v 3.84 2011/03/25 19:28:58 erk Exp $
