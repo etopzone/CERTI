@@ -20,12 +20,12 @@ INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 
 # Test 32/64 bits 
-if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    message(STATUS "Host is 64 bits") 
    add_definitions(-DHOST_IS_64BITS)
-else("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+else("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    message(STATUS "Host is 32 bits")
-endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+endif("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 # Test Endianess
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
