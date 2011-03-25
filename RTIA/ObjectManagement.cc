@@ -65,6 +65,29 @@ ObjectManagement::ObjectManagement(Communications *GC,
 
 ObjectManagement::~ObjectManagement() { }
 
+// ----------------------------------------------------------------------------
+void
+ObjectManagement::reserveObjectName(const std::string &newObjName, TypeException &e)
+{
+    NM_Reserve_Object_Instance_Name req;
+
+    //  Empty strings not allowed
+    if (newObjName.size() <= 0 ||
+        // According to spec, the HLA prefix is reserved for RTI-internal objects.
+        newObjName.compare(0, 3, "HLA") == 0 )
+    {
+        e = e_IllegalName;
+    } else {
+        req.setFederation(fm->_numero_federation);
+        req.setFederate(fm->federate);
+
+        req.setObjectName(newObjName);
+
+        comm->sendMessage(&req);
+    }
+    // JvY TODO: Finish handling on other side (and return path)
+}
+
 
 // ----------------------------------------------------------------------------
 //! registerObject

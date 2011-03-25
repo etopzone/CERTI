@@ -393,11 +393,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		ROINr = static_cast<M_Reserve_Object_Instance_Name *>(rep);
 		
 		ROINr->setObjectName(ROINq->getObjectName());
-
-		ddm->reserveObjectName(ROINq->getObjectName(), e);
-
-		
-
+		om->reserveObjectName(ROINq->getObjectName(), e);
 		break;
 	}
 

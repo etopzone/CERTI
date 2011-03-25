@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.67 2010/10/02 13:20:39 erk Exp $
+// $Id: RTIG.cc,v 3.68 2011/03/25 20:53:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -281,6 +281,12 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processSetAttributeScopeAdvisorySwitch(link,
 			static_cast<NM_Set_Attribute_Scope_Advisory_Switch*>(msg));
 	break;
+	
+      case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME:
+        Debug(D, pdTrace) << "reserveObjectInstanceName" << endl ;
+        auditServer.setLevel(6);
+        processReserveObjectInstanceName(link, static_cast<NM_Reserve_Object_Instance_Name*>(msg));
+        break;
 
       case NetworkMessage::REGISTER_OBJECT:
         D.Out(pdTrace, "registerObject.");
@@ -1048,4 +1054,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.67 2010/10/02 13:20:39 erk Exp $
+// $Id: RTIG.cc,v 3.68 2011/03/25 20:53:53 erk Exp $

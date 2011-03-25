@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.37 2010/08/09 07:05:47 erk Exp $
+// $Id: DataDistribution.cc,v 3.38 2011/03/25 20:53:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -247,29 +247,6 @@ throw (RegionNotKnown)
 
 } /* end of associateRegion */
 
-// ----------------------------------------------------------------------------
-void 
-DataDistribution::reserveObjectName(const std::string &newObjName, TypeException &e)
-{
-	NM_Reserve_Object_Instance_Name req;
-
-	//  Empty strings not allowed
-	if (newObjName.size() <= 0 ||
-		// According to spec, the HLA prefix is reserved for RTI-internal objects.
-		newObjName.compare(0, 3, "HLA") == 0 )
-	{
-		e = e_IllegalName;
-	} else {
-		req.setFederation(fm->_numero_federation);
-		req.setFederate(fm->federate);
-
-		req.setObjectName(newObjName);
-
-		comm->sendMessage(&req);
-	}
-	// JvY TODO: Finish handling on other side (and return path)
-}
-
 
 ObjectHandle
 DataDistribution::registerObject(ObjectClassHandle class_handle,
@@ -445,4 +422,4 @@ throw (RegionNotKnown)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.37 2010/08/09 07:05:47 erk Exp $
+// $Id: DataDistribution.cc,v 3.38 2011/03/25 20:53:54 erk Exp $

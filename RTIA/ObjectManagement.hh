@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.38 2010/11/15 13:15:46 erk Exp $
+// $Id: ObjectManagement.hh,v 3.39 2011/03/25 20:53:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -42,6 +42,8 @@ public:
     ~ObjectManagement();
 
     // Object Management services
+    void reserveObjectName(const std::string &, TypeException &);
+
     ObjectHandle registerObject(ObjectClassHandle theClassHandle,
                                 const std::string& theObjectName,
                                 FederationTime date,
@@ -313,4 +315,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.38 2010/11/15 13:15:46 erk Exp $
+// $Id: ObjectManagement.hh,v 3.39 2011/03/25 20:53:54 erk Exp $
