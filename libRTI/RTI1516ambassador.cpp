@@ -1086,8 +1086,10 @@ namespace rti1516
 		G.Out(pdGendoc,"enter RTI1516ambassador::requestObjectAttributeValueUpdate");
 		req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
+		size_t attr_num = theAttributes.size();
+		req.setAttributesSize( attr_num );
 		uint32_t i = 0;
-		for ( rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
+		for ( rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); i < attr_num; ++it, ++i)
 		{
 			req.setAttributes(AttributeHandleFriend::toCertiHandle(*it),i);
 		}
