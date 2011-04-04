@@ -1215,7 +1215,7 @@ namespace rti1516
 		M_Attribute_Ownership_Acquisition req, rep ;
 
 		req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-		if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data())
+		if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL )
 		{
 			throw RTIinternalError (L"Calling attributeOwnershipAcquisition with Tag NULL") ;
 		}
