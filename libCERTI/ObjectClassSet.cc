@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.52 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.53 2011/04/11 11:44:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -560,20 +560,20 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     // Broadcast ReflectAttributeValues message recursively
     currentClass = objectClass->getSuperclass();
 
-    while (currentClass != 0) {
-        D.Out(pdProtocol,
-              "Broadcasting UAOD msg to parent class %d for instance %d.",
-              currentClass, object->getHandle());
+    if (ocbList != NULL) {
+      while (currentClass != 0) {
+          D.Out(pdProtocol,
+                "Broadcasting UAOD msg to parent class %d for instance %d.",
+                currentClass, object->getHandle());
 
-        // It may throw ObjectClassNotDefined
-        objectClass = getObjectFromHandle(currentClass);
-        objectClass->broadcastClassMessage(ocbList);
-
-        currentClass = objectClass->getSuperclass();
+          // It may throw ObjectClassNotDefined
+          objectClass = getObjectFromHandle(currentClass);
+          objectClass->broadcastClassMessage(ocbList);
+          currentClass = objectClass->getSuperclass();
+      }
+      delete ocbList ;
     }
-
-    delete ocbList ;
-}
+} /* end of unconditionalAttributeOwnershipDivestiture */
 
 // ----------------------------------------------------------------------------
 //! attributeOwnershipAcquisition.
@@ -591,7 +591,7 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 {
     // It may throw ObjectNotKnown
     ObjectClass * objectClass = getInstanceClass(object->getHandle());
-
+    
     // It may throw a bunch of exceptions.
     objectClass->attributeOwnershipAcquisition(theFederateHandle, object, theAttributeList, theTag);
 }
@@ -634,4 +634,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.52 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.53 2011/04/11 11:44:11 erk Exp $

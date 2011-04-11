@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.85 2011/04/11 11:14:15 erk Exp $
+// $Id: ObjectClass.cc,v 3.86 2011/04/11 11:44:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1209,17 +1209,21 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
            RTIinternalError)
 {
     // Pre-conditions checking
-    // Do all attribute handles exist ? It may throw AttributeNotDefined.
-    for (unsigned index = 0 ; index < theAttributeList.size() ; index++)
+    // Do all attribute handles exist?
+    // If not then AttributeNotDefined will be thrown.
+    for (unsigned index = 0 ; index < theAttributeList.size() ; index++) {
         getAttribute(theAttributeList[index]);
+    }
 
-    //Le federe est-il proprietaire de tous les attributs
+    // Is the federate the owner of all the attributes?
     ObjectAttribute * oa ;
     for (unsigned i = 0 ; i < theAttributeList.size() ; i++) {
         oa = object->getAttribute(theAttributeList[i]);
-
         if (oa->getOwner() != theFederateHandle)
-            throw AttributeNotOwned("");
+            throw AttributeNotOwned(stringize() << "federate <"
+                                                << theFederateHandle
+                                                << "> not owner of attribute <"
+                                                << oa->getHandle()<<">, it is=<"<<oa->getOwner()<<">.");
     }
 
     int compteur_assumption = 0 ;
@@ -1284,8 +1288,9 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
             broadcastClassMessage(List);
         }
-        else
-            delete AnswerAssumption ;
+        else {
+            delete AnswerAssumption;
+        }
 	
         if (compteur_acquisition != 0) {
         	NM_Attribute_Ownership_Acquisition_Notification AOAN;
@@ -1670,4 +1675,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.85 2011/04/11 11:14:15 erk Exp $
+// $Id: ObjectClass.cc,v 3.86 2011/04/11 11:44:11 erk Exp $
