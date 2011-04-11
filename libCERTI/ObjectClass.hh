@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.55 2010/10/02 13:20:42 erk Exp $
+// $Id: ObjectClass.hh,v 3.56 2011/04/11 11:14:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -47,22 +47,6 @@ class    ObjectClassBroadcastList;
 #include <string>
 
 namespace certi {
-
-class CDiffusion
-{
-public:
-	typedef struct {
-		FederateHandle federate ;
-		AttributeHandle attribute ;
-
-	} DiffStruct ;
-
-	std::vector <DiffStruct> DiffArray ;
-
-	int size ;
-
-	CDiffusion() { size = 0 ; };
-};
 
 /**
  *  OMT object class.
@@ -138,8 +122,12 @@ public:
 	 */
 	ObjectClassSet* getSubClasses() {return subClasses;}
 
-	// Security Methods
-	void checkFederateAccess(FederateHandle, const std::string&)
+	/**
+	 *  Checks whether if federate is allowed to access the object class
+	 *  @throw SecurityError if the Federate is not allowed to access the
+	 *         Object Class, and print an Audit message containing reason.
+	 */
+	void checkFederateAccess(FederateHandle, const std::string& reason)
 	throw (SecurityError);
 
 	SecurityLevelID getSecurityLevelId() const { return securityLevelId ; }
@@ -287,7 +275,23 @@ private:
 
 	void sendToFederate(NetworkMessage *msg, FederateHandle theFederate);
 
-	void sendToOwners(CDiffusion *diffusionList,
+	/**
+	 * Simple private inner-class.
+	 */
+	class  DiffusionPair {
+	public:
+	       DiffusionPair(FederateHandle federate, AttributeHandle attribute)
+	       {this->federate=federate; this->attribute=attribute;}
+	       FederateHandle federate ;
+	       AttributeHandle attribute ;
+	};
+
+	typedef std::vector<DiffusionPair> CDiffusion;
+
+	/**
+	 * Send the message (msg) to owners using the diffusion list.
+	 */
+	void sendToOwners(CDiffusion& diffusionList,
 			Object* object,
 			FederateHandle theFederate,
 			const std::string& theTag,
@@ -352,4 +356,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.55 2010/10/02 13:20:42 erk Exp $
+// $Id: ObjectClass.hh,v 3.56 2011/04/11 11:14:15 erk Exp $
