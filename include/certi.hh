@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.50 2010/08/10 16:34:10 erk Exp $
+// $Id: certi.hh,v 3.51 2011/04/26 11:07:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -66,11 +66,9 @@
           #define  CERTI_INT64_FORMAT         "ll"
        #endif
     #endif
-    #if defined(CERTI_EXPORTS)
-		#define CERTI_EXPORT __declspec(dllexport)
-	#else
-		#define CERTI_EXPORT __declspec(dllimport)
-	#endif
+    #define ANY_DLL_EXPORT __declspec(dllexport)
+    #define ANY_DLL_IMPORT __declspec(dllimport)
+    #define ANY_DLL_LOCAL
 #else
     #include <inttypes.h>
     #define  STAT_FUNCTION		stat
@@ -82,7 +80,21 @@
        #define  CERTI_INT64_CONSTANT(val)  (val##LL)
        #define  CERTI_INT64_FORMAT         "ll"
     #endif
-	#define CERTI_EXPORT
+    #if (__GNUC__ >= 4)
+       #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+   #else
+       #define ANY_DLL_EXPORT
+       #define ANY_DLL_IMPORT
+       #define ANY_DLL_LOCAL
+    #endif
+#endif
+
+#if defined(CERTI_EXPORTS)
+    #define CERTI_EXPORT ANY_DLL_EXPORT
+#else
+    #define CERTI_EXPORT ANY_DLL_IMPORT
 #endif
 
 #define CERTI_UINT64_SWAP_LE_BE_CONSTANT(val)	((uint64_t) ( \
@@ -311,4 +323,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.50 2010/08/10 16:34:10 erk Exp $
+// $Id: certi.hh,v 3.51 2011/04/26 11:07:38 erk Exp $

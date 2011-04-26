@@ -1,6 +1,6 @@
 # FIXME I do not remember why this should be static?
 # on non WINDOWS platform
-set(BESTATIC "")
+set(BESTATIC "STATIC")
 if (WIN32 AND MINGW)
     set(BESTATIC "STATIC")
 endif(WIN32 AND MINGW)

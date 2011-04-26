@@ -1,28 +1,39 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.18 2010/11/20 18:10:12 erk Exp $
+// $Id: RTI.hh,v 3.19 2011/04/26 11:07:38 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__CYGWIN__)
 	#pragma warning(disable: 4290)
 	#pragma warning(disable: 4275)
 	#pragma warning(disable: 4251)
 	#pragma warning(disable: 4273)
 	#pragma warning(disable: 4996)
-	#if defined(RTI_EXPORTS)
-		#define RTI_EXPORT __declspec(dllexport)
-	#else
-		#define RTI_EXPORT __declspec(dllimport)
-	#endif
-    #if defined(FedTime_EXPORTS)
-        #define FEDTIME_EXPORT __declspec(dllexport)
-    #else
-        #define FEDTIME_EXPORT __declspec(dllimport)
-    #endif
+	#define ANY_DLL_EXPORT __declspec(dllexport)
+	#define ANY_DLL_IMPORT __declspec(dllimport)
+	#define ANY_DLL_LOCAL
 #else
-	#define RTI_EXPORT
-    #define FEDTIME_EXPORT
+    #if (__GNUC__ >= 4)
+       #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+    #else
+       #define ANY_DLL_EXPORT
+       #define ANY_DLL_IMPORT
+       #define ANY_DLL_LOCAL
+    #endif
+#endif
+
+#if defined(RTI_EXPORTS)
+    #define RTI_EXPORT ANY_DLL_EXPORT
+#else
+    #define RTI_EXPORT ANY_DLL_IMPORT
+#endif
+#if defined(FedTime_EXPORTS)
+    #define FEDTIME_EXPORT ANY_DLL_EXPORT
+#else
+    #define FEDTIME_EXPORT ANY_DLL_IMPORT
 #endif
 
 #ifdef RTI_USES_STD_FSTREAM

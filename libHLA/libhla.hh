@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: libhla.hh,v 1.5 2010/03/28 16:08:33 erk Exp $
+// $Id: libhla.hh,v 1.6 2011/04/26 11:07:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBHLA_HH_INCLUDED
@@ -39,15 +39,27 @@ typedef short int         int_least16_t;
 #include <inttypes.h>
 #endif
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__CYGWIN__)
     #pragma warning(disable: 4251)
-    #if defined(HLA_EXPORTS)
-        #define HLA_EXPORT __declspec(dllexport)
-    #else
-        #define HLA_EXPORT __declspec(dllimport)
-    #endif
+    #define ANY_DLL_EXPORT __declspec(dllexport)
+    #define ANY_DLL_IMPORT __declspec(dllimport)
+    #define ANY_DLL_LOCAL
 #else
-    #define HLA_EXPORT
+    #if (__GNUC__ >= 4)
+       #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
+       #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+    #else
+       #define ANY_DLL_EXPORT
+       #define ANY_DLL_IMPORT
+       #define ANY_DLL_LOCAL
+    #endif
+#endif
+
+#if defined(HLA_EXPORTS)
+    #define HLA_EXPORT ANY_DLL_EXPORT
+#else
+    #define HLA_EXPORT ANY_DLL_IMPORT
 #endif
 
 #include <string>

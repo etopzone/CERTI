@@ -6,7 +6,7 @@
 #include "SHMSysV.hh"
 #include "SocketSHM.hh"
 
-class SocketSHMSysV : public SocketSHM {
+class CERTI_EXPORT SocketSHMSysV : public SocketSHM {
 private:    
 
 public :

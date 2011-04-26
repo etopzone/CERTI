@@ -121,16 +121,18 @@ ENDIF("${CMAKE_CXX_COMPILER}" MATCHES "ccache")
 # see  http://www.cmake.org/Wiki/CMake:Eclipse
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")  
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden") 
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # Enforce strict ANSI C/C++ compliance checking
 IF(NOT MINGW)
 IF(CMAKE_COMPILER_IS_GNUCC)
-  # we may add -Wextra if we want gcc to _really_ scream
+  # we may add -Wextra if we want gcc to _really_ scream  
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -Wall -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
