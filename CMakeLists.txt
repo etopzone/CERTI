@@ -147,6 +147,13 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
 
+# FIXME currently on MacOS we have a "undefined symbol issue"
+# The toggle to linker flag is a "quick fix" to avoid that
+# but this is not the end of the story we need to fix it for good.
+if (APPLE)
+   set(GLOBAL PROPERTY LINK_FLAGS "-flat_namespace -undefined suppress")
+endif(APPLE)
+
 IF (WIN32)
     IF (MINGW)
         SET(CMAKE_SHARED_LIBRARY_PREFIX "")
