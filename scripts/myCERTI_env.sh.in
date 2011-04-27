@@ -72,6 +72,11 @@ if [ -z "$MODIFPATH" ];
 then
     export LD_LIBRARY_PATH=$MOREPATHLIB:$LD_LIBRARY_PATH
 fi
+MODIFPATHMACOS=`echo $DYLD_LIBRARY_PATH | grep $MOREPATHLIB`
+if [ -z "$MODIFPATH" ];
+then
+    export DYLD_LIBRARY_PATH=$MOREPATHLIB:$DYLD_LIBRARY_PATH
+fi
 
 echo "=========================================================="
 echo "** WARNING ** We hope you have made source myCERTI.sh **"
@@ -82,5 +87,6 @@ echo "CERTI_HOME      = " $CERTI_HOME
 echo "CERTI_FED       = " $CERTI_FED
 echo "PATH            = " $PATH
 echo "LD_LIBRARY_PATH = " $LD_LIBRARY_PATH
+echo "DYLD_LIBRARY_PATH = " $DYLD_LIBRARY_PATH
 
 

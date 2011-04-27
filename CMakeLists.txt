@@ -1,4 +1,3 @@
-
 PROJECT(CERTI CXX)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.4)
@@ -126,7 +125,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden") 
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden") 
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # Enforce strict ANSI C/C++ compliance checking
@@ -146,13 +145,6 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
-
-# FIXME currently on MacOS we have a "undefined symbol issue"
-# The toggle to linker flag is a "quick fix" to avoid that
-# but this is not the end of the story we need to fix it for good.
-if (APPLE)
-   set(GLOBAL PROPERTY LINK_FLAGS "-flat_namespace -undefined suppress")
-endif(APPLE)
 
 IF (WIN32)
     IF (MINGW)
@@ -223,7 +215,9 @@ SET(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
 SET(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS}")
 SET(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
 FIND_LIBRARY(RT_LIBRARY rt)
-SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${RT_LIBRARY})
+if(RT_LIBRARY)
+  SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${RT_LIBRARY})
+endif(RT_LIBRARY)
 
 CHECK_FUNCTION_EXISTS(clock_gettime HAVE_CLOCK_GETTIME)
 CHECK_FUNCTION_EXISTS(clock_settime HAVE_CLOCK_SETTIME)
@@ -374,6 +368,20 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 # Globally used compiler flags
 ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
+
+# FIXME currently on MacOS we have a "undefined symbol issue"
+# The toggle to linker flag is a "quick fix" to avoid that
+# but this is not the end of the story we need to fix it for good.
+if (APPLE)
+   SET (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_INIT} "-flat_namespace -undefined suppress"
+        CACHE STRING "Flags used by the linker during the creation of dll's." FORCE)
+   # module linker flags
+   SET (CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_INIT} "-flat_namespace -undefined suppress"
+        CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
+
+   #set(PROPERTY LINK_FLAGS_DEBUG "-flat_namespace -undefined suppress")
+Endif(APPLE)
+
 
 ADD_SUBDIRECTORY( include )
 ADD_SUBDIRECTORY( libHLA )
