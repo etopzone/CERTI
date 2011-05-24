@@ -134,7 +134,7 @@ rti1516::LogicalTime &
 RTI1516fedTime::operator+=(rti1516::LogicalTimeInterval const & value)
 throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 {
-	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
+	const RTI1516fedTimeInterval * other = dynamic_cast<const RTI1516fedTimeInterval *>(&value);
 	if (other == NULL)
 	{
 #if defined(_WIN32)
@@ -144,7 +144,7 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 #endif
 	} else
 	{
-		_fedTime += other->_fedTime;
+		_fedTime += other->getInterval();
 	}
 
 	return *this;
@@ -155,7 +155,7 @@ rti1516::LogicalTime &
 RTI1516fedTime::operator-=(rti1516::LogicalTimeInterval const & value)
 throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 {
-	const RTI1516fedTime * other = dynamic_cast<const RTI1516fedTime *>(&value);
+	const RTI1516fedTimeInterval * other = dynamic_cast<const RTI1516fedTimeInterval *>(&value);
 	if (other == NULL)
 	{
 #if defined(_WIN32)
@@ -165,7 +165,7 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 #endif
 	} else
 	{
-		_fedTime -= other->_fedTime;
+		_fedTime -= other->getInterval();
 	}
 
 	return *this;
