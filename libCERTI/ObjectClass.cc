@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.86 2011/04/11 11:44:11 erk Exp $
+// $Id: ObjectClass.cc,v 3.87 2011/06/08 14:40:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1227,7 +1227,6 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     }
 
     int compteur_assumption = 0 ;
-    int compteur_acquisition = 0 ;
     NM_Unconditional_Attribute_Ownership_Divestiture *AnswerAssumption = NULL ;
     ObjectClassBroadcastList *List = NULL ;
     FederateHandle NewOwner ;
@@ -1292,7 +1291,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             delete AnswerAssumption;
         }
 	
-        if (compteur_acquisition != 0) {
+        if (!diffusionAcquisition.empty()) {
         	NM_Attribute_Ownership_Acquisition_Notification AOAN;
             sendToOwners(diffusionAcquisition, object,
                          theFederateHandle, "\0",
@@ -1341,11 +1340,6 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     
     //! TODO: replace 'compteur' with 'counter'
     int compteur_notification = 0 ;
-    /*! UPD. these counters are really useless
-     * because they copy the std::vector<> size.
-     */
-    int compteur_divestiture = 0 ;
-    int compteur_release = 0 ;
     FederateHandle oldOwner ;
     if (server != NULL) {
         // The federate have to publish the class
@@ -1405,14 +1399,14 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
         else
             delete AnswerNotification ;
 
-        if (compteur_divestiture != 0) {
+        if (!diffusionDivestiture.empty()) {
         	NM_Attribute_Ownership_Divestiture_Notification AODN;
             sendToOwners(diffusionDivestiture, object,
                          theFederateHandle, "\0",
                          AODN);
         }
 
-        if (compteur_release != 0) {
+        if (!diffusionRelease.empty()) {
         	NM_Request_Attribute_Ownership_Release RAOR;
             sendToOwners(diffusionRelease, object, theFederateHandle,
                          theTag, RAOR);
@@ -1492,7 +1486,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
                 object->setOwner(newOwner);
         }
 
-        if (compteur_acquisition != 0) {
+        if (!diffusionAcquisition.empty()) {
         	NM_Attribute_Ownership_Acquisition_Notification AOAN;
             sendToOwners(diffusionAcquisition, object, the_federate, "\0",AOAN);
         }
@@ -1675,4 +1669,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.86 2011/04/11 11:44:11 erk Exp $
+// $Id: ObjectClass.cc,v 3.87 2011/06/08 14:40:56 erk Exp $
