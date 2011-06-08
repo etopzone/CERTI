@@ -54,7 +54,7 @@ namespace std
 
 namespace rti1516
 {
-  class RTI_EXPORT_FEDTIME LogicalTimeFactory
+  class FEDTIME_EXPORT LogicalTimeFactory
   {
   public:
     virtual
@@ -77,7 +77,7 @@ namespace rti1516
 
 namespace rti1516
 {  
-  class RTI_EXPORT_FEDTIME LogicalTimeFactoryFactory
+  class FEDTIME_EXPORT LogicalTimeFactoryFactory
   {
   public:
 

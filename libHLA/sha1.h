@@ -96,7 +96,7 @@ enum
  *  This structure will hold context information for the SHA-1
  *  hashing operation
  */
-typedef struct HLA_EXPORT SHA1Context
+typedef struct SHA1Context
 {
     uint32_t Intermediate_Hash[SHA1HashSize/4]; /* Message Digest  */
 

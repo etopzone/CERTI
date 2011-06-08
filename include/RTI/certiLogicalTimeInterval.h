@@ -43,7 +43,7 @@ namespace rti1516
 
 namespace rti1516
 {
-  class RTI_EXPORT_FEDTIME LogicalTimeInterval
+  class FEDTIME_EXPORT LogicalTimeInterval
   {
   public:
     virtual

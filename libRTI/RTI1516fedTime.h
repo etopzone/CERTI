@@ -9,7 +9,7 @@ namespace rti1516 {
 	class VariableLengthData;
 }
 
-class RTI_EXPORT_FEDTIME RTI1516fedTime : public rti1516::LogicalTime
+class FEDTIME_EXPORT RTI1516fedTime : public rti1516::LogicalTime
 {
 public:
 	RTI1516fedTime(double timeVal);
@@ -136,7 +136,7 @@ private:
 
 }; // class RTI_EXPORT_FEDTIME RTI1516fedTime
 
-class RTI_EXPORT_FEDTIME RTI1516fedTimeInterval : public rti1516::LogicalTimeInterval
+class FEDTIME_EXPORT RTI1516fedTimeInterval : public rti1516::LogicalTimeInterval
 {
 public:
 	RTI1516fedTimeInterval(double timeVal);
@@ -266,9 +266,9 @@ private:
 	double _epsilon;
 	double _positiveInfinity;
 
-}; // class RTI_EXPORT_FEDTIME RTI1516fedTimeInterval
+}; // class FEDTIME_EXPORT RTI1516fedTimeInterval
 
-class RTI_EXPORT_FEDTIME RTI1516fedTimeFactory : public rti1516::LogicalTimeFactory
+class FEDTIME_EXPORT RTI1516fedTimeFactory : public rti1516::LogicalTimeFactory
 {
 public:
 	virtual
@@ -304,7 +304,7 @@ private:
 	RTI1516fedTimeFactory()
 		throw();
 
-}; // class RTI_EXPORT_FEDTIME RTI1516fedTimeFactory
+}; // class FEDTIME_EXPORT RTI1516fedTimeFactory
 
 
 
@@ -314,7 +314,7 @@ private:
 
 //namespace rti1516
 //{  
-//  class RTI_EXPORT_FEDTIME LogicalTimeFactoryFactory
+//  class FEDTIME_EXPORT LogicalTimeFactoryFactory
 //  {
 //  public:
 //
