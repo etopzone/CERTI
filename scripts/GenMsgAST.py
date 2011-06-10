@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.17 2010/06/24 14:07:05 erk Exp $
+## $Id: GenMsgAST.py,v 1.18 2011/06/10 14:47:19 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1168,40 +1168,40 @@ class ASTChecker(object):
                 else:
                     msg.merge = AST.getType(msg.merge)
 
-        # check the factory methods
-
-        if AST.factory.hasFactoryCreator():
-            if not AST.isDefined(AST.factory.creator[0]):
-                self.logger.fatal('The return type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)'
-                                   % AST.factory.creator[0])
-                self.logger.fatal(' --> Check lines (%d,%d)'
-                                  % AST.factory.linespan + ' of <%s>'
-                                  % AST.name)
-                return
-            if not AST.isDefined(AST.factory.creator[2]):
-                self.logger.fatal('The parameter type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)'
-                                   % AST.factory.creator[2])
-                self.logger.fatal(' --> Check lines (%d,%d)'
-                                  % AST.factory.linespan + ' of <%s>'
-                                  % AST.name)
-
-                return
-
-        if AST.factory.hasFactoryReceiver():
-            if not AST.isDefined(AST.factory.receiver[0]):
-                self.logger.fatal('The return type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)'
-                                   % AST.factory.receiver[0])
-                self.logger.fatal(' --> Check lines (%d,%d)'
-                                  % AST.factory.linespan + ' of <%s>'
-                                  % AST.name)
-                return
-            if not AST.isDefined(AST.factory.receiver[2]):
-                self.logger.fatal('The parameter type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)'
-                                   % AST.factory.receiver[2])
-                self.logger.fatal(' --> Check lines (%d,%d)'
-                                  % AST.factory.linespan + ' of <%s>'
-                                  % AST.name)
-                return
+        # check the factory methods if any
+        if AST.factory != None:
+            if AST.factory.hasFactoryCreator():
+                if not AST.isDefined(AST.factory.creator[0]):
+                    self.logger.fatal('The return type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)'
+                                       % AST.factory.creator[0])
+                    self.logger.fatal(' --> Check lines (%d,%d)'
+                                      % AST.factory.linespan + ' of <%s>'
+                                      % AST.name)
+                    return
+                if not AST.isDefined(AST.factory.creator[2]):
+                    self.logger.fatal('The parameter type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)'
+                                       % AST.factory.creator[2])
+                    self.logger.fatal(' --> Check lines (%d,%d)'
+                                      % AST.factory.linespan + ' of <%s>'
+                                      % AST.name)
+    
+                    return
+    
+            if AST.factory.hasFactoryReceiver():
+                if not AST.isDefined(AST.factory.receiver[0]):
+                    self.logger.fatal('The return type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)'
+                                       % AST.factory.receiver[0])
+                    self.logger.fatal(' --> Check lines (%d,%d)'
+                                      % AST.factory.linespan + ' of <%s>'
+                                      % AST.name)
+                    return
+                if not AST.isDefined(AST.factory.receiver[2]):
+                    self.logger.fatal('The parameter type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)'
+                                       % AST.factory.receiver[2])
+                    self.logger.fatal(' --> Check lines (%d,%d)'
+                                      % AST.factory.linespan + ' of <%s>'
+                                      % AST.name)
+                    return
 
         # Now the AST has been checked successfully
 
