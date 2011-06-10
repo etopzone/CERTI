@@ -199,8 +199,8 @@ void messageBufferTests(libhla::MessageBuffer& MsgBuf) {
 	MsgBuf.updateReservedBytes();
 	cout << "    now (pseudo) sending a buffer of size " << MsgBuf.size() << " bytes ..." << endl;
 	memcpy(MsgBuf2(0),MsgBuf(0),MsgBuf.reservedBytes);
-	printf("MsgBuf = ");MsgBuf.show(MsgBuf(0),MsgBuf.reservedBytes);printf("\n");
-	printf("MsgBuf = ");MsgBuf2.show(MsgBuf(0),MsgBuf2.reservedBytes);printf("\n");
+	 printf("    MsgBuf = ");MsgBuf.show(MsgBuf(0),MsgBuf.reservedBytes);printf("\n");
+	 printf("    MsgBuf2 = ");MsgBuf2.show(MsgBuf(0),MsgBuf2.reservedBytes);printf("\n");
 	cout << "    now (pseudo) receiving buffer header of " << (uint32_t) MsgBuf.reservedBytes << " bytes ..." << endl;
 	cout << "    reconstruct receive buffer size from buffer header ..." <<endl;
 	MsgBuf2.assumeSizeFromReservedBytes();
