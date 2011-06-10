@@ -24,6 +24,80 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MB_IMPLEMENT_SIGNED(type)                \
+        int32_t                     \
+        MB_write_##type##s(MsgBuffer_t* msg,  type##_t* data, uint32_t n) {     \
+    return MB_write_u##type##s(msg, (u##type##_t*)(data),n);  \
+}                           \
+\
+int32_t                     \
+MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n) {        \
+    return MB_read_u##type##s(msg, (u##type##_t*)(data),n); \
+}                               \
+
+#define MB_IMPLEMENT_SINGLE_READ_WRITE(type,suffix)     \
+        MB_IMPLEMENT_SINGLE_READ_WRITE_(type,type##suffix)
+
+#define MB_IMPLEMENT_SINGLE_READ_WRITE2(type)     \
+        MB_IMPLEMENT_SINGLE_READ_WRITE_(type,type)
+
+#define MB_IMPLEMENT_SINGLE_READ_WRITE_(type,datatype)     \
+        int32_t                     \
+        MB_write_##type(MsgBuffer_t* msg,  datatype data) {     \
+    return MB_write_##type##s(msg, &data,1);    \
+}                           \
+\
+int32_t                     \
+MB_read_##type(MsgBuffer_t* msg, datatype* data) {       \
+    return MB_read_##type##s(msg,data,1);  \
+}                                    \
+\
+datatype MB_get_##type(MsgBuffer_t* msg) {\
+    datatype retval;     \
+    MB_read_##type##s(msg,&retval,1);\
+    return retval; \
+}
+
+MB_IMPLEMENT_SINGLE_READ_WRITE(uint8,_t)
+MB_IMPLEMENT_SIGNED(int8)
+MB_IMPLEMENT_SINGLE_READ_WRITE(int8,_t)
+MB_IMPLEMENT_SINGLE_READ_WRITE2(char)
+MB_IMPLEMENT_SINGLE_READ_WRITE(uint16,_t)
+MB_IMPLEMENT_SIGNED(int16)
+MB_IMPLEMENT_SINGLE_READ_WRITE(int16,_t)
+MB_IMPLEMENT_SINGLE_READ_WRITE(uint32,_t)
+MB_IMPLEMENT_SIGNED(int32)
+MB_IMPLEMENT_SINGLE_READ_WRITE(int32,_t)
+MB_IMPLEMENT_SINGLE_READ_WRITE(uint64,_t)
+MB_IMPLEMENT_SIGNED(int64)
+MB_IMPLEMENT_SINGLE_READ_WRITE(int64,_t)
+MB_IMPLEMENT_SINGLE_READ_WRITE2(float)
+MB_IMPLEMENT_SINGLE_READ_WRITE2(double)
+
+int32_t
+MB_write_chars(MsgBuffer_t* msg,  char* data, uint32_t n) {
+    return MB_write_uint8s(msg,(uint8_t*)(data),n);
+}
+
+int32_t
+MB_read_chars(MsgBuffer_t* msg, char* data, uint32_t n) {
+    return MB_read_uint8s(msg,(uint8_t*)(data),n);
+}
+
+int32_t
+MB_write_bool(MsgBuffer_t* msg,  bool_t toggle) {
+    if(toggle) {
+        return MB_write_uint8(msg,1);
+    } else {
+        return MB_write_uint8(msg,0);
+    }
+}
+
+bool_t
+MB_read_bool(MsgBuffer_t* msg) {
+    return (1==MB_get_uint8(msg));
+}
+
 static void MB_initialize(MsgBuffer_t* msg) {
     assert(msg);
     msg->buffer = NULL;

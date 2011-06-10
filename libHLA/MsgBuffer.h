@@ -329,15 +329,10 @@ void MB_assumeSizeFromReservedBytes(MsgBuffer_t* msg);
 
 #define MB_DECLARE_SIGNED(type)                \
         MB_EXPORT int32_t                     \
-        MB_write_##type##s(MsgBuffer_t* msg,  type##_t* data, uint32_t n) {     \
-    return MB_write_u##type##s(msg, (u##type##_t*)(data),n);  \
-}                           \
+        MB_write_##type##s(MsgBuffer_t* msg,  type##_t* data, uint32_t n);\
 \
 MB_EXPORT int32_t                     \
-MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n) {        \
-    return MB_read_u##type##s(msg, (u##type##_t*)(data),n); \
-}                               \
-
+MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n);
 
 #define MB_DECLARE_SINGLE_READ_WRITE(type,suffix)     \
         MB_DECLARE_SINGLE_READ_WRITE_(type,type##suffix)
@@ -345,23 +340,14 @@ MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n) {        \
 #define MB_DECLARE_SINGLE_READ_WRITE2(type)     \
         MB_DECLARE_SINGLE_READ_WRITE_(type,type)
 
-
 #define MB_DECLARE_SINGLE_READ_WRITE_(type,datatype)     \
-        int32_t                     \
-        MB_write_##type(MsgBuffer_t* msg,  datatype data) {     \
-    return MB_write_##type##s(msg, &data,1);    \
-}                           \
+        MB_EXPORT int32_t                     \
+        MB_write_##type(MsgBuffer_t* msg,  datatype data);\
 \
 MB_EXPORT int32_t                     \
-MB_read_##type(MsgBuffer_t* msg, datatype* data) {       \
-    return MB_read_##type##s(msg,data,1);  \
-}                                    \
+MB_read_##type(MsgBuffer_t* msg, datatype* data) ;\
 \
-MB_EXPORT datatype MB_get_##type(MsgBuffer_t* msg) {\
-    datatype retval;     \
-    MB_read_##type##s(msg,&retval,1);\
-    return retval; \
-} 
+MB_EXPORT datatype MB_get_##type(MsgBuffer_t* msg);
 
 MB_EXPORT
 int32_t
@@ -377,15 +363,11 @@ MB_DECLARE_SINGLE_READ_WRITE(int8,_t)
 
 MB_EXPORT
 int32_t
-MB_write_chars(MsgBuffer_t* msg,  char* data, uint32_t n) {
-    return MB_write_uint8s(msg,(uint8_t*)(data),n);
-}
+MB_write_chars(MsgBuffer_t* msg,  char* data, uint32_t n);
 
 MB_EXPORT
 int32_t
-MB_read_chars(MsgBuffer_t* msg, char* data, uint32_t n) {
-    return MB_read_uint8s(msg,(uint8_t*)(data),n);
-}
+MB_read_chars(MsgBuffer_t* msg, char* data, uint32_t n);
 MB_DECLARE_SINGLE_READ_WRITE2(char)
 
 #define MB_write_bytes  MB_write_chars
@@ -459,19 +441,11 @@ MB_read_string(MsgBuffer_t* msg, char* str, uint32_t slen);
 
 MB_EXPORT
 int32_t
-MB_write_bool(MsgBuffer_t* msg,  bool_t toggle) {
-    if(toggle) {
-        return MB_write_uint8(msg,1);
-    } else {
-        return MB_write_uint8(msg,0);
-    }
-}
+MB_write_bool(MsgBuffer_t* msg,  bool_t toggle);
 
 MB_EXPORT
 bool_t
-MB_read_bool(MsgBuffer_t* msg) {
-    return (1==MB_get_uint8(msg));
-}
+MB_read_bool(MsgBuffer_t* msg);
 
 /**
  * Update the reserved bytes area.
