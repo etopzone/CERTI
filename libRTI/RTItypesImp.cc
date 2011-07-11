@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.8 2010/11/10 08:18:47 erk Exp $
+// $Id: RTItypesImp.cc,v 3.9 2011/07/11 11:00:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -406,7 +406,7 @@ void ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet 
 
 void ParameterHandleValuePairSetImp::empty()
 {
-    return _set.clear();
+    _set.clear();
 }
 
 RTI::ULong ParameterHandleValuePairSetImp::start() const
@@ -565,4 +565,4 @@ void RegionImp::commit()
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.8 2010/11/10 08:18:47 erk Exp $
+// $Id: RTItypesImp.cc,v 3.9 2011/07/11 11:00:09 erk Exp $

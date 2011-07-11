@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAvariantRecord.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAvariantRecord.hh,v 1.3 2011/07/11 11:00:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_VARIANTRECORD_HH
@@ -304,9 +304,9 @@ struct HLAvariantField<D, E, M, N, false>
     void copy(int e, void* source)
     {
         if (e == E)
-            return ((M*)this)->copy(source);
+            ((M*)this)->copy(source);
         else
-            return ((N*)this)->copy(e, source);
+            ((N*)this)->copy(e, source);
     }
 
     static const size_t m_octetBoundary = MAX(M::m_octetBoundary, N::m_octetBoundary);
@@ -352,9 +352,9 @@ struct HLAvariantField<D, E, M, N, true>
     void copy(int e, void* source)
     {
         if (e == E)
-            return ((M*)this)->copy(source);
+            ((M*)this)->copy(source);
         else
-            return ((N*)this)->copy(e, source);
+            ((N*)this)->copy(e, source);
     }
 
     static const size_t m_octetBoundary = MAX(M::m_octetBoundary, N::m_octetBoundary);
@@ -404,5 +404,5 @@ struct __FieldAt<HLAvariantEnd, e>
 
 #endif // _HLATYPES_VARIANTRECORD_HH
 
-// $Id: HLAvariantRecord.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAvariantRecord.hh,v 1.3 2011/07/11 11:00:09 erk Exp $
 
