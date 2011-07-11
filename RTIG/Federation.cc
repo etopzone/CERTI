@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.138 2011/01/11 12:29:40 erk Exp $
+// $Id: Federation.cc,v 3.139 2011/07/11 11:17:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -499,7 +499,7 @@ throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 			}
 		}
 	}
-	catch (NetworkError) {
+	catch (NetworkError&) {
 		throw RTIinternalError("Network Error while initializing federate.");
 	}
 
@@ -2742,5 +2742,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.138 2011/01/11 12:29:40 erk Exp $
+// $Id: Federation.cc,v 3.139 2011/07/11 11:17:25 erk Exp $
 

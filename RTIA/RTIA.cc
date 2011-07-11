@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.35 2010/11/22 14:56:53 erk Exp $
+// $Id: RTIA.cc,v 3.36 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -144,7 +144,7 @@ RTIA::execute() {
 
             /* timev is undefined after select() */
         }
-        catch (NetworkSignal) {
+        catch (NetworkSignal&) {
             fm->_connection_state = FederationManagement::CONNECTION_FIN;
             n = 0 ;
             delete msg_un ;
@@ -178,4 +178,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.35 2010/11/22 14:56:53 erk Exp $
+// $Id: RTIA.cc,v 3.36 2011/07/11 11:17:24 erk Exp $

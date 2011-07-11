@@ -13,7 +13,7 @@ public :
                     const SHM_SIDE_t& Socket_Side,
                     const int Socket_Size ); 
     // Destructor
-    ~SocketSHMPosix (); 
+    virtual ~SocketSHMPosix ();
      
     void Open();
     

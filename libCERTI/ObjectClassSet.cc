@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.53 2011/04/11 11:44:11 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.54 2011/07/11 11:17:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -179,7 +179,7 @@ ObjectClassSet::getAttributeHandle(const std::string& the_name,
          G.Out(pdGendoc,"exit ObjectClassSet::getAttributeHandle");
          return handle ;
          }
-    catch ( NameNotFound )
+    catch (NameNotFound& )
          {
          G.Out(pdGendoc,"exit  ObjectClassset::getAttributeHandle on NameNotFound");
          throw NameNotFound (the_name) ;
@@ -634,4 +634,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.53 2011/04/11 11:44:11 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.54 2011/07/11 11:17:26 erk Exp $

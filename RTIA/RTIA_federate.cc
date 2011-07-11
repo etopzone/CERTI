@@ -870,10 +870,10 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 			GOCNr->setClassName(om->getObjectClassName(GOCNq->getObjectClass()));
 			GOCNr->setObjectClass(GOCNq->getObjectClass());
 		}
-		catch (ObjectClassNotDefined) {
+		catch (ObjectClassNotDefined&) {
 			rep->setException(e_ObjectClassNotDefined);
 		}
-		catch (RTIinternalError) {
+		catch (RTIinternalError&) {
 			rep->setException(e_RTIinternalError);
 		}
 	}

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.56 2011/04/11 11:14:15 erk Exp $
+// $Id: ObjectClass.hh,v 3.57 2011/07/11 11:17:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -89,7 +89,7 @@ public:
 	/**
 	 * Destroy an object class.
 	 */
-	~ObjectClass();
+	virtual ~ObjectClass();
 
 	void display() const ;
 
@@ -356,4 +356,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.56 2011/04/11 11:14:15 erk Exp $
+// $Id: ObjectClass.hh,v 3.57 2011/07/11 11:17:26 erk Exp $

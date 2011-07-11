@@ -16,7 +16,7 @@ class HLA_EXPORT SHMWin32 : public SHM {
     public :
     SHMWin32(const std::string& SHMName, const int SHMSize, const bool True) ;
     SHMWin32(const std::string& SHMName, const int SHMSize) ;
-    ~SHMWin32() ;
+    virtual ~SHMWin32() ;
 
     void Open() throw(SharedMemoryNotOpen) ;
     void Attach() throw(SharedMemoryNotAttached) ;

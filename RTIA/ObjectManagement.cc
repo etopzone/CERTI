@@ -802,7 +802,7 @@ ObjectManagement::getObjectClassHandle(const std::string& theName)
 		G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle");
 		return handle;
 	}
-	catch (NameNotFound) {
+	catch (NameNotFound&) {
 		G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
 		throw NameNotFound(theName);
 	}
@@ -847,7 +847,7 @@ ObjectManagement::getAttributeHandle(const std::string& theName,
 		G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle");
 		return handle;
 	}
-	catch (NameNotFound) {
+	catch (NameNotFound&) {
 		G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle on NameNotFound");
 		throw NameNotFound(theName);
 	}

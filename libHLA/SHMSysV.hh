@@ -33,7 +33,7 @@ class HLA_EXPORT SHMSysV : public SHM {
     public :
     SHMSysV(const std::string& SHMName, const int SHMSize, const bool True) ;
     SHMSysV(const std::string& SHMName, const int SHMSize) ;  
-    ~SHMSysV() ;
+    virtual ~SHMSysV() ;
     void Open() ;
     void Attach() ;
     void Close() ;

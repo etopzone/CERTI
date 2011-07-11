@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.110 2011/01/11 12:29:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.111 2011/07/11 11:17:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -88,15 +88,15 @@ RTIG::processCreateFederation(Socket *link, NM_Create_Federation_Execution *req)
 	try {
 		federations.createFederation(federation, h, FEDid);
 	}
-	catch (CouldNotOpenFED e)
+	catch (CouldNotOpenFED& e)
 	{
 		rep.setException(e_CouldNotOpenFED,e._reason);
 	}
-	catch (ErrorReadingFED e)
+	catch (ErrorReadingFED& e)
 	{
 		rep.setException(e_ErrorReadingFED,e._reason);
 	}
-	catch (FederationExecutionAlreadyExists e)
+	catch (FederationExecutionAlreadyExists& e)
 	{
 		rep.setException(e_FederationExecutionAlreadyExists,e._reason);
 	}
@@ -1506,15 +1506,15 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_A
 				request->getAttributes(),
 				request->getAttributesSize());
 	}
-	catch (ObjectNotKnown e)
+	catch (ObjectNotKnown& e)
 	{
 		answer.setException(e_ObjectNotKnown,e._reason);
 	}
-	catch (FederationExecutionDoesNotExist e)
+	catch (FederationExecutionDoesNotExist& e)
 	{
 		answer.setException(e_FederationExecutionDoesNotExist,e._reason);
 	}
-	catch (RTIinternalError e)
+	catch (RTIinternalError& e)
 	{
 		answer.setException(e_RTIinternalError,e._reason);
 	}
@@ -1546,15 +1546,15 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 				request->getAttributes(),
 				request->getAttributesSize());
 	}
-	catch (ObjectClassNotDefined e)
+	catch (ObjectClassNotDefined& e)
 	{
 		answer.setException(e_ObjectClassNotDefined,e._reason);
 	}
-	catch (FederationExecutionDoesNotExist e)
+	catch (FederationExecutionDoesNotExist& e)
 	{
 		answer.setException(e_FederationExecutionDoesNotExist,e._reason);
 	}
-	catch (RTIinternalError e)
+	catch (RTIinternalError& e)
 	{
 		answer.setException(e_RTIinternalError,e._reason);
 	}
@@ -1570,4 +1570,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.110 2011/01/11 12:29:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.111 2011/07/11 11:17:25 erk Exp $

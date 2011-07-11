@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.42 2010/03/19 13:54:03 erk Exp $
+// $Id: Interaction.hh,v 3.43 2011/07/11 11:17:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -80,7 +80,7 @@ public:
     /**
      * Destructor.
      */
-    ~Interaction();
+    virtual ~Interaction();
 
     void setSpace(SpaceHandle);
     SpaceHandle getSpace();
@@ -265,4 +265,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.42 2010/03/19 13:54:03 erk Exp $
+// $Id: Interaction.hh,v 3.43 2011/07/11 11:17:26 erk Exp $

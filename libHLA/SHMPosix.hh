@@ -15,7 +15,7 @@ class HLA_EXPORT SHMPosix : public SHM {
     public :
     SHMPosix(const std::string& SHMName, const int SHMSize, const bool True) ;
     SHMPosix(const std::string& SHMName, const int SHMSize) ;  
-    ~SHMPosix() ;
+    virtual ~SHMPosix() ;
 
     void Open() ;
     void Attach() ;

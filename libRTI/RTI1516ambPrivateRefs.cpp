@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.3 2011/02/18 11:25:39 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.4 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1157,8 +1157,7 @@ throw (rti1516::RTIinternalError)
 
 	case Message::TIME_ADVANCE_GRANT:
 		try {
-			std::auto_ptr < rti1516::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
-			fed_amb->timeAdvanceGrant(*fedTime);
+			fed_amb->timeAdvanceGrant(RTI1516fedTime(msg->getDate().getTime()));
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeAdvanceGrant")
 		break ;
@@ -1206,4 +1205,4 @@ throw (rti1516::RTIinternalError)
 	}
 }
 
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.3 2011/02/18 11:25:39 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.4 2011/07/11 11:17:24 erk Exp $

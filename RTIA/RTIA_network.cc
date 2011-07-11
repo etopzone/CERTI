@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.42 2011/03/25 20:53:54 erk Exp $
+// $Id: RTIA_network.cc,v 3.43 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,7 +116,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           		// We MUST update RootObject here
           		rootObject->registerObjectInstance(fm->federate, DO->getObjectClass(), DO->getObject(),DO->getLabel());
           	}
-          	catch (ObjectAlreadyRegistered) {
+          	catch (ObjectAlreadyRegistered&) {
           	}
 
       }
@@ -414,4 +414,4 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.42 2011/03/25 20:53:54 erk Exp $
+// $Id: RTIA_network.cc,v 3.43 2011/07/11 11:17:24 erk Exp $

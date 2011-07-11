@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.125 2011/01/31 11:34:53 erk Exp $
+// $Id: RTIambassador.cc,v 3.126 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -111,7 +111,7 @@ throw (RTI::RTIinternalError)
 
 		return result;
 	}
-	catch (std::bad_alloc) {
+	catch (std::bad_alloc&) {
 		throw RTI::RTIinternalError("Cannot allocate memory.");
 	}
 	throw RTI::RTIinternalError("");
@@ -442,7 +442,7 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
 			// Otherwise, the RTI calls a FederateAmbassador service.
 			privateRefs->callFederateAmbassador(vers_Fed.get());
 		}
-		catch (RTI::RTIinternalError) {
+		catch (RTI::RTIinternalError&) {
 			// RTIA awaits TICK_REQUEST_NEXT, terminate the tick() processing
 			privateRefs->sendTickRequestStop();
 			// ignore the response and re-throw the original exception
@@ -2850,4 +2850,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.125 2011/01/31 11:34:53 erk Exp $
+// $Id: RTIambassador.cc,v 3.126 2011/07/11 11:17:24 erk Exp $

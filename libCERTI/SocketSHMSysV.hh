@@ -15,7 +15,7 @@ public :
                    const SHM_SIDE_t& Socket_Side,
                    const int Socket_size );  
     // Destructor
-    ~SocketSHMSysV (); 
+    virtual ~SocketSHMSysV ();
      
     void Open();
    

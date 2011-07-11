@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
+// $Id: RoutingSpace.hh,v 3.13 2011/07/11 11:17:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -49,7 +49,7 @@ public:
     /** 
      * Destructor
      */
-    ~RoutingSpace();
+    virtual ~RoutingSpace();
     
     /** 
      * Get the handle of the specified dimension
@@ -96,5 +96,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
+// $Id: RoutingSpace.hh,v 3.13 2011/07/11 11:17:26 erk Exp $
 

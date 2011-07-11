@@ -172,7 +172,7 @@ namespace rti1516
 				// Otherwise, the RTI calls a FederateAmbassador service.
 				privateRefs->callFederateAmbassador(vers_Fed.get());
 			}
-			catch (RTIinternalError) {
+			catch (RTIinternalError&) {
 				// RTIA awaits TICK_REQUEST_NEXT, terminate the tick() processing
 				privateRefs->sendTickRequestStop();
 				// ignore the response and re-throw the original exception
