@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.21 2011/07/13 15:43:17 erk Exp $
+## $Id: GenMsgC.py,v 1.1 2011/07/13 15:43:17 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -35,26 +35,26 @@ import sys
 import os
 
 
-class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
+class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
     """
-    This is a C++ generator for C{MessageAST}.
+    This is a C generator for C{MessageAST}.
     
     """
 
     def generatorName(cls):
-        return 'CXX'
+        return 'C'
 
     generatorName = classmethod(generatorName)
 
     def __init__(self, MessageAST):
-        super(CXXCERTIGenerator, self).__init__(MessageAST, '//')
+        super(CCERTIGenerator, self).__init__(MessageAST, '//')
         self.included = dict()
         self.typedefed = dict()
         self.builtinTypeMap = {
-            'onoff': 'bool',
-            'bool': 'bool',
-            'string': 'std::string',
+            'onoff': 'uint8_t',
+            'bool': 'uint8_t',
+            'string': 'char*',
             'byte': 'uint8_t',
             'int8': 'int8_t',
             'uint8': 'uint8_t',
@@ -99,12 +99,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             'float': 'read_float',
             'double': 'read_double',
             }
-        self.__languageName = 'C++'
+        self.__languageName = 'C'
         self.replacePrefix = None
         self.exportPrefix = ''
-        self.serializeBufferType = 'libhla::MessageBuffer'
+        self.serializeBufferType = 'MsgBuffer_t'
         self.messageTypeGetter = 'getType()'
-        self.exception = ['std::string']
+        self.exception = ['string']
 
     def getTargetTypeName(self, name):
         if name in self.builtinTypeMap.keys():
@@ -112,7 +112,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         else:
             t = self.AST.getType(name)
         if isinstance(t, GenMsgAST.EnumType):
-            prefix = self.AST.name.split('.')[0] + '::'
+            prefix = self.AST.name.split('.')[0] + '_'
             return prefix + name
         else:
             return name
@@ -120,7 +120,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     def getRepresentationFor(self, name):
         for native in self.AST.natives:
             if name == native.name:
-                return native.getRepresentation()
+                representation = native.getRepresentation()
+                if representation:
+                    return representation
         return None
 
     def getSerializeMethodName(self, name):
@@ -128,8 +130,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             return self.serializeTypeMap[name]
         else:
             representation = self.getRepresentationFor(name)
-            if representation and not representation.hasQualifier():
-                return self.getSerializeMethodName(representation.representation)
+            if representation:
+                return self.getSerializeMethodName(representation)
         return None
 
     def getDeSerializeMethodName(self, name):
@@ -137,8 +139,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             return self.deserializeTypeMap[name]
         else:
             representation = self.getRepresentationFor(name)
-            if representation and not representation.hasQualifier():
-                return self.getDeSerializeMethodName(representation.representation)
+            if representation:
+                return self.getDeSerializeMethodName(representation)
         return None
 
     def openNamespaces(self, stream):
@@ -149,7 +151,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
             nameSpaceList = self.AST.package.name.split('.')
             for ns in nameSpaceList:
-                stream.write(self.getIndent() + '''namespace %s {
+                stream.write(self.getIndent() + self.commentLineBeginWith + '''package %s 
 
 '''
                              % ns)
@@ -164,143 +166,163 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             nameSpaceList.reverse()
             for ns in nameSpaceList:
                 self.unIndent()
-                stream.write(self.getIndent() + '} '
+                stream.write(self.getIndent() + ''
                              + self.commentLineBeginWith
                              + ' end of namespace %s \n' % ns)
 
-    def writeOneGetterSetter(self, stream, field):
-
+    def writeOneGetterSetter(self, stream, field,msg):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
 
         if field.typeid.name == 'onoff':
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
-                stream.write('uint32_t get'
+                stream.write('uint32_t ' + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + 'Size() const')
-                stream.write(' {return ' + field.name + '.size();}\n')
+                             + 'Size(%s cthis) '
+                             % msg.name)
+                stream.write(' {return cthis.' + field.name + 'size;}\n')
+                stream.write(self.getIndent())
+                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
+                             + 'Size(%s* cthis,uint32_t num) {\n' % msg.name)
+		self.indent()
+                stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
+                stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
+                stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
+			    % (field.name, field.name))
+                stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
+		self.unIndent()
+                stream.write(self.getIndent() + '}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + 'Size(uint32_t num)')
-                stream.write(' {' + field.name + '.resize(num);}\n')
+                stream.write(' ' + targetTypeName + ' '
+                             + msg.name +'_get' + self.upperFirst(field.name)
+                             + '(' + msg.name + ' cthis) ')
+                stream.write(' {return cthis.' + field.name + ';}\n')
 
                 stream.write(self.getIndent())
-                stream.write('const std::vector<' + targetTypeName
-                             + '>& get' + self.upperFirst(field.name)
-                             + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write('void ' + msg.name + '_' + field.name + 'On(%s* cthis, uint32_t rank)'
+			    % msg.name)
+                stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 1;}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'On(uint32_t rank)')
-                stream.write(' {' + field.name + '[rank] = true;}\n')
-
-                stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'Off(uint32_t rank)'
-                             )
-                stream.write(' {' + field.name + '[rank] = false;}\n')
+                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s* cthis, uint32_t rank)'
+			    % msg.name)
+                        
+                stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 0;}\n')
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' is'
                              + self.upperFirst(field.name)
-                             + 'On(uint32_t rank) const')
-                stream.write(' {return ' + field.name + '[rank];}\n')
+                             + 'On(uint32_t rank) ')
+                stream.write(' {return cthis.' + field.name + '[rank];}\n')
             else:
                 stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'On()')
-                stream.write(' {' + field.name + ' = true;}\n')
+                stream.write('void ' + msg.name + '_' + field.name + 'On(%s* cthis)'
+			    % msg.name)
+                stream.write(' {cthis->' + field.name + ' = 1;}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'Off()')
-                stream.write(' {' + field.name + ' = false;}\n')
+                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s* cthis)'
+			    % (msg.name, msg.name,msg.name))
+                stream.write(' {cthis->' +field.name + ' = 0;}\n')
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' is'
                              + self.upperFirst(field.name)
-                             + 'On() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                             + 'On(%s* cthis) '
+			    % msg.name)
+                stream.write(' {return cthis->' + field.name + ';}\n')
         else:
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
-                stream.write('uint32_t get'
+                stream.write('uint32_t ' + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + 'Size() const')
-                stream.write(' {return ' + field.name + '.size();}\n')
+                             + 'Size(%s cthis) '
+			     % msg.name)
+                stream.write('{ return cthis.' + field.name + 'size;}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + 'Size(uint32_t num)')
-                stream.write(' {' + field.name + '.resize(num);}\n')
+                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
+                             + 'Size(%s* cthis, uint32_t num) { \n'
+                             % msg.name)
+		self.indent()
+                stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
+                stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
+                stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
+			    % (field.name, field.name))
+                stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
+                stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
+		self.unIndent()
+                stream.write(self.getIndent() + '}\n')
 
                 stream.write(self.getIndent())
-                stream.write('const std::vector<' + targetTypeName
-                             + '>& get' + self.upperFirst(field.name)
-                             + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                #stream.write('const ' + targetTypeName
+                #             + '* ' + msg.name + '_get' + self.upperFirst(field.name)
+                #             + '(' + msg.name + ' cthis) ')
+                #stream.write(' {return cthis.' + field.name + ';}\n')
+
 
                 stream.write(self.getIndent())
-                stream.write('const ' + targetTypeName + '& get'
+                stream.write(targetTypeName + ' ' + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + '(uint32_t rank) const')
-                stream.write(' {return ' + field.name + '[rank];}\n')
+                             + '(%s* cthis, uint32_t rank)'
+			    % msg.name)
+                stream.write(' {return cthis->' + field.name + '[rank];}\n')
 
                 stream.write(self.getIndent())
-                stream.write(targetTypeName + '& get'
-                             + self.upperFirst(field.name)
-                             + '(uint32_t rank)')
-                stream.write(' {return ' + field.name + '[rank];}\n')
-
-                stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + '(const ')
-                stream.write(targetTypeName + '& new'
+                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
+                             + '(%s* cthis, '
+			    % msg.name)
+                stream.write(targetTypeName + ' new'
                              + self.upperFirst(field.name)
                              + ', uint32_t rank)')
-                stream.write(' {' + field.name + '[rank]=new'
+                stream.write(' {cthis->' + field.name + '[rank]=new'
                              + self.upperFirst(field.name) + ';}\n')
-
-                stream.write(self.getIndent())
-                stream.write('void remove'
-                             + self.upperFirst(field.name)
-                             + '(uint32_t rank)')
-                stream.write(' {' + field.name + '.erase(' + field.name
-                             + '.begin() + rank);}\n')
             else:
                 stream.write(self.getIndent())
-                stream.write('const ' + targetTypeName + '& get'
-                             + self.upperFirst(field.name) + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write(targetTypeName + ' ' + msg.name + '_get'
+                             + self.upperFirst(field.name) + '(%s cthis) '
+                             % msg.name)
+                stream.write(' {return cthis.'  + field.name + ';}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + '(const ')
-                stream.write(targetTypeName + '& new'
+                stream.write('void ' + msg.name + '_set'+ self.upperFirst(field.name)
+                             + '(%s* cthis,  '
+                            % msg.name)
+                stream.write(targetTypeName + ' new'
                              + self.upperFirst(field.name) + ') {')
                 if field.qualifier == 'optional':
                     stream.write('\n')
                     self.indent()
-                    stream.write(self.getIndent() + '_has%s=true;\n'
+                    stream.write(self.getIndent() + 'cthis->_has%s=1;\n'
                                  % self.upperFirst(field.name))
-                    stream.write(self.getIndent() + field.name + '=new'
+                    stream.write(self.getIndent() + 'cthis->' + field.name + '=new'
                                  + self.upperFirst(field.name) + ';\n')
                     self.unIndent()
                     stream.write(self.getIndent())
                 else:
-                    stream.write(field.name + '=new'
+                    stream.write('cthis->' + field.name + '=new'
                                  + self.upperFirst(field.name) + ';')
                 stream.write('}\n')
                 if field.qualifier == 'optional':
                     stream.write(self.getIndent())
                     tmp = self.upperFirst(field.name)
-                    stream.write('bool has%s() {return _has%s;}\n'
-                                 % (tmp, tmp))
+                    stream.write('uint8_t has%s(%s cthis) {return cthis._has%s;}\n'
+                                 % (tmp,  msg.name,
+                                 tmp))
 
     def writeDeclarationFieldStatement(self, stream, field):
         stream.write(self.getIndent())
         if field.qualifier == 'repeated':
-            stream.write('std::vector<%s> %s;'
+            stream.write('%s* %s;\n'
                          % (self.getTargetTypeName(field.typeid.name),
                          field.name))
+            stream.write(self.getIndent() + 'uint32_t ' + field.name + 'size;')
         else:
             stream.write('%s %s;'
                          % (self.getTargetTypeName(field.typeid.name),
@@ -312,13 +334,14 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         # been given or not.
 
         if field.qualifier == 'optional':
-            stream.write(self.getIndent() + 'bool _has%s;\n'
+            stream.write(self.getIndent() + 'uint8_t _has%s;\n'
                          % self.upperFirst(field.name))
 
     def generateEnum(self, stream, enum):
         self.writeComment(stream, enum)
         stream.write(self.getIndent())
-        stream.write('typedef enum %s {\n' % enum.name)
+        stream.write('typedef enum %s_%s {\n' % (self.AST.name.split('.'
+                         )[0], enum.name))
         self.indent()
         first = True
         lastname = enum.values[len(enum.values) - 1].name
@@ -341,7 +364,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
         self.unIndent()
         stream.write(self.getIndent())
-        stream.write('} %s_t; ' % enum.name)
+        stream.write('} %s_%s; ' % (self.AST.name.split('.'
+                         )[0], enum.name))
         stream.write(self.commentLineBeginWith + 'end of enum %s \n'
                      % enum.name)
 
@@ -358,7 +382,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             (headerProtectMacroName, ext) = \
                 os.path.splitext(self.AST.name)
 
-        headerProtectMacroName = '%s_HH' \
+        headerProtectMacroName = '%s_H' \
             % headerProtectMacroName.upper()
         stream.write('#ifndef %s\n' % headerProtectMacroName)
         stream.write('#define %s\n' % headerProtectMacroName)
@@ -367,10 +391,16 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
         stream.write(self.commentLineBeginWith
                      + ' ****-**** Global System includes ****-****\n')
-        stream.write('#include <vector>\n')
-        self.included['#include <vector>'] = 1
-        stream.write('#include <string>\n')
-        self.included['#include <string>'] = 1
+        stream.write('#include <stdio.h>\n')
+        self.included['#include <stdio.h>'] = 1
+        stream.write('#include <stdlib.h>\n')
+        self.included['#include <stdlib.h>'] = 1
+        stream.write('#include <stdint.h>\n')
+        self.included['#include <stdint.h>'] = 1
+        stream.write('#include <assert.h>\n')
+        self.included['#include <assert.h>'] = 1
+        stream.write('#include <string.h>\n')
+        self.included['#include <string.h>'] = 1
 
         # add include coming from native type specification
 
@@ -378,8 +408,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                      + ' ****-**** Includes coming from native types ****-****\n'
                      )
         for native in self.AST.natives:
-            if native.hasLanguage('CXX'):
-                for line in native.getLanguageLines('CXX'):
+            if native.hasLanguage('C'):
+                for line in native.getLanguageLines('C'):
 
                     # we are only interested in native "include" statement
 
@@ -406,8 +436,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent() + self.commentLineBeginWith)
             stream.write('     - with typedef (see below [if any])\n')
             for native in self.AST.natives:
-                if native.hasLanguage('CXX'):
-                    for line in native.getLanguageLines('CXX'):
+                if native.hasLanguage('C'):
+                    for line in native.getLanguageLines('C'):
                         stmt = line.statement
 
                        # we are only interested in native statement
@@ -420,22 +450,22 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                             self.typedefed[stmt] = 1
 
             # Put enum in a namespace in order to avoid conflict
-
-            stream.write(self.getIndent())
-            stream.write('namespace %s {\n' % self.AST.name.split('.'
-                         )[0])
-            self.indent()
+	    
+            stream.write(self.getIndent() + 
+			self.commentLineBeginWith +
+				'%s package equivalent in C\n'
+                             % (self.AST.name.split('.')[0]))
 
             # Generate version
 
             if self.AST.hasVersion():
                 (major, minor) = self.AST.version.number
                 stream.write(self.getIndent())
-                stream.write('static const uint32_t versionMajor = %d;\n'
-                              % major)
+                stream.write('static const uint32_t %s_versionMajor = %d;\n'
+                              % (self.AST.name.split('.')[0], major))
                 stream.write(self.getIndent())
-                stream.write('static const uint32_t versionMinor = %d;\n'
-                              % minor)
+                stream.write('static const uint32_t %s_versionMinor = %d;\n'
+                              % (self.AST.name.split('.')[0], minor))
 
             # Generate enum
 
@@ -446,48 +476,57 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
             # close enum namespace
 
-            self.unIndent()
-            stream.write(self.getIndent())
-            stream.write('}\n')
 
             # Generate message type
 
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
+
+                if msg.hasEnum():
+                    self.generateEnum(stream, msg.enum)
+                    stream.write('\n')
                 stream.write(self.getIndent())
-                stream.write('class %s %s' % (self.exportPrefix,
+
+                stream.write('typedef struct %s %s' % (self.exportPrefix,
                              msg.name))
                 if msg.hasMerge():
-                    stream.write(' : public %s {\n' % msg.merge.name)
-                    virtual = 'virtual '
+		    stream.write('{\n')
+                    virtual = ''
                 elif msg.hasHeir():
                     stream.write(' {\n')
-                    virtual = 'virtual '
+                    virtual = ''
                 else:
                     stream.write(' {\n')
                     virtual = ''
 
                 self.indent()
 
-                # begin public
-
-                stream.write(self.getIndent() + 'public:\n')
-                self.indent()
-
-                if msg.hasEnum():
-                    self.generateEnum(stream, msg.enum)
-                    stream.write('\n')
 
                 if msg.hasMerge():
                     stream.write(self.getIndent()
-                                 + 'typedef %s Super;\n'
+                                 + '%s super;\n'
                                  % msg.merge.name)
+
+
+                # write fields
+
+                for field in msg.fields:
+                    if isinstance(field,
+                                  GenMsgAST.MessageType.CombinedField):
+                        for cfield in field.fields:
+                            self.writeDeclarationFieldStatement(stream,
+                                    cfield)
+                    else:
+                        self.writeDeclarationFieldStatement(stream,
+                                field)
+
+		self.unIndent()
+		stream.write(self.getIndent() + '} %s; \n\n' % msg.name)
 
                 # now write constructor/destructor
 
-                stream.write(self.getIndent() + msg.name + '();\n')
-                stream.write(self.getIndent() + virtual + '~'
-                             + msg.name + '();\n')
+                stream.write(self.getIndent() + 'void %s_create();\n' % msg.name)
+                stream.write(self.getIndent() + 'void %s_destroy();\n\n' % msg.name)
 
                 # write virtual serialize and deserialize
                 # if we have some specific field
@@ -497,11 +536,11 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # serialize/deserialize
 
                     stream.write(self.getIndent() + virtual
-                                 + 'void serialize(%s& msgBuffer);\n'
-                                 % self.serializeBufferType)
+                                 + 'void %s_serialize(%s* cthis, %s* msgBuffer);\n'
+                                 % (msg.name, msg.name, self.serializeBufferType))
                     stream.write(self.getIndent() + virtual
-                                 + 'void deserialize(%s& msgBuffer);\n'
-                                 % self.serializeBufferType)
+                                 + 'void %s_deserialize(%s* cthis, %s* msgBuffer);\n'
+                                 % (msg.name, msg.name, self.serializeBufferType))
 
                     # specific getter/setter
 
@@ -513,9 +552,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                 GenMsgAST.MessageType.CombinedField):
                             for cfield in field.fields:
                                 self.writeOneGetterSetter(stream,
-                                        cfield)
+                                        cfield,msg)
                         else:
-                            self.writeOneGetterSetter(stream, field)
+                            self.writeOneGetterSetter(stream, field,msg)
 
                     # the show method
 
@@ -523,47 +562,19 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                  + self.commentLineBeginWith
                                  + ' the show method\n')
                     stream.write(self.getIndent() + virtual
-                                 + 'std::ostream& show(std::ostream& out);\n'
+                                 + 'FILE* show(FILE* out);\n'
                                  )
-
-                self.unIndent()
 
                 # end public:
 
-                # begin protected
-
-                stream.write(self.getIndent() + 'protected:\n')
-                self.indent()
-                for field in msg.fields:
-                    if isinstance(field,
-                                  GenMsgAST.MessageType.CombinedField):
-                        for cfield in field.fields:
-                            self.writeDeclarationFieldStatement(stream,
-                                    cfield)
-                    else:
-                        self.writeDeclarationFieldStatement(stream,
-                                field)
-                self.unIndent()
-
-                # end protected
-
-                # begin private
-
-                stream.write(self.getIndent() + 'private:\n')
-                self.indent()
-                self.unIndent()
-
-                # end private
-
-                self.unIndent()
-                stream.write(self.getIndent() + '};\n')
 
         # Generate Factory (if any)
         # @todo
 
         if self.AST.hasFactory():
             self.writeComment(stream, self.AST.factory)
-            stream.write(self.getIndent() + 'class %s %s {\n'
+            stream.write(self.getIndent() + '/*\n')
+            stream.write(self.getIndent() + 'typedef struct %s %s {\n'
                          % (self.exportPrefix, self.AST.factory.name))
             self.indent()
 
@@ -611,10 +622,11 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent() + '''};
 
 ''')
+	    stream.write(self.getIndent() + '*/\n')
 
         # may close any open namespaces
 
-        self.closeNamespaces(stream)
+	self.closeNamespaces(stream)
 
         # close usual HEADER protecting MACRO
 
@@ -626,10 +638,10 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
             stream.write('_has' + self.upperFirst(field.name)
-                         + '=false;\n')
+                         + '=0;\n')
         if field.hasDefaultValue():
             stream.write(self.getIndent())
-            stream.write(field.name + '=' + str(field.defaultValue)
+            stream.write(field.typeid.name + ' ' + field.name + '=' + str(field.defaultValue)
                          + ';\n')
         else:
             stream.write(self.getIndent())
@@ -637,13 +649,14 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(field.name
                          + '= <no default value in message spec using builtin>\n'
                          )
+
             # FIXME find a default value for every type beside natives
 
     def writeSerializeFieldStatement(self, stream, field):
         indexField = ''
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
-            stream.write('msgBuffer.write_bool(_has%s);\n'
+            stream.write('MB_write_bool(msgBuffer,_has%s);\n'
                          % self.upperFirst(field.name))
             stream.write(self.getIndent())
             stream.write('if (_has%s) {\n'
@@ -653,9 +666,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             indexField = '[i]'
             stream.write(self.getIndent())
             stream.write('uint32_t ' + field.name + 'Size = '
-                         + field.name + '.size();\n')
+                         + field.name + 'size;\n')
             stream.write(self.getIndent())
-            stream.write('msgBuffer.write_uint32(' + field.name
+            stream.write('MB_write_uint32(msgBuffer,' + field.name
                          + 'Size);\n')
             stream.write(self.getIndent())
             stream.write('for (uint32_t i = 0; i < ' + field.name
@@ -664,47 +677,36 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
         stream.write(self.getIndent())
         methodName = self.getSerializeMethodName(field.typeid.name)
-        # field has no Serialize Method Name found in the map
-        if None == methodName:
+        if None == methodName:  # field has no Serialize Method Name found in the map
+
             # non native field case
+
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write(field.name + indexField
-                             + '.serialize(msgBuffer);\n')
-            # enum type field case (enum are serialized as uint32)
+                             + '_serialize(msgBuffer);\n')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
+
+            # enum type field case (enum are serialized as uint32)
+
                 methodName = self.getSerializeMethodName('uint32')
-                stream.write('msgBuffer.' + methodName)
-                stream.write('(' + field.name + indexField + ');\n')
-            # native field case
+                stream.write('MB_' + methodName)
+                stream.write('(msgBuffer' + field.name + indexField + ');\n')
             else:
-                repLine = self.getRepresentationFor(field.typeid.name)
-                # some native may not have any representation at all
-                if repLine:
-                    methodName = self.getSerializeMethodName(repLine.representation)
-                    # The representation line may have a qualifier
-                    # like 'repeated'
-                    if methodName != None and repLine.hasQualifier():
-                        if repLine.qualifier == 'repeated':
-                            stream.write(self.commentLineBeginWith + "serialize native whose representation is 'repeated' %s \n" % repLine.representation)
-                            stream.write(self.getIndent() + 'msgBuffer.'+ self.getSerializeMethodName('uint32'))
-                            stream.write('('+field.name + indexField + '.size()' +');\n')
-                            stream.write(self.getIndent() + 'msgBuffer.'+ self.getSerializeMethodName(repLine.representation)+'s')
-                            stream.write('('+field.name + indexField +'.data(),')
-                            stream.write(field.name + indexField + '.size()' +');\n')
-                # we can not handle this native case: no representation given
-                else:
-                    stream.write(self.commentLineBeginWith + ' FIXME FIXME FIXME\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + "don't know how to serialize native field <%s> of type <%s>\n"
-                                 % (field.name, field.typeid.name))
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + "probably no 'representation' given\n")
+
+            # native field case
+
+                stream.write(self.commentLineBeginWith
+                             + ' FIXME FIXME FIXME\n')
+                stream.write(self.getIndent()
+                             + self.commentLineBeginWith
+                             + " don't know how to serialize native field <%s> of type <%s>\n"
+                              % (field.name, field.typeid.name))
         else:
-            # field has one Serialize Method Name found in the map
-            stream.write('msgBuffer.' + methodName)
-            stream.write('(' + field.name + indexField + ');\n')
+
+              # field has one Serialize Method Name found in the map
+
+            stream.write('MB_' + methodName)
+            stream.write('(msgBuffer,' + field.name + indexField + ');\n')
 
         if field.qualifier == 'optional':
             self.unIndent()
@@ -717,12 +719,13 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         indexField = ''
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
-            stream.write('out << "(opt) %s =" ' % field.name)
+            stream.write('fprintf(out,"(opt) %s =" ' % field.name)
         elif field.qualifier == 'repeated':
             indexField = '[i]'
             stream.write(self.getIndent())
-            stream.write('out << "    %s [] =" << std::endl;\n'
+            stream.write('fprintf(out,"    %s [] = \n");\n'
                          % field.name)
+            stream.write('fflush(out);\n')
             stream.write(self.getIndent())
             stream.write('for (uint32_t i = 0; i < get'
                          + self.upperFirst(field.name)
@@ -731,20 +734,21 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent() + 'out ')
         else:
             stream.write(self.getIndent())
-            stream.write('out << " %s = " ' % field.name)
+            stream.write('fprintf(out," %s = " ' % field.name)
 
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:  # field has no Serialize Method Name found in the map
 
             # non native field case
+
             if field.typeid.name in [m.name for m in self.AST.messages]:
-                stream.write('<< ' + field.name + indexField
+                stream.write(field.name + indexField
                              + '.show(out)')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
 
             # enum type field case (enum are serialized as uint32)
 
-                stream.write('<< %s << " " ' % (field.name
+                stream.write('+ %s + " " ' % (field.name
                              + indexField))
             else:
 
@@ -761,23 +765,26 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
               # field has one Serialize Method Name found in the map
 
-            stream.write('<< %s << " " ' % (field.name + indexField))
+            stream.write('+ %s + " " ' % (field.name + indexField))
 
         if field.qualifier == 'optional':
-            stream.write(self.getIndent() + '<< std::endl;\n')
+            stream.write(self.getIndent() + '+ "\\n");\n')
+            stream.write(self.getIndent() + 'fflush(out)\n')
         elif field.qualifier == 'repeated':
             stream.write(';\n')
             self.unIndent()
             stream.write(self.getIndent() + '}\n')
-            stream.write(self.getIndent() + 'out << std::endl;\n')
+            stream.write(self.getIndent() + 'fprintf(out,"\\n");\n')
+            stream.write(self.getIndent() + 'fflush(out);\n')
         else:
-            stream.write(self.getIndent() + '<< std::endl;\n')
+            stream.write(self.getIndent() + ' + "\\n");\n')
+            stream.write(self.getIndent() + 'fflush(out);\n')
 
     def writeDeSerializeFieldStatement(self, stream, field):
         indexField = ''
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
-            stream.write('_has%s = msgBuffer.read_bool();\n'
+            stream.write('_has%s = MB_read_bool(msgBuffer);\n'
                          % self.upperFirst(field.name))
             stream.write(self.getIndent())
             stream.write('if (_has%s) {\n'
@@ -787,9 +794,9 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             indexField = '[i]'
             stream.write(self.getIndent())
             stream.write('uint32_t ' + field.name
-                         + 'Size = msgBuffer.read_uint32();\n')
+                         + 'Size = MB_read_uint32(msgBuffer);\n')
             stream.write(self.getIndent())
-            stream.write(field.name + '.resize(' + field.name
+            stream.write(field.name + 'size =' + field.name
                          + 'Size);\n')
             stream.write(self.getIndent())
             stream.write('for (uint32_t i = 0; i < ' + field.name
@@ -798,67 +805,56 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
         stream.write(self.getIndent())
         methodName = self.getDeSerializeMethodName(field.typeid.name)
-        # field has no Deserialize Method Name found in the map
-        if None == methodName:
-            # non native field case
+        if None == methodName:  # field has no Deserialize Method Name found in the map
+
+         # non native field case
+
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write(field.name + indexField
-                             + '.deserialize(msgBuffer);\n')
-            # enum type field case (enum are deserialized as uint32)
+                             + '_deserialize(msgBuffer);\n')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
+
+            # enum type field case (enum are deserialized as uint32)
+
                 targetTypeName = \
                     self.getTargetTypeName(field.typeid.name)
                 methodName = self.getDeSerializeMethodName('uint32')
+
                 # We should check if the uint32 value is in enum range before casting it into enumtype
+
                 stream.write(field.name + indexField + ' = static_cast<'
-                              + targetTypeName + '>(msgBuffer.'
+                              + targetTypeName + '>(MB_'
                              + methodName + ' ());\n')
-            # native field case
             else:
-                repLine = self.getRepresentationFor(field.typeid.name)
-                # some native may not have any representation at all
-                if repLine:
-                    methodName = self.getDeSerializeMethodName(repLine.representation)
-                    # The representation line may have a qualifier
-                    # like 'repeated'
-                    if methodName != None and repLine.hasQualifier():
-                        if repLine.qualifier == 'repeated':
-                            stream.write(self.commentLineBeginWith + "deserialize native whose representation is 'repeated' %s \n" % repLine.representation)
-                            stream.write(self.getIndent()
-                                         + field.name + indexField + '.resize('
-                                         + 'msgBuffer.'
-                                         + self.getDeSerializeMethodName('uint32')+'()'
-                                         + ');\n')
-                            stream.write(self.getIndent() + 'msgBuffer.' + self.getDeSerializeMethodName(repLine.representation)+'s')
-                            stream.write('(&('+field.name + indexField +'[0]),')
-                            stream.write(field.name + indexField + '.size()' +');\n')
-                # we can not handle this native case: no representation given
-                else:
-                    stream.write(self.commentLineBeginWith
-                                 + ' FIXME FIXME FIXME\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + "don't know how to deserialize native field <%s> of type <%s>\n"
-                                 % (field.name, field.typeid.name))
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + "probably no 'representation' given\n")
-        # field has one Deserialize Method Name found in the map
+
+            # native field case
+
+                stream.write(self.commentLineBeginWith
+                             + ' FIXME FIXME FIXME\n')
+                stream.write(self.getIndent()
+                             + self.commentLineBeginWith
+                             + " don't know how to deserialize native field <%s> of type <%s>\n"
+                              % (field.name, field.typeid.name))
         else:
+
+              # field has one Deserialize Method Name found in the map
+
             if methodName == 'read_string':
-                stream.write('msgBuffer.' + methodName + '('
+                stream.write('MB_' + methodName + '(msgBuffer,'
                              + field.name + indexField + ');\n')
             else:
-                # We may have to cast in order to enforce conversion
+
+                # We may have to vast in order to enforce conversion
+
                 if isinstance(field.typeid, GenMsgAST.NativeType):
                     stream.write(field.name + indexField
                                  + ' = static_cast<'
-                                 + field.typeid.name + '>(msgBuffer.'
-                                 + methodName + '());\n')
+                                 + field.typeid.name + '>(MB_'
+                                 + methodName + '(msgBuffer));\n')
                 else:
                     stream.write(field.name + indexField
-                                 + ' = msgBuffer.' + methodName
-                                 + '();\n')
+                                 + ' = MB_' + methodName
+                                 + '(msgBuffer);\n')
 
         if field.qualifier == 'optional':
             self.unIndent()
@@ -870,7 +866,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     def writeFactoryCreator(self, stream):
         creator = (self.AST.factory.creator[0], self.AST.factory.name) \
             + self.AST.factory.creator[1:]
-        stream.write(self.getIndent() + '%s* %s::%s(%s type) throw ('
+        stream.write(self.getIndent() + '%s* %s_%s(%s type) throw ('
                      % creator)
         stream.write('%s' % self.exception[0])
         for exception in self.exception[1:]:
@@ -886,12 +882,12 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         self.indent()
         for e in self.AST.eMessageType.values:
             if None != self.replacePrefix:
-                stream.write(self.getIndent() + 'case %s::%s:\n'
+                stream.write(self.getIndent() + 'case %s_%s:\n'
                              % (creator[0],
                              e.name.replace(self.replacePrefix[0], '',
                              1)))
             else:
-                stream.write(self.getIndent() + 'case %s::%s:\n'
+                stream.write(self.getIndent() + 'case %s_%s:\n'
                              % (creator[0], e.name))
 
             self.indent()
@@ -914,7 +910,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                      + ' end if switch (type)\n')
         stream.write(self.getIndent() + 'return msg;\n')
         self.unIndent()
-        stream.write(self.getIndent() + '''} /* end of %s::%s */
+        stream.write(self.getIndent() + '''} /* end of %s_%s */
 
 '''
                      % (creator[1], creator[2]))
@@ -923,7 +919,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         receiver = (self.AST.factory.receiver[0],
                     self.AST.factory.name) \
             + self.AST.factory.receiver[1:]
-        stream.write(self.getIndent() + '%s* %s::%s(%s stream) throw ('
+        stream.write(self.getIndent() + '%s* %s_%s(%s stream) throw ('
                      % receiver)
         stream.write('%s' % self.exception[0])
         for exception in self.exception[1:]:
@@ -947,17 +943,17 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                      + ' create specific message from type \n')
 
         stream.write(self.getIndent() + 'msg = ')
-        stream.write(self.AST.factory.name + '::'
+        stream.write(self.AST.factory.name + '_'
                      + self.AST.factory.creator[1] + '(msgGen.%s);\n'
                      % self.messageTypeGetter)
 
         stream.write(self.getIndent()
-                     + 'msgBuffer.assumeSizeFromReservedBytes();\n')
+                     + 'MB_assumeSizeFromReservedBytes();\n')
         stream.write(self.getIndent() + 'msg->deserialize(msgBuffer);\n'
                      )
         stream.write(self.getIndent() + 'return msg;\n')
         self.unIndent()
-        stream.write(self.getIndent() + '''} /* end of %s::%s */ 
+        stream.write(self.getIndent() + '''} /* end of %s_constructor */ 
 
 '''
                      % (receiver[1], receiver[2]))
@@ -982,8 +978,6 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
         # add necessary standard includes
 
-        stream.write('#include <vector>\n')
-        stream.write('#include <string>\n')
 
         # [Try to] add corresponding header include
 
@@ -991,7 +985,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         if supposedHeaderName != '<stdout>':
             supposedHeaderName = os.path.basename(supposedHeaderName)
             supposedHeaderName = os.path.splitext(supposedHeaderName)[0]
-            stream.write('#include "' + supposedHeaderName + '.hh"\n')
+            stream.write('#include "' + supposedHeaderName + '.h"\n')
 
         # Generate namespace for specified package package
         # we may have nested namespace
@@ -1005,7 +999,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
 
                 # Generate Constructor
 
-                stream.write(self.getIndent() + '%s::%s() {\n'
+                stream.write(self.getIndent() + '%s_create(%s* cthis) {\n'
                              % (msg.name, msg.name))
                 self.indent()
                 if msg.hasMerge():
@@ -1013,35 +1007,37 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # Assign my name.
 
                     stream.write(self.getIndent()
-                                 + 'this->messageName = "' + msg.name
-                                 + '";\n')
+                                 + 'char* temp;\n ' + self.getIndent() +
+				 'temp = malloc(sizeof(char)*strlen("' + msg.name
+                                 + '")));\n')
+                    stream.write(self.getIndent() + 'strcpy(temp,"' + msg.name + '");\n')
+                    stream.write(self.getIndent()
+                                 + 'cthis->super->messageName = temp; \n')
+                                 
                     if None != self.replacePrefix:
-                        stream.write(self.getIndent() + 'this->type = '
+                        stream.write(self.getIndent() + 'cthis->super->type = '
                                 + msg.name.upper().replace(self.replacePrefix[0],
                                 self.replacePrefix[1], 1) + ';\n')
                     else:
-                        stream.write(self.getIndent() + 'this->type = '
+                        stream.write(self.getIndent() + 'cthis->super->type = '
                                 + msg.name.upper() + ';\n')
 
-                # Write init value if any was provided
+                # Write init value if any was provided and alloc memory
 
                 if len(msg.fields) > 0:
                     self.applyToFields(stream, msg.fields,
                             self.writeInitFieldStatement)
                 self.unIndent()
-                stream.write(self.getIndent() + '''}
-
-''')
+                stream.write(self.getIndent() + '}\n')
 
                 # Generate Destructor
 
-                stream.write(self.getIndent() + '%s::~%s() {\n'
+                stream.write(self.getIndent() + 'void %s_destroy(%s* cthis) {\n'
                              % (msg.name, msg.name))
                 self.indent()
+                stream.write(self.getIndent() + 'free(cthis);\n')
                 self.unIndent()
-                stream.write(self.getIndent() + '''}
-
-''')
+                stream.write(self.getIndent() + '}\n\n')
 
                 # write virtual serialize and deserialize
                 # if we have some specific field
@@ -1051,7 +1047,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # begin serialize method
 
                     stream.write(self.getIndent()
-                                 + 'void %s::serialize(%s& msgBuffer) {\n'
+                                 + 'void %s_serialize(%s* msgBuffer) {\n'
                                   % (msg.name,
                                  self.serializeBufferType))
                     self.indent()
@@ -1060,7 +1056,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                 + self.commentLineBeginWith)
                         stream.write('Call mother class\n')
                         stream.write(self.getIndent()
-                                + 'Super::serialize(msgBuffer);\n')
+                                + 'Super_serialize(msgBuffer);\n')
                     stream.write(self.getIndent()
                                  + self.commentLineBeginWith)
                     stream.write('Specific serialization code\n')
@@ -1076,7 +1072,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # begin deserialize method
 
                     stream.write(self.getIndent()
-                                 + 'void %s::deserialize(%s& msgBuffer) {\n'
+                                 + 'void %s_deserialize(%s* msgBuffer) {\n'
                                   % (msg.name,
                                  self.serializeBufferType))
                     self.indent()
@@ -1085,7 +1081,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                                 + self.commentLineBeginWith)
                         stream.write('Call mother class\n')
                         stream.write(self.getIndent()
-                                + 'Super::deserialize(msgBuffer);\n')
+                                + 'Super_deserialize(msgBuffer);\n')
                     stream.write(self.getIndent()
                                  + self.commentLineBeginWith)
                     stream.write('Specific deserialization code\n')
@@ -1100,26 +1096,30 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                     # begin show method
 
                     stream.write(self.getIndent()
-                                 + 'std::ostream& %s::show(std::ostream& out) {\n'
+                                 + 'FILE* %s_show(FILE* out) {\n'
                                   % msg.name)
                     self.indent()
                     stream.write(self.getIndent()
-                                 + 'out << "[%s -Begin]" << std::endl;'
+                                 + 'fprintf(out,"[%s -Begin] \\n");\n'
                                  % msg.name)
+                    stream.write(self.getIndent()
+                                 + 'fflush(out);')
                     if msg.hasMerge():
                         stream.write(self.getIndent()
                                 + self.commentLineBeginWith)
                         stream.write('Call mother class\n')
                         stream.write(self.getIndent()
-                                + 'Super::show(out);\n')
+                                + 'Super_show(out);\n')
                     stream.write(self.getIndent()
                                  + self.commentLineBeginWith)
                     stream.write('Specific show code\n')
                     self.applyToFields(stream, msg.fields,
                             self.writeShowFieldStatement)
                     stream.write(self.getIndent()
-                                 + 'out << "[%s -End]" << std::endl;\n'
+                                 + 'fprintf(out,"[%s -End] \\n");\n'
                                  % msg.name)
+                    stream.write(self.getIndent()
+                                 + 'fflush(out);\n')
                     stream.write(self.getIndent() + 'return out;\n')
                     self.unIndent()
                     stream.write(self.getIndent() + '''}
@@ -1145,49 +1145,49 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         self.closeNamespaces(stream)
 
 
-class CXXCERTIMessageGenerator(CXXCERTIGenerator):
+class CCERTIMessageGenerator(CCERTIGenerator):
 
     """
-    This is a C++ generator for C{MessageAST}.
+    This is a C generator for C{MessageAST}.
     
     """
 
     def generatorName(cls):
-        return 'CXXCERTIMessage'
+        return 'CCERTIMessage'
 
     generatorName = classmethod(generatorName)
 
     def __init__(self, MessageAST):
-        super(CXXCERTIMessageGenerator, self).__init__(MessageAST)
+        super(CCERTIMessageGenerator, self).__init__(MessageAST)
         self.replacePrefix = list()
         self.replacePrefix.append('M_')
         self.replacePrefix.append('Message::')
         self.exportPrefix = 'CERTI_EXPORT'
-        self.serializeBufferType = 'libhla::MessageBuffer'
+        self.serializeBufferType = 'MsgBuffer_t'
         self.messageTypeGetter = 'getMessageType()'
         self.exception = ['NetworkError', 'NetworkSignal']
 
 
-class CXXCERTINetworkMessageGenerator(CXXCERTIGenerator):
+class CCERTINetworkMessageGenerator(CCERTIGenerator):
 
     """
-    This is a C++ generator for C{MessageAST}.
+    This is a C generator for C{MessageAST}.
     
     """
 
     def generatorName(cls):
-        return 'CXXCERTINetworkMessage'
+        return 'CCERTINetworkMessage'
 
     generatorName = classmethod(generatorName)
 
     def __init__(self, MessageAST):
-        super(CXXCERTINetworkMessageGenerator,
+        super(CCERTINetworkMessageGenerator,
               self).__init__(MessageAST)
         self.replacePrefix = list()
         self.replacePrefix.append('NM_')
         self.replacePrefix.append('NetworkMessage::')
         self.exportPrefix = 'CERTI_EXPORT'
-        self.serializeBufferType = 'libhla::MessageBuffer'
+        self.serializeBufferType = 'MsgBuffer_t'
         self.messageTypeGetter = 'getMessageType()'
         self.exception = ['NetworkError', 'NetworkSignal']
 

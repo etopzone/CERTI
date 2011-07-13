@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.9 2011/07/11 11:00:09 erk Exp $
+// $Id: RTItypesImp.cc,v 3.10 2011/07/13 15:43:16 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -80,7 +80,7 @@ void AttributeHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULo
     if (i < size()) {
         const AttributeHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        memcpy(buff, item.second.data(), len);
+        memcpy(buff, &(item.second[0]), len);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
@@ -92,7 +92,7 @@ char *AttributeHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong &
     if (i < size()) {
         const AttributeHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        return (char *)item.second.data();
+        return (char *)&(item.second[0]);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
@@ -119,7 +119,9 @@ RTI::Region *AttributeHandleValuePairSetImp::getRegion(RTI::ULong) const
 void AttributeHandleValuePairSetImp::add(RTI::Handle h, const char *str, RTI::ULong len)
     throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
 {
-    _set.push_back(AttributeHandleValuePair_t(h, std::string(str, len)));
+    std::vector<char> v;
+    v.assign(str,str+len);
+    _set.push_back(AttributeHandleValuePair_t(h, v));
 }
 
 void AttributeHandleValuePairSetImp::remove(RTI::Handle h)
@@ -342,7 +344,7 @@ void ParameterHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULo
     if (i < size()) {
         const ParameterHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        memcpy(buff, item.second.data(), len);
+        memcpy(buff, &(item.second[0]), len);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
@@ -354,7 +356,7 @@ char *ParameterHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong &
     if (i < size()) {
         const ParameterHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        return (char *)item.second.data();
+        return (char *)&(item.second[0]);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
@@ -381,7 +383,9 @@ RTI::Region *ParameterHandleValuePairSetImp::getRegion() const
 void ParameterHandleValuePairSetImp::add(RTI::Handle h, const char *str, RTI::ULong len)
     throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
 {
-    _set.push_back(ParameterHandleValuePair_t(h, std::string(str, len)));
+    std::vector<char> v;
+    v.assign(str,str+len);
+    _set.push_back(ParameterHandleValuePair_t(h, v));
 }
 
 void ParameterHandleValuePairSetImp::remove(RTI::Handle h)
@@ -565,4 +569,4 @@ void RegionImp::commit()
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.9 2011/07/11 11:00:09 erk Exp $
+// $Id: RTItypesImp.cc,v 3.10 2011/07/13 15:43:16 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.51 2011/04/26 11:07:38 erk Exp $
+// $Id: certi.hh,v 3.52 2011/07/13 15:43:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -131,6 +131,7 @@
 #define CERTI_DECODE_DOUBLE_FROM_UINT64BE(val)  (CERTI_UINT64_FROM_BE (*(uint64_t*)(val)))
 
 #include <string>
+#include <vector>
 #include <sstream>
 
 /**
@@ -162,8 +163,8 @@ typedef Handle   EventRetractionHandle;
 typedef double TickTime;
 
 typedef std::string ObjectName_t ;
-typedef std::string AttributeValue_t;
-typedef std::string ParameterValue_t;
+typedef std::vector<char> AttributeValue_t;
+typedef std::vector<char> ParameterValue_t;
 
 enum ResignAction {
     RELEASE_ATTRIBUTES = 1,
@@ -323,4 +324,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.51 2011/04/26 11:07:38 erk Exp $
+// $Id: certi.hh,v 3.52 2011/07/13 15:43:17 erk Exp $

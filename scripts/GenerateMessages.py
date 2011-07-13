@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.42 2010/06/24 14:07:04 erk Exp $
+## $Id: GenerateMessages.py,v 1.43 2011/07/13 15:43:17 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -92,6 +92,7 @@ import GenMsgCXX
 import GenMsgPython
 import GenMsgJava
 import GenMsgAST
+import GenMsgC
 
 generatorBackends = dict()
 generatorBackends[GenMsgBase.MsgSpecGenerator.generatorName().lower()] = \
@@ -106,7 +107,8 @@ generatorBackends[GenMsgPython.PythonGenerator.generatorName().lower()] = \
     GenMsgPython.PythonGenerator
 generatorBackends[GenMsgJava.JavaGenerator.generatorName().lower()] = \
     GenMsgJava.JavaGenerator
-
+generatorBackends[GenMsgC.CCERTIGenerator.generatorName().lower()] = \
+    GenMsgC.CCERTIGenerator
 
 def usage():
     print 'Usage:\n%s --input=<message> [--language=<lang>] [--type=header|body] [--factory-only] [--output=<filename>] [--verbose] [--help]' \
@@ -444,7 +446,6 @@ def p_native(p):
 
     # we should reverse the language list
     # because the parse build it the other way around (recursive way)
-
     p[4].reverse()
     p[0] = GenMsgAST.NativeType(p[2], p[4])
     p[0].linespan = (p.linespan(1)[0], p.linespan(5)[1])
@@ -455,7 +456,6 @@ def p_native_line_list(p):
                         | native_line eol_comment native_line_list'''
 
     # Create or append the list (of pair)
-
     if len(p) == 3:
         p[1].comment = p[2]
         p[0] = [p[1]]
@@ -479,10 +479,14 @@ def p_language_line(p):
 
 
 def p_representation_line(p):
-    '''representation_line : REPRESENTATION typeid
+    '''representation_line : REPRESENTATION qualifier typeid
+                        | REPRESENTATION typeid
                         | REPRESENTATION COMBINE'''
 
-    p[0] = GenMsgAST.NativeType.RepresentationLine(p[2])
+    if len(p)==3:
+        p[0] = GenMsgAST.NativeType.RepresentationLine(p[2],None)
+    else:
+        p[0] = GenMsgAST.NativeType.RepresentationLine(p[3],p[2])
 
 
 def p_enum(p):

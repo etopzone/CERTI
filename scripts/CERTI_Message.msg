@@ -133,12 +133,12 @@ native AttributeHandleValuePairSet {
 }
 
 native AttributeValue_t {
-	representation string
+	representation repeated byte
 	language CXX [#include "certi.hh"]
 }
 
 native ParameterValue_t {
-	representation string
+	representation repeated byte
 	language CXX [#include "certi.hh"]
 }
 
@@ -162,7 +162,7 @@ native EventRetractionHandle {
 message EventRetraction {
     required FederateHandle sendingFederate {default = 0}
     required uint64         SN              {default = 0}
-}        
+}
 
 // Connexion initialization message
 message M_Open_Connexion : merge Message {
@@ -286,8 +286,8 @@ message M_Register_Object_Instance : merge Message {
 
 message M_Update_Attribute_Values : merge Message {
         required ObjectClassHandle     objectClass
-	    required ObjectHandle          object
-	    combine AttributeHandleValuePairSet {
+        required ObjectHandle          object
+        combine AttributeHandleValuePairSet {
            repeated AttributeHandle       attributes
            repeated AttributeValue_t      values
         }        
@@ -584,7 +584,7 @@ message M_Time_Regulation_Enabled : merge Message {}
 message M_Time_Constrained_Enabled : merge Message {}
 
 native Extent {
-   language CXX [#include "Extent.hh"]	     
+   language CXX [#include "Extent.hh"]
 }
 
 // Data Distribution Management

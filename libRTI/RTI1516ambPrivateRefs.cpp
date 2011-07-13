@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.4 2011/07/11 11:17:24 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.5 2011/07/13 15:43:16 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -85,7 +85,7 @@ getAHVMFromRequest(T* request)
 	
 	for (uint32_t i = 0 ; i < size ; ++i) {
 		rti1516::AttributeHandle attribute = rti1516::AttributeHandleFriend::createRTI1516Handle(request->getAttributes(i)); 		
-		rti1516::VariableLengthData varData(request->getValues(i).data(), request->getValues(i).length()); 
+		rti1516::VariableLengthData varData(&(request->getValues(i)[0]), request->getValues(i).size()); 
 		result->insert(std::pair<rti1516::AttributeHandle,rti1516::VariableLengthData>(attribute, varData)); 
 	}
 
@@ -101,7 +101,7 @@ getPHVMFromRequest(T* request)
 
 	for (uint32_t i = 0 ; i < size ; ++i) {
 		rti1516::ParameterHandle parameter = rti1516::ParameterHandleFriend::createRTI1516Handle(request->getParameters(i));
-		rti1516::VariableLengthData varData(request->getValues(i).data(), request->getValues(i).length()); 
+		rti1516::VariableLengthData varData(&(request->getValues(i)[0]), request->getValues(i).size()); 
 		result->insert(std::pair<rti1516::ParameterHandle,rti1516::VariableLengthData>(parameter, varData)); 
 	}
 
@@ -1205,4 +1205,4 @@ throw (rti1516::RTIinternalError)
 	}
 }
 
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.4 2011/07/11 11:17:24 erk Exp $
+// $Id: RTI1516ambPrivateRefs.cpp,v 1.5 2011/07/13 15:43:16 erk Exp $

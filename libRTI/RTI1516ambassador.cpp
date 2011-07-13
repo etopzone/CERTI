@@ -40,8 +40,11 @@ namespace rti1516
 		uint32_t i = 0;
 		for ( rti1516::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i)
 		{
-			req.setParameters(ParameterHandleFriend::toCertiHandle(it->first),i);
-			req.setValues(certi::ParameterValue_t( (char*)it->second.data(), it->second.size() ), i);
+		    req.setParameters(ParameterHandleFriend::toCertiHandle(it->first),i);
+		    certi::ParameterValue_t paramValue;
+		    paramValue.resize(it->second.size());
+		    memcpy(&(paramValue[0]), it->second.data(), it->second.size());
+		    req.setValues(paramValue, i);
 		}
 		privateRefs->executeService(&req, &rep);
 	}
@@ -56,7 +59,10 @@ namespace rti1516
 		for ( rti1516::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i)
 		{
 			req.setAttributes(AttributeHandleFriend::toCertiHandle(it->first),i);
-			req.setValues(certi::AttributeValue_t( (char*)it->second.data(),it->second.size() ), i);
+ 			certi::AttributeValue_t attrValue;
+ 			attrValue.resize(it->second.size());
+ 			memcpy(&(attrValue[0]), it->second.data(), it->second.size());
+ 			req.setValues(attrValue, i);  
 		}
 		privateRefs->executeService(&req, &rep);
 	}

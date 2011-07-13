@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.139 2011/07/11 11:17:25 erk Exp $
+// $Id: Federation.cc,v 3.140 2011/07/13 15:43:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -934,11 +934,6 @@ throw (FederateNotExecutionMember,
 			tag);
 	D.Out(pdRequest, "Federation %d: Broadcasted Interaction %d from Federate "
 			"%d nb params %d.", handle, interaction, federate_handle, list_size);
-	for (int i=0 ; i < list_size ; i++)
-		D.Out(pdRequest,
-				" Param %d Value %s",
-				parameter_handles[i],
-				parameter_values[i].c_str());
 
 	G.Out(pdGendoc,"exit Federation::broadcastInteraction with time");
 
@@ -985,7 +980,7 @@ throw (FederateNotExecutionMember,
 		D.Out(pdRequest,
 				" Param %d Value %s",
 				parameter_handles[i],
-				parameter_values[i].c_str());
+				string(&(parameter_values[i][0]), parameter_values[i].size()).c_str());
 
 	G.Out(pdGendoc,"exit Federation::broadcastInteraction without time");
 
@@ -2742,5 +2737,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.139 2011/07/11 11:17:25 erk Exp $
+// $Id: Federation.cc,v 3.140 2011/07/13 15:43:18 erk Exp $
 

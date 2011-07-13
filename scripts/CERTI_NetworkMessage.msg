@@ -95,12 +95,12 @@ native FederateHandle {
 }
 
 native AttributeValue_t {
-	representation string
+	representation repeated byte
 	language CXX [#include "certi.hh"]
 }
 
 native ParameterValue_t {
-	representation string
+	representation repeated byte
 	language CXX [#include "certi.hh"]
 }
 

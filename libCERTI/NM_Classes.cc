@@ -1,4 +1,4 @@
-// Generated on 2010 August Mon, 09 at 18:13:03 by the CERTI message generator
+// Generated on 2011 July Wed, 13 at 17:02:50 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -1211,13 +1211,13 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    void NM_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -1233,13 +1233,13 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       _hasEvent = msgBuffer.read_bool();
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    std::ostream& NM_Update_Attribute_Values::show(std::ostream& out) {
@@ -1254,7 +1254,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <AttributeValue_t>";
       }
       out << std::endl;
       out << "(opt) event =" << "      //FIXME FIXME don't know how to serialize native field <event> of type <EventRetractionHandle>"      << std::endl;
@@ -1288,13 +1288,13 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    void NM_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -1310,13 +1310,13 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       _hasEvent = msgBuffer.read_bool();
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    std::ostream& NM_Reflect_Attribute_Values::show(std::ostream& out) {
@@ -1331,7 +1331,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <AttributeValue_t>";
       }
       out << std::endl;
       out << "(opt) event =" << "      //FIXME FIXME don't know how to serialize native field <event> of type <EventRetractionHandle>"      << std::endl;
@@ -1364,7 +1364,9 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_uint32(region);
    }
@@ -1382,7 +1384,9 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
@@ -1399,7 +1403,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <ParameterValue_t>";
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
@@ -1433,13 +1437,13 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    void NM_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -1455,13 +1459,13 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       _hasEvent = msgBuffer.read_bool();
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    std::ostream& NM_Receive_Interaction::show(std::ostream& out) {
@@ -1476,7 +1480,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <ParameterValue_t>";
       }
       out << std::endl;
       out << "(opt) event =" << "      //FIXME FIXME don't know how to serialize native field <event> of type <EventRetractionHandle>"      << std::endl;
@@ -1502,9 +1506,7 @@ namespace certi {
       msgBuffer.write_uint32(object);
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    void NM_Delete_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -1514,9 +1516,7 @@ namespace certi {
       object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
       _hasEvent = msgBuffer.read_bool();
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    std::ostream& NM_Delete_Object::show(std::ostream& out) {
@@ -1549,9 +1549,7 @@ namespace certi {
       msgBuffer.write_uint32(objectClass);
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to serialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    void NM_Remove_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -1562,9 +1560,7 @@ namespace certi {
       objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
       _hasEvent = msgBuffer.read_bool();
       if (_hasEvent) {
-         // FIXME FIXME FIXME
-         // don't know how to deserialize native field <event> of type <EventRetractionHandle>
-      }
+               }
    }
 
    std::ostream& NM_Remove_Object::show(std::ostream& out) {
@@ -2767,7 +2763,8 @@ namespace certi {
       Super::serialize(msgBuffer);
       //Specific serialization code
       // FIXME FIXME FIXME
-      // don't know how to serialize native field <timestamp> of type <FederationTime>
+      //don't know how to serialize native field <timestamp> of type <FederationTime>
+      //probably no 'representation' given
    }
 
    void NM_Message_Null_Prime::deserialize(libhla::MessageBuffer& msgBuffer) {
@@ -2775,7 +2772,8 @@ namespace certi {
       Super::deserialize(msgBuffer);
       //Specific deserialization code
       // FIXME FIXME FIXME
-      // don't know how to deserialize native field <timestamp> of type <FederationTime>
+      //don't know how to deserialize native field <timestamp> of type <FederationTime>
+      //probably no 'representation' given
    }
 
    std::ostream& NM_Message_Null_Prime::show(std::ostream& out) {
@@ -2806,7 +2804,8 @@ namespace certi {
       msgBuffer.write_bool(_hasDate);
       if (_hasDate) {
          // FIXME FIXME FIXME
-         // don't know how to serialize native field <date> of type <FederationTime>
+         //don't know how to serialize native field <date> of type <FederationTime>
+         //probably no 'representation' given
       }
       msgBuffer.write_bool(_hasLabel);
       if (_hasLabel) {
@@ -2824,7 +2823,8 @@ namespace certi {
       _hasDate = msgBuffer.read_bool();
       if (_hasDate) {
          // FIXME FIXME FIXME
-         // don't know how to deserialize native field <date> of type <FederationTime>
+         //don't know how to deserialize native field <date> of type <FederationTime>
+         //probably no 'representation' given
       }
       _hasLabel = msgBuffer.read_bool();
       if (_hasLabel) {

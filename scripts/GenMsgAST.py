@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.18 2011/06/10 14:47:19 erk Exp $
+## $Id: GenMsgAST.py,v 1.19 2011/07/13 15:43:17 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -702,7 +702,6 @@ class NativeType(ASTElement):
 
         # store language line list in a dictionary
         # in order to ease retrieval
-
         self.languages = dict()
         """
         @ivar: the language line of the C{NativeType} object
@@ -710,18 +709,21 @@ class NativeType(ASTElement):
         """
         self.representation = None
         """
-        @ivar: the representation of the C{NativeType} object. It can be either 'combine' or a basic type.
+        @ivar: the representation of the C{NativeType} object. It can be either 'combine' or a basic type with a qualifier.
         @type: C{string} 
         """
         for l in lines:
+            # Native line l is a language line
             if isinstance(l, NativeType.LanguageLine):
                 if l.name in self.languages.keys():
                     self.languages[l.name].append(l)
                 else:
                     self.languages[l.name] = list()
                     self.languages[l.name].append(l)
+            # Native line l is a representation line
             else:
-                self.representation = l.representation
+                self.representation = l
+        # we will keep track of the number of Heir of the native types
         self.nbHeir = 0
 
     def __repr__(self):
@@ -800,24 +802,31 @@ class NativeType(ASTElement):
         Represents a Representation Line Value
         """
 
-        def __init__(self, value):
+        def __init__(self, value, qualifier):
             """
             The class constructor
             @param value: the value of the representation line, e.g. how a field of this native type has to be serialized 
             and deserialized. The value can be either 'combine' or a basic type.
+            @param qualifier: this is the usual type qualifier (required, repeated or optional) in fact only repeated 
+            is currently used.
             """
-            super(NativeType.RepresentationLine,
-                  self).__init__(name='representation')
+            super(NativeType.RepresentationLine,self).__init__(name='representation')
             self.representation = value
             """
             @ivar: the representation that has to be used, e.g. how a field of this native type has to be serialized 
             and deserialized. The representation can be either 'combine' or a basic type.
             @type: C{string}
             """
+            self.qualifier      = qualifier
 
+        def hasQualifier(self):
+            """
+            Tells if the C{RepresentationLine} object has got a qualifier or not
+            @return: TRUE if the C{RepresentationLine} object has got a qualifier and FALSE if not
+            """
+            return self.qualifier != None
 
 class MessageType(ASTElement):
-
     """ 
     Represents a message type.
     

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.28 2010/11/09 22:25:38 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.29 2011/07/13 15:43:16 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,8 +44,8 @@ getAHVPSFromRequest(T* request)
 	result.resize(size);
 
 	for (uint32_t i = 0 ; i < size ; ++i) {
-		result[i].first = request->getAttributes(i);
-		result[i].second.assign(request->getValues(i).data(), request->getValues(i).length());
+	    result[i].first = request->getAttributes(i);
+	    result[i].second.assign(request->getValues(i).begin(), request->getValues(i).end());
 	}
 
 	return result;
@@ -62,7 +62,7 @@ getPHVPSFromRequest(T* request)
 
 	for (uint32_t i = 0 ; i < size ; ++i) {
 		result[i].first = request->getParameters(i);
-		result[i].second.assign(request->getValues(i).data(), request->getValues(i).length());
+		result[i].second.assign(request->getValues(i).begin(), request->getValues(i).end());
 	}
 
 	return result;
@@ -983,4 +983,4 @@ throw (RTI::RTIinternalError)
 	}
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.28 2010/11/09 22:25:38 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.29 2011/07/13 15:43:16 erk Exp $

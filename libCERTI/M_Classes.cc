@@ -1,4 +1,4 @@
-// Generated on 2010 August Mon, 09 at 18:13:03 by the CERTI message generator
+// Generated on 2011 July Wed, 13 at 17:02:50 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -994,7 +994,9 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_bool(_hasEventRetraction);
       if (_hasEventRetraction) {
@@ -1016,7 +1018,9 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       _hasEventRetraction = msgBuffer.read_bool();
       if (_hasEventRetraction) {
@@ -1037,7 +1041,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <AttributeValue_t>";
       }
       out << std::endl;
       out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
@@ -1124,7 +1128,9 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_bool(_hasEventRetraction);
       if (_hasEventRetraction) {
@@ -1146,7 +1152,9 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       _hasEventRetraction = msgBuffer.read_bool();
       if (_hasEventRetraction) {
@@ -1167,7 +1175,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <AttributeValue_t>";
       }
       out << std::endl;
       out << "(opt) eventRetraction =" << eventRetraction.show(out)      << std::endl;
@@ -1202,7 +1210,9 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_uint32(region);
       msgBuffer.write_bool(_hasEventRetraction);
@@ -1224,7 +1234,9 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
       _hasEventRetraction = msgBuffer.read_bool();
@@ -1245,7 +1257,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <ParameterValue_t>";
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
@@ -1281,7 +1293,9 @@ namespace certi {
       uint32_t valuesSize = values.size();
       msgBuffer.write_uint32(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.write_string(values[i]);
+         //serialize native whose representation is 'repeated' byte 
+         msgBuffer.write_uint32(values[i].size());
+         msgBuffer.write_bytes(values[i].data(),values[i].size());
       }
       msgBuffer.write_uint32(region);
       msgBuffer.write_bool(_hasEventRetraction);
@@ -1303,7 +1317,9 @@ namespace certi {
       uint32_t valuesSize = msgBuffer.read_uint32();
       values.resize(valuesSize);
       for (uint32_t i = 0; i < valuesSize; ++i) {
-         msgBuffer.read_string(values[i]);
+         //deserialize native whose representation is 'repeated' byte 
+         values[i].resize(msgBuffer.read_uint32());
+         msgBuffer.read_bytes(&(values[i][0]),values[i].size());
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
       _hasEventRetraction = msgBuffer.read_bool();
@@ -1324,7 +1340,7 @@ namespace certi {
       out << std::endl;
       out << "    values [] =" << std::endl;
       for (uint32_t i = 0; i < getValuesSize(); ++i) {
-         out << values[i] << " " ;
+         out << "         //FIXME FIXME don't know how to serialize native field <values> of type <ParameterValue_t>";
       }
       out << std::endl;
       out << " region = " << region << " "       << std::endl;
@@ -3143,7 +3159,8 @@ namespace certi {
       msgBuffer.write_uint32(extentSetSize);
       for (uint32_t i = 0; i < extentSetSize; ++i) {
          // FIXME FIXME FIXME
-         // don't know how to serialize native field <extentSet> of type <Extent>
+         //don't know how to serialize native field <extentSet> of type <Extent>
+         //probably no 'representation' given
       }
       msgBuffer.write_uint32(region);
    }
@@ -3157,7 +3174,8 @@ namespace certi {
       extentSet.resize(extentSetSize);
       for (uint32_t i = 0; i < extentSetSize; ++i) {
          // FIXME FIXME FIXME
-         // don't know how to deserialize native field <extentSet> of type <Extent>
+         //don't know how to deserialize native field <extentSet> of type <Extent>
+         //probably no 'representation' given
       }
       region = static_cast<RegionHandle>(msgBuffer.read_uint32());
    }
@@ -3196,7 +3214,8 @@ namespace certi {
       msgBuffer.write_uint32(extentSetSize);
       for (uint32_t i = 0; i < extentSetSize; ++i) {
          // FIXME FIXME FIXME
-         // don't know how to serialize native field <extentSet> of type <Extent>
+         //don't know how to serialize native field <extentSet> of type <Extent>
+         //probably no 'representation' given
       }
    }
 
@@ -3209,7 +3228,8 @@ namespace certi {
       extentSet.resize(extentSetSize);
       for (uint32_t i = 0; i < extentSetSize; ++i) {
          // FIXME FIXME FIXME
-         // don't know how to deserialize native field <extentSet> of type <Extent>
+         //don't know how to deserialize native field <extentSet> of type <Extent>
+         //probably no 'representation' given
       }
    }
 
