@@ -1410,9 +1410,17 @@ namespace rti1516
 		
 		//JRE: is dit wel goed?
 		//JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
-		double * lookAheadTime = (double*) theLookahead.encode().data();
-		req.setLookahead(*lookAheadTime);
-
+		union ud {
+			double   dv;
+			uint64_t uv;
+		} value;
+#ifdef HOST_IS_BIG_ENDIAN
+		memcpy(&(value.uv), theLookahead.encode().data(), sizeof(double));
+#else
+		value.uv = CERTI_DECODE_DOUBLE_FROM_UINT64BE(theLookahead.encode().data());
+#endif
+		double lookAheadTime = value.dv;
+		req.setLookahead(lookAheadTime);
 		privateRefs->executeService(&req, &rep);
 	}
 
