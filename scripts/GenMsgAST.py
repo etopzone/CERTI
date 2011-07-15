@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.19 2011/07/13 15:43:17 erk Exp $
+## $Id: GenMsgAST.py,v 1.20 2011/07/15 12:22:04 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1080,6 +1080,8 @@ class ASTChecker(object):
                 elif isinstance(f, MessageType.CombinedField):
                     if not self.checkMessageFields(f, AST):
                         return False
+                    else:
+                        f.typeid = AST.getType(f.typeid)
                 else:
                     self.logger.fatal('Unknown MessageField type %s'
                             % f.str())
@@ -1128,9 +1130,7 @@ class ASTChecker(object):
                 parent = AST.getType(msg.merge)
                 parent.nbHeir += 1
                 if None != lastMerge:
-
-                      # recurse to find root merge
-
+                    # recurse to find root merge
                     rootMerge = AST.getRootMergeType(msg.merge)
                     if lastMerge != rootMerge:
                         blah = AST.getRootMergeType(msg.merge, 1)
@@ -1165,7 +1165,6 @@ class ASTChecker(object):
 
         # check if merger are either native or message
         # @todo should check that merger is not an enum
-
         for msg in AST.messages:
             if msg.hasMerge():
                 if not AST.isDefined(msg.merge):
@@ -1193,7 +1192,6 @@ class ASTChecker(object):
                     self.logger.fatal(' --> Check lines (%d,%d)'
                                       % AST.factory.linespan + ' of <%s>'
                                       % AST.name)
-    
                     return
     
             if AST.factory.hasFactoryReceiver():

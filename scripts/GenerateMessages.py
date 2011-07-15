@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.43 2011/07/13 15:43:17 erk Exp $
+## $Id: GenerateMessages.py,v 1.44 2011/07/15 12:22:04 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -111,7 +111,7 @@ generatorBackends[GenMsgC.CCERTIGenerator.generatorName().lower()] = \
     GenMsgC.CCERTIGenerator
 
 def usage():
-    print 'Usage:\n%s --input=<message> [--language=<lang>] [--type=header|body] [--factory-only] [--output=<filename>] [--verbose] [--help]' \
+    print 'Usage:\n%s --input=<message> [--language=<lang>] [--type=header|body] [--factory-only] [--output=<filename>|<output directory>] [--verbose] [--help]' \
         % os.path.basename(sys.argv[0])
     print '   Supported target languages are:'
     for gene in generatorBackends.values():
@@ -144,6 +144,7 @@ factoryOnly = False
 gentype = 'header'
 language = GenMsgBase.MsgSpecGenerator.generatorName()
 output = sys.stdout
+oname  = 'stdout'
 inputFile = None
 
 # Parse command line options
@@ -158,7 +159,16 @@ for (o, a) in opts:
     if o in ('-f', '--factory-only'):
         factoryOnly = True
     if o in ('-o', '--output'):
-        output = open(a, mode='w')
+        try:
+            output = open(a, mode='w')
+            oname  = a
+        except IOError, err:
+            if (os.path.isdir(a)):
+                mainlogger.warn('output argument <%s> is a directory, passing it as-is to the generator'%a)
+                output = a
+                oname  = a
+            else:
+                mainlogger.error('unable to create output file <%s> [err=%s]' % (a,err))
     if o in ('-v', '--verbose'):
         verbose = True
         mainlogger.setLevel(logging.INFO)
@@ -167,7 +177,7 @@ for (o, a) in opts:
         sys.exit(0)
 
 mainlogger.info('Reading message specifications from: <%s>' % inputFile)
-mainlogger.info('output send to: <%s>' % repr(output.name))
+mainlogger.info('output send to: <%s>' % oname)
 mainlogger.info('Generating for language: <%s>' % language)
 
 # Lexer+Parser specification begins here
@@ -713,6 +723,9 @@ if lexer.syntax:
       usage()
 
   if generator != None:
+      generator.logger.addHandler(stdoutHandler)
+      if verbose:
+          generator.logger.setLevel(logging.INFO)
       generator.generate(output, gentype, factoryOnly)
   mainlogger.info('Generate %s from AST, Done.' % language)
   msgFile.close()

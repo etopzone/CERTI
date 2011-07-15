@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.21 2011/07/13 15:43:17 erk Exp $
+## $Id: GenMsgCXX.py,v 1.22 2011/07/15 12:22:03 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -116,30 +116,6 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
             return prefix + name
         else:
             return name
-
-    def getRepresentationFor(self, name):
-        for native in self.AST.natives:
-            if name == native.name:
-                return native.getRepresentation()
-        return None
-
-    def getSerializeMethodName(self, name):
-        if name in self.serializeTypeMap.keys():
-            return self.serializeTypeMap[name]
-        else:
-            representation = self.getRepresentationFor(name)
-            if representation and not representation.hasQualifier():
-                return self.getSerializeMethodName(representation.representation)
-        return None
-
-    def getDeSerializeMethodName(self, name):
-        if name in self.deserializeTypeMap.keys():
-            return self.deserializeTypeMap[name]
-        else:
-            representation = self.getRepresentationFor(name)
-            if representation and not representation.hasQualifier():
-                return self.getDeSerializeMethodName(representation.representation)
-        return None
 
     def openNamespaces(self, stream):
         if self.AST.hasPackage():
@@ -346,9 +322,8 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
                      % enum.name)
 
     def generateHeader(self, stream, factoryOnly=False):
-
+        self.addGeneratedByLine(stream)
         # write the usual header protecting MACRO
-
         supposedHeaderName = stream.name
         if supposedHeaderName != '<stdout>':
             supposedHeaderName = os.path.basename(supposedHeaderName)
@@ -979,12 +954,10 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         """
         Generate the body.
         """
-
+        self.addGeneratedByLine(stream)
         # add necessary standard includes
-
         stream.write('#include <vector>\n')
         stream.write('#include <string>\n')
-
         # [Try to] add corresponding header include
 
         supposedHeaderName = stream.name

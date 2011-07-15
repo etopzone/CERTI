@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.6 2010/06/11 12:43:12 erk Exp $
+## $Id: GenMsgBase.py,v 1.7 2011/07/15 12:22:01 erk Exp $
 ## ----------------------------------------------------------------------------
 
 # We use logging for ... logging :-)
@@ -55,7 +55,7 @@ class CodeGenerator(object):
         self.commentLineBeginWith = commentLineBeginWith
         self.logger = logging.Logger(self.generatorName() + 'Generator')
         self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(logging.StreamHandler(sys.stdout))
+        #self.logger.addHandler(logging.StreamHandler(sys.stdout))
         self.__indentString = '   '
         self.__indentLevel = 0
         self.builtinTypeMap = {
@@ -100,6 +100,33 @@ class CodeGenerator(object):
             return self.builtinTypeMap[name]
         else:
             return name
+    
+    def getRepresentationFor(self, name):
+        for native in self.AST.natives:
+            if name == native.name:
+                return native.getRepresentation()
+        return None
+
+    def getSerializeMethodName(self, name):
+        if name in self.serializeTypeMap.keys():
+            return self.serializeTypeMap[name]
+        else:
+            representation = self.getRepresentationFor(name)
+            if representation and not representation.hasQualifier():
+                return self.getSerializeMethodName(representation.representation)
+        
+        self.logger.warn("No serialize method for <%s>", name)
+        return None
+
+    def getDeSerializeMethodName(self, name):
+        if name in self.deserializeTypeMap.keys():
+            return self.deserializeTypeMap[name]
+        else:
+            representation = self.getRepresentationFor(name)
+            if representation and not representation.hasQualifier():
+                return self.getDeSerializeMethodName(representation.representation)
+        self.logger.warn("No serialize method for <%s>", name)
+        return None
 
     def lowerFirst(self, str):
         res = str[0].lower() + str[1:]
@@ -117,13 +144,10 @@ class CodeGenerator(object):
         language has whole line comment support
         with some beginning characters.
         """
-
         if ASTElement.hasComment():
             for line in ASTElement.comment.lines:
-
                 # we should not indent optional comment
                 # since they come at the end of a line
-
                 if not ASTElement.comment.isAtEOL:
                     stream.write(self.getIndent())
                 stream.write(self.commentLineBeginWith)
@@ -136,27 +160,26 @@ class CodeGenerator(object):
         """
         Generate the header.
         """
-
         self.logger.error('generateHeader not IMPLEMENTED')
 
     def generateBody(self, stream, factoryOnly=False):
         """
         Generate the body.
         """
-
         self.logger.error('generateBody not IMPLEMENTED')
+
+    def addGeneratedByLine(self,stream):
+        stream.write(self.commentLineBeginWith)
+        stream.write(' Generated on %s by the CERTI message generator\n'
+                     % datetime.datetime.now().strftime('%Y %B %a, %d at %H:%M:%S'
+                     ))
 
     def generate(
         self,
         stream,
         what,
-        factoryOnly=False,
-        ):
-        stream.write(self.commentLineBeginWith)
-        stream.write(' Generated on %s by the CERTI message generator\n'
-
-                     % datetime.datetime.now().strftime('%Y %B %a, %d at %H:%M:%S'
-                     ))
+        factoryOnly=False):
+        
         if what.lower() == 'header':
             self.generateHeader(stream, factoryOnly)
         elif what.lower() == 'body':
@@ -166,7 +189,6 @@ class CodeGenerator(object):
 
 
 class MsgSpecGenerator(CodeGenerator):
-
     """
     This is a text generator for C{MessageAST}.
     
@@ -199,21 +221,17 @@ class MsgSpecGenerator(CodeGenerator):
         """
 
         # Generate package
-
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
             stream.write('package %s\n' % self.AST.package.name)
 
-    # Generate version
-
+        # Generate version
         if self.AST.hasVersion():
             self.writeComment(stream, self.AST.version)
             stream.write('version %d.%d\n' % self.AST.version.number)
 
         if not factoryOnly:
-
             # Generate native type
-
             for native in self.AST.natives:
                 self.writeComment(stream, native)
                 stream.write('native %s {\n' % native.name)
@@ -229,7 +247,6 @@ class MsgSpecGenerator(CodeGenerator):
                 stream.write('}\n')
 
             # Generate enum
-
             for enum in self.AST.enums:
                 self.writeComment(stream, enum)
                 stream.write('enum %s {\n' % enum.name)
@@ -250,7 +267,6 @@ class MsgSpecGenerator(CodeGenerator):
 ''')
 
             # Generate message type
-
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
                 stream.write('message %s' % msg.name)
@@ -287,7 +303,6 @@ class MsgSpecGenerator(CodeGenerator):
 ''')
 
         # Generate Factory
-
         if self.AST.hasFactory():
             self.writeComment(stream, self.AST.factory)
             stream.write('factory %s {\n' % self.AST.factory.name)
@@ -301,5 +316,3 @@ class MsgSpecGenerator(CodeGenerator):
             stream.write('''}
 
 ''')
-
-

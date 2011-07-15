@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgJava.py,v 1.4 2010/06/11 12:43:12 erk Exp $
+## $Id: GenMsgJava.py,v 1.5 2011/07/15 12:22:02 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -31,6 +31,7 @@ import logging
 import GenMsgBase
 import GenMsgAST
 import sys
+import os
 
 
 class JavaGenerator(GenMsgBase.CodeGenerator):
@@ -151,58 +152,56 @@ import hla.rti.LogicalTimeInterval;
 """)
 
     def generateHeader(self, stream, factoryOnly=False):
+        self.logger.warn("There is no 'header' for Java, only body.")
+        self.logger.warn("Header generation does sanity checks only")
         for native in self.AST.natives:
             if native.hasLanguage('Java'):
-
                 # This an example may be it would be worth to check whether if the
-                # refered native types are valids?
-
+                # referred native types are valids?
                 for line in native.getLanguageLines('Java'):
-                    stream.write('Found native **' + line.statement
-                                 + '**\n')
+                    self.logger.info('Found native **' + line.statement+ '**')
 
     def prepareName(self, name):
         upperAfterScore = lambda x: __import__('re').sub(r'_(.)',
                 lambda y: y.group(0).upper(), x)
-        return upperAfterScore(name.lower()).replace('_', '')[1:]
-
-    def getSerializeMethodName(self, name):
-        if name in self.serializeTypeMap.keys():
-            return self.serializeTypeMap[name]
+        if (name.find('_')>0):
+            return upperAfterScore(name.lower()).replace('_', '')[1:]
         else:
-            representation = self.getRepresentationFor(name)
-            if representation:
-                return self.getSerializeMethodName(representation)
-        print 'No serialize method name for <%s> ' % name
-        return None
-
-    def getDeSerializeMethodName(self, name):
-        if name in self.deserializeTypeMap.keys():
-            return self.deserializeTypeMap[name]
-        else:
-            representation = self.getRepresentationFor(name)
-            if representation:
-                return self.getDeSerializeMethodName(representation)
-        return None
-
-    def getRepresentationFor(self, name):
-        for native in self.AST.natives:
-            if name == native.name:
-                representation = native.getRepresentation()
-                if representation:
-                    return representation
-        return None
+            return name
 
     def generateBody(self, stream, factoryOnly=False):
         """
         Generate the body.
         """
-
+        # Java generator generates multiple files so close
+        # and delete the previously opened javaFile and create
+        # a directory with the same name instead
+        shouldCreateDir=False
+        if (isinstance(stream,file)):
+            mydirname = stream.name
+            if os.path.exists(mydirname):
+                os.remove(mydirname)
+                shouldCreateDir=True
+        elif (isinstance(stream,"".__class__)):
+            mydirname = stream
+            if not os.path.exists(mydirname):
+                shouldCreateDir = True
+        else:
+            self.logger.error("Unknown type of stream <%>" % type(stream))
+        
+        if shouldCreateDir:
+            os.makedirs(mydirname)
+            self.logger.info("Generates java javaFile in %s directory" % mydirname)
         for msg in self.AST.messages:
-            file = open('messages/' + self.prepareName(msg.name)
-                        + '.java', 'w')
+            if os.path.exists(mydirname):
+                javaFile = open(mydirname +os.sep+ self.prepareName(msg.name)
+                            + '.java', 'w')
+            else:
+                javaFile = sys.stdout
+                javaFile.write("// ----------    %s ----------\n" % (self.prepareName(msg.name)+'.java'))
 
-            file.write("""// ----------------------------------------------------------------------------
+            self.addGeneratedByLine(javaFile)
+            javaFile.write("""// ----------------------------------------------------------------------------
 // CERTI - HLA Run Time Infrastructure
 // Copyright (C) 2010 Andrej Pancik
 //
@@ -224,25 +223,25 @@ import hla.rti.LogicalTimeInterval;
 """)
 
             if self.AST.hasPackage():
-                file.write('package ' + self.AST.package.name
+                javaFile.write('package ' + self.AST.package.name
                            + ''';
 
 ''')
-            self.generateIncludes(file)
-            file.write(self.getIndent() + 'public class '
+            self.generateIncludes(javaFile)
+            javaFile.write(self.getIndent() + 'public class '
                        + self.prepareName(msg.name)
                        + ' extends CertiMessage {\n')
             self.indent()
 
             if len(msg.fields) > 0:
                 for field in msg.fields:
-                    file.write(self.getIndent() + 'private ')
+                    javaFile.write(self.getIndent() + 'private ')
 
                     # Combined field and "plain" field must not be treated the same way
 
                     if not isinstance(field,
                             GenMsgAST.MessageType.CombinedField):
-                        self.writeFieldStatement(file, field)
+                        self.writeFieldStatement(javaFile, field)
                     else:
 
                         # combined field may be written in a specific way
@@ -251,117 +250,111 @@ import hla.rti.LogicalTimeInterval;
                         # generated
 
                         for cfield in field.fields:
-                            self.writeFieldStatement(file, cfield)
+                            self.writeFieldStatement(javaFile, cfield)
 
-            file.write('\n')
+            javaFile.write('\n')
 
             # constructor
 
-            file.write(self.getIndent() + 'public '
+            javaFile.write(self.getIndent() + 'public '
                        + self.prepareName(msg.name) + '() {\n')
             self.indent()
-            file.write(self.getIndent() + 'super(CertiMessageType.'
+            javaFile.write(self.getIndent() + 'super(CertiMessageType.'
                        + msg.name.upper()[2:] + ');\n')
             self.unIndent()
-            file.write(self.getIndent() + '''}
+            javaFile.write(self.getIndent() + '''}
 
 ''')
 
-            file.write(self.getIndent() + 'public '
+            javaFile.write(self.getIndent() + 'public '
                        + self.prepareName(msg.name)
                        + '(CertiLogicalTime federationTime) {\n')
             self.indent()
-            file.write(self.getIndent() + 'super(CertiMessageType.'
+            javaFile.write(self.getIndent() + 'super(CertiMessageType.'
                        + msg.name.upper()[2:] + ', federationTime);\n')
             self.unIndent()
-            file.write(self.getIndent() + '''}
+            javaFile.write(self.getIndent() + '''}
 
 ''')
 
-            # file.write(self.getIndent() + "public " + self.prepareName(msg.name) + "(double federationTime, attributes) {\n")
+            # javaFile.write(self.getIndent() + "public " + self.prepareName(msg.name) + "(double federationTime, attributes) {\n")
             # TODO attributes in constructor
             # self.indent()
-            # file.write(self.getIndent() + "super(CertiMessageType." + msg.name.upper()[2:] + ", federationTime);\n")
+            # javaFile.write(self.getIndent() + "super(CertiMessageType." + msg.name.upper()[2:] + ", federationTime);\n")
 
             # TODO initialize local attributes
             # self.unIndent()
-            # file.write(self.getIndent() + "}\n\n");
+            # javaFile.write(self.getIndent() + "}\n\n");
 
             if len(msg.fields) > 0:
-                file.write(self.getIndent() + '@Override\n')
-                file.write(self.getIndent()
+                javaFile.write(self.getIndent() + '@Override\n')
+                javaFile.write(self.getIndent()
                            + 'public void writeMessage(MessageBuffer messageBuffer) {\n'
                            )
                 self.indent()
-                file.write(self.getIndent()
+                javaFile.write(self.getIndent()
                            + '''super.writeMessage(messageBuffer); //Header
 
 ''')
 
                 for field in msg.fields:
-
+                    methodName = self.getSerializeMethodName(field.typeid.name)
                     # Combined field and "plain" field must not be treated the same way
-
                     if not isinstance(field,
-                            GenMsgAST.MessageType.CombinedField):
-                        file.write(self.getIndent()
-                                   + self.getSerializeMethodName(field.typeid.name)
+                            GenMsgAST.MessageType.CombinedField) and methodName:
+                        javaFile.write(self.getIndent()
+                                   + methodName
                                    % field.name + '\n')
-                    else:
-
+                    elif methodName:
                         # FIXME TODO
-
                         for cfield in field.fields:
                             pass
 
                 self.unIndent()
-                file.write(self.getIndent() + '''}
+                javaFile.write(self.getIndent() + '''}
 
 ''')
 
-                file.write(self.getIndent() + '@Override\n')
-                file.write(self.getIndent()
+                javaFile.write(self.getIndent() + '@Override\n')
+                javaFile.write(self.getIndent()
                            + 'public void readMessage(MessageBuffer messageBuffer) throws CertiException {\n'
                            )
                 self.indent()
-                file.write(self.getIndent()
+                javaFile.write(self.getIndent()
                            + '''super.readMessage(messageBuffer); //Header 
 
 ''')
 
                 for field in msg.fields:
-
+                    methodName = self.getSerializeMethodName(field.typeid.name)
                     # Combined field and "plain" field must not be treated the same way
-
                     if not isinstance(field,
-                            GenMsgAST.MessageType.CombinedField):
-                        file.write(self.getIndent()
-                                   + self.getDeSerializeMethodName(field.typeid.name)
+                            GenMsgAST.MessageType.CombinedField) and methodName:
+                        javaFile.write(self.getIndent()
+                                   + methodName
                                    % field.name + '\n')
-                    else:
-
+                    elif methodName:
                         # FIXME TODO
-
                         for cfield in field.fields:
                             pass
 
                 self.unIndent()
-                file.write(self.getIndent() + '''}
+                javaFile.write(self.getIndent() + '''}
 
 ''')
 
-                file.write(self.getIndent() + '@Override\n')
-                file.write(self.getIndent()
+                javaFile.write(self.getIndent() + '@Override\n')
+                javaFile.write(self.getIndent()
                            + 'public String toString() {\n')
                 self.indent()
-                file.write(self.getIndent() + 'return (super.toString()'
+                javaFile.write(self.getIndent() + 'return (super.toString()'
                            )
                 for field in msg.fields:
-                    file.write(' + ", ' + field.name + ': " + '
+                    javaFile.write(' + ", ' + field.name + ': " + '
                                + field.name)
-                file.write(');\n')
+                javaFile.write(');\n')
                 self.unIndent()
-                file.write(self.getIndent() + '''}
+                javaFile.write(self.getIndent() + '''}
 
 ''')
 
@@ -373,16 +366,16 @@ import hla.rti.LogicalTimeInterval;
 
                     if not isinstance(field,
                             GenMsgAST.MessageType.CombinedField):
-                        file.write(self.getIndent() + 'public '
+                        javaFile.write(self.getIndent() + 'public '
                                    + self.getTargetTypeName(field.typeid.name)
                                    + ' get'
                                    + field.name[0].capitalize()
                                    + field.name[1:] + '() {\n')
                         self.indent()
-                        file.write(self.getIndent() + 'return '
+                        javaFile.write(self.getIndent() + 'return '
                                    + field.name + ';\n')
                         self.unIndent()
-                        file.write(self.getIndent() + '''}
+                        javaFile.write(self.getIndent() + '''}
 
 ''')
 
@@ -394,7 +387,7 @@ import hla.rti.LogicalTimeInterval;
 
                     if not isinstance(field,
                             GenMsgAST.MessageType.CombinedField):
-                        file.write(self.getIndent() + 'public void set'
+                        javaFile.write(self.getIndent() + 'public void set'
                                    + field.name[0].capitalize()
                                    + field.name[1:] + '('
                                    + self.getTargetTypeName(field.typeid.name)
@@ -402,16 +395,16 @@ import hla.rti.LogicalTimeInterval;
                                    + field.name[0].capitalize()
                                    + field.name[1:] + ') {\n')
                         self.indent()
-                        file.write(self.getIndent() + 'this.'
+                        javaFile.write(self.getIndent() + 'this.'
                                    + field.name + ' = new'
                                    + field.name[0].capitalize()
                                    + field.name[1:] + ';\n')
                         self.unIndent()
-                        file.write(self.getIndent() + '''}
+                        javaFile.write(self.getIndent() + '''}
 
 ''')
 
-            file.write('''}
+            javaFile.write('''}
 
 ''')
             self.unIndent()
