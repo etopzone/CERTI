@@ -20,12 +20,12 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.1 2011/07/13 15:43:17 erk Exp $
+## $Id: GenMsgC.py,v 1.2 2011/07/15 13:37:54 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
 The CERTI Message Generator.
-C++ Backend Generator
+C Backend Generator
 """
 
 import logging
@@ -68,36 +68,36 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             'double': 'double',
             }
         self.serializeTypeMap = {
-            'onoff': 'write_bool',
-            'bool': 'write_bool',
-            'string': 'write_string',
-            'byte': 'write_byte',
-            'int8': 'write_int8',
-            'uint8': 'write_uint8',
-            'int16': 'write_int16',
-            'uint16': 'write_uint16',
-            'int32': 'write_int32',
-            'uint32': 'write_uint32',
-            'int64': 'write_int64',
-            'uint64': 'write_uint64',
-            'float': 'write_float',
-            'double': 'write_double',
+            'onoff': 'MB_write_bool',
+            'bool': 'MB_write_bool',
+            'string': 'MB_write_string',
+            'byte': 'MB_write_byte',
+            'int8': 'MB_write_int8',
+            'uint8': 'MB_write_uint8',
+            'int16': 'MB_write_int16',
+            'uint16': 'MB_write_uint16',
+            'int32': 'MB_write_int32',
+            'uint32': 'MB_write_uint32',
+            'int64': 'MB_write_int64',
+            'uint64': 'MB_write_uint64',
+            'float': 'MB_write_float',
+            'double': 'MB_write_double',
             }
         self.deserializeTypeMap = {
-            'onoff': 'read_bool',
-            'bool': 'read_bool',
-            'string': 'read_string',
-            'byte': 'read_byte',
-            'int8': 'read_int8',
-            'uint8': 'read_uint8',
-            'int16': 'read_int16',
-            'uint16': 'read_uint16',
-            'int32': 'read_int32',
-            'uint32': 'read_uint32',
-            'int64': 'read_int64',
-            'uint64': 'read_uint64',
-            'float': 'read_float',
-            'double': 'read_double',
+            'onoff': 'MB_read_bool',
+            'bool': 'MB_read_bool',
+            'string': 'MB_read_string',
+            'byte': 'MB_read_byte',
+            'int8': 'MB_read_int8',
+            'uint8': 'MB_read_uint8',
+            'int16': 'MB_read_int16',
+            'uint16': 'MB_read_uint16',
+            'int32': 'MB_read_int32',
+            'uint32': 'MB_read_uint32',
+            'int64': 'MB_read_int64',
+            'uint64': 'MB_read_uint64',
+            'float': 'MB_read_float',
+            'double': 'MB_read_double',
             }
         self.__languageName = 'C'
         self.replacePrefix = None
@@ -113,42 +113,14 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             t = self.AST.getType(name)
         if isinstance(t, GenMsgAST.EnumType):
             prefix = self.AST.name.split('.')[0] + '_'
-            return prefix + name
+            return prefix + name + "_t"
         else:
-            return name
-
-    def getRepresentationFor(self, name):
-        for native in self.AST.natives:
-            if name == native.name:
-                representation = native.getRepresentation()
-                if representation:
-                    return representation
-        return None
-
-    def getSerializeMethodName(self, name):
-        if name in self.serializeTypeMap.keys():
-            return self.serializeTypeMap[name]
-        else:
-            representation = self.getRepresentationFor(name)
-            if representation:
-                return self.getSerializeMethodName(representation)
-        return None
-
-    def getDeSerializeMethodName(self, name):
-        if name in self.deserializeTypeMap.keys():
-            return self.deserializeTypeMap[name]
-        else:
-            representation = self.getRepresentationFor(name)
-            if representation:
-                return self.getDeSerializeMethodName(representation)
-        return None
+            return name + "_t"
 
     def openNamespaces(self, stream):
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
-
             # we may have nested namespace
-
             nameSpaceList = self.AST.package.name.split('.')
             for ns in nameSpaceList:
                 stream.write(self.getIndent() + self.commentLineBeginWith + '''package %s 
@@ -183,16 +155,16 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(' {return cthis.' + field.name + 'size;}\n')
                 stream.write(self.getIndent())
                 stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s* cthis,uint32_t num) {\n' % msg.name)
-		self.indent()
+                             + 'Size(%s_t* cthis,uint32_t num) {\n' % msg.name)
+                self.indent()
                 stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
                 stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
                 stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-			    % (field.name, field.name))
+                             % (field.name, field.name))
                 stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-		self.unIndent()
+                self.unIndent()
                 stream.write(self.getIndent() + '}\n')
 
                 stream.write(self.getIndent())
@@ -202,14 +174,14 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(' {return cthis.' + field.name + ';}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'On(%s* cthis, uint32_t rank)'
-			    % msg.name)
+                stream.write('void ' + msg.name + '_' + field.name + 'On(%s_t* cthis, uint32_t rank)'
+                             % msg.name)
                 stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 1;}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s* cthis, uint32_t rank)'
-			    % msg.name)
+                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s_t* cthis, uint32_t rank)'
+                             % msg.name)
                         
                 stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 0;}\n')
@@ -221,63 +193,56 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(' {return cthis.' + field.name + '[rank];}\n')
             else:
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'On(%s* cthis)'
-			    % msg.name)
+                stream.write('void ' + msg.name + '_' + field.name + 'On(%s_t* cthis)'
+                             % msg.name)
                 stream.write(' {cthis->' + field.name + ' = 1;}\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s* cthis)'
-			    % (msg.name, msg.name,msg.name))
+                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s_t* cthis)'
+                             % (msg.name, msg.name,msg.name))
                 stream.write(' {cthis->' +field.name + ' = 0;}\n')
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' is'
                              + self.upperFirst(field.name)
                              + 'On(%s* cthis) '
-			    % msg.name)
+                                % msg.name)
                 stream.write(' {return cthis->' + field.name + ';}\n')
         else:
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
                 stream.write('uint32_t ' + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + 'Size(%s cthis) '
-			     % msg.name)
+                             + 'Size(%s_t cthis) '
+                             % msg.name)
                 stream.write('{ return cthis.' + field.name + 'size;}\n')
 
                 stream.write(self.getIndent())
                 stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s* cthis, uint32_t num) { \n'
+                             + 'Size(%s_t* cthis, uint32_t num) { \n'
                              % msg.name)
-		self.indent()
+                self.indent()
                 stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
                 stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
                 stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-			    % (field.name, field.name))
+                             % (field.name, field.name))
                 stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
                 stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-		self.unIndent()
+                self.unIndent()
                 stream.write(self.getIndent() + '}\n')
-
-                stream.write(self.getIndent())
-                #stream.write('const ' + targetTypeName
-                #             + '* ' + msg.name + '_get' + self.upperFirst(field.name)
-                #             + '(' + msg.name + ' cthis) ')
-                #stream.write(' {return cthis.' + field.name + ';}\n')
-
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' ' + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + '(%s* cthis, uint32_t rank)'
-			    % msg.name)
+                             + '(%s_t* cthis, uint32_t rank)'
+                             % msg.name)
                 stream.write(' {return cthis->' + field.name + '[rank];}\n')
 
                 stream.write(self.getIndent())
                 stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
-                             + '(%s* cthis, '
-			    % msg.name)
+                             + '(%s_t* cthis, '
+                             % msg.name)
                 stream.write(targetTypeName + ' new'
                              + self.upperFirst(field.name)
                              + ', uint32_t rank)')
@@ -286,13 +251,13 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             else:
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' ' + msg.name + '_get'
-                             + self.upperFirst(field.name) + '(%s cthis) '
+                             + self.upperFirst(field.name) + '(%s_t cthis) '
                              % msg.name)
                 stream.write(' {return cthis.'  + field.name + ';}\n')
 
                 stream.write(self.getIndent())
                 stream.write('void ' + msg.name + '_set'+ self.upperFirst(field.name)
-                             + '(%s* cthis,  '
+                             + '(%s_t* cthis,  '
                             % msg.name)
                 stream.write(targetTypeName + ' new'
                              + self.upperFirst(field.name) + ') {')
@@ -312,7 +277,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 if field.qualifier == 'optional':
                     stream.write(self.getIndent())
                     tmp = self.upperFirst(field.name)
-                    stream.write('uint8_t has%s(%s cthis) {return cthis._has%s;}\n'
+                    stream.write('uint8_t has%s(%s_t cthis) {return cthis._has%s;}\n'
                                  % (tmp,  msg.name,
                                  tmp))
 
@@ -364,7 +329,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
         self.unIndent()
         stream.write(self.getIndent())
-        stream.write('} %s_%s; ' % (self.AST.name.split('.'
+        stream.write('} %s_%s_t; ' % (self.AST.name.split('.'
                          )[0], enum.name))
         stream.write(self.commentLineBeginWith + 'end of enum %s \n'
                      % enum.name)
@@ -372,7 +337,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
     def generateHeader(self, stream, factoryOnly=False):
 
         # write the usual header protecting MACRO
-
         supposedHeaderName = stream.name
         if supposedHeaderName != '<stdout>':
             supposedHeaderName = os.path.basename(supposedHeaderName)
@@ -410,9 +374,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         for native in self.AST.natives:
             if native.hasLanguage('C'):
                 for line in native.getLanguageLines('C'):
-
                     # we are only interested in native "include" statement
-
                     stmt = line.statement
                     if stmt.find('#include') >= 0 and not stmt \
                         in self.included.keys():
@@ -426,9 +388,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         self.openNamespaces(stream)
 
         if not factoryOnly:
-
             # Native type should be defined in included header
-
             stream.write(self.getIndent() + self.commentLineBeginWith)
             stream.write(' Native types has been defined:\n')
             stream.write(self.getIndent() + self.commentLineBeginWith)
@@ -439,10 +399,8 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 if native.hasLanguage('C'):
                     for line in native.getLanguageLines('C'):
                         stmt = line.statement
-
-                       # we are only interested in native statement
-                       # which are not #include
-
+                        # we are only interested in native statement
+                        # which are not #include
                         if stmt.find('typedef') >= 0 and not stmt \
                             in self.typedefed.keys():
                             self.writeComment(stream, native)
@@ -450,14 +408,12 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                             self.typedefed[stmt] = 1
 
             # Put enum in a namespace in order to avoid conflict
-	    
             stream.write(self.getIndent() + 
-			self.commentLineBeginWith +
-				'%s package equivalent in C\n'
+                         self.commentLineBeginWith +
+                         '%s package equivalent in C\n'
                              % (self.AST.name.split('.')[0]))
 
             # Generate version
-
             if self.AST.hasVersion():
                 (major, minor) = self.AST.version.number
                 stream.write(self.getIndent())
@@ -468,7 +424,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                               % (self.AST.name.split('.')[0], minor))
 
             # Generate enum
-
             lastname = ''
             for enum in self.AST.enums:
                 self.generateEnum(stream, enum)
@@ -478,7 +433,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
 
             # Generate message type
-
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
 
@@ -489,27 +443,16 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
                 stream.write('typedef struct %s %s' % (self.exportPrefix,
                              msg.name))
-                if msg.hasMerge():
-		    stream.write('{\n')
-                    virtual = ''
-                elif msg.hasHeir():
-                    stream.write(' {\n')
-                    virtual = ''
-                else:
-                    stream.write(' {\n')
-                    virtual = ''
-
+                stream.write(' {\n')
+                virtual = ''
                 self.indent()
-
 
                 if msg.hasMerge():
                     stream.write(self.getIndent()
                                  + '%s super;\n'
                                  % msg.merge.name)
 
-
                 # write fields
-
                 for field in msg.fields:
                     if isinstance(field,
                                   GenMsgAST.MessageType.CombinedField):
@@ -520,30 +463,25 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                         self.writeDeclarationFieldStatement(stream,
                                 field)
 
-		self.unIndent()
-		stream.write(self.getIndent() + '} %s; \n\n' % msg.name)
+                self.unIndent()
+                stream.write(self.getIndent() + '} %s_t; \n\n' % msg.name)
 
                 # now write constructor/destructor
-
                 stream.write(self.getIndent() + 'void %s_create();\n' % msg.name)
                 stream.write(self.getIndent() + 'void %s_destroy();\n\n' % msg.name)
 
                 # write virtual serialize and deserialize
                 # if we have some specific field
-
                 if len(msg.fields) > 0:
-
                     # serialize/deserialize
-
                     stream.write(self.getIndent() + virtual
-                                 + 'void %s_serialize(%s* cthis, %s* msgBuffer);\n'
+                                 + 'void %s_serialize(%s_t* cthis, %s* msgBuffer);\n'
                                  % (msg.name, msg.name, self.serializeBufferType))
                     stream.write(self.getIndent() + virtual
-                                 + 'void %s_deserialize(%s* cthis, %s* msgBuffer);\n'
+                                 + 'void %s_deserialize(%s_t* cthis, %s* msgBuffer);\n'
                                  % (msg.name, msg.name, self.serializeBufferType))
 
                     # specific getter/setter
-
                     stream.write(self.getIndent()
                                  + self.commentLineBeginWith
                                  + ' specific Getter(s)/Setter(s)\n')
@@ -554,7 +492,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                                 self.writeOneGetterSetter(stream,
                                         cfield,msg)
                         else:
-                            self.writeOneGetterSetter(stream, field,msg)
+                            self.writeOneGetterSetter(stream,field,msg)
 
                     # the show method
 
@@ -564,69 +502,37 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent() + virtual
                                  + 'FILE* show(FILE* out);\n'
                                  )
-
                 # end public:
 
 
         # Generate Factory (if any)
         # @todo
-
         if self.AST.hasFactory():
             self.writeComment(stream, self.AST.factory)
             stream.write(self.getIndent() + '/*\n')
-            stream.write(self.getIndent() + 'typedef struct %s %s {\n'
-                         % (self.exportPrefix, self.AST.factory.name))
-            self.indent()
 
-            # begin public
-
-            stream.write(self.getIndent() + 'public:\n')
-            self.indent()
-
-            stream.write(self.getIndent()
-                         + 'static %s* %s(%s type) throw ('
-                         % self.AST.factory.creator)
-            stream.write('%s' % self.exception[0])
-            for exception in self.exception[1:]:
-                stream.write(' ,%s' % exception)
-            stream.write('); \n')
+            if self.AST.factory.hasFactoryCreator:
+                ccreator = (self.AST.factory.creator[0],
+                            self.AST.factory.name+"_"+self.AST.factory.creator[1],
+                            self.AST.factory.creator[2])
+                stream.write(self.getIndent()
+                             + '%s* %s(%s type)'
+                             % ccreator)
+                stream.write('; \n')
 
             if self.AST.factory.hasFactoryReceiver():
+                creceiver = (self.AST.factory.receiver[0],
+                            self.AST.factory.name+"_"+self.AST.factory.receiver[1],
+                            self.AST.factory.receiver[2])
                 stream.write(self.getIndent()
-                             + 'static %s* %s(%s stream) throw ('
-                             % self.AST.factory.receiver)
-                stream.write('%s' % self.exception[0])
-                for exception in self.exception[1:]:
-                    stream.write(' ,%s' % exception)
-                stream.write('); \n')
-
-            self.unIndent()
-
-            # end public
-            # begin protected
-
-            stream.write(self.getIndent() + 'protected:\n')
-            self.indent()
-            self.unIndent()
-
-            # end protected
-            # begin private
-
-            stream.write(self.getIndent() + 'private:\n')
-            self.indent()
-            self.unIndent()
-
-            # end private
-
-            self.unIndent()
-            stream.write(self.getIndent() + '''};
-
-''')
-	    stream.write(self.getIndent() + '*/\n')
+                             + '%s* %s(%s stream)'
+                             % creceiver)
+                stream.write('; \n')
+        stream.write(self.getIndent() + '*/\n')
 
         # may close any open namespaces
 
-	self.closeNamespaces(stream)
+        self.closeNamespaces(stream)
 
         # close usual HEADER protecting MACRO
 
@@ -689,7 +595,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             # enum type field case (enum are serialized as uint32)
 
                 methodName = self.getSerializeMethodName('uint32')
-                stream.write('MB_' + methodName)
+                stream.write(methodName)
                 stream.write('(msgBuffer' + field.name + indexField + ');\n')
             else:
 
@@ -705,7 +611,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
               # field has one Serialize Method Name found in the map
 
-            stream.write('MB_' + methodName)
+            stream.write(methodName)
             stream.write('(msgBuffer,' + field.name + indexField + ');\n')
 
         if field.qualifier == 'optional':
@@ -725,7 +631,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent())
             stream.write('fprintf(out,"    %s [] = \n");\n'
                          % field.name)
-            stream.write('fflush(out);\n')
             stream.write(self.getIndent())
             stream.write('for (uint32_t i = 0; i < get'
                          + self.upperFirst(field.name)
@@ -753,8 +658,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             else:
 
                 # stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")
-            # native field case
-
+                # native field case
                 stream.write('<< "')
                 stream.write(self.getIndent()
                              + self.commentLineBeginWith
@@ -762,9 +666,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                               % (field.name, field.typeid.name))
                 stream.write('"')
         else:
-
               # field has one Serialize Method Name found in the map
-
             stream.write('+ %s + " " ' % (field.name + indexField))
 
         if field.qualifier == 'optional':
@@ -775,10 +677,8 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             self.unIndent()
             stream.write(self.getIndent() + '}\n')
             stream.write(self.getIndent() + 'fprintf(out,"\\n");\n')
-            stream.write(self.getIndent() + 'fflush(out);\n')
         else:
             stream.write(self.getIndent() + ' + "\\n");\n')
-            stream.write(self.getIndent() + 'fflush(out);\n')
 
     def writeDeSerializeFieldStatement(self, stream, field):
         indexField = ''
@@ -823,7 +723,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 # We should check if the uint32 value is in enum range before casting it into enumtype
 
                 stream.write(field.name + indexField + ' = static_cast<'
-                              + targetTypeName + '>(MB_'
+                              + targetTypeName + '>('
                              + methodName + ' ());\n')
             else:
 
@@ -840,7 +740,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
               # field has one Deserialize Method Name found in the map
 
             if methodName == 'read_string':
-                stream.write('MB_' + methodName + '(msgBuffer,'
+                stream.write(methodName + '(msgBuffer,'
                              + field.name + indexField + ');\n')
             else:
 
@@ -849,11 +749,11 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 if isinstance(field.typeid, GenMsgAST.NativeType):
                     stream.write(field.name + indexField
                                  + ' = static_cast<'
-                                 + field.typeid.name + '>(MB_'
+                                 + field.typeid.name + '>('
                                  + methodName + '(msgBuffer));\n')
                 else:
                     stream.write(field.name + indexField
-                                 + ' = MB_' + methodName
+                                 + ' = ' + methodName
                                  + '(msgBuffer);\n')
 
         if field.qualifier == 'optional':
@@ -977,10 +877,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         """
 
         # add necessary standard includes
-
-
         # [Try to] add corresponding header include
-
         supposedHeaderName = stream.name
         if supposedHeaderName != '<stdout>':
             supposedHeaderName = os.path.basename(supposedHeaderName)
@@ -989,17 +886,13 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
         # Generate namespace for specified package package
         # we may have nested namespace
-
         self.openNamespaces(stream)
         if not factoryOnly:
 
             # Generate message type
-
             for msg in self.AST.messages:
-
                 # Generate Constructor
-
-                stream.write(self.getIndent() + '%s_create(%s* cthis) {\n'
+                stream.write(self.getIndent() + '%s_create(%s_t* cthis) {\n'
                              % (msg.name, msg.name))
                 self.indent()
                 if msg.hasMerge():
@@ -1023,7 +916,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                                 + msg.name.upper() + ';\n')
 
                 # Write init value if any was provided and alloc memory
-
                 if len(msg.fields) > 0:
                     self.applyToFields(stream, msg.fields,
                             self.writeInitFieldStatement)
@@ -1031,8 +923,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent() + '}\n')
 
                 # Generate Destructor
-
-                stream.write(self.getIndent() + 'void %s_destroy(%s* cthis) {\n'
+                stream.write(self.getIndent() + 'void %s_destroy(%s_t* cthis) {\n'
                              % (msg.name, msg.name))
                 self.indent()
                 stream.write(self.getIndent() + 'free(cthis);\n')
@@ -1043,9 +934,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                 # if we have some specific field
 
                 if len(msg.fields) > 0:
-
                     # begin serialize method
-
                     stream.write(self.getIndent()
                                  + 'void %s_serialize(%s* msgBuffer) {\n'
                                   % (msg.name,
