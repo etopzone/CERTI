@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.7 2011/07/15 12:22:01 erk Exp $
+## $Id: GenMsgBase.py,v 1.8 2011/07/15 12:30:01 erk Exp $
 ## ----------------------------------------------------------------------------
 
 # We use logging for ... logging :-)
@@ -307,11 +307,13 @@ class MsgSpecGenerator(CodeGenerator):
             self.writeComment(stream, self.AST.factory)
             stream.write('factory %s {\n' % self.AST.factory.name)
             self.indent()
-            stream.write(self.getIndent() + 'factoryCreator %s %s(%s)\n'
-                          % self.AST.factory.creator)
-            stream.write(self.getIndent()
-                         + 'factoryReceiver %s %s(%s)\n'
-                         % self.AST.factory.receiver)
+            if self.AST.factory.hasFactoryCreator():
+                stream.write(self.getIndent() + 'factoryCreator %s %s(%s)\n'
+                             % self.AST.factory.creator)
+            if self.AST.factory.hasFactoryReceiver():
+                stream.write(self.getIndent()
+                             + 'factoryReceiver %s %s(%s)\n'
+                             % self.AST.factory.receiver)
             self.unIndent()
             stream.write('''}
 
