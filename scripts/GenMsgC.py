@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.2 2011/07/15 13:37:54 erk Exp $
+## $Id: GenMsgC.py,v 1.3 2011/07/16 18:10:09 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -35,7 +35,7 @@ import sys
 import os
 
 
-class CCERTIGenerator(GenMsgBase.CodeGenerator):
+class CGenerator(GenMsgBase.CodeGenerator):
 
     """
     This is a C generator for C{MessageAST}.
@@ -48,7 +48,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
     generatorName = classmethod(generatorName)
 
     def __init__(self, MessageAST):
-        super(CCERTIGenerator, self).__init__(MessageAST, '//')
+        super(CGenerator, self).__init__(MessageAST, '/* ',' */')
         self.included = dict()
         self.typedefed = dict()
         self.builtinTypeMap = {
@@ -104,7 +104,8 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         self.exportPrefix = ''
         self.serializeBufferType = 'MsgBuffer_t'
         self.messageTypeGetter = 'getType()'
-        self.exception = ['string']
+        self.exception = []
+        self.commentInsideLineBeginWith = " * "
 
     def getTargetTypeName(self, name):
         if name in self.builtinTypeMap.keys():
@@ -122,25 +123,12 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             self.writeComment(stream, self.AST.package)
             # we may have nested namespace
             nameSpaceList = self.AST.package.name.split('.')
-            for ns in nameSpaceList:
-                stream.write(self.getIndent() + self.commentLineBeginWith + '''package %s 
-
-'''
-                             % ns)
-                self.indent()
 
     def closeNamespaces(self, stream):
         if self.AST.hasPackage():
-
             # we may have nested namespace
-
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
-            for ns in nameSpaceList:
-                self.unIndent()
-                stream.write(self.getIndent() + ''
-                             + self.commentLineBeginWith
-                             + ' end of namespace %s \n' % ns)
 
     def writeOneGetterSetter(self, stream, field,msg):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
@@ -331,8 +319,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent())
         stream.write('} %s_%s_t; ' % (self.AST.name.split('.'
                          )[0], enum.name))
-        stream.write(self.commentLineBeginWith + 'end of enum %s \n'
-                     % enum.name)
+        self.writeCommentLines(stream,"end of enum %s" % enum.name)
 
     def generateHeader(self, stream, factoryOnly=False):
 
@@ -352,9 +339,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         stream.write('#define %s\n' % headerProtectMacroName)
 
         # add necessary standard and global includes
-
-        stream.write(self.commentLineBeginWith
-                     + ' ****-**** Global System includes ****-****\n')
+        self.writeCommentLines(stream,"****-**** Global System includes ****-****")
         stream.write('#include <stdio.h>\n')
         self.included['#include <stdio.h>'] = 1
         stream.write('#include <stdlib.h>\n')
@@ -367,10 +352,8 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         self.included['#include <string.h>'] = 1
 
         # add include coming from native type specification
-
-        stream.write(self.commentLineBeginWith
-                     + ' ****-**** Includes coming from native types ****-****\n'
-                     )
+        self.writeCommentLines(stream,
+                               "****-**** Includes coming from native types ****-****")
         for native in self.AST.natives:
             if native.hasLanguage('C'):
                 for line in native.getLanguageLines('C'):
@@ -384,17 +367,13 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
         # Generate namespace for specified package package
         # we may have nested namespace
-
         self.openNamespaces(stream)
 
         if not factoryOnly:
             # Native type should be defined in included header
-            stream.write(self.getIndent() + self.commentLineBeginWith)
-            stream.write(' Native types has been defined:\n')
-            stream.write(self.getIndent() + self.commentLineBeginWith)
-            stream.write('     - by included headers (see above)\n')
-            stream.write(self.getIndent() + self.commentLineBeginWith)
-            stream.write('     - with typedef (see below [if any])\n')
+            self.writeCommentLines(stream,""" Native types has been defined:
+- by included headers (see above)
+- with typedef (see below [if any])""")
             for native in self.AST.natives:
                 if native.hasLanguage('C'):
                     for line in native.getLanguageLines('C'):
@@ -408,10 +387,6 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                             self.typedefed[stmt] = 1
 
             # Put enum in a namespace in order to avoid conflict
-            stream.write(self.getIndent() + 
-                         self.commentLineBeginWith +
-                         '%s package equivalent in C\n'
-                             % (self.AST.name.split('.')[0]))
 
             # Generate version
             if self.AST.hasVersion():
@@ -431,16 +406,13 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
             # close enum namespace
 
-
             # Generate message type
             for msg in self.AST.messages:
                 self.writeComment(stream, msg)
-
                 if msg.hasEnum():
                     self.generateEnum(stream, msg.enum)
                     stream.write('\n')
                 stream.write(self.getIndent())
-
                 stream.write('typedef struct %s %s' % (self.exportPrefix,
                              msg.name))
                 stream.write(' {\n')
@@ -482,9 +454,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                                  % (msg.name, msg.name, self.serializeBufferType))
 
                     # specific getter/setter
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + ' specific Getter(s)/Setter(s)\n')
+                    self.writeCommentLines(stream,"specific Getter(s)/Setter(s)")
                     for field in msg.fields:
                         if isinstance(field,
                                 GenMsgAST.MessageType.CombinedField):
@@ -495,12 +465,9 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                             self.writeOneGetterSetter(stream,field,msg)
 
                     # the show method
-
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + ' the show method\n')
+                    self.writeCommentLines(stream,"the show method")
                     stream.write(self.getIndent() + virtual
-                                 + 'FILE* show(FILE* out);\n'
+                                 + "FILE* %s_show(FILE* out);\n" % msg.name
                                  )
                 # end public:
 
@@ -550,11 +517,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
             stream.write(field.typeid.name + ' ' + field.name + '=' + str(field.defaultValue)
                          + ';\n')
         else:
-            stream.write(self.getIndent())
-            stream.write(self.commentLineBeginWith)
-            stream.write(field.name
-                         + '= <no default value in message spec using builtin>\n'
-                         )
+            self.writeCommentLines(stream,field.name + "= <no default value in message spec using builtin>")
 
             # FIXME find a default value for every type beside natives
 
@@ -766,12 +729,9 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
     def writeFactoryCreator(self, stream):
         creator = (self.AST.factory.creator[0], self.AST.factory.name) \
             + self.AST.factory.creator[1:]
-        stream.write(self.getIndent() + '%s* %s_%s(%s type) throw ('
+        stream.write(self.getIndent() + '%s* %s_%s(%s type)'
                      % creator)
-        stream.write('%s' % self.exception[0])
-        for exception in self.exception[1:]:
-            stream.write(' ,%s' % exception)
-        stream.write(') { \n')
+        stream.write('{ \n')
 
         self.indent()
         stream.write(self.getIndent() + '''%s* msg = NULL;
@@ -791,14 +751,10 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                              % (creator[0], e.name))
 
             self.indent()
-
             if None == e.type:
-
-        # we throw here the first exception of the list
-
+                # we throw here the first exception of the list
                 stream.write(self.getIndent()
-                             + 'throw %s("%s message type should not be used!!");\n'
-                              % (self.exception[0], e.name))
+                             + 'return -1; /* value %s may not be used*/\n' % e.name)
             else:
                 stream.write(self.getIndent() + 'msg = new %s();\n'
                              % e.type)
@@ -901,7 +857,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
 
                     stream.write(self.getIndent()
                                  + 'char* temp;\n ' + self.getIndent() +
-				 'temp = malloc(sizeof(char)*strlen("' + msg.name
+                                 'temp = malloc(sizeof(char)*strlen("' + msg.name
                                  + '")));\n')
                     stream.write(self.getIndent() + 'strcpy(temp,"' + msg.name + '");\n')
                     stream.write(self.getIndent()
@@ -941,14 +897,10 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                                  self.serializeBufferType))
                     self.indent()
                     if msg.hasMerge():
-                        stream.write(self.getIndent()
-                                + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
+                        self.writeCommentLines(stream,"Call mother class")
                         stream.write(self.getIndent()
                                 + 'Super_serialize(msgBuffer);\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith)
-                    stream.write('Specific serialization code\n')
+                    self.writeCommentLines(stream,"Specific serialization code")
                     self.applyToFields(stream, msg.fields,
                             self.writeSerializeFieldStatement)
                     self.unIndent()
@@ -966,14 +918,10 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                                  self.serializeBufferType))
                     self.indent()
                     if msg.hasMerge():
-                        stream.write(self.getIndent()
-                                + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
+                        self.writeCommentLines(stream,"Call mother class")
                         stream.write(self.getIndent()
                                 + 'Super_deserialize(msgBuffer);\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith)
-                    stream.write('Specific deserialization code\n')
+                    self.writeCommentLines(stream,"Specific deserialization code")
                     self.applyToFields(stream, msg.fields,
                             self.writeDeSerializeFieldStatement)
                     self.unIndent()
@@ -991,17 +939,11 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent()
                                  + 'fprintf(out,"[%s -Begin] \\n");\n'
                                  % msg.name)
-                    stream.write(self.getIndent()
-                                 + 'fflush(out);')
                     if msg.hasMerge():
-                        stream.write(self.getIndent()
-                                + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
+                        self.writeCommentLines(stream,"Call mother class")
                         stream.write(self.getIndent()
                                 + 'Super_show(out);\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith)
-                    stream.write('Specific show code\n')
+                    self.writeCommentLines(stream,"Specific show code")
                     self.applyToFields(stream, msg.fields,
                             self.writeShowFieldStatement)
                     stream.write(self.getIndent()
@@ -1034,7 +976,7 @@ class CCERTIGenerator(GenMsgBase.CodeGenerator):
         self.closeNamespaces(stream)
 
 
-class CCERTIMessageGenerator(CCERTIGenerator):
+class CCERTIMessageGenerator(CGenerator):
 
     """
     This is a C generator for C{MessageAST}.
@@ -1057,7 +999,7 @@ class CCERTIMessageGenerator(CCERTIGenerator):
         self.exception = ['NetworkError', 'NetworkSignal']
 
 
-class CCERTINetworkMessageGenerator(CCERTIGenerator):
+class CCERTINetworkMessageGenerator(CGenerator):
 
     """
     This is a C generator for C{MessageAST}.

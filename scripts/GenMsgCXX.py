@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.22 2011/07/15 12:22:03 erk Exp $
+## $Id: GenMsgCXX.py,v 1.23 2011/07/16 18:10:09 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -35,7 +35,7 @@ import sys
 import os
 
 
-class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
+class CXXGenerator(GenMsgBase.CodeGenerator):
 
     """
     This is a C++ generator for C{MessageAST}.
@@ -48,7 +48,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
     generatorName = classmethod(generatorName)
 
     def __init__(self, MessageAST):
-        super(CXXCERTIGenerator, self).__init__(MessageAST, '//')
+        super(CXXGenerator, self).__init__(MessageAST, '//')
         self.included = dict()
         self.typedefed = dict()
         self.builtinTypeMap = {
@@ -1118,7 +1118,7 @@ class CXXCERTIGenerator(GenMsgBase.CodeGenerator):
         self.closeNamespaces(stream)
 
 
-class CXXCERTIMessageGenerator(CXXCERTIGenerator):
+class CXXCERTIMessageGenerator(CXXGenerator):
 
     """
     This is a C++ generator for C{MessageAST}.
@@ -1141,7 +1141,7 @@ class CXXCERTIMessageGenerator(CXXCERTIGenerator):
         self.exception = ['NetworkError', 'NetworkSignal']
 
 
-class CXXCERTINetworkMessageGenerator(CXXCERTIGenerator):
+class CXXCERTINetworkMessageGenerator(CXXGenerator):
 
     """
     This is a C++ generator for C{MessageAST}.

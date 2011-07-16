@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.8 2011/07/15 12:30:01 erk Exp $
+## $Id: GenMsgBase.py,v 1.9 2011/07/16 18:10:09 erk Exp $
 ## ----------------------------------------------------------------------------
 
 # We use logging for ... logging :-)
@@ -50,9 +50,15 @@ class CodeGenerator(object):
 
     generatorName = classmethod(generatorName)
 
-    def __init__(self, MessageAST, commentLineBeginWith):
+    def __init__(self, MessageAST, commentLineBeginWith, commentEndWith=None):
         self.AST = MessageAST
-        self.commentLineBeginWith = commentLineBeginWith
+        self.commentLineBeginWith       = commentLineBeginWith
+        self.commentEndWith             = commentEndWith
+        if commentEndWith==None:
+            self.commentInsideLineBeginWith = commentLineBeginWith
+        else:
+            nbCar = len(commentLineBeginWith)
+            self.commentInsideLineBeginWith = nbCar*" "
         self.logger = logging.Logger(self.generatorName() + 'Generator')
         self.logger.setLevel(logging.ERROR)
         #self.logger.addHandler(logging.StreamHandler(sys.stdout))
@@ -145,16 +151,43 @@ class CodeGenerator(object):
         with some beginning characters.
         """
         if ASTElement.hasComment():
+            lineNb = 0
             for line in ASTElement.comment.lines:
                 # we should not indent optional comment
                 # since they come at the end of a line
                 if not ASTElement.comment.isAtEOL:
                     stream.write(self.getIndent())
-                stream.write(self.commentLineBeginWith)
+                if lineNb==0:
+                    stream.write(self.commentLineBeginWith)
+                else:
+                    stream.write(self.commentInsideLineBeginWith)
                 stream.write(str(line))
                 stream.write('\n')
+                lineNb = lineNb + 1
+            if self.commentEndWith!=None:
+                stream.write(self.commentEndWith+'\n')
         else:
             stream.write('\n')
+    
+    def writeCommentLines(self,stream, commentLines):
+        """
+        Write a comment block to the stream.
+        
+        Multiple lines comment is handled as well.
+        """
+        lineNb = 0
+        if self.commentEndWith!=None:
+            stream.write(self.getIndent()+self.commentLineBeginWith)
+        for line in commentLines.split('\n'):
+            if (lineNb>0):
+                stream.write('\n')
+                stream.write(self.getIndent()+self.commentInsideLineBeginWith)
+            stream.write(str(line))
+            lineNb = lineNb + 1
+        if lineNb>1:
+            stream.write('\n')
+        if self.commentEndWith!=None:
+            stream.write(self.getIndent()+self.commentEndWith+'\n')
 
     def generateHeader(self, stream, factoryOnly=False):
         """

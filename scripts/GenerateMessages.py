@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.44 2011/07/15 12:22:04 erk Exp $
+## $Id: GenerateMessages.py,v 1.45 2011/07/16 18:10:09 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -97,8 +97,8 @@ import GenMsgC
 generatorBackends = dict()
 generatorBackends[GenMsgBase.MsgSpecGenerator.generatorName().lower()] = \
     GenMsgBase.MsgSpecGenerator
-generatorBackends[GenMsgCXX.CXXCERTIGenerator.generatorName().lower()] = \
-    GenMsgCXX.CXXCERTIGenerator
+generatorBackends[GenMsgCXX.CXXGenerator.generatorName().lower()] = \
+    GenMsgCXX.CXXGenerator
 generatorBackends[GenMsgCXX.CXXCERTIMessageGenerator.generatorName().lower()] = \
     GenMsgCXX.CXXCERTIMessageGenerator
 generatorBackends[GenMsgCXX.CXXCERTINetworkMessageGenerator.generatorName().lower()] = \
@@ -107,8 +107,8 @@ generatorBackends[GenMsgPython.PythonGenerator.generatorName().lower()] = \
     GenMsgPython.PythonGenerator
 generatorBackends[GenMsgJava.JavaGenerator.generatorName().lower()] = \
     GenMsgJava.JavaGenerator
-generatorBackends[GenMsgC.CCERTIGenerator.generatorName().lower()] = \
-    GenMsgC.CCERTIGenerator
+generatorBackends[GenMsgC.CGenerator.generatorName().lower()] = \
+    GenMsgC.CGenerator
 
 def usage():
     print 'Usage:\n%s --input=<message> [--language=<lang>] [--type=header|body] [--factory-only] [--output=<filename>|<output directory>] [--verbose] [--help]' \
