@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgSpec.py,v 1.1 2011/07/18 11:54:10 erk Exp $
+## $Id: GenMsgSpec.py,v 1.2 2011/07/18 11:57:34 erk Exp $
 ## ----------------------------------------------------------------------------
 
 # We use logging for ... logging :-)
@@ -28,6 +28,7 @@
 import logging
 import GenMsgAST
 import GenMsgBase
+import sys
 
 class MsgSpecGenerator(GenMsgBase.CodeGenerator):
     """
