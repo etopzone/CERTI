@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.45 2011/07/16 18:10:09 erk Exp $
+## $Id: GenerateMessages.py,v 1.46 2011/07/18 11:54:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -88,6 +88,7 @@ import GenMsgAST
 # FIXME TODO: implement automatic loading of additionnal languages
 
 import GenMsgBase
+import GenMsgSpec
 import GenMsgCXX
 import GenMsgPython
 import GenMsgJava
@@ -95,8 +96,8 @@ import GenMsgAST
 import GenMsgC
 
 generatorBackends = dict()
-generatorBackends[GenMsgBase.MsgSpecGenerator.generatorName().lower()] = \
-    GenMsgBase.MsgSpecGenerator
+generatorBackends[GenMsgSpec.MsgSpecGenerator.generatorName().lower()] = \
+    GenMsgSpec.MsgSpecGenerator
 generatorBackends[GenMsgCXX.CXXGenerator.generatorName().lower()] = \
     GenMsgCXX.CXXGenerator
 generatorBackends[GenMsgCXX.CXXCERTIMessageGenerator.generatorName().lower()] = \
@@ -142,7 +143,7 @@ if len(opts) < 1:
 verbose = False
 factoryOnly = False
 gentype = 'header'
-language = GenMsgBase.MsgSpecGenerator.generatorName()
+language = GenMsgSpec.MsgSpecGenerator.generatorName()
 output = sys.stdout
 oname  = 'stdout'
 inputFile = None

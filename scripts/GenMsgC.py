@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.3 2011/07/16 18:10:09 erk Exp $
+## $Id: GenMsgC.py,v 1.4 2011/07/18 11:54:10 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -36,7 +36,6 @@ import os
 
 
 class CGenerator(GenMsgBase.CodeGenerator):
-
     """
     This is a C generator for C{MessageAST}.
     
@@ -121,16 +120,16 @@ class CGenerator(GenMsgBase.CodeGenerator):
     def openNamespaces(self, stream):
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
-            # we may have nested namespace
+            # we may have nested name space(s)
             nameSpaceList = self.AST.package.name.split('.')
 
     def closeNamespaces(self, stream):
         if self.AST.hasPackage():
-            # we may have nested namespace
+            # we may have nested name space(s)
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
 
-    def writeOneGetterSetter(self, stream, field,msg):
+    def writeOneGetterSetter(self, stream, field, msg):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
 
         if field.typeid.name == 'onoff':
@@ -281,11 +280,9 @@ class CGenerator(GenMsgBase.CodeGenerator):
                          % (self.getTargetTypeName(field.typeid.name),
                          field.name))
         self.writeComment(stream, field)
-
         # optional field generate another boolean field
         # used to detect whether if the optional field has
         # been given or not.
-
         if field.qualifier == 'optional':
             stream.write(self.getIndent() + 'uint8_t _has%s;\n'
                          % self.upperFirst(field.name))
@@ -314,7 +311,6 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 else:
                     stream.write('%s, ' % enumval.name)
                     self.writeComment(stream, enumval)
-
         self.unIndent()
         stream.write(self.getIndent())
         stream.write('} %s_%s_t; ' % (self.AST.name.split('.'
@@ -322,7 +318,6 @@ class CGenerator(GenMsgBase.CodeGenerator):
         self.writeCommentLines(stream,"end of enum %s" % enum.name)
 
     def generateHeader(self, stream, factoryOnly=False):
-
         # write the usual header protecting MACRO
         supposedHeaderName = stream.name
         if supposedHeaderName != '<stdout>':
@@ -831,7 +826,6 @@ class CGenerator(GenMsgBase.CodeGenerator):
         """
         Generate the body.
         """
-
         # add necessary standard includes
         # [Try to] add corresponding header include
         supposedHeaderName = stream.name
