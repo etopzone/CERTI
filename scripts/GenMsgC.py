@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.4 2011/07/18 11:54:10 erk Exp $
+## $Id: GenMsgC.py,v 1.5 2011/07/19 08:58:54 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -105,17 +105,16 @@ class CGenerator(GenMsgBase.CodeGenerator):
         self.messageTypeGetter = 'getType()'
         self.exception = []
         self.commentInsideLineBeginWith = " * "
+        if self.AST.hasPackage():
+            self.nameprefix=self.AST.package.shortname+"_"
+        else:
+            self.nameprefix=""
 
     def getTargetTypeName(self, name):
         if name in self.builtinTypeMap.keys():
             return self.builtinTypeMap[name]
         else:
-            t = self.AST.getType(name)
-        if isinstance(t, GenMsgAST.EnumType):
-            prefix = self.AST.name.split('.')[0] + '_'
-            return prefix + name + "_t"
-        else:
-            return name + "_t"
+            return self.nameprefix+name + "_t"
 
     def openNamespaces(self, stream):
         if self.AST.hasPackage():
@@ -129,144 +128,195 @@ class CGenerator(GenMsgBase.CodeGenerator):
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
 
-    def writeOneGetterSetter(self, stream, field, msg):
+    def writeOneGetterSetter(self, stream, field, msg, headerOnly=True):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
 
         if field.typeid.name == 'onoff':
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
-                stream.write('uint32_t ' + msg.name + '_get'
+                stream.write('uint32_t ' + self.nameprefix + msg.name + '_get'
                              + self.upperFirst(field.name)
                              + 'Size(%s cthis) '
-                             % msg.name)
-                stream.write(' {return cthis.' + field.name + 'size;}\n')
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {return cthis.' + field.name + 'size;}\n')
+                else:
+                    stream.write(';\n')
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s_t* cthis,uint32_t num) {\n' % msg.name)
-                self.indent()
-                stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
-                stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
-                stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-                             % (field.name, field.name))
-                stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-                self.unIndent()
-                stream.write(self.getIndent() + '}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_set' + self.upperFirst(field.name)
+                             + 'Size(%s_t* cthis, uint32_t num)' % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {\n')
+                    self.indent()
+                    stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
+                    stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
+                    stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
+                                 % (field.name, field.name))
+                    stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
+                    self.unIndent()
+                    stream.write(self.getIndent() + '}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
                 stream.write(' ' + targetTypeName + ' '
-                             + msg.name +'_get' + self.upperFirst(field.name)
-                             + '(' + msg.name + ' cthis) ')
-                stream.write(' {return cthis.' + field.name + ';}\n')
+                             + self.nameprefix + msg.name +'_get' + self.upperFirst(field.name)
+                             + '(' + self.nameprefix + msg.name + '* cthis) ')
+                if not headerOnly:
+                    stream.write(' {return cthis.' + field.name + ';}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'On(%s_t* cthis, uint32_t rank)'
-                             % msg.name)
-                stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 1;}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'On(%s_t* cthis, uint32_t rank)'
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 1;}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s_t* cthis, uint32_t rank)'
-                             % msg.name)
-                        
-                stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 0;}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'Off(%s_t* cthis, uint32_t rank)'
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {\n' + self.getIndent() + 'assert(rank<cthis->'+ field.name +'size);\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + '[rank] = 0;}\n')
+                else:
+                    stream.write(";\n")
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' is'
                              + self.upperFirst(field.name)
-                             + 'On(uint32_t rank) ')
-                stream.write(' {return cthis.' + field.name + '[rank];}\n')
+                             + 'On(uint32_t rank)')
+                if not headerOnly:
+                    stream.write(' {return cthis.' + field.name + '[rank];}\n')
+                else:
+                    stream.write(';\n')
             else:
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'On(%s_t* cthis)'
-                             % msg.name)
-                stream.write(' {cthis->' + field.name + ' = 1;}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'On(%s_t* cthis)'
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {cthis->' + field.name + ' = 1;}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_' + field.name + 'Off(%s_t* cthis)'
-                             % (msg.name, msg.name,msg.name))
-                stream.write(' {cthis->' +field.name + ' = 0;}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'Off(%s_t* cthis)'
+                             % (self.nameprefix + msg.name, self.nameprefix + msg.name,self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {cthis->' +field.name + ' = 0;}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' is'
                              + self.upperFirst(field.name)
                              + 'On(%s* cthis) '
-                                % msg.name)
-                stream.write(' {return cthis->' + field.name + ';}\n')
+                                % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {return cthis->' + field.name + ';}\n')
+                else:
+                    stream.write(';\n')
         else:
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
-                stream.write('uint32_t ' + msg.name + '_get'
+                stream.write('uint32_t ' + self.nameprefix + msg.name + '_get'
                              + self.upperFirst(field.name)
-                             + 'Size(%s_t cthis) '
-                             % msg.name)
-                stream.write('{ return cthis.' + field.name + 'size;}\n')
+                             + 'Size(%s_t* cthis)'
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write('{ return cthis.' + field.name + 'size;}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s_t* cthis, uint32_t num) { \n'
-                             % msg.name)
-                self.indent()
-                stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
-                stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
-                stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-                             % (field.name, field.name))
-                stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
-                stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-                self.unIndent()
-                stream.write(self.getIndent() + '}\n')
+                stream.write('void ' + self.nameprefix + msg.name + '_set' + self.upperFirst(field.name)
+                             + 'Size(%s_t* cthis, uint32_t num)'
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' { \n')
+                    self.indent()
+                    stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
+                    stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
+                    stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
+                                 % (field.name, field.name))
+                    stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
+                    stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
+                    self.unIndent()
+                    stream.write(self.getIndent() + '}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write(targetTypeName + ' ' + msg.name + '_get'
+                stream.write(targetTypeName + ' ' + self.nameprefix + msg.name + '_get'
                              + self.upperFirst(field.name)
                              + '(%s_t* cthis, uint32_t rank)'
-                             % msg.name)
-                stream.write(' {return cthis->' + field.name + '[rank];}\n')
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {return cthis->' + field.name + '[rank];}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_set' + self.upperFirst(field.name)
+                stream.write('void ' + self.nameprefix + msg.name + '_set' + self.upperFirst(field.name)
                              + '(%s_t* cthis, '
-                             % msg.name)
+                             % (self.nameprefix + msg.name))
                 stream.write(targetTypeName + ' new'
                              + self.upperFirst(field.name)
                              + ', uint32_t rank)')
-                stream.write(' {cthis->' + field.name + '[rank]=new'
-                             + self.upperFirst(field.name) + ';}\n')
+                if not headerOnly:
+                    stream.write(' {cthis->' + field.name + '[rank]=new'
+                                 + self.upperFirst(field.name) + ';}\n')
+                else:
+                    stream.write(';\n')
             else:
                 stream.write(self.getIndent())
-                stream.write(targetTypeName + ' ' + msg.name + '_get'
-                             + self.upperFirst(field.name) + '(%s_t cthis) '
-                             % msg.name)
-                stream.write(' {return cthis.'  + field.name + ';}\n')
+                stream.write(targetTypeName + ' ' + self.nameprefix + msg.name + '_get'
+                             + self.upperFirst(field.name) + '(%s_t* cthis) '
+                             % (self.nameprefix + msg.name))
+                if not headerOnly:
+                    stream.write(' {return cthis.'  + field.name + ';}\n')
+                else:
+                    stream.write(';\n')
 
                 stream.write(self.getIndent())
-                stream.write('void ' + msg.name + '_set'+ self.upperFirst(field.name)
+                stream.write('void ' + self.nameprefix + msg.name + '_set'+ self.upperFirst(field.name)
                              + '(%s_t* cthis,  '
-                            % msg.name)
+                            % (self.nameprefix + msg.name))
                 stream.write(targetTypeName + ' new'
-                             + self.upperFirst(field.name) + ') {')
-                if field.qualifier == 'optional':
-                    stream.write('\n')
-                    self.indent()
-                    stream.write(self.getIndent() + 'cthis->_has%s=1;\n'
-                                 % self.upperFirst(field.name))
-                    stream.write(self.getIndent() + 'cthis->' + field.name + '=new'
-                                 + self.upperFirst(field.name) + ';\n')
-                    self.unIndent()
-                    stream.write(self.getIndent())
+                             + self.upperFirst(field.name) + ')')
+                if not headerOnly:
+                    stream.write(' {')
+                    if field.qualifier == 'optional':
+                        stream.write('\n')
+                        self.indent()
+                        stream.write(self.getIndent() + 'cthis->_has%s=1;\n'
+                                     % self.upperFirst(field.name))
+                        stream.write(self.getIndent() + 'cthis->' + field.name + '=new'
+                                     + self.upperFirst(field.name) + ';\n')
+                        self.unIndent()
+                        stream.write(self.getIndent())
+                    else:
+                        stream.write('cthis->' + field.name + '=new'
+                                     + self.upperFirst(field.name) + ';')
+                    stream.write('}\n')
                 else:
-                    stream.write('cthis->' + field.name + '=new'
-                                 + self.upperFirst(field.name) + ';')
-                stream.write('}\n')
+                    stream.write(';\n')
+
                 if field.qualifier == 'optional':
                     stream.write(self.getIndent())
                     tmp = self.upperFirst(field.name)
-                    stream.write('uint8_t has%s(%s_t cthis) {return cthis._has%s;}\n'
-                                 % (tmp,  msg.name,
-                                 tmp))
+                    stream.write('uint8_t has%s(%s_t cthis)'
+                                 % (tmp, self.nameprefix + msg.name))
+                    if not headerOnly:
+                        stream.write(' {return cthis._has%s;}\n' % tmp)
+                    else:
+                        stream.write(';\n')
 
     def writeDeclarationFieldStatement(self, stream, field):
         stream.write(self.getIndent())
@@ -274,7 +324,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
             stream.write('%s* %s;\n'
                          % (self.getTargetTypeName(field.typeid.name),
                          field.name))
-            stream.write(self.getIndent() + 'uint32_t ' + field.name + 'size;')
+            stream.write(self.getIndent() + 'uint32_t ' + field.name + 'Size;')
         else:
             stream.write('%s %s;'
                          % (self.getTargetTypeName(field.typeid.name),
@@ -290,8 +340,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
     def generateEnum(self, stream, enum):
         self.writeComment(stream, enum)
         stream.write(self.getIndent())
-        stream.write('typedef enum %s_%s {\n' % (self.AST.name.split('.'
-                         )[0], enum.name))
+        stream.write('typedef enum %s {\n' % (self.nameprefix+enum.name))
         self.indent()
         first = True
         lastname = enum.values[len(enum.values) - 1].name
@@ -313,8 +362,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     self.writeComment(stream, enumval)
         self.unIndent()
         stream.write(self.getIndent())
-        stream.write('} %s_%s_t; ' % (self.AST.name.split('.'
-                         )[0], enum.name))
+        stream.write('} %s_t; ' % (self.nameprefix+enum.name))
         self.writeCommentLines(stream,"end of enum %s" % enum.name)
 
     def generateHeader(self, stream, factoryOnly=False):
@@ -323,7 +371,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
         if supposedHeaderName != '<stdout>':
             supposedHeaderName = os.path.basename(supposedHeaderName)
             supposedHeaderName = os.path.splitext(supposedHeaderName)[0]
-            headerProtectMacroName = supposedHeaderName
+            headerProtectMacroName = supposedHeaderName                
         else:
             (headerProtectMacroName, ext) = \
                 os.path.splitext(self.AST.name)
@@ -360,8 +408,8 @@ class CGenerator(GenMsgBase.CodeGenerator):
                         stream.write(stmt + '\n')
                         self.included[stmt] = 1
 
-        # Generate namespace for specified package package
-        # we may have nested namespace
+        # Generate name space for specified package package
+        # we may have nested name space
         self.openNamespaces(stream)
 
         if not factoryOnly:
@@ -385,13 +433,13 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
             # Generate version
             if self.AST.hasVersion():
-                (major, minor) = self.AST.version.number
+                (major, minor) = self.AST.version.number                
                 stream.write(self.getIndent())
-                stream.write('static const uint32_t %s_versionMajor = %d;\n'
-                              % (self.AST.name.split('.')[0], major))
+                stream.write('static const uint32_t %sversionMajor = %d;\n'
+                              % (self.nameprefix, major))
                 stream.write(self.getIndent())
-                stream.write('static const uint32_t %s_versionMinor = %d;\n'
-                              % (self.AST.name.split('.')[0], minor))
+                stream.write('static const uint32_t %sversionMinor = %d;\n'
+                              % (self.nameprefix, minor))
 
             # Generate enum
             lastname = ''
@@ -409,7 +457,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     stream.write('\n')
                 stream.write(self.getIndent())
                 stream.write('typedef struct %s %s' % (self.exportPrefix,
-                             msg.name))
+                             self.nameprefix+msg.name))
                 stream.write(' {\n')
                 virtual = ''
                 self.indent()
@@ -431,22 +479,26 @@ class CGenerator(GenMsgBase.CodeGenerator):
                                 field)
 
                 self.unIndent()
-                stream.write(self.getIndent() + '} %s_t; \n\n' % msg.name)
+                stream.write(self.getIndent() + '} %s_t; \n\n' % (self.nameprefix+msg.name))
 
                 # now write constructor/destructor
-                stream.write(self.getIndent() + 'void %s_create();\n' % msg.name)
-                stream.write(self.getIndent() + 'void %s_destroy();\n\n' % msg.name)
+                self.writeCommentLines(stream,"Creator function")
+                stream.write(self.getIndent() + '%s_t* %s_create();\n' % (self.nameprefix+msg.name,self.nameprefix+msg.name))
+                self.writeCommentLines(stream,"Destructor function")
+                stream.write(self.getIndent() + 'void %s_destroy(%s_t** cthis);\n\n' % (self.nameprefix+msg.name,self.nameprefix+msg.name))
 
                 # write virtual serialize and deserialize
                 # if we have some specific field
                 if len(msg.fields) > 0:
                     # serialize/deserialize
+                    self.writeCommentLines(stream,"Serialize function")
                     stream.write(self.getIndent() + virtual
                                  + 'void %s_serialize(%s_t* cthis, %s* msgBuffer);\n'
-                                 % (msg.name, msg.name, self.serializeBufferType))
+                                 % (self.nameprefix+msg.name, self.nameprefix+msg.name, self.serializeBufferType))
+                    self.writeCommentLines(stream,"DeSerialize function")
                     stream.write(self.getIndent() + virtual
                                  + 'void %s_deserialize(%s_t* cthis, %s* msgBuffer);\n'
-                                 % (msg.name, msg.name, self.serializeBufferType))
+                                 % (self.nameprefix+msg.name, self.nameprefix+msg.name, self.serializeBufferType))
 
                     # specific getter/setter
                     self.writeCommentLines(stream,"specific Getter(s)/Setter(s)")
@@ -842,13 +894,14 @@ class CGenerator(GenMsgBase.CodeGenerator):
             # Generate message type
             for msg in self.AST.messages:
                 # Generate Constructor
-                stream.write(self.getIndent() + '%s_create(%s_t* cthis) {\n'
-                             % (msg.name, msg.name))
+                stream.write(self.getIndent() + '%s_t* \n' % (self.nameprefix+msg.name))
+                stream.write(self.getIndent() + '%s_create() {\n'
+                             % (self.nameprefix+msg.name))
                 self.indent()
+                stream.write(self.getIndent() +'%s_t* newObj;\n' % (self.nameprefix+msg.name))
+                stream.write(self.getIndent() +'newObj = malloc(sizeof(%s_t);\n' % (self.nameprefix+msg.name))
                 if msg.hasMerge():
-
                     # Assign my name.
-
                     stream.write(self.getIndent()
                                  + 'char* temp;\n ' + self.getIndent() +
                                  'temp = malloc(sizeof(char)*strlen("' + msg.name
@@ -869,12 +922,14 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 if len(msg.fields) > 0:
                     self.applyToFields(stream, msg.fields,
                             self.writeInitFieldStatement)
+                
+                stream.write(self.getIndent() + "return newObj;\n")
                 self.unIndent()
-                stream.write(self.getIndent() + '}\n')
+                stream.write(self.getIndent() + '}\n\n')
 
                 # Generate Destructor
-                stream.write(self.getIndent() + 'void %s_destroy(%s_t* cthis) {\n'
-                             % (msg.name, msg.name))
+                stream.write(self.getIndent() + 'void %s_destroy(%s_t** cthis) {\n'
+                             % (self.nameprefix+msg.name, self.nameprefix+msg.name))
                 self.indent()
                 stream.write(self.getIndent() + 'free(cthis);\n')
                 self.unIndent()
@@ -924,8 +979,19 @@ class CGenerator(GenMsgBase.CodeGenerator):
 ''')
 
                     # end deserialize method
+                    
+                    # Generate getter/setter
+                    self.writeCommentLines(stream,"specific Getter(s)/Setter(s)")
+                    for field in msg.fields:
+                        if isinstance(field,
+                                GenMsgAST.MessageType.CombinedField):
+                            for cfield in field.fields:
+                                self.writeOneGetterSetter(stream,
+                                        cfield,msg,headerOnly=False)
+                        else:
+                            self.writeOneGetterSetter(stream,field,msg,headerOnly=False)
+                    
                     # begin show method
-
                     stream.write(self.getIndent()
                                  + 'FILE* %s_show(FILE* out) {\n'
                                   % msg.name)

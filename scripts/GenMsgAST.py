@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.20 2011/07/15 12:22:04 erk Exp $
+## $Id: GenMsgAST.py,v 1.21 2011/07/19 08:58:54 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -33,6 +33,7 @@ import getopt
 import sys
 import datetime
 import logging
+import re
 
 # Build some logger related objects
 
@@ -166,6 +167,32 @@ class MessageAST(ASTElement):
        
     
     """
+    def shortenName(cls,somename):
+        """
+        Shorten the package name in order to use it as a prefix.
+        The short name is composed of the upper case letters found
+        in the name collated together and transformed to lower case
+        """
+        all_uppers = re.findall("[A-Z]", somename)
+        containsdot = re.findall("\.", somename)
+        # build short name with the upper case letters
+        if len(all_uppers)>0:
+            shortname = ""
+            for l in all_uppers:
+                shortname = shortname + l
+            shortname = shortname.lower()
+        # build short name with initial letter of dot-separated names
+        elif len(containsdot)>0:
+            dotseparated = somename.split(".")
+            shortname = ""
+            for w in dotseparated:
+                shortname = shortname + w[0]
+        # build short name with the first 3 letters
+        else:
+            shortname = somename[0:3]
+        return shortname
+    
+    shortenName = classmethod(shortenName)
 
     def __init__(self, name):
         """
@@ -411,9 +438,8 @@ class MessageAST(ASTElement):
             self.logger.debug('Add %s %s' % (type(any).__name__,
                               any.name))
 
-            # Typename must be unique
-
-            if self.isDefined(any.name):
+            # Typename must be unique (but the package name)
+            if not isinstance(any, Package) and self.isDefined(any.name):
                 self.logger.error('%s already defined in the AST'
                                   % any.name)
                 self.logger.error(' --> Check lines (%d,%d) '
@@ -588,6 +614,7 @@ class Package(ASTElement):
         @type name: C{string}
         """
         super(Package, self).__init__(name)
+        self.shortname = MessageAST.shortenName(self.name)
 
     def __repr__(self):
         """
@@ -595,7 +622,6 @@ class Package(ASTElement):
         @return: the representation of the C{Package} object
         """
         return 'package %s' % self.name
-
 
 class Version(ASTElement):
 
@@ -1105,7 +1131,6 @@ class ASTChecker(object):
         #        fields and not being sub-class of MesssageAST.
         #        this could be done with introspection.
         #        see: http://docs.python.org/library/inspect.html
-
         if not isinstance(AST, MessageAST):
             self.logger.error('The supplied object is not an instance of MessageAST: <%s>'
                                % type(AST))
@@ -1113,13 +1138,11 @@ class ASTChecker(object):
 
         # check if all field used in message have known types
         # At the same time build the enum values for MessageTypes
-
         enumval = EnumType.EnumValue('NOT_USED', None)
         enumval.type = None
         msgTypeEnumVals = [enumval]
         lastMerge = None
         for msg in AST.messages:
-
             # We do not generate the enum factory entry for a message
             # with no merge there is no possible factory for that
             # kind of message.
@@ -1210,8 +1233,12 @@ class ASTChecker(object):
                                       % AST.name)
                     return
 
+        # Build short name
+        if AST.hasPackage():
+            AST.shortname = AST.package.shortname
+        else:
+            AST.shortname = AST.shortenName(AST.name)
         # Now the AST has been checked successfully
 
         AST.checked = True
-
 
