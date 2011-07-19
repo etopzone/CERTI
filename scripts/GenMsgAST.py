@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.21 2011/07/19 08:58:54 erk Exp $
+## $Id: GenMsgAST.py,v 1.22 2011/07/19 20:21:21 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1039,11 +1039,17 @@ class EnumType(ASTElement):
         """
         res = 'Enum %s {\n' % self.name
         for val in self.values:
-            res = res + '  ' + str(val[0]) + ' = ' + str(val[1]) \
+            res = res + '  ' + str(val.name) + ' = ' + str(val.value) \
                 + ', \n'
         res = res + '}'
         return res
-
+    
+    def addNamePrefix(self,namePrefix):
+        """
+        Add a name prefix to every enumerated values
+        """
+        for val in self.values:
+            val.name = namePrefix+val.name
 
     class EnumValue(ASTElement):
         """ 

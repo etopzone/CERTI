@@ -232,7 +232,7 @@ MB_create(MsgBuffer_t* msg);
  * Constructor with size.
  * Build a MessageBuffer with provisioned bufSize buffer.
  * @param[in,out] msg pointer to the message buffer structure
- * @param[in] bufferMaxSize, the [initial] maixmum size of the buffer
+ * @param[in] bufferMaxSize, the [initial] maximum size of the buffer
  */
 MB_EXPORT
 void

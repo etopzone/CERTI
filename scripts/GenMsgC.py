@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.5 2011/07/19 08:58:54 erk Exp $
+## $Id: GenMsgC.py,v 1.6 2011/07/19 20:21:21 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -131,7 +131,9 @@ class CGenerator(GenMsgBase.CodeGenerator):
     def writeOneGetterSetter(self, stream, field, msg, headerOnly=True):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
 
+        # onoff 
         if field.typeid.name == 'onoff':
+            # onoff and repeated
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
                 stream.write('uint32_t ' + self.nameprefix + msg.name + '_get'
@@ -139,24 +141,17 @@ class CGenerator(GenMsgBase.CodeGenerator):
                              + 'Size(%s cthis) '
                              % (self.nameprefix + msg.name))
                 if not headerOnly:
-                    stream.write(' {return cthis.' + field.name + 'size;}\n')
+                    stream.write(' {return cthis->' + field.name + 'Size;}\n')
                 else:
                     stream.write(';\n')
                 stream.write(self.getIndent())
                 stream.write('void ' + self.nameprefix + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s_t* cthis, uint32_t num)' % (self.nameprefix + msg.name))
+                             + 'Size(%s_t* cthis, uint32_t sz)' % (self.nameprefix + msg.name))
                 if not headerOnly:
-                    stream.write(' {\n')
-                    self.indent()
-                    stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
-                    stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
-                    stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-                                 % (field.name, field.name))
-                    stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
-                    stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
-                    stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-                    self.unIndent()
-                    stream.write(self.getIndent() + '}\n')
+                    self.writeSetSizeFunctionBody(stream, field,
+                                                  True,
+                                                  True,
+                                                  False)
                 else:
                     stream.write(';\n')
 
@@ -165,7 +160,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
                              + self.nameprefix + msg.name +'_get' + self.upperFirst(field.name)
                              + '(' + self.nameprefix + msg.name + '* cthis) ')
                 if not headerOnly:
-                    stream.write(' {return cthis.' + field.name + ';}\n')
+                    stream.write(' {return cthis->' + field.name + ';}\n')
                 else:
                     stream.write(';\n')
 
@@ -192,9 +187,10 @@ class CGenerator(GenMsgBase.CodeGenerator):
                              + self.upperFirst(field.name)
                              + 'On(uint32_t rank)')
                 if not headerOnly:
-                    stream.write(' {return cthis.' + field.name + '[rank];}\n')
+                    stream.write(' {return cthis->' + field.name + '[rank];}\n')
                 else:
                     stream.write(';\n')
+            # onoff not repeated
             else:
                 stream.write(self.getIndent())
                 stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'On(%s_t* cthis)'
@@ -206,7 +202,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
                 stream.write(self.getIndent())
                 stream.write('void ' + self.nameprefix + msg.name + '_' + field.name + 'Off(%s_t* cthis)'
-                             % (self.nameprefix + msg.name, self.nameprefix + msg.name,self.nameprefix + msg.name))
+                             % (self.nameprefix + msg.name))
                 if not headerOnly:
                     stream.write(' {cthis->' +field.name + ' = 0;}\n')
                 else:
@@ -221,7 +217,9 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     stream.write(' {return cthis->' + field.name + ';}\n')
                 else:
                     stream.write(';\n')
+        # not an onoff
         else:
+            # not an onoff and repeated
             if field.qualifier == 'repeated':
                 stream.write(self.getIndent())
                 stream.write('uint32_t ' + self.nameprefix + msg.name + '_get'
@@ -229,26 +227,19 @@ class CGenerator(GenMsgBase.CodeGenerator):
                              + 'Size(%s_t* cthis)'
                              % (self.nameprefix + msg.name))
                 if not headerOnly:
-                    stream.write('{ return cthis.' + field.name + 'size;}\n')
+                    stream.write('{ return cthis->' + field.name + 'Size;}\n')
                 else:
                     stream.write(';\n')
 
                 stream.write(self.getIndent())
                 stream.write('void ' + self.nameprefix + msg.name + '_set' + self.upperFirst(field.name)
-                             + 'Size(%s_t* cthis, uint32_t num)'
+                             + 'Size(%s_t* cthis, uint32_t sz)'
                              % (self.nameprefix + msg.name))
                 if not headerOnly:
-                    stream.write(' { \n')
-                    self.indent()
-                    stream.write(self.getIndent() + field.typeid.name + '* temp;\n')
-                    stream.write(self.getIndent() + 'temp = calloc(num,sizeof(' + field.typeid.name + '));\n')
-                    stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, cthis->%ssize);\n'
-                                 % (field.name, field.name))
-                    stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
-                    stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
-                    stream.write(self.getIndent() + 'cthis->' + field.name + 'size = num;\n')
-                    self.unIndent()
-                    stream.write(self.getIndent() + '}\n')
+                    self.writeSetSizeFunctionBody(stream, field,
+                                                  False,
+                                                  True,
+                                                  self.isBuiltin(field.typeid.name))
                 else:
                     stream.write(';\n')
 
@@ -274,13 +265,14 @@ class CGenerator(GenMsgBase.CodeGenerator):
                                  + self.upperFirst(field.name) + ';}\n')
                 else:
                     stream.write(';\n')
+            # not an onoff and not repeated
             else:
                 stream.write(self.getIndent())
                 stream.write(targetTypeName + ' ' + self.nameprefix + msg.name + '_get'
                              + self.upperFirst(field.name) + '(%s_t* cthis) '
                              % (self.nameprefix + msg.name))
                 if not headerOnly:
-                    stream.write(' {return cthis.'  + field.name + ';}\n')
+                    stream.write(' {return cthis->'  + field.name + ';}\n')
                 else:
                     stream.write(';\n')
 
@@ -314,9 +306,33 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     stream.write('uint8_t has%s(%s_t cthis)'
                                  % (tmp, self.nameprefix + msg.name))
                     if not headerOnly:
-                        stream.write(' {return cthis._has%s;}\n' % tmp)
+                        stream.write(' {return cthis->_has%s;}\n' % tmp)
                     else:
                         stream.write(';\n')
+
+    def writeSetSizeFunctionBody(self, stream, field, isOnoff, isRepeated, isBuiltin):
+        stream.write(' {\n')
+        self.indent()
+        stream.write(self.getIndent() + self.getTargetTypeName(field.typeid.name) + '* temp;\n')
+        if isRepeated:
+            if isBuiltin:
+                stream.write(self.getIndent() + 'temp = calloc(sz,sizeof(' 
+                             + self.getTargetTypeName(field.typeid.name) + '));\n')
+            else:
+                stream.write(self.getIndent() + 'temp = %s_create(sz);\n' % (self.getTargetTypeName(field.typeid.name)))
+            stream.write(self.getIndent()+'if (cthis->' + field.name + 'Size>0) {\n')
+            self.indent()
+            stream.write(self.getIndent() + 'memcpy(temp,cthis->%s, (cthis->%sSize)*sizeof(%s));\n'
+                     % (field.name, field.name,self.getTargetTypeName(field.typeid.name)))
+            stream.write(self.getIndent() + 'free(cthis->' + field.name + ');\n')
+            stream.write(self.getIndent() + 'cthis->' + field.name + ' = temp;\n')
+            stream.write(self.getIndent() + 'cthis->' + field.name + 'Size = num;\n')
+            stream.write('}\n')
+            self.unIndent()
+        else:
+            self.writeCommentLines("FIXME this case is not handled TODO TODO")
+        stream.write('}\n')
+        self.unIndent()
 
     def writeDeclarationFieldStatement(self, stream, field):
         stream.write(self.getIndent())
@@ -402,11 +418,10 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 for line in native.getLanguageLines('C'):
                     # we are only interested in native "include" statement
                     stmt = line.statement
-                    if stmt.find('#include') >= 0 and not stmt \
-                        in self.included.keys():
-                        self.writeComment(stream, native)
-                        stream.write(stmt + '\n')
+                    if stmt.find('#include') >= 0 and not stmt in self.included.keys():
                         self.included[stmt] = 1
+                    self.writeComment(stream, native)
+                    stream.write(stmt + '\n')
 
         # Generate name space for specified package package
         # we may have nested name space
@@ -444,6 +459,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
             # Generate enum
             lastname = ''
             for enum in self.AST.enums:
+                enum.addNamePrefix(self.nameprefix+self.AST.shortenName(enum.name)+'_')
                 self.generateEnum(stream, enum)
             stream.write('\n')
 
@@ -451,8 +467,10 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
             # Generate message type
             for msg in self.AST.messages:
+                self.writeCommentLines(stream,"---------------------- BEGIN <%s> ------------------------" % msg.name)
                 self.writeComment(stream, msg)
                 if msg.hasEnum():
+                    msg.enum.addNamePrefix(self.nameprefix+self.AST.shortenName(msg.enum.name)+'_')
                     self.generateEnum(stream, msg.enum)
                     stream.write('\n')
                 stream.write(self.getIndent())
@@ -482,8 +500,10 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent() + '} %s_t; \n\n' % (self.nameprefix+msg.name))
 
                 # now write constructor/destructor
-                self.writeCommentLines(stream,"Creator function")
-                stream.write(self.getIndent() + '%s_t* %s_create();\n' % (self.nameprefix+msg.name,self.nameprefix+msg.name))
+                self.writeCommentLines(stream,"""Creator function
+@param[in] nb>0 is the number of element(s) to create (array)""")
+                stream.write(self.getIndent() + '%s_t* %s_create('  % (self.nameprefix+msg.name,self.nameprefix+msg.name)
+                             +self.getTargetTypeName("uint32")+' nb);\n')
                 self.writeCommentLines(stream,"Destructor function")
                 stream.write(self.getIndent() + 'void %s_destroy(%s_t** cthis);\n\n' % (self.nameprefix+msg.name,self.nameprefix+msg.name))
 
@@ -516,9 +536,9 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     stream.write(self.getIndent() + virtual
                                  + "FILE* %s_show(FILE* out);\n" % msg.name
                                  )
-                # end public:
-
-
+                    
+                    self.writeCommentLines(stream,"---------------------- END <%s> ------------------------" % msg.name)
+                    stream.write("\n")
         # Generate Factory (if any)
         # @todo
         if self.AST.hasFactory():
@@ -556,17 +576,38 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
     def writeInitFieldStatement(self, stream, field):
         if field.qualifier == 'optional':
-            stream.write(self.getIndent())
-            stream.write('_has' + self.upperFirst(field.name)
+            stream.write(self.getIndent()+'_has' 
+                         + self.upperFirst(field.name)
                          + '=0;\n')
-        if field.hasDefaultValue():
-            stream.write(self.getIndent())
-            stream.write(field.typeid.name + ' ' + field.name + '=' + str(field.defaultValue)
-                         + ';\n')
+        # Sequence are initialized to unallocated pointer
+        # they should be allocated with SetSize function
+        if field.qualifier== 'repeated':
+            stream.write(self.getIndent()+field.name+"Size = 0;\n")
+            stream.write(self.getIndent()+field.name+" = NULL;\n")
+        # non repeated builtin does not require allocation.
+        elif self.isBuiltin(field.typeid.name):
+            if field.hasDefaultValue():
+                stream.write(self.getIndent())
+                if field.typeid.name=='string':
+                    stream.write('newObj->' + field.name + '= strndup('
+                                 +str(field.defaultValue)+',MAX_CSTRINGSIZE);\n')
+                else:
+                    stream.write('newObj->' + field.name + '=' + str(field.defaultValue)
+                                 + ';\n')
+            else:
+                if field.typeid.name=='string':
+                    self.writeCommentLines(stream,"string without default value are unallocated before they are assigned a value")
+                    stream.write(self.getIndent()+'newObj->'+field.name+" = NULL;\n")
+                else:
+                    self.writeCommentLines(stream,field.name + "= <no default value in message spec using builtin>")
+                    # FIXME find a default value for every type beside natives
+        # non-builtin - non repeated requires a call to create function
         else:
-            self.writeCommentLines(stream,field.name + "= <no default value in message spec using builtin>")
-
-            # FIXME find a default value for every type beside natives
+            stream.write(self.getIndent()+'newObj->'+field.name+' = ')
+            if isinstance(field.typeid,GenMsgAST.EnumType):
+                stream.write('%s;\n' % field.typeid.values[0].name)
+            else:
+                stream.write(self.getTargetTypeName(field.typeid.name)+'_create(1);\n')
 
     def writeSerializeFieldStatement(self, stream, field):
         indexField = ''
@@ -594,16 +635,12 @@ class CGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent())
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:  # field has no Serialize Method Name found in the map
-
             # non native field case
-
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write(field.name + indexField
                              + '_serialize(msgBuffer);\n')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
-
             # enum type field case (enum are serialized as uint32)
-
                 methodName = self.getSerializeMethodName('uint32')
                 stream.write(methodName)
                 stream.write('(msgBuffer' + field.name + indexField + ');\n')
@@ -893,32 +930,38 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
             # Generate message type
             for msg in self.AST.messages:
+                self.writeCommentLines(stream,"---------------------- BEGIN <%s> ------------------------" % msg.name)
                 # Generate Constructor
                 stream.write(self.getIndent() + '%s_t* \n' % (self.nameprefix+msg.name))
-                stream.write(self.getIndent() + '%s_create() {\n'
-                             % (self.nameprefix+msg.name))
+                stream.write(self.getIndent() + '%s_create(' % (self.nameprefix+msg.name) 
+                             +self.getTargetTypeName("uint32")+' nb) {\n'
+                             )
                 self.indent()
                 stream.write(self.getIndent() +'%s_t* newObj;\n' % (self.nameprefix+msg.name))
-                stream.write(self.getIndent() +'newObj = malloc(sizeof(%s_t);\n' % (self.nameprefix+msg.name))
+                stream.write(self.getIndent() + "assert(nb>0);\n")
+                stream.write(self.getIndent() + 'newObj = malloc(nb*sizeof(%s_t));\n' % (self.nameprefix+msg.name))
+                stream.write(self.getIndent() + "assert(newObj!=NULL);\n")
                 if msg.hasMerge():
-                    # Assign my name.
+                    stream.write(self.getIndent()+
+                                 'for (%s i=0;i<nb;++i) {\n' % self.getTargetTypeName("uint32"))
+                    self.indent()
+                    stream.write(self.getIndent()+
+                                 'newObj[i].super = %s_create(1)\n' % (self.nameprefix+msg.merge.name))
+                    # Assign my name (we can use constant string here)
                     stream.write(self.getIndent()
-                                 + 'char* temp;\n ' + self.getIndent() +
-                                 'temp = malloc(sizeof(char)*strlen("' + msg.name
-                                 + '")));\n')
-                    stream.write(self.getIndent() + 'strcpy(temp,"' + msg.name + '");\n')
-                    stream.write(self.getIndent()
-                                 + 'cthis->super->messageName = temp; \n')
-                                 
+                                 + 'newObj[i].super->messageName = "%s"; \n' % msg.name)
                     if None != self.replacePrefix:
-                        stream.write(self.getIndent() + 'cthis->super->type = '
+                        stream.write(self.getIndent() + 'newObj[i].super->type = '
                                 + msg.name.upper().replace(self.replacePrefix[0],
                                 self.replacePrefix[1], 1) + ';\n')
                     else:
-                        stream.write(self.getIndent() + 'cthis->super->type = '
+                        stream.write(self.getIndent() + 'newObj[i].super->type = '
                                 + msg.name.upper() + ';\n')
+                    self.unIndent()
+                    stream.write(self.getIndent()+"}\n")
 
-                # Write init value if any was provided and alloc memory
+                # Write allocate non builtin-type field
+                # and assigne init value if any was provided
                 if len(msg.fields) > 0:
                     self.applyToFields(stream, msg.fields,
                             self.writeInitFieldStatement)
@@ -931,7 +974,9 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent() + 'void %s_destroy(%s_t** cthis) {\n'
                              % (self.nameprefix+msg.name, self.nameprefix+msg.name))
                 self.indent()
-                stream.write(self.getIndent() + 'free(cthis);\n')
+                stream.write(self.getIndent() + "assert(cthis!=NULL);\n")
+                stream.write(self.getIndent() + 'free(*cthis);\n')
+                stream.write(self.getIndent() + '*cthis = NULL;\n')
                 self.unIndent()
                 stream.write(self.getIndent() + '}\n\n')
 
@@ -1013,11 +1058,10 @@ class CGenerator(GenMsgBase.CodeGenerator):
                                  + 'fflush(out);\n')
                     stream.write(self.getIndent() + 'return out;\n')
                     self.unIndent()
-                    stream.write(self.getIndent() + '''}
-
-''')
-
+                    stream.write(self.getIndent() + '''}\n''')
                     # end show method
+                    self.writeCommentLines(stream,"---------------------- END <%s> ------------------------" % msg.name)
+                    stream.write("\n")
 
         # Generate Factory (if any)
         # @todo
