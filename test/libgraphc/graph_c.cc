@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: graph_c.cc,v 3.5 2007/04/26 14:42:51 erk Exp $ 
+// $Id: graph_c.cc,v 3.6 2011/07/20 12:50:39 erk Exp $ 
 // ---------------------------------------------------------------------------
 
 
@@ -118,7 +118,7 @@ static const char * rech(couleur a)   {
   case PINK:    nom_coub = "Pink";    break;
   case VIOLET:  nom_coub = "Violet";  break;
   case WHITE:   nom_coub = "White";   break;
-  default:      nom_coub = "Black";
+  default:      nom_coub = "Black"; break;
   }
   
   return nom_coub;
@@ -2135,7 +2135,7 @@ tcla1 retourkey1(point COORD) {
 
 tcla2 retourkey2() {
 
-     int   nbcar;
+     /*int   nbcar;*/
      tcla2 tret1;
      char  frappe[5];
      int   i;
@@ -2151,7 +2151,7 @@ tcla2 retourkey2() {
                  &evenem);
                  
      if(evenem.type == KeyPress) {
-     nbcar = XLookupString((XKeyEvent *)&evenem,
+     /*nbcar*/(void)XLookupString((XKeyEvent *)&evenem,
                            frappe,
                            5,
                            &touche,
@@ -2210,4 +2210,4 @@ void ModeNORMAL()
 
 #endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.cc,v 3.5 2007/04/26 14:42:51 erk Exp $
+// $Id: graph_c.cc,v 3.6 2011/07/20 12:50:39 erk Exp $
