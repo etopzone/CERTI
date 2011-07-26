@@ -62,6 +62,12 @@ ENDIF(USE_FULL_RPATH)
 OPTION(BUILD_LEGACY_LIBRTI
              "Build CERTI legacy libRTI" OFF)
 
+IF (NOT BUILD_LEGACY_LIBRTI AND WIN32)
+   OPTION(CERTI_RTING_DLL_USE_LIB_PREFIX
+          "Use lib prefix for DLL (Windows Only)" 
+          OFF)
+ENDIF()
+
 OPTION(BUILD_DOC
              "Build documentation (using doxygen)" OFF)
 
