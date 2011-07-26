@@ -31,7 +31,6 @@ public:
     virtual Exception *cloneSelf() const throw() = 0 ;
     virtual void throwSelf() const = 0 ;
     const std::string displayMe() const;
-    virtual long getType() = 0;
 };
 
 #define RTI_EXCEPT(A) \
@@ -45,5 +44,4 @@ public: \
     A (A const &toCopy) : Exception(toCopy) { _name = #A ; this->displayMe();} \
     Exception *cloneSelf() const throw() { return (new A(_reason)); } \
     void throwSelf() const { throw *this ; } \
-    long getType() {return type;}; \
 };
