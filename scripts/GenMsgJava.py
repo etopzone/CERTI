@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgJava.py,v 1.5 2011/07/15 12:22:02 erk Exp $
+## $Id: GenMsgJava.py,v 1.6 2011/07/28 14:04:21 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -236,9 +236,7 @@ import hla.rti.LogicalTimeInterval;
             if len(msg.fields) > 0:
                 for field in msg.fields:
                     javaFile.write(self.getIndent() + 'private ')
-
                     # Combined field and "plain" field must not be treated the same way
-
                     if not isinstance(field,
                             GenMsgAST.MessageType.CombinedField):
                         self.writeFieldStatement(javaFile, field)
