@@ -441,11 +441,11 @@ MB_read_string(MsgBuffer_t* msg, char* str, uint32_t slen);
 
 MB_EXPORT
 int32_t
-MB_write_bool(MsgBuffer_t* msg,  bool_t toggle);
+MB_write_bool(MsgBuffer_t* msg, bool_t toggle);
 
 MB_EXPORT
-bool_t
-MB_read_bool(MsgBuffer_t* msg);
+int32_t
+MB_read_bool(MsgBuffer_t* msg, bool_t* toggle);
 
 /**
  * Update the reserved bytes area.

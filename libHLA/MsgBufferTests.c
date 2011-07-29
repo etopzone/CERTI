@@ -95,8 +95,8 @@ void messageBufferTests(MsgBuffer_t* MsgBuf) {
     MB_read_int64(MsgBuf,&vi64); assert(vi64==i64);
     MB_read_float(MsgBuf,&vf32); assert(vf32==f32);
     MB_read_double(MsgBuf,&vd64); assert(vd64==d64);
-    vtrueBool = MB_read_bool(MsgBuf); assert(trueBool==vtrueBool);
-    vfalseBool = MB_read_bool(MsgBuf); assert(falseBool==vfalseBool);
+    MB_read_bool(MsgBuf,&vtrueBool); assert(trueBool==vtrueBool);
+    MB_read_bool(MsgBuf,&vfalseBool); assert(falseBool==vfalseBool);
     MB_read_string(MsgBuf,vstdstr,MYVSTR_SIZE); assert(0==strcmp(vstdstr,stdstr));
     printf("    std::string = %s\n",vstdstr);
     printf("    All encoded/decoded values are equal.\n");

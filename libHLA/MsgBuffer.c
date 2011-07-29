@@ -93,9 +93,9 @@ MB_write_bool(MsgBuffer_t* msg,  bool_t toggle) {
     }
 }
 
-bool_t
-MB_read_bool(MsgBuffer_t* msg) {
-    return (1==MB_get_uint8(msg));
+int32_t
+MB_read_bool(MsgBuffer_t* msg, bool_t* toggle) {
+    return MB_read_uint8(msg,toggle);
 }
 
 static void MB_initialize(MsgBuffer_t* msg) {
