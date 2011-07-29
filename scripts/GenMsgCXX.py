@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.23 2011/07/16 18:10:09 erk Exp $
+## $Id: GenMsgCXX.py,v 1.24 2011/07/29 09:08:23 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -120,9 +120,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
     def openNamespaces(self, stream):
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
-
             # we may have nested namespace
-
             nameSpaceList = self.AST.package.name.split('.')
             for ns in nameSpaceList:
                 stream.write(self.getIndent() + '''namespace %s {
@@ -135,7 +133,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         if self.AST.hasPackage():
 
             # we may have nested namespace
-
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
             for ns in nameSpaceList:
@@ -355,9 +352,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         for native in self.AST.natives:
             if native.hasLanguage('CXX'):
                 for line in native.getLanguageLines('CXX'):
-
                     # we are only interested in native "include" statement
-
                     stmt = line.statement
                     if stmt.find('#include') >= 0 and not stmt \
                         in self.included.keys():

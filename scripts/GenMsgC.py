@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgC.py,v 1.7 2011/07/28 14:04:20 erk Exp $
+## $Id: GenMsgC.py,v 1.8 2011/07/29 09:08:23 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -302,7 +302,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 if field.qualifier == 'optional':
                     stream.write(self.getIndent())
                     tmp = self.upperFirst(field.name)
-                    stream.write('uint8_t has%s(%s_t cthis)'
+                    stream.write('uint8_t has%s(%s_t* cthis)'
                                  % (tmp, self.nameprefix + msg.name))
                     if not headerOnly:
                         stream.write(' {return cthis->_has%s;}\n' % tmp)
@@ -481,7 +481,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
 
                 if msg.hasMerge():
                     stream.write(self.getIndent()
-                                 + '%s super;\n'
+                                 + '%s* super;\n'
                                  % self.getTargetTypeName(msg.merge.name))
 
                 # write fields
@@ -601,7 +601,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
         else:
             stream.write(self.getIndent()+'newObj->'+field.name+' = ')
             if isinstance(field.typeid,GenMsgAST.EnumType):
-                stream.write('%s;\n' % field.typeid.values[0].name)
+                stream.write('%s;\n' % (self.nameprefix + self.AST.shortenName(field.typeid.name) +'_'+field.typeid.values[0].name))
             else:
                 stream.write(self.getTargetTypeName(field.typeid.name)+'_create(1);\n')
 
@@ -633,17 +633,15 @@ class CGenerator(GenMsgBase.CodeGenerator):
         if None == methodName:  # field has no Serialize Method Name found in the map
             # non native field case
             if field.typeid.name in [m.name for m in self.AST.messages]:
-                stream.write(field.name + indexField
-                             + '_serialize(msgBuffer);\n')
+                self.writeCommentLines("FIXME call serialize for field %s" % field.name)
+                #stream.write(field.name + indexField+ '_serialize(msgBuffer);\n')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
             # enum type field case (enum are serialized as uint32)
                 methodName = self.getSerializeMethodName('uint32')
                 stream.write(methodName)
-                stream.write('(msgBuffer' + field.name + indexField + ');\n')
+                stream.write('(msgBuffer,cthis->' + field.name + indexField + ');\n')
             else:
-
             # native field case
-
                 stream.write(self.commentLineBeginWith
                              + ' FIXME FIXME FIXME\n')
                 stream.write(self.getIndent()
@@ -666,7 +664,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
         indexField = ''
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
-            stream.write('fprintf(out,"(opt) %s =" ' % field.name)
+            stream.write('fprintf(out,"(opt) %s =" cthis->' % field.name)
         elif field.qualifier == 'repeated':
             indexField = '[i]'
             stream.write(self.getIndent())
@@ -680,7 +678,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
             stream.write(self.getIndent() + 'out ')
         else:
             stream.write(self.getIndent())
-            stream.write('fprintf(out," %s = " ' % field.name)
+            stream.write('fprintf(out," %s = " cthis->' % field.name)
 
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:  # field has no Serialize Method Name found in the map
@@ -725,7 +723,7 @@ class CGenerator(GenMsgBase.CodeGenerator):
         indexField = ''
         if field.qualifier == 'optional':
             stream.write(self.getIndent())
-            stream.write('cthis->_has%s = MB_read_bool(msgBuffer);\n'
+            stream.write('MB_read_bool(msgBuffer,&(cthis->_has%s));\n'
                          % self.upperFirst(field.name))
             stream.write(self.getIndent())
             stream.write('if (cthis->_has%s) {\n'
@@ -734,8 +732,8 @@ class CGenerator(GenMsgBase.CodeGenerator):
         elif field.qualifier == 'repeated':
             indexField = '[i]'
             stream.write(self.getIndent())
-            stream.write('uint32_t ' + field.name
-                         + 'Size = MB_read_uint32(msgBuffer);\n')
+            stream.write('uint32_t ' + field.name+ 'Size;\n');
+            stream.write('MB_read_uint32(msgBuffer,&'+field.name+'Size);\n')
             stream.write(self.getIndent())
             stream.write('cthis->'+field.name + 'size =' + field.name
                          + 'Size);\n')
@@ -747,50 +745,41 @@ class CGenerator(GenMsgBase.CodeGenerator):
         stream.write(self.getIndent())
         methodName = self.getDeSerializeMethodName(field.typeid.name)
         if None == methodName:  # field has no Deserialize Method Name found in the map
-         # non native field case
+            # non native field case
             if field.typeid.name in [m.name for m in self.AST.messages]:
                 stream.write('cthis->'+field.name + indexField
                              + '_deserialize(msgBuffer);\n')
             elif field.typeid.name in [m.name for m in self.AST.enums]:
-
-            # enum type field case (enum are deserialized as uint32)
-
+                 # enum type field case (enum are deserialized as uint32)
                 targetTypeName = \
                     self.getTargetTypeName(field.typeid.name)
                 methodName = self.getDeSerializeMethodName('uint32')
 
                 # We should check if the uint32 value is in enum range before casting it into enumtype
-                stream.write('cthis->'+field.name + indexField + ' = static_cast<'
-                              + targetTypeName + '>('
-                             + methodName + ' ());\n')
+                stream.write(methodName +'(msgBuffer,(&cthis->'+field.name + indexField + '));\n')
             else:
-
             # native field case
-
                 stream.write(self.commentLineBeginWith
                              + ' FIXME FIXME FIXME\n')
                 stream.write(self.getIndent()
                              + self.commentLineBeginWith
                              + " don't know how to deserialize native field <%s> of type <%s>\n"
                               % (field.name, field.typeid.name))
+        # field has one Deserialize Method Name found in the map
         else:
-              # field has one Deserialize Method Name found in the map
-            if methodName == 'read_string':
-                stream.write(methodName + '(msgBuffer,'
-                             + field.name + indexField + ');\n')
+            if methodName == 'MB_read_string':
+                stream.write(methodName + '(msgBuffer,cthis->'
+                             + field.name + indexField + ',MAX_CSTRINGSIZE);\n')
             else:
-
                 # We may have to vast in order to enforce conversion
-
                 if isinstance(field.typeid, GenMsgAST.NativeType):
                     stream.write('cthis->'+field.name + indexField
                                  + ' = static_cast<'
                                  + field.typeid.name + '>('
                                  + methodName + '(msgBuffer));\n')
                 else:
-                    stream.write('cthis->'+field.name + indexField
-                                 + ' = ' + methodName
-                                 + '(msgBuffer);\n')
+                    stream.write(methodName
+                                 + '(msgBuffer,&(cthis->'+field.name + indexField+'));\n')
 
         if field.qualifier == 'optional':
             self.unIndent()
@@ -930,22 +919,23 @@ class CGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent() + "assert(nb>0);\n")
                 stream.write(self.getIndent() + 'newObj = malloc(nb*sizeof(%s_t));\n' % (self.nameprefix+msg.name))
                 stream.write(self.getIndent() + "assert(newObj!=NULL);\n")
+                
                 if msg.hasMerge():
                     stream.write(self.getIndent()+
                                  'for (%s i=0;i<nb;++i) {\n' % self.getTargetTypeName("uint32"))
                     self.indent()
                     stream.write(self.getIndent()+
-                                 'newObj[i].super = %s_create(1)\n' % (self.nameprefix+msg.merge.name))
+                                 'newObj[i].super = %s_create(1);\n' % (self.nameprefix+msg.merge.name))
                     # Assign my name (we can use constant string here)
                     stream.write(self.getIndent()
                                  + 'newObj[i].super->messageName = "%s"; \n' % msg.name)
                     if None != self.replacePrefix:
                         stream.write(self.getIndent() + 'newObj[i].super->type = '
-                                + msg.name.upper().replace(self.replacePrefix[0],
-                                self.replacePrefix[1], 1) + ';\n')
+                                     + msg.name.upper().replace(self.replacePrefix[0],
+                                     self.replacePrefix[1], 1) + ';\n')
                     else:
                         stream.write(self.getIndent() + 'newObj[i].super->type = '
-                                + msg.name.upper() + ';\n')
+                                + self.nameprefix + self.AST.shortenName("MessageType")+ '_' + msg.name.upper() + ';\n')
                     self.unIndent()
                     stream.write(self.getIndent()+"}\n")
 
@@ -981,8 +971,8 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     self.indent()
                     if msg.hasMerge():
                         self.writeCommentLines(stream,"Call mother class")
-                        stream.write(self.getIndent()
-                                + 'Super_serialize(msgBuffer);\n')
+                        self.writeCommentLines(stream,"FIXME TBD")
+                        #stream.write(self.getIndent()+ 'Super_serialize(msgBuffer);\n')
                     self.writeCommentLines(stream,"Specific serialization code")
                     self.applyToFields(stream, msg.fields,
                             self.writeSerializeFieldStatement)
@@ -1000,8 +990,8 @@ class CGenerator(GenMsgBase.CodeGenerator):
                     self.indent()
                     if msg.hasMerge():
                         self.writeCommentLines(stream,"Call mother class")
-                        stream.write(self.getIndent()
-                                + 'Super_deserialize(msgBuffer);\n')
+                        self.writeCommentLines(stream,"FIXME TBD")
+                        #stream.write(self.getIndent()+ 'Super_deserialize(msgBuffer);\n')
                     self.writeCommentLines(stream,"Specific deserialization code")
                     self.applyToFields(stream, msg.fields,
                             self.writeDeSerializeFieldStatement)
@@ -1033,11 +1023,11 @@ class CGenerator(GenMsgBase.CodeGenerator):
                                  % msg.name)
                     if msg.hasMerge():
                         self.writeCommentLines(stream,"Call mother class")
-                        stream.write(self.getIndent()
-                                + 'Super_show(out);\n')
+                        self.writeCommentLines(stream,"FIXME TBD")
+                        #stream.write(self.getIndent()+ 'Super_show(out);\n')
                     self.writeCommentLines(stream,"Specific show code")
-                    self.applyToFields(stream, msg.fields,
-                            self.writeShowFieldStatement)
+                    # FIXME this needs a rewrite
+                    #self.applyToFields(stream, msg.fields,self.writeShowFieldStatement)
                     stream.write(self.getIndent()
                                  + 'fprintf(out,"[%s -End] \\n");\n'
                                  % msg.name)

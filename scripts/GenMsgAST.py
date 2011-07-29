@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgAST.py,v 1.22 2011/07/19 20:21:21 erk Exp $
+## $Id: GenMsgAST.py,v 1.23 2011/07/29 09:08:23 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1154,7 +1154,6 @@ class ASTChecker(object):
             # kind of message.
             # However some message types may merge from one another
             # as soon as there is a "common" root merge type
-
             if msg.hasMerge():
                 parent = AST.getType(msg.merge)
                 parent.nbHeir += 1
@@ -1177,6 +1176,12 @@ class ASTChecker(object):
             if not self.checkMessageFields(msg, AST):
                 return
 
+        # only add merger type in the enumeration if the
+        # type is not native
+        if (not isinstance(lastMerge, NativeType)):
+            enumval = EnumType.EnumValue(lastMerge.name.upper(), None)
+            enumval.type = lastMerge.name
+            msgTypeEnumVals.append(enumval)
         enumval = EnumType.EnumValue('LAST', None)
         enumval.type = None
         msgTypeEnumVals.append(enumval)

@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgBase.py,v 1.11 2011/07/28 14:04:20 erk Exp $
+## $Id: GenMsgBase.py,v 1.12 2011/07/29 09:08:22 erk Exp $
 ## ----------------------------------------------------------------------------
 
 # We use logging for ... logging :-)
@@ -167,6 +167,8 @@ class CodeGenerator(object):
                 lineNb = lineNb + 1
             if self.commentEndWith!=None:
                 stream.write(self.commentEndWith+'\n')
+            else:
+                stream.write('\n')
         else:
             stream.write('\n')
     
