@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.57 2010/10/02 13:20:42 erk Exp $
+// $Id: FederationsList.hh,v 3.58 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -308,8 +308,7 @@ public:
     void subscribeObject(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
-                         const std::vector <AttributeHandle> &theAttributeList,
-                         uint16_t theListSize)
+                         const std::vector <AttributeHandle> &theAttributeList)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederationExecutionDoesNotExist,
@@ -699,4 +698,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.57 2010/10/02 13:20:42 erk Exp $
+// $Id: FederationsList.hh,v 3.58 2011/09/01 13:50:55 erk Exp $

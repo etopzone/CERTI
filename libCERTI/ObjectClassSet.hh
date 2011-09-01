@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.40 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.41 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -85,10 +85,18 @@ public:
 	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
 			SecurityError);
 
-	void subscribe(FederateHandle, ObjectClassHandle, const std::vector <AttributeHandle> &,
-			int theListSize, const RTIRegion * = 0)
-	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
-			SecurityError);
+    /**
+     * Subscribes a federate to a set of attributes with a region.
+     * Sends the discovery messages if necessary.
+     * @param federate Federate to subscribe
+     * @param class_handle Class to be subscribed
+     * @param attributes List of attributes to be subscribed
+     * @param region Subscription region (NULL for default)
+     */
+    void subscribe(FederateHandle, ObjectClassHandle,
+                   const std::vector <AttributeHandle>& attributes,
+                   const RTIRegion * = NULL)
+    throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError, SecurityError);
 
 	// Object Instance Management
 	void deleteObject(FederateHandle theFederateHandle,
@@ -182,4 +190,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.40 2010/03/19 13:54:03 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.41 2011/09/01 13:50:54 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.73 2010/10/02 13:20:41 erk Exp $
+// $Id: FederationsList.cc,v 3.74 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -783,13 +783,11 @@ FederationsList::subscribeInteraction(Handle federationHandle,
 }
 
 // ----------------------------------------------------------------------------
-// subscribeObject
 void
 FederationsList::subscribeObject(Handle federationHandle,
                                  FederateHandle federate,
                                  ObjectClassHandle object_class,
-                                 const std::vector <AttributeHandle> &attributes,
-                                 uint16_t list_size)
+                                 const std::vector <AttributeHandle> &attributes)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            FederationExecutionDoesNotExist,
@@ -802,7 +800,7 @@ FederationsList::subscribeObject(Handle federationHandle,
     // It may throw FederationExecutionDoesNotExist.
     Federation *federation = searchFederation(federationHandle);
 
-    federation->subscribeObject(federate, object_class, attributes, list_size);
+    federation->subscribeObject(federate, object_class, attributes);
 }
 
 // ----------------------------------------------------------------------------
@@ -1450,5 +1448,5 @@ FederationsList::getNullPrimeValue(FederationHandle federation)
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.73 2010/10/02 13:20:41 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.74 2011/09/01 13:50:55 erk Exp $
 

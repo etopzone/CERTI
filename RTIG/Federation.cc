@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.140 2011/07/13 15:43:18 erk Exp $
+// $Id: Federation.cc,v 3.141 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -450,7 +450,7 @@ throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 {
 	try {
 		getFederate(federate_name);
-		throw FederateAlreadyExecutionMember("");
+		throw FederateAlreadyExecutionMember(federate_name);
 	}
 	catch (FederateNotExecutionMember &e) {
 		// Nothing to do.
@@ -1482,7 +1482,7 @@ throw (FederateNotExecutionMember)
 {
 	HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
 	if (i == _handleFederateMap.end())
-		throw FederateNotExecutionMember("Federate Handle not found.");
+		throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <"<< federate_handle << "> not found.");
 	return i->second;
 }
 
@@ -1510,10 +1510,20 @@ bool
 Federation::empty() const
 throw (FederatesCurrentlyJoined)
 {
-	if (_handleFederateMap.empty())
+	if (_handleFederateMap.empty()) {
 		return true ;
-	else
-		throw FederatesCurrentlyJoined("");
+	}
+	else {
+	    // build the list of name of the federate currently joined
+	    HandleFederateMap::const_iterator it;
+	    std::stringstream msg;
+	    msg << "<";
+	    for (it = _handleFederateMap.begin(); it != _handleFederateMap.end(); it++) {
+	        msg << " " << (it->second).getName();
+	    }
+	    msg << " >";
+		throw FederatesCurrentlyJoined(msg.str().c_str());
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -1523,10 +1533,11 @@ bool
 Federation::check(FederateHandle federate_handle) const
 throw (FederateNotExecutionMember)
 {
-	HandleFederateMap::const_iterator i = _handleFederateMap.find(federate_handle);
-	if (i == _handleFederateMap.end())
-		throw FederateNotExecutionMember("Federate Handle not found.");
-	return true;
+    HandleFederateMap::const_iterator i = _handleFederateMap.find(federate_handle);
+    if (i == _handleFederateMap.end()) {
+        throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <"<< federate_handle << "> not found in federation <" << handle);
+    }
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -1731,7 +1742,7 @@ throw (FederateOwnsAttributes, FederateNotExecutionMember)
 
 	D.Out(pdExcept, "Federation %d could not remove unknown federate %d.",
 			handle, federate_handle);
-	throw FederateNotExecutionMember("");
+	throw FederateNotExecutionMember(certi::stringize() << "Federate Handle=<"<<federate_handle <<">");
 }
 
 // ----------------------------------------------------------------------------
@@ -1865,115 +1876,117 @@ throw (InteractionClassNotDefined,
 
 void
 Federation::subscribeObject(FederateHandle federate,
-		ObjectClassHandle object,
-		const std::vector <AttributeHandle> &attributes,
-		uint16_t list_size)
+                            ObjectClassHandle object,
+                            const std::vector <AttributeHandle> &attributes)
 throw (ObjectClassNotDefined,
-		AttributeNotDefined,
-		FederateNotExecutionMember,
-		SaveInProgress,
-		SecurityError,
-		RestoreInProgress,
-		RTIinternalError)
-		{
-	G.Out(pdGendoc,"enter Federation::subscribeObject");
-	// It may throw FederateNotExecutionMember.
-	this->check(federate);
+       AttributeNotDefined,
+       FederateNotExecutionMember,
+       SaveInProgress,
+       SecurityError,
+       RestoreInProgress,
+       RTIinternalError)
+  {
+    G.Out(pdGendoc,"enter Federation::subscribeObject");
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
 
-	// It may throw *NotDefined
-	root->ObjectClasses->subscribe(federate, object, attributes, list_size);
+    /*
+     * The subscription process in CERTI:
+     * In RTIG.cc the network messages SUBSCRIBE_OBJECT_CLASS and UNSUBSCRIBE_
+     * OBJECT_CLASS are both mapped to the method processSubscribeObject within
+     * RTIG_processing.cc. RTIG_proccessing invokes this method
+     * (subscribeObject).
+     */
 
-	/*
-	 * The subscription process in CERTI:
-	 * In RTIG.cc the network messages SUBSCRIBE_OBJECT_CLASS and UNSUBSCRIBE_
-	 * OBJECT_CLASS are both mapped to the method processSubscribeObject within
-	 * RTIG_processing.cc. RTIG_proccessing invokes this method
-	 * (subscribeObject).
-	 * The above code line (root->ObjectClasses->subscribe(...) calls the
-	 * subscription within the CERTI library in ObjectClassSet.cc. Further on,
-	 * ObjectClassSet::subscribe invokes ObjectClass::subscribe. That method
-	 * first unsubscribes all attributes, afterwards the subscription is
-	 * done in a for loop til list_size.
-	 * This means: Unsubscription and subscription are realized by the same
-	 * method. Only the list_size parameter controls the
-	 * unsubscription/subscription process.
-	 *
-	 * Do we need a cleaner solution, e.g. separate methods for subscription/
-	 * unsubscription?
-	 */
+    // It may throw NotDefined
+    root->ObjectClasses->subscribe(federate, object, attributes);
 
-	if (list_size!=0) {  // do only for subscription
-		// get object class from object class handle
-		ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
+    /*
+     * The above code line (root->ObjectClasses->subscribe(...) calls the
+     * subscription within the CERTI library in ObjectClassSet.cc. Further on,
+     * ObjectClassSet::subscribe invokes ObjectClass::subscribe. That method
+     * first unsubscribes all attributes, afterwards the subscription is
+     * done in a for loop till list_size.
+     * This means: Unsubscription and subscription are realized by the same
+     * method. Only the list_size parameter controls the
+     * unsubscription/subscription process.
+     *
+     * Do we need a cleaner solution, e.g. separate methods for subscription/
+     * unsubscription?
+     */
 
-		// get attributes of object class
-		ObjectClassAttribute::PublishersList_t publishers;
+    if (attributes.size()!=0) {  // do only for subscription
+        // get object class from object class handle
+        ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
 
-		// get publishers of attributes
-		// first for: iterate through the attribute list and get publishers of
-		//            each attribtue
-		// second for: iterate through the temporal publishers list and store
-		//             non-duplicate entries in publishers
-		ObjectClassAttribute::PublishersList_t tmp_publishers;
+        // get attributes of object class
+        ObjectClassAttribute::PublishersList_t publishers;
 
-		const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
-		for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
-				i != attributeMap.end(); ++i) {
-			tmp_publishers = i->second->getPublishers();
-			for (ObjectClassAttribute::PublishersList_t::const_iterator
-					j=tmp_publishers.begin();
-					j!=tmp_publishers.end();
-					j++) {
-				// insert only non-duplicate entries ->
-				// pair<iterator, bool> set::insert(const TYPE& val);
-				publishers.insert(*j);
-			}
-			tmp_publishers.clear();
-		}
+        // get publishers of attributes
+        // first for: iterate through the attribute list and get publishers of
+        //            each attribute
+        // second for: iterate through the temporary publishers list and store
+        //             non-duplicate entries in publishers
+        ObjectClassAttribute::PublishersList_t tmp_publishers;
 
-		// notify all publishers
-		std::set<FederateHandle> federate_set;
+        const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
+        for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
+                i != attributeMap.end(); ++i) {
+            tmp_publishers = i->second->getPublishers();
+            for (ObjectClassAttribute::PublishersList_t::const_iterator
+                    j=tmp_publishers.begin();
+                    j!=tmp_publishers.end();
+                    j++) {
+                // insert only non-duplicate entries ->
+                // pair<iterator, bool> set::insert(const TYPE& val);
+                publishers.insert(*j);
+            }
+            tmp_publishers.clear();
+        }
 
-		for (ObjectClassAttribute::PublishersList_t::const_iterator
-				k=publishers.begin();
-				k!=publishers.end();
-				k++) {
+        // notify all publishers
+        std::set<FederateHandle> federate_set;
 
-			if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
-				federate_set.insert(*k);
-			}
-		}
+        for (ObjectClassAttribute::PublishersList_t::const_iterator
+                k=publishers.begin();
+                k!=publishers.end();
+                k++) {
 
-		// broadcastSomeMessage needs a vector, no set -> conversion
-		vector<FederateHandle> federate_vector(federate_set.size());
-		std::copy(federate_set.begin(), federate_set.end(), federate_vector.begin());
+            if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
+                federate_set.insert(*k);
+            }
+        }
 
-		NM_Start_Registration_For_Object_Class msg ;
-		msg.setFederate(federate);
-		msg.setFederation(handle);
-		msg.setObjectClass(object);
+        // broadcastSomeMessage needs a vector, no set -> conversion
+        vector<FederateHandle> federate_vector(federate_set.size());
+        std::copy(federate_set.begin(), federate_set.end(), federate_vector.begin());
 
-		this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short)federate_vector.size());
+        NM_Start_Registration_For_Object_Class msg ;
+        msg.setFederate(federate);
+        msg.setFederation(handle);
+        msg.setObjectClass(object);
 
-		publishers.clear();
-		federate_set.clear();
-		federate_vector.clear();
-	}
-	else {	// unsubscribe branch
-		/* test if objectclass is subscribed by anyone else
-		 * -> yes : do nothing
-		 * -> no : test if publisher sets its CRA switch
-		 *  	-> no : do nothing
-		 *  	-> yes : inform publisher with federate service stopRegistrationForObjectClass
-		 */
+        this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short)federate_vector.size());
 
-	}
+        publishers.clear();
+        federate_set.clear();
+        federate_vector.clear();
+    }
+    else {	// unsubscribe branch
+        /* test if objectclass is subscribed by anyone else
+         * -> yes : do nothing
+         * -> no : test if publisher sets its CRA switch
+         *  	-> no : do nothing
+         *  	-> yes : inform publisher with federate service stopRegistrationForObjectClass
+         */
 
-	D.Out(pdRegister,
-			"Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
-			handle, federate, list_size, object);
-	G.Out(pdGendoc,"exit  Federation::subscribeObject");
-		}
+    }
+
+    D.Out(pdRegister,
+            "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
+            handle, federate, attributes.size(), object);
+    G.Out(pdGendoc,"exit  Federation::subscribeObject");
+  }
 
 // ----------------------------------------------------------------------------
 // updateAttributeValues with time
@@ -2423,8 +2436,7 @@ throw (RegionNotKnown,
 		RTIinternalError)
 		{
 	check(federate);
-	root->ObjectClasses->subscribe(federate, c, attributes, nb,
-			root->getRegion(region_handle));
+	root->ObjectClasses->subscribe(federate, c, attributes, root->getRegion(region_handle));
 		}
 
 // ----------------------------------------------------------------------------
@@ -2737,5 +2749,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.140 2011/07/13 15:43:18 erk Exp $
+// $Id: Federation.cc,v 3.141 2011/09/01 13:50:55 erk Exp $
 

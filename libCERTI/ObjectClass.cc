@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.87 2011/06/08 14:40:56 erk Exp $
+// $Id: ObjectClass.cc,v 3.88 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -768,44 +768,39 @@ ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID) throw (SecurityErro
 }
 
 // ----------------------------------------------------------------------------
-/** Subscribes a federate to some of this class attributes, with a
-    particular region.
-    @param fed Federate to subscribe
-    @param attributes Begining of the attribute-handle list
-    @param nb_attributes Number of attributes in the list
-    @param region Subscription region. Use 0 for default region.
-    @return true if the federate needs to discover objects of this
-    class because of this subscription
- */
 bool
 ObjectClass::subscribe(FederateHandle fed,
-		const std::vector <AttributeHandle> &attributes,
-		int nb_attributes,
-		const RTIRegion *region)
-throw (AttributeNotDefined, RTIinternalError, SecurityError)
-{
-	checkFederateAccess(fed, "Subscribe");
+                       const std::vector <AttributeHandle> &attributes,
+                       const RTIRegion *region)
+throw (AttributeNotDefined, RTIinternalError, SecurityError) {
 
-	for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
-		getAttribute(attributes[i]);
+    uint32_t nb_attributes = attributes.size();
+    checkFederateAccess(fed, "Subscribe");
 
-	if (nb_attributes > 0)
-		maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
+    // Verify all attributes
+    for (int i = 0 ; i < attributes.size() ; ++i) {
+        // may throw AttributeNotDefined
+        getAttribute(attributes[i]);
+    }
 
-	bool was_subscriber = isSubscribed(fed);
+    if (nb_attributes > 0) {
+        maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
+    }
 
-	// FIXME what does this means?
-	unsubscribe(fed, region);
+    bool was_subscriber = isSubscribed(fed);
 
-	Debug(D, pdTrace) << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
-	<< ", " << nb_attributes << " attributes, region "
-	<< (region ? region->getHandle() : 0) << std::endl ;
+    // FIXME what does this means?
+    unsubscribe(fed, region);
 
-	for (int i = 0 ; i < nb_attributes ; ++i) {
-		getAttribute(attributes[i])->subscribe(fed, region);
-	}
+    Debug(D, pdTrace) << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
+            << ", " << nb_attributes << " attributes, region "
+            << (region ? region->getHandle() : 0) << std::endl ;
 
-	return (nb_attributes > 0) && !was_subscriber ;
+    for (int i = 0 ; i < attributes.size() ; ++i) {
+        getAttribute(attributes[i])->subscribe(fed, region);
+    }
+
+    return (attributes.size() > 0) && !was_subscriber ;
 } /* end of subscribe */
 
 // ----------------------------------------------------------------------------
@@ -827,7 +822,6 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     ObjectAttribute * oa ;
     for (int i = 0 ; i < the_size ; i++) {
         oa = object->getAttribute(the_attributes[i]);
-
         if (oa->getOwner() != the_federate)
             throw AttributeNotOwned(stringize() << "Federate <"<<the_federate<<"> is not owner of attribute <"<<oa->getHandle()<<">");
     }
@@ -1669,4 +1663,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.87 2011/06/08 14:40:56 erk Exp $
+// $Id: ObjectClass.cc,v 3.88 2011/09/01 13:50:54 erk Exp $

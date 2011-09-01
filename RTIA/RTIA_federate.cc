@@ -180,7 +180,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 				throw FederateAlreadyExecutionMember("Federate yet joined or same name");
 				break;
 			case e_FederationExecutionDoesNotExist:
-				throw FederationExecutionDoesNotExist("Federation doesn not yet exist");
+				throw FederationExecutionDoesNotExist("Federation does not exist [yet]");
 				break;
 			case e_SaveInProgress:
 				throw SaveInProgress("Save in progress");

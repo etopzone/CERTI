@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.88 2010/11/15 13:15:47 erk Exp $
+// $Id: FederationManagement.cc,v 3.89 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -262,7 +262,8 @@ joinFederationExecution(const std::string& Federate,
             _nom_federe = Federate;
             _numero_federation = reponse->getFederation() ;
             federate = reponse->getFederate();
-            tm->setFederate(reponse->getFederate());
+            //std::cout << "federate ID=" << federate << std::endl;
+            tm->setFederate(federate);
 #ifdef FEDERATION_USES_MULTICAST
             // creation du socket pour la communication best-effort
             comm->CreerSocketMC(reponse->AdresseMulticast, MC_PORT);
@@ -279,8 +280,9 @@ joinFederationExecution(const std::string& Federate,
             G.Out(pdGendoc,"exit(%d) FederationManagement::joinFederationExecution",federate);
             return(federate);
         }
-        else
-            e = reponse->getException() ;
+        else {
+            e = reponse->getException();
+        }
     }
     G.Out(pdGendoc,"exit(0) FederationManagement::joinFederationExecution");
     return(0);

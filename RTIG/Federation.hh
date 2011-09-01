@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.70 2010/11/09 22:24:26 erk Exp $
+// $Id: Federation.hh,v 3.71 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -319,12 +319,10 @@ public:
      * @param[in] federate federate handle of the subscriber
      * @param[in] object subscripted object class handle 
      * @param[in] attributes subscripted vector of attributes 
-     * @param[in] list_size size of the attribute vector
-    */
+     */
     void subscribeObject(FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
-                         const std::vector <AttributeHandle> &theAttributeList,
-                         uint16_t theListSize)
+                         const std::vector <AttributeHandle> &theAttributeList)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederateNotExecutionMember,
@@ -723,4 +721,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.70 2010/11/09 22:24:26 erk Exp $
+// $Id: Federation.hh,v 3.71 2011/09/01 13:50:55 erk Exp $

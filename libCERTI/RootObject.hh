@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.37 2010/11/15 13:15:46 erk Exp $
+// $Id: RootObject.hh,v 3.38 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -121,7 +121,7 @@ public:
         throw (ObjectNotKnown);
 
     void deleteObjectInstance(FederateHandle, ObjectHandle,
-    			      FederationTime theTime, const std::string& theTag)
+                              FederationTime theTime, const std::string& theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag)
@@ -130,15 +130,14 @@ public:
     void killFederate(FederateHandle) throw (RTIinternalError);
 
     // Access to elements of the RootObject hierarchy
-    ObjectAttribute *getObjectAttribute(ObjectHandle, AttributeHandle);
-    ObjectClass *getObjectClass(ObjectClassHandle);
-    Interaction *getInteractionClass(InteractionClassHandle);
-    Object *getObject(ObjectHandle);
-    ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
-						  AttributeHandle);
-	
-	void
-	getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
+    ObjectAttribute*      getObjectAttribute(ObjectHandle, AttributeHandle);
+    ObjectClass*          getObjectClass(ObjectClassHandle);
+    Interaction*          getInteractionClass(InteractionClassHandle);
+    Object*               getObject(ObjectHandle);
+    ObjectClassAttribute* getObjectClassAttribute(ObjectHandle, AttributeHandle);
+
+    void
+    getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
 
     /**
      * Add an object class to the ObjectRoot
@@ -205,4 +204,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.37 2010/11/15 13:15:46 erk Exp $
+// $Id: RootObject.hh,v 3.38 2011/09/01 13:50:54 erk Exp $

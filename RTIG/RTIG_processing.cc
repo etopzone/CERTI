@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.111 2011/07/11 11:17:25 erk Exp $
+// $Id: RTIG_processing.cc,v 3.112 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -150,7 +150,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 
 	Handle num_federation = federations.getFederationHandle(federation);
 
-	// Need to dump the fom into that
+	// Need to dump the FOM into that
 	NM_Join_Federation_Execution rep ;
 	try
 	{
@@ -166,7 +166,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 		// Prepare answer about JoinFederationExecution
 		NM_Join_Federation_Execution rep ;
 		rep.setException(e_FederateAlreadyExecutionMember,
-				"Federate with same name has yet joined the federation");
+		certi::stringize() << "Federate with same name <"<< federate << "> has already joined the federation");
 
 		G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.getExceptionReason().c_str());
 
@@ -748,20 +748,19 @@ RTIG::processPublishObjectClass(Socket *link, NM_Publish_Object_Class *req)
 void
 RTIG::processSubscribeObjectClass(Socket *link, NM_Subscribe_Object_Class *req)
 {
-	G.Out(pdGendoc,"enter RTIG::processSubscribeObjectClass");
-	G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processSubscribeObjectClass");
+    G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
 
-	std::vector <AttributeHandle> arrayVide ;
-	bool sub = (req->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
+    std::vector <AttributeHandle> emptyAttributeList;
+    bool sub = (req->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
-	auditServer << "Subscribe Object Class = " << req->getObjectClass()
-										<< ", # of att. = " << req->getAttributesSize() ;
+    auditServer << "Subscribe Object Class = " << req->getObjectClass()
+                << ", # of att. = " << req->getAttributesSize() ;
 
-	federations.subscribeObject(req->getFederation(),
-			req->getFederate(),
-			req->getObjectClass(),
-			sub ? req->getAttributes() : arrayVide,
-					sub ? req->getAttributesSize() : 0);
+    federations.subscribeObject(req->getFederation(),
+                                req->getFederate(),
+                                req->getObjectClass(),
+                                sub ? req->getAttributes() : emptyAttributeList);
 
 	D.Out(pdRegister,
 			"Federate %u of Federation %u subscribed to object class %d.",
@@ -1570,4 +1569,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.111 2011/07/11 11:17:25 erk Exp $
+// $Id: RTIG_processing.cc,v 3.112 2011/09/01 13:50:55 erk Exp $

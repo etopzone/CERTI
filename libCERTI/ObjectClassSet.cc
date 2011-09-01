@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.54 2011/07/11 11:17:26 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.55 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -163,15 +163,15 @@ ObjectClassSet::getAttributeHandle(const std::string& the_name,
     ObjectClass *objectClass = 0 ;
     AttributeHandle handle ;
 
-    if (the_name.empty())
-        throw RTIinternalError("name is null");
+    if (the_name.empty()) {
+        throw RTIinternalError("provided Attribute name is null");
+    }
 
     D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
           the_name.c_str(), the_class);
 
     // It may throw ObjectClassNotDefined.
     objectClass = getObjectFromHandle(the_class);
-
 
     try
         {
@@ -362,30 +362,22 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-/** Subscribes a federate to a set of attributes with a region. Sends the
-    discovery messages if necessary.
-    @param federate Federate to subscribe
-    @param class_handle Class to be subscribed
-    @param attributes List of attributes to be subscribed
-    @param nb Number of attributes
-    @param region Subscription region (0 for default)
- */
 void
 ObjectClassSet::subscribe(FederateHandle federate,
                           ObjectClassHandle class_handle,
                           const std::vector <AttributeHandle> &attributes,
-                          int nb,
-			  const RTIRegion *region)
+                          const RTIRegion *region)
     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
            SecurityError)
 {
     ObjectClass *object_class = getObjectFromHandle(class_handle);
 
-    bool need_discover = object_class->subscribe(federate, attributes, nb, region);
+    bool need_discover = object_class->subscribe(federate, attributes, region);
 
-    if (need_discover)
-	object_class->recursiveDiscovering(federate, class_handle);
-}
+    if (need_discover) {
+        object_class->recursiveDiscovering(federate, class_handle);
+    }
+} /* end of subscribe */
 
 // ----------------------------------------------------------------------------
 //! updateAttributeValues with time
@@ -634,4 +626,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.54 2011/07/11 11:17:26 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.55 2011/09/01 13:50:54 erk Exp $

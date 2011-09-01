@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.57 2011/07/11 11:17:26 erk Exp $
+// $Id: ObjectClass.hh,v 3.58 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -144,8 +144,17 @@ public:
 			bool PubOrUnpub)
 	throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-	bool subscribe(FederateHandle, const std::vector <AttributeHandle> &, int, const RTIRegion *)
-	throw (AttributeNotDefined, RTIinternalError, SecurityError);
+    /**
+     * Subscribes a federate to some of this class attributes,
+     * with a particular region.
+     * @param[in] federate Federate to subscribe
+     * @param[in] attributes the attribute-handle list
+     * @param[in] region Subscription region. Use 0 for default region.
+     * @return true if the federate needs to discover objects of this
+     * class because of this subscription
+     */
+    bool subscribe(FederateHandle federate, const std::vector <AttributeHandle>& attributes, const RTIRegion * region)
+        throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
 	void unsubscribe(FederateHandle, const RTIRegion *);
 	void unsubscribe(FederateHandle);
@@ -356,4 +365,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.57 2011/07/11 11:17:26 erk Exp $
+// $Id: ObjectClass.hh,v 3.58 2011/09/01 13:50:54 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.35 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -232,11 +232,11 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     for (uint32_t i=0 ; i<attribArraySize ; i++)
         req.setAttributes(attribArray[i],i) ;
 
-    // Emission
+    // Send the message to RTIG
     G.Out(pdGendoc,"                              =====> send S_O_C to RTIG");
     comm->sendMessage(&req);
 
-    // Reception
+    // Wait for the RTIG answer
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
                       req.getFederate()));
@@ -482,4 +482,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.34 2010/03/23 13:13:27 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.35 2011/09/01 13:50:55 erk Exp $

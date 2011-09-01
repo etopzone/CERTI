@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.19 2010/03/23 13:13:27 erk Exp $
+// $Id: SocketServer.cc,v 3.20 2011/09/01 13:50:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -262,7 +262,7 @@ SocketServer::getWithReferences(Handle the_federation,
             return (*i);
     }
 
-    throw FederateNotExecutionMember("");
+    throw FederateNotExecutionMember(certi::stringize() << "Federate handle" << the_federate << "is not a member of Federation" << the_federation);
 }
 
 // ----------------------------------------------------------------------------
@@ -342,4 +342,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.19 2010/03/23 13:13:27 erk Exp $
+// $Id: SocketServer.cc,v 3.20 2011/09/01 13:50:54 erk Exp $
