@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.88 2011/09/01 13:50:54 erk Exp $
+// $Id: ObjectClass.cc,v 3.89 2011/09/02 21:42:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -551,7 +551,7 @@ ObjectClass::killFederate(FederateHandle the_federate)
     try {
         // Does federate is publishing something ? (not important)
         if (isFederatePublisher(the_federate)) {
-            publish(the_federate, liste_vide, 0, false);
+            publish(the_federate, liste_vide, false);
         }
 
         // Does federate subscribed something ?
@@ -587,7 +587,6 @@ ObjectClass::killFederate(FederateHandle the_federate)
 void
 ObjectClass::publish(FederateHandle theFederateHandle,
                      const std::vector <AttributeHandle> &theAttributeList,
-                     uint32_t theListSize,
                      bool PubOrUnpub)
     throw (AttributeNotDefined,
            RTIinternalError,
@@ -597,8 +596,10 @@ ObjectClass::publish(FederateHandle theFederateHandle,
           theFederateHandle);
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
-    for (uint16_t index = 0 ; index < theListSize ; index++)
-        getAttribute(theAttributeList[index]);
+    for (std::vector <AttributeHandle>::const_iterator it = theAttributeList.begin();
+         it != theAttributeList.end(); ++it) {
+        getAttribute(*it);
+    }
 
     // Check Security Levels
     checkFederateAccess(theFederateHandle, "Publish");
@@ -607,22 +608,26 @@ ObjectClass::publish(FederateHandle theFederateHandle,
     D.Out(pdInit, "ObjectClass %d: Reset publish info of Federate %d.",
           handle, theFederateHandle);
 
-    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
-        if (i->second->isPublishing(theFederateHandle)) {
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin();
+         i != _handleClassAttributeMap.end(); ++i) {
+         if (i->second->isPublishing(theFederateHandle)) {
             i->second->unpublish(theFederateHandle);
-        }
+         }
     }
 
     // Publish attributes one by one.
     ObjectClassAttribute * attribute ;
-    for (uint16_t i = 0 ; i < theListSize ; i++) {
+    for (std::vector <AttributeHandle>::const_iterator it = theAttributeList.begin();
+                 it != theAttributeList.end(); ++it) {
         D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.",
-              handle, theFederateHandle, theAttributeList[i]);
-        attribute = getAttribute(theAttributeList[i]);
-	if (PubOrUnpub)
-	    attribute->publish(theFederateHandle);
-	else
-	    attribute->unpublish(theFederateHandle);
+              handle, theFederateHandle, *it);
+        attribute = getAttribute(*it);
+        if (PubOrUnpub) {
+            attribute->publish(theFederateHandle);
+        }
+        else {
+            attribute->unpublish(theFederateHandle);
+        }
     }
 }
 
@@ -778,9 +783,10 @@ throw (AttributeNotDefined, RTIinternalError, SecurityError) {
     checkFederateAccess(fed, "Subscribe");
 
     // Verify all attributes
-    for (int i = 0 ; i < attributes.size() ; ++i) {
+    for (std::vector<AttributeHandle>::const_iterator it = attributes.begin();
+         it != attributes.end(); ++it) {
         // may throw AttributeNotDefined
-        getAttribute(attributes[i]);
+        getAttribute(*it);
     }
 
     if (nb_attributes > 0) {
@@ -789,15 +795,20 @@ throw (AttributeNotDefined, RTIinternalError, SecurityError) {
 
     bool was_subscriber = isSubscribed(fed);
 
-    // FIXME what does this means?
+    /* FIXME what does this means?
+     * We first unsubscribe the federate from any attribute he may have
+     * subscribed to in order to resubscribe to the new specified set of attribute.
+     */
     unsubscribe(fed, region);
 
     Debug(D, pdTrace) << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
             << ", " << nb_attributes << " attributes, region "
             << (region ? region->getHandle() : 0) << std::endl ;
 
-    for (int i = 0 ; i < attributes.size() ; ++i) {
-        getAttribute(attributes[i])->subscribe(fed, region);
+    /* This loop will be void if the federate did "unsubscribe" */
+    for (std::vector<AttributeHandle>::const_iterator it = attributes.begin();
+         it != attributes.end(); ++it) {
+        getAttribute(*it)->subscribe(fed, region);
     }
 
     return (attributes.size() > 0) && !was_subscriber ;
@@ -1579,13 +1590,15 @@ ObjectClass::getHandle() const
 void
 ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
-    Debug(D, pdTrace) << "ObjectClass::unsubscribe" << ": fed " << fed << ", region "
-	       << (region ? region->getHandle() : 0) << std::endl ;
+    Debug(D, pdTrace) << "ObjectClass::unsubscribe: fed " << fed
+                      << ", region "
+                      << (region ? region->getHandle() : 0) << std::endl;
 
-    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
-	if (i->second->isSubscribed(fed, region)) {
-	    i->second->unsubscribe(fed, region);
-	}
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin();
+         i != _handleClassAttributeMap.end(); ++i) {
+        if (i->second->isSubscribed(fed, region)) {
+            i->second->unsubscribe(fed, region);
+        }
     }
 }
 
@@ -1663,4 +1676,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.88 2011/09/01 13:50:54 erk Exp $
+// $Id: ObjectClass.cc,v 3.89 2011/09/02 21:42:22 erk Exp $

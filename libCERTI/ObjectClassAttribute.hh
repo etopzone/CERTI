@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.28 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.29 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -68,14 +68,28 @@ public:
     // Security methods
     virtual void checkFederateAccess(FederateHandle the_federate, const std::string& reason) const ;
 
-    // Publish methods
-    bool isPublishing(FederateHandle) const ;
-    void publish(FederateHandle) throw (RTIinternalError, SecurityError);
+    /**
+     * Return true if specified federate is publisher of the attribute.
+     * @param[in] federate the handle of the federate
+     * @return true if the specified federate handle belongs to the set of publishers of this attribute
+     *         false otherwise
+     */
+    bool isPublishing(FederateHandle federate) const;
+    /**
+     * Add the federate to the set of publishers of this attribute.
+     * @param[in] federate the handle of the federate
+     */
+    void publish(FederateHandle federate) throw (RTIinternalError, SecurityError);
+
+    /**
+     * Remove the federate from the set of publishers of this attribute.
+     * @param[in] federate the handle of the federate
+     */
     void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
 
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
-			     const RTIRegion *region = 0);
+                             const RTIRegion *region = NULL);
 
     /**
      * Getter for the attributes publisher list.
@@ -108,4 +122,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.28 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.29 2011/09/02 21:42:23 erk Exp $

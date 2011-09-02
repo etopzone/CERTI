@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.71 2011/09/01 13:50:55 erk Exp $
+// $Id: Federation.hh,v 3.72 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -270,7 +270,6 @@ public:
     void publishObject(FederateHandle theFederateHandle,
                        ObjectClassHandle theObjectHandle,
                        const std::vector <AttributeHandle> &theAttributeList,
-                       uint16_t theListSize,
                        bool PubOrUnpub)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
@@ -721,4 +720,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.71 2011/09/01 13:50:55 erk Exp $
+// $Id: Federation.hh,v 3.72 2011/09/02 21:42:24 erk Exp $

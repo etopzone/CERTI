@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.112 2011/09/01 13:50:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.113 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -713,34 +713,31 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 void
 RTIG::processPublishObjectClass(Socket *link, NM_Publish_Object_Class *req)
 {
-	bool pub = (req->getMessageType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
+    bool pub = (req->getMessageType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
-	auditServer << "Publish Object Class = " << req->getObjectClass() << ", # of att. = "
-			<< req->getAttributesSize() ;
+    auditServer << "Publish Object Class = " << req->getObjectClass() << ", # of att. = "
+                << req->getAttributesSize() ;
 
-	federations.publishObject(req->getFederation(),
-			req->getFederate(),
-			req->getObjectClass(),
-			req->getAttributes(),
-			req->getAttributesSize(),
-			pub);
+    federations.publishObject(req->getFederation(),
+                              req->getFederate(),
+                              req->getObjectClass(),
+                              req->getAttributes(),
+                              pub);
 
-	D.Out(pdRegister, "Federate %u of Federation %u published object class %d.",
-			req->getFederate(), req->getFederation(), req->getObjectClass());
+    D.Out(pdRegister, "Federate %u of Federation %u published object class %d.",
+            req->getFederate(), req->getFederation(), req->getObjectClass());
 
-
-	if (pub) {
-		NM_Publish_Object_Class POC;
-		POC.setFederate(req->getFederate());
-		POC.setObjectClass(req->getObjectClass());
-		POC.send(link,NM_msgBufSend); // send answer to RTIA
-	} else {
-		NM_Unpublish_Object_Class UOC;
-		UOC.setFederate(req->getFederate());
-		UOC.setObjectClass(req->getObjectClass());
-		UOC.send(link,NM_msgBufSend); // send answer to RTIA
-
-	}
+    if (pub) {
+        NM_Publish_Object_Class POC;
+        POC.setFederate(req->getFederate());
+        POC.setObjectClass(req->getObjectClass());
+        POC.send(link,NM_msgBufSend); // send answer to RTIA
+    } else {
+        NM_Unpublish_Object_Class UOC;
+        UOC.setFederate(req->getFederate());
+        UOC.setObjectClass(req->getObjectClass());
+        UOC.send(link,NM_msgBufSend); // send answer to RTIA
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -762,26 +759,24 @@ RTIG::processSubscribeObjectClass(Socket *link, NM_Subscribe_Object_Class *req)
                                 req->getObjectClass(),
                                 sub ? req->getAttributes() : emptyAttributeList);
 
-	D.Out(pdRegister,
-			"Federate %u of Federation %u subscribed to object class %d.",
-			req->getFederate(), req->getFederation(), req->getObjectClass());
+    D.Out(pdRegister,
+            "Federate %u of Federation %u subscribed to object class %d.",
+            req->getFederate(), req->getFederation(), req->getObjectClass());
 
-	if (sub) {
-		NM_Subscribe_Object_Class rep;
-		rep.setFederate(req->getFederate());
-		rep.setObjectClass(req->getObjectClass());
+    if (sub) {
+        NM_Subscribe_Object_Class rep;
+        rep.setFederate(req->getFederate());
+        rep.setObjectClass(req->getObjectClass());
+        rep.send(link,NM_msgBufSend); // send answer to RTIA
+    } else {
+        NM_Unsubscribe_Object_Class rep;
+        rep.setFederate(req->getFederate());
+        rep.setObjectClass(req->getObjectClass());
+        rep.send(link,NM_msgBufSend); // send answer to RTIA
+    }
 
-		rep.send(link,NM_msgBufSend); // send answer to RTIA
-	} else {
-		NM_Unsubscribe_Object_Class rep;
-		rep.setFederate(req->getFederate());
-		rep.setObjectClass(req->getObjectClass());
-
-		rep.send(link,NM_msgBufSend); // send answer to RTIA
-	}
-
-	G.Out(pdGendoc,"END   **  SUBSCRIBE OBJECT CLASS SERVICE **");
-	G.Out(pdGendoc,"exit  RTIG::processSubscribeObjectClass");
+    G.Out(pdGendoc,"END   **  SUBSCRIBE OBJECT CLASS SERVICE **");
+    G.Out(pdGendoc,"exit  RTIG::processSubscribeObjectClass");
 }
 
 // ----------------------------------------------------------------------------
@@ -1569,4 +1564,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.112 2011/09/01 13:50:55 erk Exp $
+// $Id: RTIG_processing.cc,v 3.113 2011/09/02 21:42:24 erk Exp $

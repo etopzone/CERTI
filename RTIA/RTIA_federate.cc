@@ -306,10 +306,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		D.Out(pdTrace,
 				"Receiving Message from Federate, type PublishObjectClass.");
 
-		dm->publishObjectClass(POCq->getObjectClass(),
-				POCq->getAttributes(),
-				POCq->getAttributesSize(),
-				e);
+		dm->publishObjectClass(POCq->getObjectClass(),POCq->getAttributes(),e);
 	}
 	break ;
 
@@ -318,7 +315,6 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		UOCq = static_cast<M_Unpublish_Object_Class *>(req);
 		D.Out(pdTrace,
 				"Receiving Message from Federate, type UnpublishObjectClass.");
-
 		dm->unpublishObjectClass(UOCq->getObjectClass(), e);
 	}
 	break ;

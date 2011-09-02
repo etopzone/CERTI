@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.9 2009/11/24 16:39:20 erk Exp $
+// $Id: Subscribable.hh,v 3.10 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
@@ -50,7 +50,7 @@ public:
     bool operator==(const Subscriber &) const ;
 
 protected:
-    FederateHandle handle ; //!< The ID of the Subscriber.
+    FederateHandle handle ;   //!< The ID of the Subscriber.
     const RTIRegion *region ; //!< the subscription region
 };
 
@@ -86,4 +86,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.9 2009/11/24 16:39:20 erk Exp $
+// $Id: Subscribable.hh,v 3.10 2011/09/02 21:42:23 erk Exp $

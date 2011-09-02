@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.35 2011/09/01 13:50:55 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.36 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -59,19 +59,16 @@ DeclarationManagement::~DeclarationManagement()
 void
 DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                           const std::vector <AttributeHandle> &attribArray,
-                                          uint32_t attribArraySize,
                                           TypeException &e)
 {
     G.Out(pdGendoc,"enter DeclarationManagement::publishObjectClass") ;
     e = e_NO_EXCEPTION ;
 
-    // Partie Locale
-
+    // Local update
     try {
         rootObject->ObjectClasses->publish(fm->federate,
                                            theClassHandle,
                                            attribArray,
-                                           attribArraySize,
                                            true);
     }
     catch (Exception *e) {
@@ -80,20 +77,20 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
         throw e ;
     }
 
-    // Partie RTIG
+    // RTIG update
     NM_Publish_Object_Class req ;    
     req.setObjectClass(theClassHandle);
-    req.setAttributesSize(attribArraySize);
+    req.setAttributesSize(attribArray.size());
     req.setFederation(fm->_numero_federation);
     req.setFederate(fm->federate);
 
-    for (uint32_t i=0 ; i<attribArraySize ; i++)
+    for (uint32_t i=0 ; i<attribArray.size() ; i++)
         req.setAttributes(attribArray[i],i) ;
 
-    // Emission
+    // Send to RTIG
     comm->sendMessage(&req);
 
-    // Reception    
+    // Receive RTIG answer
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
@@ -106,38 +103,33 @@ void
 DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
                                             TypeException &e)
 {
-    // Variables leurres
-    //AttributeHandle *attribArray = NULL ;
-    uint16_t attribArraySize = 0 ;
-    std::vector <AttributeHandle> attribArrayVector ;
-    attribArrayVector.empty();
+    // Dummy var containing no Attribute at all
+    std::vector <AttributeHandle> attribArrayVector;
 
     e = e_NO_EXCEPTION ;
 
-    // Partie Locale
-
+    // Local update
     try {
         rootObject->ObjectClasses->publish(fm->federate,
                                            theClassHandle,
                                            attribArrayVector,
-                                           attribArraySize,
                                            false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
         throw e ;
     }
 
-    // Partie RTIG
+    // RTIG update
     NM_Unpublish_Object_Class req ;
-   
+
     req.setFederation(fm->_numero_federation) ;
     req.setFederate(fm->federate);
     req.setObjectClass(theClassHandle);
 
-    // Emission de la requete vers le RTIG
+    // Send request to RTIG
     comm->sendMessage(&req);
 
-    // On attend une reponse
+    // Receive RTIG answer
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
@@ -482,4 +474,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.35 2011/09/01 13:50:55 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.36 2011/09/02 21:42:24 erk Exp $

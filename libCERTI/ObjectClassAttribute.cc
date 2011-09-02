@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.38 2010/03/20 16:34:13 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.39 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -82,9 +82,10 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
 void
 ObjectClassAttribute::deletePublisher(FederateHandle fed)
 {
-	PublishersList_t::iterator it = publishers.find(fed);
-	if (it != publishers.end())
-		publishers.erase(it);
+    PublishersList_t::iterator it = publishers.find(fed);
+    if (it != publishers.end()) {
+        publishers.erase(it);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -107,7 +108,7 @@ ObjectClassAttribute::display() const
 bool
 ObjectClassAttribute::isPublishing(FederateHandle fed) const
 {
-	return publishers.find(fed) != publishers.end();
+    return (publishers.find(fed)) != publishers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -116,17 +117,18 @@ void
 ObjectClassAttribute::publish(FederateHandle fed)
 throw (RTIinternalError, SecurityError)
 {
-	if (!isPublishing(fed)) {
-		checkFederateAccess(fed, "Publish");
-		Debug(D, pdInit) << "Attribute " << handle << ": Added Federate " << fed
-				<< " to publishers list." << endl ;
-		publishers.insert(fed);
-	}
-	else
-		Debug(D, pdError) << "Attribute " << handle
-		<< ": Inconsistent publish request from Federate "
-		<< fed << endl ;
-}
+    if (!isPublishing(fed)) {
+        checkFederateAccess(fed, "Publish");
+        Debug(D, pdInit) << "Attribute " << handle << ": Added Federate " << fed
+                << " to publishers list." << endl ;
+        publishers.insert(fed);
+    }
+    else {
+        Debug(D, pdError) << "Attribute " << handle
+                << ": Inconsistent publish request from Federate "
+                << fed << endl ;
+    }
+} /* end of publish */
 
 // ----------------------------------------------------------------------------
 //! unpublish
@@ -134,16 +136,16 @@ void
 ObjectClassAttribute::unpublish(FederateHandle fed)
 throw (RTIinternalError, SecurityError)
 {
-	if (isPublishing(fed)) {
-		Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed
-				<< " from publishers list." << endl ;
-		deletePublisher(fed);
-	}
-
-	else
-		Debug(D, pdError) << "Attribute " << handle
-		<< ": Inconsistent publish request from Federate "
-		<< fed << endl ;
+    if (isPublishing(fed)) {
+        Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed
+                << " from publishers list." << endl ;
+        deletePublisher(fed);
+    }
+    else {
+        Debug(D, pdError) << "Attribute " << handle
+        << ": Inconsistent publish request from Federate "
+        << fed << endl ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -193,4 +195,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.38 2010/03/20 16:34:13 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.39 2011/09/02 21:42:23 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.41 2011/09/01 13:50:54 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.42 2011/09/02 21:42:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -76,14 +76,20 @@ public:
 	void killFederate(FederateHandle theFederate)
 	throw ();
 
-	// Object Class Management
-	void publish(FederateHandle theFederateHandle,
-			ObjectClassHandle theClassHandle,
-			const std::vector <AttributeHandle> &theAttributeList,
-			uint32_t theListSize,
-			bool PubOrUnpub)
-	throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
-			SecurityError);
+    /**
+     * Register specified federate as a publisher of the specified attribute list
+     * for the specified Object Class.
+     * @param[in] theFederateHandle the handle of the publisher federate
+     * @param[in] theClassHandle the handle of the class to be published
+     * @param[in] theAttributeList the list of attribute of theClassHandle
+     * @param[in] PubOrUnpub true when publishing, false when unpublishing
+     */
+     void publish(FederateHandle theFederateHandle,
+                  ObjectClassHandle theClassHandle,
+                  const std::vector <AttributeHandle> &theAttributeList,
+                  bool PubOrUnpub)
+     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
+             SecurityError);
 
     /**
      * Subscribes a federate to a set of attributes with a region.
@@ -190,4 +196,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.41 2011/09/01 13:50:54 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.42 2011/09/02 21:42:22 erk Exp $

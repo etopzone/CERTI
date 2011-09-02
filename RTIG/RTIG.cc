@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.68 2011/03/25 20:53:53 erk Exp $
+// $Id: RTIG.cc,v 3.69 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -230,7 +230,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
         D.Out(pdTrace, "un/publishObjectClass.");
         auditServer.setLevel(7);
-        processPublishObjectClass(link,  static_cast<NM_Publish_Object_Class*>(msg));
+        /* we cast to Publish because Unpublish inherits from Publish */
+        processPublishObjectClass(link, static_cast<NM_Publish_Object_Class*>(msg));
         break ;
 
       case NetworkMessage::PUBLISH_INTERACTION_CLASS:
@@ -1054,4 +1055,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.68 2011/03/25 20:53:53 erk Exp $
+// $Id: RTIG.cc,v 3.69 2011/09/02 21:42:24 erk Exp $

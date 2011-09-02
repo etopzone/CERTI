@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.141 2011/09/01 13:50:55 erk Exp $
+// $Id: Federation.cc,v 3.142 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1606,30 +1606,28 @@ throw (InteractionClassNotDefined,
 
 void
 Federation::publishObject(FederateHandle federate,
-		ObjectClassHandle object,
-		const std::vector <AttributeHandle> &attributes,
-		uint16_t list_size,
-		bool pub)
+                          ObjectClassHandle object,
+                          const std::vector <AttributeHandle> &attributes,
+                          bool pub)
 throw (ObjectClassNotDefined,
-		AttributeNotDefined,
-		FederateNotExecutionMember,
-		SaveInProgress,
-		SecurityError,
-		RestoreInProgress,
-		RTIinternalError)
-		{
-	G.Out(pdGendoc,"enter Federation::publishObject");
-	// It may throw FederateNotExecutionMember.
-	this->check(federate);
+        AttributeNotDefined,
+        FederateNotExecutionMember,
+        SaveInProgress,
+        SecurityError,
+        RestoreInProgress,
+        RTIinternalError) {
+    G.Out(pdGendoc,"enter Federation::publishObject");
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
 
-	// It may throw *NotDefined
-	root->ObjectClasses->publish(federate, object, attributes, list_size, pub);
+    // It may throw *NotDefined*
+    root->ObjectClasses->publish(federate, object, attributes, pub);
 
-	D.Out(pdRegister,
-			"Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
-			handle, federate, list_size, object);
-	G.Out(pdGendoc,"exit  Federation::publishObject");
-		}
+    D.Out(pdRegister,
+            "Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
+            handle, federate, attributes.size(), object);
+    G.Out(pdGendoc,"exit  Federation::publishObject");
+}
 
 
 void 
@@ -1898,7 +1896,7 @@ throw (ObjectClassNotDefined,
      * (subscribeObject).
      */
 
-    // It may throw NotDefined
+    // It may throw AttributeNotDefined
     root->ObjectClasses->subscribe(federate, object, attributes);
 
     /*
@@ -1946,12 +1944,10 @@ throw (ObjectClassNotDefined,
 
         // notify all publishers
         std::set<FederateHandle> federate_set;
-
         for (ObjectClassAttribute::PublishersList_t::const_iterator
                 k=publishers.begin();
                 k!=publishers.end();
                 k++) {
-
             if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
                 federate_set.insert(*k);
             }
@@ -1972,8 +1968,8 @@ throw (ObjectClassNotDefined,
         federate_set.clear();
         federate_vector.clear();
     }
-    else {	// unsubscribe branch
-        /* test if objectclass is subscribed by anyone else
+    else { // unsubscribe branch
+        /* test if objectClass is subscribed by anyone else
          * -> yes : do nothing
          * -> no : test if publisher sets its CRA switch
          *  	-> no : do nothing
@@ -2749,5 +2745,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.141 2011/09/01 13:50:55 erk Exp $
+// $Id: Federation.cc,v 3.142 2011/09/02 21:42:24 erk Exp $
 

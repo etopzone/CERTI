@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.10 2009/11/24 16:39:20 erk Exp $
+// $Id: Subscribable.cc,v 3.11 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -168,11 +168,12 @@ Subscribable::subscribe(FederateHandle fed, const RTIRegion *region)
 {
     if (!isSubscribed(fed, region)) {
         checkFederateAccess(fed, "Subscribe");
-	subscribers.push_back(Subscriber(fed, region));
+        subscribers.push_back(Subscriber(fed, region));
     }
-    else
+    else {
         Debug(D, pdError) << "Inconsistency in subscribe request from federate "
-		   << fed << std::endl ;
+                          << fed << std::endl ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -208,4 +209,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.10 2009/11/24 16:39:20 erk Exp $
+// $Id: Subscribable.cc,v 3.11 2011/09/02 21:42:23 erk Exp $
