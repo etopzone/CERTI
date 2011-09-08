@@ -1,4 +1,4 @@
-// Generated on 2011 July Wed, 13 at 17:02:50 by the CERTI message generator
+// Generated on 2011 September Thu, 08 at 22:08:47 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -1213,7 +1213,7 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          //serialize native whose representation is 'repeated' byte 
          msgBuffer.write_uint32(values[i].size());
-         msgBuffer.write_bytes(values[i].data(),values[i].size());
+         msgBuffer.write_bytes(&(values[i][0]),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
@@ -1290,7 +1290,7 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          //serialize native whose representation is 'repeated' byte 
          msgBuffer.write_uint32(values[i].size());
-         msgBuffer.write_bytes(values[i].data(),values[i].size());
+         msgBuffer.write_bytes(&(values[i][0]),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {
@@ -1366,7 +1366,7 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          //serialize native whose representation is 'repeated' byte 
          msgBuffer.write_uint32(values[i].size());
-         msgBuffer.write_bytes(values[i].data(),values[i].size());
+         msgBuffer.write_bytes(&(values[i][0]),values[i].size());
       }
       msgBuffer.write_uint32(region);
    }
@@ -1439,7 +1439,7 @@ namespace certi {
       for (uint32_t i = 0; i < valuesSize; ++i) {
          //serialize native whose representation is 'repeated' byte 
          msgBuffer.write_uint32(values[i].size());
-         msgBuffer.write_bytes(values[i].data(),values[i].size());
+         msgBuffer.write_bytes(&(values[i][0]),values[i].size());
       }
       msgBuffer.write_bool(_hasEvent);
       if (_hasEvent) {

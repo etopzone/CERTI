@@ -20,7 +20,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenMsgCXX.py,v 1.24 2011/07/29 09:08:23 erk Exp $
+## $Id: GenMsgCXX.py,v 1.25 2011/09/08 20:24:06 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -659,7 +659,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                             stream.write(self.getIndent() + 'msgBuffer.'+ self.getSerializeMethodName('uint32'))
                             stream.write('('+field.name + indexField + '.size()' +');\n')
                             stream.write(self.getIndent() + 'msgBuffer.'+ self.getSerializeMethodName(repLine.representation)+'s')
-                            stream.write('('+field.name + indexField +'.data(),')
+                            stream.write('(&('+field.name + indexField +'[0]),')
                             stream.write(field.name + indexField + '.size()' +');\n')
                 # we can not handle this native case: no representation given
                 else:

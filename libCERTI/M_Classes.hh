@@ -1,4 +1,4 @@
-// Generated on 2011 July Wed, 13 at 17:02:50 by the CERTI message generator
+// Generated on 2011 September Thu, 08 at 22:08:47 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -53,12 +53,12 @@ namespace certi {
       static const uint32_t versionMinor = 0;
 
    }
-   // The EventRetraction is not inheriting from base "Message"
-   // this is a plain message which may be used as field
-   // in messages merging from "Message". As such
-   // it won't appear in the generated factory method.
-   // It's a convenient way to describe a structured native
-   // message using "combine". 
+   // The EventRetraction is not inheriting from base "Message"   
+// this is a plain message which may be used as field   
+// in messages merging from "Message". As such   
+// it won't appear in the generated factory method.   
+// It's a convenient way to describe a structured native   
+// message using "combine". 
    class CERTI_EXPORT EventRetraction {
       public:
          EventRetraction();

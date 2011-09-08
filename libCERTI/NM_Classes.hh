@@ -1,4 +1,4 @@
-// Generated on 2011 July Wed, 13 at 17:02:50 by the CERTI message generator
+// Generated on 2011 September Thu, 08 at 22:08:47 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -50,16 +50,16 @@ namespace certi {
       static const uint32_t versionMinor = 0;
 
    }
-   // The EventRetraction is not inheriting from base "Message"
-   // this is a plain message which may be used as field
-   // in messages merging from "Message". As such
-   // it won't appear in the generated factory method.
-   // It's a convenient way to describe a structured native
-   // message using "combine". 
-   //message EventRetraction {
-   //    required FederateHandle sendingFederate {default = 0}
-   //    required uint64         SN              {default = 0}
-   //}
+   // The EventRetraction is not inheriting from base "Message"   
+// this is a plain message which may be used as field   
+// in messages merging from "Message". As such   
+// it won't appear in the generated factory method.   
+// It's a convenient way to describe a structured native   
+// message using "combine".    
+//message EventRetraction {   
+//    required FederateHandle sendingFederate {default = 0}   
+//    required uint64         SN              {default = 0}   
+//}
    class CERTI_EXPORT NM_FOM_Dimension {
       public:
          NM_FOM_Dimension();
@@ -492,8 +492,8 @@ namespace certi {
          std::vector<FederateHandle> federates;// the federate set
       private:
    };
-   // HLA 1.3    - §4.7
-   // IEEE-1516  - §4.7
+   // HLA 1.3    - §4.7   
+// IEEE-1516  - §4.7
    class CERTI_EXPORT NM_Confirm_Synchronization_Point_Registration : public NetworkMessage {
       public:
          typedef NetworkMessage Super;
@@ -1366,9 +1366,9 @@ namespace certi {
       protected:
       private:
    };
-   // This is a base message which is used to 
-   // define several Attribute_Ownership_XXX
-   // since all these message contains the same fields
+   // This is a base message which is used to    
+// define several Attribute_Ownership_XXX   
+// since all these message contains the same fields
    class CERTI_EXPORT NM_Attribute_Ownership_Unavailable : public NM_Attribute_Ownership_Base {
       public:
          typedef NM_Attribute_Ownership_Base Super;
