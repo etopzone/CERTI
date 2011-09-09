@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.143 2011/09/09 11:18:51 erk Exp $
+// $Id: Federation.cc,v 3.144 2011/09/09 14:31:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -190,7 +190,7 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
 #ifdef WIN32
         char temp[260];
         GetCurrentDirectory(260,temp);
-        fom_paths.insert(fom_paths.end(),string(temp)+"\share\\federations\\");
+        fom_paths.insert(fom_paths.end(),string(temp)+"\\share\\federations\\");
 #endif
 
         /* add pathes from CERTI_FOM_PATH */
@@ -2733,5 +2733,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.143 2011/09/09 11:18:51 erk Exp $
+// $Id: Federation.cc,v 3.144 2011/09/09 14:31:26 erk Exp $
 
