@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.142 2011/09/02 21:42:24 erk Exp $
+// $Id: Federation.cc,v 3.143 2011/09/09 11:18:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,6 +60,20 @@ using std::vector ;
 #define NODE_FEDERATE (const xmlChar*) "federate"
 #endif // HAVE_XML
 
+// Path splitting functions
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while(std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    return split(s, delim, elems);
+}
+
 #ifdef _WIN32
 # define strcasecmp stricmp
 #endif
@@ -80,7 +94,8 @@ static PrettyDebug DNULL("RTIG_NULLMSG","[RTIG NULL MSG]");
  * predefined places:
  *
  * -# bare filename considered as a path provided through FEDid_name
- * -# getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
+ * -# getenv(CERTI_FOM_PATH) + FEDid_name
+ * -# getenv(CERTI_HOME)+"/share/federations/"+ FEDid_name
  * -# installation place plus FEDid_name
  *     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
  * -# on Unix "/usr/local/share/federation/" + FEDid_name
@@ -88,282 +103,255 @@ static PrettyDebug DNULL("RTIG_NULLMSG","[RTIG NULL MSG]");
  */
 
 #ifdef FEDERATION_USES_MULTICAST
-
 Federation::Federation(const std::string& federation_name,
-		FederationHandle federation_handle,
-		SocketServer &socket_server,
-		AuditFile &audit_server,
-		SocketMC *mc_link,
-		int theVerboseLevel)
+                       FederationHandle federation_handle,
+                       SocketServer &socket_server,
+                       AuditFile &audit_server,
+                       SocketMC *mc_link,
+                       int theVerboseLevel)
 #else
-	Federation::Federation(const std::string& federation_name,
-			Handle federation_handle,
-			SocketServer &socket_server,
-			AuditFile &audit_server,
-			const std::string& FEDid_name,
-			int theVerboseLevel)
+Federation::Federation(const std::string& federation_name,
+                       Handle federation_handle,
+                       SocketServer &socket_server,
+                       AuditFile &audit_server,
+                       const std::string& FEDid_name,
+                       int theVerboseLevel)
 #endif
 throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
-		RTIinternalError)
-		: federateHandles(1), objectHandles(1), saveInProgress(false),
-		  restoreInProgress(false), saveStatus(true), restoreStatus(true),
-		  verboseLevel(theVerboseLevel)
+        RTIinternalError)
+        : federateHandles(1), objectHandles(1), saveInProgress(false),
+          restoreInProgress(false), saveStatus(true), restoreStatus(true),
+          verboseLevel(theVerboseLevel)
 
 {
-	//    fedparser::FedParser *fed_reader ;
-	STAT_STRUCT file_stat;
+    STAT_STRUCT file_stat;
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
-	// Initialize Multicast
-	if (mc_link == NULL) {
-		D.Out(pdExcept, "Null Multicast socket for new Federation.");
-		throw RTIinternalError("NULL Multicast socket for new Federation.");
-	}
+    // Initialize Multicast
+    if (mc_link == NULL) {
+        D.Out(pdExcept, "Null Multicast socket for new Federation.");
+        throw RTIinternalError("NULL Multicast socket for new Federation.");
+    }
 
-	D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
-	MCLink = mc_link ;
+    D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
+    MCLink = mc_link ;
 #endif // FEDERATION_USES_MULTICAST // --------------
 
-	G.Out(pdGendoc,"enter Federation::Federation");
-	// Allocates Name
-	if (federation_name.empty() || (federation_handle == 0))
-		throw RTIinternalError("Null init parameter in Federation creation.");
+    G.Out(pdGendoc,"enter Federation::Federation");
+    // Allocates Name
+    if (federation_name.empty() || (federation_handle == 0))
+        throw RTIinternalError("Null init parameter in Federation creation.");
 
-	name = federation_name;
+    name = federation_name;
 
-	// Default Attribute values
-	handle = federation_handle;
-	FEDid  = FEDid_name;
+    // Default Attribute values
+    handle = federation_handle;
+    FEDid  = FEDid_name;
 
-	D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
-			handle);
+    D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
+            handle);
 
-	// Initialize the Security Server.
-	server = new SecurityServer(socket_server, audit_server, handle);
+    // Initialize the Security Server.
+    server = new SecurityServer(socket_server, audit_server, handle);
 
-	// Read FOM File to initialize Root Object.
-	root = new RootObject(server);
+    // Read FOM File to initialize Root Object.
+    root = new RootObject(server);
 
-	if (verboseLevel>0) {
-		cout << "New federation: " << name << endl ;
-	}
+    if (verboseLevel>0) {
+        cout << "New federation: " << name << endl ;
+    }
 
-	// We should try to open FOM file from different
-	// predefined places:
-	//
-	// 1 - bare filename considered as a path provided through FEDid_name
-	//
-	// 2 - getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
-	//
-	// 3 - Installation place plus FEDid_name
-	//     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
-	//
-	// 4 - "/usr/local/share/federation/" +  FEDid_name
-	//     last resort Unix-only case [for backward compatibility]
-	//
-	string filename   = FEDid;
-	bool   filefound  = false;
-	if (verboseLevel>0) {
-		cout << "Looking for FOM file... " << endl ;
+    // We should try to open FOM file from different
+    // predefined places:
+    //
+    // 1 - bare filename considered as a path provided through FEDid_name
+    //
+    // 2 - getenv(CERTI_FOM_PATH) + FEDid_name
+    //
+    // 3 - getenv(CERTI_HOME) + "/share/federations" + FEDid_name
+    //
+    // 4 - Installation place plus FEDid_name
+    //     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
+    //
+    // 5 - "/usr/local/share/federation/" +  FEDid_name
+    //     last resort Unix-only case [for backward compatibility]
+    //
+    string filename   = FEDid;
+    bool   filefound  = false;
+    if (verboseLevel>0) {
+        cout << "Looking for FOM file... " << endl ;
+        cout << "   Trying... " << filename;
+    }
+    filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
 
-		cout << "   Trying... " << filename;
-	}
-	filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-
-#ifdef _WIN32
-	if (!filefound) {
-		char temp[260];
-		if (verboseLevel>0) {
-			cout << " --> cannot access." <<endl;
-		}
-		GetCurrentDirectory(260,temp);
-		filename = string(temp);
-		filename = filename + "\\share\\federations\\"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
-
-	if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." <<endl;
-		}
-		filename = string(getenv("CERTI_HOME"))+"\\share\\federations\\"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
-
-	if (!filefound) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." <<endl;
-		}
-		filename = PACKAGE_INSTALL_PREFIX "\\share\\federations\\"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
-#else
-	if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." <<endl;
-		}
-		filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
-
-	if (!filefound) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." << endl;
-		}
-		filename = PACKAGE_INSTALL_PREFIX "/share/federations/"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
-
-	if (!filefound) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." << endl;
-		}
-		filename = "/usr/local/share/federations/"+FEDid_name;
-		if (verboseLevel>0) {
-			cout << "   Now trying..." << filename;
-		}
-		filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
-	}
+    /* This is the main path handling loop */
+    if (!filefound) {
+        vector<string> fom_paths;
+#ifdef WIN32
+        char temp[260];
+        GetCurrentDirectory(260,temp);
+        fom_paths.insert(fom_paths.end(),string(temp)+"\share\\federations\\");
 #endif
 
-	if (!filefound) {
-		if (verboseLevel>0) {
-			cout << " --> cannot access." <<endl;
-		}
-		cerr << "Next step will fail"<<endl;
-		G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-		throw CouldNotOpenFED("RTIG cannot find FED file.");
-	}
+        /* add pathes from CERTI_FOM_PATH */
+        if (NULL!=getenv("CERTI_FOM_PATH")) {
+            string path = getenv("CERTI_FOM_PATH");
+            vector<string> certi_fom_paths = split(path, ':');
+            fom_paths.insert(fom_paths.end(),certi_fom_paths.begin(),certi_fom_paths.end());
+        }
 
-	// now really assign FEDid
-	FEDid = filename;
+        if (NULL!=getenv("CERTI_HOME")) {
+#ifdef WIN32
+            fom_paths.insert(fom_paths.end(),string(getenv("CERTI_HOME"))+"\\share\\federations\\");
+#else
+            fom_paths.insert(fom_paths.end(),string(getenv("CERTI_HOME"))+"/share/federations/");
+#endif
+        }
 
-	// Try to open to verify if file exists
-	std::ifstream fedTry(FEDid.c_str());
-	if (!fedTry.is_open())
-	{
-		if (verboseLevel>0) {
-			cout << "... failed : ";
-		}
-		G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-		throw CouldNotOpenFED("RTIG have found but cannot open FED file");
-	}
-	else {
-		if (verboseLevel>0) {
-			cout << "... opened." << endl ;
-		}
-		fedTry.close();
-	}
+#ifdef WIN32
+        fom_paths.insert(fom_paths.end(),PACKAGE_INSTALL_PREFIX "\\share\\federations");
+#else
+        fom_paths.insert(fom_paths.end(),PACKAGE_INSTALL_PREFIX "/share/federations/");
+        fom_paths.insert(fom_paths.end(),"/usr/local/share/federations/");
+#endif
 
-	int  nbcar_filename = filename.length() ;
-	bool is_a_fed       = false ;
-	bool is_an_xml      = false ;
+        /* try to open FED using fom_paths prefixes */
+        for (vector<string>::iterator i = fom_paths.begin(); i != fom_paths.end(); i++) {
+            if (verboseLevel>0) {
+                cout << " --> cannot access." <<endl;
+            }
+            filename = (*i)+FEDid_name;
+            if (verboseLevel>0) {
+                cout << "   Now trying... " << filename;
+            }
+            filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+            if (filefound) break;
+        }
+    }
 
-	// hope there is a . before fed or xml
-	if ( filename[nbcar_filename-4] != '.' )
-	{
-		G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-		throw CouldNotOpenFED("Incorrect FED file name, cannot find "
-				"extension (character '.' is missing [or not in reverse 4th place])");
-	}
+    if (!filefound) {
+        if (verboseLevel>0) {
+            cout << " --> cannot access." <<endl;
+        }
+        cerr << "Next step will fail"<<endl;
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
+        throw CouldNotOpenFED("RTIG cannot find FED file.");
+    }
 
-	string extension = filename.substr(nbcar_filename-3,3) ;
-	D.Out(pdTrace,"filename is: %s (extension is <%s>",filename.c_str(),extension.c_str());
-	if ( !strcasecmp(extension.c_str(),"fed") )
-	{
-		is_a_fed = true ;
-		D.Out(pdTrace, "Trying to use .fed file");
-	}
-	else if  ( !strcasecmp(extension.c_str(),"xml") )
-	{
-		is_an_xml = true ;
-		D.Out(pdTrace, "Trying to use .xml file");
-	}
-	else {
-		G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-		throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
-	}
+    // now really assign FEDid
+    FEDid = filename;
 
-	std::ifstream fedFile(filename.c_str());
+    // Try to open to verify if file exists
+    std::ifstream fedTry(FEDid.c_str());
+    if (!fedTry.is_open())
+    {
+        if (verboseLevel>0) {
+            cout << "... failed : ";
+        }
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
+        throw CouldNotOpenFED("RTIG have found but cannot open FED file");
+    }
+    else {
+        if (verboseLevel>0) {
+            cout << "... opened." << endl ;
+        }
+        fedTry.close();
+    }
 
-	if (fedFile.is_open())
-	{
-		fedFile.close();
-		if ( is_a_fed )
-		{
-			// parse FED file and show the parse on stdout if verboseLevel>=2
-			int err = fedparser::build(filename.c_str(), root, (verboseLevel>=2));
-			if (err != 0 )
-			{
-				G.Out(pdGendoc,"exit Federation::Federation on exception ErrorReadingFED");
-				throw ErrorReadingFED("fed parser found error in FED file");
-			}
+    int  nbcar_filename = filename.length() ;
+    bool is_a_fed       = false ;
+    bool is_an_xml      = false ;
 
-			// Retrieve the FED file last modification time(for Audit)
-			STAT_STRUCT StatBuffer ;
+    // hope there is a . before fed or xml
+    if ( filename[nbcar_filename-4] != '.' )
+    {
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
+        throw CouldNotOpenFED("Incorrect FED file name, cannot find "
+                "extension (character '.' is missing [or not in reverse 4th place])");
+    }
+
+    string extension = filename.substr(nbcar_filename-3,3) ;
+    D.Out(pdTrace,"filename is: %s (extension is <%s>",filename.c_str(),extension.c_str());
+    if ( !strcasecmp(extension.c_str(),"fed") )
+    {
+        is_a_fed = true ;
+        D.Out(pdTrace, "Trying to use .fed file");
+    }
+    else if  ( !strcasecmp(extension.c_str(),"xml") )
+    {
+        is_an_xml = true ;
+        D.Out(pdTrace, "Trying to use .xml file");
+    }
+    else {
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
+        throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
+    }
+
+    std::ifstream fedFile(filename.c_str());
+
+    if (fedFile.is_open())
+    {
+        fedFile.close();
+        if ( is_a_fed )
+        {
+            // parse FED file and show the parse on stdout if verboseLevel>=2
+            int err = fedparser::build(filename.c_str(), root, (verboseLevel>=2));
+            if (err != 0 )
+            {
+                G.Out(pdGendoc,"exit Federation::Federation on exception ErrorReadingFED");
+                throw ErrorReadingFED("fed parser found error in FED file");
+            }
+
+            // Retrieve the FED file last modification time(for Audit)
+            STAT_STRUCT StatBuffer ;
 #if defined(_WIN32) && _MSC_VER >= 1400
-			char MTimeBuffer[26];
+            char MTimeBuffer[26];
 #else
-			char *MTimeBuffer ;
+            char *MTimeBuffer ;
 #endif
 
-			if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
+            if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
 #if defined(_WIN32) && _MSC_VER >= 1400
-				ctime_s(&MTimeBuffer[0],26,&StatBuffer.st_mtime);
+                ctime_s(&MTimeBuffer[0],26,&StatBuffer.st_mtime);
 #else
-				MTimeBuffer = ctime(&StatBuffer.st_mtime);
+                MTimeBuffer = ctime(&StatBuffer.st_mtime);
 #endif
-				MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
-				server->audit << "(Last modified " << MTimeBuffer << ")" ;
-			}
-			else
-				server->audit << "(could not retrieve last modif time, errno "
-				<< errno << ")." ;
-		}
-		else if ( is_an_xml )
-		{
-			if (XmlParser::exists()) {
-				XmlParser *parser = new XmlParser(root);
-				server->audit << ", XML File : " << filename ;
+                MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
+                server->audit << "(Last modified " << MTimeBuffer << ")" ;
+            }
+            else
+                server->audit << "(could not retrieve last modif time, errno "
+                << errno << ")." ;
+        }
+        else if ( is_an_xml )
+        {
+            if (XmlParser::exists()) {
+                XmlParser *parser = new XmlParser(root);
+                server->audit << ", XML File : " << filename ;
 
-				try {
-					parser->parse(filename);
-				}
-				catch (Exception *e) {
-					delete parser ;
-					delete server ;
-					server = NULL ;
-					delete root ;
-					root = NULL ;
-					throw e ;
-				}
-				delete parser ;
-			}
-			else {
-				cout << "Compiled without XML support" << endl ;
-				G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-				throw CouldNotOpenFED("Could not parse XML file. (Compiled without XML lib.)");
-			}
-		}
-	}
+                try {
+                    parser->parse(filename);
+                }
+                catch (Exception *e) {
+                    delete parser ;
+                    delete server ;
+                    server = NULL ;
+                    delete root ;
+                    root = NULL ;
+                    throw e ;
+                }
+                delete parser ;
+            }
+            else {
+                cout << "Compiled without XML support" << endl ;
+                G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
+                throw CouldNotOpenFED("Could not parse XML file. (Compiled without XML lib.)");
+            }
+        }
+    }
 
-	minNERx.setZero();
-	G.Out(pdGendoc,"exit Federation::Federation");
+    minNERx.setZero();
+    G.Out(pdGendoc,"exit Federation::Federation");
 
 }
 
@@ -2745,5 +2733,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.142 2011/09/02 21:42:24 erk Exp $
+// $Id: Federation.cc,v 3.143 2011/09/09 11:18:51 erk Exp $
 
