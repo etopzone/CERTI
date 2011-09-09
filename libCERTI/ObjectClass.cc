@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.89 2011/09/02 21:42:22 erk Exp $
+// $Id: ObjectClass.cc,v 3.90 2011/09/09 14:35:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -992,17 +992,17 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         ObjectClassAttribute * oca ;
         for (uint32_t i = 0 ; i < theAttributeList.size() ; i++) {
             oa = object->getAttribute(theAttributeList[i]);
-
             if (oa->hasCandidates()) {
+                oca = getAttribute(theAttributeList[i]);
                 // An attributeOwnershipAcquisition is on the way
                 // with this attribute.
 
-                // Le demandeur le plus recent devient proprietaire
+                // The more recent ownership candidate (requester) becomes owner
                 NewOwner = oa->getFirstCandidate();
 
                 oa->setOwner(NewOwner);
 
-                // On le supprime de la liste des demandeurs
+                // Suppress him from candidate list
                 oa->removeCandidate(NewOwner);
 
                 // Reinitialise divesting
@@ -1013,7 +1013,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
                 AnswerDivestiture.setAttributes(theAttributeList[i],compteur_divestiture);
                 compteur_divestiture++ ;
-
+                /* FIXME not sure that this should be done */
                 if (oca->isNamed("privilegeToDelete")) {
                     object->setOwner(NewOwner);
                 }
@@ -1676,4 +1676,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.89 2011/09/02 21:42:22 erk Exp $
+// $Id: ObjectClass.cc,v 3.90 2011/09/09 14:35:35 erk Exp $
