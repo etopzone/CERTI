@@ -399,6 +399,9 @@ ADD_SUBDIRECTORY( test )
 ADD_SUBDIRECTORY( doc )
 ADD_SUBDIRECTORY( scripts )
 
+install(EXPORT certi-targets DESTINATION share/scripts)
+
+
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
 SET(CPACK_PACKAGE_CONTACT "certi-devel@nongnu.org")

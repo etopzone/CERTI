@@ -197,8 +197,10 @@ SET(TestFedTime1516_SRCS
 
 # Install rules for both libRTI-NG and libFedTime
 INSTALL(TARGETS RTI FedTime RTI1516 FedTime1516
+    EXPORT certi-targets
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
 
-INSTALL(FILES RTI1516fedTime.h DESTINATION include/RTI)    
+
+  INSTALL(FILES RTI1516fedTime.h DESTINATION include/RTI)
