@@ -48,6 +48,7 @@
  *   - http://gnuwin32.sourceforge.net/packages/flex.htm
  *   - http://gnuwin32.sourceforge.net/packages/bison.htm
  *   - http://gnuwin32.sourceforge.net/packages/m4.htm
+ *     <br><em> Beware: you need to put m4 in the PATH such that bison may call it without trouble</em> 
  * - RedHat/Fedora/CentOS Linux
 \verbatim
  yum install flex bison
@@ -183,4 +184,4 @@ apt-get install libx11-dev xbitmaps
  *  
  */
 
-// $Id: build.dox,v 3.4 2011/01/09 18:30:45 erk Exp $
+// $Id: build.dox,v 3.5 2011/09/14 13:30:18 erk Exp $

@@ -2,9 +2,13 @@
  * \page intro Introduction
  *
  * \addindex Introduction
- * CERTI is an Open Source HLA compliant  
- * <a href="http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)">
- * RunTime Infrastructure (RTI)</a>.
+ * CERTI is an Open Source HLA compliant 
+ * <a href="http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)"> RunTime Infrastructure (RTI)</a>,
+ * which aims at being a multi-standard, multi-language RTI including:
+ *    - DoD HLA 1.3 (a.k.a. RTI-NGv6): C++, Java, Python, Fortran90, Matlab
+ *    - IEEE1516-2000 (a.k.a. HLA 1516): C++
+ *    - IEEE1516-2010 (a.k.a. HLA Evolved): work-in-progress
+ * 
  * You'll find hereafter the documentation for building and installing CERTI.
  * CERTI is primarily developed and maintained by the Toulouse research center of ONERA [http://www.onera.fr], the French Aerospace Labs. 
  * The primary goal of CERTI is to be used in research activities but CERTI has a growing
@@ -17,7 +21,6 @@
  * <a href="http://lists.nongnu.org/mailman/listinfo/certi-devel">
  * http://lists.nongnu.org/mailman/listinfo/certi-devel </a>
  * for discussion regarding CERTI usage.
- *  
  */
 
-// $Id: introduction.dox,v 3.1 2008/10/19 21:44:25 gotthardp Exp $
+// $Id: introduction.dox,v 3.2 2011/09/14 13:30:18 erk Exp $

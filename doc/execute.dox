@@ -38,7 +38,8 @@
  * \subsection certi_user_env CERTI environment variables
  * 
  * CERTI uses a set of environment variables which may influence its 
- * execution behavior.
+ * execution behavior. Those variables may be set on federate execution location
+ * or on RTIG (a.k.a. The CERTI CRC) location. 
  * <center>
  * <TABLE>
  * <tr>
@@ -46,6 +47,12 @@
  * </tr>
  * <tr>
  * <td>CERTI_HOME</td> <td>RTIG</td><td>the CERTI installation base directory.
+ *                                      This is used by the RTIG in order
+ *                                      to look for FOM files 
+ *                                      (see \ref certi_executable_RTIG).</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_FOM_PATH</td> <td>RTIG</td><td>the CERTI Federation Object Model search path. The variable may contain a ":" separated list of paths.
  *                                      This is used by the RTIG in order
  *                                      to look for FOM files 
  *                                      (see \ref certi_executable_RTIG).</td>
@@ -96,4 +103,4 @@
  * \image latex "billiard.png" "Billard consoleshot" width=12cm
  */
 
-// $Id: execute.dox,v 3.5 2009/05/20 08:17:15 gotthardp Exp $
+// $Id: execute.dox,v 3.6 2011/09/14 13:30:18 erk Exp $

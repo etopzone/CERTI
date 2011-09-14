@@ -3,7 +3,7 @@
  *
  * \addindex installation
  *
- * CERTI comes as a set of libraries and binaries executables, which may
+ * CERTI comes as a set of libraries and binary executables, which may
  * be used to build an HLA compliant simulation.
  *
  * \section certi_install Install the CERTI software
@@ -40,4 +40,4 @@
  *  
  */
 
-// $Id: install.dox,v 3.1 2008/10/19 21:44:24 gotthardp Exp $
+// $Id: install.dox,v 3.2 2011/09/14 13:30:18 erk Exp $

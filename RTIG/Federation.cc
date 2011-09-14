@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.144 2011/09/09 14:31:26 erk Exp $
+// $Id: Federation.cc,v 3.145 2011/09/14 13:30:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -90,15 +90,20 @@ static PrettyDebug DNULL("RTIG_NULLMSG","[RTIG NULL MSG]");
 
 /**
  * \defgroup certi_FOM_FileSearch CERTI FOM file search algorithm
- * RTIG tries to open FOM file from different
- * predefined places:
+ * When a federate calls the CreateFederationExcution API
+ * RTIG tries to open FOM file from different predefined places,
+ * using various environment variables:
  *
- * -# bare filename considered as a path provided through FEDid_name
- * -# getenv(CERTI_FOM_PATH) + FEDid_name
- * -# getenv(CERTI_HOME)+"/share/federations/"+ FEDid_name
- * -# installation place plus FEDid_name
- *     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
- * -# on Unix "/usr/local/share/federation/" + FEDid_name
+ * -# Bare filename considered as a path provided through <code> FEDid_name </code>
+ * -# Use CERTI federation object model serach PATH
+ *    <code>getenv(CERTI_FOM_PATH) + FEDid_name</code>.
+ *    <br><code>CERTI_FOM_PATH</code> environment variable may contains a list of path
+ *    separated with ':'.
+ * -# Using the <code> CERTI_HOME </code> environment variable
+ *    <code>getenv(CERTI_HOME)+"/share/federations/"+ FEDid_name</code>
+ * -# installation place plus <code>FEDid_name</code>
+ *    <br><code>PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name</code>
+ * -# on Unix <code>"/usr/local/share/federation/" + FEDid_name</code>
  *    for backward compatibility reason.
  */
 
@@ -163,19 +168,7 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
 
     // We should try to open FOM file from different
     // predefined places:
-    //
-    // 1 - bare filename considered as a path provided through FEDid_name
-    //
-    // 2 - getenv(CERTI_FOM_PATH) + FEDid_name
-    //
-    // 3 - getenv(CERTI_HOME) + "/share/federations" + FEDid_name
-    //
-    // 4 - Installation place plus FEDid_name
-    //     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
-    //
-    // 5 - "/usr/local/share/federation/" +  FEDid_name
-    //     last resort Unix-only case [for backward compatibility]
-    //
+    // --> see doxygen doc at the top of this file.
     string filename   = FEDid;
     bool   filefound  = false;
     if (verboseLevel>0) {
@@ -193,7 +186,7 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
         fom_paths.insert(fom_paths.end(),string(temp)+"\\share\\federations\\");
 #endif
 
-        /* add pathes from CERTI_FOM_PATH */
+        /* add paths from CERTI_FOM_PATH */
         if (NULL!=getenv("CERTI_FOM_PATH")) {
             string path = getenv("CERTI_FOM_PATH");
             vector<string> certi_fom_paths = split(path, ':');
@@ -2733,5 +2726,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.144 2011/09/09 14:31:26 erk Exp $
+// $Id: Federation.cc,v 3.145 2011/09/14 13:30:33 erk Exp $
 
