@@ -4,65 +4,61 @@
 # to CERTI Dashboard.
 #
 ####################################################################
-SET (CTEST_SOURCE_DIRECTORY "/LOCAL/ERIC/CertiNightly/CERTI")
-SET (CTEST_BINARY_DIRECTORY "/LOCAL/ERIC/CertiNightly/build")
-
-SET (CTEST_CVS_COMMAND "cvs")
-SET (CTEST_CVS_CHECKOUT "${CTEST_CVS_COMMAND} -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi co -d CERTI certi")
-
-# Easy handling of script commande line argument
-SET(MODEL Nightly)
-IF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
-  SET(MODEL Experimental) 
-ENDIF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
-
-# which ctest command to use for running the dashboard
-IF (${MODEL} MATCHES Experimental)
-
-   SET (CTEST_COMMAND
-       "logger -i -t cdash \"CERTI Experimental CDash BEGIN...\" "
-       "ctest -D ${MODEL}"
-       "logger -i -t cdash \"CERTI Experimental CDash END.\" "
-   )
-ELSE(${MODEL} MATCHES Experimental)
-   SET (CTEST_COMMAND 
-     "logger -i -t cdash \"CERTI Nightly CDash BEGIN...\" "
-     "ctest -D NightlyStart -D NightlyUpdate -D NightlyConfigure -D NightlyBuild -D NightlyTest -D NightlySubmit"
-     "ctest -D NightlyMemCheck -D NightlySubmit"
-     "logger -i -t cdash \"CERTI Nightly CDash END.\" "
-   )
-endif(${MODEL} MATCHES Experimental)
-
-# what cmake command to use for configuring this dashboard
-SET (CTEST_CMAKE_COMMAND 
-  "cmake"
-  )
-
+cmake_minimum_required(VERSION 2.8)
 ####################################################################
-# The values in this section are optional you can either
-# have them or leave them commented out
+# BEGINNING OF LOCAL SETUP...
+####################################################################
+# chose you MY_CTEST_ROOT_DIR
+# source checked out and build tree will be put in this directory
+set(MY_CTEST_ROOT_DIR "/tmp/CERTI-Test")
+if(NOT EXISTS ${MY_CTEST_ROOT_DIR})
+  file(MAKE_DIRECTORY ${MY_CTEST_ROOT_DIR})
+endif()
+
+set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+set(CTEST_BUILD_COMMAND   "make -j3")
+set(CTEST_SITE            "ErkOnTheMove")
+set(CTEST_BUILD_NAME      "Linux-x86_64-gcc-4.6.1")
+set(CTEST_BUILD_CONFIGURATION "Debug")
+####################################################################
+# END OF LOCAL SETUP.
 ####################################################################
 
-# should ctest backup the source tree and restore it whenever a test failed?
-#SET (CTEST_BACKUP_AND_RESTORE TRUE) 
+set(CTEST_SOURCE_DIRECTORY "${MY_CTEST_ROOT_DIR}/src")
+set(CTEST_BINARY_DIRECTORY "${MY_CTEST_ROOT_DIR}/build")
+# Empty the binary directory – clean build
+ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
+# Write initial cache
+#file(WRITE
+#    "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+#CMAKE_BUILD_TYPE:String=Debug
+#")
 
-# should ctest wipe the binary tree before running
-#SET (CTEST_START_WITH_EMPTY_BINARY_DIRECTORY TRUE)
+set(CTEST_UPDATE_COMMAND "cvs")
+set(CTEST_CVS_COMMAND "cvs")
+set(CTEST_CVS_CHECKOUT "${CTEST_CVS_COMMAND} -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi co -d src certi")
+ 
+# Easy handling of script command line argument
+# CTEST_SCRIPT_ARG is the 'value' that comes after the comma in
+# ctest -Syour-ctest-script.cmake,value
+set(MODEL Nightly)
+if(${CTEST_SCRIPT_ARG} MATCHES Experimental)
+  set(MODEL Experimental) 
+endif(${CTEST_SCRIPT_ARG} MATCHES Experimental)
 
-# this is the initial cache to use for the binary tree, be careful to escape
-# any quotes inside of this string if you use it
-SET (CTEST_INITIAL_CACHE "
-MAKECOMMAND:STRING=make
-CMAKE_MAKE_PROGRAM:FILEPATH=make
-CMAKE_GENERATOR:INTERNAL=Unix Makefiles
-BUILDNAME:STRING=Linux-i686-gcc-4.1.2
-SITE:STRING=ErkAtONERA
-CVSCOMMAND:FILEPATH=cvs
-")
-
-SET( $ENV{LC_MESSAGES}    "en_EN" )
-
+set($ENV{LC_MESSAGES}    "en_EN")
 # set any extra environment variables to use during the execution of the script here:
-SET (CTEST_ENVIRONMENT
-    "HTTP_PROXY=proxy.onecert.fr:80"
+set (CTEST_ENVIRONMENT
+    #"HTTP_PROXY=<your-proxy-url-here>"
 )
+# Now start update and configure steps
+ctest_start(${MODEL})
+ctest_update(SOURCE "${CTEST_SOURCE_DIRECTORY}")
+ctest_submit(PARTS Update Notes)
+ctest_configure(BUILD "${CTEST_BINARY_DIRECTORY}" SOURCE "${CTEST_SOURCE_DIRECTORY}" APPEND)
+ctest_submit(PARTS Configure)
+ctest_build(BUILD "${CTEST_BINARY_DIRECTORY}" APPEND)
+include("${CTEST_SOURCE_DIRECTORY}/CTestConfig.cmake")
+ctest_submit(PARTS Build)
+ctest_test(BUILD "${CTEST_BINARY_DIRECTORY}")
+ctest_submit(PARTS Test)
