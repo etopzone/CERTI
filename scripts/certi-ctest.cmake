@@ -1,8 +1,8 @@
 ####################################################################
-#
-# CTest script which may be used to setup a CDash submission
-# to CERTI Dashboard.
-#
+# CTest script (new style)
+# which may be used to setup a CDash submission 
+# to CERTI Dashboard:
+#    http://my.cdash.org/index.php?project=CERTI
 ####################################################################
 cmake_minimum_required(VERSION 2.8)
 ####################################################################
