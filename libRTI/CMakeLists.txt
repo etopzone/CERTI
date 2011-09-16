@@ -59,7 +59,7 @@ SET(RTI_LIB_INCLUDE
 #SOURCE_GROUP("RTI\\Header" FILES ${RTI_LIB_INCLUDE})
 
 ADD_LIBRARY(RTI ${RTI_LIB_SRCS} ${RTI_LIB_INCLUDE})
-TARGET_LINK_LIBRARIES(RTI CERTI)
+TARGET_LINK_LIBRARIES(RTI CERTI FedTime)
 
 IF (BUILD_LEGACY_LIBRTI)
     MESSAGE(STATUS "libRTI variant: CERTI legacy")
@@ -123,7 +123,12 @@ ADD_LIBRARY(FedTime
     ${FEDTIME_SRCS}
 )
 
-TARGET_LINK_LIBRARIES(FedTime RTI)
+# Correct line
+TARGET_LINK_LIBRARIES(FedTime)
+# Incorrect line 
+# (at least the dependency exists but we cannot specify that
+#  because we would generate a circular deps RTI-->FedTime-->RTI)
+#TARGET_LINK_LIBRARIES(FedTime RTI)
 
 IF (WIN32 AND CERTI_RTING_DLL_USE_LIB_PREFIX)
    SET_TARGET_PROPERTIES(FedTime PROPERTIES OUTPUT_NAME "libFedTime")
@@ -170,6 +175,8 @@ ADD_LIBRARY(FedTime1516
 # Correct line
 TARGET_LINK_LIBRARIES(FedTime1516)
 # Incorrect line
+# (at least the dependency exists but we cannot specify that
+#  because we would generate a circular deps RTI1516-->FedTime1516-->RTI1516)
 #TARGET_LINK_LIBRARIES(FedTime1516 RTI1516)
 
 SET_TARGET_PROPERTIES(FedTime1516 PROPERTIES PROJECT_LABEL LibFedTime1516)
