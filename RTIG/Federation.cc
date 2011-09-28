@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.145 2011/09/14 13:30:33 erk Exp $
+// $Id: Federation.cc,v 3.146 2011/09/28 20:03:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1604,6 +1604,73 @@ throw (ObjectClassNotDefined,
     // It may throw *NotDefined*
     root->ObjectClasses->publish(federate, object, attributes, pub);
 
+    if (attributes.size()!=0) {  // do only for subscription
+        // get object class from object class handle
+        ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
+
+        // get publishers of attributes
+        ObjectClassAttribute::PublishersList_t publishers;
+        ObjectClassAttribute::PublishersList_t tmp_publishers;
+
+        // first for: iterate through the attribute list and get publishers of
+        //            each attribute
+        // second for: iterate through the temporary publishers list and store
+        //             non-duplicate entries in publishers
+
+        // get attributes of object class
+       const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
+
+       for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
+                i != attributeMap.end(); ++i) {
+            tmp_publishers = i->second->getPublishers();
+            for (ObjectClassAttribute::PublishersList_t::const_iterator
+                    j=tmp_publishers.begin();
+                    j!=tmp_publishers.end();
+                    j++) {
+                // insert only non-duplicate entries ->
+                // pair<iterator, bool> set::insert(const TYPE& val);
+                publishers.insert(*j);
+            }
+            tmp_publishers.clear();
+        }
+
+        // notify all publishers
+        std::set<FederateHandle> federate_set;
+        for (ObjectClassAttribute::PublishersList_t::const_iterator
+                k=publishers.begin();
+                k!=publishers.end();
+                k++) {
+            if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
+                federate_set.insert(*k);
+            }
+        }
+
+        // broadcastSomeMessage needs a vector, no set -> conversion
+        vector<FederateHandle> federate_vector(federate_set.size());
+        std::copy(federate_set.begin(), federate_set.end(), federate_vector.begin());
+
+        NM_Start_Registration_For_Object_Class msg ;
+        msg.setFederate(federate);
+        msg.setFederation(handle);
+        msg.setObjectClass(object);
+
+        this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short)federate_vector.size());
+
+        publishers.clear();
+        federate_set.clear();
+        federate_vector.clear();
+    }
+    else { // unsubscribe branch
+        // test if objectClass is subscribed by anyone else
+        // -> yes : do nothing
+        // -> no : test if publisher sets its CRA switch
+        //    -> no : do nothing
+        //    -> yes : inform publisher with federate service stopRegistrationForObjectClass
+        //
+
+    }
+
+    
     D.Out(pdRegister,
             "Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
             handle, federate, attributes.size(), object);
@@ -1898,18 +1965,19 @@ throw (ObjectClassNotDefined,
         // get object class from object class handle
         ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
 
-        // get attributes of object class
-        ObjectClassAttribute::PublishersList_t publishers;
-
         // get publishers of attributes
+        ObjectClassAttribute::PublishersList_t publishers;
+        ObjectClassAttribute::PublishersList_t tmp_publishers;
+
         // first for: iterate through the attribute list and get publishers of
         //            each attribute
         // second for: iterate through the temporary publishers list and store
         //             non-duplicate entries in publishers
-        ObjectClassAttribute::PublishersList_t tmp_publishers;
 
-        const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
-        for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
+        // get attributes of object class
+       const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
+
+       for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
                 i != attributeMap.end(); ++i) {
             tmp_publishers = i->second->getPublishers();
             for (ObjectClassAttribute::PublishersList_t::const_iterator
@@ -2726,5 +2794,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.145 2011/09/14 13:30:33 erk Exp $
+// $Id: Federation.cc,v 3.146 2011/09/28 20:03:49 erk Exp $
 
