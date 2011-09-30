@@ -1,5 +1,39 @@
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libCERTI)
 
+##########################################################
+# VariableLenghtData
+# This STATIC library is necessary on Windows in order
+# to avoid circular dependencies
+##########################################################
+if (WIN32)
+  set(VARDATA1516_SRCS
+      RTI1516variableLengthData.cpp
+      RTI1516variableLengthDataImplementation.h
+      ../include/RTI/VariableLengthData.h
+     )
+
+  source_group("Source Files\\VarData" FILES ${VARDATA1516_SRCS})
+
+  add_library(VarData1516 STATIC ${VARDATA1516_SRCS})
+  target_link_libraries(VarData1516)
+  set_target_properties(VarData1516 PROPERTIES PROJECT_LABEL LibVarData1516)
+  set_target_properties(VarData1516 PROPERTIES COMPILE_FLAGS "-DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
+
+  if (MINGW)
+      set_target_properties(VarData1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libVarData1516.def")
+      install(FILES ${LIBRARY_OUTPUT_PATH}/libVarData1516.def
+              DESTINATION lib)
+  endif (MINGW)
+  set_target_properties(VarData1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
+  set(VarData1516Target "VarData1516")
+else()
+  set(VarData1516Target "")
+endif (WIN32)
+
+##########################
+# RTI1516
+##########################
+
 SET(RTI1516_LIB_SRCS
   RTI1516ambassadorFactory.cpp
   RTI1516exception.cpp
@@ -173,14 +207,14 @@ ADD_LIBRARY(FedTime1516
 )
 
 # Correct line
-TARGET_LINK_LIBRARIES(FedTime1516)
+TARGET_LINK_LIBRARIES(FedTime1516 ${VarData1516Target})
 # Incorrect line
 # (at least the dependency exists but we cannot specify that
 #  because we would generate a circular deps RTI1516-->FedTime1516-->RTI1516)
 #TARGET_LINK_LIBRARIES(FedTime1516 RTI1516)
 
 SET_TARGET_PROPERTIES(FedTime1516 PROPERTIES PROJECT_LABEL LibFedTime1516)
-SET_TARGET_PROPERTIES(FedTime1516 PROPERTIES COMPILE_FLAGS "-DBUILDING_FEDTIME -DRTI_DISABLE_WARNINGS")
+SET_TARGET_PROPERTIES(FedTime1516 PROPERTIES COMPILE_FLAGS "-DBUILDING_FEDTIME -DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
 
 IF (MINGW)
     SET_TARGET_PROPERTIES(FedTime1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libFedTime1516.def")
@@ -203,7 +237,7 @@ SET(TestFedTime1516_SRCS
 
 
 # Install rules for both libRTI-NG and libFedTime
-INSTALL(TARGETS RTI FedTime RTI1516 FedTime1516
+INSTALL(TARGETS RTI FedTime RTI1516 FedTime1516 ${VarData1516Target}
     EXPORT certi-targets
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
