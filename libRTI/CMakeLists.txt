@@ -19,12 +19,15 @@ if (WIN32)
   set_target_properties(VarData1516 PROPERTIES PROJECT_LABEL LibVarData1516)
   set_target_properties(VarData1516 PROPERTIES COMPILE_FLAGS "-DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
 
-  if (MINGW)
-      set_target_properties(VarData1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libVarData1516.def")
-      install(FILES ${LIBRARY_OUTPUT_PATH}/libVarData1516.def
-              DESTINATION lib)
-  endif (MINGW)
-  set_target_properties(VarData1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
+  # There shouldn't be any def file for STATIC library since this is not a DLL
+  # Commenting out next line.
+  #if (MINGW)
+  #    set_target_properties(VarData1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libVarData1516.def")
+  #    install(FILES ${LIBRARY_OUTPUT_PATH}/libVarData1516.def
+  #            DESTINATION lib)
+  #endif (MINGW)
+  # There shouldn't be any SOVERSION as well
+  #set_target_properties(VarData1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
   set(VarData1516Target "VarData1516")
 else()
   set(VarData1516Target "")
