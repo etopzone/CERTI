@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.56 2011/09/02 21:42:23 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.57 2011/10/03 09:17:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -160,8 +160,8 @@ ObjectClassSet::getAttributeHandle(const std::string& the_name,
 {
     G.Out(pdGendoc,"enter ObjectClassSet::getAttributeHandle");
 
-    ObjectClass *objectClass = 0 ;
-    AttributeHandle handle ;
+    ObjectClass    *objectClass = NULL;
+    AttributeHandle      handle = 0;
 
     if (the_name.empty()) {
         throw RTIinternalError("provided Attribute name is null");
@@ -177,13 +177,13 @@ ObjectClassSet::getAttributeHandle(const std::string& the_name,
         {
          handle = objectClass->getAttributeHandle(the_name);
          G.Out(pdGendoc,"exit ObjectClassSet::getAttributeHandle");
-         return handle ;
          }
     catch (NameNotFound& )
          {
          G.Out(pdGendoc,"exit  ObjectClassset::getAttributeHandle on NameNotFound");
          throw NameNotFound (the_name) ;
          }
+    return handle;
 }
 
 // ----------------------------------------------------------------------------
@@ -623,4 +623,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.56 2011/09/02 21:42:23 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.57 2011/10/03 09:17:35 erk Exp $

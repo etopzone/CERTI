@@ -795,17 +795,18 @@ ObjectManagement::reflectRetraction(EventRetractionHandle,
 ObjectClassHandle
 ObjectManagement::getObjectClassHandle(const std::string& theName)
 {
-	ObjectClassHandle handle ;
-	G.Out(pdGendoc,"enter ObjectManagement::getObjectClassHandle");
-	try {
-		handle = rootObject->ObjectClasses->getObjectClassHandle(theName);
-		G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle");
-		return handle;
-	}
-	catch (NameNotFound&) {
-		G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
-		throw NameNotFound(theName);
-	}
+    ObjectClassHandle handle ;
+    G.Out(pdGendoc,"enter ObjectManagement::getObjectClassHandle");
+    try {
+        handle = rootObject->ObjectClasses->getObjectClassHandle(theName);
+        G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle");
+
+    }
+    catch (NameNotFound&) {
+        G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
+        throw NameNotFound(theName);
+    }
+    return handle;
 }
 
 
@@ -837,20 +838,21 @@ ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
 //! getAttributeHandle.
 AttributeHandle
 ObjectManagement::getAttributeHandle(const std::string& theName,
-		ObjectClassHandle theClassHandle)
+        ObjectClassHandle theClassHandle)
 {
-	AttributeHandle handle ;
-	G.Out(pdGendoc,"enter ObjectManagement::getAttributeHandle");
-	try {
-		handle = rootObject->ObjectClasses->getAttributeHandle(theName,
-				theClassHandle);
-		G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle");
-		return handle;
-	}
-	catch (NameNotFound&) {
-		G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle on NameNotFound");
-		throw NameNotFound(theName);
-	}
+    AttributeHandle handle ;
+    G.Out(pdGendoc,"enter ObjectManagement::getAttributeHandle");
+    try {
+        handle = rootObject->ObjectClasses->getAttributeHandle(theName,
+                theClassHandle);
+        G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle");
+
+    }
+    catch (NameNotFound&) {
+        G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle on NameNotFound");
+        throw NameNotFound(theName);
+    }
+    return handle;
 }
 
 // ----------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.26 2009/11/24 21:44:48 erk Exp $
+// $Id: main.cc,v 3.27 2011/10/03 09:18:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -71,12 +71,6 @@ extern "C" void WaitForEnd_Unx(int SignalNumber);
 
 void ExceptionHandler();
 void TerminateHandler();
-
-#ifdef HAVE_XML
-static const bool WITH_XML = true ;
-#else
-static const bool WITH_XML = false ;
-#endif
 
 static bool exit_billard = false ;
 
@@ -251,6 +245,7 @@ main(int argc, char **argv)
     }
 
     std::cout << "Exiting." << std::endl ;
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
