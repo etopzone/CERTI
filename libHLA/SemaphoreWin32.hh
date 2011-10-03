@@ -20,7 +20,7 @@ namespace ipc {
 
 class HLA_EXPORT SemaphoreWin32 : public Semaphore {
     private :
-        HANDLE WINAPI _hSemaphore;
+        HANDLE _hSemaphore;
 
     public :
     SemaphoreWin32() ;

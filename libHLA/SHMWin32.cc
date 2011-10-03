@@ -61,7 +61,7 @@ std::cout <<  "Created shared memory object : " << _Name.c_str() << std::endl ;
 // ************************************************
 void SHMWin32::Attach() throw(SharedMemoryNotAttached) {
 
-BOOL WINAPI retcode ;
+BOOL retcode ;
 
 _pBuf = (LPTSTR) MapViewOfFile(_hMapFile,
                    FILE_MAP_ALL_ACCESS,      // read/write permission
@@ -85,7 +85,7 @@ _pBuf = (LPTSTR) MapViewOfFile(_hMapFile,
 void SHMWin32::Close() throw(SharedMemoryNotClosed,
                              HandleNotClosed) {
 
-BOOL WINAPI retcode ;
+BOOL retcode ;
 
 // Unmap
    retcode=UnmapViewOfFile((PVOID)_pBuf);

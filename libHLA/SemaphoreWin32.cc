@@ -70,7 +70,7 @@ void SemaphoreWin32::P()
 std::cout << "Begin of Operation P for the semaphore identified by handle : " << _hSemaphore << std::endl ;
 #endif
 
-DWORD  WINAPI dwRetCode;
+DWORD dwRetCode;
 
 dwRetCode = WaitForSingleObject(
                    (HANDLE)_hSemaphore,  // handle to semaphore
@@ -107,7 +107,7 @@ void SemaphoreWin32::V()
 std::cout << "Begin of Operation V for the semaphore identified by handle : " << _hSemaphore << std::endl ;
 #endif
 
-BOOL WINAPI retcode ;
+BOOL retcode ;
 
   retcode = ReleaseSemaphore(
         _hSemaphore,  // handle to semaphore
@@ -130,7 +130,7 @@ std::cout << "End of Operation V for the semaphore identified by handle : " << _
 void SemaphoreWin32::Delete()
                     throw(HandleNotClosed) {
 
-BOOL WINAPI retcode ;
+BOOL retcode ;
 
 #ifdef DEBUG
 std::cout << "Destroy the semaphore identified by handle : " << _hSemaphore << std::endl ;
