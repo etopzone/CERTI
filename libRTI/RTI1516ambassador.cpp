@@ -1611,7 +1611,7 @@ namespace rti1516
 
 		//TODO JRE: goed testen of deze return value wel klopt!
 		certi::FederationTime fedTime = rep.getDate();
-		if (fedTime == NULL || fedTime.getTime() == 0) {
+		if (fedTime.getTime() == 0.0) {
 			return false;
 		}	
 
@@ -1650,7 +1650,7 @@ namespace rti1516
 
 		//TODO JRE: goed testen of deze return value wel klopt!
 		certi::FederationTime fedTime = rep.getDate();
-		if (fedTime == NULL || fedTime.getTime() == 0) {
+		if (fedTime.getTime() == 0.0) {
 			return false;
 		}
 		// JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
