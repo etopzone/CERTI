@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.126 2011/07/11 11:17:24 erk Exp $
+// $Id: RTIambassador.cc,v 3.127 2011/10/03 06:54:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -367,101 +367,104 @@ throw (RTI::RTIinternalError)
 RTI::Boolean
 RTI::RTIambassador::tick()
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
-		RTI::ConcurrentAccessAttempted,
-		RTI::RTIinternalError)
-		{
+        RTI::ConcurrentAccessAttempted,
+        RTI::RTIinternalError)
+        {
 #if defined(LEGACY_LIBRTI)
-	__tick_kernel(RTI_FALSE, 0.0, 0.0);
+    __tick_kernel(RTI_FALSE, 0.0, 0.0);
 #elif defined (HLA13NG_LIBRTI)
-	// may suffer from starving
-	__tick_kernel(RTI_TRUE, 0.0, std::numeric_limits<double>::infinity());
+    // may suffer from starving
+    __tick_kernel(RTI_TRUE, 0.0, std::numeric_limits<double>::infinity());
 #else
 #error "At least one LIBRTI flag must be defined."
 #endif
-	return RTI_FALSE;
-		}
+    return RTI_FALSE;
+        }
 
 // ----------------------------------------------------------------------------
 RTI::Boolean
 RTI::RTIambassador::tick2()
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
-		RTI::ConcurrentAccessAttempted,
-		RTI::RTIinternalError)
-		{
-	__tick_kernel(RTI_FALSE, std::numeric_limits<double>::infinity(), 0.0);
-	return RTI_FALSE;
-		}
+        RTI::ConcurrentAccessAttempted,
+        RTI::RTIinternalError)
+        {
+    __tick_kernel(RTI_FALSE, std::numeric_limits<double>::infinity(), 0.0);
+    return RTI_FALSE;
+        }
 
 // ----------------------------------------------------------------------------
 RTI::Boolean
 RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickTime maximum)
 throw (RTI::SpecifiedSaveLabelDoesNotExist,
-		RTI::ConcurrentAccessAttempted,
-		RTI::RTIinternalError)
-		{
-	M_Tick_Request vers_RTI;
-	std::auto_ptr<Message> vers_Fed(NULL);
+        RTI::ConcurrentAccessAttempted,
+        RTI::RTIinternalError)
+        {
+    M_Tick_Request vers_RTI;
+    std::auto_ptr<Message> vers_Fed(NULL);
 
-	// Request callback(s) from the local RTIA
-	vers_RTI.setMultiple(multiple);
-	vers_RTI.setMinTickTime(minimum);
-	vers_RTI.setMaxTickTime(maximum);
+    // Request callback(s) from the local RTIA
+    vers_RTI.setMultiple(multiple);
+    vers_RTI.setMinTickTime(minimum);
+    vers_RTI.setMaxTickTime(maximum);
 
-	try {
-		vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
-	}
-	catch (NetworkError &e) {
-		std::stringstream msg;
-		msg << "NetworkError in tick() while sending TICK_REQUEST: " << e._reason;
+    try {
+        vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
+    }
+    catch (NetworkError &e) {
+        std::stringstream msg;
+        msg << "NetworkError in tick() while sending TICK_REQUEST: " << e._reason;
 
-		throw RTI::RTIinternalError(msg.str().c_str());
-	}
+        throw RTI::RTIinternalError(msg.str().c_str());
+    }
 
-	// Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
-	while (1) {
-		try {
-			vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
-		}
-		catch (NetworkError &e) {
-			std::stringstream msg;
-			msg << "NetworkError in tick() while receiving response: " << e._reason;
-			throw RTI::RTIinternalError(msg.str().c_str());
-		}
+    // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
+    while (1) {
+        try {
+            vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
+        }
+        catch (NetworkError &e) {
+            std::stringstream msg;
+            msg << "NetworkError in tick() while receiving response: " << e._reason;
+            throw RTI::RTIinternalError(msg.str().c_str());
+        }
 
-		// If the type is TICK_REQUEST, the __tick_kernel() has terminated.
-		if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
-			if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
-				// tick() may only throw exceptions defined in the HLA standard
-				// the RTIA is responsible for sending 'allowed' exceptions only
-				privateRefs->processException(vers_Fed.get());
-			}
-			return RTI::Boolean(static_cast<M_Tick_Request*>(vers_Fed.get())->getMultiple());
-		}
+        // If the type is TICK_REQUEST, the __tick_kernel() has terminated.
+        if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
+            if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
+                // tick() may only throw exceptions defined in the HLA standard
+                // the RTIA is responsible for sending 'allowed' exceptions only
+                privateRefs->processException(vers_Fed.get());
+            }
+            return RTI::Boolean(static_cast<M_Tick_Request*>(vers_Fed.get())->getMultiple());
+        }
 
-		try {
-			// Otherwise, the RTI calls a FederateAmbassador service.
-			privateRefs->callFederateAmbassador(vers_Fed.get());
-		}
-		catch (RTI::RTIinternalError&) {
-			// RTIA awaits TICK_REQUEST_NEXT, terminate the tick() processing
-			privateRefs->sendTickRequestStop();
-			// ignore the response and re-throw the original exception
-			throw;
-		}
+        try {
+            // Otherwise, the RTI calls a FederateAmbassador service.
+            privateRefs->callFederateAmbassador(vers_Fed.get());
+        }
+        catch (RTI::RTIinternalError&) {
+            // RTIA awaits TICK_REQUEST_NEXT, terminate the tick() processing
+            privateRefs->sendTickRequestStop();
+            // ignore the response and re-throw the original exception
+            throw;
+        }
 
-		try {
-			// Request next callback from the RTIA
-			M_Tick_Request_Next tick_next;
-			tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
-		}
-		catch (NetworkError &e) {
-			std::stringstream msg;
-			msg << "NetworkError in tick() while sending TICK_REQUEST_NEXT: " << e._reason;
+        try {
+            // Request next callback from the RTIA
+            M_Tick_Request_Next tick_next;
+            tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
+        }
+        catch (NetworkError &e) {
+            std::stringstream msg;
+            msg << "NetworkError in tick() while sending TICK_REQUEST_NEXT: " << e._reason;
 
-			throw RTI::RTIinternalError(msg.str().c_str());
-		}
-	} // while(1)
-		}
+            throw RTI::RTIinternalError(msg.str().c_str());
+        }
+    } // while(1)
+    // This statement may never be reached but it please the compiler
+    // for 'non void function with no return'
+    return RTI::Boolean(false);
+        }
 
 // ----------------------------------------------------------------------------
 RTI::Boolean
@@ -2850,4 +2853,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.126 2011/07/11 11:17:24 erk Exp $
+// $Id: RTIambassador.cc,v 3.127 2011/10/03 06:54:17 erk Exp $
