@@ -454,7 +454,7 @@ Billard::step()
               "timestep : %.2f", time_aux.getTime(),
               ((RTIfedTime&)localTime).getTime(),
               ((RTIfedTime&)TIME_STEP).getTime());
-	granted = false ;
+        granted = false ;
         rtiamb.timeAdvanceRequest(time_aux);
     }
     catch (RTI::Exception& e) {
@@ -462,8 +462,8 @@ Billard::step()
     }
 
     for (vector<Ball>::iterator it = remote.begin(); it != remote.end(); ++it) {
-	it->active = false ;
-    }	
+        it->active = false ;
+    }
 
     while (!granted) {
         try {
@@ -483,6 +483,9 @@ Billard::step()
 
     for (it = remote.begin(); it != remote.end(); ++it) {
         if (it->ID != 0 && it->active && local.checkBallCollision(&(*it))) {
+#ifdef X_DISPLAY_MISSING
+            std::cout << "Collision between Ball <" << local.ID << "> and <"<<it->ID<<">" << std::endl;
+#endif
             sendInteraction(local.dx, local.dy, next_step, it->ID);
             // On prend la vitesse de l'autre sauf dans le cas ou
             // on avait deja la meme. Dans ce cas, on inverse la notre.
@@ -891,10 +894,10 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
         }
     }
     if (bille) {
-	if (h1 == local.ID) {
-	    local.dx = dx1 ;
-	    local.dy = dy1 ;
-	}
+        if (h1 == local.ID) {
+            local.dx = dx1 ;
+            local.dy = dy1 ;
+        }
     }
 }
 
