@@ -1,4 +1,660 @@
-2010-11-11 18:22  tag CERTI-3_4_0
+2011-10-18 22:36  tag CERTI-3_4_1
+
+2011-10-18 22:36  erk
+
+	* scripts/certi-ctest.cmake (1.4, CERTI-3_4_1): More comment at the
+	  beginning of the file
+
+2011-10-18 22:23  erk
+
+	* CMakeLists.txt (1.107, CERTI-3_4_1): Prepare 3.4.1 release
+
+2011-10-18 22:20  erk
+
+	* scripts/FindRTI.cmake (1.14, CERTI-3_4_1): Prune whitespace
+
+2011-10-07 13:10  erk
+
+	* test/Billard/Billard.cc (3.46, CERTI-3_4_1): Add some collision
+	  message for nongui case
+
+2011-10-03 11:17  erk
+
+	* libCERTI/ObjectClassSet.cc (3.57), RTIA/ObjectManagement.cc
+	  (3.77), test/Billard/main.cc (3.27) (utags: CERTI-3_4_1): Less
+	  compiler warnings
+
+2011-10-03 09:01  erk
+
+	* libRTI/RTI1516ambassador.cpp (1.10, CERTI-3_4_1): Suppress
+	  warning about pointer/non-pointer comparison, in fact this test
+	  is unnecessary (and probably buggy)
+
+2011-10-03 08:54  erk
+
+	* libRTI/RTIambassador.cc (3.127, CERTI-3_4_1): Avoid using tab,
+	  use space
+
+2011-10-03 08:53  erk
+
+	* libHLA/: SHMWin32.cc (1.3), SemaphoreWin32.cc (1.3),
+	  SemaphoreWin32.hh (1.3) (utags: CERTI-3_4_1): Suppress Warning
+	  due to WINAPI misuse
+
+2011-10-01 11:01  erk
+
+	* libRTI/CMakeLists.txt (1.25, CERTI-3_4_1): No def file is
+	  generated for STATIC lib this is reserved for DLL see:
+	  http://www.transmissionzero.co.uk/computing/advanced-mingw-dll-topics/
+
+2011-09-30 15:28  erk
+
+	* libRTI/CMakeLists.txt (1.24): Merge modified version of
+	  Jan-Patrick patch for fixing build-time dependency issue on
+	  Windows.
+
+2011-09-28 22:03  erk
+
+	* RTIG/Federation.cc (3.146, CERTI-3_4_1): Merged patch #7625:
+	  startRegistrationForObjectClass callback started in publishObject
+	  from Jan-Patrick.
+
+2011-09-26 22:24  erk
+
+	* CMakeLists.txt (1.106): Avoid MinGW warning about visibility.
+	  Merge patch #7624 from Jan-Patrick Osterloh
+
+2011-09-16 23:25  erk
+
+	* scripts/certi-ctest.cmake (1.3): Comments update
+
+2011-09-16 23:13  erk
+
+	* scripts/certi-ctest.cmake (1.2): Update certi-ctest.cmake CTest
+	  script to new-style ctest scripting
+
+2011-09-16 18:39  erk
+
+	* libRTI/CMakeLists.txt (1.23): Merge updated version of patch
+	  #7566
+
+2011-09-14 22:32  erk
+
+	* libCERTI/CMakeLists.txt (1.37, CERTI-3_4_1),
+	  libHLA/CMakeLists.txt (1.16, CERTI-3_4_1), libRTI/CMakeLists.txt
+	  (1.22), CMakeLists.txt (1.105), doc/CMakeLists.txt (1.11,
+	  CERTI-3_4_1): Prepare EXPORTED target
+
+2011-09-14 22:32  erk
+
+	* doc/DoxyTools.cmake (3.6, CERTI-3_4_1): Fix typo in DoxyTools
+	  it's even strange to have worked at some point??
+
+2011-09-14 15:30  erk
+
+	* doc/certi_install.cnf.in (3.8, CERTI-3_4_1), doc/build.dox (3.5,
+	  CERTI-3_4_1), doc/execute.dox (3.6, CERTI-3_4_1), doc/install.dox
+	  (3.2, CERTI-3_4_1), doc/introduction.dox (3.2, CERTI-3_4_1),
+	  RTIG/Federation.cc (3.145): Small documentation update.  At least
+	  add  the CERTI_FED_PATH doc
+
+2011-09-09 16:35  erk
+
+	* libCERTI/ObjectClass.cc (3.90, CERTI-3_4_1): Fix uninitialized
+	  var use
+
+2011-09-09 16:31  erk
+
+	* RTIG/Federation.cc (3.144): Fix Windows path escape
+
+2011-09-09 16:29  erk
+
+	* test/CMakeLists.txt (1.4, CERTI-3_4_1): Do not compile
+	  CertiCheckHostAndIp on Windows.
+
+2011-09-09 13:18  tag CERTI-MORSE-0_4
+
+2011-09-09 13:18  erk
+
+	* RTIG/Federation.cc (3.143, CERTI-MORSE-0_4): Merge patch #7614:
+	  Add a new environment path variable to look for FOM files
+	  Modified version in order to factor out Windows an unix code and
+	  avoid duplication.  Now the algorithm is simple:    1) try the
+	  bare file    2) try PATH_PREFIX+file with PATH_PREFIX being a
+	  list of possible pathes	 including the one specified in
+	  CERTI_FOM_PATH
+
+2011-09-08 22:24  erk
+
+	* libCERTI/M_Classes.hh (3.16), libCERTI/NM_Classes.cc (3.31),
+	  libCERTI/NM_Classes.hh (3.25), libCERTI/M_Classes.cc (3.16),
+	  scripts/GenMsgCXX.py (1.25) (utags: CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Fix compilation error on Windows.  STL
+	  std::vector does not have .a standard .data() accessor.  Should
+	  use &(v[0]) which should always work.
+
+2011-09-02 23:42  erk
+
+	* libCERTI/ObjectClass.cc (3.89, CERTI-MORSE-0_4),
+	  libCERTI/ObjectClassSet.hh (3.42, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/ObjectClass.hh (3.59, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/ObjectClassAttribute.cc (3.39, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libCERTI/ObjectClassAttribute.hh (3.29,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libCERTI/ObjectClassSet.cc (3.56,
+	  CERTI-MORSE-0_4), libCERTI/Subscribable.cc (3.11, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libCERTI/Subscribable.hh (3.10, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIA/DeclarationManagement.cc (3.36,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), RTIA/RTIA_federate.cc (3.119,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), RTIG/Federation.cc (3.142),
+	  RTIG/Federation.hh (3.72, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIG/FederationsList.cc (3.75, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIG/FederationsList.hh (3.59, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIG/RTIG.cc (3.69, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIG/RTIG_processing.cc (3.113, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIA/DeclarationManagement.hh (3.12, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Publishing/Unpublishing path clean-up
+
+2011-09-01 15:50  erk
+
+	* libCERTI/ObjectClass.cc (3.88), libCERTI/ObjectClass.hh (3.58),
+	  libCERTI/ObjectClassSet.cc (3.55), libCERTI/ObjectClassSet.hh
+	  (3.41), libCERTI/RootObject.hh (3.38, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libCERTI/SocketServer.cc (3.20, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIA/DeclarationManagement.cc (3.35),
+	  RTIA/FederationManagement.cc (3.89, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIA/RTIA_federate.cc (3.118),
+	  RTIG/Federation.cc (3.141), RTIG/Federation.hh (3.71),
+	  RTIG/FederationsList.cc (3.74), RTIG/FederationsList.hh (3.58),
+	  RTIG/RTIG_processing.cc (3.112): Clean-up subscribe path while
+	  hunting bug#34016 - Suppress unnecessary list_size argument -
+	  Improve comments here and there - replace tabs with space along
+	  the way
+
+2011-07-29 11:08  erk
+
+	* libHLA/: MsgBuffer.c (1.3), MsgBuffer.h (1.4), MsgBufferTests.c
+	  (1.2) (utags: CERTI-3_4_1, CERTI-MORSE-0_4): Be homogeneous even
+	  with bool
+
+2011-07-29 11:08  erk
+
+	* scripts/: GenMsgBase.py (1.12, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  GenMsgAST.py (1.23, CERTI-3_4_1, CERTI-MORSE-0_4), GenMsgC.py
+	  (1.8, CERTI-3_4_1, CERTI-MORSE-0_4), GenMsgCXX.py (1.24): Better
+	  C message generator
+
+2011-07-28 16:04  erk
+
+	* scripts/: GenMsgBase.py (1.11), GenMsgC.py (1.7), GenMsgJava.py
+	  (1.6, CERTI-3_4_1, CERTI-MORSE-0_4): Update C generator
+
+2011-07-26 12:12  erk
+
+	* CMakeLists.txt (1.104), cmake_uninstall.cmake.in (1.1,
+	  CERTI-3_4_1) (utags: CERTI-MORSE-0_4): Add Uninstall target.
+	  Contribution from Charles on the ML.
+
+2011-07-26 11:27  erk
+
+	* CMakeLists.txt (1.103), libRTI/CMakeLists.txt (1.21,
+	  CERTI-MORSE-0_4): Add the CERTI_RTING_DLL_USE_LIB_PREFIX CMake
+	  OPTION in order to ease the constrution of libRTI-NG.dll and
+	  libFedTime.dll instead of RTI-NG.dll and FedTime.dll on Windows.
+	  This was requested by a user on the ML.  This is NOT the default
+	  behavior.
+
+2011-07-26 10:19  erk
+
+	* include/baseTypes.hh (3.15, CERTI-3_4_1, CERTI-MORSE-0_4): Avoid
+	  non-standard addition to the RTI::Exception type
+
+2011-07-20 14:50  erk
+
+	* test/libgraphc/graph_c.cc (3.6, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Fix compiler warning
+
+2011-07-19 22:21  erk
+
+	* libHLA/MsgBuffer.h (1.3), scripts/GenMsgAST.py (1.22),
+	  scripts/GenMsgC.py (1.6): Some more C Generator updates...
+
+2011-07-19 10:58  erk
+
+	* scripts/: GenMsgAST.py (1.21), GenMsgC.py (1.5): Build shortname
+	  of the package and use it as prefix for C generator
+
+2011-07-19 09:57  erk
+
+	* test/: CMakeLists.txt (1.3), certiCheckHostAndIP.c (1.1,
+	  CERTI-3_4_1) (utags: CERTI-MORSE-0_4): Add binary for testing IP
+	  address
+
+2011-07-18 13:57  erk
+
+	* scripts/GenMsgSpec.py (1.2, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Missing import
+
+2011-07-18 13:54  erk
+
+	* scripts/: GenMsgBase.py (1.10), GenMsgC.py (1.4), GenMsgSpec.py
+	  (1.1), GenerateMessages.py (1.46, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Continue Message generator refactoring
+
+2011-07-16 20:10  erk
+
+	* scripts/: GenMsgBase.py (1.9), GenMsgC.py (1.3), GenMsgCXX.py
+	  (1.23), GenerateMessages.py (1.45): - rename generator classes in
+	  order to have more consistent names - go ahead with C generator
+	  (Work-in-progress)
+
+2011-07-15 15:37  erk
+
+	* scripts/GenMsgC.py (1.2): C Message generator backend update
+
+2011-07-15 14:30  erk
+
+	* scripts/GenMsgBase.py (1.8): Tolerate "partial" factory specs
+
+2011-07-15 14:22  erk
+
+	* scripts/: GenMsgBase.py (1.7), GenMsgJava.py (1.5), GenMsgCXX.py
+	  (1.22), GenMsgAST.py (1.20), GenerateMessages.py (1.44): Update
+	  CERTI Java message generator in order to tolerate the new
+	  representation syntax.  This is not enough for a fully functional
+	  Java generator but this is the first step
+
+2011-07-13 17:53  erk
+
+	* libRTI/RTI1516ambassador.cpp (1.9, CERTI-MORSE-0_4): Merge patch
+	  #7568 from Christoph Laesche
+
+2011-07-13 17:43  erk
+
+	* libRTI/RTI1516ambPrivateRefs.cpp (1.5, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libRTI/RTIambPrivateRefs.cc (3.29, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libRTI/RTItypesImp.cc (3.10, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), include/certi.hh (3.52, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libCERTI/M_Classes.cc (3.15),
+	  libCERTI/M_Classes.hh (3.15), libCERTI/NM_Classes.cc (3.30),
+	  libCERTI/NM_Classes.hh (3.24), libRTI/RTI1516ambassador.cpp
+	  (1.8), scripts/CERTI_Message.msg (1.18, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), scripts/CERTI_NetworkMessage.msg (1.23,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), scripts/GenMsgAST.py (1.19),
+	  scripts/GenMsgC.py (1.1), scripts/GenMsgCXX.py (1.21),
+	  scripts/GenerateMessages.py (1.43), RTIG/Federation.cc (3.140):
+	  Merge a modified version of Christoph Laesche patch #7567 Some
+	  improvement of the CERTI Message generator are bundled with it.
+
+2011-07-11 13:17  erk
+
+	* RTIA/ObjectManagement.cc (3.76, CERTI-MORSE-0_4), RTIA/RTIA.cc
+	  (3.36, CERTI-3_4_1, CERTI-MORSE-0_4), RTIA/RTIA_federate.cc
+	  (3.117), RTIA/RTIA_network.cc (3.43, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), libRTI/RTI1516ambPrivateRefs.cpp (1.4),
+	  libRTI/RTI1516ambassador.cpp (1.7), libRTI/RTIambassador.cc
+	  (3.126, CERTI-MORSE-0_4), RTIG/Federation.cc (3.139),
+	  RTIG/RTIG_processing.cc (3.111), libCERTI/SocketSHMWin32.hh (1.3,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libHLA/SHMPosix.hh (1.2,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libHLA/SHMSysV.hh (1.3,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libHLA/SHMWin32.hh (1.3,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libCERTI/Interaction.hh (3.43,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libCERTI/ObjectClass.hh (3.57),
+	  libCERTI/ObjectClassSet.cc (3.54), libCERTI/RoutingSpace.hh
+	  (3.13, CERTI-3_4_1, CERTI-MORSE-0_4), libCERTI/SocketSHMPosix.hh
+	  (3.3, CERTI-3_4_1, CERTI-MORSE-0_4), libCERTI/SocketSHMSysV.hh
+	  (3.3, CERTI-3_4_1, CERTI-MORSE-0_4): Add virtual destructor when
+	  missing.  Replace some catch by value by catch by ref.
+
+2011-07-11 13:00  erk
+
+	* libHLA/HLAvariantRecord.hh (1.3, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libRTI/RTItypesImp.cc (3.9): Fix some compiler warnings
+
+2011-06-10 16:47  erk
+
+	* scripts/GenMsgAST.py (1.18): Tolerate message specification
+	  without factory
+
+2011-06-10 16:39  erk
+
+	* libHLA/: MsgBuffer.c (1.2), MsgBuffer.h (1.2): Avoid duplicate
+	  symbols.
+
+2011-06-10 16:05  erk
+
+	* libHLA/: CMakeLists.txt (1.15, CERTI-MORSE-0_4),
+	  MessageBufferTests.cc (1.2, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  MsgBuffer.c (1.1), MsgBuffer.h (1.1), MsgBufferTests.c (1.1): Add
+	  message buffer handling in C.  The two implementations (C and
+	  C++) will eventually be merged in order avoid code duplication.
+
+2011-06-09 15:44  erk
+
+	* test/libgraphc/CMakeLists.txt (1.9, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Different naming used in main CMakeLists.txt
+	  and here
+
+2011-06-08 16:42  erk
+
+	* include/RTI/Handle.h (1.3), include/RTI/LogicalTimeFactory.h
+	  (1.3), include/RTI/SpecificConfig.h (1.5),
+	  include/RTI/certiLogicalTime.h (1.2),
+	  include/RTI/certiLogicalTimeFactory.h (1.2),
+	  include/RTI/certiLogicalTimeInterval.h (1.2), libHLA/sha1.h
+	  (1.6), libRTI/RTI1516HandleFactory.h (1.2),
+	  libRTI/RTI1516HandleImplementation.h (1.4),
+	  libRTI/RTI1516fedTime.h (1.3) (utags: CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Update for proper visibility handling with gcc
+	  in 1516 lib.	Should check on Windows.
+
+2011-06-08 16:40  erk
+
+	* libCERTI/ObjectClass.cc (3.87): Merge patch from Eugene.
+
+2011-05-24 07:54  erk
+
+	* libRTI/RTI1516fedTime.cpp (1.5, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Blilnd fix for invalid mix of time and time interval
+	  implementation class.
+
+2011-04-27 18:22  erk
+
+	* COPYING (3.2), COPYING.txt (1.1, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Rename license file
+
+2011-04-27 18:02  erk
+
+	* CERTICPackOptions.cmake.in (1.3, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  CMakeLists.txt (1.102): One more try to build a Mac OS installer
+
+2011-04-27 17:18  erk
+
+	* test/utility/CMakeLists.txt (1.9, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  better way to check for RT libs
+
+2011-04-27 17:07  erk
+
+	* CMakeLists.txt (1.101), libHLA/CMakeLists.txt (1.14),
+	  scripts/myCERTI_env.sh.in (1.2, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Raw try in order to make CERTI compile on MacOS
+
+2011-04-27 09:04  erk
+
+	* CMakeLists.txt (1.100), test/utility/CMakeLists.txt (1.8): Blind
+	  fix for compiling on MacOS
+
+2011-04-26 13:07  erk
+
+	* CMakeLists.txt (1.99), include/RTI.hh (3.19, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), include/certi.hh (3.51),
+	  libCERTI/SocketSHMSysV.hh (3.2), libHLA/libhla.hh (1.6,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), libHLA/sha1.h (1.5),
+	  libRTI/CMakeLists.txt (1.20), test/libgraphc/CMakeLists.txt
+	  (1.8): Use GCC visibility when possible.  This should help us to
+	  track the circular reference problem and this is a good practice
+	  anyway: http://gcc.gnu.org/wiki/Visibility
+
+2011-04-11 13:44  erk
+
+	* libCERTI/: ObjectClass.cc (3.86), ObjectClassSet.cc (3.53): fix
+	  bug #32994 : unconditionalAttributeOwnershipDivestiture results
+	  in RTIG crash Sligtly modified version of the patch provided by
+	  Eugene.
+
+2011-04-11 13:14  erk
+
+	* libCERTI/: ObjectClass.cc (3.85), ObjectClass.hh (3.56): Fix bug
+	  #32993 : Incorrect use of std::vector Use a new inner class for
+	  CDiffusion.  This should avoid the common mistake of the use of
+	  vector.
+
+2011-04-04 15:36  erk
+
+	* libRTI/RTI1516ambassador.cpp (1.6): Fix bug #32992 : Error while
+	  invoking AttributeOwnershipAcquisition merge Eugene's patch
+
+2011-03-26 09:53  erk
+
+	* libRTI/RTI1516ambassador.cpp (1.5): fix bug #32910 : segfault
+	  caused by requestAttributeValueUpdate merge Eugene patch.
+
+2011-03-25 21:53  erk
+
+	* RTIG/RTIG.cc (3.68), RTIA/DataDistribution.cc (3.38, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIA/DataDistribution.hh (3.22, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIA/ObjectManagement.cc (3.75),
+	  RTIA/ObjectManagement.hh (3.39, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  RTIA/RTIA_federate.cc (3.116), RTIA/RTIA_network.cc (3.42): fix
+	  bug #32904 : ReserveObjectInsranceName method call results in
+	  RTIA crash Merge in patch from Eugene and move reserveObjectName
+	  method from DDM to OM where it should have been put.
+
+2011-03-25 20:28  erk
+
+	* libCERTI/ObjectClass.cc (3.84): Fix bug #32905 : invoking of
+	  unconditionalAttributeOwnershipDivestiture results in RTIG crash
+	  Merged patch from Eugene.
+
+2011-03-25 20:23  erk
+
+	* CMakeLists.txt (1.98): May be a typo for 64 bits check
+
+2011-03-14 13:56  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.9, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Fix forgotten testing typo.
+
+2011-03-13 20:58  erk
+
+	* CMakeLists.txt (1.97), scripts/GeneratePackageType.cmake (1.2,
+	  CERTI-3_4_1, CERTI-MORSE-0_4),
+	  scripts/SystemSpecificInformations.cmake (1.8): Update
+	  SystemSpecificInformations
+
+2011-02-18 15:25  erk
+
+	* libRTI/RTI1516ambassador.cpp (1.4): fix bug #32531 : Attribure
+	  and parameter values are not handled properly and simplify code
+	  when possible.
+
+2011-02-18 12:25  erk
+
+	* libRTI/RTI1516ambPrivateRefs.cpp (1.3): Fix  bug #32503 :
+	  federate callbacks are invoked with incorrect timestamp value
+
+2011-02-17 15:53  erk
+
+	* libRTI/RTI1516Handle.cpp (1.3, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  Merge patch from Eugene which should fix bug #32496 :
+	  realizations of base handle classes are not completed
+
+2011-02-16 13:34  erk
+
+	* libRTI/RTI1516fedTime.cpp (1.4): Implement some missing
+	  encode/decode methods: Should fix part of bug #32503 : federate
+	  callbacks are invoked with incorrect timestamp value
+
+2011-02-01 13:51  erk
+
+	* scripts/Toolchain-cross-mingw32-linux.cmake (1.1, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Add toolchain for cross-compiling (not working
+	  yet)
+
+2011-01-31 12:34  erk
+
+	* include/RTIambServices.hh (3.11, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libRTI/RTIambassador.cc (3.125): Update doxygen comment
+
+2011-01-26 17:00  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.7, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): MAJ CERTI implem' status list
+
+2011-01-19 17:05  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.6): Update feature
+	  status list
+
+2011-01-18 14:26  erk
+
+	* libCERTI/BasicMessage.cc (3.18, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libRTI/RTI1516ambassador.cpp (1.3): Fix bug #32162 : std::wstring
+	  is not handled properly
+
+2011-01-11 13:29  erk
+
+	* RTIA/RTIA_network.cc (3.41), RTIA/TimeManagement.cc (3.70,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), RTIG/Federation.cc (3.138),
+	  RTIG/RTIG_processing.cc (3.110): Better trace for NULL [PRIME]
+	  message protocol RTIA_NULLMSG=D RTIG_NULLMSG=D
+
+2011-01-09 19:30  erk
+
+	* doc/build.dox (3.4, CERTI-MORSE-0_4): Add the xbitmaps ref.
+	  Makes it explicit that Fedora means RedHat/Fedora/CentOS
+
+2011-01-09 19:19  erk
+
+	* doc/build.dox (3.3): Update installation documentation Add
+	  information concerning libX11-devel on Fedora
+
+2011-01-09 19:01  erk
+
+	* config.h.cmake (1.6, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  CMakeLists.txt (1.96), test/Billard/CMakeLists.txt (1.10,
+	  CERTI-3_4_1, CERTI-MORSE-0_4), test/libgraphc/CMakeLists.txt
+	  (1.7): Compile Billard twice.  billard --> with GUI (when X11
+	  found) billard-nogui --> always compiled
+
+2010-12-10 12:43  erk
+
+	* doc/: certi_developer.cnf.in (3.6, CERTI-3_4_1),
+	  certi_install.cnf.in (3.7), certi_user.cnf.in (3.10, CERTI-3_4_1)
+	  (utags: CERTI-MORSE-0_4): Use a4 instead of a4wide which may not
+	  be available
+
+2010-12-09 15:01  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.5): Update List of
+	  services with hopefully complete set including 1516-2010 addition
+
+2010-12-08 19:07  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.4): Small Update
+
+2010-12-02 08:31  erk
+
+	* libRTI/: RTI1516ambassadorFactory.cpp (1.6, CERTI-3_4_1,
+	  CERTI-MORSE-0_4), RTIambassador.cc (3.124): Merge patch #7401 :
+	  Avoid the RTIA console window on Windows
+
+2010-11-23 11:04  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.3): MAJ with
+	  General Overview OK for FM and reported values from 1516-2000
+	  implem' report
+
+2010-11-22 23:38  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.2): Update service
+	  status list
+
+2010-11-22 22:45  erk
+
+	* doc/CERTI-HLA-ImplementationStatusList.ods (1.1): Add first CERTI
+	  HLA implementation status list
+
+2010-11-22 15:56  erk
+
+	* RTIA/: RTIA.cc (3.35), RTIA_federate.cc (3.115): More symbolic
+	  (named) trace instead of numeric ones
+
+2010-11-21 16:32  erk
+
+	* CMakeLists.txt (1.95): Try to fix compilation on SunOS (typo)
+
+2010-11-21 16:31  erk
+
+	* CMakeLists.txt (1.94): Try to fix compilation on SunOS
+
+2010-11-21 15:08  erk
+
+	* CMakeLists.txt (1.93): Add 32/64bits detection
+
+2010-11-21 13:12  erk
+
+	* doc/: CERTI-tickHandling.xml (1.6), RTIA-model-shot.png (1.1),
+	  libRTI-model-shot.png (1.1) (utags: CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Update Uppaal model
+
+2010-11-20 19:10  erk
+
+	* include/: RTI.hh (3.18), RTI/RTIambassador.h (1.3, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Improve API documentation with doxygen
+
+2010-11-20 18:49  erk
+
+	* doc/CERTI-tickHandling.xml (1.5): Uppaal model update
+
+2010-11-20 17:52  erk
+
+	* RTIA/: TimeManagement.cc (3.69), TimeManagement.hh (3.28,
+	  CERTI-3_4_1, CERTI-MORSE-0_4): Some french-->english renaming
+	  More API documentation.
+
+2010-11-20 17:51  erk
+
+	* doc/CERTI-tickHandling.q (1.1, CERTI-3_4_1, CERTI-MORSE-0_4):
+	  example of Uppaal Query
+
+2010-11-20 17:39  erk
+
+	* RTIA/RTIA_federate.cc (3.114), RTIA/TimeManagement.cc (3.68),
+	  doc/CERTI-tickHandling.xml (1.4): More documentation on tick
+	  internals
+
+2010-11-19 22:11  erk
+
+	* doc/CERTI-tickHandling.xml (1.3): Tick Model update
+
+2010-11-19 21:32  erk
+
+	* include/RTIambServices.hh (3.10), libRTI/RTIambassador.cc
+	  (3.123), RTIA/RTIA_federate.cc (3.113): Enhance tick related
+	  prog. comments and doc
+
+2010-11-19 14:12  erk
+
+	* RTIA/TimeManagement.hh (3.27): More comment about tick internals
+
+2010-11-19 14:11  erk
+
+	* doc/CERTI-tickHandling.xml (1.2): CERTI tick handling automaton
+	  (work in progress)
+
+2010-11-15 14:15  erk
+
+	* RTIA/ObjectManagement.hh (3.38), RTIA/RTIA_federate.cc (3.112),
+	  libCERTI/ObjectSet.cc (3.34, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/ObjectSet.hh (3.19, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/RootObject.cc (3.52, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/RootObject.hh (3.37), RTIA/FederationManagement.cc
+	  (3.88), RTIA/ObjectManagement.cc (3.74): Handle delete object
+	  action in RFE merged modified patch from Michael Raab: patch
+	  #7391 : Implement action in Resign Federation Execution
+
+2010-11-12 08:32  erk
+
+	* libCERTI/SocketMC.cc (3.23, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/SocketUDP.cc (3.30, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libCERTI/SocketUN.cc (3.37, CERTI-3_4_1, CERTI-MORSE-0_4),
+	  libRTI/RTI1516ambassadorFactory.cpp (1.5): Next fix for AIX 5.2
+	  and gcc 3.4.x
+
+2010-11-11 18:46  erk
+
+	* CMakeLists.txt (1.92), ReleaseProcess.txt (1.9, CERTI-3_4_1,
+	  CERTI-MORSE-0_4): Bump CVS to next possible version 3.4.1cvs
 
 2010-11-11 18:22  erk
 
