@@ -82,12 +82,15 @@ throw (BadInitializationParameter,
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 	ZeroMemory( &pi, sizeof(pi) );
+
+#ifndef RTIA_CONSOLE_SHOW
 	/*
 	 * Avoid displaying console window
 	 * when running RTIA.
 	 */
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_HIDE;
+#endif
 
 #if !defined(RTIA_USE_TCP)
 	SOCKET newPipeFd;

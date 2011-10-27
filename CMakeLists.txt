@@ -85,6 +85,12 @@ IF(RTIA_USE_TCP)
     ADD_DEFINITIONS(-DRTIA_USE_TCP)
 ENDIF(RTIA_USE_TCP)
 
+OPTION(RTIA_CONSOLE_SHOW
+       "Windows specific: if set to ON the RTIA console will be shown" OFF)
+IF(RTIA_CONSOLE_SHOW)
+    ADD_DEFINITIONS(-DRTIA_CONSOLE_SHOW)
+ENDIF(RTIA_CONSOLE_SHOW)
+
 # The new NULL Prime message protocol
 OPTION(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL 
          "NULL PRIME MESSAGE protocol is an enhanced version of the CMB NULL MESSAGE protocol (experimental)" OFF)
