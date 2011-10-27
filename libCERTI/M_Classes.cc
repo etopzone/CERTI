@@ -1,4 +1,4 @@
-// Generated on 2011 September Thu, 08 at 22:08:47 by the CERTI message generator
+// Generated on 2011 October Tue, 25 at 17:19:26 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "M_Classes.hh"
@@ -2958,7 +2958,7 @@ namespace certi {
    M_Modify_Lookahead::M_Modify_Lookahead() {
       this->messageName = "M_Modify_Lookahead";
       this->type = Message::MODIFY_LOOKAHEAD;
-      //lookahead= <no default value in message spec using builtin>
+      lookahead=0;
    }
 
    M_Modify_Lookahead::~M_Modify_Lookahead() {
@@ -2990,7 +2990,7 @@ namespace certi {
    M_Query_Lookahead::M_Query_Lookahead() {
       this->messageName = "M_Query_Lookahead";
       this->type = Message::QUERY_LOOKAHEAD;
-      //lookahead= <no default value in message spec using builtin>
+      lookahead=0;
    }
 
    M_Query_Lookahead::~M_Query_Lookahead() {

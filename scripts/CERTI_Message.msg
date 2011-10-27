@@ -545,11 +545,11 @@ message M_Query_Federate_Time : merge Message {}
 message M_Query_Min_Next_Event_Time : merge Message {}
 
 message M_Modify_Lookahead : merge Message {
-	required double lookahead
+	required double lookahead {default=0}
 }
 
 message M_Query_Lookahead : merge Message {
-	required double lookahead
+	required double lookahead {default=0}
 }
 
 message M_Retract : merge Message {
