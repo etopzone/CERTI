@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.146 2011/09/28 20:03:49 erk Exp $
+// $Id: Federation.cc,v 3.147 2011/10/29 17:07:02 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -202,7 +202,7 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
         }
 
 #ifdef WIN32
-        fom_paths.insert(fom_paths.end(),PACKAGE_INSTALL_PREFIX "\\share\\federations");
+        fom_paths.insert(fom_paths.end(),PACKAGE_INSTALL_PREFIX "\\share\\federations\\");
 #else
         fom_paths.insert(fom_paths.end(),PACKAGE_INSTALL_PREFIX "/share/federations/");
         fom_paths.insert(fom_paths.end(),"/usr/local/share/federations/");
@@ -2794,5 +2794,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.146 2011/09/28 20:03:49 erk Exp $
+// $Id: Federation.cc,v 3.147 2011/10/29 17:07:02 erk Exp $
 
