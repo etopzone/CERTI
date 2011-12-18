@@ -27,7 +27,7 @@
 # define NOMINMAX
 # endif
 # include <winsock2.h>
-# include <Ws2tcpip.h>
+# include <ws2tcpip.h>
 typedef u_long         in_addr_t;
 typedef unsigned short in_port_t;
 #else
