@@ -7,7 +7,8 @@ SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
 SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
 
 # here is the target environment located
-SET(CMAKE_FIND_ROOT_PATH  /usr/i586-mingw32msvc )
+SET(USER_ROOT_PATH /home/erk/erk-win32-dev)
+SET(CMAKE_FIND_ROOT_PATH  /usr/i586-mingw32msvc ${USER_ROOT_PATH})
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 
