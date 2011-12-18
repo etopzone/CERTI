@@ -409,9 +409,6 @@ ADD_SUBDIRECTORY( test )
 ADD_SUBDIRECTORY( doc )
 ADD_SUBDIRECTORY( scripts )
 
-install(EXPORT certi-targets DESTINATION share/scripts)
-
-
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
 SET(CPACK_PACKAGE_CONTACT "certi-devel@nongnu.org")
@@ -541,6 +538,27 @@ ADD_CUSTOM_TARGET(patch
 
 ENABLE_TESTING()
 
+## Here comes the CERTI export things ##
+# Create a CERTIBuildTreeSettings.cmake file for the use from the build tree
+configure_file(CERTIBuildTreeSettings.cmake.in
+  "${PROJECT_BINARY_DIR}/CERTIBuildTreeSettings.cmake" @ONLY)
+
+#file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
+#   "${INSTALL_INCLUDE_DIR}")
+set(CONF_REL_INCLUDE_DIR "../../include")
+configure_file(CERTIConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/CERTIConfig.cmake" @ONLY)
+configure_file(CERTIConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}/CERTIConfigVersion.cmake" @ONLY)
+
+# Install the Config mode files
+install(FILES
+        ${PROJECT_BINARY_DIR}/CERTIConfig.cmake
+        ${PROJECT_BINARY_DIR}/CERTIConfigVersion.cmake
+        DESTINATION share/scripts)
+# And the exported set
+install(EXPORT CERTIDepends DESTINATION share/scripts)
+
 IF (WIN32)
   MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")
 ELSE (WIN32)
@@ -550,3 +568,5 @@ ENDIF (WIN32)
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")
+
+
