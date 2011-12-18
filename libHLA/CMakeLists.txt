@@ -22,11 +22,11 @@ SOURCE_GROUP("Source Files\\Hash" FILES ${LIBHLA_HASH_SRCS})
 
 # Currently TLSF does not compile as-is on WIN32
 IF (NOT WIN32)
-SET(LIBHLA_ALLOC_SRCS tlsf.c tlsf.h tlsf_target.h)
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES tlsf.h)
-set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES LANGUAGE "C")
-set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES CFLAGS "-Wextra -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wno-long-long -Wstrict-aliasing=2")
-SOURCE_GROUP("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS})
+  SET(LIBHLA_ALLOC_SRCS tlsf.c tlsf.h tlsf_target.h)
+  LIST(APPEND LIBHLA_EXPORTED_INCLUDES tlsf.h)
+  set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES LANGUAGE "C")
+  set_source_files_properties(tlsf.c tlsf.h tlsf_target.h PROPERTIES CFLAGS "-Wextra -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wno-long-long -Wstrict-aliasing=2")
+  SOURCE_GROUP("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS})
 ENDIF (NOT WIN32)
 
 SET(LIBHLA_MB_SRCS MessageBuffer.cc MessageBuffer.hh MsgBuffer.c MsgBuffer.h)

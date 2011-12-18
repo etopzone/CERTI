@@ -48,6 +48,11 @@ if(WIN32)
   if(CMAKE_SYSTEM_VERSION MATCHES "6.1")
     set(SPECIFIC_SYSTEM_VERSION_NAME "Win7")
   endif(CMAKE_SYSTEM_VERSION MATCHES "6.1")
+  
+  # Cross-compiling
+  if (CMAKE_CROSSCOMPILING)
+     set(SPECIFIC_SYSTEM_VERSION_NAME "cross_${CMAKE_HOST_SYSTEM_NAME}")
+  endif()
 
   # Compilers
   # taken from http://predef.sourceforge.net/precomp.html#sec34
