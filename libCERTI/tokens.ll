@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.9 2010/11/09 12:43:30 erk Exp $
+// $Id: tokens.ll,v 3.10 2011/12/18 15:26:16 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"
@@ -65,11 +65,11 @@ ident   [A-Za-z_][-A-Za-z0-9_\.]*
 
 %%
 
-;;.*\n		certi::fedparser::line_number++ ; /* comments */
-[ \t]+		/* whitespaces */
-\n		certi::fedparser::line_number++ ;
-"("		return L_PAR ;
-")"		return R_PAR ;
+;;.*\r?\n   certi::fedparser::line_number++ ; /* comments */
+[ \t]+      /* whitespaces */
+\r?\n       certi::fedparser::line_number++ ;
+"("     return L_PAR ;
+")"     return R_PAR ;
 "("[Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee]	return ATTRIBUTE ;
 "("[Cc][Ll][Aa][Ss][Ss]	return CLASS ;
 "("[Dd][Ii][Mm][Ee][Nn][Ss][Ii][Oo][Nn]	return DIMENSION ;
@@ -80,36 +80,35 @@ ident   [A-Za-z_][-A-Za-z0-9_\.]*
 "("[Ii][Nn][Tt][Ee][Rr][Aa][Cc][Tt][Ii][Oo][Nn][Ss]	return INTERACTIONS ;
 "("[Oo][Bb][Jj][Ee][Cc][Tt][Ss]	return OBJECTS ;
 [Rr][Ee][Cc][Ee][Ii][Vv][Ee] {
-	certi::fedparser::order = certi::RECEIVE ;
-	return ORDER ;
+    certi::fedparser::order = certi::RECEIVE ;
+    return ORDER ;
 }
 [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp] {
-    certi::fedparser::timestamp_arg = std::string(yytext) ;	
-	certi::fedparser::order = certi::TIMESTAMP ;
-	return TIMESTAMP_TOKEN ;
+    certi::fedparser::timestamp_arg = std::string(yytext) ;
+    certi::fedparser::order = certi::TIMESTAMP ;
+    return TIMESTAMP_TOKEN ;
 }
 "("[Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]	return PARAMETER ;
 "("[Ss][Ee][Cc]_[Ll][Ee][Vv][Ee][Ll]	return SEC_LEVEL ;
 "("[Ss][Pp][Aa][Cc][Ee]	return SPACE ;
 "("[Ss][Pp][Aa][Cc][Ee][Ss]	return SPACES ;
 [Bb][Ee][Ss][Tt]_[Ee][Ff][Ff][Oo][Rr][Tt] {
-	certi::fedparser::transport = certi::BEST_EFFORT ;	
-	return TRANSPORT ;
+     certi::fedparser::transport = certi::BEST_EFFORT ;
+     return TRANSPORT ;
 }
-[Rr][Ee][Ll][Ii][Aa][Bb][Ll][Ee] { 
-	certi::fedparser::transport = certi::RELIABLE ; 
- 	return TRANSPORT ; 
+[Rr][Ee][Ll][Ii][Aa][Bb][Ll][Ee] {
+    certi::fedparser::transport = certi::RELIABLE ;
+    return TRANSPORT ;
 }
-{ident}		{ certi::fedparser::arg = yytext ; return STRING ; }
-\"[^"\n]*["]	{ 			
-			certi::fedparser::arg = std::string(&yytext[1], 
-				&yytext[yyleng - 1]) ;			
-			return STRING ; 
-		}
-.		yyerror("invalid character");
+{ident}        { certi::fedparser::arg = yytext ; return STRING ; }
+\"[^"\n]*["]   {
+                certi::fedparser::arg = std::string(&yytext[1],&yytext[yyleng - 1]);
+                return STRING ;
+                }
+.              yyerror("invalid character");
 
 %%
 
 int yywrap() { 
-	return 1 ;
+    return 1 ;
 }
