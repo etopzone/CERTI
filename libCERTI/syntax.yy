@@ -20,13 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.9 2010/11/09 12:43:31 erk Exp $
+// $Id: syntax.yy,v 3.10 2011/12/29 17:59:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
 #include <iostream>
 
 using std::cout ;
+using std::cerr ;
 using std::endl ;
 
 namespace certi {
@@ -74,6 +75,7 @@ int yyerror(const char *);
 %token TRANSPORT
 %token TIMESTAMP_TOKEN
 
+%error-verbose
 %start fed
 
 %%
@@ -281,7 +283,7 @@ object_security_level:
 %%
 
 int yyerror(const char *s) {
-    cout << endl << certi::fedparser::fed_filename << ":" 
-	 << certi::fedparser::line_number << ": " << s << endl ;
+    cerr << endl << certi::fedparser::fed_filename << ":" 
+         << certi::fedparser::line_number << ": " << s << endl ;
     return 0 ;
 }
