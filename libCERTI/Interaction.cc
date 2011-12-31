@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.62 2010/03/23 13:13:27 erk Exp $
+// $Id: Interaction.cc,v 3.63 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -44,7 +44,7 @@ static PrettyDebug D("INTERACTION", "(Interact) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 Interaction::Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder)
-  : Subscribable(theName), parent(0), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
+  : Subscribable(theName), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
   superClass(0), id(PublicLevelID), space(0)
 {
 	/*
@@ -244,7 +244,7 @@ Interaction::display() const
 	cout << " Interaction " << handle << " \"" << name << "\" :" << endl ;
 
 	// Display inheritance
-	cout << " Parent Class Handle: " << parent << endl ;
+	cout << " Parent Class Handle: " << getSuperclass() << endl ;
 	cout << " Security Level: " << id << endl ;
 	cout << " " << subClasses->size() << " Child(s):" << endl ;
 
@@ -507,7 +507,7 @@ throw (FederateNotPublishing,
 	// Return the BroadcastList in case it had to be passed to the
 	// parent class.
 	return ibList ;
-		}
+}
 
 
 // ----------------------------------------------------------------------------
@@ -541,4 +541,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.62 2010/03/23 13:13:27 erk Exp $
+// $Id: Interaction.cc,v 3.63 2011/12/31 13:25:58 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.59 2011/09/02 21:42:24 erk Exp $
+// $Id: FederationsList.hh,v 3.60 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -452,7 +452,7 @@ public:
                          const std::vector <ParameterValue_t> &theValueList,
                          uint16_t theListSize,
                          FederationTime theTime,
-			 RegionHandle,
+                         RegionHandle,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
@@ -469,7 +469,7 @@ public:
                          const std::vector <ParameterHandle> &theParameterList,
                          const std::vector <ParameterValue_t> &theValueList,
                          uint16_t theListSize,
-			 RegionHandle,
+                         RegionHandle,
                          const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
@@ -697,4 +697,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.59 2011/09/02 21:42:24 erk Exp $
+// $Id: FederationsList.hh,v 3.60 2011/12/31 13:25:58 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.52 2010/11/15 13:15:46 erk Exp $
+// $Id: RootObject.cc,v 3.53 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -424,7 +424,7 @@ RootObject::addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC) {
 
 void
 RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
-	Interactions->addClass(currentIC,parentIC);
+    Interactions->addClass(currentIC,parentIC);
 } /* end of addInteractionClass */
 
 void
@@ -628,4 +628,4 @@ RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.52 2010/11/15 13:15:46 erk Exp $
+// $Id: RootObject.cc,v 3.53 2011/12/31 13:25:58 erk Exp $

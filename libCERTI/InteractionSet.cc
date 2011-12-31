@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: InteractionSet.cc,v 3.34 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -52,58 +52,55 @@ InteractionSet::~InteractionSet() {
 void
 InteractionSet::addClass(Interaction *newClass, Interaction *parentClass) {
 
-	D.Out(pdInit, "Adding new interaction class %d, ", newClass->getHandle());
-	/* link to server */
-	newClass->server = server ;
-	add(newClass,parentClass);
+    D.Out(pdInit, "Adding new interaction class %d, ", newClass->getHandle());
+    /* link to server */
+    newClass->server = server ;
+    add(newClass,parentClass);
 } /* end of addClass */
 
 // ----------------------------------------------------------------------------
 //! broadcastInteraction with time.
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
-		InteractionClassHandle interaction_handle,
-		const std::vector <ParameterHandle> &parameter_list,
-		const std::vector <ParameterValue_t> &value_list,
-		uint16_t list_size,
-		FederationTime the_time,
-		const RTIRegion *region,
-		const std::string& the_tag)
+        InteractionClassHandle interaction_handle,
+        const std::vector <ParameterHandle> &parameter_list,
+        const std::vector <ParameterValue_t> &value_list,
+        uint16_t list_size,
+        FederationTime the_time,
+        const RTIRegion *region,
+        const std::string& the_tag)
 throw (FederateNotPublishing,
-		InteractionClassNotDefined,
-		InteractionParameterNotDefined,
-		RTIinternalError) {
+        InteractionClassNotDefined,
+        InteractionParameterNotDefined,
+        RTIinternalError) {
 
-	G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction with time") ;
+    G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction with time") ;
 
-	// It may throw InteractionClassNotDefined.
-	//InteractionClassHandle currentClass = interaction_handle ;
-	Interaction *theInteraction = getObjectFromHandle(interaction_handle);
+    // It may throw InteractionClassNotDefined.
+    Interaction *theInteraction = getObjectFromHandle(interaction_handle);
 
-	InteractionBroadcastList *ibList ;
-	ibList = theInteraction->sendInteraction(federate_handle,
-			parameter_list,
-			value_list,
-			list_size,
-			the_time,
-			region,
-			the_tag);
+    InteractionBroadcastList *ibList;
+    ibList = theInteraction->sendInteraction(federate_handle,
+            parameter_list,
+            value_list,
+            list_size,
+            the_time,
+            region,
+            the_tag);
 
-	// Pass the Message(and its BroadcastList) to the Parent Classes.
-	if (ibList != NULL) {
-		//currentClass = theInteraction->parent ;
-		//while (CurrentClass != 0) {
-		// theInteraction = getObjectFromHandle(CurrentClass);
-		// theInteraction->broadcastInteractionMessage(List);
-		// CurrentClass = theInteraction->Father ;
-		//}
-		delete ibList ;
-	}
-	else
-		// BroadcastInteraction should not be called on the RTIA(see IsReady)
-		throw RTIinternalError("BroadcastInteraction called by RTIA.");
-
-	G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction with time") ;
+    // Pass the Message(and its BroadcastList) to the Parent Classes.
+    if (ibList != NULL) {
+        while (theInteraction->getSuperclass() != 0) {
+            theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
+            theInteraction->broadcastInteractionMessage(ibList,region);
+        }
+        delete ibList ;
+    }
+    else {
+        // BroadcastInteraction should not be called on the RTIA(see IsReady)
+        throw RTIinternalError("BroadcastInteraction called by RTIA.");
+    }
+    G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction with time") ;
 
 } /* end of broadcastInteraction (with time) */
 
@@ -111,46 +108,43 @@ throw (FederateNotPublishing,
 //! broadcastInteraction without time
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
-		InteractionClassHandle interaction_handle,
-		const std::vector <ParameterHandle> &parameter_list,
-		const std::vector <ParameterValue_t> &value_list,
-		uint16_t list_size,
-		const RTIRegion *region,
-		const std::string& the_tag)
+        InteractionClassHandle interaction_handle,
+        const std::vector <ParameterHandle> &parameter_list,
+        const std::vector <ParameterValue_t> &value_list,
+        uint16_t list_size,
+        const RTIRegion *region,
+        const std::string& the_tag)
 throw (FederateNotPublishing,
-		InteractionClassNotDefined,
-		InteractionParameterNotDefined,
-		RTIinternalError) {
+        InteractionClassNotDefined,
+        InteractionParameterNotDefined,
+        RTIinternalError) {
 
-	G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction without time") ;
+    G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction without time") ;
 
-	// It may throw InteractionClassNotDefined.
-	//InteractionClassHandle currentClass = interaction_handle ;
-	Interaction *theInteraction = getObjectFromHandle(interaction_handle);
+    // It may throw InteractionClassNotDefined.
+    //InteractionClassHandle currentClass = interaction_handle ;
+    Interaction *theInteraction = getObjectFromHandle(interaction_handle);
 
-	InteractionBroadcastList *ibList ;
-	ibList = theInteraction->sendInteraction(federate_handle,
-			parameter_list,
-			value_list,
-			list_size,
-			region,
-			the_tag);
+    InteractionBroadcastList *ibList ;
+    ibList = theInteraction->sendInteraction(federate_handle,
+            parameter_list,
+            value_list,
+            list_size,
+            region,
+            the_tag);
 
-	// Pass the Message(and its BroadcastList) to the Parent Classes.
-	if (ibList != NULL) {
-		//currentClass = theInteraction->parent ;
-		//while (CurrentClass != 0) {
-		// theInteraction = getObjectFromHandle(CurrentClass);
-		// theInteraction->broadcastInteractionMessage(List);
-		// CurrentClass = theInteraction->Father ;
-		//}
-		delete ibList ;
-	}
-	else
-		// BroadcastInteraction should not be called on the RTIA(see IsReady)
-		throw RTIinternalError("BroadcastInteraction called by RTIA.");
-
-	G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction without time") ;
+    // Pass the Message(and its BroadcastList) to the Parent Classes.
+    if (ibList != NULL) {
+        while (theInteraction->getSuperclass() != 0) {
+            theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
+            theInteraction->broadcastInteractionMessage(ibList,region);
+        }
+        delete ibList ;
+    } else {
+        // BroadcastInteraction should not be called on the RTIA(see IsReady)
+        throw RTIinternalError("BroadcastInteraction called by RTIA.");
+    }
+    G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction without time") ;
 } /* end of broadcastInteraction (WITHOUT time) */
 
 // ----------------------------------------------------------------------------
@@ -272,4 +266,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.33 2010/03/19 13:54:03 erk Exp $
+// $Id: InteractionSet.cc,v 3.34 2011/12/31 13:25:58 erk Exp $

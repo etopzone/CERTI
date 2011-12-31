@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.113 2011/09/02 21:42:24 erk Exp $
+// $Id: RTIG_processing.cc,v 3.114 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -951,50 +951,48 @@ RTIG::processUpdateAttributeValues(Socket *link, NM_Update_Attribute_Values *req
 void
 RTIG::processSendInteraction(Socket *link, NM_Send_Interaction *req)
 {
-	G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
-	G.Out(pdGendoc,"enter RTIG::processSendInteraction");
+    G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processSendInteraction");
 
-	// Building Value Array
-	auditServer << "IntID = " << req->getInteractionClass()
-									<< ", date = " << req->getDate().getTime();
-	if ( req->isDated() )
-	{
-		federations.updateParameter(req->getFederation(),
-				req->getFederate(),
-				req->getInteractionClass(),
-				req->getParameters(),
-				req->getValues(),
-				req->getParametersSize(),
-				req->getDate(),
-				req->getRegion(),
-				req->getLabel());
-	}
-	else
-	{
-		federations.updateParameter(req->getFederation(),
-				req->getFederate(),
-				req->getInteractionClass(),
-				req->getParameters(),
-				req->getValues(),
-				req->getParametersSize(),
-				req->getRegion(),
-				req->getLabel());
-	}
+    // Building Value Array
+    auditServer << "IntID = " << req->getInteractionClass()
+                << ", date = " << req->getDate().getTime();
+    if (req->isDated()) {
+        federations.updateParameter(req->getFederation(),
+                req->getFederate(),
+                req->getInteractionClass(),
+                req->getParameters(),
+                req->getValues(),
+                req->getParametersSize(),
+                req->getDate(),
+                req->getRegion(),
+                req->getLabel());
+    }
+    else {
+        federations.updateParameter(req->getFederation(),
+                req->getFederate(),
+                req->getInteractionClass(),
+                req->getParameters(),
+                req->getValues(),
+                req->getParametersSize(),
+                req->getRegion(),
+                req->getLabel());
+    }
 
-	D.Out(pdDebug, "Interaction %d parameters update completed",
-			req->getInteractionClass());
+    D.Out(pdDebug, "Interaction %d parameters update completed",
+            req->getInteractionClass());
 
-	NM_Send_Interaction rep ;
-	rep.setFederate(req->getFederate());
-	rep.setInteractionClass(req->getInteractionClass());
-	// Don't forget label and tag
-	rep.setLabel(req->getLabel());
-	rep.setTag(req->getTag());
-	G.Out(pdGendoc,"processSendInteraction===>write");
-	rep.send(link,NM_msgBufSend); // send answer to RTIA
+    NM_Send_Interaction rep ;
+    rep.setFederate(req->getFederate());
+    rep.setInteractionClass(req->getInteractionClass());
+    // Don't forget label and tag
+    rep.setLabel(req->getLabel());
+    rep.setTag(req->getTag());
+    G.Out(pdGendoc,"processSendInteraction===>write");
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 
-	G.Out(pdGendoc,"exit RTIG::processSendInteraction");
-	G.Out(pdGendoc,"END ** SEND INTERACTION SERVICE **");
+    G.Out(pdGendoc,"exit RTIG::processSendInteraction");
+    G.Out(pdGendoc,"END ** SEND INTERACTION SERVICE **");
 
 }
 
@@ -1564,4 +1562,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.113 2011/09/02 21:42:24 erk Exp $
+// $Id: RTIG_processing.cc,v 3.114 2011/12/31 13:25:58 erk Exp $

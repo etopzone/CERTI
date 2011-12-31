@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.43 2011/07/11 11:17:26 erk Exp $
+// $Id: Interaction.hh,v 3.44 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -205,13 +205,6 @@ public:
 
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
-    /**
-     * The super class handle.
-     * 0 if they aren't any.
-     */
-    InteractionClassHandle parent ;
-
-    //std::list<InteractionClassHandle> children ;
 
     uint16_t depth ;
 
@@ -265,4 +258,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.43 2011/07/11 11:17:26 erk Exp $
+// $Id: Interaction.hh,v 3.44 2011/12/31 13:25:58 erk Exp $
