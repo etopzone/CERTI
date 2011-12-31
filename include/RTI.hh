@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.19 2011/04/26 11:07:38 erk Exp $
+// $Id: RTI.hh,v 3.20 2011/12/31 13:24:00 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -62,6 +62,10 @@ public:
 
 	/**
 	 * RTI (RunTime Infrastructure) Ambassador class.
+	 * The RTIambassador class is the interface used by an
+	 * HLA federate to call the RTI. The RTI may call the
+	 * federate back using the Federate Ambassador class
+	 * @see FederateAmbassador.
 	 */
     class RTI_EXPORT RTIambassador
     {
@@ -74,6 +78,9 @@ public:
 
     /**
      * Federate Ambassador class.
+     * The FederateAmbassador is the structure RTI callback class.
+     * When the RTI needs to contact the federate it calls one
+     * of the FederateAmbassador class methods.
      */
     class RTI_EXPORT FederateAmbassador
     {
