@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.23 2010/11/09 12:43:30 erk Exp $
+// $Id: fed.cc,v 3.24 2011/12/31 13:24:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -330,27 +330,27 @@ endObject()
 void
 startInteraction()
 {
-	Interaction *parent = NULL;
-	Interaction *interaction = new Interaction(interactionclassname_arg,interactionHandle++,transport,order);
+    Interaction *parent = NULL;
+    Interaction *interaction = new Interaction(interactionclassname_arg,interactionHandle++,transport,order);
 
-	/* does this interaction class have a parent ? */
-	if (interactions.size() > 0) {
-		parent = interactions.back();
-	}
+    /* does this interaction class have a parent ? */
+    if (interactions.size() > 0) {
+        parent = interactions.back();
+    }
 
-	root_object->addInteractionClass(interaction,parent);
-	/* put the freshly created interaction on the interaction stack
-	 * (for inheritance handle)
-	 */
-	interactions.push_back(interaction);
+    root_object->addInteractionClass(interaction,parent);
+    /* put the freshly created interaction on the interaction stack
+     * (for inheritance handle)
+     */
+    interactions.push_back(interaction);
 
-	indent();
-	if(verbose)
-		cout << "(interaction \"" << interactionclassname_arg << "\" (id "
-		<< interaction->getHandle() << ")" ;
-	printTransport();
-	printOrder();
-	++indentation ;
+    indent();
+    if(verbose)
+        cout << "(interaction \"" << interactionclassname_arg << "\" (id "
+        << interaction->getHandle() << ")" ;
+    printTransport();
+    printOrder();
+    ++indentation ;
 }
 
 // ----------------------------------------------------------------------------
@@ -474,4 +474,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.23 2010/11/09 12:43:30 erk Exp $
+// $Id: fed.cc,v 3.24 2011/12/31 13:24:27 erk Exp $

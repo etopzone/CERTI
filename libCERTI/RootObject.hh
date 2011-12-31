@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.38 2011/09/01 13:50:54 erk Exp $
+// $Id: RootObject.hh,v 3.39 2011/12/31 13:23:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -27,17 +27,17 @@
 
 // forward declaration
 namespace certi {
-	class Object;
-	class ObjectSet;
-	class ObjectAttribute;
-	class ObjectClass;
-	class ObjectClassSet;
-	class ObjectClassAttribute;
-	class Interaction;
-	class InteractionSet;
-	class RTIRegion;
-	class RoutingSpace;
-    class NM_Join_Federation_Execution;
+   class Object;
+   class ObjectSet;
+   class ObjectAttribute;
+   class ObjectClass;
+   class ObjectClassSet;
+   class ObjectClassAttribute;
+   class Interaction;
+   class InteractionSet;
+   class RTIRegion;
+   class RoutingSpace;
+   class NM_Join_Federation_Execution;
 }  // namespace certi
 
 #include "certi.hh"
@@ -204,4 +204,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.38 2011/09/01 13:50:54 erk Exp $
+// $Id: RootObject.hh,v 3.39 2011/12/31 13:23:44 erk Exp $
