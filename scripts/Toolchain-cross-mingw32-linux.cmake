@@ -1,7 +1,16 @@
 # the name of the target operating system
 SET(CMAKE_SYSTEM_NAME Windows)
 
-set(COMPILER_PREFIX "i586-mingw32msvc")
+# Choose an appropriate compiler prefix
+
+# for classical mingw32
+# see http://www.mingw.org/
+#set(COMPILER_PREFIX "i586-mingw32msvc")
+
+# for 32 or 64 bits mingw-w64
+# see http://mingw-w64.sourceforge.net/
+set(COMPILER_PREFIX "i686-w64-mingw32")
+#set(COMPILER_PREFIX "x86_64-w64-mingw32"
 
 # which compilers to use for C and C++
 find_program(CMAKE_RC_COMPILER NAMES ${COMPILER_PREFIX}-windres)
