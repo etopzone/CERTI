@@ -565,6 +565,8 @@ ELSE (WIN32)
   MESSAGE(STATUS "*** CERTI has been successfully configured ********")
 ENDIF (WIN32)
 
+add_test(package ${CMAKE_BUILD_TOOL} package)
+
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")
