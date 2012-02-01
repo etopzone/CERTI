@@ -23,18 +23,10 @@ namespace rti1516
 		return *this;
 	}
 
-namespace certi
-{
-	const std::wstring displayRTIexception(rti1516::Exception const &e)
-	{
-		return e.what();
-	}
-}
-
 	std::wostream & 
 	operator << (std::wostream &stream, Exception const &e)
 	{
-		return stream << certi::displayRTIexception(e) << std::endl;
+		return stream << e.what() << std::endl;
 	}
 
 
