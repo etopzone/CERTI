@@ -18,9 +18,9 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 
-# Test 32/64 bits 
+# Test 32/64 bits
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-   message(STATUS "Host is 64 bits") 
+   message(STATUS "Host is 64 bits")
    add_definitions(-DHOST_IS_64BITS)
 else("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    message(STATUS "Host is 32 bits")
@@ -432,7 +432,15 @@ SET(CPACK_PROJECT_CONFIG_FILE "${CERTI_BINARY_DIR}/CERTICPackOptions.cmake")
 
 IF (WIN32)
     SET(CPACK_SOURCE_GENERATOR "ZIP")
-    SET(CPACK_GENERATOR "NSIS;ZIP")
+    SET(CPACK_GENERATOR "ZIP")
+    # Add NSIS generator iff makensis is found on the system
+    find_program(MAKENSIS_EXECUTABLE
+                 NAMES makensis
+                 DOC "The NSIS package maker command")
+    if (MAKENSIS_EXECUTABLE)
+      list(APPEND CPACK_GENERATOR "NSIS")
+    endif(MAKENSIS_EXECUTABLE)
+
     ## Add a custom target callable from IDE (Mostly for Visual Studio)
     GET_FILENAME_COMPONENT(CPACK_COMMAND ${CMAKE_COMMAND} PATH)
     SET(CPACK_COMMAND ${CPACK_COMMAND}/cpack)
@@ -445,7 +453,7 @@ IF (WIN32)
     SET(CMAKE_INSTALL_DEBUG_LIBRARIES "Yes")
     # Install Runtime Libraries
     INCLUDE(InstallRequiredSystemLibraries)
-    
+
     # NSIS installer specific part
     SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
     SET(CPACK_NSIS_CREATE_ICONS "
