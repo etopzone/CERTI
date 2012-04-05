@@ -14,8 +14,9 @@ along with this program, in the file "gpl.txt"; if not, write to the
 Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 02111-1307 USA
 
-The "libRTI" and "libCERTI" components are licensed under the GNU
-Lesser General Public License. This is a GPL-compatible license (this
+All the library components (e.g. libRTI, libCERTI, libHLA...)
+components are licensed under the GNU Lesser General Public License.
+This is a GPL-compatible license (this
 is why CERTI can be considered as GPL software). You should have
 received a copy of the GNU LGPL with this program, in the file
 "lesser.txt".
