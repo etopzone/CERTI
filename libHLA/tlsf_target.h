@@ -1,5 +1,5 @@
-#ifndef _TARGET_H_
-#define _TARGET_H_
+#ifndef _TLSF_TARGET_H_
+#define _TLSF_TARGET_H_
 
 #include <pthread.h>
 
