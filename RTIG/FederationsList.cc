@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.76 2011/12/31 13:25:58 erk Exp $
+// $Id: FederationsList.cc,v 3.77 2012/04/26 07:49:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1405,7 +1405,7 @@ FederationsList::requestClassAttributeValueUpdate(Handle federationHandle,
 
 	Federation *federation = searchFederation(federationHandle);
 
-	return federation->requestClassAttributeValueUpdate(federate, classHandle, attributes, list_size);
+	federation->requestClassAttributeValueUpdate(federate, classHandle, attributes, list_size);
 }
 
 void
@@ -1446,5 +1446,5 @@ FederationsList::getNullPrimeValue(FederationHandle federation)
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.76 2011/12/31 13:25:58 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.77 2012/04/26 07:49:35 erk Exp $
 
