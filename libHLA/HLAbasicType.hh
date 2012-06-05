@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.7 2010/03/14 17:35:20 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.8 2012/06/05 15:33:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -140,7 +140,7 @@ struct __swap<T,8>
 };
 
 // HLA basic type, represented by <T> type stored in <S> using <E> encoding.
-template<class T, class S, template<class T>class E>
+template<class T, class S, template<class W>class E>
 struct HLAbasicType
 {
     HLAbasicType& operator = (const T& data)
@@ -178,7 +178,7 @@ struct HLAbasicType
     static const bool m_isVariable = false;
 };
 
-template<class T, class S, template<class T>class E>
+template<class T, class S, template<class W>class E>
 std::ostream& PrintBuffer(std::ostream& stream, HLAbasicType<T,S,E>& buffer)
 { return __print_buffer(stream, (void*)&buffer, buffer.__sizeof()); }
 
@@ -218,5 +218,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.7 2010/03/14 17:35:20 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.8 2012/06/05 15:33:18 erk Exp $
 

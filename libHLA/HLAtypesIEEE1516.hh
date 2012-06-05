@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAtypesIEEE1516.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.6 2012/06/05 15:33:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_IEEE1516_HH
@@ -47,6 +47,7 @@
  */
 
 #include <HLAbuffer.hh>
+#include <cstring>
 
 namespace libhla {
 
@@ -120,5 +121,5 @@ public:
 
 #endif // _HLATYPES_IEEE1516_HH
 
-// $Id: HLAtypesIEEE1516.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.6 2012/06/05 15:33:18 erk Exp $
 
