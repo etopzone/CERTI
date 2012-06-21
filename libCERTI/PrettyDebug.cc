@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.10 2009/10/21 19:51:12 erk Exp $
+// $Id: PrettyDebug.cc,v 4.11 2012/06/21 08:03:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "PrettyDebug.hh"
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 
 #include <stdarg.h>
@@ -42,6 +43,21 @@
 std::ostream PrettyDebug::_defaultOutputStream(std::cerr.rdbuf());
 std::string PrettyDebug::_federateName;
 
+void PrettyDebug::initStreams() {
+    static std::filebuf* fb = NULL;
+    if (!fb) {
+        const char *value = getenv("CERTI_DEBUG_FILE");
+        if  (value) {
+            fb = new std::filebuf();
+            fb->open(value, std::ios_base::out | std::ios_base::app);
+        }
+    }
+    /* replace buffer stream if we have one */
+    if (fb) {
+        _defaultOutputStream.rdbuf(fb);
+    }
+}
+
 // ----------------------------------------------------------------------------
 /** Constructor. Initialize the debug process according to the value
  *  of the 'name' environment variable.  The 'header' message is put
@@ -49,11 +65,14 @@ std::string PrettyDebug::_federateName;
  *  whatever you need. */
 PrettyDebug::PrettyDebug(const char* name, const char* header)
 {
+    PrettyDebug::initStreams();
+
     if (header)
         _header = header;
 
-    for (unsigned i = pdUnused; i < unsigned(pdLast); ++i)
-	_streams[i] = 0;
+    for (unsigned i = pdUnused; i < unsigned(pdLast); ++i) {
+        _streams[i] = 0;
+    }
 
     // note that if we do not have a name, we cannot enable any debug message ...
     if (name) {
@@ -64,9 +83,10 @@ PrettyDebug::PrettyDebug(const char* name, const char* header)
             char debugKeys[] = pdDebugKeysString;
             unsigned valueLen = strlen(value);
             for (unsigned i = 0; i < valueLen; ++i) {
-		const char* pos = strchr(debugKeys, value[i]);
-		if (pos)
+                const char* pos = strchr(debugKeys, value[i]);
+                if (pos) {
                     _streams[pos - debugKeys] = &_defaultOutputStream;
+                }
             }
         }
     }
@@ -176,4 +196,4 @@ PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
     return stream;
 }
 
-// $Id: PrettyDebug.cc,v 4.10 2009/10/21 19:51:12 erk Exp $
+// $Id: PrettyDebug.cc,v 4.11 2012/06/21 08:03:25 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.8 2009/10/21 20:04:46 erk Exp $
+// $Id: PrettyDebug.hh,v 4.9 2012/06/21 08:03:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -32,6 +32,7 @@
 #include "certi.hh"
 #include <iosfwd>
 #include <string>
+#include <fstream>
 
 /** Do not use the pdUnused and pdLast Levels!!! Do not also specify
  *  any value for the elements, because order is used and missing
@@ -122,10 +123,11 @@ private:
     std::string _header;
     std::ostream* _streams[pdLast];
 
+    static void initStreams();
     static std::ostream _defaultOutputStream;
     static std::string _federateName;
 };
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.8 2009/10/21 20:04:46 erk Exp $
+// $Id: PrettyDebug.hh,v 4.9 2012/06/21 08:03:24 erk Exp $
