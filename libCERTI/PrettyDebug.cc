@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.11 2012/06/21 08:03:25 erk Exp $
+// $Id: PrettyDebug.cc,v 4.12 2012/06/21 12:16:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "PrettyDebug.hh"
@@ -36,20 +36,31 @@
 #ifdef _WIN32
 # include <time.h>
 # include <sys/timeb.h>
+# include <process.h>
 #else
 # include <sys/time.h>
+# include <sys/types.h>
+# include <unistd.h>
 #endif
 
 std::ostream PrettyDebug::_defaultOutputStream(std::cerr.rdbuf());
 std::string PrettyDebug::_federateName;
+std::filebuf* PrettyDebug::fb = NULL;
 
 void PrettyDebug::initStreams() {
-    static std::filebuf* fb = NULL;
     if (!fb) {
         const char *value = getenv("CERTI_DEBUG_FILE");
         if  (value) {
+            std::ostringstream filename;
+            int pid
+#ifdef _WIN32
+              = _getpid();
+#else
+              =(int)getpid();
+#endif
+            filename << value <<"-" <<pid;
             fb = new std::filebuf();
-            fb->open(value, std::ios_base::out | std::ios_base::app);
+            fb->open(filename.str().c_str(), std::ios_base::out | std::ios_base::trunc);
         }
     }
     /* replace buffer stream if we have one */
@@ -196,4 +207,4 @@ PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
     return stream;
 }
 
-// $Id: PrettyDebug.cc,v 4.11 2012/06/21 08:03:25 erk Exp $
+// $Id: PrettyDebug.cc,v 4.12 2012/06/21 12:16:17 erk Exp $
