@@ -20,17 +20,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.10 2011/12/18 15:26:16 erk Exp $
+// $Id: tokens.ll,v 3.11 2012/07/22 12:39:53 erk Exp $
 // ----------------------------------------------------------------------------
 
+#include "config.h"
 #include "syntax.h"
 #include "certi.hh"
 #include <string>
 #include <iostream>
 
+
 // Help the mingw bison/yacc pair when building with msvc from msys
 #ifndef HAVE_UNISTD_H
 #define YY_NO_UNISTD_H 1
+#else
+#include <unistd.h>
 #endif
 #ifdef _WIN32
 #define isatty(fid) 0
