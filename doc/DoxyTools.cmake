@@ -34,9 +34,9 @@ MACRO(PARSE_ARGUMENTS prefix arg_names option_names)
     ELSE (is_arg_name)
       LIST_CONTAINS(is_option ${arg} ${option_names})
       IF (is_option)
-	     SET(${prefix}_${arg} TRUE)
+        SET(${prefix}_${arg} TRUE)
       ELSE (is_option)
-	     SET(current_arg_list ${current_arg_list} ${arg})
+        SET(current_arg_list ${current_arg_list} ${arg})
       ENDIF (is_option)
     ENDIF (is_arg_name)
   ENDFOREACH(arg)
@@ -56,10 +56,17 @@ MACRO(DoxyTools_ADD_DocSet)
     ENDIF(DoxyTools_VERBOSE)
 
     SET(${DOCSET}_DOC_OUTPUT_DIR ${DoxyTools_OUTPUT_DIR} CACHE PATH "${DOCSET} doc output dir")
+    set(OUTPUT_FILES "")
     # Define appropriate doc type generation for Doxygen
+    # and associated output files.
     LIST_CONTAINS(genpdf "pdf" ${DoxyTools_DOC_TYPE})
     IF (genpdf)
        SET(${DOCSET}_DOC_GENERATE_LATEX "YES")
+       SET(OUTPUT_FILE_PDF "${DoxyTools_OUTPUT_DIR}/latex/refman.pdf")
+       SET(OUTPUT_FILE_TEX "${DoxyTools_OUTPUT_DIR}/latex/refman.tex")
+       SET(OUTPUT_FILES "${OUTPUT_FILES} ${OUTPUT_FILE_TEX} ${OUTPUT_FILE_PDF}")
+       # find pdflatex compiler
+       find_package(LATEX)
     ELSE (genpdf)
        SET(${DOCSET}_DOC_GENERATE_LATEX "NO")
     ENDIF(genpdf)
@@ -67,6 +74,11 @@ MACRO(DoxyTools_ADD_DocSet)
     LIST_CONTAINS(genhtml "html" ${DoxyTools_DOC_TYPE})
     IF (genhtml)
        SET(${DOCSET}_DOC_GENERATE_HTML "YES")
+       SET(OUTPUT_FILE_HTML "${DoxyTools_OUTPUT_DIR}/html/index.html")
+       SET(OUTPUT_FILES "${OUTPUT_FILES} ${OUTPUT_FILE_HTML}")
+       FOREACH(arg ${DoxyTools_INPUT_FILES})
+          CONFIGURE_FILE(${arg} ${DoxyTools_OUTPUT_DIR}/html/${arg} COPYONLY)
+       ENDFOREACH(arg)
     ELSE (genhtml)
        SET(${DOCSET}_DOC_GENERATE_HTML "NO")
     ENDIF(genhtml)
@@ -79,46 +91,42 @@ MACRO(DoxyTools_ADD_DocSet)
         CONFIGURE_FILE(${DoxyTools_CONFIG_FILE}.in ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
     ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${DoxyTools_CONFIG_FILE}.in)
 
-    IF (genhtml)
-       SET(OUTPUT_FILE ${DoxyTools_OUTPUT_DIR}/html/index.html)
-       FOREACH(arg ${DoxyTools_INPUT_FILES})
-          CONFIGURE_FILE(${arg} ${DoxyTools_OUTPUT_DIR}/html/${arg} COPYONLY)
-       ENDFOREACH(arg)
-    ENDIF(genhtml)
-
     # create output directory
     FILE(MAKE_DIRECTORY ${DoxyTools_OUTPUT_DIR})
-    IF(OUTPUT_FILE)
-       ADD_CUSTOM_COMMAND(
-          OUTPUT  ${OUTPUT_FILE}
-          COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
+    IF(OUTPUT_FILES)
+      # Always run doxygen (independently of the targeted output formats)
+      ADD_CUSTOM_COMMAND(
+          OUTPUT  ${OUTPUT_FILE_HTML} ${OUTPUT_FILE_TEX}
+          COMMAND ${CMAKE_COMMAND} -E echo_append "Building ${DOCSET} Documentation..."
           COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
           COMMAND ${CMAKE_COMMAND} -E echo "Done."
           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
           DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
-       ADD_CUSTOM_TARGET(${DOCSET}_doc ALL DEPENDS ${OUTPUT_FILE})
-    ENDIF(OUTPUT_FILE)
+       # If genpdf was specified AND a pdflatex compiler was found
+       # then create a rule for running pdflatex
+       IF(genpdf AND PDFLATEX_COMPILER)
+         ADD_CUSTOM_COMMAND(
+           OUTPUT  ${OUTPUT_FILE_PDF}
+           COMMAND ${CMAKE_COMMAND} -E echo_append "Building ${DOCSET} PDF Documentation..."
+           COMMAND ${PDFLATEX_COMPILER} refman.tex
+           COMMAND ${CMAKE_COMMAND} -E echo "Done."
+           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOCSET}/latex
+           DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE} ${OUTPUT_FILE_TEX})
+       ENDIF(genpdf AND PDFLATEX_COMPILER)
+       ADD_CUSTOM_TARGET(${DOCSET}_doc ALL DEPENDS ${OUTPUT_FILE_HTML} ${OUTPUT_FILE_TEX} ${OUTPUT_FILE_PDF} )
+    ENDIF(OUTPUT_FILES)
 
     ADD_CUSTOM_TARGET(${DOCSET}_doc_forced
-           COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
+           COMMAND ${CMAKE_COMMAND} -E echo_append "Building ${DOCSET} Documentation..."
            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
            COMMAND ${CMAKE_COMMAND} -E echo "Done."
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-    # If genpdf was specified AND a pdflatex compiler was found
-    # then create a rule for running pdflatex
-    IF(genpdf AND PDFLATEX_COMPILER)
-        ADD_CUSTOM_TARGET(${DOCSET}_doc_forced_pdf
-           COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} PDF Documentation..."
-           COMMAND ${PDFLATEX_COMPILER} refman.tex
-           COMMAND ${CMAKE_COMMAND} -E echo "Done."
-           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOCSET}/latex)
-    ENDIF(genpdf AND PDFLATEX_COMPILER)
+    add_dependencies(${DOCSET}_doc_forced ${DOCSET}_doc)
 
-    IF (genhtml)
+    IF (genhtml OR genpdf)
        MESSAGE(STATUS "Will build DOC Set <${DOCSET}> in <${DoxyTools_OUTPUT_DIR}>")
        CONFIGURE_FILE(doc_install.in ${DOCSET}_doc_install.cmake @ONLY)
        INSTALL(SCRIPT ${CMAKE_BINARY_DIR}/doc/${DOCSET}_doc_install.cmake COMPONENT DOC)
-    ENDIF (genhtml)
-
+    ENDIF ()
 ENDMACRO(DoxyTools_ADD_DocSet)
