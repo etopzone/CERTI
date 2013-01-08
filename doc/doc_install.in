@@ -1,7 +1,7 @@
 MESSAGE(STATUS "Now installing Doc set <@DOCSET@> ...")
 SET(HTMLGEN @genhtml@)
 IF (HTMLGEN)
-   MESSAGE(STATUS "Installing HTML output for Doc set <@DOCSET@>...")      
+   MESSAGE(STATUS "Installing HTML output for Doc set <@DOCSET@>...")
    EXECUTE_PROCESS(COMMAND @CMAKE_COMMAND@ -E copy_directory @DoxyTools_OUTPUT_DIR@/html $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/share/doc/certi/@DOCSET@/html)
 ENDIF (HTMLGEN)
 
