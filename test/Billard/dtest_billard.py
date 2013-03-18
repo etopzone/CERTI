@@ -28,6 +28,8 @@ import time
 import threading
 import getopt, sys
 import dtest
+# uncomment this if you want Promela/SPIN trace
+#from dtest.Promela_trace_handler import PromelaTraceHandler
 
 pseudoExecActive=0
 
@@ -78,7 +80,7 @@ certi_home_defined=False
 display=":0.0"
 rtig_param = getUserHostPath("rtig")
 billard_param = getUserHostPath("billard")
-    
+
 for o, a in opts:
     if o in ("--help"):
             usage()
@@ -94,11 +96,11 @@ for o, a in opts:
         certi_home_defined=True
     if o in ("--display"):
         display = a;
-        
+
 if not certi_home_defined:
     if os.environ.has_key("CERTI_HOME"):
         certi_home=os.environ["CERTI_HOME"]
-    else: 
+    else:
         print "You must define CERTI_HOME environment variable"
         sys.exit(2)
 
@@ -161,18 +163,30 @@ dtest.DTestMaster.logger.setLevel(level=logging.WARNING)
 dtest.DTester.logger.setLevel(level=logging.WARNING)
 dtest.SSHSessionHandler.logger.setLevel(level=logging.WARNING)
 
+# Add some trace Handlers
+traceManager = dtest.TraceManager()
+# TAP goes to stdout
+traceManager.register(dtest.TAPTraceHandler())
+# MSC goes to file MSC-trace
+traceManager.register(dtest.MSCTraceHandler(output="billard-trace.msc"))
+# Promela goes to PROMELA_trace
+#traceManager.register(PromelaTraceHandler())
+
 def goTest():
     myDTestMaster = dtest.DTestMaster("CERTI Billard autotest","Launch RTIG + several billards")
+    myDTestMaster.registerTraceManager(traceManager)
+    myDTestMaster.trace=1
+
     if (pseudoExecActive):
         myDTestMaster.setPseudoExec(1)
     myDTestMaster.timeout = 40
     myDTestMaster.register(rtig)
     myDTestMaster.register(firstBillard)
     myDTestMaster.register(billard2)
-    myDTestMaster.register(billard3)  
-    #myDTestMaster.register(billard4)  
+    myDTestMaster.register(billard3)
+    #myDTestMaster.register(billard4)
     myDTestMaster.startTestSequence()
     myDTestMaster.waitTestSequenceEnd()
-    
+
 goTest()
 
