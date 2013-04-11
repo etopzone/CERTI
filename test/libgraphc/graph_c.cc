@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: graph_c.cc,v 3.6 2011/07/20 12:50:39 erk Exp $ 
+// $Id: graph_c.cc,v 3.7 2013/04/11 20:16:19 erk Exp $ 
 // ---------------------------------------------------------------------------
 
 
@@ -27,15 +27,15 @@
 #ifndef X_DISPLAY_MISSING
 
 #include <X11/Xlib.h>
-#include <X11/Xutil.h> 
-#include <X11/cursorfont.h> 
+#include <X11/Xutil.h>
+#include <X11/cursorfont.h>
 
 #include "graph_c.hh"
 
 #include <X11/bitmaps/cntr_ptr>
 #include <X11/bitmaps/dot>
 #include <X11/bitmaps/dropbar8>
-#include <X11/bitmaps/left_ptr> 
+#include <X11/bitmaps/left_ptr>
 #include <X11/bitmaps/right_ptr>
 #include <X11/bitmaps/menu16>
 #include <X11/bitmaps/opendotMask>
@@ -2210,4 +2210,4 @@ void ModeNORMAL()
 
 #endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.cc,v 3.6 2011/07/20 12:50:39 erk Exp $
+// $Id: graph_c.cc,v 3.7 2013/04/11 20:16:19 erk Exp $

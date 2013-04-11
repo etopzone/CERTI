@@ -12,7 +12,7 @@ install(TARGETS graph-nogui
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
-    
+
 if (NOT X_DISPLAY_MISSING)
    add_library(graph ${BESTATIC} graph_c.cc)
    install(TARGETS graph
