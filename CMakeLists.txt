@@ -308,7 +308,7 @@ ENDIF(NOT FORCE_NO_X11)
 
 IF (X11_FOUND)
    FIND_FILE(HAVE_X11_XLIB
-     NAMES Xlib
+     NAMES Xlib Xlib.h
      PATH_SUFFIXES X11/
      DOC "X11 Xlib header")
 
@@ -316,7 +316,7 @@ IF (X11_FOUND)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/Xlib not found.")
   ENDIF(NOT HAVE_X11_XLIB)
-  
+
   FIND_FILE(HAVE_X11_BITMAPS_CNTR_PTR
     NAMES cntr_ptr
     PATH_SUFFIXES X11/bitmaps
