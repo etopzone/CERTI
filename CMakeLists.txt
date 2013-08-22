@@ -307,8 +307,9 @@ ELSE(NOT FORCE_NO_X11)
 ENDIF(NOT FORCE_NO_X11)
 
 IF (X11_FOUND)
+   message(STATUS "X11 include directory: ${X11_INCLUDE_DIR}")
    FIND_FILE(HAVE_X11_XLIB
-     NAMES Xlib Xlib.h
+     NAMES Xlib.h
      PATH_SUFFIXES X11/
      DOC "X11 Xlib header")
 
