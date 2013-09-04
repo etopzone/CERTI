@@ -182,27 +182,36 @@ _est_init_udp = true ;
 }
 
 // ----------------------------------------------------------------------------
-SocketUDP::SocketUDP()
-{
-_est_init_udp = false ;
+SocketUDP::SocketUDP() {
+
+    PhysicalLink = true ;
+
     _socket_udp = 0;
 
-hp_distant = NULL ;
-PhysicalLink = true ;
+    memset(&sock_local, 0, sizeof(struct sockaddr_in));
+    memset(&sock_source, 0, sizeof(struct sockaddr_in));
+    Addr_Source = NULL;
+    Port_Source = 0;
 
-BufferSize = 0 ;
-SentBytesCount = 0 ;
-RcvdBytesCount = 0 ;
+    memset(&sock_distant, 0, sizeof(struct sockaddr_in));
+    hp_distant   = NULL;
 
-#ifdef _WIN32								//netDot
-	SocketTCP::winsockStartup();
+    _sock_local_length = 0;
+    _est_init_udp      = false;
+
+    SentBytesCount = 0;
+    RcvdBytesCount = 0;
+    BufferSize     = 0;
+
+#ifdef _WIN32 //netDot
+    SocketTCP::winsockStartup();
 #endif
 }
 
 // ----------------------------------------------------------------------------
 SocketUDP::~SocketUDP()
 {
-// Fermeture
+// Closing the socket
 if (_est_init_udp)
 	close();
 

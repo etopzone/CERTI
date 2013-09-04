@@ -67,7 +67,7 @@ private:
 
 	bool PhysicalLink ; ///< tak indicating physical or logical link
 
-		SOCKET _socket_udp;
+	SOCKET _socket_udp;
 	struct sockaddr_in sock_local ;
 
 	struct sockaddr_in sock_source ;
