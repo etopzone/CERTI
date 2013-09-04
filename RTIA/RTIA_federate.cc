@@ -794,9 +794,11 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		break ;
 
 	case Message::QUERY_LOOKAHEAD: {
-		M_Query_Lookahead *QLr, *QLq;
+		M_Query_Lookahead *QLr;
 		QLr = static_cast<M_Query_Lookahead*>(rep);
-		QLq = static_cast<M_Query_Lookahead*>(req);
+		// The query part is not necessary.
+		//M_Query_Lookahead *QLq;
+		//QLq = static_cast<M_Query_Lookahead*>(req);
 		D.Out(pdTrace,
 				"Receiving Message from Federate, type RequestLookAhead.");
 
