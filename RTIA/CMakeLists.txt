@@ -2,6 +2,17 @@
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libCERTI)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libRTI)
 
+find_program(GENGETOPT_PROGRAM NAMES gengetopt)
+if (GENGETOPT_PROGRAM)
+   set(GGOFILE ${CMAKE_CURRENT_SOURCE_DIR}/RTIA.ggo)
+   add_custom_target(GenRTIACmdline
+                    COMMAND ${GENGETOPT_PROGRAM} --no-handle-error --show-required -i ${GGOFILE}
+                    DEPENDS ${GGOFILE}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    COMMENT "Regenerate RTIA command line C files -- (from ${GGOFILE})"
+                    )
+endif(GENGETOPT_PROGRAM)
+
 SET(rtia_SRCS
   Communications.cc Communications.hh
   DataDistribution.cc DataDistribution.hh
