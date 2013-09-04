@@ -43,9 +43,9 @@ using std::string ;
 //! SignalHandler.
 extern "C" void SignalHandler(int sig)
 {
-	RTIG::signalHandler(sig);
-	// Catch signal again.
-	std::signal(sig, SignalHandler);
+    RTIG::signalHandler(sig);
+    // Catch signal again.
+    std::signal(sig, SignalHandler);
 }
 
 // ----------------------------------------------------------------------------
@@ -54,7 +54,7 @@ void
 NewHandler()
 throw (MemoryExhausted)
 {
-	throw MemoryExhausted("main RTIG");
+    throw MemoryExhausted("main RTIG");
 }
 
 // ----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ throw (MemoryExhausted)
  * one rtig process for each federation. However a single RTIG may
  * be used for several federations.
  * The command line usage of the RTIG is following:
- * \par rtig [-v 2]
+ * \par rtig [-v 2] [-l @IP|hostname]
  * \par
  * <ul>
  *   <li> \b -v  (optional) verbosity level </li>
@@ -75,6 +75,7 @@ throw (MemoryExhausted)
  *          <li> 1 -> small amount </li>
  *          <li> 2 -> show fed parse </li>
  *   </ul>
+ *   <li> \b -l  (optional) listening @IP address</li>
  * </ul>
  *
  * Once the RTIG is launched an HLA Federate may interact with the RTI.
@@ -94,45 +95,53 @@ throw (MemoryExhausted)
  */
 int main(int argc, char *argv[])
 {
-	RTIG myRTIG;
-	gengetopt_args_info args ;
-	if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
-	/* The default verbose level is 2 */
-	int verboseLevel = 2;
-	if (args.verbose_given)
-		verboseLevel = args.verbose_arg;
+    RTIG myRTIG;
+    gengetopt_args_info args ;
+    if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
+    /* The default verbose level is 2 */
+    int verboseLevel = 2;
+    if (args.verbose_given)
+        verboseLevel = args.verbose_arg;
 
 #if _WIN32
-	string dn = string(argv[0]);
-	dn = dn.substr(0,dn.find_last_of("\\"));
-	dn = dn.substr(0,dn.find_last_of("\\"));
-	if (NULL==getenv("CERTI_HOME")) {
-		dn = "CERTI_HOME="+dn+"\\";
-		cout << "Updating : " << dn << endl;
-		putenv(dn.c_str());
-	}
+    string dn = string(argv[0]);
+    dn = dn.substr(0,dn.find_last_of("\\"));
+    dn = dn.substr(0,dn.find_last_of("\\"));
+    if (NULL==getenv("CERTI_HOME")) {
+        dn = "CERTI_HOME="+dn+"\\";
+        cout << "Updating : " << dn << endl;
+        putenv(dn.c_str());
+    }
 #endif
 
-	if (verboseLevel>0) {
-		cout << "CERTI RTIG " VERSION " - Copyright 2002-2008  ONERA" << endl ;
-		cout << "This is free software ; see the source for copying "
-		     << "conditions. There is NO\nwarranty ; not even for "
-		     << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-		     << endl << endl ;
-	}
+    if (verboseLevel>0) {
+        cout << "CERTI RTIG " VERSION " - Copyright 2002-2008  ONERA" << endl ;
+        cout << "This is free software ; see the source for copying "
+             << "conditions. There is NO\nwarranty ; not even for "
+             << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+             << endl << endl ;
+    }
 
-	std::signal(SIGINT, SignalHandler);
+    std::signal(SIGINT, SignalHandler);
 #ifndef _WIN32
-	std::signal(SIGPIPE, SignalHandler);
+    std::signal(SIGPIPE, SignalHandler);
 #endif
 
-	std::set_new_handler(NewHandler);
+    std::set_new_handler(NewHandler);
 
-	myRTIG.setVerboseLevel(verboseLevel);
-	myRTIG.execute();
+    myRTIG.setVerboseLevel(verboseLevel);
+    // if a listening IP has been specified then use it
+    if (args.listen_given) {
+        myRTIG.setListeningIPAddress(args.listen_arg);
+    }
+    try {
+        myRTIG.execute();
+    } catch (NetworkError& e) {
+        std::cerr << "CERTI RTIG aborted with a Network Error: [" << e._reason << "]." <<std::endl;
+    }
 
-	if (verboseLevel>0) {
-		cout << "CERTI RTIG exiting." << endl ;
-	}
-	exit(EXIT_SUCCESS);
+    if (verboseLevel>0) {
+        cout << "CERTI RTIG exiting." << endl ;
+    }
+    exit(EXIT_SUCCESS);
 } /* end of main */

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.37 2010/10/02 13:20:37 erk Exp $
+// $Id: RTIG.hh,v 3.38 2013/09/04 07:56:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -32,6 +32,8 @@
 #include "FederationsList.hh"
 #include "AuditFile.hh"
 #include "HandleManager.hh"
+
+#include <string>
 
 namespace certi {
 namespace rtig {
@@ -56,13 +58,13 @@ public:
     static void signalHandler(int sig);
     static bool terminate ;
     void setVerboseLevel(int level) { verboseLevel = level ; federations.setVerboseLevel(level);}
-    void execute();
-
+    void setListeningIPAddress(const std::string& hostName) throw (NetworkError);
+    void execute() throw (NetworkError);
 
 private:
     // Both methods return the socket, because it may have been closed
     // & deleted.
-  Socket* processIncomingMessage(Socket*) throw (NetworkError) ;
+    Socket* processIncomingMessage(Socket*) throw (NetworkError) ;
     Socket* chooseProcessingMethod(Socket*, NetworkMessage *);
 
     void openConnection();
@@ -129,6 +131,7 @@ private:
     int tcpPort ;
     int udpPort ;
     int verboseLevel ;
+    in_addr_t listeningIPAddress;
     HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
@@ -145,4 +148,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.37 2010/10/02 13:20:37 erk Exp $
+// $Id: RTIG.hh,v 3.38 2013/09/04 07:56:43 erk Exp $

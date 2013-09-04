@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.69 2011/09/02 21:42:24 erk Exp $
+// $Id: RTIG.cc,v 3.70 2013/09/04 07:56:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -59,15 +59,19 @@ RTIG::RTIG()
       auditServer(RTIG_AUDIT_FILENAME),
       federations(socketServer, auditServer)
 {
+    this->verboseLevel = 0;
+    // the default is to listen on all network interface
+    // unless -l argument to rtig command line is specified
+    this->listeningIPAddress = 0;
     // Start RTIG services
     const char *tcp_port_s = getenv("CERTI_TCP_PORT");
     const char *udp_port_s = getenv("CERTI_UDP_PORT");
     if (tcp_port_s==NULL) tcp_port_s = PORT_TCP_RTIG ;
     if (udp_port_s==NULL) udp_port_s = PORT_UDP_RTIG ;
-    tcpPort = atoi(tcp_port_s);
-    udpPort = atoi(udp_port_s);
+    this->tcpPort = atoi(tcp_port_s);
+    this->udpPort = atoi(udp_port_s);
 
-    federations.setVerboseLevel(verboseLevel);
+    this->federations.setVerboseLevel(verboseLevel);
 }
 
 // ----------------------------------------------------------------------------
@@ -452,97 +456,111 @@ RTIG::closeConnection(Socket *link, bool emergency)
     G.Out(pdGendoc,"exit  RTIG::closeConnection");
 }
 
+void
+RTIG::setListeningIPAddress(const std::string& hostName) throw (NetworkError) {
+    this->listeningIPAddress = Socket::host2addr(hostName);
+}
+
+
 // ----------------------------------------------------------------------------
 // execute
 // Called only by RTIG main
 void
-RTIG::execute()
-{
-int result ;
-fd_set fd ;
-Socket *link ;
+RTIG::execute() throw (NetworkError) {
+    int result ;
+    fd_set fd ;
+    Socket *link ;
 
-// create TCP and UDP connections for the RTIG server
-udpSocketServer.createUDPServer(udpPort);
-tcpSocketServer.createTCPServer(tcpPort);
-// udpSocketServer.createUDPServer(PORT_UDP_RTIG);
+    // create TCP and UDP connections for the RTIG server
 
-if (verboseLevel>0) {
-	cout << "CERTI RTIG up and running ..." << endl ;
-	}
-terminate = false ;
+    // listen only on specified interface (if any)
+    //  1) listen on interface specified on the command line
+    if (this->listeningIPAddress != 0) {
+        udpSocketServer.createUDPServer(udpPort);
+        tcpSocketServer.createTCPServer(tcpPort, listeningIPAddress);
+    }
+    // default case listen on all network interfaces
+    else {
+        udpSocketServer.createUDPServer(udpPort);
+        tcpSocketServer.createTCPServer(tcpPort);
+    }
 
-while (!terminate) {
-	// Initialize fd_set structure with all opened sockets.
-	#if _WIN32
+    if (verboseLevel>0) {
+        cout << "CERTI RTIG up and running ..." << endl ;
+    }
+    terminate = false ;
 
-	result = 0;	// Wait for an incoming message.
-	while (!result)
-		{
-		int test;
+    while (!terminate) {
+        // Initialize fd_set structure with all opened sockets.
+    #if _WIN32
 
-		FD_ZERO(&fd);
-		FD_SET(tcpSocketServer.returnSocket(), &fd);
+        result = 0;	// Wait for an incoming message.
+        while (!result)
+        {
+            int test;
 
-		int highest_fd = socketServer.addToFDSet(&fd);
-		int server_socket = tcpSocketServer.returnSocket();
+            FD_ZERO(&fd);
+            FD_SET(tcpSocketServer.returnSocket(), &fd);
 
-		//typedef struct timeval {  long tv_sec;  long tv_usec; }
-		timeval		watchDog;
-		watchDog.tv_sec= 0;
-		watchDog.tv_usec= 50000L;
+            int highest_fd = socketServer.addToFDSet(&fd);
+            int server_socket = tcpSocketServer.returnSocket();
 
-		highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
+            //typedef struct timeval {  long tv_sec;  long tv_usec; }
+            timeval		watchDog;
+            watchDog.tv_sec= 0;
+            watchDog.tv_usec= 50000L;
 
-		result = select(highest_fd+1, &fd, NULL, NULL, &watchDog);
-		if (result < 0) test= WSAGetLastError();
-		if (terminate) break;
-		}
-	if (terminate) break;
+            highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
 
-	if((result == -1)&&(WSAGetLastError() == WSAEINTR)) break;
-	#else
-		FD_ZERO(&fd);
-		FD_SET(tcpSocketServer.returnSocket(), &fd);
+            result = select(highest_fd+1, &fd, NULL, NULL, &watchDog);
+            if (result < 0) test= WSAGetLastError();
+            if (terminate) break;
+        }
+        if (terminate) break;
 
-		int fd_max = socketServer.addToFDSet(&fd);
-		fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
+        if((result == -1)&&(WSAGetLastError() == WSAEINTR)) break;
+#else
+        FD_ZERO(&fd);
+        FD_SET(tcpSocketServer.returnSocket(), &fd);
 
-		result = 0 ;	// Wait for an incoming message.
-		result = select(fd_max + 1, &fd, NULL, NULL, NULL);
+        int fd_max = socketServer.addToFDSet(&fd);
+        fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
 
-		if((result == -1)&&(errno == EINTR)) break;
-	#endif
+        result = 0 ;	// Wait for an incoming message.
+        result = select(fd_max + 1, &fd, NULL, NULL, NULL);
 
-	// Is it a message from an already opened connection?
-	link = socketServer.getActiveSocket(&fd);
-	if (link != NULL) {
-		D.Out(pdCom, "Incoming message on socket %ld.",
-		link->returnSocket());
-		try {
-			do {
-				link = processIncomingMessage(link);
-				if (link == NULL)break ;
-				} while (link->isDataReady());
-			}
-		catch (NetworkError &e) {
-			if (!e._reason.empty())
-			D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason.c_str());
-			else
-			D.Out(pdExcept, "Catching Network Error, no reason string.");
-			cout << "RTIG dropping client connection " << link->returnSocket()
-			<< '.' << endl ;
-			closeConnection(link, true);
-			link = NULL ;
-			}
-		}
+        if((result == -1)&&(errno == EINTR)) break;
+#endif
 
-	// Or on the server socket ?
-	if (FD_ISSET(tcpSocketServer.returnSocket(), &fd)) {
-		D.Out(pdCom, "Demande de connexion.");
-		openConnection();
-		}
-	}
+        // Is it a message from an already opened connection?
+        link = socketServer.getActiveSocket(&fd);
+        if (link != NULL) {
+            D.Out(pdCom, "Incoming message on socket %ld.",
+                    link->returnSocket());
+            try {
+                do {
+                    link = processIncomingMessage(link);
+                    if (link == NULL)break ;
+                } while (link->isDataReady());
+            }
+            catch (NetworkError &e) {
+                if (!e._reason.empty())
+                    D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason.c_str());
+                else
+                    D.Out(pdExcept, "Catching Network Error, no reason string.");
+                cout << "RTIG dropping client connection " << link->returnSocket()
+                     << '.' << endl ;
+                closeConnection(link, true);
+                link = NULL ;
+            }
+        }
+
+        // Or on the server socket ?
+        if (FD_ISSET(tcpSocketServer.returnSocket(), &fd)) {
+            D.Out(pdCom, "Demande de connexion.");
+            openConnection();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1055,4 +1073,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.69 2011/09/02 21:42:24 erk Exp $
+// $Id: RTIG.cc,v 3.70 2013/09/04 07:56:32 erk Exp $

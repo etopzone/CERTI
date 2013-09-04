@@ -1,22 +1,35 @@
 include_directories(${CERTI_SOURCE_DIR}/libHLA)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libCERTI)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libRTI)
+include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
+include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 
-SET(rtig_SRCS
-  Federate.cc
-  Federation.cc
-  FederationsList.cc
+find_program(GENGETOPT_PROGRAM NAMES gengetopt)
+if (GENGETOPT_PROGRAM)
+   set(GGOFILE ${CMAKE_CURRENT_SOURCE_DIR}/RTIG.ggo)
+   add_custom_target(GenRTIGCmdline
+                    COMMAND ${GENGETOPT_PROGRAM} --no-handle-error --show-required -i ${GGOFILE}
+                    DEPENDS ${GGOFILE}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    COMMENT "Regenerate RTIG command line C files -- (from ${GGOFILE})"
+                    )
+endif(GENGETOPT_PROGRAM)
+set(rtig_SRCS_generated
+    RTIG_cmdline.c RTIG_cmdline.h)
+
+set(rtig_SRCS
+  Federate.cc Federate.hh
+  Federation.cc Federation.hh
+  FederationsList.cc FederationsList.hh
   main.cc
-  RTIG.cc
+  RTIG.cc RTIG.hh
   RTIG_processing.cc
-  Trace.cc
-  RTIG_cmdline.c  
+  Trace.cc Trace.hh
+  ${rtig_SRCS_generated}
   )
 
-ADD_EXECUTABLE(rtig ${rtig_SRCS})
-TARGET_LINK_LIBRARIES(rtig CERTI)
+add_executable(rtig ${rtig_SRCS})
+target_link_libraries(rtig CERTI)
 
-INSTALL(TARGETS rtig
+install(TARGETS rtig
     EXPORT CERTIDepends
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

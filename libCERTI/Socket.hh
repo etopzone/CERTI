@@ -39,6 +39,8 @@ typedef unsigned short in_port_t;
 typedef int SOCKET;
 #endif
 
+#include <cstring>
+#include <cerrno>
 #include <string>
 #include <sstream>
 
@@ -47,45 +49,64 @@ namespace certi {
 class CERTI_EXPORT Socket
 {
 public:
-	typedef unsigned long ByteCount_t;
-	virtual ~Socket() {};
+    typedef unsigned long ByteCount_t;
+    virtual ~Socket() {};
 
     virtual void createConnection(const char *server_name, unsigned int port)
         throw (NetworkError) = 0;
     virtual void send(const unsigned char *, size_t) = 0;
-	virtual void receive(void *Buffer, unsigned long Size) = 0 ;
-	virtual void close() = 0 ;
+    virtual void receive(void *Buffer, unsigned long Size) = 0 ;
+    virtual void close() = 0 ;
 
-	// This method may be used for implementation using Read Buffers,
-	// because in that case 'select' system calls are not trustworthy.
-	// See Important Note in SocketTCP.hh
-	virtual bool isDataReady() const = 0 ;
+    // This method may be used for implementation using Read Buffers,
+    // because in that case 'select' system calls are not trustworthy.
+    // See Important Note in SocketTCP.hh
+    virtual bool isDataReady() const = 0 ;
 
-	virtual unsigned long returnAdress() const = 0 ;
+    virtual unsigned long returnAdress() const = 0 ;
 
-		virtual SOCKET returnSocket() = 0;
+    virtual SOCKET returnSocket() = 0;
 
-	/**
-	 * This function build a string which represents
-	 * the provided IPv4 address as a "w.x.y.z".
-	 * @param[in] addr, the IPv4 address
-	 * @return the string "w.x.y.z"
-	 */
-	static const std::string addr2string(in_addr_t addr) {
-		typedef union {
-			uint32_t    addr;
-		    uint8_t     parts[4];
-		} addr_union_t;
-		std::stringstream msg;
+    /**
+     * This function builds a string which represents
+     * the provided IPv4 address as a "w.x.y.z".
+     * @param[in] addr, the IPv4 address
+     * @return the string "w.x.y.z"
+     */
+    static const std::string addr2string(in_addr_t addr) {
+        typedef union {
+            uint32_t    addr;
+            uint8_t     parts[4];
+        } addr_union_t;
+        std::stringstream msg;
 
         addr_union_t uaddr;
-		uaddr.addr = (uint32_t)ntohl((uint32_t)(addr));
-		msg << ""  << static_cast<int>(uaddr.parts[3])
-		    << "." << static_cast<int>(uaddr.parts[2])
-		    << "." << static_cast<int>(uaddr.parts[1])
-		    << "." << static_cast<int>(uaddr.parts[0]);
-		return msg.str();
-	}
+        uaddr.addr = (uint32_t)ntohl((uint32_t)(addr));
+        msg << ""  << static_cast<int>(uaddr.parts[3])
+            << "." << static_cast<int>(uaddr.parts[2])
+            << "." << static_cast<int>(uaddr.parts[1])
+            << "." << static_cast<int>(uaddr.parts[0]);
+        return msg.str();
+    }
+
+    /**
+     * This function builds an IP address out of an hostname.
+     */
+    static in_addr_t host2addr(const std::string& hostName) throw (NetworkError) {
+        in_addr_t retaddr=0;
+        // get host information from server name
+        // this may perform DNS query
+        struct hostent *hptr = gethostbyname(hostName.c_str());
+        // FIXME we should probably use getaddrinfo instead
+        if (NULL == hptr) {
+            throw NetworkError(stringize()
+                    << "gethostbyname gave NULL answer for hostname <"
+                    << hostName
+                    << "> with error <" << strerror(errno) << ">");
+        }
+        memcpy((void *) &retaddr, (void *) hptr->h_addr, hptr->h_length);
+        return retaddr;
+    }
 };
 
 } // namespace certi
