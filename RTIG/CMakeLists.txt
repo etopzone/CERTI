@@ -15,6 +15,12 @@ endif(GENGETOPT_PROGRAM)
 set(rtig_SRCS_generated
     RTIG_cmdline.c RTIG_cmdline.h)
 
+IF (CMAKE_COMPILER_IS_GNUCC) 
+   message(STATUS "INHIBIT Compiler warning for gengetopt generated files")
+   SET_SOURCE_FILES_PROPERTIES(${rtig_SRCS_generated}
+                               PROPERTIES COMPILE_FLAGS "-w")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 set(rtig_SRCS
   Federate.cc Federate.hh
   Federation.cc Federation.hh

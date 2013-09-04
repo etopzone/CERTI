@@ -12,6 +12,14 @@ if (GENGETOPT_PROGRAM)
                     COMMENT "Regenerate RTIA command line C files -- (from ${GGOFILE})"
                     )
 endif(GENGETOPT_PROGRAM)
+set(rtia_SRCS_generated
+    RTIA_cmdline.c RTIA_cmdline.h)
+
+IF (CMAKE_COMPILER_IS_GNUCC) 
+   message(STATUS "INHIBIT Compiler warning for gengetopt generated files")
+   SET_SOURCE_FILES_PROPERTIES(${rtia_SRCS_generated}
+                               PROPERTIES COMPILE_FLAGS "-w")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 SET(rtia_SRCS
   Communications.cc Communications.hh
@@ -25,7 +33,7 @@ SET(rtia_SRCS
   RTIA.cc RTIA.hh
   RTIA_federate.cc
   RTIA_network.cc
-  RTIA_cmdline.c RTIA_cmdline.h
+  ${rtia_SRCS_generated}
   Statistics.cc Statistics.hh
   TimeManagement.cc TimeManagement.hh  
   )
