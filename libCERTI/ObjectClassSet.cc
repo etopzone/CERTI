@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.57 2011/10/03 09:17:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.58 2013/09/04 08:15:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -253,7 +253,8 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
     handled_iterator i;
 
     for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
-        // Call KillFederate on that class until it returns NULL.
+        // Call KillFederate on every class of the current class set
+        // until it returns NULL.
         do {
             D.Out(pdExcept, "Kill Federate Handle %d .", theFederate);
             ocbList = i->second->killFederate(theFederate);
@@ -261,7 +262,8 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
             D.Out(pdExcept, "Federate Handle %d Killed.", theFederate);
 
             // Broadcast RemoveObject message recursively
-            if (ocbList != 0) {
+            // going from current class to its superclass.
+            if (ocbList != NULL) {
                 currentClass = i->second->getSuperclass();
                 D.Out(pdExcept, "List not NULL");
                 while (currentClass != 0) {
@@ -270,11 +272,11 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
                           currentClass);
 
                     // It may throw ObjectClassNotDefined
-                    i->second = getObjectFromHandle(currentClass);
+                    ObjectClass* currentClassObject = getObjectFromHandle(currentClass);
 
-                    i->second->broadcastClassMessage(ocbList);
+                    currentClassObject->broadcastClassMessage(ocbList);
 
-                    currentClass = i->second->getSuperclass();
+                    currentClass = currentClassObject->getSuperclass();
                 }
 
                 delete ocbList ;
@@ -623,4 +625,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.57 2011/10/03 09:17:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.58 2013/09/04 08:15:34 erk Exp $
