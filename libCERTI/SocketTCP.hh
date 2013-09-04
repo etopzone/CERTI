@@ -77,27 +77,27 @@ protected:
     ByteCount_t RcvdBytesCount;
 
 private:
-	int open();
-	int connect(in_port_t port, in_addr_t addr);
-	int listen(unsigned long howMuch=5);
-	int bind(in_port_t port=0, in_addr_t addr=INADDR_ANY);
-	void setPort(in_port_t port);
-	in_port_t getPort() const ;
-	in_addr_t getAddr() const ;
+    int open();
+    int connect(in_port_t port, in_addr_t addr);
+    int listen(unsigned long howMuch=5);
+    int bind(in_port_t port=0, in_addr_t addr=INADDR_ANY);
+    void setPort(in_port_t port);
+    in_port_t getPort() const ;
+    in_addr_t getAddr() const ;
 
-        SOCKET _socket_tcp;
-	#ifdef _WIN32
-	  static int winsockInits;
-	#endif
-bool	_est_init_tcp;
-struct sockaddr_in _sockIn;
+    SOCKET _socket_tcp;
+    #ifdef _WIN32
+    static int winsockInits;
+    #endif
+    bool _est_init_tcp;
+    struct sockaddr_in _sockIn;
 
 #ifdef SOCKTCP_BUFFER_LENGTH
-	// This class can use a buffer to reduce the number of systems calls
-	// when reading a lot of small amouts of data. Each time a Receive
-	// is made, it will try to read SOCKTCP_BUFFER_LENGTH
-	char ReadBuffer[SOCKTCP_BUFFER_LENGTH] ;
-	unsigned long RBLength ;
+    // This class can use a buffer to reduce the number of systems calls
+    // when reading a lot of small amouts of data. Each time a Receive
+    // is made, it will try to read SOCKTCP_BUFFER_LENGTH
+    char ReadBuffer[SOCKTCP_BUFFER_LENGTH] ;
+    unsigned long RBLength ;
 #endif
 };
 

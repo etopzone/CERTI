@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.34 2010/11/11 12:02:05 erk Exp $
+// $Id: SocketTCP.cc,v 3.35 2013/09/04 12:53:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketTCP.hh"
@@ -90,13 +90,14 @@ if (winsockInits==0)
 // ----------------------------------------------------------------------------
 SocketTCP::SocketTCP()
 {
-_est_init_tcp = false ;
+    _socket_tcp    = 0;
+    _est_init_tcp  = false;
 
-SentBytesCount = 0 ;
-RcvdBytesCount = 0 ;
+    SentBytesCount = 0;
+    RcvdBytesCount = 0;
 
 #ifdef _WIN32
-	winsockStartup();
+    winsockStartup();
 #endif
 
 #ifdef SOCKTCP_BUFFER_LENGTH
@@ -108,10 +109,10 @@ RcvdBytesCount = 0 ;
 SocketTCP::~SocketTCP()
 {// Fermeture
 if (_est_init_tcp)
-	close();
+    close();
 
 #ifdef _WIN32
-	winsockShutdown();
+    winsockShutdown();
 #endif
 
 #ifdef RTI_PRINTS_STATISTICS
@@ -580,4 +581,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.34 2010/11/11 12:02:05 erk Exp $
+// $Id: SocketTCP.cc,v 3.35 2013/09/04 12:53:03 erk Exp $
