@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.52 2011/07/13 15:43:17 erk Exp $
+// $Id: certi.hh,v 3.53 2013/09/06 12:50:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -29,20 +29,25 @@
         // Visual C++ does not support declarations using exceptions specification
         #pragma warning(disable: 4290)
         #pragma warning(disable: 4251)
-		#pragma message("MSVC specific - disabled pragma 4251 and 4290 (exception specification ignored)")
-	    #define _CRT_SECURE_NO_DEPRECATE
-		#pragma message("JvY - Used _CRT_SECURE_NO_DEPRECATE")
-
-		#ifndef FAKED_INTTYPES_DEFINED
-		#define FAKED_INTTYPES_DEFINED
-        typedef unsigned __int64        uint64_t;
-        typedef __int64			 int64_t;
-        typedef unsigned __int32	uint32_t;
-        typedef __int32			 int32_t;
-        typedef unsigned __int16	uint16_t;
-        typedef __int16			 int16_t;
-        typedef unsigned __int8	         uint8_t;
-        typedef __int8			  int8_t;
+        #pragma message("MSVC specific - disabled pragma 4251 and 4290 (exception specification ignored)")
+        #define _CRT_SECURE_NO_DEPRECATE
+        #pragma message("JvY - Used _CRT_SECURE_NO_DEPRECATE")
+        // Visual C++ 2012 or greater now includes stdint
+        // http://stackoverflow.com/questions/126279/c99-stdint-h-header-and-ms-visual-studio
+        #if _MSC_VER >= 1700
+            #include <stdint.h>
+        #else
+            #ifndef FAKED_INTTYPES_DEFINED
+            #define FAKED_INTTYPES_DEFINED
+            typedef unsigned __int64    uint64_t;
+            typedef __int64             int64_t;
+            typedef unsigned __int32    uint32_t;
+            typedef __int32             int32_t;
+            typedef unsigned __int16    uint16_t;
+            typedef __int16             int16_t;
+            typedef unsigned __int8     uint8_t;
+            typedef __int8              int8_t;
+        #endif
         #endif
         #ifdef _M_X64
            #define  CERTI_INT64_CONSTANT(val)  (val##L)
@@ -324,4 +329,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.52 2011/07/13 15:43:17 erk Exp $
+// $Id: certi.hh,v 3.53 2013/09/06 12:50:14 erk Exp $
