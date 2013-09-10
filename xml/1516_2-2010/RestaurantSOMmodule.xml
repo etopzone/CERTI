@@ -1,0 +1,1030 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd">
+	<modelIdentification>
+		<name>RestaurantExample</name>
+		<type>SOM</type>
+		<version>1.0 Alpha</version>
+		<modificationDate>2010-08-16</modificationDate>
+		<securityClassification>Unclassified</securityClassification>
+		<releaseRestriction>NA</releaseRestriction>
+		<releaseRestriction>Other organizations not related to Federated Foods</releaseRestriction>
+		<purpose>To define an HLA object model for a restaurant federate</purpose>
+		<applicationDomain>Restaurant operations</applicationDomain>
+		<description>This object model is intended to define the external HLA interface of the "Joe's Place" restaurant simulation.</description>
+		<useLimitation>NA</useLimitation>
+		<useHistory>Federated Foods federation</useHistory>
+		<keyword notes="Note3">
+			<taxonomy>Food Service Industry Taxonomy</taxonomy>
+			<keywordValue>Restaurant</keywordValue>
+		</keyword>
+		<keyword>
+			<taxonomy>Food Service Industry Taxonomy</taxonomy>
+			<keywordValue>Menu</keywordValue>
+		</keyword>
+		<keyword>
+			<taxonomy>Food Service Industry Taxonomy</taxonomy>
+			<keywordValue>Waiter</keywordValue>
+		</keyword>
+		<poc>
+			<pocType>Sponsor</pocType>
+			<pocName>Mr. Joseph Doe</pocName>
+			<pocOrg>Joe's Place</pocOrg>
+			<pocTelephone>1-977-555-1234</pocTelephone>
+			<pocEmail>doej@joesplace.com</pocEmail>
+		</poc>
+		<reference>
+			<type>Standalone</type>
+			<identification>NA</identification>
+		</reference>
+		<other>See Mobil International Restaurant Guide for more information</other>
+		<glyph alt="Restaurant" height="32" type="GIF" width="32">R0lGODlhIAAgAKIAAAAAAP///wD//8DAwICAgP///wAAAAAAACH5BAEAAAUALAAAAAAgACAAAAOrGLLc/nCpSKu9mIXNu//eA47kJpbgMHznALxESRBq6GzEq69fPtAxzimne/E4PuBPeAsQi4COKzdzdYZQI7LouzYDWUDQqaPaGhwX9PgUs764dWAqPnrRIzURdcrv+HA9ZYB4IESHJX0eiE92dxqCbnFab4VbL4uDZ5AcRY5gmkyFapQfXI8SG6d+oS1FKKQAPFilJKSinDMoHjUmgbskisDBGcXGx2jIFwEJADs=
+</glyph>
+	</modelIdentification>
+	<serviceUtilization>
+		<connect section="4.2" isCallback="false" isUsed="false"/>
+		<disconnect section="4.3" isCallback="false" isUsed="false"/>
+		<connectionLost section="4.4" isCallback="true" isUsed="false"/>
+		<createFederationExecution section="4.5" isCallback="false" isUsed="false"/>
+		<destroyFederationExecution section="4.6" isCallback="false" isUsed="false"/>
+		<listFederationExecutions section="4.7" isCallback="false" isUsed="false"/>
+		<reportFederationExecutions section="4.8" isCallback="true" isUsed="false"/>
+		<joinFederationExecution section="4.9" isCallback="false" isUsed="true"/>
+		<resignFederationExecution section="4.10" isCallback="false" isUsed="true"/>
+		<registerFederationSynchronizationPoint section="4.11" isCallback="false" isUsed="false"/>
+		<confirmSynchronizationPointRegistration section="4.12" isCallback="true" isUsed="false"/>
+		<announceSynchronizationPoint section="4.13" isCallback="true" isUsed="false"/>
+		<synchronizationPointAchieved section="4.14" isCallback="false" isUsed="false"/>
+		<federationSynchronized section="4.15" isCallback="true" isUsed="false"/>
+		<requestFederationSave section="4.16" isCallback="false" isUsed="false"/>
+		<initiateFederateSave section="4.17" isCallback="true" isUsed="false"/>
+		<federateSaveBegun section="4.18" isCallback="false" isUsed="false"/>
+		<federateSaveComplete section="4.19" isCallback="false" isUsed="false"/>
+		<federationSaved section="4.20" isCallback="true" isUsed="false"/>
+		<abortFederationSave section="4.21" isCallback="false" isUsed="false"/>
+		<queryFederationSaveStatus section="4.22" isCallback="false" isUsed="false"/>
+		<federationSaveStatusResponse section="4.23" isCallback="true" isUsed="false"/>
+		<requestFederationRestore section="4.24" isCallback="false" isUsed="false"/>
+		<confirmFederationRestorationRequest section="4.25" isCallback="true" isUsed="false"/>
+		<federationRestoreBegun section="4.26" isCallback="true" isUsed="false"/>
+		<initiateFederateRestore section="4.27" isCallback="true" isUsed="false"/>
+		<federateRestoreComplete section="4.28" isCallback="false" isUsed="false"/>
+		<federationRestored section="4.29" isCallback="true" isUsed="false"/>
+		<abortFederationRestore section="4.30" isCallback="false" isUsed="false"/>
+		<queryFederationRestoreStatus section="4.31" isCallback="false" isUsed="false"/>
+		<federationRestoreStatusResponse section="4.32" isCallback="true" isUsed="false"/>
+		<publishObjectClassAttributes section="5.2" isCallback="false" isUsed="false"/>
+		<unpublishObjectClassAttributes section="5.3" isCallback="false" isUsed="false"/>
+		<publishInteractionClass section="5.4" isCallback="false" isUsed="false"/>
+		<unpublishInteractionClass section="5.5" isCallback="false" isUsed="false"/>
+		<subscribeObjectClassAttributes section="5.6" isCallback="false" isUsed="false"/>
+		<unsubscribeObjectClassAttributes section="5.7" isCallback="false" isUsed="false"/>
+		<subscribeInteractionClass section="5.8" isCallback="false" isUsed="false"/>
+		<unsubscribeInteractionClass section="5.9" isCallback="false" isUsed="false"/>
+		<startRegistrationForObjectClass section="5.10" isCallback="true" isUsed="false"/>
+		<stopRegistrationForObjectClass section="5.11" isCallback="true" isUsed="false"/>
+		<turnInteractionsOn section="5.12" isCallback="true" isUsed="false"/>
+		<turnInteractionsOff section="5.13" isCallback="true" isUsed="false"/>
+		<reserveObjectInstanceName section="6.2" isCallback="false" isUsed="false"/>
+		<objectInstanceNameReserved section="6.3" isCallback="true" isUsed="false"/>
+		<releaseObjectInstanceName section="6.4" isCallback="false" isUsed="false"/>
+		<reserveMultipleObjectInstanceNames section="6.5" isCallback="false" isUsed="false"/>
+		<multipleObjectInstanceNamesReserved section="6.6" isCallback="true" isUsed="false"/>
+		<releaseMultipleObjectInstanceNames section="6.7" isCallback="false" isUsed="false"/>
+		<registerObjectInstance section="6.8" isCallback="false" isUsed="false"/>
+		<discoverObjectInstance section="6.9" isCallback="true" isUsed="false"/>
+		<updateAttributeValues section="6.10" isCallback="false" isUsed="false"/>
+		<reflectAttributeValues section="6.11" isCallback="true" isUsed="false"/>
+		<sendInteraction section="6.12" isCallback="false" isUsed="false"/>
+		<receiveInteraction section="6.13" isCallback="true" isUsed="false"/>
+		<deleteObjectInstance section="6.14" isCallback="false" isUsed="false"/>
+		<removeobjectinstance section="6.15" isCallback="true" isUsed="false"/>
+		<localDeleteObjectInstance section="6.16" isCallback="false" isUsed="false"/>
+		<attributesInScope section="6.17" isCallback="true" isUsed="false"/>
+		<attributesOutOfScope section="6.18" isCallback="true" isUsed="false"/>
+		<requestAttributeValueUpdate section="6.19" isCallback="false" isUsed="false"/>
+		<provideAttributeValueUpdate section="6.20" isCallback="true" isUsed="false"/>
+		<turnUpdatesOnForObjectInstance section="6.21" isCallback="true" isUsed="false"/>
+		<turnUpdatesOffForObjectInstance section="6.22" isCallback="true" isUsed="false"/>
+		<requestAttributeTransportationTypeChange section="6.23" isCallback="false" isUsed="false"/>
+		<confirmAttributeTransportationTypeChange section="6.24" isCallback="true" isUsed="false"/>
+		<queryAttributeTransportationType section="6.25" isCallback="false" isUsed="false"/>
+		<reportAttributeTransportationType section="6.26" isCallback="true" isUsed="false"/>
+		<requestInteractionTransportationTypeChange section="6.27" isCallback="false" isUsed="false"/>
+		<confirmInteractionTransportationTypeChange section="6.28" isCallback="true" isUsed="false"/>
+		<queryInteractionTransportationType section="6.29" isCallback="false" isUsed="false"/>
+		<reportInteractionTransportationType section="6.30" isCallback="true" isUsed="false"/>
+		<unconditionalAttributeOwnershipDivestiture section="7.2" isCallback="false" isUsed="false"/>
+		<negotiatedAttributeOwnershipDivestiture section="7.3" isCallback="false" isUsed="false"/>
+		<requestAttributeOwnershipAssumption section="7.4" isCallback="true" isUsed="false"/>
+		<requestDivestitureConfirmation section="7.5" isCallback="true" isUsed="false"/>
+		<confirmDivestiture section="7.6" isCallback="false" isUsed="false"/>
+		<attributeOwnershipAcquisitionNotification section="7.7" isCallback="true" isUsed="false"/>
+		<attributeOwnershipAcquisition section="7.8" isCallback="false" isUsed="false"/>
+		<attributeOwnershipAcquisitionIfAvailable section="7.9" isCallback="false" isUsed="false"/>
+		<attributeOwnershipUnavailable section="7.10" isCallback="true" isUsed="false"/>
+		<requestAttributeOwnershipRelease section="7.11" isCallback="true" isUsed="false"/>
+		<attributeOwnershipReleaseDenied section="7.12" isCallback="false" isUsed="false"/>
+		<attributeOwnershipDivestitureIfWanted section="7.13" isCallback="false" isUsed="false"/>
+		<cancelNegotiatedAttributeOwnershipDivestiture section="7.14" isCallback="false" isUsed="false"/>
+		<cancelAttributeOwnershipAcquisition section="7.15" isCallback="false" isUsed="false"/>
+		<confirmAttributeOwnershipAcquisitionCancellation section="7.16" isCallback="true" isUsed="false"/>
+		<queryAttributeOwnership section="7.17" isCallback="false" isUsed="false"/>
+		<informAttributeOwnership section="7.18" isCallback="true" isUsed="false"/>
+		<isAttributeOwnedByFederate section="7.19" isCallback="false" isUsed="false"/>
+		<enableTimeRegulation section="8.2" isCallback="false" isUsed="false"/>
+		<timeRegulationEnabled section="8.3" isCallback="true" isUsed="false"/>
+		<disableTimeRegulation section="8.4" isCallback="false" isUsed="false"/>
+		<enableTimeConstrained section="8.5" isCallback="false" isUsed="false"/>
+		<timeConstrainedEnabled section="8.6" isCallback="true" isUsed="false"/>
+		<disableTimeConstrained section="8.7" isCallback="false" isUsed="false"/>
+		<timeAdvanceRequest section="8.8" isCallback="false" isUsed="false"/>
+		<timeAdvanceRequestAvailable section="8.9" isCallback="false" isUsed="false"/>
+		<nextMessageRequest section="8.10" isCallback="false" isUsed="false"/>
+		<nextMessageRequestAvailable section="8.11" isCallback="false" isUsed="false"/>
+		<flushQueueRequest section="8.12" isCallback="false" isUsed="false"/>
+		<timeAdvanceGrant section="8.13" isCallback="true" isUsed="false"/>
+		<enableAsynchronousDelivery section="8.14" isCallback="false" isUsed="false"/>
+		<disableAsynchronousDelivery section="8.15" isCallback="false" isUsed="false"/>
+		<queryGALT section="8.16" isCallback="false" isUsed="false"/>
+		<queryLogicalTime section="8.17" isCallback="false" isUsed="false"/>
+		<queryLITS section="8.18" isCallback="false" isUsed="false"/>
+		<modifyLookahead section="8.19" isCallback="false" isUsed="false"/>
+		<queryLookahead section="8.20" isCallback="false" isUsed="false"/>
+		<retract section="8.21" isCallback="false" isUsed="false"/>
+		<requestRetraction section="8.22" isCallback="true" isUsed="false"/>
+		<changeAttributeOrderType section="8.23" isCallback="false" isUsed="false"/>
+		<changeInteractionOrderType section="8.24" isCallback="false" isUsed="false"/>
+		<createRegion section="9.2" isCallback="false" isUsed="false"/>
+		<commitRegionModifications section="9.3" isCallback="false" isUsed="false"/>
+		<deleteRegion section="9.4" isCallback="false" isUsed="false"/>
+		<registerObjectInstanceWithRegions section="9.5" isCallback="false" isUsed="false"/>
+		<associateRegionsForUpdates section="9.6" isCallback="false" isUsed="false"/>
+		<unassociateRegionsForUpdates section="9.7" isCallback="false" isUsed="false"/>
+		<subscribeObjectClassAttributesWithRegions section="9.8" isCallback="false" isUsed="false"/>
+		<unsubscribeObjectClassAttributesWithRegions section="9.9" isCallback="false" isUsed="false"/>
+		<subscribeInteractionClassWithRegions section="9.10" isCallback="false" isUsed="false"/>
+		<unsubscribeInteractionClassWithRegions section="9.11" isCallback="false" isUsed="false"/>
+		<sendInteractionWithRegions section="9.12" isCallback="false" isUsed="false"/>
+		<requestAttributeValueUpdateWithRegions section="9.13" isCallback="false" isUsed="false"/>
+		<getAutomaticResignDirective section="10.2" isCallback="false" isUsed="false"/>
+		<setAutomaticResignDirective section="10.3" isCallback="false" isUsed="false"/>
+		<getFederateHandle section="10.4" isCallback="false" isUsed="false"/>
+		<getFederateName section="10.5" isCallback="false" isUsed="false"/>
+		<getObjectClassHandle section="10.6" isCallback="false" isUsed="false"/>
+		<getObjectClassName section="10.7" isCallback="false" isUsed="false"/>
+		<getKnownObjectClassHandle section="10.8" isCallback="false" isUsed="false"/>
+		<getObjectInstanceHandle section="10.9" isCallback="false" isUsed="false"/>
+		<getObjectInstanceName section="10.10" isCallback="false" isUsed="false"/>
+		<getAttributeHandle section="10.11" isCallback="false" isUsed="false"/>
+		<getAttributeName section="10.12" isCallback="false" isUsed="false"/>
+		<getUpdateRateValue section="10.13" isCallback="false" isUsed="false"/>
+		<getUpdateRateValueForAttribute section="10.14" isCallback="false" isUsed="false"/>
+		<getInteractionClassHandle section="10.15" isCallback="false" isUsed="true"/>
+		<getInteractionClassName section="10.16" isCallback="false" isUsed="false"/>
+		<getParameterHandle section="10.17" isCallback="false" isUsed="false"/>
+		<getParameterName section="10.18" isCallback="false" isUsed="false"/>
+		<getOrderType section="10.19" isCallback="false" isUsed="false"/>
+		<getOrderName section="10.20" isCallback="false" isUsed="false"/>
+		<getTransportationTypeHandle section="10.21" isCallback="false" isUsed="false"/>
+		<getTransportationTypeName section="10.22" isCallback="false" isUsed="false"/>
+		<getAvailableDimensionsForClassAttribute section="10.23" isCallback="false" isUsed="false"/>
+		<getAvailableDimensionsForInteractionClass section="10.24" isCallback="false" isUsed="false"/>
+		<getDimensionHandle section="10.25" isCallback="false" isUsed="false"/>
+		<getDimensionName section="10.26" isCallback="false" isUsed="false"/>
+		<getDimensionUpperBound section="10.27" isCallback="false" isUsed="false"/>
+		<getDimensionHandleSet section="10.28" isCallback="false" isUsed="false"/>
+		<getRangeBounds section="10.29" isCallback="false" isUsed="false"/>
+		<setRangeBounds section="10.30" isCallback="false" isUsed="false"/>
+		<normalizeFederateHandle section="10.31" isCallback="false" isUsed="false"/>
+		<normalizeServiceGroup section="10.32" isCallback="false" isUsed="false"/>
+		<enableObjectClassRelevanceAdvisorySwitch section="10.33" isCallback="false" isUsed="false"/>
+		<disableObjectClassRelevanceAdvisorySwitch section="10.34" isCallback="false" isUsed="false"/>
+		<enableAttributeRelevanceAdvisorySwitch section="10.35" isCallback="false" isUsed="false"/>
+		<disableAttributeRelevanceAdvisorySwitch section="10.36" isCallback="false" isUsed="false"/>
+		<enableAttributeScopeAdvisorySwitch section="10.37" isCallback="false" isUsed="false"/>
+		<disableAttributeScopeAdvisorySwitch section="10.38" isCallback="false" isUsed="false"/>
+		<enableInteractionRelevanceAdvisorySwitch section="10.39" isCallback="false" isUsed="false"/>
+		<disableInteractionRelevanceAdvisorySwitch section="10.40" isCallback="false" isUsed="false"/>
+		<evokeCallback section="10.41" isCallback="false" isUsed="false"/>
+		<evokeMultipleCallbacks section="10.42" isCallback="false" isUsed="false"/>
+		<enableCallbacks section="10.43" isCallback="false" isUsed="false"/>
+		<disableCallbacks section="10.44" isCallback="false" isUsed="false"/>
+	</serviceUtilization>
+	<objects>
+		<objectClass>
+			<name>HLAobjectRoot</name>
+			<objectClass>
+				<name>Customer</name>
+				<sharing>PublishSubscribe</sharing>
+				<semantics>Statement of money owed by the customer</semantics>
+			</objectClass>
+			<objectClass>
+				<name>Order</name>
+				<sharing>PublishSubscribe</sharing>
+				<semantics>Specific items requested by a customer</semantics>
+			</objectClass>
+			<objectClass>
+				<name>Bill</name>
+				<sharing>PublishSubscribe</sharing>
+				<semantics>r</semantics>
+			</objectClass>
+			<objectClass>
+				<name>Employee</name>
+				<sharing>Neither</sharing>
+				<semantics>A person working for the restaurant</semantics>
+				<attribute>
+					<name>PayRate</name>
+					<dataType>DollarRate</dataType>
+					<updateType>Conditional</updateType>
+					<updateCondition notes="Note3 Note4">Merit increase</updateCondition>
+					<ownership>DivestAcquire</ownership>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Amount the employee is paid per hour</semantics>
+				</attribute>
+				<attribute>
+					<name>YearsOfService</name>
+					<dataType>Years</dataType>
+					<updateType>Periodic</updateType>
+					<updateCondition notes="Note3">1/year</updateCondition>
+					<ownership>DivestAcquire</ownership>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Number of years the employee has worked for the restaurant</semantics>
+				</attribute>
+				<attribute>
+					<name>HomeNumber</name>
+					<dataType>HLAASCIIstring</dataType>
+					<updateType>Conditional</updateType>
+					<updateCondition>Employee request</updateCondition>
+					<ownership>DivestAcquire</ownership>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Employee home phone number</semantics>
+				</attribute>
+				<attribute>
+					<name>HomeAddress</name>
+					<dataType>AddressType</dataType>
+					<updateType>Conditional</updateType>
+					<updateCondition>Employee request</updateCondition>
+					<ownership>DivestAcquire</ownership>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Employee home address</semantics>
+				</attribute>
+				<objectClass>
+					<name>Greeter</name>
+					<sharing>PublishSubscribe</sharing>
+				</objectClass>
+				<objectClass>
+					<name>Waiter</name>
+					<sharing>PublishSubscribe</sharing>
+					<attribute>
+						<name>Efficiency</name>
+						<dataType>WaiterValue</dataType>
+						<updateType>Conditional</updateType>
+						<updateCondition>Performance review</updateCondition>
+						<ownership>DivestAcquire</ownership>
+						<sharing>PublishSubscribe</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Efficiency rating of waiter</semantics>
+					</attribute>
+					<attribute>
+						<name>Cheerfulness</name>
+						<dataType>WaiterValue</dataType>
+						<updateType>Conditional</updateType>
+						<updateCondition>Performance review</updateCondition>
+						<ownership>DivestAcquire</ownership>
+						<sharing>PublishSubscribe</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Cheerfulness of waiter</semantics>
+					</attribute>
+					<attribute>
+						<name>State</name>
+						<dataType>WaiterTasks</dataType>
+						<updateType>Conditional</updateType>
+						<updateCondition>Work flow</updateCondition>
+						<ownership>DivestAcquire</ownership>
+						<sharing>PublishSubscribe</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>What the waiter is doing</semantics>
+					</attribute>
+				</objectClass>
+				<objectClass>
+					<name>Cashier</name>
+					<sharing>PublishSubscribe</sharing>
+					<semantics>Employee who collects money</semantics>
+				</objectClass>
+				<objectClass>
+					<name>Dishwasher</name>
+					<sharing>PublishSubscribe</sharing>
+					<semantics>Cleaner of plates, pots, and utensils</semantics>
+				</objectClass>
+				<objectClass>
+					<name>Cook</name>
+					<sharing>PublishSubscribe</sharing>
+					<semantics>Preparer of the meal</semantics>
+				</objectClass>
+			</objectClass>
+			<objectClass>
+				<name>Food</name>
+				<sharing>Subscribe</sharing>
+				<semantics>Products served at the restaurant</semantics>
+				<objectClass>
+					<name>MainCourse</name>
+					<sharing>PublishSubscribe</sharing>
+					<semantics>Principal dish</semantics>
+				</objectClass>
+				<objectClass>
+					<name>Drink</name>
+					<sharing>Subscribe</sharing>
+					<semantics>Liquid accompanyment to meal</semantics>
+					<attribute>
+						<name>NumberCups</name>
+						<dataType>DrinkCount</dataType>
+						<updateType>Conditional</updateType>
+						<updateCondition>Customer request</updateCondition>
+						<ownership>NoTransfer</ownership>
+						<sharing>PublishSubscribe</sharing>
+						<dimensions>
+							<dimension>BarQuantity</dimension>
+						</dimensions>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Number of drinks</semantics>
+					</attribute>
+					<objectClass>
+						<name>Water</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Tap water</semantics>
+					</objectClass>
+					<objectClass>
+						<name>Coffee</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Brewed coffee</semantics>
+					</objectClass>
+					<objectClass>
+						<name>Soda</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Carbonated beverage</semantics>
+						<attribute>
+							<name>Flavor</name>
+							<dataType>FlavorType</dataType>
+							<updateType>Conditional</updateType>
+							<updateCondition>Customer request</updateCondition>
+							<ownership>NoTransfer</ownership>
+							<sharing>PublishSubscribe</sharing>
+							<dimensions>
+								<dimension>SodaFlavor</dimension>
+								<dimension>BarQuantity</dimension>
+							</dimensions>
+							<transportation>HLAreliable</transportation>
+							<order>TimeStamp</order>
+							<semantics>Flavor of soda</semantics>
+						</attribute>
+					</objectClass>
+				</objectClass>
+				<objectClass>
+					<name>Appetizers</name>
+					<sharing>Subscribe</sharing>
+					<semantics>Portion served before main course</semantics>
+					<objectClass>
+						<name>Soup</name>
+						<sharing>Subscribe</sharing>
+						<semantics>Soup course</semantics>
+						<objectClass>
+							<name>ClamChowder</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>Clam chowder</semantics>
+							<objectClass>
+								<name>Manhattan</name>
+								<sharing>Publish</sharing>
+								<semantics>Manhattan style clam chowder</semantics>
+							</objectClass>
+							<objectClass>
+								<name>NewEngland</name>
+								<sharing>Publish</sharing>
+								<semantics>New England style clam chowder</semantics>
+							</objectClass>
+						</objectClass>
+						<objectClass>
+							<name>BeefBarley</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>Beef barley soup</semantics>
+						</objectClass>
+					</objectClass>
+					<objectClass>
+						<name>Nachos</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Nachos</semantics>
+					</objectClass>
+				</objectClass>
+				<objectClass>
+					<name>Entree</name>
+					<sharing>Subscribe</sharing>
+					<semantics>Principal dish</semantics>
+					<objectClass>
+						<name>Beef</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Beef entree</semantics>
+					</objectClass>
+					<objectClass>
+						<name>Chicken</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Chicken entree</semantics>
+					</objectClass>
+					<objectClass>
+						<name>Seafood</name>
+						<sharing>Subscribe</sharing>
+						<semantics>Seafood entree</semantics>
+						<objectClass>
+							<name>Fish</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>Fish of the day</semantics>
+						</objectClass>
+						<objectClass>
+							<name>Shrimp</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>Shrimp scampi</semantics>
+						</objectClass>
+						<objectClass>
+							<name notes="Note1">Lobster</name>
+							<sharing notes="Note2">PublishSubscribe</sharing>
+							<semantics>Lobster thermador</semantics>
+						</objectClass>
+					</objectClass>
+					<objectClass>
+						<name>Pasta</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Pasta entree</semantics>
+					</objectClass>
+				</objectClass>
+				<objectClass>
+					<name>SideDish</name>
+					<sharing>Subscribe</sharing>
+					<semantics>ala carte dishes</semantics>
+					<objectClass>
+						<name>Corn</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Corn side dish</semantics>
+					</objectClass>
+					<objectClass>
+						<name>Broccoli</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Broccoli side dish</semantics>
+					</objectClass>
+					<objectClass>
+						<name>BakedPotato</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Baked potato side dish</semantics>
+					</objectClass>
+				</objectClass>
+				<objectClass>
+					<name>Dessert</name>
+					<sharing>Subscribe</sharing>
+					<semantics>Deserts</semantics>
+					<objectClass>
+						<name>Cake</name>
+						<sharing>PublishSubscribe</sharing>
+						<semantics>Cake dessert</semantics>
+					</objectClass>
+					<objectClass>
+						<name>IceCream</name>
+						<sharing>Subscribe</sharing>
+						<semantics>Ice cream dessert</semantics>
+						<objectClass>
+							<name>Chocolate</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>Chocolate ice cream</semantics>
+						</objectClass>
+						<objectClass>
+							<name>Vanilla</name>
+							<sharing>PublishSubscribe</sharing>
+							<semantics>vanilla ice cream</semantics>
+						</objectClass>
+					</objectClass>
+				</objectClass>
+			</objectClass>
+		</objectClass>
+	</objects>
+	<interactions>
+		<interactionClass>
+			<name>HLAinteractionRoot</name>
+			<interactionClass>
+				<name>CustomerTransactions</name>
+				<sharing>Publish</sharing>
+				<transportation>HLAreliable</transportation>
+				<order>TimeStamp</order>
+				<semantics>The base class of interactions between customers and employee</semantics>
+				<interactionClass>
+					<name>CustomerSeated</name>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Customer has occupied a table</semantics>
+				</interactionClass>
+				<interactionClass>
+					<name>OrderTaken</name>
+					<sharing>Publish</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Waiter has taken customers order</semantics>
+					<interactionClass>
+						<name>FromKidsMenu</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Customer ordered from children menu</semantics>
+					</interactionClass>
+					<interactionClass>
+						<name>FromAdultMenu</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Customer ordered from normal menu</semantics>
+					</interactionClass>
+				</interactionClass>
+				<interactionClass>
+					<name>FoodServed</name>
+					<sharing>Publish</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Waiter has served food</semantics>
+					<interactionClass>
+						<name>DrinkServed</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Waiter has served a drink</semantics>
+					</interactionClass>
+					<interactionClass>
+						<name>AppetizerServed</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Waiter has served appetizers</semantics>
+					</interactionClass>
+					<interactionClass>
+						<name>MainCourseServed</name>
+						<sharing>Publish</sharing>
+						<dimensions>
+							<dimension>WaiterId</dimension>
+						</dimensions>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Waiter has served entree</semantics>
+						<parameter>
+							<name>TemperatureOk</name>
+							<dataType>ServiceStat</dataType>
+							<semantics>Whether the food was the correct temperature</semantics>
+						</parameter>
+						<parameter>
+							<name>AccuracyOk</name>
+							<dataType>ServiceStat</dataType>
+							<semantics>Whether the correct food was served</semantics>
+						</parameter>
+						<parameter>
+							<name>TimelinessOk</name>
+							<dataType>HLAboolean</dataType>
+							<semantics>Whether the food was served in a reasonable amount of time</semantics>
+						</parameter>
+					</interactionClass>
+					<interactionClass>
+						<name>DessertServed</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Waiter has served dessert</semantics>
+					</interactionClass>
+				</interactionClass>
+				<interactionClass>
+					<name>CustomerPays</name>
+					<sharing>Publish</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Customer has paid bill</semantics>
+					<interactionClass>
+						<name>ByCreditCard</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Credit card payment</semantics>
+					</interactionClass>
+					<interactionClass>
+						<name>ByCash</name>
+						<sharing>Publish</sharing>
+						<transportation>HLAreliable</transportation>
+						<order>TimeStamp</order>
+						<semantics>Cash payment</semantics>
+					</interactionClass>
+				</interactionClass>
+				<interactionClass>
+					<name>CustomerLeaves</name>
+					<sharing>PublishSubscribe</sharing>
+					<transportation>HLAreliable</transportation>
+					<order>TimeStamp</order>
+					<semantics>Customer departs restaurant</semantics>
+				</interactionClass>
+			</interactionClass>
+		</interactionClass>
+	</interactions>
+	<dimensions>
+		<dimension>
+			<name>SodaFlavor</name>
+			<dataType>FlavorType</dataType>
+			<upperBound>3</upperBound>
+			<normalization>linearEnumerated (Flavor, [Cola, Orange, RootBeer])</normalization>
+			<value>[0..3)</value>
+		</dimension>
+		<dimension>
+			<name>BarQuantity</name>
+			<dataType>DrinkCount</dataType>
+			<upperBound>25</upperBound>
+			<normalization>linear (NumberCups, 1, 25)</normalization>
+			<value>[0)</value>
+		</dimension>
+		<dimension>
+			<name>WaiterId</name>
+			<dataType>EmplId</dataType>
+			<upperBound>20</upperBound>
+			<normalization>linear (WaiterId, 1, 20)</normalization>
+			<value>Excluded</value>
+		</dimension>
+	</dimensions>
+	<time>
+		<timeStamp>
+			<dataType>TimeType</dataType>
+			<semantics>Floating point value expressed in minutes</semantics>
+		</timeStamp>
+		<lookahead>
+			<dataType>LAType</dataType>
+			<semantics>Floating point value expressed in minutes (non-negative)</semantics>
+		</lookahead>
+	</time>
+	<tags>
+		<deleteRemoveTag>
+			<dataType>HLAASCIIstring</dataType>
+			<semantics>Reason for deletion</semantics>
+		</deleteRemoveTag>
+		<divestitureRequestTag>
+			<dataType>PriorityLevel</dataType>
+			<semantics>High value for immediate transfer</semantics>
+		</divestitureRequestTag>
+		<acquisitionRequestTag>
+			<dataType>PriorityLevel</dataType>
+			<semantics>High value for immediate transfer</semantics>
+		</acquisitionRequestTag>
+	</tags>
+	<synchronizations>
+		<synchronizationPoint>
+			<label>InitialPublish</label>
+			<capability>Achieve</capability>
+			<semantics>Achieved when all classes are published and subscribed, and all initially present objects are registered</semantics>
+		</synchronizationPoint>
+		<synchronizationPoint>
+			<label>InitialUpdate</label>
+			<capability>Achieve</capability>
+			<semantics>Achieved when instance attribute values for all initially present objects are updated</semantics>
+		</synchronizationPoint>
+		<synchronizationPoint>
+			<label>BeginTimeAdvance</label>
+			<capability>Achieve</capability>
+			<semantics>Achieved when time management services are invoked</semantics>
+		</synchronizationPoint>
+		<synchronizationPoint>
+			<label>PauseExecution</label>
+			<dataType>TimeType</dataType>
+			<capability>RegisterAchieve</capability>
+			<semantics>Achieved when the time advance after the time in the user-supplied tag is attained; time advance 
+				requests should then cease</semantics>
+		</synchronizationPoint>
+	</synchronizations>
+	<transportations>
+		<transportation>
+			<name>HLAreliable</name>
+			<reliable>Yes</reliable>
+			<semantics>Provide reliable delivery of data in the sense that TCP/IP delivers
+its data reliably</semantics>
+		</transportation>
+		<transportation>
+			<name>HLAbestEffort</name>
+			<reliable>No</reliable>
+			<semantics>Make an effort to deliver data in the sense that UDP provides
+best-effort delivery</semantics>
+		</transportation>
+	</transportations>
+	<switches>
+		<autoProvide isEnabled="false"/>
+		<conveyRegionDesignatorSets isEnabled="false"/>
+		<attributeScopeAdvisory isEnabled="true"/>
+		<attributeRelevanceAdvisory isEnabled="true"/>
+		<objectClassRelevanceAdvisory isEnabled="true"/>
+		<interactionRelevanceAdvisory isEnabled="true"/>
+		<serviceReporting isEnabled="false"/>
+		<exceptionReporting isEnabled="false"/>
+		<delaySubscriptionEvaluation isEnabled="false"/>
+		<automaticResignAction resignAction="CancelThenDeleteThenDivest"/>
+	</switches>
+	<updateRates>
+		<updateRate>
+			<name>High</name>
+			<rate>30.0</rate>
+		</updateRate>
+		<updateRate>
+			<name>Medium</name>
+			<rate>5.0</rate>
+		</updateRate>
+		<updateRate>
+			<name>Low</name>
+			<rate>0.2</rate>
+		</updateRate>
+	</updateRates>
+	<dataTypes>
+		<basicDataRepresentations>
+			<basicData>
+				<name>UnsignedShort</name>
+				<size>16</size>
+				<interpretation>Integer in the range [0, 2^16 - 1]</interpretation>
+				<endian>Big</endian>
+				<encoding>16-bit unsigned integer.</encoding>
+			</basicData>
+		</basicDataRepresentations>
+		<simpleDataTypes>
+			<simpleData>
+				<name>TimeType</name>
+				<representation>HLAfloat32BE</representation>
+				<units>Minutes</units>
+				<resolution>0.01667</resolution>
+				<accuracy>NA</accuracy>
+				<semantics>Time representation</semantics>
+			</simpleData>
+			<simpleData>
+				<name>LAType</name>
+				<representation>HLAfloat32BE</representation>
+				<units>Minutes</units>
+				<resolution>0.01667</resolution>
+				<accuracy>NA</accuracy>
+				<semantics>Time interval (non-negative)</semantics>
+			</simpleData>
+			<simpleData>
+				<name>DollarRate</name>
+				<representation>HLAfloat32BE</representation>
+				<units>$/hour</units>
+				<resolution>0.01</resolution>
+				<accuracy>Perfect</accuracy>
+				<semantics>Cost per hour</semantics>
+			</simpleData>
+			<simpleData>
+				<name>Years</name>
+				<representation>HLAinteger32BE</representation>
+				<units>Years</units>
+				<resolution>1</resolution>
+				<accuracy>Perfect</accuracy>
+				<semantics>Elapsed time in years</semantics>
+			</simpleData>
+			<simpleData>
+				<name>DrinkCount</name>
+				<representation>UnsignedShort</representation>
+				<units>Cups</units>
+				<resolution>1</resolution>
+				<accuracy>Perfect</accuracy>
+				<semantics>Measure of number of drinks</semantics>
+			</simpleData>
+			<simpleData>
+				<name>EmplId</name>
+				<representation>HLAinteger32BE</representation>
+				<units>NA</units>
+				<resolution>1</resolution>
+				<accuracy>Perfect</accuracy>
+				<semantics>Employee identifier</semantics>
+			</simpleData>
+			<simpleData>
+				<name>RateScale</name>
+				<representation>HLAinteger32BE</representation>
+				<units>NA</units>
+				<resolution>1</resolution>
+				<accuracy>Perfect</accuracy>
+				<semantics>Evaluation of staff where 1 = best</semantics>
+			</simpleData>
+		</simpleDataTypes>
+		<enumeratedDataTypes>
+			<enumeratedData>
+				<name>PriorityLevel</name>
+				<representation>HLAinteger32BE</representation>
+				<semantics>General three-level priority indicator</semantics>
+				<enumerator>
+					<name>Low</name>
+					<value>0</value>
+				</enumerator>
+				<enumerator>
+					<name>Medium</name>
+					<value>1</value>
+				</enumerator>
+				<enumerator>
+					<name>High</name>
+					<value>2</value>
+				</enumerator>
+			</enumeratedData>
+			<enumeratedData>
+				<name>WaiterTasks</name>
+				<representation>HLAinteger32BE</representation>
+				<semantics>Possible activities of waiters</semantics>
+				<enumerator>
+					<name>TakingOrder</name>
+					<value>1</value>
+				</enumerator>
+				<enumerator>
+					<name>Serving</name>
+					<value>2</value>
+				</enumerator>
+				<enumerator>
+					<name>Cleaning</name>
+					<value>3</value>
+				</enumerator>
+				<enumerator>
+					<name>CalculatingBill</name>
+					<value>4</value>
+				</enumerator>
+				<enumerator>
+					<name>Other</name>
+					<value>5</value>
+				</enumerator>
+			</enumeratedData>
+			<enumeratedData>
+				<name>FlavorType</name>
+				<representation>HLAinteger32BE</representation>
+				<semantics>Possible flavors of soda</semantics>
+				<enumerator>
+					<name>Cola</name>
+					<value>101</value>
+				</enumerator>
+				<enumerator>
+					<name>Orange</name>
+					<value>102</value>
+				</enumerator>
+				<enumerator>
+					<name>RootBeer</name>
+					<value>103</value>
+				</enumerator>
+				<enumerator>
+					<name>Cream</name>
+					<value>104</value>
+				</enumerator>
+			</enumeratedData>
+			<enumeratedData>
+				<name>ExperienceLevel</name>
+				<representation>HLAinteger32BE</representation>
+				<semantics>Level of experience of waiters</semantics>
+				<enumerator>
+					<name>Trainee</name>
+					<value>0</value>
+				</enumerator>
+				<enumerator>
+					<name>Apprentice</name>
+					<value>1</value>
+				</enumerator>
+				<enumerator>
+					<name>Journeyman</name>
+					<value>2</value>
+				</enumerator>
+				<enumerator>
+					<name>Senior</name>
+					<value>3</value>
+				</enumerator>
+				<enumerator>
+					<name>Temporary</name>
+					<value>4</value>
+				</enumerator>
+				<enumerator>
+					<name>Master</name>
+					<value>5</value>
+				</enumerator>
+			</enumeratedData>
+		</enumeratedDataTypes>
+		<arrayDataTypes>
+			<arrayData>
+				<name>Employees</name>
+				<dataType>EmplId</dataType>
+				<cardinality>10</cardinality>
+				<encoding>HLAfixedArray</encoding>
+				<semantics>Identifiers of employees currently working</semantics>
+			</arrayData>
+			<arrayData>
+				<name>AddressBook</name>
+				<dataType>AddressType</dataType>
+				<cardinality>Dynamic</cardinality>
+				<encoding>An HLAinteger32BE followed by a set of index-value tuples. Each tuple consists of an HLAinteger32BE indicating the array index, followed by the element for that index. The initial HLAinteger32BE indicates the number of index-value pairs to follow, since all array elements need not be included.</encoding>
+				<semantics>Collection of all employee addresses</semantics>
+			</arrayData>
+		</arrayDataTypes>
+		<fixedRecordDataTypes>
+			<fixedRecordData>
+				<name>ServiceStat</name>
+				<encoding>HLAfixedRecord</encoding>
+				<semantics>Check-off on whether the server performed properly on elements of the meal</semantics>
+				<field>
+					<name>EntreeOk</name>
+					<dataType>HLAboolean</dataType>
+					<semantics>Entree status</semantics>
+				</field>
+				<field>
+					<name>Veggy1Ok</name>
+					<dataType>HLAboolean</dataType>
+					<semantics>Vegetable 1 status</semantics>
+				</field>
+				<field>
+					<name>Veggy2Ok</name>
+					<dataType>HLAboolean</dataType>
+					<semantics>Vegetable 2 status</semantics>
+				</field>
+			</fixedRecordData>
+			<fixedRecordData>
+				<name>AddressType</name>
+				<encoding>HLAfixedRecord</encoding>
+				<semantics>Mailing address</semantics>
+				<field>
+					<name>Name</name>
+					<dataType>HLAASCIIstring</dataType>
+					<semantics>Employee name</semantics>
+				</field>
+				<field>
+					<name>Street</name>
+					<dataType>HLAASCIIstring</dataType>
+					<semantics>Street address</semantics>
+				</field>
+				<field>
+					<name>City</name>
+					<dataType>HLAASCIIstring</dataType>
+					<semantics>City name</semantics>
+				</field>
+				<field>
+					<name>State</name>
+					<dataType>HLAASCIIstring</dataType>
+					<semantics>State abbreviation</semantics>
+				</field>
+				<field>
+					<name>Zip</name>
+					<dataType>HLAASCIIstring</dataType>
+					<semantics>Postal code</semantics>
+				</field>
+			</fixedRecordData>
+		</fixedRecordDataTypes>
+		<variantRecordDataTypes>
+			<variantRecordData>
+				<name>WaiterValue</name>
+				<discriminant>ValIndex</discriminant>
+				<dataType>ExperienceLevel</dataType>
+				<alternative>
+					<enumerator>Trainee</enumerator>
+					<name>CoursePassed</name>
+					<dataType>HLAboolean</dataType>
+					<semantics>Ratings scale for employees under training</semantics>
+				</alternative>
+				<alternative>
+					<enumerator>[Apprentice .. Senior], Master</enumerator>
+					<name>Rating</name>
+					<dataType>RateScale</dataType>
+					<semantics>Ratings scale for permanent employees</semantics>
+				</alternative>
+				<alternative>
+					<enumerator>HLAother</enumerator>
+					<name>NA</name>
+					<semantics>All others</semantics>
+				</alternative>
+				<encoding>HLAvariantRecord</encoding>
+				<semantics>Datatype for waiter performance rating value</semantics>
+			</variantRecordData>
+		</variantRecordDataTypes>
+	</dataTypes>
+	<notes>
+		<note>
+			<label>Note1</label>
+			<semantics>http://www.seasonalfoods.com/lobster</semantics>
+		</note>
+		<note>
+			<label>Note2</label>
+			<semantics>For most general-purpose restaurant simulations, this will be Subscribe only.</semantics>
+		</note>
+		<note>
+			<label>Note3</label>
+			<semantics>Merit raises are not provided according to any regular time interval; they are provided on a
+supervisor’s recommendation based on evidence of exceptional effort and performance.</semantics>
+		</note>
+		<note>
+			<label>Note4</label>
+			<semantics>Years of service are a factor in any merit raise. This value is only changed on the anniversary of the
+employee’s hire.</semantics>
+		</note>
+		<note>
+			<label>Note5</label>
+			<semantics>These dimensions were reused from the “Tommy’s Place” SOM.</semantics>
+		</note>
+	</notes>
+</objectModel>
