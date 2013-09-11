@@ -1373,31 +1373,31 @@ RTIA::processOngoingTick() {
 void
 RTIA::initFederateProcessing(Message *req, Message* rep)
 {
-	if(req->getMessageType() == Message::OPEN_CONNEXION) {
-		M_Open_Connexion *OCq, *OCr;
-		OCq = static_cast<M_Open_Connexion *>(req);
-		OCr = static_cast<M_Open_Connexion *>(rep);
+    if(req->getMessageType() == Message::OPEN_CONNEXION) {
+        M_Open_Connexion *OCq, *OCr;
+        OCq = static_cast<M_Open_Connexion *>(req);
+        OCr = static_cast<M_Open_Connexion *>(rep);
 
-		if(OCq->getVersionMajor() == CERTI_Message::versionMajor) {
-			uint32_t minorEffective = OCq->getVersionMinor() < CERTI_Message::versionMinor
-				? OCq->getVersionMinor() : CERTI_Message::versionMinor;
-			OCr->setVersionMajor(CERTI_Message::versionMajor);
-			OCr->setVersionMinor(minorEffective);
+        if(OCq->getVersionMajor() == CERTI_Message::versionMajor) {
+            uint32_t minorEffective = OCq->getVersionMinor() <= CERTI_Message::versionMinor
+                    ? OCq->getVersionMinor() : CERTI_Message::versionMinor;
+            OCr->setVersionMajor(CERTI_Message::versionMajor);
+            OCr->setVersionMinor(minorEffective);
 
-			fm->_connection_state = FederationManagement::CONNECTION_READY;
-		}
-		else {
-			rep->setException(e_RTIinternalError, stringize()
-				<< "RTIA protocol version mismatch"
-				<< "; federate " << OCq->getVersionMajor() << "." << OCq->getVersionMinor()
-				<< ", RTIA " << CERTI_Message::versionMajor << "." << CERTI_Message::versionMinor);
-		}
-	}
-	else {
-		rep->setException(e_RTIinternalError,
-			"RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
-	}
-	stat.federateService(req->getMessageType());
+            fm->_connection_state = FederationManagement::CONNECTION_READY;
+        }
+        else {
+            rep->setException(e_RTIinternalError, stringize()
+                    << "RTIA protocol version mismatch"
+                    << "; federate " << OCq->getVersionMajor() << "." << OCq->getVersionMinor()
+                    << ", RTIA " << CERTI_Message::versionMajor << "." << CERTI_Message::versionMinor);
+        }
+    }
+    else {
+        rep->setException(e_RTIinternalError,
+                "RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
+    }
+    stat.federateService(req->getMessageType());
 }
 
 void
