@@ -13,9 +13,8 @@ namespace rti1516
 	class RTI_EXPORT RTI1516ambassador : RTIambassador
 	{
 		friend std::auto_ptr< RTIambassador >
-			RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & args);
-		//throw (BadInitializationParameter,
-		//	RTIinternalError);
+			RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & args)
+		throw (BadInitializationParameter, RTIinternalError);
 
 	private:
 		RTI1516ambPrivateRefs* privateRefs ;
