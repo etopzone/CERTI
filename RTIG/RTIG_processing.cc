@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.114 2011/12/31 13:25:58 erk Exp $
+// $Id: RTIG_processing.cc,v 3.115 2013/09/16 13:24:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1481,42 +1481,43 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NM_DDM_Register_Object *req)
 void
 RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NM_Request_Object_Attribute_Value_Update *request)
 {
-	NM_Request_Object_Attribute_Value_Update answer ;
-	Handle federateOwner ;  // federate owner of the object
-	G.Out(pdGendoc,"enter RTIG::processRequestObjectAttributeValueUpdate");
-	G.Out(pdGendoc,"BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
+    NM_Request_Object_Attribute_Value_Update answer;
+    G.Out(pdGendoc,"enter RTIG::processRequestObjectAttributeValueUpdate");
+    G.Out(pdGendoc,"BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 
-	auditServer << "ObjID = " << request->getObject() ;
+    auditServer << "ObjID = " << request->getObject() ;
 
-	// We have to do verifications about this object and we need owner
-	answer.setException(e_NO_EXCEPTION);
-	try
-	{
-		federateOwner = federations.requestObjectOwner(request->getFederation(),
-				request->getFederate(),
-				request->getObject(),
-				request->getAttributes(),
-				request->getAttributesSize());
-	}
-	catch (ObjectNotKnown& e)
-	{
-		answer.setException(e_ObjectNotKnown,e._reason);
-	}
-	catch (FederationExecutionDoesNotExist& e)
-	{
-		answer.setException(e_FederationExecutionDoesNotExist,e._reason);
-	}
-	catch (RTIinternalError& e)
-	{
-		answer.setException(e_RTIinternalError,e._reason);
-	}
+    // We have to do verifications about this object and we need owner
+    answer.setException(e_NO_EXCEPTION);
+    try	{
+        // While searching for the federate owner we will send
+        // a NM_Provide_Attribute_Value_Update
+        // (see Federation::requestObjectOwner)
+        (void) federations.requestObjectOwner(request->getFederation(),
+                request->getFederate(),
+                request->getObject(),
+                request->getAttributes(),
+                request->getAttributesSize());
+    }
+    catch (ObjectNotKnown& e)
+    {
+        answer.setException(e_ObjectNotKnown,e._reason);
+    }
+    catch (FederationExecutionDoesNotExist& e)
+    {
+        answer.setException(e_FederationExecutionDoesNotExist,e._reason);
+    }
+    catch (RTIinternalError& e)
+    {
+        answer.setException(e_RTIinternalError,e._reason);
+    }
 
-	answer.setFederate(request->getFederate());
-	answer.setObject(request->getObject());
+    answer.setFederate(request->getFederate());
+    answer.setObject(request->getObject());
 
-	answer.send(link,NM_msgBufSend); // Send answer to RTIA
-	G.Out(pdGendoc,"exit  RTIG::processRequestObjectAttributeValueUpdate");
-	G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
+    answer.send(link,NM_msgBufSend); // Send answer to RTIA
+    G.Out(pdGendoc,"exit  RTIG::processRequestObjectAttributeValueUpdate");
+    G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 }
 
 // ----------------------------------------------------------------------------
@@ -1562,4 +1563,4 @@ RTIG::processRequestClassAttributeValueUpdate(Socket *link, NM_Request_Class_Att
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.114 2011/12/31 13:25:58 erk Exp $
+// $Id: RTIG_processing.cc,v 3.115 2013/09/16 13:24:09 erk Exp $
