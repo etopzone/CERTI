@@ -91,6 +91,7 @@ throw (SaveInProgress, RestoreInProgress)
 	default:
 		fm->checkFederationSaving();
 		fm->checkFederationRestoring();
+		break;
 	}
 	G.Out(pdGendoc,"exit  RTIA::saveAndRestoreStatus");
 }
@@ -1321,6 +1322,7 @@ RTIA::processOngoingTick() {
 			if (tm->_tick_state != TimeManagement::TICK_NEXT)
 				return; // keep waiting
 			// else goto TICK_NEXT
+			// NO break;
 
 		case TimeManagement::TICK_NEXT:
 			/* a callback was evoked decide how to continue */
@@ -1346,6 +1348,7 @@ RTIA::processOngoingTick() {
 			if (tm->_tick_state == TimeManagement::TICK_NEXT)
 				break; // goto TICK_NEXT
 			// else goto TICK_RETURN
+			// NO break;
 
 		case TimeManagement::TICK_RETURN: {
 			M_Tick_Request msg_ack;
@@ -1366,6 +1369,7 @@ RTIA::processOngoingTick() {
 		default:
 			std::cerr << "Unknown state: " << tm->_tick_state << std::endl;
 			assert(false);
+			break;
 		}
 	}
 } /* RTIA::processOngoingTick() */
