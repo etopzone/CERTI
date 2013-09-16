@@ -423,7 +423,7 @@ if(_Side == BUFFER_SC){
     std::cout << "RingBuffer::Send(...) --> BEGIN Algorithm : Count_SC = " << _Tab_SC[0] << " | Write_SC = " << _Tab_SC[1] << "| Read_SC = " << _Tab_SC[2] << std::endl ;
     #endif
 
-    if (Size > _Tab_SC[0]) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
+    if ((int)Size > _Tab_SC[0]) { // Test si il y a assez de place disponible dans le buffer (Exeption a envoyer)
        try {
         _Sem_SC->V() ;
        }
@@ -495,7 +495,7 @@ else{
     std::cout << "RingBuffer::Send(...) --> BEGIN Algorithm : Count_CS = " << _Tab_CS[0] << " | Write_CS = " << _Tab_CS[1] << "| Read_CS = " << _Tab_CS[2] << std::endl ;
     #endif
 
-    if (Size > _Tab_CS[0]) { // Test si il y a assez de place disponible dans le buffer
+    if ((int)Size > _Tab_CS[0]) { // Test si il y a assez de place disponible dans le buffer
        try {
           _Sem_CS->V() ;
        }
@@ -587,7 +587,7 @@ if(_Side == BUFFER_SC){
 
     memcpy(_Tab_CS, _Pw_Pr_CS->GetShm(), 3 * sizeof(int) ) ;
 
-    if (_Tab_CS[0] == _Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
+    if (_Tab_CS[0] == (int) _Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
        try {
           _Sem_CS->V() ;
        }
@@ -671,7 +671,7 @@ else{
 
     memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int) ) ;
 
-    if (_Tab_SC[0] == _Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
+    if (_Tab_SC[0] == (int)_Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
        try {
          _Sem_SC->V() ;
        }
