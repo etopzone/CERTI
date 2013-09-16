@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.73 2011/12/31 13:25:58 erk Exp $
+// $Id: Federation.hh,v 3.74 2013/09/16 14:09:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -31,18 +31,11 @@
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
 #include "certi.hh"
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
 #endif
-
-// Libraries
-#ifdef HAVE_XML
-#include <libxml/xmlmemory.h> // FIXME: should be in the .cc
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#endif // HAVE_XML
 
 namespace certi {
 namespace rtig {
@@ -51,7 +44,7 @@ class Federation
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
-    Handle handle ;
+    Handle handle;
     std::string name ;
     std::string FEDid ;
 
@@ -74,7 +67,7 @@ private:
 #endif
 
     bool saveXmlData();
-    bool restoreXmlData();
+    bool restoreXmlData(std::string docFilename);
 
     // METHODS -----------------------------------------------------------------
 public:
@@ -708,10 +701,6 @@ private:
      * The minimum NERx timestamp for this federation
      */
     FederationTime minNERx;
-
-#ifdef HAVE_XML
-    xmlDocPtr doc ; // FIXME: should not be an attribute
-#endif // HAVE_XML
     /* The message buffer used to send Network messages */
     MessageBuffer NM_msgBufSend;
 };
@@ -720,4 +709,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.73 2011/12/31 13:25:58 erk Exp $
+// $Id: Federation.hh,v 3.74 2013/09/16 14:09:43 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.148 2011/12/31 13:25:59 erk Exp $
+// $Id: Federation.cc,v 3.149 2013/09/16 14:09:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,6 +55,9 @@ using std::vector ;
 
 // Definitions
 #ifdef HAVE_XML
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 #define ROOT_NODE (const xmlChar*) "rtigSaveData"
 #define NODE_FEDERATION (const xmlChar*) "federation"
 #define NODE_FEDERATE (const xmlChar*) "federate"
@@ -1317,6 +1320,8 @@ throw (FederateNotExecutionMember)
 }
 
 // ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 //! Informs that a federate is requesting a save.
 void
 Federation::requestFederationRestore(FederateHandle the_federate,
@@ -1339,17 +1344,7 @@ throw (FederateNotExecutionMember)
 	bool success = true ;
 #ifdef HAVE_XML
 	string filename = name + "_" + the_label + ".xcs" ;
-	doc = xmlParseFile(filename.c_str());
-
-	// Did libXML manage to parse the file ?
-	if (doc == 0) {
-		cerr << "XML restore file not parsed successfully" << endl ;
-		xmlFreeDoc(doc);
-		success = false ;
-	}
-	if (success) {
-		success = restoreXmlData();
-	}
+	success = restoreXmlData(filename);
 #else
 	success = false ;
 #endif // HAVE_XML
@@ -2587,11 +2582,20 @@ throw (ObjectClassNotDefined, ObjectClassNotPublished,
 
 // ----------------------------------------------------------------------------
 bool
-Federation::restoreXmlData()
+Federation::restoreXmlData(std::string docFilename)
 {
 #ifndef HAVE_XML
 	return false ;
 #else
+
+    xmlDocPtr doc = xmlParseFile(docFilename.c_str());
+
+    // Did libXML manage to parse the file ?
+    if (doc == 0) {
+        cerr << "XML restore file not parsed successfully" << endl ;
+        xmlFreeDoc(doc);
+        return false ;
+    }
 	xmlNodePtr cur ;
 
 	cur = xmlDocGetRootElement(doc);
@@ -2659,7 +2663,7 @@ Federation::saveXmlData()
 #ifndef HAVE_XML
 	return false ;
 #else
-	doc = xmlNewDoc((const xmlChar *) "1.0");
+	xmlDocPtr doc = xmlNewDoc((const xmlChar *) "1.0");
 	doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
 
 	xmlNodePtr federation ;
@@ -2794,5 +2798,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.148 2011/12/31 13:25:59 erk Exp $
+// $Id: Federation.cc,v 3.149 2013/09/16 14:09:43 erk Exp $
 
