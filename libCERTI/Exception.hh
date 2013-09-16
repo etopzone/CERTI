@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.11 2010/05/31 09:33:26 erk Exp $
+// $Id: Exception.hh,v 3.12 2013/09/16 13:23:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -161,7 +161,7 @@ public:
     const char *_name;
 
     Exception(const std::string &reason)
-        : _reason(reason) { }
+        : _reason(reason), _name("Exception") { }
     virtual ~Exception() { }
     const std::string displayMe() const;
     virtual long getType() const = 0;
@@ -303,4 +303,4 @@ CERTI_EXCEPTION(SocketSHMNotDeleted)
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.11 2010/05/31 09:33:26 erk Exp $
+// $Id: Exception.hh,v 3.12 2013/09/16 13:23:04 erk Exp $
