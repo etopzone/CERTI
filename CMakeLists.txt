@@ -92,7 +92,7 @@ IF(RTIA_CONSOLE_SHOW)
 ENDIF(RTIA_CONSOLE_SHOW)
 
 # The new NULL Prime message protocol
-OPTION(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL 
+OPTION(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
          "NULL PRIME MESSAGE protocol is an enhanced version of the CMB NULL MESSAGE protocol (experimental)" OFF)
 IF(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
     ADD_DEFINITIONS(-DCERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
@@ -103,7 +103,7 @@ OPTION(CERTI_REALTIME_EXTENSIONS
          "CERTI proposed realtime extension to HLA API" OFF)
 IF(CERTI_REALTIME_EXTENSIONS)
     ADD_DEFINITIONS(-DCERTI_REALTIME_EXTENSIONS)
-ENDIF(CERTI_REALTIME_EXTENSIONS)                  
+ENDIF(CERTI_REALTIME_EXTENSIONS)
 
 IF (NOT CMAKE_BUILD_TYPE)
    MESSAGE(STATUS "No build type selected, default to Debug")
@@ -133,30 +133,30 @@ ENDIF("${CMAKE_CXX_COMPILER}" MATCHES "ccache")
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
   IF(NOT MINGW)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")  
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
   ENDIF(NOT MINGW)
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
   IF(NOT MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
   ENDIF(NOT MINGW)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # Enforce strict ANSI C/C++ compliance checking
 IF(NOT MINGW)
 IF(CMAKE_COMPILER_IS_GNUCC)
-  # we may add -Wextra if we want gcc to _really_ scream  
+  # we may add -Wextra if we want gcc to _really_ scream
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -Wall -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
   # we may add -Wextra if we want gcc to _really_ scream
   set(CXXSTD "c++98")
   if (CMAKE_SYSTEM MATCHES "SunOS")
-     set(CXXSTD "gnu++98")    
+     set(CXXSTD "gnu++98")
   endif(CMAKE_SYSTEM MATCHES "SunOS")
-  # we need gnu++98 for long long and uint64 definition on some architecture 
+  # we need gnu++98 for long long and uint64 definition on some architecture
   # (e.g. Solaris 8 + gcc 3.4.x)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
@@ -430,10 +430,10 @@ SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
 
 # Handle CPack-generator specific configuration
 ADD_CUSTOM_TARGET(PACKAGE_TYPE
-       COMMAND ${CMAKE_COMMAND} 
+       COMMAND ${CMAKE_COMMAND}
                  -DSRCDIR="${CERTI_SOURCE_DIR}"
                  -DDSTDIR="${CERTI_BINARY_DIR}"
-                 -DMSVC=${MSVC} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} 
+                 -DMSVC=${MSVC} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                  -DCMAKE_CFG_INTDIR=${CMAKE_CFG_INTDIR}
                  -P ${CERTI_SOURCE_DIR}/scripts/GeneratePackageType.cmake)
 
@@ -590,5 +590,3 @@ add_test(TestPackage ${CMAKE_BUILD_TOOL} package)
 ### Uninstall ###
 configure_file("${CMAKE_HOME_DIRECTORY}/cmake_uninstall.cmake.in" "cmake_uninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall "${CMAKE_COMMAND}" -P "cmake_uninstall.cmake")
-
-
