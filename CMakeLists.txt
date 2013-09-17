@@ -18,12 +18,25 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 INCLUDE(CheckFunctionExists)
 INCLUDE(CheckLibraryExists)
 
+# Display some information on host and target (when cross-compiling)
+if (CMAKE_CROSSCOMPILING)
+   message(STATUS "Cross-compiling build.")
+else (CMAKE_CROSSCOMPILING)
+   message(STATUS "Native build.")
+endif (CMAKE_CROSSCOMPILING)
+
 # Test 32/64 bits
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    message(STATUS "Host is 64 bits")
    add_definitions(-DHOST_IS_64BITS)
+   if (WIN32)
+       set(WINXXBITS Win64)
+   endif(WIN32)
 else("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    message(STATUS "Host is 32 bits")
+   if (WIN32)
+       set(WINXXBITS Win32)
+   endif(WIN32)
 endif("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 # Test Endianess
 INCLUDE(TestBigEndian)
@@ -535,18 +548,20 @@ SET(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
 INCLUDE(CPack)
 INCLUDE(UsePackageBackup)
 
-# The UseRPMTools and UseDebian thing
-# are obsolete since CPack 2.6.0 which has
-# builtin support for RPM and DEB.
-# We may get rid of those sooner or later
-INCLUDE(UseRPMTools)
-IF(RPMTools_FOUND)
-  RPMTools_ADD_RPM_TARGETS(certi)
-ENDIF(RPMTools_FOUND)
-INCLUDE(UseDebian)
-IF (DEBIAN_FOUND)
-  ADD_DEBIAN_TARGETS(certi)
-ENDIF(DEBIAN_FOUND)
+if (CMAKE_VERSION VERSION_LESS 2.6.0)
+    # The UseRPMTools and UseDebian thing
+    # are obsolete since CPack 2.6.0 which has
+    # builtin support for RPM and DEB.
+    # We may get rid of those sooner or later
+    INCLUDE(UseRPMTools)
+    IF(RPMTools_FOUND)
+      RPMTools_ADD_RPM_TARGETS(certi)
+    ENDIF(RPMTools_FOUND)
+    INCLUDE(UseDebian)
+    IF (DEBIAN_FOUND)
+      ADD_DEBIAN_TARGETS(certi)
+    ENDIF(DEBIAN_FOUND)
+endif (CMAKE_VERSION VERSION_LESS 2.6.0)
 
 ## Patch generating target
 # The custom target is using a cmake script which in turn use execute_process,
@@ -580,7 +595,7 @@ install(EXPORT CERTIDepends DESTINATION share/scripts)
 
 
 IF (WIN32)
-  MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")
+  MESSAGE(STATUS "*** CERTI for ${WINXXBITS} has been successfully configured ********")
 ELSE (WIN32)
   MESSAGE(STATUS "*** CERTI has been successfully configured ********")
 ENDIF (WIN32)
