@@ -1,7 +1,11 @@
-# This file is used by gengetopt to generate the command line parser.
+# This is used by gengetopt to generate Billard command line parser
+# see http://www.gnu.org/software/gengetopt/gengetopt.html#Basic-Usage
 
 package "billard"
-purpose "CERTI test application"
+purpose "CERTI Billard test application"
+
+# gengetopt options
+args "-F Billard_cmdline -G"
 
 # Options
 option  "auto"          a       "auto start"            int     no
