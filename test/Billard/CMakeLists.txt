@@ -8,6 +8,25 @@ IF (WIN32)
    ADD_DEFINITIONS(-DHAVE_STRING_H)
 ENDIF (WIN32)
 
+find_program(GENGETOPT_PROGRAM NAMES gengetopt)
+if (GENGETOPT_PROGRAM)
+   set(GGOFILE ${CMAKE_CURRENT_SOURCE_DIR}/Billard.ggo)
+   add_custom_target(GenBillardCmdline
+                    COMMAND ${GENGETOPT_PROGRAM} --no-handle-error --show-required -i ${GGOFILE}
+                    DEPENDS ${GGOFILE}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    COMMENT "Regenerate Billard command line C files -- (from ${GGOFILE})"
+                    )
+endif(GENGETOPT_PROGRAM)
+set(Billard_SRCS_generated
+    Billard_cmdline.c Billard_cmdline.h)
+
+IF (CMAKE_COMPILER_IS_GNUCC) 
+   message(STATUS "INHIBIT Compiler warning for gengetopt generated files: ${Billard_SRCS_generated}.")
+   SET_SOURCE_FILES_PROPERTIES(${Billard_SRCS_generated}
+                               PROPERTIES COMPILE_FLAGS "-w")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 ########### next target ###############
 
 SET(billard_SRCS
@@ -20,6 +39,7 @@ SET(billard_SRCS
   cmdline.c
   getopt.c
   getopt1.c
+  #${Billard_SRCS_generated} not ready [yet]
   )
   
 IF(X_DISPLAY_MISSING)
