@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.149 2013/09/16 14:09:43 erk Exp $
+// $Id: Federation.cc,v 3.150 2013/09/18 14:29:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,7 +77,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return split(s, delim, elems);
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) & not defined(__MINGW32__)
 # define strcasecmp stricmp
 #endif
 
@@ -2798,5 +2798,5 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.149 2013/09/16 14:09:43 erk Exp $
+// $Id: Federation.cc,v 3.150 2013/09/18 14:29:22 erk Exp $
 
