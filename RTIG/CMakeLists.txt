@@ -16,7 +16,7 @@ set(rtig_SRCS_generated
     RTIG_cmdline.c RTIG_cmdline.h)
 
 IF (CMAKE_COMPILER_IS_GNUCC) 
-   message(STATUS "INHIBIT Compiler warning for gengetopt generated files")
+   message(STATUS "INHIBIT Compiler warning for gengetopt generated files: ${rtig_SRCS_generated}.")
    SET_SOURCE_FILES_PROPERTIES(${rtig_SRCS_generated}
                                PROPERTIES COMPILE_FLAGS "-w")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
