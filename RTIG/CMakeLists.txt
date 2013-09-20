@@ -16,10 +16,16 @@ set(rtig_SRCS_generated
     RTIG_cmdline.c RTIG_cmdline.h)
 
 IF (CMAKE_COMPILER_IS_GNUCC) 
-   message(STATUS "INHIBIT Compiler warning for gengetopt generated files: ${rtig_SRCS_generated}.")
+   message(STATUS "INHIBIT Compiler (GCC) warning for gengetopt generated files: ${rtig_SRCS_generated}.")
    SET_SOURCE_FILES_PROPERTIES(${rtig_SRCS_generated}
                                PROPERTIES COMPILE_FLAGS "-w")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
+if (MSVC)
+   message(STATUS "INHIBIT Compiler (MSVC) warning for gengetopt generated files: ${rtig_SRCS_generated}.")
+   SET_SOURCE_FILES_PROPERTIES(${rtig_SRCS_generated}
+                               PROPERTIES COMPILE_FLAGS "-D_CRT_SECURE_NO_WARNINGS")
+endif(MSVC)
 
 set(rtig_SRCS
   Federate.cc Federate.hh
