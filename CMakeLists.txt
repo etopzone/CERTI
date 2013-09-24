@@ -420,8 +420,20 @@ if (APPLE)
         CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
 
    #set(PROPERTY LINK_FLAGS_DEBUG "-flat_namespace -undefined suppress")
-Endif(APPLE)
+endif(APPLE)
 
+# FIX for mingw for auto-import without -enable-auto-import warning
+if (NOT CMAKE_CROSSCOMPILING)
+   message("CMAKE_CROSSCOMPILING = ${CMAKE_CROSSCOMPILING}")
+   if (MINGW)
+       SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --enable-auto-import")
+       SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} --enable-auto-import"
+            CACHE STRING "Flags used by the linker during the creation of dll's." FORCE)
+       # module linker flags
+       SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} --enable-auto-import"
+            CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
+   endif(MINGW)
+endif(NOT CMAKE_CROSSCOMPILING)
 
 ADD_SUBDIRECTORY( include )
 ADD_SUBDIRECTORY( libHLA )
