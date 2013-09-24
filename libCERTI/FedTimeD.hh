@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedTimeD.hh,v 4.1 2009/04/02 19:58:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FEDTIMED_HH
@@ -183,5 +182,3 @@ typedef FedTime FederationTimeDelta;
 } // namespace certi
 
 #endif // CERTI_FEDTIMED_HH
-
-// $Id: FedTimeD.hh,v 4.1 2009/04/02 19:58:09 erk Exp $

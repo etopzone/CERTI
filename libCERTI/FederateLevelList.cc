@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -59,5 +58,3 @@ FederateLevelList::getLevel(const std::string &theName) const
 }
 
 }
-
-// $Id: FederateLevelList.cc,v 3.11 2007/07/06 09:25:18 erk Exp $

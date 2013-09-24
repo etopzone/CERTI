@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.38 2013/09/04 07:56:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -148,4 +147,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.38 2013/09/04 07:56:43 erk Exp $
+// $Id: RTIG.hh,v 3.39 2013/09/24 14:27:58 erk Exp $

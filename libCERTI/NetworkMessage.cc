@@ -16,7 +16,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.51 2010/08/11 16:45:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -61,5 +60,3 @@ std::ostream& NetworkMessage::show(std::ostream& out) {
 } /* end of show */
 
 } // namespace certi
-
-// $Id: NetworkMessage.cc,v 3.51 2010/08/11 16:45:14 erk Exp $

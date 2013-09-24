@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.74 2013/09/16 14:09:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -709,4 +708,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.74 2013/09/16 14:09:43 erk Exp $
+// $Id: Federation.hh,v 3.75 2013/09/24 14:27:58 erk Exp $

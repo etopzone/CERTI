@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.8 2010/11/09 12:43:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _FED_HH
@@ -75,4 +74,3 @@ void endSpace();
 }
 
 #endif // _FED_HH
-// $Id: fed.hh,v 3.8 2010/11/09 12:43:30 erk Exp $

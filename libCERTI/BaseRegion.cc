@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -155,5 +154,3 @@ BaseRegion::overlaps(const BaseRegion &region) const
 }
 
 } // namespace certi
-
-// $Id: BaseRegion.cc,v 3.6 2010/03/07 21:30:30 erk Exp $

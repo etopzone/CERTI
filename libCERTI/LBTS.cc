@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.20 2010/08/19 10:50:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -158,5 +157,3 @@ LBTS::remove(FederateHandle num_fed)
 }
 
 } // namespace certi
-
-// $Id: LBTS.cc,v 3.20 2010/08/19 10:50:22 erk Exp $

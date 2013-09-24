@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
@@ -66,5 +65,3 @@ private:
 }
 
 #endif // _CERTI_AUDIT_LINE_HH
-
-// $Id: AuditLine.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $

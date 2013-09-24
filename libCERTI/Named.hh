@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -131,5 +130,3 @@ protected:
 } // certi
 
 #endif // LIBCERTI_NAMED_HH
-
-// $Id: Named.hh,v 3.11 2010/03/20 17:30:37 gotthardp Exp $

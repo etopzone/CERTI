@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.58 2013/09/04 08:15:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -625,4 +624,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.58 2013/09/04 08:15:34 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.59 2013/09/24 14:27:57 erk Exp $

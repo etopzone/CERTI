@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.35 2013/09/04 12:53:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketTCP.hh"
@@ -581,4 +580,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.35 2013/09/04 12:53:03 erk Exp $
+// $Id: SocketTCP.cc,v 3.36 2013/09/24 14:27:51 erk Exp $

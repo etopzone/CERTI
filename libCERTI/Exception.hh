@@ -20,7 +20,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.12 2013/09/16 13:23:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -303,4 +302,4 @@ CERTI_EXCEPTION(SocketSHMNotDeleted)
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.12 2013/09/16 13:23:04 erk Exp $
+// $Id: Exception.hh,v 3.13 2013/09/24 14:27:57 erk Exp $

@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.11 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
@@ -84,5 +83,3 @@ protected:
 } // namespace certi
 
 #endif // _CERTI_AUDIT_FILE_HH
-
-// $Id: AuditFile.hh,v 3.11 2009/11/19 18:15:32 erk Exp $

@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.24 2011/12/31 13:24:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -473,5 +472,3 @@ addDimension()
 }
 
 }} // namespaces
-
-// $Id: fed.cc,v 3.24 2011/12/31 13:24:27 erk Exp $

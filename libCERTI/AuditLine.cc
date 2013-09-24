@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.12 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -124,6 +123,3 @@ AuditLine::setLevel(unsigned short l)
 }
 
 } // namespace certi
-
-// $Id: AuditLine.cc,v 3.12 2009/11/19 18:15:32 erk Exp $
-

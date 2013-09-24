@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.21 2010/05/31 09:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -174,4 +173,3 @@ const std::string certi::Exception::displayMe() const
     Debug(PD_Exception, pdExcept) << msg.str();
     return msg.str();
 }
-// $Id: Exception.cc,v 3.21 2010/05/31 09:33:26 erk Exp $

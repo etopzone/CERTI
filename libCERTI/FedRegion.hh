@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.hh,v 3.5 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FED_REGION_HH
@@ -74,5 +73,3 @@ private:
 }
 
 #endif // CERTI_FED_REGION_HH
-
-// $Id: FedRegion.hh,v 3.5 2010/03/07 21:30:30 erk Exp $

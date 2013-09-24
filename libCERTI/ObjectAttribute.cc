@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.19 2009/11/20 17:33:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -186,5 +185,3 @@ ObjectAttribute::unassociate(RTIRegion *r)
 }
 
 } //namespace certi
-
-// $Id: ObjectAttribute.cc,v 3.19 2009/11/20 17:33:57 erk Exp $

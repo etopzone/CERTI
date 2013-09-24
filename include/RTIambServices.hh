@@ -1,5 +1,4 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.11 2011/01/31 11:34:53 erk Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -803,7 +802,3 @@ RegionToken getRegionToken(Region *)
 
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
-
-
-
-// $Id: RTIambServices.hh,v 3.11 2011/01/31 11:34:53 erk Exp $

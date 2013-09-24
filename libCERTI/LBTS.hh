@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.13 2010/08/19 10:50:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
@@ -107,5 +106,3 @@ private:
 }
 
 #endif // LIBCERTI_LBTS_HH
-
-// $Id: LBTS.hh,v 3.13 2010/08/19 10:50:19 erk Exp $

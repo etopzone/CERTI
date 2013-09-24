@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.28 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -156,5 +155,3 @@ private:
 } // namespace certi
 
 #endif // _CERTI_INTERACTION_SET_HH
-
-// $Id: InteractionSet.hh,v 3.28 2010/03/19 13:54:03 erk Exp $

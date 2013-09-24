@@ -1,5 +1,4 @@
 // HLA 1.3 Header "NullFederateAmbassador.hh"
-// $Id: NullFederateAmbassador.hh,v 3.1 2005/04/30 16:30:43 breholee Exp $
 
 #ifndef NullFederateAmbassador_h
 #define NullFederateAmbassador_h
@@ -167,5 +166,3 @@ public:
 };
 
 #endif
-
-// $Id: NullFederateAmbassador.hh,v 3.1 2005/04/30 16:30:43 breholee Exp $

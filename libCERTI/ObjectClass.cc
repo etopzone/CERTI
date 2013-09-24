@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.90 2011/09/09 14:35:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1675,5 +1674,3 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 // }
 
 } // namespace certi
-
-// $Id: ObjectClass.cc,v 3.90 2011/09/09 14:35:35 erk Exp $

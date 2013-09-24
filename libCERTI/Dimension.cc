@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.9 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Dimension.hh"
@@ -51,7 +50,3 @@ Dimension::setUpperBound(uint32_t upperBound)
 }
 
 } // namespace certi
-
-// $Id: Dimension.cc,v 3.9 2010/03/07 21:30:30 erk Exp $
-
-

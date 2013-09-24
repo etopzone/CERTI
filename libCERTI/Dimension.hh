@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.10 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -82,5 +81,3 @@ private:
 } // namespace certi
 
 #endif
-
-// $Id: Dimension.hh,v 3.10 2010/03/07 21:30:30 erk Exp $

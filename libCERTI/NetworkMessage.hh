@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.66 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -260,5 +259,3 @@ private:
 } // namespace certi
 
 #endif // CERTI_NETWORK_MESSAGE_HH
-
-// $Id: NetworkMessage.hh,v 3.66 2010/08/09 18:24:07 erk Exp $

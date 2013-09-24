@@ -20,7 +20,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.11 2012/07/22 12:39:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "config.h"

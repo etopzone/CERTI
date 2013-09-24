@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.12 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -220,5 +219,3 @@ AuditFile::operator<<(double n)
 }
 
 }
-
-// $Id: AuditFile.cc,v 3.12 2009/11/19 18:15:31 erk Exp $

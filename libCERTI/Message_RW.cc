@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.42 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Message.hh"
@@ -145,5 +144,3 @@ Message::writeHandleArray(MessageBuffer &msgBuffer)
  */
 
 } // namespace certi
-
-// $Id: Message_RW.cc,v 3.42 2010/06/10 08:31:52 erk Exp $

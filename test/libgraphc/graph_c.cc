@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: graph_c.cc,v 3.7 2013/04/11 20:16:19 erk Exp $ 
 // ---------------------------------------------------------------------------
 
 
@@ -2210,4 +2209,4 @@ void ModeNORMAL()
 
 #endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.cc,v 3.7 2013/04/11 20:16:19 erk Exp $
+// $Id: graph_c.cc,v 3.8 2013/09/24 14:27:59 erk Exp $

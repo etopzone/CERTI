@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.18 2011/01/18 13:26:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -297,5 +296,3 @@ BasicMessage::getRegions() const
 }
 
 } // namespace certi
-
-// $Id: BasicMessage.cc,v 3.18 2011/01/18 13:26:21 erk Exp $

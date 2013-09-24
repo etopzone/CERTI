@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.34 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -265,5 +264,3 @@ throw (FederateNotSubscribing,
 		}
 
 } // namespace certi
-
-// $Id: InteractionSet.cc,v 3.34 2011/12/31 13:25:58 erk Exp $

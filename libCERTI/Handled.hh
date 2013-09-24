@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Handled.hh,v 3.2 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLED_HH
@@ -97,5 +96,3 @@ Handled<T>::getHandle() const
 } // certi
 
 #endif // LIBCERTI_HANDLED_HH
-
-// $Id: Handled.hh,v 3.2 2007/09/03 13:26:05 erk Exp $

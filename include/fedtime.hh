@@ -1,5 +1,4 @@
 // HLA 1.3 Header "fedtime.hh"
-// $Id: fedtime.hh,v 3.13 2009/04/02 19:58:11 erk Exp $
 
 #ifndef HLA_FEDTIME_HH
 #define HLA_FEDTIME_HH
@@ -126,5 +125,3 @@ RTIfedTime operator*(const RTI::Double &, const RTI::FedTime &);
 RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
 
 #endif // HLA_FEDTIME_HH
-
-// $Id: fedtime.hh,v 3.13 2009/04/02 19:58:11 erk Exp $

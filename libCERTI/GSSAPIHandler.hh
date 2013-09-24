@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GSSAPI_HANDLER_HH
@@ -103,5 +102,3 @@ private:
 
 #endif // WITH_GSSAPI
 #endif // _CERTI_GSSAPI_HANDLER_HH
-
-// $Id: GSSAPIHandler.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $

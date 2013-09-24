@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.17 2010/06/10 08:31:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -176,5 +175,3 @@ protected:
 } // namespace certi
 
 #endif // LIBCERTI_BASIC_MESSAGE
-
-// $Id: BasicMessage.hh,v 3.17 2010/06/10 08:31:52 erk Exp $

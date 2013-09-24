@@ -16,7 +16,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: GAV.cc,v 3.23 2010/03/19 13:54:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -564,6 +563,3 @@ ParameterHandleValuePairSet::next(uint32_t) const
 }
 
 } // namespace certi
-
-// $Id: GAV.cc,v 3.23 2010/03/19 13:54:03 erk Exp $
-

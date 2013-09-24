@@ -17,7 +17,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.11 2010/03/20 20:43:55 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FEDERATE_LEVEL_LIST_HH
@@ -50,5 +49,3 @@ protected:
 } // namespace certi
 
 #endif // CERTI_FEDERATE_LEVEL_LIST_HH
-
-// $Id: FederateLevelList.hh,v 3.11 2010/03/20 20:43:55 gotthardp Exp $

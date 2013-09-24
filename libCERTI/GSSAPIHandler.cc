@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.cc,v 3.8 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef WITH_GSSAPI
@@ -687,5 +686,3 @@ void GSSAPIHandler::setRemoteName(char *PrincipalName)
 }
 
 #endif // WITH_GSSAPI
-
-// $Id: GSSAPIHandler.cc,v 3.8 2009/10/21 18:56:28 erk Exp $

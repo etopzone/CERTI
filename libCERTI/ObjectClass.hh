@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.59 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -363,5 +362,3 @@ private:
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
-
-// $Id: ObjectClass.hh,v 3.59 2011/09/02 21:42:23 erk Exp $

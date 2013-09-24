@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.10 2012/06/21 12:16:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -131,4 +130,4 @@ private:
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.10 2012/06/21 12:16:17 erk Exp $
+// $Id: PrettyDebug.hh,v 4.11 2013/09/24 14:27:57 erk Exp $

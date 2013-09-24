@@ -16,7 +16,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.53 2013/09/06 12:50:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -329,4 +328,4 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.53 2013/09/06 12:50:14 erk Exp $
+// $Id: certi.hh,v 3.54 2013/09/24 14:28:49 erk Exp $

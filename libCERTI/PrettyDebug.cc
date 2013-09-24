@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.12 2012/06/21 12:16:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "PrettyDebug.hh"
@@ -207,4 +206,4 @@ PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
     return stream;
 }
 
-// $Id: PrettyDebug.cc,v 4.12 2012/06/21 12:16:17 erk Exp $
+// $Id: PrettyDebug.cc,v 4.13 2013/09/24 14:27:50 erk Exp $

@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.10 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -91,5 +90,3 @@ Named::getLeafClassName(const std::string& qualifiedClassName) {
 } /* end of getLeafClassName */
 
 } // certi
-
-// $Id: Named.cc,v 3.10 2009/11/19 18:15:32 erk Exp $

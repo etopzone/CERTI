@@ -18,7 +18,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FedTime.cc,v 3.16 2009/04/02 19:58:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <math.h>
@@ -420,6 +419,3 @@ operator/(const double &d, const FedTime &time)
     FedTime fedtime = d / time.getTime();
     return fedtime ;
 }
-
-// $Id: FedTime.cc,v 3.16 2009/04/02 19:58:09 erk Exp $
-

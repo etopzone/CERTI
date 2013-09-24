@@ -16,7 +16,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.58 2010/05/30 17:41:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -122,5 +121,3 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 } /* end of receive */
 
 } // namespace certi
-
-// $Id: NetworkMessage_RW.cc,v 3.58 2010/05/30 17:41:06 erk Exp $

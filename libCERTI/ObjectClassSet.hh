@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.42 2011/09/02 21:42:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -196,4 +195,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.42 2011/09/02 21:42:22 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.43 2013/09/24 14:27:57 erk Exp $

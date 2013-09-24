@@ -1,5 +1,4 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh.cmake,v 1.1 2009/10/22 15:33:17 erk Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -389,5 +388,3 @@ struct EventRetractionHandle_s {
 typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
-
-// $Id: RTItypes.hh.cmake,v 1.1 2009/10/22 15:33:17 erk Exp $

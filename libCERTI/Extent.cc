@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.14 2010/03/07 21:30:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -107,5 +106,3 @@ Extent::overlaps(const Extent &e) const
 }
 
 } // namespace certi
-
-// $Id: Extent.cc,v 3.14 2010/03/07 21:30:30 erk Exp $

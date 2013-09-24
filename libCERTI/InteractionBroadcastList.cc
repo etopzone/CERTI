@@ -19,7 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.16 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -176,5 +175,3 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 }
 
 } // namespace certi
-
-// $Id: InteractionBroadcastList.cc,v 3.16 2010/03/23 13:13:27 erk Exp $
