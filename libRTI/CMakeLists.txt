@@ -185,7 +185,7 @@ SET(TestFedTime_SRCS
 )
 ADD_EXECUTABLE(TestFedTime ${TestFedTime_SRCS})
 TARGET_LINK_LIBRARIES(TestFedTime FedTime RTI)
-ADD_TEST(TestLibFedTime TestFedTime)
+ADD_TEST(NAME TestLibFedTime COMMAND $<TARGET_FILE:TestFedTime>)
 
 ##########################################################
 SET(FEDTIME1516_SRCS
