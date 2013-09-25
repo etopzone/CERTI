@@ -423,17 +423,23 @@ if (APPLE)
 endif(APPLE)
 
 # FIX for mingw for auto-import without -enable-auto-import warning
-if (NOT CMAKE_CROSSCOMPILING)
-   message("CMAKE_CROSSCOMPILING = ${CMAKE_CROSSCOMPILING}")
-   if (MINGW)
-       SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --enable-auto-import")
-       SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} --enable-auto-import"
+if (MINGW)
+   if (CMAKE_CROSSCOMPILING)
+       # mingw Cross-compiler does not seem to handle the flags??
+       # even if the builtin doc mention it
+       #set(AUTOIMPORT_FLAGS "--enable-auto-import")
+       set(AUTOIMPORT_FLAGS "")
+   else (CMAKE_CROSSCOMPILING)
+       set(AUTOIMPORT_FLAGS "-enable-auto-import")
+   endif(CMAKE_CROSSCOMPILING)
+   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${AUTOIMPORT_FLAGS}")
+   
+   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
             CACHE STRING "Flags used by the linker during the creation of dll's." FORCE)
-       # module linker flags
-       SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} --enable-auto-import"
+   # module linker flags
+   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
             CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
-   endif(MINGW)
-endif(NOT CMAKE_CROSSCOMPILING)
+endif(MINGW)
 
 ADD_SUBDIRECTORY( include )
 ADD_SUBDIRECTORY( libHLA )
