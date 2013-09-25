@@ -1,6 +1,6 @@
 PROJECT(CERTI CXX)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4.4)
+cmake_minimum_required(VERSION 2.8.0)
 INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
 MARK_AS_ADVANCED(TCL_TCLSH DART_ROOT)
 # New Policy for full path library search
