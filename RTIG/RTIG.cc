@@ -457,7 +457,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
 
 void
 RTIG::setListeningIPAddress(const std::string& hostName) throw (NetworkError) {
-    this->listeningIPAddress = Socket::host2addr(hostName);
+    Socket::host2addr(hostName,this->listeningIPAddress);
 }
 
 
@@ -475,10 +475,10 @@ RTIG::execute() throw (NetworkError) {
     // listen only on specified interface (if any)
     //  1) listen on interface specified on the command line
     if (this->listeningIPAddress != 0) {
-        udpSocketServer.createUDPServer(udpPort);
+        udpSocketServer.createUDPServer(udpPort, listeningIPAddress);
         tcpSocketServer.createTCPServer(tcpPort, listeningIPAddress);
     }
-    // default case listen on all network interfaces
+    // default case on all network interfaces
     else {
         udpSocketServer.createUDPServer(udpPort);
         tcpSocketServer.createTCPServer(tcpPort);
@@ -1072,4 +1072,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.71 2013/09/24 14:27:58 erk Exp $
+// $Id: RTIG.cc,v 3.72 2013/09/27 13:04:33 erk Exp $

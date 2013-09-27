@@ -24,10 +24,6 @@
 #include <cstring>
 #include <cstdio>
 
-#ifndef MAXHOSTNAMELEN
-#define MAXHOSTNAMELEN 4096
-#endif
-
 #ifdef _WIN32
 #include "SocketTCP.hh"
 #else
@@ -140,43 +136,27 @@ _est_init_udp = true ;
 // ----------------------------------------------------------------------------
 //! create an UDP server.
 void
-SocketUDP::createUDPServer(unsigned int port)
+SocketUDP::createUDPServer(unsigned int port, in_addr_t addr)
     throw (NetworkError, NetworkSignal)
 {
   assert(!_est_init_udp);
 
-  char localhost[MAXHOSTNAMELEN+1] ;
-  struct hostent * hp_local=NULL;
-
   // Building Local Address
   memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
 
-  gethostname(localhost, MAXHOSTNAMELEN);
-
-  hp_local = (struct hostent *) gethostbyname(localhost);
-  if (NULL == hp_local)
-    {
-        throw NetworkError(stringize()
-            << "gethostbyname gave NULL answer for hostname <"
-            << localhost
-            << "> with error <" << strerror(errno) << ">");
-    }
-
-   memcpy((char *) &sock_local.sin_addr,(char *)hp_local->h_addr, hp_local->h_length);
-   sock_local.sin_family = hp_local->h_addrtype ;
+   sock_local.sin_addr.s_addr   = addr;
+   sock_local.sin_family = AF_INET;
    sock_local.sin_port   = htons((u_short)port);
 
-if (!open())
-	{
-	perror("SocketUDP: Open");
-	throw NetworkError("Cannot open UDP Socket");
-	}
+   if (!open()) {
+       perror("SocketUDP: Open");
+       throw NetworkError("Cannot open UDP Socket");
+   }
 
-if (!bind())
-	{
-	perror("SocketUDP: Bind");
-	throw NetworkError("Cannot bind UDP Socket");
-	}
+   if (!bind()) {
+       perror("SocketUDP: Bind");
+       throw NetworkError("Cannot bind UDP Socket");
+   }
 
 _est_init_udp = true ;
 }

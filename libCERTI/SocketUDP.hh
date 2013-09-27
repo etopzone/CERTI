@@ -50,7 +50,7 @@ public :
     virtual void createConnection(const char *server_name, unsigned int port)
         throw (NetworkError);
 
-	void createUDPServer(unsigned int port)
+	void createUDPServer(unsigned int port, in_addr_t addr = INADDR_ANY)
 	throw (NetworkError, NetworkSignal);
 
 	void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
@@ -65,7 +65,7 @@ private:
 	int bind();
 	int open();
 
-	bool PhysicalLink ; ///< tak indicating physical or logical link
+	bool PhysicalLink ; ///< tag indicating physical or logical link
 
 	SOCKET _socket_udp;
 	struct sockaddr_in sock_local ;

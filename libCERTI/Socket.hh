@@ -39,6 +39,11 @@ typedef unsigned short in_port_t;
 typedef int SOCKET;
 #endif
 
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 4096
+#endif
+
+#include <unistd.h>
 #include <cstring>
 #include <cerrno>
 #include <string>
@@ -92,8 +97,8 @@ public:
     /**
      * This function builds an IP address out of an hostname.
      */
-    static in_addr_t host2addr(const std::string& hostName) throw (NetworkError) {
-        in_addr_t retaddr=0;
+    static void host2addr(const std::string& hostName, in_addr_t& addr) throw (NetworkError) {
+        addr = 0;
         // get host information from server name
         // this may perform DNS query
         struct hostent *hptr = gethostbyname(hostName.c_str());
@@ -104,8 +109,23 @@ public:
                     << hostName
                     << "> with error <" << strerror(errno) << ">");
         }
-        memcpy((void *) &retaddr, (void *) hptr->h_addr, hptr->h_length);
-        return retaddr;
+        memcpy((void *) &addr, (void *) hptr->h_addr, hptr->h_length);;
+    }
+
+    /**
+     * Get the IP address corresponding to the first interface of the host.
+     */
+    static void getMyFirstIPaddr(in_addr_t& addr) throw (NetworkError) {
+        char           name[MAXHOSTNAMELEN+1];
+        /* FIXME gethostname is deprecated
+         * we should use getnameinfo and getaddrinfo
+         */
+        if (0 != gethostname(name,1024)) {
+            throw NetworkError(stringize()
+                                << "gethostname FAILED"
+                                << " with error <" << strerror(errno) << ">");
+        }
+        Socket::host2addr(name,addr);
     }
 };
 
