@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.28 2010/02/27 16:53:36 erk Exp $
+// $Id: main.cc,v 3.29 2013/09/27 08:20:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,15 +27,26 @@
 #include "RTIA_cmdline.h"
 
 #include <sys/types.h>
-#include <signal.h>
+#include <csignal>
 
 using namespace certi;
 using namespace rtia;
 using namespace std;
 
-extern "C"void SignalHandler(int Signal);
-void NewHandler();
 int normal_end;
+
+// ----------------------------------------------------------------------------
+void SignalHandler(int signal) {
+    printf("\nRTIA: Received signal %d. Exiting peacefully.\n", signal);
+    normal_end = 1;
+    // Catch signal again.
+    std::signal(signal, SignalHandler);
+}
+
+// ----------------------------------------------------------------------------
+void NewHandler() {
+    throw MemoryExhausted("RTIA (main) has exhausted memory error");
+}
 
 /**
  * @defgroup certi_executable_RTIA RTIA
@@ -115,17 +126,5 @@ main(int argc, char **argv) {
 	return (EXIT_SUCCESS);
 }
 
-// ----------------------------------------------------------------------------
-void SignalHandler(int Signal) {
 
-	printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
-        normal_end = 1;
-        //exit(0);
-}
-
-// ----------------------------------------------------------------------------
-void NewHandler() {
-	throw MemoryExhausted("RTIA has exhausted memory error");
-}
-
-// EOF $Id: main.cc,v 3.28 2010/02/27 16:53:36 erk Exp $
+// EOF
