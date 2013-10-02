@@ -1,6 +1,11 @@
-PROJECT(CERTI CXX)
+if (WIN32)
+    cmake_minimum_required(VERSION 2.8.0)
+else()
+    cmake_minimum_required(VERSION 2.6.4)
+endif()
 
-cmake_minimum_required(VERSION 2.8.0)
+project(CERTI CXX)
+
 INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
 MARK_AS_ADVANCED(TCL_TCLSH DART_ROOT)
 # New Policy for full path library search
