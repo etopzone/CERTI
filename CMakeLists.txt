@@ -505,11 +505,13 @@ IF (WIN32)
     SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
     SET(CPACK_NSIS_CREATE_ICONS "
 	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\RTIG.lnk\\\" \\\"$INSTDIR\\\\bin\\\\RTIG.exe\\\"
-	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard.exe\\\" \\\"-n 1 -t 10 -FTest.fed -fTest\\\"
+	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard_1.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard-nogui.exe\\\" \\\"-n Billard1 -t 10 -FTest.fed -fTest\\\"
+	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard_2.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard-nogui.exe\\\" \\\"-n Billard2 -t 10 -FTest.fed -fTest\\\"
 	      ")
     SET(CPACK_NSIS_DELETE_ICONS "
 	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\RTIG.lnk\\\"
-	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard.lnk\\\"
+	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard_1.lnk\\\"
+	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard_2.lnk\\\"
 	      ")
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} CERTI (HLA RTI)")
     SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\savannah.nongnu.org\\\\projects\\\\certi")
