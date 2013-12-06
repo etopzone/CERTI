@@ -11,10 +11,18 @@ CERTI releases should be done with the following steps:
 
     Bugs:
     https://savannah.nongnu.org/bugs/?group=certi
-    - checked if fixed are really CVS and switches
-       status from ReadyToTest to Done
-                   from Open to Closed
-                   check the Release 
+    - check if fixed bugs are really in CVS and
+      switch status 
+            from ReadyToTest to Done
+            from Open to Closed
+      check the Release version.
+
+    Patches:
+    https://savannah.nongnu.org/patch/?group=certi
+    - check those which are "Ready For Test"
+      switch status 
+             from ReadyForTest to Done
+             from Open to Closed
 
     Tasks:
     https://savannah.nongnu.org/task/?group=certi
@@ -39,8 +47,8 @@ CERTI releases should be done with the following steps:
      Better is at least 2 built:
          Linux ix86 wth gcc  (32bits)
          Windows win32 with Visual Studio 
-                     and/or Code::Blocks (http://www.codeblocks.org/)
-                     and/or Wascana (http://wascana.sourceforge.net/)                     
+                and/or Code::Blocks (http://www.codeblocks.org/)
+                and/or MinGW (http://mingw-w64.sourceforge.net)+Eclipse CDT
 
 6) Run autotests :))
    Which means for today run as many tests as you can do
