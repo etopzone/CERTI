@@ -41,7 +41,7 @@ set(CTEST_BUILD_CONFIGURATION "Debug")
 # set any extra environment variables to use during 
 # the execution of the script here:
 set (CTEST_ENVIRONMENT
-    #"HTTP_PROXY=<your proxy url here"
+    #"HTTP_PROXY=<your proxy url here>"
 )
 ####################################################################
 # END OF LOCAL SETUP.
@@ -60,6 +60,7 @@ ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
 set(CTEST_UPDATE_COMMAND "cvs")
 set(CTEST_CVS_COMMAND "cvs")
 set(CTEST_CVS_CHECKOUT "${CTEST_CVS_COMMAND} -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/certi co -d src certi")
+#set(CTEST_CVS_UPDATE_OPTIONS )
  
 # Easy handling of script command line argument
 # CTEST_SCRIPT_ARG is the 'value' that comes after the comma in
