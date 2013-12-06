@@ -234,9 +234,9 @@ SET(TestFedTime1516_SRCS
 #ADD_EXECUTABLE(TestFedTime1516 ${TestFedTime1516_SRCS})
 
 # TODO: Should link with RTI1516 lib, instead of base RTI lib
-#TARGET_LINK_LIBRARIES(TestFedTime1516 FedTime1516 RTI)
+#TARGET_LINK_LIBRARIES(TestFedTime1516 FedTime1516 RTI1516)
 
-#ADD_TEST(TestLibFedTime1516 TestFedTime1516)
+#ADD_TEST(TestLibFedTime1516 COMMAND $<TARGET_FILE:TestFedTime1516>)
 
 
 # Install rules for both libRTI-NG and libFedTime
