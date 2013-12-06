@@ -1,4 +1,564 @@
-2011-10-18 22:36  tag CERTI-3_4_1
+2013-12-06 13:31  tag CERTI-3_4_2
+
+2013-12-06 13:31  erk
+
+	* CMakeLists.txt (1.130, CERTI-3_4_2): Prepare 3.4.2 release
+
+2013-12-06 13:24  erk
+
+	* RTIG/main.cc (3.24, CERTI-3_4_2): Provide a better error when @IP
+	  format is wrong
+
+2013-12-06 13:10  erk
+
+	* libRTI/CMakeLists.txt (1.28, CERTI-3_4_2): Use new style add_test
+	  even in commented out code
+
+2013-12-06 13:09  erk
+
+	* scripts/certi-ctest.cmake (1.5, CERTI-3_4_2): Small update
+
+2013-12-06 11:34  erk
+
+	* CMakeLists.txt (1.129): Add ENABLE_MINGW_AUTOIMPORT option and
+	  avoid discovering which version of MinGW support the
+	  -enable-auto-import option.  This close patch #8184.
+
+2013-10-02 15:49  erk
+
+	* CMakeLists.txt (1.128): Add two icon in start menu (of NSIS
+	  installer) in order to be able to easily launch:    RTIG + 2
+	  billard applications.
+
+	  The default is to use billard-nogui because GUI version of
+	  billard is not currently built on Windows.
+
+2013-10-02 14:50  erk
+
+	* CMakeLists.txt (1.127): Avoid requiring cmake 2.8.0 on Linux
+	  since default CentOS 5/6 version of CMake is 2.6.4 and we
+	  currently only "really" require 2.8.x on Windows
+
+2013-09-27 15:04  erk
+
+	* libCERTI/SocketUDP.cc (3.32), RTIG/RTIG.cc (3.72),
+	  libCERTI/Socket.hh (3.22), libCERTI/SocketUDP.hh (3.16) (utags:
+	  CERTI-3_4_2): Fixes bug #23360 : RTIA UDP socket being bound to
+	  `localhost` address bug #35955 : RTIG listen on all interfaces
+
+	  UDP as well as TCP should obey the new -l option of RTIG.
+
+2013-09-27 10:39  erk
+
+	* ReleaseProcess.txt (1.10, CERTI-3_4_2): Small update command line
+	  reminder for scp
+
+2013-09-27 10:38  erk
+
+	* CMakeLists.txt (1.126): Go back to work on 3.4.2 release
+
+2013-09-27 10:33  tag CERTI_SYS015_2013
+
+2013-09-27 10:33  erk
+
+	* CMakeLists.txt (1.125, CERTI_SYS015_2013): Build specific version
+	  for SYS015 course
+
+2013-09-27 10:20  erk
+
+	* RTIA/main.cc (3.29, CERTI-3_4_2, CERTI_SYS015_2013): Adjust RTIA
+	  signal handling in the same way RTIG does.  This was suggested in
+	  bug #23135 : RTIG/RTIA generates no coredump after unhandled
+	  exception This close the bug.
+
+2013-09-26 16:21  erk
+
+	* CTestConfig.cmake (1.4, CERTI-3_4_2, CERTI_SYS015_2013): Change
+	  the Nightly update date
+
+2013-09-25 16:57  erk
+
+	* libHLA/CMakeLists.txt (1.20, CERTI-3_4_2), libRTI/CMakeLists.txt
+	  (1.27) (utags: CERTI_SYS015_2013): Merge patch #8187 : Fix for
+	  CTest Nightly This requires cmake 2.8.0.  The requirement has
+	  been added in a previous commit.
+
+2013-09-25 16:55  erk
+
+	* CMakeLists.txt (1.124): Fix patch #7072 we should require modern
+	  CMake version.  We go for 2.8.0 which is already more than 3 year
+	  old which seems acceptable.
+
+2013-09-25 11:46  erk
+
+	* CMakeLists.txt (1.123): On native windows build keep one-dash
+	  prefix option -enable-auto-import
+
+2013-09-24 16:46  erk
+
+	* libCERTI/BaseRegion.hh (3.5), libCERTI/HandleManager.hh (3.10),
+	  libCERTI/Message.cc (3.70), libCERTI/NameReservation.hh (3.4),
+	  include/RTI.hh (3.22), include/federateAmbServices.hh (3.3)
+	  (utags: CERTI-3_4_2, CERTI_SYS015_2013): Re-add files that were
+	  wrongly suppressed
+
+2013-09-24 16:27  erk
+
+	* libCERTI/AuditLine.cc (3.13, CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/BaseRegion.hh (3.4), libCERTI/ObjectAttribute.cc (3.20,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/ObjectClass.cc (3.91,
+	  CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/ObjectClassBroadcastList.cc (3.33, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/fed.hh (3.9, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/FederateLevelList.hh (3.12,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/GAV.cc (3.24,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/HandleManager.hh (3.9),
+	  libCERTI/LBTS.cc (3.21, CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/ObjectClassAttribute.cc (3.40, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/tokens.ll (3.12, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/AuditFile.hh (3.12, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/BasicMessage.cc (3.19, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/NetworkMessage.hh (3.67,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/PrettyDebug.cc (4.13,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Exception.cc (3.22,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/FedTime.cc (3.17,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Interaction.cc (3.65,
+	  CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/ObjectClassBroadcastList.hh (3.12, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/SocketTCP.cc (3.36, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/BaseRegion.cc (3.7, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/FederateLevelList.cc (3.12,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/InteractionSet.cc
+	  (3.35, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/LBTS.hh (3.14,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Message.cc (3.69),
+	  libCERTI/Named.cc (3.11, CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/ObjectClassAttribute.hh (3.30, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/Extent.cc (3.15, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/Object.cc (3.29, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/ObjectAttribute.hh (3.20,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/GSSAPIHandler.hh (3.5,
+	  CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/InteractionBroadcastList.hh (3.11, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/NetworkMessage_RW.cc (3.59,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/helper.hh (3.3,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/FedRegion.cc (3.7,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/FedTimeD.hh (4.2,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/InteractionSet.hh
+	  (3.29, CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/NameReservation.hh (3.3), libCERTI/AuditFile.cc (3.13,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/AuditLine.hh (3.12,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Extent.hh (3.13,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/GSSAPIHandler.cc (3.9,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/NetworkMessage.cc
+	  (3.52, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/BasicMessage.hh
+	  (3.18, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Dimension.cc
+	  (3.10, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Dimension.hh
+	  (3.11, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Exception.hh
+	  (3.13, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/FedRegion.hh
+	  (3.6, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/Interaction.hh
+	  (3.46, CERTI-3_4_2, CERTI_SYS015_2013),
+	  libCERTI/InteractionBroadcastList.cc (3.17, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/Message_RW.cc (3.43, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/Named.hh (3.12, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/ObjectClass.hh (3.60, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/ObjectClassSet.cc (3.59,
+	  CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/ObjectClassSet.hh
+	  (3.43, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/PrettyDebug.hh
+	  (4.11, CERTI-3_4_2, CERTI_SYS015_2013), libCERTI/fed.cc (3.25,
+	  CERTI-3_4_2, CERTI_SYS015_2013), RTIG/Federation.cc (3.152,
+	  CERTI-3_4_2, CERTI_SYS015_2013), RTIG/Federation.hh (3.75,
+	  CERTI-3_4_2, CERTI_SYS015_2013), RTIG/RTIG.cc (3.71,
+	  CERTI_SYS015_2013), RTIG/RTIG.hh (3.39, CERTI-3_4_2,
+	  CERTI_SYS015_2013), RTIG/RTIG_processing.cc (3.116, CERTI-3_4_2,
+	  CERTI_SYS015_2013), libCERTI/Handled.hh (3.3, CERTI-3_4_2,
+	  CERTI_SYS015_2013), test/Billard/Billard_cmdline.c (1.1,
+	  CERTI-3_4_2, CERTI_SYS015_2013), test/Billard/Billard_cmdline.h
+	  (1.1, CERTI-3_4_2, CERTI_SYS015_2013), test/libgraphc/graph_c.cc
+	  (3.8, CERTI-3_4_2, CERTI_SYS015_2013), doc/certi_install_doc.tree
+	  (3.6), doc/certi_user_doc.tree (3.7), doc/install.dox (3.3),
+	  doc/introduction.dox (3.3), doc/build.dox (3.6), doc/execute.dox
+	  (3.7), include/RTI.hh (3.21), include/RTIambServices.hh (3.12,
+	  CERTI-3_4_2, CERTI_SYS015_2013), include/RTItypes.hh.cmake (1.2,
+	  CERTI-3_4_2, CERTI_SYS015_2013), include/certi.hh (3.54,
+	  CERTI-3_4_2, CERTI_SYS015_2013), include/federateAmbServices.hh
+	  (3.2), include/fedtime.hh (3.14, CERTI-3_4_2, CERTI_SYS015_2013),
+	  include/NullFederateAmbassador.hh (3.2, CERTI-3_4_2,
+	  CERTI_SYS015_2013): Merge patch #7791 : Remove $Id: ChangeLog,v 3.44 2013/12/06 12:48:41 erk Exp $ CVS keywords
+
+2013-09-24 11:16  erk
+
+	* CMakeLists.txt (1.122): Merge patch #8184 with slight
+	  modification to avoid --enable-auto-import when cross-compiling
+	  because mingw32/64 cross compiler doesn not seem to support the
+	  option.
+
+2013-09-20 14:09  erk
+
+	* RTIG/CMakeLists.txt (1.13), test/Billard/CMakeLists.txt (1.12),
+	  RTIA/CMakeLists.txt (1.14) (utags: CERTI-3_4_2,
+	  CERTI_SYS015_2013): Less "secure" MSVC warning for gengetopt
+	  generated files.
+
+2013-09-20 14:04  erk
+
+	* RTIG/Federation.cc (3.151): Should fix build error on MSVC
+
+2013-09-18 16:50  erk
+
+	* test/Billard/CMakeLists.txt (1.11): Prepare proper gengetopt
+	  command line generation [unfinished]
+
+2013-09-18 16:50  erk
+
+	* test/Billard/: Billard.ggo (1.1, CERTI-3_4_2, CERTI_SYS015_2013),
+	  CommandLine.ggo (3.5): Rename CommandLine.ggo --> Billard.ggo
+
+2013-09-18 16:49  erk
+
+	* RTIA/CMakeLists.txt (1.13), RTIG/CMakeLists.txt (1.12): Update
+	  for more informative messages
+
+2013-09-18 16:29  erk
+
+	* RTIG/Federation.cc (3.150): Avoid Mingw warning: "warning:
+	  "strcasecmp" redefined [enabled by default]"
+
+2013-09-17 17:05  erk
+
+	* scripts/Toolchain-cross-mingw-Win64.cmake (1.1, CERTI-3_4_2,
+	  CERTI_SYS015_2013), CMakeLists.txt (1.121),
+	  scripts/Toolchain-cross-mingw-Win32.cmake (1.1, CERTI-3_4_2,
+	  CERTI_SYS015_2013), scripts/Toolchain-cross-mingw32-linux.cmake
+	  (1.6): Add test for properly cross-compiling CERTI on a Linux
+	  host to a Win32/64 target
+
+2013-09-16 16:31  erk
+
+	* include/CMakeLists.txt (1.6, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Suppress spurious space.
+
+2013-09-16 16:30  erk
+
+	* libCERTI/RingBuffer.cc (3.4, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Avoid compiler warning.  This is not a real fix, this code must
+	  be changed/updated.
+
+2013-09-16 16:14  erk
+
+	* libRTI/RTI1516ambassador.h (1.3, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Complete friend function prototype to include full exception
+	  specification.
+
+2013-09-16 16:10  erk
+
+	* CMakeLists.txt (1.120): Prune spurious space in CMakeLists.txt
+
+2013-09-16 16:09  erk
+
+	* RTIG/: Federation.cc (3.149), Federation.hh (3.74): Calm down
+	  compiler warning and avoid using libxml inlcudes in CERTI headers
+	  (using it in .cc is enough).
+
+2013-09-16 15:24  erk
+
+	* RTIG/RTIG_processing.cc (3.115): Avoid compiler warning about
+	  "set but not used variable".	Add some more comment about this
+	  "side-effect" call.
+
+2013-09-16 15:23  erk
+
+	* libCERTI/Exception.hh (3.12): Avoid compiler warning about
+	  non-initialized field member.
+
+2013-09-16 15:22  erk
+
+	* RTIA/RTIA_federate.cc (3.122, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Add break or explicit NO break comment in order to calm down code
+	  analysis warning and makes it explicit that we don't want a break
+	  in some cases.
+
+2013-09-11 10:17  erk
+
+	* RTIA/RTIA_federate.cc (3.121): Avoid compiler warning (clang) due
+	  to unsigned comparison.
+
+2013-09-10 14:46  erk
+
+	* xml/: README.txt (1.1), 1516_1-2010/HLAstandardMIM.xml (1.1),
+	  1516_1-2010/IEEE1516-FDD-2010.xsd (1.1),
+	  1516_1-2010/hla1516e.wsdl (1.1), 1516_2-2000/HLA.dtd (1.1),
+	  1516_2-2000/OMT-DIF.xml (1.1), 1516_2-2010/IEEE1516-DIF-2010.xsd
+	  (1.1), 1516_2-2010/IEEE1516-OMT-2010.xsd (1.1),
+	  1516_2-2010/RestaurantFOMmodule.xml (1.1),
+	  1516_2-2010/RestaurantSOMmodule.xml (1.1) (utags: CERTI-3_4_2,
+	  CERTI_SYS015_2013): Add xml files coming from IEEE-1516 norms
+
+2013-09-06 15:34  erk
+
+	* scripts/SystemSpecificInformations.cmake (1.11, CERTI-3_4_2,
+	  CERTI_SYS015_2013): Update more MSVC version
+
+2013-09-06 14:50  erk
+
+	* include/certi.hh (3.53): Should fix compilation with Visual
+	  Studio 2012.
+
+2013-09-04 14:53  erk
+
+	* libCERTI/: CMakeLists.txt (1.40, CERTI-3_4_2, CERTI_SYS015_2013),
+	  SocketTCP.hh (3.25, CERTI-3_4_2, CERTI_SYS015_2013), SocketTCP.cc
+	  (3.35): Calm down warning concerning uninitialized field member
+	  in constructor.
+
+2013-09-04 14:50  erk
+
+	* RTIG/CMakeLists.txt (1.11), RTIA/CMakeLists.txt (1.12): Calm down
+	  compiler warning for generated files.
+
+2013-09-04 10:15  erk
+
+	* libCERTI/ObjectClassSet.cc (3.58): Fixes bug #39456 : Recovery
+	  after crashed federate that owns multiple objects.
+
+2013-09-04 09:56  erk
+
+	* RTIG/CMakeLists.txt (1.10), RTIG/RTIG.ggo (3.2, CERTI-3_4_2,
+	  CERTI_SYS015_2013), RTIG/RTIG.cc (3.70), RTIG/RTIG_cmdline.c
+	  (3.2, CERTI-3_4_2, CERTI_SYS015_2013), RTIG/RTIG_cmdline.h (3.2,
+	  CERTI-3_4_2, CERTI_SYS015_2013), RTIG/RTIG.hh (3.38),
+	  RTIG/main.cc (3.23, CERTI_SYS015_2013), libCERTI/Socket.hh (3.21,
+	  CERTI_SYS015_2013): Add -l command line option to RTIG in order
+	  to listen on a specific  @IP address and not all of them.  Fixes
+	  bug #35955
+
+2013-09-04 09:52  erk
+
+	* RTIA/CMakeLists.txt (1.11): Add custom target for easing the
+	  regeneration of RTIA command line handling
+
+2013-09-04 09:51  erk
+
+	* RTIA/RTIA_federate.cc (3.120): Calm down one more warning about
+	  set but unused local var.
+
+2013-09-04 09:50  erk
+
+	* libCERTI/: SocketUDP.cc (3.31), SocketUDP.hh (3.15) (utags:
+	  CERTI_SYS015_2013): Calm down some compiler warning about
+	  initialization
+
+2013-08-22 09:46  erk
+
+	* CMakeLists.txt (1.119): Search only Xlib.h and display actual X11
+	  include dir found.
+
+2013-04-11 22:20  erk
+
+	* CMakeLists.txt (1.118): Xlib header needs .h extension
+
+2013-04-11 22:16  erk
+
+	* test/libgraphc/: CMakeLists.txt (1.10, CERTI-3_4_2,
+	  CERTI_SYS015_2013), graph_c.cc (3.7): Pruning
+
+2013-04-11 22:16  erk
+
+	* CMakeLists.txt (1.117): Fix X11 header discovery bug which makes
+	  compilation fail on Mac OS X 10.8 Contributed by Jerome Hugues.
+
+2013-03-18 09:47  erk
+
+	* test/Billard/dtest_billard.py (1.7, CERTI-3_4_2,
+	  CERTI_SYS015_2013): Add example of alternative trace manager
+
+2013-01-08 10:45  erk
+
+	* doc/DoxyTools.cmake (3.7, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Enhance dependencies for doxygen doc generation
+
+2013-01-08 10:45  erk
+
+	* doc/doc_install.in (3.4, CERTI-3_4_2, CERTI_SYS015_2013): Remove
+	  spurious space
+
+2012-07-22 14:39  erk
+
+	* libCERTI/tokens.ll (3.11): Fix compilation with gcc 4.7.x (isatty
+	  undefined)
+
+2012-06-21 14:16  erk
+
+	* libCERTI/: PrettyDebug.cc (4.12), PrettyDebug.hh (4.10): Avoid
+	  race condition on DEBUG file.  Mangle the filename using PID
+
+2012-06-21 10:03  erk
+
+	* libCERTI/: PrettyDebug.hh (4.9), PrettyDebug.cc (4.11): Try to
+	  implement.  Trace in file oen can  now set CERTI_DEBUG_FILE env
+	  var
+
+2012-06-05 17:33  erk
+
+	* libHLA/: HLAbasicType.hh (1.8), HLAtypesIEEE1516.hh (1.6) (utags:
+	  CERTI-3_4_2, CERTI_SYS015_2013): Fix compilation error with clang
+
+2012-05-23 23:18  erk
+
+	* CERTICPackOptions.cmake.in (1.4, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Indent in a more readable manner
+
+2012-04-26 10:24  erk
+
+	* .cvsignore (1.7, CERTI-3_4_2, CERTI_SYS015_2013): Ignore any
+	  subdir beginning with build, i.e. globbing expression build* in
+	  .cvsignore
+
+2012-04-26 10:23  erk
+
+	* libHLA/CMakeLists.txt (1.19): Do not flag header file as "C
+	  source file" this produce CMake warning for nothing.	Tidy up the
+	  CMakeLists.txt a little bit.
+
+2012-04-26 09:50  erk
+
+	* libHLA/tlsf_target.h (1.2, CERTI-3_4_2, CERTI_SYS015_2013): Fix
+	  header protecting macro name
+
+2012-04-26 09:49  erk
+
+	* RTIG/FederationsList.cc (3.77, CERTI-3_4_2, CERTI_SYS015_2013):
+	  Remove return value usage where method should return void.
+
+2012-04-05 13:45  erk
+
+	* COPYING.txt (1.2, CERTI-3_4_2, CERTI_SYS015_2013): Clarify
+	  license status for **all** lib
+
+2012-02-05 12:43  erk
+
+	* CMakeLists.txt (1.116): Check whether if NSIS is installed before
+	  trying to build NSIS package
+
+2012-02-01 17:25  erk
+
+	* libRTI/RTI1516exception.cpp (1.2, CERTI-3_4_2,
+	  CERTI_SYS015_2013): Remove unnecessary CERTI specific method
+
+2012-01-26 22:39  erk
+
+	* CMakeLists.txt (1.115): Adjust test name for package
+
+2012-01-26 22:33  erk
+
+	* CMakeLists.txt (1.114): Try adding package as a test
+
+2011-12-31 16:49  tag CERTI-3_4_2-dev1
+
+2011-12-31 16:49  erk
+
+	* libCERTI/: Interaction.cc (3.64), Interaction.hh (3.45) (utags:
+	  CERTI-3_4_2-dev1): More interaction class clean-up
+
+2011-12-31 14:25  erk
+
+	* RTIG/Federation.hh (3.73, CERTI-3_4_2-dev1),
+	  RTIG/FederationsList.cc (3.76, CERTI-3_4_2-dev1),
+	  RTIG/FederationsList.hh (3.60, CERTI-3_4_2, CERTI_SYS015_2013,
+	  CERTI-3_4_2-dev1), RTIG/RTIG_processing.cc (3.114,
+	  CERTI-3_4_2-dev1), libCERTI/Interaction.cc (3.63),
+	  libCERTI/Interaction.hh (3.44), libCERTI/InteractionSet.cc (3.34,
+	  CERTI-3_4_2-dev1), libCERTI/RootObject.cc (3.53, CERTI-3_4_2,
+	  CERTI_SYS015_2013, CERTI-3_4_2-dev1), RTIG/Federation.cc (3.148,
+	  CERTI-3_4_2-dev1): Fix interaction class inheritance.  Previously
+	  send interaction wasn't propagated to super class
+
+2011-12-31 14:25  erk
+
+	* scripts/Toolchain-cross-mingw32-linux.cmake (1.5,
+	  CERTI-3_4_2-dev1): More cross compiler support
+
+2011-12-31 14:24  erk
+
+	* include/RTI.hh (3.20, CERTI-3_4_2-dev1): some more documentation
+
+2011-12-31 14:23  erk
+
+	* libCERTI/: RootObject.hh (3.39, CERTI-3_4_2, CERTI_SYS015_2013),
+	  fed.cc (3.24) (utags: CERTI-3_4_2-dev1): reindent source
+
+2011-12-29 18:59  erk
+
+	* libCERTI/syntax.yy (3.10, CERTI-3_4_2, CERTI_SYS015_2013,
+	  CERTI-3_4_2-dev1): Enable improved syntax error reporting
+
+2011-12-20 08:43  erk
+
+	* CMakeLists.txt (1.113, CERTI-3_4_2-dev1),
+	  scripts/Toolchain-cross-mingw32-linux.cmake (1.4): Enhance
+	  mingw32 toolchain file
+
+2011-12-18 17:02  erk
+
+	* CERTIBuildTreeSettings.cmake.in (1.1, CERTI-3_4_2,
+	  CERTI_SYS015_2013, CERTI-3_4_2-dev1), CERTIConfig.cmake.in (1.1,
+	  CERTI-3_4_2, CERTI_SYS015_2013, CERTI-3_4_2-dev1),
+	  CERTIConfigVersion.cmake.in (1.1, CERTI-3_4_2, CERTI_SYS015_2013,
+	  CERTI-3_4_2-dev1), CMakeLists.txt (1.112), RTIG/CMakeLists.txt
+	  (1.9, CERTI-3_4_2-dev1), libCERTI/CMakeLists.txt (1.39,
+	  CERTI-3_4_2-dev1), libHLA/CMakeLists.txt (1.18,
+	  CERTI-3_4_2-dev1), RTIA/CMakeLists.txt (1.10, CERTI-3_4_2-dev1),
+	  libRTI/CMakeLists.txt (1.26, CERTI-3_4_2-dev1): Add CMake's
+	  config mode file for CERTI
+
+2011-12-18 17:01  erk
+
+	* scripts/Toolchain-cross-mingw32-linux.cmake (1.3): Update mingw32
+	  cross-compile toolchain file
+
+2011-12-18 16:26  erk
+
+	* libCERTI/tokens.ll (3.10, CERTI-3_4_2-dev1): Tolerate DOS like
+	  end of line.
+
+2011-12-18 16:25  erk
+
+	* CMakeLists.txt (1.111), libCERTI/Socket.hh (3.20,
+	  CERTI-3_4_2-dev1): Enable cross-compiling with libxml2 support as
+	  well
+
+2011-12-18 14:28  erk
+
+	* libHLA/CMakeLists.txt (1.17),
+	  scripts/SystemSpecificInformations.cmake (1.10,
+	  CERTI-3_4_2-dev1), CMakeLists.txt (1.110),
+	  libCERTI/CMakeLists.txt (1.38), scripts/FindLexYacc.cmake (1.6,
+	  CERTI-3_4_2, CERTI_SYS015_2013, CERTI-3_4_2-dev1),
+	  scripts/Toolchain-cross-mingw32-linux.cmake (1.2): Some small
+	  change in order to enable cross-compilling (at least from Linux
+	  to Win32)
+
+2011-10-29 19:07  erk
+
+	* RTIG/Federation.cc (3.147): Fix FOM search path regression on
+	  Windows.  Patch from Jan-Patrick.
+
+2011-10-27 09:59  erk
+
+	* CMakeLists.txt (1.109), libRTI/RTI1516ambassadorFactory.cpp (1.7,
+	  CERTI-3_4_2, CERTI_SYS015_2013, CERTI-3_4_2-dev1),
+	  libRTI/RTIambassador.cc (3.128, CERTI-3_4_2, CERTI_SYS015_2013,
+	  CERTI-3_4_2-dev1): Make RTIA console display an option (default
+	  is DO not show RTIA console)
+
+2011-10-27 09:46  erk
+
+	* scripts/CERTI_Message.msg (1.19), libCERTI/M_Classes.cc (3.17)
+	  (utags: CERTI-3_4_2, CERTI-3_4_2-dev1, CERTI_SYS015_2013): Avoid
+	  non-initialized member in some Messages
+
+2011-10-18 22:42  erk
+
+	* CMakeLists.txt (1.108): Post 3.4.1 release go for 3.4.2cvs
 
 2011-10-18 22:36  erk
 
