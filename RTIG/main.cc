@@ -130,11 +130,11 @@ int main(int argc, char *argv[])
     std::set_new_handler(NewHandler);
 
     myRTIG.setVerboseLevel(verboseLevel);
-    // if a listening IP has been specified then use it
-    if (args.listen_given) {
-        myRTIG.setListeningIPAddress(args.listen_arg);
-    }
     try {
+        // if a listening IP has been specified then use it
+        if (args.listen_given) {
+            myRTIG.setListeningIPAddress(args.listen_arg);
+        }
         myRTIG.execute();
     } catch (NetworkError& e) {
         std::cerr << "CERTI RTIG aborted with a Network Error: [" << e._reason << "]." <<std::endl;
