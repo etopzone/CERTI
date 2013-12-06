@@ -128,7 +128,11 @@ IF (NOT CMAKE_BUILD_TYPE)
    SET(CMAKE_BUILD_TYPE "Debug")
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "debug library postfix, usually d on windows")
+SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "debug library postfix, usually 'd' on windows")
+# This has to be set manually because varying version of MinGW support or not support
+# this particular command line option, the default is not to use it.
+# If you want it swicth this option to ON. 
+option(ENABLE_MINGW_AUTOIMPORT "will add -enable-auto-import to MinGW compiler option" OFF)
 
 # Force CMAKE_COMPILER_IS_GNUCC even if gcc used with ccache
 IF("${CMAKE_C_COMPILER}" MATCHES "ccache")
@@ -429,21 +433,15 @@ endif(APPLE)
 
 # FIX for mingw for auto-import without -enable-auto-import warning
 if (MINGW)
-   if (CMAKE_CROSSCOMPILING)
-       # mingw Cross-compiler does not seem to handle the flags??
-       # even if the builtin doc mention it
-       #set(AUTOIMPORT_FLAGS "--enable-auto-import")
-       set(AUTOIMPORT_FLAGS "")
-   else (CMAKE_CROSSCOMPILING)
-       set(AUTOIMPORT_FLAGS "-enable-auto-import")
-   endif(CMAKE_CROSSCOMPILING)
-   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${AUTOIMPORT_FLAGS}")
-   
-   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
+   if (ENABLE_MINGW_AUTOIMPORT)
+      set(AUTOIMPORT_FLAGS "-enable-auto-import")
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${AUTOIMPORT_FLAGS}")
+      set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
             CACHE STRING "Flags used by the linker during the creation of dll's." FORCE)
-   # module linker flags
-   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
+      # module linker flags
+      set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} ${AUTOIMPORT_FLAGS}"
             CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
+   endif()
 endif(MINGW)
 
 ADD_SUBDIRECTORY( include )
@@ -458,7 +456,7 @@ ADD_SUBDIRECTORY( scripts )
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
-SET(CPACK_PACKAGE_CONTACT "certi-devel@nongnu.org")
+SET(CPACK_PACKAGE_CONTACT "CERTI Development Team <certi-devel@nongnu.org>")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/CERTI_DESCRIPTION.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt")
 SET(CPACK_PACKAGE_NAME "${PACKAGE_NAME}")
