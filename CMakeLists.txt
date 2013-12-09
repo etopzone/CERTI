@@ -6,7 +6,7 @@ endif()
 
 project(CERTI CXX)
 
-INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
+include(${CMAKE_ROOT}/Modules/Dart.cmake)
 MARK_AS_ADVANCED(TCL_TCLSH DART_ROOT)
 # New Policy for full path library search
 # see cmake --help-policy CMP0003
@@ -16,12 +16,12 @@ ENDIF(COMMAND CMAKE_POLICY)
 ENABLE_LANGUAGE(C)
 
 # Use CERTI specific CMake modules first
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 #SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Load Checker macros
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckLibraryExists)
+include(CheckFunctionExists)
+include(CheckLibraryExists)
 
 # Display some information on host and target (when cross-compiling)
 if (CMAKE_CROSSCOMPILING)
@@ -44,7 +44,7 @@ else("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
    endif(WIN32)
 endif("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 # Test Endianess
-INCLUDE(TestBigEndian)
+include(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
 IF(BIG_ENDIAN)
    message(STATUS "Target is Big Endian")
@@ -412,9 +412,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
                             ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 # Globally used include dir
-INCLUDE_DIRECTORIES(include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 # Globally used compiler flags
 ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
 
@@ -444,15 +444,16 @@ if (MINGW)
    endif()
 endif(MINGW)
 
-ADD_SUBDIRECTORY( include )
-ADD_SUBDIRECTORY( libHLA )
-ADD_SUBDIRECTORY( libCERTI )
-ADD_SUBDIRECTORY( RTIG )
-ADD_SUBDIRECTORY( RTIA )
-ADD_SUBDIRECTORY( libRTI )
-ADD_SUBDIRECTORY( test )
-ADD_SUBDIRECTORY( doc )
-ADD_SUBDIRECTORY( scripts )
+add_subdirectory( include )
+add_subdirectory( libHLA )
+add_subdirectory( libCERTI )
+add_subdirectory( RTIG )
+add_subdirectory( RTIA )
+add_subdirectory( libRTI )
+add_subdirectory( test )
+add_subdirectory( doc )
+add_subdirectory( scripts )
+add_subdirectory( xml )
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")

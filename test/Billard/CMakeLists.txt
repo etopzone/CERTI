@@ -1,7 +1,8 @@
 INCLUDE_DIRECTORIES(BEFORE
   ${CMAKE_SOURCE_DIR}/libCERTI 
   ${CMAKE_SOURCE_DIR}/test/libgraphc
-  )
+  ${CMAKE_SOURCE_DIR}/include/
+  ${CMAKE_SOURCE_DIR}/include/hla-1_3)
 include_directories(${CERTI_SOURCE_DIR}/libHLA)
 
 IF (WIN32)

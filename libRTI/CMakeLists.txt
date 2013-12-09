@@ -1,7 +1,7 @@
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libCERTI)
+include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
 
 ##########################################################
-# VariableLenghtData
+# VariableLengthData
 # This STATIC library is necessary on Windows in order
 # to avoid circular dependencies
 ##########################################################
@@ -9,7 +9,7 @@ if (WIN32)
   set(VARDATA1516_SRCS
       RTI1516variableLengthData.cpp
       RTI1516variableLengthDataImplementation.h
-      ../include/RTI/VariableLengthData.h
+      ../include/ieee1516-2000/RTI/VariableLengthData.h
      )
 
   source_group("Source Files\\VarData" FILES ${VARDATA1516_SRCS})
@@ -37,7 +37,7 @@ endif (WIN32)
 # RTI1516
 ##########################
 
-SET(RTI1516_LIB_SRCS
+set(RTI1516_LIB_SRCS
   RTI1516ambassadorFactory.cpp
   RTI1516exception.cpp
   RTI1516variableLengthData.cpp
@@ -55,26 +55,26 @@ SET(RTI1516_LIB_SRCS
   RTI1516HandleFactory.h
   )
 
-SET(RTI1516_LIB_INCLUDE
-   ${CMAKE_BINARY_DIR}/include/RTItypes.hh
-   ../include/RTI/Enums.h
-   ../include/RTI/Exception.h
-   ../include/RTI/FederateAmbassador.h
-   ../include/RTI/Handle.h
-   ../include/RTI/LogicalTime.h
-   ../include/RTI/LogicalTimeFactory.h
-   ../include/RTI/LogicalTimeInterval.h
-   ../include/RTI/NullFederateAmbassador.h
-   ../include/RTI/RangeBounds.h
-   ../include/RTI/RTI1516.h
-   ../include/RTI/RTIambassador.h
-   ../include/RTI/RTIambassadorFactory.h
-   ../include/RTI/SpecificConfig.h
-   ../include/RTI/Typedefs.h
-   ../include/RTI/VariableLengthData.h
+set(RTI1516_LIB_INCLUDE
+   ${CMAKE_BINARY_DIR}/include/hla-1_3/RTItypes.hh
+   ../include/ieee1516-2000/RTI/Enums.h
+   ../include/ieee1516-2000/RTI/Exception.h
+   ../include/ieee1516-2000/RTI/FederateAmbassador.h
+   ../include/ieee1516-2000/RTI/Handle.h
+   ../include/ieee1516-2000/RTI/LogicalTime.h
+   ../include/ieee1516-2000/RTI/LogicalTimeFactory.h
+   ../include/ieee1516-2000/RTI/LogicalTimeInterval.h
+   ../include/ieee1516-2000/RTI/NullFederateAmbassador.h
+   ../include/ieee1516-2000/RTI/RangeBounds.h
+   ../include/ieee1516-2000/RTI/RTI1516.h
+   ../include/ieee1516-2000/RTI/RTIambassador.h
+   ../include/ieee1516-2000/RTI/RTIambassadorFactory.h
+   ../include/ieee1516-2000/RTI/SpecificConfig.h
+   ../include/ieee1516-2000/RTI/Typedefs.h
+   ../include/ieee1516-2000/RTI/VariableLengthData.h
 )
 
-SET(RTI_LIB_SRCS
+set(RTI_LIB_SRCS
   RTIambassador.cc
   RTIambPrivateRefs.cc
   RTIambPrivateRefs.hh
@@ -83,20 +83,22 @@ SET(RTI_LIB_SRCS
   RTItypesImp.hh
   )
 
-SET(RTI_LIB_INCLUDE
-   ../include/baseTypes.hh
+set(RTI_LIB_INCLUDE
+   ../include/hla-1_3/baseTypes.hh
    ../include/certi.hh
-   ../include/federateAmbServices.hh
-   ../include/NullFederateAmbassador.hh
-   ../include/RTI.hh
-   ../include/RTIambServices.hh
-   ${CMAKE_BINARY_DIR}/include/RTItypes.hh
+   ../include/hla-1_3/federateAmbServices.hh
+   ../include/hla-1_3/NullFederateAmbassador.hh
+   ../include/hla-1_3/RTI.hh
+   ../include/hla-1_3/RTIambServices.hh
+   ${CMAKE_BINARY_DIR}/include/hla-1_3/RTItypes.hh
 )
 
 #SOURCE_GROUP("RTI\\Header" FILES ${RTI_LIB_INCLUDE})
 
-ADD_LIBRARY(RTI ${RTI_LIB_SRCS} ${RTI_LIB_INCLUDE})
-TARGET_LINK_LIBRARIES(RTI CERTI FedTime)
+add_library(RTI ${RTI_LIB_SRCS} ${RTI_LIB_INCLUDE})
+set_target_properties(RTI PROPERTIES INCLUDE_DIRECTORIES
+                      "${CMAKE_SOURCE_DIR}/include/hla-1_3;${CMAKE_BINARY_DIR}/;${CMAKE_BINARY_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/include;${CMAKE_SOURCE_DIR}/libCERTI")
+target_link_libraries(RTI CERTI FedTime)
 
 IF (BUILD_LEGACY_LIBRTI)
     MESSAGE(STATUS "libRTI variant: CERTI legacy")
@@ -119,20 +121,21 @@ IF (MINGW)
 ENDIF (MINGW)
 
 
-ADD_LIBRARY(RTI1516 ${RTI1516_LIB_SRCS} ${RTI1516_LIB_INCLUDE})
+add_library(RTI1516 ${RTI1516_LIB_SRCS} ${RTI1516_LIB_INCLUDE})
+set_target_properties(RTI1516 PROPERTIES INCLUDE_DIRECTORIES
+                      "${CMAKE_SOURCE_DIR}/include/ieee1516-2000;${CMAKE_SOURCE_DIR}/include;${CMAKE_SOURCE_DIR}/libCERTI;${CMAKE_BINARY_DIR}/")
 # Incorrect line
 #TARGET_LINK_LIBRARIES(RTI1516 CERTI)
 # Correct line
-TARGET_LINK_LIBRARIES(RTI1516 CERTI FedTime1516)
+target_link_libraries(RTI1516 CERTI FedTime1516)
 
-MESSAGE(STATUS "libRTI variant: HLA 1516")
-SET_TARGET_PROPERTIES(RTI1516 PROPERTIES OUTPUT_NAME "RTI1516")
-SET_TARGET_PROPERTIES(RTI1516 PROPERTIES COMPILE_FLAGS "-DHLA13NG_LIBRTI -DRTI_DISABLE_WARNINGS -DBUILDING_RTI")
-SET_TARGET_PROPERTIES(RTI1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
+message(STATUS "libRTI variant: HLA 1516")
+set_target_properties(RTI1516 PROPERTIES OUTPUT_NAME "RTI1516")
+set_target_properties(RTI1516 PROPERTIES COMPILE_FLAGS "-DHLA13NG_LIBRTI -DRTI_DISABLE_WARNINGS -DBUILDING_RTI")
+set_target_properties(RTI1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
 IF (MINGW)
-    SET_TARGET_PROPERTIES(RTI1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libRTI1516.def")
-    INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libRTI1516.def
-            DESTINATION lib)
+    set_target_properties(RTI1516 PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libRTI1516.def")
+    install(FILES ${LIBRARY_OUTPUT_PATH}/libRTI1516.def DESTINATION lib)
 ENDIF (MINGW)
 
 ##################################################################
@@ -148,20 +151,19 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libHLA)
-SET(FEDTIME_SRCS
+include_directories(${CMAKE_SOURCE_DIR}/libHLA)
+set(FEDTIME_SRCS
     RTIfedTime.cc
-    ${CMAKE_SOURCE_DIR}/include/fedtime.hh
+    ${CMAKE_SOURCE_DIR}/include/hla-1_3/fedtime.hh
 )
 
-SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME_SRCS})
+source_group("Source Files\\FedTime" FILES ${FEDTIME_SRCS})
 
-ADD_LIBRARY(FedTime
-    ${FEDTIME_SRCS}
-)
-
+add_library(FedTime ${FEDTIME_SRCS})
+set_target_properties(FedTime PROPERTIES INCLUDE_DIRECTORIES 
+                      "${CMAKE_SOURCE_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/include/;${CMAKE_BINARY_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/libCERTI")
 # Correct line
-TARGET_LINK_LIBRARIES(FedTime)
+target_link_libraries(FedTime)
 # Incorrect line 
 # (at least the dependency exists but we cannot specify that
 #  because we would generate a circular deps RTI-->FedTime-->RTI)
@@ -180,18 +182,20 @@ ENDIF (MINGW)
 
 SET_TARGET_PROPERTIES(FedTime PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-SET(TestFedTime_SRCS
+set(TestFedTime_SRCS
   TestFedTime.cc
 )
-ADD_EXECUTABLE(TestFedTime ${TestFedTime_SRCS})
-TARGET_LINK_LIBRARIES(TestFedTime FedTime RTI)
-ADD_TEST(NAME TestLibFedTime COMMAND $<TARGET_FILE:TestFedTime>)
+add_executable(TestFedTime ${TestFedTime_SRCS})
+set_target_properties(TestFedTime PROPERTIES INCLUDE_DIRECTORIES 
+                      "${CMAKE_SOURCE_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/include/;${CMAKE_BINARY_DIR}/include/hla-1_3")
+target_link_libraries(TestFedTime FedTime RTI)
+add_test(NAME TestLibFedTime COMMAND $<TARGET_FILE:TestFedTime>)
 
 ##########################################################
 SET(FEDTIME1516_SRCS
-    ../include/RTI/certiLogicalTime.h
-    ../include/RTI/certiLogicalTimeInterval.h
-    ../include/RTI/certiLogicalTimeFactory.h
+    ../include/ieee1516-2000/RTI/certiLogicalTime.h
+    ../include/ieee1516-2000/RTI/certiLogicalTimeInterval.h
+    ../include/ieee1516-2000/RTI/certiLogicalTimeFactory.h
     RTI1516fedTime.h
     RTI1516fedTime.cpp
 
@@ -205,10 +209,9 @@ ENDIF(BUILD_WITH_EXTRA_LOGICAL_TIME)
 
 SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME1516_SRCS})
 
-ADD_LIBRARY(FedTime1516
-    ${FEDTIME1516_SRCS}
-)
-
+add_library(FedTime1516 ${FEDTIME1516_SRCS})
+set_target_properties(FedTime1516 PROPERTIES INCLUDE_DIRECTORIES 
+                      "${CMAKE_SOURCE_DIR}/include/ieee1516-2000;${CMAKE_SOURCE_DIR}/include")
 # Correct line
 TARGET_LINK_LIBRARIES(FedTime1516 ${VarData1516Target})
 # Incorrect line
@@ -247,4 +250,5 @@ INSTALL(TARGETS RTI FedTime RTI1516 FedTime1516 ${VarData1516Target}
     ARCHIVE DESTINATION lib)
 
 
-INSTALL(FILES RTI1516fedTime.h DESTINATION include/RTI)
+install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2000/RTI)
+install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
