@@ -8,16 +8,16 @@
 #
 # Once done this will define:
 #
-#  CERTI_INCLUDE_DIRS        - the directory(ies) where CERTI includes file are found
-#  CERTI_LIBRARIES               - The libraries to link against to use CERTI
-#  CERTI_DEFINITIONS           - -DRTI_USES_STD_FSTREAM
-#  CERTI_RTIG_EXECUTABLE - the RTIG program 
-#  CERTI_RTIA_EXECUTABLE - the RTIA program 
-#  CERTI_LIBRARY_DIRS        - the directory(ies) where CERTI libraries reside
-#  CERTI_ROOT_DIR              - the CERTI install prefix 
-#  CERTI_FOUND                    - true if all necessary components are found
+#  CERTI_INCLUDE_DIRS         - the directory(ies) where CERTI includes file are found
+#  CERTI_LIBRARIES            - The libraries to link against to use CERTI
+#  CERTI_DEFINITIONS          - -DRTI_USES_STD_FSTREAM
+#  CERTI_RTIG_EXECUTABLE      - the RTIG program 
+#  CERTI_RTIA_EXECUTABLE      - the RTIA program 
+#  CERTI_LIBRARY_DIRS         - the directory(ies) where CERTI libraries reside
+#  CERTI_ROOT_DIR             - the CERTI install prefix 
+#  CERTI_FOUND                - true if all necessary components are found
 #  CERTI_RUNTIME_LIBRARY_DIRS - the CERTI runtime libraries search path
-#  CERTI_BINARY_DIRS                    - the directory(ies) where the rtig, rtia programs resides
+#  CERTI_BINARY_DIRS          - the directory(ies) where the rtig, rtia programs resides
 # ************   End of FindCERTI.cmake ******************
 
 MACRO(MESSAGE_QUIETLY QUIET TYPE MSG)
@@ -128,7 +128,7 @@ ENDIF (CERTI_RTI_LIBRARY)
 FIND_FILE(CERTI_INCLUDE
   NAMES RTI.hh
   PATHS ${PATH_INCLUDE}
-  PATH_SUFFIXES include
+  PATH_SUFFIXES "include" "include/hla13"
   DOC "The CERTI Include Files")
 
 IF (CERTI_INCLUDE) 
