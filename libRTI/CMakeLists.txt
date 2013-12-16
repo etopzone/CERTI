@@ -18,6 +18,8 @@ if (WIN32)
   target_link_libraries(VarData1516)
   set_target_properties(VarData1516 PROPERTIES PROJECT_LABEL LibVarData1516)
   set_target_properties(VarData1516 PROPERTIES COMPILE_FLAGS "-DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
+  set_target_properties(VarData1516 PROPERTIES INCLUDE_DIRECTORIES
+                      "${CMAKE_SOURCE_DIR}/include/ieee1516-2000;${CMAKE_SOURCE_DIR}/include;${CMAKE_SOURCE_DIR}/libCERTI;${CMAKE_BINARY_DIR}/")
 
   # There shouldn't be any def file for STATIC library since this is not a DLL
   # Commenting out next line.
@@ -160,11 +162,11 @@ set(FEDTIME_SRCS
 source_group("Source Files\\FedTime" FILES ${FEDTIME_SRCS})
 
 add_library(FedTime ${FEDTIME_SRCS})
-set_target_properties(FedTime PROPERTIES INCLUDE_DIRECTORIES 
+set_target_properties(FedTime PROPERTIES INCLUDE_DIRECTORIES
                       "${CMAKE_SOURCE_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/include/;${CMAKE_BINARY_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/libCERTI")
 # Correct line
 target_link_libraries(FedTime)
-# Incorrect line 
+# Incorrect line
 # (at least the dependency exists but we cannot specify that
 #  because we would generate a circular deps RTI-->FedTime-->RTI)
 #TARGET_LINK_LIBRARIES(FedTime RTI)
@@ -186,7 +188,7 @@ set(TestFedTime_SRCS
   TestFedTime.cc
 )
 add_executable(TestFedTime ${TestFedTime_SRCS})
-set_target_properties(TestFedTime PROPERTIES INCLUDE_DIRECTORIES 
+set_target_properties(TestFedTime PROPERTIES INCLUDE_DIRECTORIES
                       "${CMAKE_SOURCE_DIR}/include/hla-1_3;${CMAKE_SOURCE_DIR}/include/;${CMAKE_BINARY_DIR}/include/hla-1_3")
 target_link_libraries(TestFedTime FedTime RTI)
 add_test(NAME TestLibFedTime COMMAND $<TARGET_FILE:TestFedTime>)
@@ -210,7 +212,7 @@ ENDIF(BUILD_WITH_EXTRA_LOGICAL_TIME)
 SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME1516_SRCS})
 
 add_library(FedTime1516 ${FEDTIME1516_SRCS})
-set_target_properties(FedTime1516 PROPERTIES INCLUDE_DIRECTORIES 
+set_target_properties(FedTime1516 PROPERTIES INCLUDE_DIRECTORIES
                       "${CMAKE_SOURCE_DIR}/include/ieee1516-2000;${CMAKE_SOURCE_DIR}/include")
 # Correct line
 TARGET_LINK_LIBRARIES(FedTime1516 ${VarData1516Target})
