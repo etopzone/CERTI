@@ -37,13 +37,13 @@ typedef unsigned short in_port_t;
 # include <netinet/tcp.h>
 # include <netdb.h>
 typedef int SOCKET;
+#include <unistd.h>
 #endif
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 4096
 #endif
 
-#include <unistd.h>
 #include <cstring>
 #include <cerrno>
 #include <string>
