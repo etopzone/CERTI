@@ -1,0 +1,187 @@
+/**
+ * \page build Building CERTI
+ *
+ * \addindex building
+ *
+ * CERTI comes as either as an installer (binary) or compressed tar source archives. This
+ * section describes how to build CERTI executables from the source code.
+ *
+ * The primary distribution format is gzip compressed tar source archive (.tar.gz)
+ * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
+ *
+ * CERTI build system uses  <a href="http://www.cmake.org/">CMake, http://www.cmake.org/ </a>
+ * which is a cross-platform build system generator. CMake should be used to 
+ * compile CERTI SDK on a variety of platform/compiler combination like:
+ * <ul>
+ *   <li> Linux x86 / gcc </li>
+ *   <li> Linux x86_64 / gcc </li>
+ *   <li> Solaris Sparc / Sun Studio </li>
+ *   <li> Windows / Visual Studio </li>
+ *   <li> Windows / Code::Blocks+MinGW </li>
+ *   <li> ... </li>
+ * </ul>
+ * 
+ * You may follow generic CMake usage instruction for building CERTI
+ * on various platforms:  <a href="http://www.cmake.org/cmake/help/runningcmake.html">Running CMake,  http://www.cmake.org/cmake/help/runningcmake.html://www.cmake.org/ </a>
+ * or you may try to follow the below CERTI CMake usage.
+ *
+ * \section certi_cmake_prerequisites Prerequisites
+ *
+ * CERTI compilation requires a working C++ compiler and some development tools.
+ * You may have them already installed on your system or you may download and
+ * install the missing prerequisites. All used tools are free software.
+ *
+ * CMake 
+ * - Windows installer
+ *   - http://www.cmake.org/HTML/Download.html
+ * - RedHat/Fedora/CentOS Linux
+\verbatim
+ yum install cmake
+\endverbatim
+ * - Debian/Ubuntu Linux
+\verbatim
+ apt-get install cmake
+\endverbatim
+ *
+ * Flex, Bison and m4
+ * - Windows installer
+ *   - http://gnuwin32.sourceforge.net/packages/flex.htm
+ *   - http://gnuwin32.sourceforge.net/packages/bison.htm
+ *   - http://gnuwin32.sourceforge.net/packages/m4.htm
+ *     <br><em> Beware: you need to put m4 in the PATH such that bison may call it without trouble</em> 
+ * - RedHat/Fedora/CentOS Linux
+\verbatim
+ yum install flex bison
+\endverbatim
+ * - Debian/Ubuntu Linux
+\verbatim
+ apt-get install flex bison
+\endverbatim
+ *
+ * NSIS (optionally, for building a Windows installer)
+ * - Windows installer
+ *   - http://nsis.sourceforge.net/Main_Page
+ *
+ * libxml2 (optionally, to enable federation save and restore)
+ * - Windows installer
+ *   - http://www.zlatkovic.com/libxml.en.html
+ * - RedHat/Fedora/CentOS Linux
+\verbatim
+ yum install libxml2-devel
+\endverbatim
+ * - Debian/Ubuntu Linux
+\verbatim
+ apt-get install libxml2-dev
+\endverbatim
+ *
+ * X11 (optionally, to enable billard example with a graphical animation)
+ * - RedHat/Fedora/CentOS Linux
+\verbatim
+yum install libX11-devel
+\endverbatim
+ * - Older RedHat/Fedora/CentOS Linux
+\verbatim
+yum install xorg-x11-xbitmaps
+\endverbatim
+ * - Debian/Ubuntu Linux
+\verbatim
+apt-get install libx11-dev xbitmaps
+\endverbatim
+ *
+ * \section certi_unix_build Building CERTI on Unix with Makefile generator
+ * 
+ * If you get a tarball source CERTI distribution such as you may found in the download 
+ * section of the Savannah project 
+ * <a>http://download.savannah.nongnu.org/releases/certi/</a>, 
+ * you should follow these steps: 
+ * <ol>
+ * <li>untar the archive: tar zxvf certi-\<version\>-Source.tar.gz 
+ *     this should create a certi-\<version\>-Source directory
+ * </li>
+\verbatim
+ tar zxvf certi-3.4.0-Source.tar.gz
+ ... wait for tar ending ...
+\endverbatim
+ * <li>Prepare separate build directory and run CMake
+ * </li>
+\verbatim
+ mkdir build_certi
+ cd build_certi
+ cmake -DCMAKE_INSTALL_PREFIX=/path/to/install /path/to/certi-\<version\>-Source
+ ... wait for cmake run  ending ...
+\endverbatim
+ * <li>compile your certi</li>
+ *
+\verbatim
+ make
+ ... wait the compilation end ...
+\endverbatim
+ <li> Then you may either install CERTI or build
+      a binary package that will be usable for installation</li>
+ <ul>
+ * <li>install CERTI</li>
+ *
+\verbatim
+ make install
+ ... wait for make install end ...
+\endverbatim
+ * <li>build your binary package </li>
+\verbatim
+ make package
+\endverbatim
+ </ul>
+ * </ol>
+ * After that you will have a compiled and usable CERTI package.
+ *
+ * \section certi_unix_build_GUI Building CERTI on Unix (GUI)
+ *
+ * CMake 2.6.0 and up comes with a nice and handy graphical user interface
+ * which may be invoked with the cmake-gui command. 
+ *
+ * \section certi_win32_build Building CERTI on Windows
+ *
+ * Enter the Start menu and launch the CMake application.
+ * Enter the folder for the source code (e.g. \c \\certi, created during the
+ * previous step).
+ * Enter the folder for building the programs (e.g. \c \\tempo).
+ *
+ * \image html "cmake-launch.png"
+ * \image latex "cmake-launch.png" "Launch CMake" width=12cm
+ *
+ * Hit the \c Configure button.
+ *
+ * \image html "cmake-generator.png"
+ * \image latex "cmake-generator.png" "Configure" width=10cm
+ *
+ * Choose the appropriate Generator.
+ *
+ * \image html "cmake-verify.png"
+ * \image latex "cmake-verify.png" "Choose Generator" width=12cm
+ *
+ * Verify the the paths for the different tools (flex, bison) before hitting
+ * \c Configure again.
+ *
+ * Repeat \c Configure until you get an enabled \c OK button.
+ *
+ * \image html "cmake-generate.png"
+ * \image latex "cmake-generate.png" "Generate project" width=12cm
+ *
+ * You should get a \c build folder (e.g. \\tempo) which looks like this:
+ *
+ * \image html "cmake-vsfiles.png"
+ * \image latex "cmake-vsfiles.png" "Visual Studio files" width=12cm
+ *
+ * Launch the \c CERTI.sln (e.g. using Microsoft Visual C++ 2005).
+ *
+ * \image html "cmake-vsproject.png"
+ * \image latex "cmake-vsproject.png" "CMake VS Project" width=6cm
+ *
+ * Select desired configuration (Debug or Release) and build the project
+ * (using Build All). Take a look at your folder:
+ *
+ * \image html "cmake-binaries.png"
+ * \image latex "cmake-binaries.png" "Build Tree" width=14cm
+ *  
+ */
+
+// $Id: build.dox,v 3.7 2014/02/04 09:03:48 erk Exp $

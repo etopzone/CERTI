@@ -1,0 +1,106 @@
+/**
+ * \page execute Executing HLA simulation
+ *
+ * \addindex user
+ *  
+ * \section certi_user_executables CERTI executables
+ * CERTI comes with two main executables: RTIA and RTIG.
+ * \dot
+ *   graph certi_architecture {
+ *      size = "2.5,2.5";
+ *      node [shape=record, fontname=Helvetica, fontsize=10];
+ *      federate1 [ label="federate 1" ]; rtia1 [ label="RTIA"];
+ *      federate2 [ label="federate 2" ]; rtia2 [ label="RTIA"];
+ *      federate3 [ label="federate 3" ]; rtia3 [ label="RTIA"];
+ *      rtig [ label="RTIG"];
+ *      federate1 -- rtia1 [ style="solid" ];
+ *      federate2 -- rtia2 [ style="solid" ];
+ *      federate3 -- rtia3 [ style="solid" ];
+ *      rtia1 -- rtig [ style="solid" ];
+ *      rtia2 -- rtig [ style="solid" ];
+ *      rtia3 -- rtig [ style="solid" ];
+ *      node [shape=parallelogram, fontname=Helvetica, fontsize=10];
+ *      fed [ label=".fed file"];
+ *      rtig -- fed [ style="solid" ];
+ *   }
+ * \enddot
+ *
+ * \subsection certi_user_execute
+ * If ones want to properly execute an HLA simulation using CERTI one must:
+ * (FIXME more detail to come).
+ * <ol> 
+ *  <li> configure PATH </li>
+ *  <li> store .fed (or .xml) FOM file in the search path of the rtig \see certi_FOM_FileSearch</li>
+ *  <li> run rtig, \see certi_executable_RTIG </li>
+ *  <li> configure HOST/PORT/PROXY, </li>
+ *  <li> run federations, rtia is started automatically. </li>
+ * </ol>
+ * \subsection certi_user_env CERTI environment variables
+ * 
+ * CERTI uses a set of environment variables which may influence its 
+ * execution behavior. Those variables may be set on federate execution location
+ * or on RTIG (a.k.a. The CERTI CRC) location. 
+ * <center>
+ * <TABLE>
+ * <tr>
+ * <td><b>Variable</b></td><td><b>Used by</b></td><td><b>Description</b></td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_HOME</td> <td>RTIG</td><td>the CERTI installation base directory.
+ *                                      This is used by the RTIG in order
+ *                                      to look for FOM files 
+ *                                      (see \ref certi_executable_RTIG).</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_FOM_PATH</td> <td>RTIG</td><td>the CERTI Federation Object Model search path. The variable may contain a ":" separated list of paths.
+ *                                      This is used by the RTIG in order
+ *                                      to look for FOM files 
+ *                                      (see \ref certi_executable_RTIG).</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_HOST</td> <td>RTIA</td><td>machine on which RTIG is running. 
+ *                                      As soon as it starts the RTIA will try to connect 
+ *                                      to the RTIG running on CERTI_HOST 
+ *                                      (see \ref certi_executable_RTIA).</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_TCP_PORT</td> <td>RTIG, RTIA</td> <td>TCP port used for RTIA/RTIG communications</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_UDP_PORT</td> <td>RTIG, RTIA</td> <td>UDP port used for RTIA/RTIG communications</td>
+ * </tr>
+ * <tr> <td>CERTI_HTTP_PROXY</td> <td>RTIA</td>
+ * <td>HTTP proxy address in the format http://host:port.
+ * See \ref certi_HTTP_proxy "HTTP tunneling".</td>
+ * </tr>
+ * <tr> <td>http_proxy</td> <td>RTIA</td>
+ * <td>System-wide HTTP proxy address used if CERTI_HTTP_PROXY is not defined.</td>
+ * </tr>
+ * <tr> <td>CERTI_NO_STATISTICS</td> <td>RTIA</td> <td>if set, do not display service calls statistics</td>
+ * </tr>
+ * </TABLE>
+ * </center>
+ * 
+ * \subsection certi_user_rtig RTIG: CERTI RunTime Infrastructure Gateway
+ * \copydoc certi_executable_RTIG
+ *
+ * \subsection certi_user_rtia RTIA: CERTI RunTime Infrastructure Ambassador
+ * \copydoc certi_executable_RTIA
+ *
+ * \section billiard Sample federate: Billiard
+ * Open a windows command prompt and run the RTIG.
+\verbatim
+ rtig
+\endverbatim
+ * \image html "rtig.png"
+ * \image latex "rtig.png" "RTIG screenshot" width=12cm
+ *
+ * Open another windows command prompt and run the billard program.
+\verbatim
+ billiard -n 1 fTest FTest.fed
+\endverbatim
+ * \image html "billiard.png"
+ * \image latex "billiard.png" "Billard consoleshot" width=12cm
+ */
+
+// $Id: execute.dox,v 3.8 2014/02/04 09:03:48 erk Exp $
