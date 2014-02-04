@@ -1,0 +1,45 @@
+/* -*- c -*- 
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002, 2003, 2004  ONERA
+//
+// This file is part of CERTI
+//
+// CERTI-libCERTI is free software ; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation ; either version 2 of
+// the License, or (at your option) any later version.
+//
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+// ----------------------------------------------------------------------------
+*/
+ 
+/**
+ * \page index
+ *
+ * \image html "certi.png"
+ * <h1>Installation Documentation</h1>
+ *
+ * This documentation describes CERTI installation/configuration and simulation
+ * execution.
+ * If you want to develop own HLA simulations using CERTI, please refer the User documentation.
+ *
+ * This documentation is divided into several parts:
+ *
+ * - \ref intro
+ * - \ref build
+ * - \ref install
+ * - \ref execute
+ *   - \ref certi_HTTP_proxy
+ *
+ */
+
+// $Id: certi_install_doc.tree,v 3.7 2014/02/04 09:58:21 erk Exp $
