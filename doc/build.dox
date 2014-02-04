@@ -184,4 +184,3 @@ apt-get install libx11-dev xbitmaps
  *  
  */
 
-// $Id: build.dox,v 3.7 2014/02/04 09:03:48 erk Exp $
