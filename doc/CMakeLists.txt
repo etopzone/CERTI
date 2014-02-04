@@ -58,6 +58,10 @@ IF (DOXYGEN_FOUND)
   ENDIF (BUILD_DOC_DEVELOPER)
 ENDIF (DOXYGEN_FOUND)
 
+configure_file(index.html ${CMAKE_BINARY_DIR}/doc COPYONLY)
+configure_file(favicon.ico ${CMAKE_BINARY_DIR}/doc COPYONLY)
+configure_file(certi.css ${CMAKE_BINARY_DIR}/doc COPYONLY)
+
 INSTALL(FILES
     index.html favicon.ico
     DESTINATION share/doc/certi)
