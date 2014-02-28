@@ -134,7 +134,7 @@ ADD_TEST(NAME LibHLAClocks COMMAND $<TARGET_FILE:TestClocks>)
 
 install(FILES
     ${LIBHLA_EXPORTED_INCLUDES}
-    DESTINATION include)
+    DESTINATION include/libhla)
 
 install(PROGRAMS
     hlaomtdif2cpp.py
