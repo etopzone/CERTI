@@ -66,7 +66,7 @@ throw (MemoryExhausted)
  * one rtig process for each federation. However a single RTIG may
  * be used for several federations.
  * The command line usage of the RTIG is following:
- * \par rtig [-v 2] [-l @IP|hostname]
+ * \par rtig [-v 2] [-l \@IP|hostname]
  * \par
  * <ul>
  *   <li> \b -v  (optional) verbosity level </li>
