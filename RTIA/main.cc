@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.29 2013/09/27 08:20:13 erk Exp $
+// $Id: main.cc,v 3.30 2014/02/28 15:53:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -61,6 +61,10 @@ void NewHandler() {
  *   <li> \b -v  (optional) verbose, display more information </li>
  *   <li> \b -p  (optional) tcp port to be used to communicate with FederateAmbassador</li>
  * </ul>
+ * RTIA will try to connect to RTIG process on the machine specified in CERTI_HOME
+ * (see \ref certi_user_env) environment variable. If it is void or not set then he will
+ * try to connect to localhost. RTIA connect to TCP port specified by CERTI_TCP_PORT
+ * and UDP port specified by CERTI_UDP_PORT.
  *
  * @ingroup certi_executable
  */
