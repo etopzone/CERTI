@@ -60,14 +60,15 @@
  * <tr>
  * <td>CERTI_HOST</td> <td>RTIA</td><td>machine on which RTIG is running. 
  *                                      As soon as it starts the RTIA will try to connect 
- *                                      to the RTIG running on CERTI_HOST 
+ *                                      to the RTIG running on CERTI_HOST (or "localhost" if the variable
+ *                                      is not defined or void)
  *                                      (see \ref certi_executable_RTIA).</td>
  * </tr>
  * <tr>
- * <td>CERTI_TCP_PORT</td> <td>RTIG, RTIA</td> <td>TCP port used for RTIA/RTIG communications</td>
+ * <td>CERTI_TCP_PORT</td> <td>RTIG, RTIA</td> <td>TCP port used for RTIA/RTIG communications (default: 60400)</td>
  * </tr>
  * <tr>
- * <td>CERTI_UDP_PORT</td> <td>RTIG, RTIA</td> <td>UDP port used for RTIA/RTIG communications</td>
+ * <td>CERTI_UDP_PORT</td> <td>RTIG, RTIA</td> <td>UDP port used for RTIA/RTIG communications (default: 60500) </td>
  * </tr>
  * <tr> <td>CERTI_HTTP_PROXY</td> <td>RTIA</td>
  * <td>HTTP proxy address in the format http://host:port.
@@ -97,9 +98,9 @@
  *
  * Open another windows command prompt and run the billard program.
 \verbatim
- billiard -n 1 fTest FTest.fed
+ billard -n 1 fTest FTest.fed
 \endverbatim
- * \image html "billiard.png"
- * \image latex "billiard.png" "Billard consoleshot" width=12cm
+ * \image html "billard.png"
+ * \image latex "billard.png" "Billard consoleshot" width=12cm
  */
 

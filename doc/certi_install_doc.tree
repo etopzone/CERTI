@@ -23,9 +23,10 @@
 */
  
 /**
- * \page index
- *
+ * @mainpage
+ * <center>
  * \image html "certi.png"
+ * </center>
  * <h1>Installation Documentation</h1>
  *
  * This documentation describes CERTI installation/configuration and simulation

@@ -23,9 +23,10 @@
 */
  
 /**
- * \page index
- *
+ * @mainpage
+ * <center>
  * \image html "certi.png"
+ * </center>
  * <h1>User Documentation</h1>
  *
  * This is the CERTI user documentation.
