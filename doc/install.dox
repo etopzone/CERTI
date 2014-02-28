@@ -1,0 +1,43 @@
+/**
+ * \page install Installing CERTI
+ *
+ * \addindex installation
+ *
+ * CERTI comes as a set of libraries and binary executables, which may
+ * be used to build an HLA compliant simulation.
+ *
+ * \section certi_install Install the CERTI software
+ *
+ * \subsection certi_install_layout CERTI installation layout
+ * CERTI components are installed in a user-chosen CERTI_HOME
+ * directory. Below this root directory the layout is as described below:
+ * \dot
+ *   digraph certi_layout {
+ *      size = "2.5,2.5";
+ *      node [shape=record, fontname=Helvetica, fontsize=10];
+ *      home [ label="CERTI_HOME"];
+ *      bin [ label="bin"];
+ *      lib [ label="lib"];
+ *      share [ label="share"];
+ *      doc [label="doc"];
+ *      federations [label="federations"];
+ *      home -> bin [ arrowhead="open", style="solid" ];
+ *      home -> lib [ arrowhead="open", style="solid" ];
+ *      home -> share [ arrowhead="open", style="solid" ];
+ *      share -> doc [ arrowhead="open", style="solid" ];
+ *      share -> federations [ arrowhead="open", style="solid" ];
+ *   }
+ * \enddot
+ *
+ * TODO: How to set $PATH, LD_LIBRARY_PATH
+ * TODO: Where to store .fed files, what are the .fed files?
+ *
+ * \subsection certi_install_windows Windows installer
+ * TODO: How to use the Windows installer.
+ *
+ * \subsection certi_install_rpm RPM package
+ * TODO: How to install CERTI from a .RPM file.
+ *  
+ */
+
+// $Id: install.dox,v 3.4 2014/02/28 13:55:31 erk Exp $
