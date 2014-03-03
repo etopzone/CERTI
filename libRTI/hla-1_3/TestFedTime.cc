@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: TestFedTime.cc,v 3.1 2010/02/28 18:54:44 erk Exp $
+// $Id: TestFedTime.cc,v 1.1 2014/03/03 15:18:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <iostream>
@@ -86,4 +86,4 @@ main(int argc, char* argv[]) {
 	return result;
 }
 
-// $Id: TestFedTime.cc,v 3.1 2010/02/28 18:54:44 erk Exp $
+// $Id: TestFedTime.cc,v 1.1 2014/03/03 15:18:23 erk Exp $

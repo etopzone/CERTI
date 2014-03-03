@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.29 2011/07/13 15:43:16 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 1.1 2014/03/03 15:18:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -983,4 +983,4 @@ throw (RTI::RTIinternalError)
 	}
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.29 2011/07/13 15:43:16 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 1.1 2014/03/03 15:18:24 erk Exp $

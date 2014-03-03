@@ -9,7 +9,6 @@
 #include "PrettyDebug.hh"
 
 #include "M_Classes.hh"
-//#include "RTItypesImp.hh"
 #include "RTI1516HandleFactory.h"
 #include "RTI1516fedTime.h"
 

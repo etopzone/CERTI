@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypes.cc,v 1.6 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypes.cc,v 1.1 2014/03/03 15:18:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -264,4 +264,4 @@ operator<<(RTI_STD::ostream &os, RTI::Exception *ex)
     return os<<(*ex);
 }
 
-// $Id: RTItypes.cc,v 1.6 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypes.cc,v 1.1 2014/03/03 15:18:23 erk Exp $

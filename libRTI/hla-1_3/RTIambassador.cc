@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.128 2011/10/27 07:59:51 erk Exp $
+// $Id: RTIambassador.cc,v 1.1 2014/03/03 15:18:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -2858,4 +2858,4 @@ throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	privateRefs->executeService(&req, &rep);
 		}
 
-// $Id: RTIambassador.cc,v 3.128 2011/10/27 07:59:51 erk Exp $
+// $Id: RTIambassador.cc,v 1.1 2014/03/03 15:18:23 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.10 2011/07/13 15:43:16 erk Exp $
+// $Id: RTItypesImp.cc,v 1.1 2014/03/03 15:18:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -569,4 +569,4 @@ void RegionImp::commit()
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.10 2011/07/13 15:43:16 erk Exp $
+// $Id: RTItypesImp.cc,v 1.1 2014/03/03 15:18:24 erk Exp $

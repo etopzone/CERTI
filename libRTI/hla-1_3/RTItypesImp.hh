@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypesImp.hh,v 3.5 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypesImp.hh,v 1.1 2014/03/03 15:18:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _RTI_TYPESIMP_HH
@@ -275,4 +275,4 @@ private:
 
 #endif // _RTI_TYPESIMP_HH
 
-// $Id: RTItypesImp.hh,v 3.5 2010/03/07 18:23:39 erk Exp $
+// $Id: RTItypesImp.hh,v 1.1 2014/03/03 15:18:23 erk Exp $
