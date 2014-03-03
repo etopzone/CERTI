@@ -9,14 +9,33 @@ typedef FederateAmbassador *FederateAmbassadorPtr ;
  * @{
  */
 
+/**
+ * Create the federation execution.
+ * @param[in] executionName, the name of the federation to be created
+ * @param[in] FEDid, the file path to the Federation Execution Data file, a.k.a. FED file.
+ *            this file can be an XML file or a "fed" file.
+ * @exception FederationExecutionAlreadyExists the RTI has already registered a federation with the same name
+ * @exception CouldNotOpenFED the FED (Federation Execution Data) file cannot be found or read properly (check RTIG log output)
+ * @exception ErrorReadingFED
+ * @exception ConcurrentAccessAttempted
+ * @exception RTIinternalError
+ */
 void createFederationExecution(const char *executionName, const char *FEDid)
     throw (FederationExecutionAlreadyExists, CouldNotOpenFED, ErrorReadingFED,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
-void destroyFederationExecution(const char *)
+/**
+ * Destroys the federation execution.
+ * @param[in] executionName the name of the federation
+ */
+void destroyFederationExecution(const char *executionName)
     throw (FederatesCurrentlyJoined, FederationExecutionDoesNotExist,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
+/**
+ * Joins the federation execution.
+ * 
+ */
 FederateHandle joinFederationExecution(const char *, const char *, FederateAmbassadorPtr)
     throw (FederateAlreadyExecutionMember, FederationExecutionDoesNotExist,
 	   CouldNotOpenFED, ErrorReadingFED, ConcurrentAccessAttempted,
