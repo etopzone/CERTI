@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.h,v 1.1 2014/03/03 15:18:23 erk Exp $
+// $Id: RTIambPrivateRefs.h,v 1.1 2014/03/03 16:41:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <RTI/certiRTI1516.h>
@@ -59,4 +59,4 @@ public:
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTI1516ambPrivateRefs.h,v 1.1 2014/03/03 15:18:23 erk Exp $
+// $Id: RTIambPrivateRefs.h,v 1.1 2014/03/03 16:41:48 erk Exp $

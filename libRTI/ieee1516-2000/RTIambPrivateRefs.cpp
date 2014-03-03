@@ -19,19 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.1 2014/03/03 15:18:22 erk Exp $
+// $Id: RTIambPrivateRefs.cpp,v 1.1 2014/03/03 16:41:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-#include "RTI1516ambPrivateRefs.h"
-//#include "RTItypesImp.hh"
-#include "RTI1516HandleImplementation.h"
+#include "RTIambPrivateRefs.h"
+#include "HandleImplementation.h"
 
 #include <RTI/Exception.h>
 #include <RTI/certiLogicalTime.h>
 #include <RTI/certiLogicalTimeInterval.h>
 #include <RTI/certiLogicalTimeFactory.h>
-#include "RTI1516HandleFactory.h"
+#include "RTIHandleFactory.h"
 #include "RTI1516fedTime.h"
 
 #include "PrettyDebug.hh"
@@ -1205,4 +1204,4 @@ throw (rti1516::RTIinternalError)
 	}
 }
 
-// $Id: RTI1516ambPrivateRefs.cpp,v 1.1 2014/03/03 15:18:22 erk Exp $
+// $Id: RTIambPrivateRefs.cpp,v 1.1 2014/03/03 16:41:51 erk Exp $

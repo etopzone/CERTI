@@ -12,8 +12,8 @@ include_directories(${CMAKE_BINARY_DIR}/include/ieee1516-2000)
 ##########################################################
 if (WIN32)
   set(VARDATA1516_SRCS
-      RTI1516variableLengthData.cpp
-      RTI1516variableLengthDataImplementation.h
+      RTIvariableLengthData.cpp
+      RTIvariableLengthDataImplementation.h
       ${CMAKE_SOURCE_DIR}/include/ieee1516-2000/RTI/VariableLengthData.h
      )
 
@@ -42,21 +42,21 @@ endif (WIN32)
 ##########################
 
 set(RTI1516_LIB_SRCS
-    RTI1516ambassadorFactory.cpp
-    RTI1516exception.cpp
-    RTI1516variableLengthData.cpp
-    RTI1516variableLengthDataImplementation.h
-    RTI1516ambassador.cpp
-    RTI1516ambassador.h
-    RTI1516ambPrivateRefs.cpp
-    RTI1516ambPrivateRefs.h
-    RTI1516Handle.cpp
-    RTI1516HandleImplementation.cpp
-    RTI1516HandleImplementation.h
-    RTI1516ambTime.cpp
-    RTI1516fedAmbassador.cpp
-    RTI1516HandleFactory.cpp
-    RTI1516HandleFactory.h
+    RTIambassadorFactory.cpp
+    Exception.cpp
+    RTIvariableLengthData.cpp
+    RTIvariableLengthDataImplementation.h
+    RTIambassador.cpp
+    RTIambassador.h
+    RTIambPrivateRefs.cpp
+    RTIambPrivateRefs.h
+    Handle.cpp
+    HandleImplementation.cpp
+    HandleImplementation.h
+    RTIambTime.cpp
+    RTIfedAmbassador.cpp
+    RTIHandleFactory.cpp
+    RTIHandleFactory.h
    )
 
 set(RTI1516_LIB_INCLUDE

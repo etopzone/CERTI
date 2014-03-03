@@ -12,7 +12,7 @@
 #endif
 
 #include "PrettyDebug.hh"
-#include "RTI1516ambassador.h"
+#include "RTIambassador.h"
 
 #include "M_Classes.hh"
 

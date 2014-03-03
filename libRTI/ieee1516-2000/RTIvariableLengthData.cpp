@@ -1,5 +1,5 @@
 #include <RTI/VariableLengthData.h>
-#include "RTI1516variableLengthDataImplementation.h"
+#include "RTIvariableLengthDataImplementation.h"
 #include <stdlib.h>
 #include <string.h>
 
