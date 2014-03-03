@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.39 2010/03/23 13:13:27 erk Exp $
+// $Id: Communications.cc,v 3.40 2014/03/03 14:26:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -117,15 +117,15 @@ Communications::Communications(int RTIA_port, int RTIA_fd)
     ifstream file("RTIA.dat", ios::in);
 
     if (!file.is_open()) {
-	certihost = getenv("CERTI_HOST");
-	if (NULL == certihost) {
-	    certihost = default_host ;
-	}
+        certihost = getenv("CERTI_HOST");
+        if (NULL == certihost) {
+            certihost = default_host ;
+        }
     }
     else {
-	file.get(nom_serveur_RTIG, 200);
-	file.close();	
-	certihost = nom_serveur_RTIG ;
+        file.get(nom_serveur_RTIG, 200);
+        file.close();
+        certihost = nom_serveur_RTIG ;
     }
 
     const char *tcp_port = getenv("CERTI_TCP_PORT");
@@ -358,4 +358,4 @@ Communications::receiveUN()
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.39 2010/03/23 13:13:27 erk Exp $
+// $Id: Communications.cc,v 3.40 2014/03/03 14:26:37 erk Exp $
