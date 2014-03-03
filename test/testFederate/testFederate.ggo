@@ -1,0 +1,16 @@
+# This is used by gengetopt to generate testFederate command line parser
+# see http://www.gnu.org/software/gengetopt/gengetopt.html#Basic-Usage
+
+package "testFederate"
+purpose "CERTI test Federate"
+usage	"testFederate [-v] -n name"
+
+# gengetopt options
+args "-F testFederate_cmdline -G"
+
+# Options
+option "verbose"         v "verbosity level\n 0 -> no output\n 1 -> small amount\n 2 -> show fed parse" int optional
+option "name"            n "federate name used to join the federation" string required
+option "federation-name" f "federation name to be joined by the federate" string optional default="testFederation"
+option "fom-model"       - "federation object model file" string optional default="testFederation.fed"
+#
