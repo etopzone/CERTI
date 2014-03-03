@@ -200,8 +200,9 @@ SET(FEDTIME1516_SRCS
     ../include/ieee1516-2000/RTI/certiLogicalTimeFactory.h
     RTI1516fedTime.h
     RTI1516fedTime.cpp
-
 )
+
+
 IF (BUILD_WITH_EXTRA_LOGICAL_TIME)
    LIST(APPEND FEDTIME1516_SRC
         LogicalTimeDouble.h
@@ -251,6 +252,8 @@ INSTALL(TARGETS RTI FedTime RTI1516 FedTime1516 ${VarData1516Target}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
 
-
+# mimic install directory structure in the binary tree in order to ease the linking 
+# of builtin test (i.e. testFederate)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/RTI1516fedTime.h ${CMAKE_BINARY_DIR}/include/ieee1516-2000/RTI/RTI1516fedTime.h COPYONLY)
 install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2000/RTI)
 install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
