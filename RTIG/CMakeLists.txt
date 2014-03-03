@@ -13,7 +13,7 @@ if (GENGETOPT_PROGRAM)
                     )
 endif(GENGETOPT_PROGRAM)
 set(rtig_SRCS_generated
-    RTIG_cmdline.c RTIG_cmdline.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTIG_cmdline.c ${CMAKE_CURRENT_SOURCE_DIR}/RTIG_cmdline.h)
 
 IF (CMAKE_COMPILER_IS_GNUCC) 
    message(STATUS "INHIBIT Compiler (GCC) warning for gengetopt generated files: ${rtig_SRCS_generated}.")
