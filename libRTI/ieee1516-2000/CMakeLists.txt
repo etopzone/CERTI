@@ -53,7 +53,6 @@ set(RTI1516_LIB_SRCS
     Handle.cpp
     HandleImplementation.cpp
     HandleImplementation.h
-    RTIambTime.cpp
     RTIfedAmbassador.cpp
     RTIHandleFactory.cpp
     RTIHandleFactory.h
