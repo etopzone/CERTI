@@ -96,6 +96,9 @@ namespace rti1516e
 	// Caller gives up ownership of inData to this object.
 	// This object assumes the responsibility of deleting inData
 	// when it is no longer needed.
+	// The allocation of inData is assumed to have been through an array
+	// alloctor (e.g., char* data = new char[20]. If the data was allocated
+	// in some other fashion, a deletion function must be supplied.
 	void VariableLengthData::takeDataPointer(void* inData, unsigned long inSize, VariableLengthDataDeleteFunction func)
 	{
 		if (_impl == 0)

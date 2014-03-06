@@ -25,7 +25,7 @@
 // ****************************************************************
 
 
-namespace rti1516
+namespace rti1516e
 {
   class LogicalTime;
   class LogicalTimeInterval;
@@ -52,7 +52,7 @@ namespace std
 // obtain a LogicalTimeFactory for a federation, and then will use that factory to create
 // any instances of LogicalTime or LogicalTimeInterval that it needs.
 
-namespace rti1516
+namespace rti1516e
 {
   class FEDTIME_EXPORT LogicalTimeFactory
   {

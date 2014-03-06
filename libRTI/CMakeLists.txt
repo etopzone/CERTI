@@ -7,4 +7,4 @@ include_directories(${CMAKE_BINARY_DIR})           # for the config.h file
 # Process standard specific libRTI implementation
 add_subdirectory(hla-1_3)
 add_subdirectory(ieee1516-2000)
-add_subdirectory(ieee1516-2010)
+#add_subdirectory(ieee1516-2010)

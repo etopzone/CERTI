@@ -22,9 +22,10 @@
 // ----------------------------------------------------------------------------
 
 #include <RTI/Handle.h>
-#include <limits.h>
+#include <climits>
 #include <sstream>
 #include <cstring>
+#include <stdint.h>
 #include "HandleImplementation.h"
 
 namespace rti1516e
@@ -48,7 +49,7 @@ HandleImplementation::HandleImplementation(VariableLengthData const & encodedVal
     }
 
     memcpy(&val, encodedValue.data(), size);
-    for(uint32_t i = 0; i < sizeof(val); i++)
+    for(::uint32_t i = 0; i < sizeof(val); i++)
     {
         buf[size-i-1] = (char) val & 0xFF;
         val = val >> 8;

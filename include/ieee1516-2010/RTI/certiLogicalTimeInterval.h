@@ -31,7 +31,7 @@
 // below. The encoded time classes are used to hold the arbitrary bit
 // representation of the logical time and logical time intervals.
 
-namespace rti1516
+namespace rti1516e
 {
   class LogicalTime;
 }
@@ -41,7 +41,7 @@ namespace rti1516
 #include <string>
 #include <RTI/VariableLengthData.h>
 
-namespace rti1516
+namespace rti1516e
 {
   class FEDTIME_EXPORT LogicalTimeInterval
   {

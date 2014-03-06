@@ -7,7 +7,7 @@ include_directories(${CMAKE_BINARY_DIR}/include/ieee1516-2000)
 # This STATIC library is necessary on Windows in order
 # to avoid circular dependencies
 # FIXME
-#   may be we can use CMakeOBJECT library instead
+#   may be we can use CMake OBJECT library instead
 # FIXME
 ##########################################################
 if (WIN32)
