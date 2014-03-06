@@ -47,7 +47,8 @@ set(RTI1516_LIB_SRCS
     RTIvariableLengthData.cpp
     RTIvariableLengthDataImplementation.h
     RTIambassador.cpp
-    RTIambassador.h
+    RTIambassadorImplementation.cpp
+    RTIambassadorImplementation.h
     RTIambPrivateRefs.cpp
     RTIambPrivateRefs.h
     Handle.cpp
