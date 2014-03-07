@@ -69,6 +69,19 @@ install(TARGETS ${FEDERATE_TARGETNAME}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
 
+if(NOT_READY)
+## IEEE1516_2010 specific code follow
+set(FEDERATE_TARGETNAME "CertiTestFederate-IEEE1516_2010")
+add_executable(${FEDERATE_TARGETNAME} ${testFederate_SRCS} testFederate-IEEE1516_2010.cc)
+set_target_properties(${FEDERATE_TARGETNAME} PROPERTIES COMPILE_FLAGS "-DIEEE1516_2010")
+target_include_directories(${FEDERATE_TARGETNAME} PUBLIC ${CMAKE_SOURCE_DIR}/include/ieee1516-2010 ${CMAKE_BINARY_DIR}/include/ieee1516-2010)
+target_link_libraries(${FEDERATE_TARGETNAME} RTI1516e)
+install(TARGETS ${FEDERATE_TARGETNAME}
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+endif()
+
 
 # DTest script not ready [yet]
 #install(FILES  

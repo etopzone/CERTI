@@ -52,7 +52,7 @@ public:
 #elif IEEE1516_2000
     virtual ~testFederate() throw ()
 #elif IEEE1516_2010
-    virtual ~testFederate() throw (RTI::FederateInternalError)
+    virtual ~testFederate() throw ()
 #endif
                     {if (NULL != rtiAmb) delete rtiAmb;};
 
