@@ -274,10 +274,10 @@ throw (rti1516e::FederationExecutionAlreadyExists,
     // Ignored for now.
         }
 
-void createFederationExecution (
+void RTI1516ambassador::createFederationExecution (
    std::wstring const & federationExecutionName,
    std::vector<std::wstring> const & fomModules,
-   std::wstring const & logicalTimeImplementationName = L"")
+   std::wstring const & logicalTimeImplementationName)
    throw (
            rti1516e::CouldNotCreateLogicalTimeFactory,
            rti1516e::InconsistentFDD,
@@ -289,11 +289,11 @@ void createFederationExecution (
     throw rti1516e::RTIinternalError(L"Not Implemented");
 }
 
-void createFederationExecutionWithMIM (
+void RTI1516ambassador::createFederationExecutionWithMIM (
    std::wstring const & federationExecutionName,
    std::vector<std::wstring> const & fomModules,
    std::wstring const & mimModule,
-   std::wstring const & logicalTimeImplementationName = L"")
+   std::wstring const & logicalTimeImplementationName)
    throw (
            rti1516e::CouldNotCreateLogicalTimeFactory,
            rti1516e::InconsistentFDD,

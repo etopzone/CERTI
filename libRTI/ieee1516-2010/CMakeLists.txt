@@ -57,6 +57,7 @@ set(RTI1516e_LIB_SRCS
     RTIfedAmbassador.cpp
     RTIHandleFactory.cpp
     RTIHandleFactory.h
+    Typedefs.cpp
    )
 
 set(RTI1516e_LIB_INCLUDE
@@ -81,7 +82,7 @@ add_library(RTI1516e ${RTI1516e_LIB_SRCS} ${RTI1516e_LIB_INCLUDE})
 # Incorrect line
 #target_link_libraries(RTI1516 CERTI)
 # Correct line
-target_link_libraries(RTI1516e CERTI FedTime1516)
+target_link_libraries(RTI1516e CERTI FedTime1516e)
 install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
 message(STATUS "libRTI variant: HLA 1516")
 set_target_properties(RTI1516e PROPERTIES OUTPUT_NAME "RTI1516e")
