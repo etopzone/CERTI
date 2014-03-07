@@ -45,7 +45,7 @@ struct certi_cast
         }
         catch (...)
         {
-            throw rti1516::RTIinternalError(L"Incompatible object on input.");
+            throw rti1516e::RTIinternalError(L"Incompatible object on input.");
         }
     }
 
@@ -57,7 +57,7 @@ struct certi_cast
         }
         catch (...)
         {
-            throw rti1516::RTIinternalError(L"Incompatible object on input.");
+            throw rti1516e::RTIinternalError(L"Incompatible object on input.");
         }
     }
 };

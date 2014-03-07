@@ -35,7 +35,7 @@
 // each is a separate class for type safety.  The encode method can be used to
 // generate an encoded value for a handle, that can be sent to other federates 
 // as an attribute or parameter.  (Use RTIambassador functions to reconstruct a 
-// handle from an encoded value).  RTI implementations contain definitions
+// handle from an encoded value). RTI implementations contain definitions
 // for each kind of the HandleKindImplementation classes (e.g. 
 // AttributeHandleImplementation), but these classes are not needed by 
 // federate code.
@@ -114,7 +114,7 @@ public:                                                         \
 };																						\
 
 
-namespace rti1516
+namespace rti1516e
 {
 
 // All of the RTI API's Handle classes are defined 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.h,v 1.1 2014/03/06 16:11:31 erk Exp $
+// $Id: RTIambPrivateRefs.h,v 1.2 2014/03/07 18:00:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <RTI/certiRTI1516.h>
@@ -38,8 +38,8 @@ public:
     void processException(Message *);
     void executeService(Message *requete, Message *reponse);
     void sendTickRequestStop();
-    void callFederateAmbassador(Message *msg) throw (rti1516::RTIinternalError);
-    void leave(const char *msg) throw (rti1516::RTIinternalError);
+    void callFederateAmbassador(Message *msg) throw (rti1516e::RTIinternalError);
+    void leave(const char *msg) throw (rti1516e::RTIinternalError);
 
 #ifdef _WIN32
 	  HANDLE	handle_RTIA;
@@ -48,7 +48,7 @@ public:
 #endif
 
     //! Federate Ambassador reference for module calls.
-    rti1516::FederateAmbassador *fed_amb ;
+    rti1516e::FederateAmbassador *fed_amb ;
 
     //! used to prevent reentrant calls (see tick() and executeService()).
     bool is_reentrant ;
@@ -59,4 +59,4 @@ public:
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTIambPrivateRefs.h,v 1.1 2014/03/06 16:11:31 erk Exp $
+// $Id: RTIambPrivateRefs.h,v 1.2 2014/03/07 18:00:49 erk Exp $

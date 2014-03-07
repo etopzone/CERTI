@@ -29,9 +29,10 @@
 #include <memory>
 #include <cstdlib>
 #include <cstring>
+#include "certi.hh"
 
 #include "RTI1516fedTime.h"
-#include "certi.hh"
+
 
 rti1516e::LogicalTime &
 rti1516e::LogicalTime::operator=(rti1516e::LogicalTime const & value)

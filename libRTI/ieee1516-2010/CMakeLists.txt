@@ -60,7 +60,6 @@ set(RTI1516e_LIB_SRCS
    )
 
 set(RTI1516e_LIB_INCLUDE
-    ${CMAKE_BINARY_DIR}/include/hla-1_3/RTItypes.hh
     ${CMAKE_SOURCE_DIR}/include/ieee1516-2010/RTI/Enums.h
     ${CMAKE_SOURCE_DIR}/include/ieee1516-2010/RTI/Exception.h
     ${CMAKE_SOURCE_DIR}/include/ieee1516-2010/RTI/FederateAmbassador.h

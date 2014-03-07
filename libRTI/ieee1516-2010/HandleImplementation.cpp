@@ -27,6 +27,7 @@
 #include <cstring>
 #include <stdint.h>
 #include "HandleImplementation.h"
+#include "RTIvariableLengthDataImplementation.h"
 
 namespace rti1516e
 {
@@ -119,7 +120,6 @@ std::wstring HandleImplementation::toString() const
     ost << _value;
     return ost.str();
 }
-
 
 
 #define DECLARE_HANDLE_IMPLEMENTATION_CLASS(HIK)                 \

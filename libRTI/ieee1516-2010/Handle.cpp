@@ -23,6 +23,7 @@
 #include <sstream>
 #include <RTI/Handle.h>
 #include "HandleImplementation.h"
+#include "RTIvariableLengthDataImplementation.h"
 
 namespace rti1516e
 {
@@ -162,4 +163,4 @@ DECLARE_HANDLE_CLASS(DimensionHandle)
 DECLARE_HANDLE_CLASS(MessageRetractionHandle)
 DECLARE_HANDLE_CLASS(RegionHandle)
 
-} // end namespace rti1516
+} // end namespace rti1516e

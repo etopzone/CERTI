@@ -16,6 +16,8 @@
 #ifndef RTI_RTIambassador_h
 #define RTI_RTIambassador_h
 
+#include <memory> /* need that for auto_ptr usage */
+
 namespace rti1516e
 {
    class FederateAmbassador;
