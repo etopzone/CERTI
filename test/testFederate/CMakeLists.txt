@@ -69,7 +69,6 @@ install(TARGETS ${FEDERATE_TARGETNAME}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
 
-if(NOT_READY)
 ## IEEE1516_2010 specific code follow
 set(FEDERATE_TARGETNAME "CertiTestFederate-IEEE1516_2010")
 add_executable(${FEDERATE_TARGETNAME} ${testFederate_SRCS} testFederate-IEEE1516_2010.cc)
@@ -80,8 +79,6 @@ install(TARGETS ${FEDERATE_TARGETNAME}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
-endif()
-
 
 # DTest script not ready [yet]
 #install(FILES  
