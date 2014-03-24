@@ -19,7 +19,7 @@ if (WIN32)
      )
 
 
-  add_library(VarData1516e STATIC ${VARDATA1516_SRCS})
+  add_library(VarData1516e STATIC ${VARDATA1516E_SRCS})
   target_link_libraries(VarData1516e)
   set_target_properties(VarData1516e PROPERTIES PROJECT_LABEL LibVarData1516e)
   set_target_properties(VarData1516e PROPERTIES COMPILE_FLAGS "-DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
@@ -84,7 +84,7 @@ add_library(RTI1516e ${RTI1516e_LIB_SRCS} ${RTI1516e_LIB_INCLUDE})
 # Correct line
 target_link_libraries(RTI1516e CERTI FedTime1516e)
 install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
-message(STATUS "libRTI variant: HLA 1516")
+message(STATUS "libRTI variant: HLA 1516e")
 set_target_properties(RTI1516e PROPERTIES OUTPUT_NAME "RTI1516e")
 set_target_properties(RTI1516e PROPERTIES COMPILE_FLAGS "-DHLA13NG_LIBRTI -DRTI_DISABLE_WARNINGS -DBUILDING_RTI")
 set_target_properties(RTI1516e PROPERTIES VERSION 1.0.0 SOVERSION 1)

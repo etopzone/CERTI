@@ -8,7 +8,7 @@ class VariableLengthDataImplementation
 public:
     VariableLengthDataImplementation();
     // Caller is free to delete inData after the call
-    VariableLengthDataImplementation(void const * inData, unsigned long inSize);
+    VariableLengthDataImplementation(void const * inData, size_t inSize);
     // Caller is free to delete rhs after the call
     VariableLengthDataImplementation(VariableLengthDataImplementation const & rhs);
 

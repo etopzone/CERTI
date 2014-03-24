@@ -15,7 +15,7 @@ namespace rti1516e
 	}
 
 	// Caller is free to delete inData after the call
-	VariableLengthData::VariableLengthData(void const * inData, unsigned long inSize)
+	VariableLengthData::VariableLengthData(void const * inData, size_t inSize)
 		: _impl(0)
 	{
 		_impl = new VariableLengthDataImplementation(inData, inSize);
@@ -57,7 +57,7 @@ namespace rti1516e
 			return 0;
 		}
 	}
-	unsigned long 
+	size_t 
 		VariableLengthData::size() const
 	{
 		if (_impl != 0)
@@ -70,7 +70,7 @@ namespace rti1516e
 	}
 
 	// Caller is free to delete inData after the call
-	void VariableLengthData::setData(void const * inData, unsigned long inSize)
+	void VariableLengthData::setData(void const * inData, size_t inSize)
 	{
 		if (_impl != 0)
 		{
@@ -84,7 +84,7 @@ namespace rti1516e
 	// Caller is responsible for ensuring that the data that is 
 	// pointed to is valid for the lifetime of this object, or past
 	// the next time this object is given new data.
-	void VariableLengthData::setDataPointer(void* inData, unsigned long inSize)
+	void VariableLengthData::setDataPointer(void* inData, size_t inSize)
 	{
 		if (_impl == 0)
 		{
@@ -99,7 +99,7 @@ namespace rti1516e
 	// The allocation of inData is assumed to have been through an array
 	// alloctor (e.g., char* data = new char[20]. If the data was allocated
 	// in some other fashion, a deletion function must be supplied.
-	void VariableLengthData::takeDataPointer(void* inData, unsigned long inSize, VariableLengthDataDeleteFunction func)
+	void VariableLengthData::takeDataPointer(void* inData, size_t inSize, VariableLengthDataDeleteFunction func)
 	{
 		if (_impl == 0)
 		{
@@ -120,7 +120,7 @@ namespace rti1516e
 	}
 
 	// Caller is free to delete inData after the call
-	VariableLengthDataImplementation::VariableLengthDataImplementation(void const * inData, unsigned long inSize)
+	VariableLengthDataImplementation::VariableLengthDataImplementation(void const * inData, size_t inSize)
 		: _data(0)
 		, _size(inSize)
 		, _dataOwner(true)

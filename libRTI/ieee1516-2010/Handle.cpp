@@ -115,12 +115,12 @@ namespace rti1516e
 	}                                                            \
 	                                                             \
 	/* Alternate encode for directly filling a buffer         */ \
-	unsigned long HandleKind::encodedLength() const              \
+	size_t HandleKind::encodedLength() const              \
 	{                                                            \
 		return _impl->encodedLength();                           \
 	}                                                            \
-	unsigned long HandleKind::encode(                            \
-	void* buffer, unsigned long bufferSize) const                \
+	size_t HandleKind::encode(                            \
+	void* buffer, size_t bufferSize) const                \
 	throw (CouldNotEncode)                                       \
 	{                                                            \
 		return _impl->encode( buffer, bufferSize );              \
