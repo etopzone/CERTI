@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.10 2007/06/22 08:51:39 erk Exp $
+// $Id: SocketServer.hh,v 3.11 2014/04/16 12:24:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
@@ -64,7 +64,7 @@ class CERTI_EXPORT SocketServer : private std::list<SocketTuple *>
 {
 public:
     SocketServer(SocketTCP *tcp_socket,
-                 SocketUDP *udp_socket, int the_port);
+                 SocketUDP *udp_socket);
 
     ~SocketServer();
 
@@ -114,7 +114,6 @@ private:
     // The Server socket object(used for Accepts)
     SocketTCP *ServerSocketTCP ;
     SocketUDP *ServerSocketUDP ;
-    // int port ;
 
     // ---------------------
     // -- Private Methods --
@@ -127,4 +126,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.10 2007/06/22 08:51:39 erk Exp $
+// $Id: SocketServer.hh,v 3.11 2014/04/16 12:24:01 erk Exp $

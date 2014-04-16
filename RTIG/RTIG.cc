@@ -51,10 +51,9 @@ bool RTIG::terminate = false;
 
 // ----------------------------------------------------------------------------
 // Constructor
-// Note (JYR) : udpPort modified AFTER used in socketServer(.) call, strange...
 RTIG::RTIG()
     :  federationHandles(1),
-      socketServer(&tcpSocketServer, &udpSocketServer, udpPort),
+      socketServer(&tcpSocketServer, &udpSocketServer),
       auditServer(RTIG_AUDIT_FILENAME),
       federations(socketServer, auditServer)
 {
@@ -475,13 +474,13 @@ RTIG::execute() throw (NetworkError) {
     // listen only on specified interface (if any)
     //  1) listen on interface specified on the command line
     if (this->listeningIPAddress != 0) {
-        udpSocketServer.createUDPServer(udpPort, listeningIPAddress);
-        tcpSocketServer.createTCPServer(tcpPort, listeningIPAddress);
+        udpSocketServer.createServer(udpPort, listeningIPAddress);
+        tcpSocketServer.createServer(tcpPort, listeningIPAddress);
     }
     // default case on all network interfaces
     else {
-        udpSocketServer.createUDPServer(udpPort);
-        tcpSocketServer.createTCPServer(tcpPort);
+        udpSocketServer.createServer(udpPort);
+        tcpSocketServer.createServer(tcpPort);
     }
 
     if (verboseLevel>0) {
@@ -1072,4 +1071,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.72 2013/09/27 13:04:33 erk Exp $
+// $Id: RTIG.cc,v 3.73 2014/04/16 12:24:01 erk Exp $

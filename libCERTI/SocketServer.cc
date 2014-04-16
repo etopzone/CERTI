@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.20 2011/09/01 13:50:54 erk Exp $
+// $Id: SocketServer.cc,v 3.21 2014/04/16 12:24:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -140,7 +140,7 @@ SocketServer::close(long socket,
 // ----------------------------------------------------------------------------
 //! socketServer.
 SocketServer::SocketServer(SocketTCP *tcp_socket,
-                           SocketUDP *udp_socket, int /* the_port */)
+                           SocketUDP *udp_socket)
     : list<SocketTuple *>()
 {
     if (tcp_socket == NULL)
@@ -342,4 +342,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.20 2011/09/01 13:50:54 erk Exp $
+// $Id: SocketServer.cc,v 3.21 2014/04/16 12:24:01 erk Exp $

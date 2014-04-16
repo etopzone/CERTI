@@ -50,7 +50,7 @@ public :
     virtual void createConnection(const char *server_name, unsigned int port)
         throw (NetworkError);
 
-	void createUDPServer(unsigned int port, in_addr_t addr = INADDR_ANY)
+	void createServer(unsigned int port, in_addr_t addr = INADDR_ANY)
 	throw (NetworkError, NetworkSignal);
 
 	void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)

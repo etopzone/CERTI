@@ -50,7 +50,7 @@ public :
     virtual void createConnection(const char *server_name, unsigned int port)
         throw (NetworkError);
 	void createTCPClient(in_port_t port, in_addr_t addr) throw (NetworkError);
-	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
+	void createServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
 
 	int accept(SocketTCP *serveur) throw (NetworkError);
 	virtual void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);

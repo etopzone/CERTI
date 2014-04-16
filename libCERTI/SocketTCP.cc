@@ -301,7 +301,7 @@ _est_init_tcp = true ;
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPServer(in_port_t port, in_addr_t addr)
+SocketTCP::createServer(in_port_t port, in_addr_t addr)
 throw (NetworkError)
 {
 	assert(!_est_init_tcp);
@@ -580,4 +580,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.36 2013/09/24 14:27:51 erk Exp $
+// $Id: SocketTCP.cc,v 3.37 2014/04/16 12:24:01 erk Exp $

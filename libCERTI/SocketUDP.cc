@@ -136,7 +136,7 @@ _est_init_udp = true ;
 // ----------------------------------------------------------------------------
 //! create an UDP server.
 void
-SocketUDP::createUDPServer(unsigned int port, in_addr_t addr)
+SocketUDP::createServer(unsigned int port, in_addr_t addr)
     throw (NetworkError, NetworkSignal)
 {
   assert(!_est_init_udp);
@@ -149,13 +149,11 @@ SocketUDP::createUDPServer(unsigned int port, in_addr_t addr)
    sock_local.sin_port   = htons((u_short)port);
 
    if (!open()) {
-       perror("SocketUDP: Open");
-       throw NetworkError("Cannot open UDP Socket");
+       throw NetworkError("Cannot open UDP Socket"+std::string(strerror(errno)));
    }
 
    if (!bind()) {
-       perror("SocketUDP: Bind");
-       throw NetworkError("Cannot bind UDP Socket");
+       throw NetworkError("Cannot bind UDP Socket"+std::string(strerror(errno)));
    }
 
 _est_init_udp = true ;
