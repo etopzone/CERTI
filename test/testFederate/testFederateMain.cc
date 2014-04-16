@@ -19,6 +19,9 @@ int main(int argc, char **argv)
   std::wstring federationName = testFederate::getWString(args.federation_name_arg);
   std::wstring FOMpath = testFederate::getWString(args.fom_model_arg);
 
+  // Create a federate object.
+  // This object inherit from appropriate FederateAmbassador class
+  // and embbed the appropriate RTIambassador object.
   testFederate myFederate(federateName);
   myFederate.setVerbosityLevel(verboseLevel);
   myFederate.createFederationExecution(federationName,FOMpath);

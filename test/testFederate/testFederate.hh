@@ -2,29 +2,29 @@
 #define TEST_FEDERATE_HH
 
 #if defined(HLA13)
-#include <RTI.hh>
-#include <NullFederateAmbassador.hh>
-typedef NullFederateAmbassador NullFederateAmbassador_t;
-typedef RTI::RTIambassador RTIambassador_t;
-#include <fedtime.hh>
-#define NSRTI(a) "RTI::a"
+  #include <RTI.hh>
+  #include <NullFederateAmbassador.hh>
+  typedef NullFederateAmbassador NullFederateAmbassador_t;
+  typedef RTI::RTIambassador RTIambassador_t;
+  #include <fedtime.hh>
+  #define NSRTI(a) "RTI::a"
 #elif defined(IEEE1516_2000)
-#include <RTI/RTI1516.h>
-#include <RTI/Enums.h>
-#include <RTI/NullFederateAmbassador.h>
-typedef rti1516::NullFederateAmbassador NullFederateAmbassador_t;
-typedef rti1516::RTIambassador RTIambassador_t ;
-#include <RTI/RTI1516fedTime.h>
-#define NSRTI(a) "rti1516::##a"
+  #include <RTI/RTI1516.h>
+  #include <RTI/Enums.h>
+  #include <RTI/NullFederateAmbassador.h>
+  typedef rti1516::NullFederateAmbassador NullFederateAmbassador_t;
+  typedef rti1516::RTIambassador RTIambassador_t ;
+  #include <RTI/RTI1516fedTime.h>
+  #define NSRTI(a) "rti1516::##a"
 #elif defined(IEEE1516_2010)
-#include <RTI/RTI1516.h>
-#include <RTI/Enums.h>
-#include <RTI/NullFederateAmbassador.h>
-typedef rti1516e::NullFederateAmbassador NullFederateAmbassador_t;
-typedef rti1516e::RTIambassador RTIambassador_t;
-#define NSRTI(a) "rti1516e::##a"
+  #include <RTI/RTI1516.h>
+  #include <RTI/Enums.h>
+  #include <RTI/NullFederateAmbassador.h>
+  typedef rti1516e::NullFederateAmbassador NullFederateAmbassador_t;
+  typedef rti1516e::RTIambassador RTIambassador_t;
+  #define NSRTI(a) "rti1516e::##a"
 #else
-#error "No one of HLA13, IEEE1516_2000 or IEEE1516_2010 defined --> ERROR"
+  #error "None of HLA13, IEEE1516_2000 or IEEE1516_2010 defined --> ERROR"
 #endif
 
 #include <string>

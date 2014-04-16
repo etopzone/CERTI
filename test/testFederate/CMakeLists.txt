@@ -81,8 +81,8 @@ install(TARGETS ${FEDERATE_TARGETNAME}
     ARCHIVE DESTINATION lib)
 
 # DTest script not ready [yet]
-#install(FILES  
-#  dtest_testFederation.py 
-#  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE WORLD_READ WORLD_EXECUTE
-#  DESTINATION share/scripts)
+install(FILES  
+        dtest_testFederate.py 
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE WORLD_READ WORLD_EXECUTE
+        DESTINATION share/scripts)
 
