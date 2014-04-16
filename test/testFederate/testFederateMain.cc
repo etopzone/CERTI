@@ -27,6 +27,7 @@ int main(int argc, char **argv)
   myFederate.createFederationExecution(federationName,FOMpath);
   myFederate.joinFederationExecution();
   myFederate.resignFederationExecution();
+  // Destroy the federation
   myFederate.destroyFederationExecution();
 
 }

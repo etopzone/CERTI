@@ -112,7 +112,7 @@ CERTI releases should be done with the following steps:
     Remember that once you have posted the news you should
     approve it before it appears on first page.
     
-13) OPTIONNALLY update online CERTI documentation at 
+13) OPTIONALLY update online CERTI documentation at 
         http://www.nongnu.org/certi
 
 You are right this process IS painful and should be automated (a lot...)
