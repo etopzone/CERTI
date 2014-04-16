@@ -229,7 +229,7 @@ throw (
         rti1516e::CallNotAllowedFromWithinCallback,
         rti1516e::RTIinternalError)
         {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"CONNECT Not Implemented");
         }
 
 // 4.3
@@ -238,7 +238,7 @@ throw (
         rti1516e::FederateIsExecutionMember,
         rti1516e::CallNotAllowedFromWithinCallback,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"disconnect Not Implemented");
 }
 
 // 4.5
@@ -286,7 +286,7 @@ void RTI1516ambassador::createFederationExecution (
            rti1516e::FederationExecutionAlreadyExists,
            rti1516e::NotConnected,
            rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"Create with FOM Module Not Implemented");
 }
 
 void RTI1516ambassador::createFederationExecutionWithMIM (
@@ -305,7 +305,7 @@ void RTI1516ambassador::createFederationExecutionWithMIM (
            rti1516e::FederationExecutionAlreadyExists,
            rti1516e::NotConnected,
            rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"Create with FOM Module and MIM Module tNot Implemented");
 }
 
 // 4.3
@@ -335,7 +335,7 @@ void RTI1516ambassador::listFederationExecutions ()
                      rti1516e::NotConnected,
                      rti1516e::RTIinternalError)
                 {
-throw rti1516e::RTIinternalError(L"Not Implemented");
+throw rti1516e::RTIinternalError(L"listFederationExecutions Not Implemented");
                 }
 
 // 4.9
@@ -625,7 +625,7 @@ void RTI1516ambassador::abortFederationSave ()
                 rti1516e::SaveNotInProgress,
                 rti1516e::NotConnected,
                 rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"abortFederationSave Not Implemented");
 }
 
 // 4.22
@@ -636,7 +636,7 @@ throw (rti1516e::FederateNotExecutionMember,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"queryFederationSaveStatus Not implemented");
         }
 
 // 4.24
@@ -698,7 +698,7 @@ void RTI1516ambassador::abortFederationRestore ()
             rti1516e::FederateNotExecutionMember,
             rti1516e::NotConnected,
             rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"abortFederationRestore Not Implemented");
 }
 
 // 4.24
@@ -709,7 +709,7 @@ throw (rti1516e::FederateNotExecutionMember,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"queryFederationRestoreStatus Not implemented");
         }
 
 /////////////////////////////////////
@@ -948,7 +948,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"releaseObjectInstanceName Not Implemented");
 }
 
 // 6.5
@@ -962,7 +962,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"reserveMultipleObjectInstanceName Not Implemented");
 }
 
 // 6.7
@@ -975,7 +975,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"releaseMultipleObjectInstanceName Not Implemented");
 }
 
 // 6.8
@@ -1327,7 +1327,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"queryAttributeTransportationType Not Implemented");
 }
 
 // 6.27
@@ -1363,7 +1363,7 @@ void RTI1516ambassador::queryInteractionTransportationType (
             rti1516e::FederateNotExecutionMember,
             rti1516e::NotConnected,
             rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"queryInteractionTransportationType Not Implemented");
 }
 
 ///////////////////////////////////
@@ -1524,7 +1524,7 @@ void RTI1516ambassador::attributeOwnershipReleaseDenied (
             rti1516e::FederateNotExecutionMember,
             rti1516e::NotConnected,
             rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"attributeOwnershipReleaseDenied Not Implemented");
 }
 
 // 7.13 (in RTI1.3 this function is called: AttributeOwnershipReleaseResponse)
@@ -2317,7 +2317,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getAutomaticResignDirective Not Implemented");
 }
 
 // 10.3
@@ -2328,7 +2328,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError){
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"setAutomaticResignDirective Not Implemented");
 }
 
 // 10.4
@@ -2339,7 +2339,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError){
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getFederateHandle Not Implemented");
 }
 
 // 10.5
@@ -2351,7 +2351,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getFederateName Not Implemented");
 }
 
 // 10.2
@@ -2534,7 +2534,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getUpdateRateValue Not Implemented");
 }
 
 // 10.14
@@ -2547,7 +2547,7 @@ throw (
         rti1516e::FederateNotExecutionMember,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getUpdateRateValueForAttributeNot Implemented");
 }
 
 // 10.6
@@ -2826,7 +2826,7 @@ throw (rti1516e::InvalidDimensionHandle,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"getDimensionUpperBound Not implemented");
         }
 
 // 10.30
@@ -2841,7 +2841,7 @@ throw (rti1516e::InvalidRegion,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"getDimensionHandleSet Not implemented");
         }
 
 // 10.31
@@ -2858,7 +2858,7 @@ throw (rti1516e::InvalidRegion,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"getRangeBounds Not implemented");
         }
 
 // 10.32
@@ -2877,7 +2877,7 @@ throw (rti1516e::InvalidRegion,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"setRangeBounds Not implemented");
         }
 
 // 10.33
@@ -2889,7 +2889,7 @@ throw (rti1516e::FederateNotExecutionMember,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"normalizeFederateHandle Not implemented");
         }
 
 // 10.34
@@ -2901,7 +2901,7 @@ throw (rti1516e::FederateNotExecutionMember,
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"normalizeServiceGroup Not implemented");
         }
 
 
@@ -3181,7 +3181,7 @@ throw (
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"enableCallbacks Not implemented");
         }
 
 // 10.40
@@ -3192,7 +3192,7 @@ throw (
         rti1516e::RTIinternalError)
         {
     /* TODO */
-    throw rti1516e::RTIinternalError(L"Not yet implemented");
+    throw rti1516e::RTIinternalError(L"disableCallbacks Not implemented");
         }
 
 std::auto_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory () const
@@ -3201,7 +3201,7 @@ std::auto_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory ()
                              rti1516e::NotConnected,
                              rti1516e::RTIinternalError) {
     /* FIXME this must be fixed ASAP */
-    throw rti1516e::RTIinternalError(L"Not Implemented");
+    throw rti1516e::RTIinternalError(L"getTimeFactory Not Implemented");
 }
 
 rti1516e::FederateHandle RTI1516ambassador::decodeFederateHandle(
