@@ -31,14 +31,10 @@ namespace rti1516e
   class LogicalTimeInterval;
 }
 
-namespace std
-{
-  template <class T> class auto_ptr;
-}
-
 #include <RTI/SpecificConfig.h>
 #include <RTI/Exception.h>
 #include <string>
+#include <memory>
 
 // LogicalTimeFactory is used by the RTI to construct instances of classes
 // derived from LogicalTime and LogicalTimeInterval.  A federation is responsible
