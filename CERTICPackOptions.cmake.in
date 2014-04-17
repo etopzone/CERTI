@@ -1,5 +1,5 @@
 # Only mangle package name if binary package
-if (@CPACK_GENERATOR@)
+if ("${CPACK_GENERATOR}" STRGREATER "")
    if (@MSVC@)
       # FIXME We have to find way to evaluate CMAKE_CFG_INTDIR at cpack time
       # or generate this current file at build time
@@ -10,9 +10,16 @@ if (@CPACK_GENERATOR@)
    else(@MSVC@)
       set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-@CMAKE_BUILD_TYPE@-${CPACK_SYSTEM_NAME}")
    endif(@MSVC@)
+   
+   #Normalize CPACK_PACKAGE_VERSION for picky WiX 
+   if ("${CPACK_GENERATOR}" STREQUAL "WIX")
+       string(REGEX MATCH "([0-9]*).*" CPACK_PACKAGE_VERSION_PATCH_WIX "${CPACK_PACKAGE_VERSION_PATCH}")
+	   set(CPACK_PACKAGE_VERSION_PATCH_WIX ${CMAKE_MATCH_1})
+	   set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH_WIX}")
+   endif()
 
    if("${CPACK_GENERATOR}" STREQUAL "PackageMaker")
       set(CPACK_PACKAGE_DEFAULT_LOCATION "/usr/local")
       set(CPACK_OSX_PACKAGE_VERSION "10.4")
-   endif("${CPACK_GENERATOR}" STREQUAL "PackageMaker")
-endif(@CPACK_GENERATOR@)
+   endif()
+endif()

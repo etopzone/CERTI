@@ -477,8 +477,9 @@ CONFIGURE_FILE("${CERTI_SOURCE_DIR}/CERTICPackOptions.cmake.in"
 SET(CPACK_PROJECT_CONFIG_FILE "${CERTI_BINARY_DIR}/CERTICPackOptions.cmake")
 
 IF (WIN32)
-    SET(CPACK_SOURCE_GENERATOR "ZIP")
-    SET(CPACK_GENERATOR "ZIP")
+    set(CPACK_SOURCE_GENERATOR "ZIP")
+    set(CPACK_GENERATOR "ZIP")
+	
     # Add NSIS generator iff makensis is found on the system
     find_program(MAKENSIS_EXECUTABLE
                  NAMES makensis
@@ -486,6 +487,19 @@ IF (WIN32)
     if (MAKENSIS_EXECUTABLE)
       list(APPEND CPACK_GENERATOR "NSIS")
     endif(MAKENSIS_EXECUTABLE)
+	
+	# Add WIX generator iff candle compiler is found on the system
+    find_program(CANDLE_EXECUTABLE
+                 NAMES candle
+				 PATH $ENV{WIX}/bin
+                 DOC "The WIX package compiler command")
+    if (CANDLE_EXECUTABLE)
+		list(APPEND CPACK_GENERATOR "WIX")
+		set(CPACK_WIX_UPGRADE_GUID "CE218AF5-CAC3-4A99-8CB5-98DFC182DC1B")
+		set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/doc/certi-favi.jpg")
+		set(CPACK_WIX_UI_BANNER "${CMAKE_SOURCE_DIR}/doc/certi-installer-banner-493x58.jpg")
+		set(CPACK_WIX_UI_DIALOG "${CMAKE_SOURCE_DIR}/doc/certi-ui-dialog-493x312.jpg")
+	endif (CANDLE_EXECUTABLE)
 
     ## Add a custom target callable from IDE (Mostly for Visual Studio)
     GET_FILENAME_COMPONENT(CPACK_COMMAND ${CMAKE_COMMAND} PATH)
@@ -567,7 +581,6 @@ SET(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 SET(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
-#SET(CPACK_PACKAGE_CONTACT "certi-devel@nongnu.org")
 
 INCLUDE(CPack)
 INCLUDE(UsePackageBackup)
