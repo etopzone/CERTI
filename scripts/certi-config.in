@@ -3,7 +3,7 @@
 
 work_dir=`pwd`
 script_dir=`dirname $0`; cd ${script_dir}; script_dir=`pwd`
-prefix="${script_dir}/../.."; cd ${prefix}; prefix=`pwd`;
+prefix="${script_dir}/.."; cd ${prefix}; prefix=`pwd`;
 cd ${work_dir}
 
 usage()
