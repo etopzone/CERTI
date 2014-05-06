@@ -35,9 +35,9 @@ echo "Current machine architecture is <$ARCH>."
 setenv CERTI_HOME @prefix@
 alias go_certi_home='pushd $CERTI_HOME'
 
-# 5 CERTI_FED (i.e. where we find (default) FED files
-setenv CERTI_FED $CERTI_HOME/share/federations
-alias go_certi_fed='pushd $CERTI_FED'
+# 5 CERTI_FOM_PATH (i.e. where we find (default) FED files
+setenv CERTI_FOM_PATH $CERTI_HOME/share/federations
+alias go_certi_fom='pushd $CERTI_FOM_PATH'
 
 # 6 PATH (i.e. to run easily rtig and s.o.)
 # Note sometimes PATH is not modified
@@ -73,7 +73,7 @@ echo "                                    ------"
 echo "If yes your variables for CERTI are now :"
 echo "CERTI_HOST      = " $CERTI_HOST
 echo "CERTI_HOME      = " $CERTI_HOME
-echo "CERTI_FED       = " $CERTI_FED
+echo "CERTI_FOM_PATH  = " $CERTI_FOM_PATH
 echo "PATH            = " $PATH
 echo "LD_LIBRARY_PATH = " $LD_LIBRARY_PATH
 
