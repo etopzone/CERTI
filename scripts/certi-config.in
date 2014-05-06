@@ -1,0 +1,120 @@
+#!/bin/sh
+# @configure_input@
+
+work_dir=`pwd`
+script_dir=`dirname $0`; cd ${script_dir}; script_dir=`pwd`
+prefix="${script_dir}/../.."; cd ${prefix}; prefix=`pwd`;
+cd ${work_dir}
+
+usage()
+{
+   cat <<EOF
+Usage: certi-config [OPTIONS]
+Options:
+        No option:
+            Output all the flags (compiler and linker) required to compile your program.
+        [--prefix]]
+            Output the directory in which CERTI is installed a.k.a. CERTI HOME.
+        [--version|-v]
+            Output the version of CERTI.
+        [--libs|--ldflags]
+            Output the linker flags to use for CERTI.
+        [--cflags]
+            Output the compiler flags to use for CERTI.
+        [--hlaversion]
+            Specify which version of HLA to use. May be 1.3, 1516 or 1516e (a.k.a. Evolved).
+        [--help]
+            Output this message
+EOF
+}
+execdir="${prefix}/bin"
+includedir="${prefix}/include"
+libdir="${prefix}/lib"
+datadir="${prefix}/share"
+
+certi_dirlibhla="-I${includedir}/libhla"
+
+hlaversion=13
+
+certi_dir13="-I${includedir}/hla13 ${certi_dirlibhla}"
+certi_lib13="-L${libdir} -lRTI-NGd -lFedTimed -lHLAd -lCERTId"
+
+certi_dir1516="-I${includedir}/ieee1516-2000 ${certi_dirlibhla}"
+certi_lib1516="-L${libdir} -lRTI1516d -lFedTime1516d -lHLAd -lCERTId"
+
+certi_dir1516e="-I${includedir}/ieee1516-2010 ${certi_dirlibhla}"
+certi_lib1516e="-L${libdir} -lRTI1516ed -lFedTime1516ed -lHLAd -lCERTId"
+
+while test $# -gt 0; do
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+  *) optarg= ;;
+  esac
+
+  case $1 in
+    --help|-h)
+      usage 1>&2
+      exit 1
+      ;;
+    --hlaversion=*)
+      hlaversion=${optarg}
+      case $hlaversion in
+         13|1.3)
+           hlaversion=13
+           ;;
+         1516)
+           hlaversion=1516
+           ;;
+         1516e|Evolved|evolved)
+           hlaversion=1516e
+           ;;
+         *)
+           echo "Wrong HLA version can only be 13, 1516 or 1516e not \"${hlaversion}\" "
+           usage 1>&2
+           exit 1
+           ;;
+      esac
+      ;;
+    --prefix)
+      echo_prefix=true
+      ;;
+    --version|-v)
+      echo "CERTI @PACKAGE_VERSION@"
+      exit 0
+      ;;
+    --libs|--ldflags)
+      echo_libs=true
+      ;;
+    --cflags)
+      echo_cflags=true
+      ;;
+    *)
+      usage 1>&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+eval "finaldir=\${certi_dir${hlaversion}}"
+eval "finallib=\${certi_lib${hlaversion}}"
+
+if test ! x"${echo_prefix}" = x"true" \
+   -a ! x"${echo_cflags}" = x"true" \
+   -a ! x"${echo_libs}" = x"true"; 
+then
+   echo ${finaldir} ${finallib}
+fi
+
+if test x"${echo_prefix}" = x"true" ; then
+    echo ${prefix}
+fi
+
+if test x"${echo_cflags}" = x"true"; then
+    echo ${finaldir} 
+fi
+
+if test x"${echo_libs}" = x"true"; then
+    echo ${finallib}
+fi
+
