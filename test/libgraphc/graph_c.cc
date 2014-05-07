@@ -2206,7 +2206,9 @@ void ModeNORMAL()
 {
 	XSetFunction(canal_aff,contexte_graph,GXcopy);
 }
+#else
+void unUsedSymbol() {}
 
 #endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.cc,v 3.8 2013/09/24 14:27:59 erk Exp $
+// $Id: graph_c.cc,v 3.9 2014/05/07 12:10:57 erk Exp $

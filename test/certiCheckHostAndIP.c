@@ -36,6 +36,13 @@
 #include <stdlib.h>
 #include <rpc/rpc.h>
 
+/* Add missing declaration on MacOS rpclib 
+ * which generate a spurious warning
+ */
+#ifdef __APPLE__
+void get_myaddress(struct sockaddr_in *addr);
+#endif
+
 int main(int argc, char* argv[]) {
     struct hostent*  myhost;
     struct hostent*  myhost_byaddr;
