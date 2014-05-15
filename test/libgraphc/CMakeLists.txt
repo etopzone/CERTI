@@ -14,7 +14,9 @@ install(TARGETS graph-nogui
     ARCHIVE DESTINATION lib)
 
 if (NOT X_DISPLAY_MISSING)
+   include_directories(${X11_INCLUDE_DIR})
    add_library(graph ${BESTATIC} graph_c.cc)
+   target_link_libraries(graph ${X11_LIBRARIES})
    install(TARGETS graph
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
