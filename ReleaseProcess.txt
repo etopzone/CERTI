@@ -1,6 +1,10 @@
 This file tries to describe the current CERTI release process.
-Current version is written for a CERTI administrator 
+Current version is written for a CERTI administrator
 and may certainly be only readable for them.
+Note:
+  We were using CVS until CERTI 3.4.2 (included)
+  we now use GIT. CERTI 3.4.3 being the first release
+  using GIT.
 
 CERTI releases should be done with the following steps:
 
@@ -11,8 +15,8 @@ CERTI releases should be done with the following steps:
 
     Bugs:
     https://savannah.nongnu.org/bugs/?group=certi
-    - check if fixed bugs are really in CVS and
-      switch status 
+    - check if fixed bugs are really in GIT and
+      switch status
             from ReadyToTest to Done
             from Open to Closed
       check the Release version.
@@ -20,7 +24,7 @@ CERTI releases should be done with the following steps:
     Patches:
     https://savannah.nongnu.org/patch/?group=certi
     - check those which are "Ready For Test"
-      switch status 
+      switch status
              from ReadyForTest to Done
              from Open to Closed
 
@@ -31,11 +35,11 @@ CERTI releases should be done with the following steps:
 
 3) Edit certi/CMakeLists.txt
    and bump the version to the right number with
-   [example for certi-3.2.5]
+   [example for certi-3.4.2]
 
    SET(PACKAGE_VERSION_MAJOR "3")
-   SET(PACKAGE_VERSION_MINOR "2")
-   SET(PACKAGE_VERSION_PATCH "5")
+   SET(PACKAGE_VERSION_MINOR "4")
+   SET(PACKAGE_VERSION_PATCH "3")
 
 4) commit the modified files
    certi/CMakeLists.txt
@@ -46,34 +50,44 @@ CERTI releases should be done with the following steps:
 
      Better is at least 2 built:
          Linux ix86 wth gcc  (32bits)
-         Windows win32 with Visual Studio 
+         Windows win32 with Visual Studio
                 and/or Code::Blocks (http://www.codeblocks.org/)
                 and/or MinGW (http://mingw-w64.sourceforge.net)+Eclipse CDT
 
 6) Run autotests :))
    Which means for today run as many tests as you can do
       - billard
-      - HLA Tutorial 
+      - HLA Tutorial
       - HLA TestsSuite
-   All those tests do have an associated dtest scripts. 
+   All those tests do have an associated dtest scripts.
    see for example certi/tests/Billard/dtest_billard.py
-   or HLA_TestsSuite/dtest_*.py    
+   or HLA_TestsSuite/dtest_*.py
 
 7) Tag certi tree with appropriate version
 
-   cvs tag CERTI-3_2_5 certi
+     git tag -a CERTI-3_4_3 -m "CERTI Release 3.4.3"
 
-   Generate the Changelog file using certi/scripts/cvs2cl.pl
+   Generate the Changelog file using  git log command like:
+     git log --format="%ai %an%n%n%x09*%w(79,1,10)%s %d%n"
+   You may even store this git log format using:
+     git config --global pretty.gnucl "%ai %an%n%n%x09*%w(79,1,10)%s %d%n"
+   then use:
+     git log --format=gnucl
 
-   For example updating Changelog for CERTI 3.2.4 to 3.2.5 will be done
+   For example updating Changelog for CERTI 3.4.2 to 3.4.3 will be done
    using the following command:
 
    cd /path/to/certi
-   scripts/cvs2cl.pl -t -r --delta CERTI-3_2_4:CERTI-3_2_5 --prune -T --accum 
+   git --no-pager log CERTI-3_4_2..CERTI-3_4_3 --format="%ai %an%n%n%x09*%w(79,1,10)%s %d%n" >> ChangeLog
 
    commit the ChangeLog file
+   git add ChangeLog
+   git commit -m "Update ChangeLog for CERTI Release 3.4.3"
    force the tag on it:
-   cvs tag -F CERTI-3_2_5 certi/ChangeLog
+   git tag -a -f CERTI-3_4_3 -m "CERTI Release 3.4.3"
+
+   forward the change to Savannah
+   git push
 
 8) Make certi packages using cpack
      - tar.gz (sources)              [mandatory]
@@ -82,37 +96,37 @@ CERTI releases should be done with the following steps:
 
 9) Tests your packages or ask for help to test them
    on certi-devel
-   Fix packaging trouble if any and move the previous tag 
+   Fix packaging trouble if any and move the previous tag
    if any commit occurred.
 
 10) Digitally sign the packages you made and put them
     in the download area:
     https://savannah.gnu.org/maintenance/DownloadArea
 
-    gpg -b certi-3.2.5.tar.gz
-    
-    scp certi-3.2.5.tar.gz* <user>@dl.sv.nongnu.org:/releases/certi/
+    gpg -b certi-3.4.3.tar.gz
+
+    scp certi-3.4.3.tar.gz* <user>@dl.sv.nongnu.org:/releases/certi/
 
 11) Check if the download area has been properly updated
     http://download.savannah.nongnu.org/releases/certi/
-     
-    Beware the automatic mirror selection, go to 
-    the "noredirect" link: 
+
+    Beware the automatic mirror selection, go to
+    the "noredirect" link:
     http://download.savannah.gnu.org/releases-noredirect/certi/
-     
+
     Or look at the mirror monitoring:
     http://download.savannah.gnu.org/mirmon/
 
 12) Post the appropriate news on Savannah CERTI pages
     https://savannah.nongnu.org/news/submit.php?group=certi
 
-    DON'T MAIL to certi-devel since news are 
+    DON'T MAIL to certi-devel since news are
     automagically forwarded to appropriate ML
 
     Remember that once you have posted the news you should
     approve it before it appears on first page.
-    
-13) OPTIONALLY update online CERTI documentation at 
+
+13) OPTIONALLY update online CERTI documentation at
         http://www.nongnu.org/certi
 
 You are right this process IS painful and should be automated (a lot...)
