@@ -1,3 +1,240 @@
+2014-06-26 14:45:30 +0200 Eric NOULARD
+
+	* Prepare CERTI 3.4.3 Release (Include some typo fix in git log format
+          indication) (HEAD, tag: CERTI-3_4_3, master)
+
+2014-06-26 14:43:41 +0200 Eric NOULARD
+
+	* Update testFederate in order to do more test (on-going work) (origin/master,
+          origin/HEAD)
+
+2014-06-26 14:42:58 +0200 Eric NOULARD
+
+	* Implement connect/disconnect for IEEE-1516 2010
+
+2014-06-26 14:42:21 +0200 Eric NOULARD
+
+	* Update Release Process description for using git
+
+2014-05-15 10:53:51 +0000 Eric Noulard
+
+	* Fix compile error on MacOS with both mac port X11 and Quartz/native X11
+          installed (origin/origin)
+
+2014-05-07 12:10:56 +0000 Eric Noulard
+
+	* Fix compilation warning on MasOS X/Clang 5.1
+
+2014-05-06 09:12:55 +0000 Eric Noulard
+
+	* Better to install certi-config in bin dir.
+
+2014-05-06 09:02:10 +0000 Eric Noulard
+
+	* Provide a certi-config script in order to ease hand-written build systems.
+          certi-config --cflags provides compile flags certi-config --libs
+          provides linker flags one should use: --hlaversion option in order to
+          select 1.3, 1516 or 1516e.
+
+2014-05-06 08:06:17 +0000 Eric Noulard
+
+	* Second thought:  put both local and remote link this may be more convenient.
+
+2014-05-06 07:59:06 +0000 Eric Noulard
+
+	* Refer to PDF documentation on www.nongnu.org directly. This is more convenient
+          when PDF are not generated locally.
+
+2014-05-06 07:43:43 +0000 Eric Noulard
+
+	* Remove old reference to CERTI_FED var and use up to date CERTI_FOM_PATH
+
+2014-04-17 09:42:13 +0000 Eric Noulard
+
+	* Add support for WIX installer if WiX Toolset is found on the machine.
+
+2014-04-16 15:01:16 +0000 Eric Noulard
+
+	* Avoid MSVC warning
+
+2014-04-16 14:41:02 +0000 Eric Noulard
+
+	* Add some devel files (tag: CERTI-3_4_3-beta)
+
+2014-04-16 14:32:19 +0000 Eric Noulard
+
+	* Prepare 3.4.3-beta release
+
+2014-04-16 14:31:54 +0000 Eric Noulard
+
+	* Provide more explicit Not Implemented messages
+
+2014-04-16 13:47:06 +0000 Eric Noulard
+
+	* Add automatic test federate script
+
+2014-04-16 12:24:01 +0000 Eric Noulard
+
+	* Clean-up the code a little bit
+
+2014-04-16 11:30:49 +0000 Eric Noulard
+
+	* Avoid forward declaration of auto_ptr. Use proper standard include header
+          <memory>.
+
+2014-03-24 13:01:52 +0000 Eric Noulard
+
+	* Fix compilation on Windows, patch from Jan-Patrick.
+
+2014-03-07 18:25:17 +0000 Eric Noulard
+
+	* testFederate now compile & link for IEEE-1516-2010 this is mostly untested
+          though :-(
+
+2014-03-07 18:24:43 +0000 Eric Noulard
+
+	* Add the missings bit into libRTI for IEEE-1516-2010
+
+2014-03-07 18:01:22 +0000 Eric Noulard
+
+	* Prepare IEEE-1516-2010 test
+
+2014-03-07 18:00:49 +0000 Eric Noulard
+
+	* Very alpha version of IEEE-1516-2010 library which compile just fine.
+
+2014-03-07 18:00:05 +0000 Eric Noulard
+
+	* Remove spurious file
+
+2014-03-06 16:11:31 +0000 Eric Noulard
+
+	* One more step towards IEEE-1516-2010 API not working yet
+
+2014-03-06 16:01:36 +0000 Eric Noulard
+
+	* API Update from 1516 to 1516e
+
+2014-03-06 12:14:10 +0000 Eric Noulard
+
+	* Rename RTiambassador implementation to appropriate name and put it in certi::
+          namespace while leaving polymorphic RTIambassador in rti1516::
+          namespace.
+
+2014-03-05 10:15:56 +0000 Eric Noulard
+
+	* Remove useless file
+
+2014-03-03 16:43:25 +0000 Eric Noulard
+
+	* Prepare IEEE-1516-2010  library build
+
+2014-03-03 16:42:36 +0000 Eric Noulard
+
+	* Change copyrihgt date and remove CVS expansion keyword
+
+2014-03-03 16:41:46 +0000 Eric Noulard
+
+	* Rename file since we now have a private directory. It will ease the 1516-2000
+          --> 1516-2010 copy/paste
+
+2014-03-03 15:18:13 +0000 Eric Noulard
+
+	* Split-up standard specific files in separate directories. One for existing
+          hla-1_3 One for existing ieee1516-2000 One for the forthcoming
+          ieee1516-2010.
+
+2014-03-03 14:29:30 +0000 Eric Noulard
+
+	* Add a test federate in the Certi source tree in order to ease multi-standard
+          (1.3, 1516-2000, 1516-2010/Evolved) testing.
+
+2014-03-03 14:27:21 +0000 Eric Noulard
+
+	* prefer absolute path usage for generated files
+
+2014-03-03 14:26:37 +0000 Eric Noulard
+
+	* tab pruning
+
+2014-03-03 14:26:03 +0000 Eric Noulard
+
+	* Install configured file in the build tree at configure time in order to ease
+          the compilation of builtin test federate
+
+2014-03-03 14:24:56 +0000 Eric Noulard
+
+	* Enhance HLA 1.3 API documentation. This is a long running and painful job.
+
+2014-02-28 15:54:13 +0000 Eric Noulard
+
+	* Update RTIG doxygen documentation
+
+2014-02-28 15:53:34 +0000 Eric Noulard
+
+	* Update RTIA doxygen documentation
+
+2014-02-28 15:53:12 +0000 Eric Noulard
+
+	* export libhla includes in its own place
+
+2014-02-28 15:33:24 +0000 Eric Noulard
+
+	* Update doxygen generated documentation configuration
+
+2014-02-28 13:55:31 +0000 Eric Noulard
+
+	* Resurrect install.dox file
+
+2014-02-04 10:34:21 +0000 Eric Noulard
+
+	* More doc update
+
+2014-02-04 10:00:34 +0000 Eric Noulard
+
+	* Suppress CVS $ tags
+
+2014-02-04 09:58:21 +0000 Eric Noulard
+
+	* Resurrect two more doc files...
+
+2014-02-04 09:03:48 +0000 Eric Noulard
+
+	* Resurrect documentation files that were suppressed by error
+
+2014-01-22 09:35:58 +0000 Eric Noulard
+
+	* Avoid including unistd.h on Windows
+
+2013-12-16 14:07:29 +0000 Eric Noulard
+
+	* Fix build error on Windows+Code::Blocks
+
+2013-12-09 15:49:39 +0000 Eric Noulard
+
+	* Update find module to look for CERTI new include directories
+
+2013-12-09 13:56:19 +0000 Eric Noulard
+
+	* Missing generated include path.
+
+2013-12-09 13:47:43 +0000 Eric Noulard
+
+	* Source file and path structure redesign in order to prepare the addition of
+          ieee1516 v2010 (evolved).
+
+2013-12-06 13:45:42 +0000 Eric Noulard
+
+	* Do not confuse host and target when cross-compiling
+
+2013-12-06 13:30:33 +0000 Eric Noulard
+
+	* Small update of the release process
+
+2013-12-06 12:55:04 +0000 Eric Noulard
+
+	* Go on with CERTI development
+
 2013-12-06 13:31  tag CERTI-3_4_2
 
 2013-12-06 13:31  erk
