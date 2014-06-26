@@ -229,8 +229,19 @@ throw (
         rti1516e::CallNotAllowedFromWithinCallback,
         rti1516e::RTIinternalError)
         {
-    throw rti1516e::RTIinternalError(L"CONNECT Not Implemented");
-        }
+
+    switch (theCallbackModel) {
+    case rti1516e::HLA_EVOKED:
+        // before rti1516-2010 this this done in CFE
+        privateRefs->fed_amb = &federateAmbassador ;
+        break;
+    case rti1516e::HLA_IMMEDIATE:
+        throw rti1516e::UnsupportedCallbackModel(L"CONNECT callback model HLA_IMMEDIATE not implemented [yet].");
+    default:
+
+        throw rti1516e::UnsupportedCallbackModel(wstringize() << L"CONNECT unsupported callback model " << theCallbackModel);
+    } /* end of switch(theCallbackModel) */
+}
 
 // 4.3
 void RTI1516ambassador::disconnect ()
@@ -238,7 +249,8 @@ throw (
         rti1516e::FederateIsExecutionMember,
         rti1516e::CallNotAllowedFromWithinCallback,
         rti1516e::RTIinternalError) {
-    throw rti1516e::RTIinternalError(L"disconnect Not Implemented");
+    privateRefs->fed_amb = NULL;
+
 }
 
 // 4.5
@@ -393,9 +405,6 @@ throw (rti1516e::CouldNotCreateLogicalTimeFactory,
     if ( &federationExecutionName == NULL || federationExecutionName.length() <= 0 )
         throw rti1516e::RTIinternalError(L"Incorrect or empty federation name");
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
-
-    // FIXME rti1516-2010 this should be done in connect (probably)
-    //privateRefs->fed_amb = &federateAmbassador ;
 
     req.setFederateName(federateTypeAsString);
     req.setFederationName(federationExecutionNameAsString);
