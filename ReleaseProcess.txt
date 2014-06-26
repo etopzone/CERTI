@@ -35,7 +35,7 @@ CERTI releases should be done with the following steps:
 
 3) Edit certi/CMakeLists.txt
    and bump the version to the right number with
-   [example for certi-3.4.2]
+   [example for certi-3.4.3]
 
    SET(PACKAGE_VERSION_MAJOR "3")
    SET(PACKAGE_VERSION_MINOR "4")
@@ -68,9 +68,9 @@ CERTI releases should be done with the following steps:
      git tag -a CERTI-3_4_3 -m "CERTI Release 3.4.3"
 
    Generate the Changelog file using  git log command like:
-     git log --format="%ai %an%n%n%x09*%w(79,1,10)%s %d%n"
+     git log --format="%ai %an%n%n%x09*%w(79,1,10)%s%d%n"
    You may even store this git log format using:
-     git config --global pretty.gnucl "%ai %an%n%n%x09*%w(79,1,10)%s %d%n"
+     git config --global pretty.gnucl "%ai %an%n%n%x09*%w(79,1,10)%s%d%n"
    then use:
      git log --format=gnucl
 
