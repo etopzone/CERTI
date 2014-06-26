@@ -5,6 +5,14 @@
 #include <sstream>
 #include <cstdlib>
 
+/**
+ * The CERTI test Federate.
+ * This is a sample federate which helps in testing RTI features.
+ * This federate comes in 3 flavour:
+ *    - CertiTestFederate-HLA13 which uses HLA 1.3 API
+ *    - CertiTestFederate-IEEE1516_2000 which uses IEEE-1516 v2000 API
+ *    - CertiTestFederate-IEEE1516_2010 which uses IEEE-1516 v2010 API
+ */
 int main(int argc, char **argv)
 {
   gengetopt_args_info args ;
@@ -26,6 +34,8 @@ int main(int argc, char **argv)
   myFederate.setVerbosityLevel(verboseLevel);
   myFederate.createFederationExecution(federationName,FOMpath);
   myFederate.joinFederationExecution();
+  myFederate.getHandles();
+
   myFederate.resignFederationExecution();
   // Destroy the federation
   myFederate.destroyFederationExecution();
