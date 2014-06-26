@@ -479,7 +479,7 @@ SET(CPACK_PROJECT_CONFIG_FILE "${CERTI_BINARY_DIR}/CERTICPackOptions.cmake")
 IF (WIN32)
     set(CPACK_SOURCE_GENERATOR "ZIP")
     set(CPACK_GENERATOR "ZIP")
-	
+
     # Add NSIS generator iff makensis is found on the system
     find_program(MAKENSIS_EXECUTABLE
                  NAMES makensis
@@ -487,11 +487,11 @@ IF (WIN32)
     if (MAKENSIS_EXECUTABLE)
       list(APPEND CPACK_GENERATOR "NSIS")
     endif(MAKENSIS_EXECUTABLE)
-	
-	# Add WIX generator iff candle compiler is found on the system
+
+    # Add WIX generator iff candle compiler is found on the system
     find_program(CANDLE_EXECUTABLE
                  NAMES candle
-				 PATH $ENV{WIX}/bin
+		 PATH $ENV{WIX}/bin
                  DOC "The WIX package compiler command")
     if (CANDLE_EXECUTABLE)
 		list(APPEND CPACK_GENERATOR "WIX")
@@ -499,7 +499,7 @@ IF (WIN32)
 		set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/doc/certi-favi.jpg")
 		set(CPACK_WIX_UI_BANNER "${CMAKE_SOURCE_DIR}/doc/certi-installer-banner-493x58.jpg")
 		set(CPACK_WIX_UI_DIALOG "${CMAKE_SOURCE_DIR}/doc/certi-ui-dialog-493x312.jpg")
-	endif (CANDLE_EXECUTABLE)
+    endif (CANDLE_EXECUTABLE)
 
     ## Add a custom target callable from IDE (Mostly for Visual Studio)
     GET_FILENAME_COMPONENT(CPACK_COMMAND ${CMAKE_COMMAND} PATH)
@@ -572,9 +572,9 @@ ENDIF(SPECIFIC_COMPILER_NAME)
 
 # Avoid putting BUILDIR inside source package (simple case)
 IF ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
-   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*")
+   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*;\\\\.git")
 ELSE ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
-   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*;${CMAKE_BINARY_DIR}/*")
+   SET(CPACK_SOURCE_IGNORE_FILES "/\\\\.pydev.*;/\\\\.settings/;/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*;\\\\.cproject;\\\\.project;autom4te.cache/*;${CMAKE_BINARY_DIR}/*;\\\\.git")
 ENDIF ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
 
 SET(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
