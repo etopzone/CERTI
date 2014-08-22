@@ -481,6 +481,7 @@ IF (WIN32)
     set(CPACK_GENERATOR "ZIP")
 
     # Add NSIS generator iff makensis is found on the system
+    # see http://nsis.sourceforge.net
     find_program(MAKENSIS_EXECUTABLE
                  NAMES makensis
                  DOC "The NSIS package maker command")
@@ -489,10 +490,11 @@ IF (WIN32)
     endif(MAKENSIS_EXECUTABLE)
 
     # Add WIX generator iff candle compiler is found on the system
+    # See http://wixtoolset.org/
     find_program(CANDLE_EXECUTABLE
                  NAMES candle
-		 PATH $ENV{WIX}/bin
-                 DOC "The WIX package compiler command")
+		         PATHS "$ENV{WIX}/bin"
+                 DOC "The WIX package compiler command")    
     if (CANDLE_EXECUTABLE)
 		list(APPEND CPACK_GENERATOR "WIX")
 		set(CPACK_WIX_UPGRADE_GUID "CE218AF5-CAC3-4A99-8CB5-98DFC182DC1B")
