@@ -90,8 +90,8 @@ RTIA::displayStatistics()
 // ----------------------------------------------------------------------------
 void
 RTIA::execute() {
-    Message        *msg_un;
-    NetworkMessage *msg_tcp_udp;
+    Message        *msgFromFederate;
+    NetworkMessage *msgFromRTIG;
     int n ;
 
     while (fm->_connection_state != FederationManagement::CONNECTION_FIN) {
@@ -101,15 +101,15 @@ RTIA::execute() {
          *   Network Message will come from a virtual constructor call
          *   Message will come from a "simple" constructor call
          */
-    	msg_un      = NULL;
-    	msg_tcp_udp = NULL;
+    	msgFromFederate      = NULL;
+    	msgFromRTIG = NULL;
         try {
             switch (tm->_tick_state) {
               case TimeManagement::NO_TICK:
                 /* tick() is not active:
                  *   block until RTIA or federate message comes
                  */
-                comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+                comm->readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
               case TimeManagement::TICK_BLOCKING:
@@ -123,10 +123,10 @@ RTIA::execute() {
                     timev.tv_sec = int(tm->_tick_timeout);
                     timev.tv_usec = int((tm->_tick_timeout-timev.tv_sec)*1000000.0);
 
-                    comm->readMessage(n, &msg_tcp_udp, &msg_un, &timev);
+                    comm->readMessage(n, &msgFromRTIG, &msgFromFederate, &timev);
                 }
                 else
-                    comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+                    comm->readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
               case TimeManagement::TICK_CALLBACK:
@@ -135,7 +135,7 @@ RTIA::execute() {
                  *   block until federate message comes
                  *   RTIA messages are queued in a system queue
                  */
-                comm->readMessage(n, NULL, &msg_un, NULL);
+                comm->readMessage(n, NULL, &msgFromFederate, NULL);
                 break;
 
               default:
@@ -147,21 +147,21 @@ RTIA::execute() {
         catch (NetworkSignal&) {
             fm->_connection_state = FederationManagement::CONNECTION_FIN;
             n = 0 ;
-            delete msg_un ;
-            delete msg_tcp_udp ;
+            delete msgFromFederate ;
+            delete msgFromRTIG ;
         }
 
         switch (n) {
           case 0:
             break ;
           case 1:
-            processNetworkMessage(msg_tcp_udp);
+            processNetworkMessage(msgFromRTIG);
             if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {
                 processOngoingTick();
             }
             break ;
           case 2:
-            processFederateRequest(msg_un);
+            processFederateRequest(msgFromFederate);
             break ;
           case 3: // timeout
             if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {

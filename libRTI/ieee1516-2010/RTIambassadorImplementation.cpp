@@ -265,7 +265,7 @@ throw (rti1516e::FederationExecutionAlreadyExists,
         rti1516e::NotConnected,
         rti1516e::RTIinternalError)
         {
-    /* TODO */
+
     certi::M_Create_Federation_Execution req, rep ;
 
     G.Out(pdGendoc,"enter RTI1516ambassador::createFederationExecution");
