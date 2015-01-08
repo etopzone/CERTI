@@ -1,8 +1,4 @@
-if (WIN32)
-    cmake_minimum_required(VERSION 2.8.0)
-else()
-    cmake_minimum_required(VERSION 2.6.4)
-endif()
+cmake_minimum_required(VERSION 2.8.11)
 
 project(CERTI CXX)
 
