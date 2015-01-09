@@ -29,7 +29,6 @@
 #include "fedtime.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
-#include "certi.hh"
 
 #include <vector>
 
