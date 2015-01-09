@@ -75,7 +75,6 @@ int yyerror(const char *);
 %token TRANSPORT
 %token TIMESTAMP_TOKEN
 
-%error-verbose
 %start fed
 
 %%
