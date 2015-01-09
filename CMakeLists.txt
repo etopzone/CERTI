@@ -336,6 +336,7 @@ IF (X11_FOUND)
     MESSAGE(STATUS "X11 header: X11/Xlib not found.")
   ENDIF(NOT HAVE_X11_XLIB)
 
+# on fedora, we need the package : xorg-x11-xbitmaps
   FIND_FILE(HAVE_X11_BITMAPS_CNTR_PTR
     NAMES cntr_ptr
     PATH_SUFFIXES X11/bitmaps
