@@ -161,6 +161,11 @@ public:
 
     Exception(const std::string &reason)
         : _reason(reason), _name("Exception") { }
+
+    const std::wstring wreason() const {
+    	std::wstring wval(_reason.begin(),_reason.end());
+    	return wval;
+    }
     virtual ~Exception() { }
     const std::string displayMe() const;
     virtual long getType() const = 0;
