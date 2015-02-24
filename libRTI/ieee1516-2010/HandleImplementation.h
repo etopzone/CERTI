@@ -65,7 +65,16 @@ namespace rti1516e
 	   /* Generate an encoded value that can be used to send     */ 
 	   /* handles to other federates in updates or interactions. */ 
 	   virtual VariableLengthData encode() const;                           
-	                                                                
+
+	   /* Generate a hash value for use in storing handles in a  */
+	   /* in a hash table.                                       */
+	   /* Note: The hash value may not be unique across two      */
+	   /* separate handle values but it will be equal given two  */
+	   /* separate instances of the same handle value.           */
+	   /* H1 == H2 implies H1.hash() == H2.hash()                */
+	   /* H1 != H2 does not imply H1.hash() != H2.hash()         */
+	   long hash () const;
+
 	   /* Alternate encode for directly filling a buffer         */ 
 	   virtual unsigned long encodedLength() const;                         
 	   virtual unsigned long encode(                                        

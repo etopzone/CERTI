@@ -26,8 +26,11 @@
 #include <sstream>
 #include <cstring>
 #include <stdint.h>
+#include <functional>
 #include "HandleImplementation.h"
 #include "RTIvariableLengthDataImplementation.h"
+
+#include "PMurHash.h"
 
 namespace rti1516e
 {
@@ -80,6 +83,31 @@ bool HandleImplementation::isValid() const
         return false;
     else
         return true;
+}
+
+
+long HandleImplementation::hash () const
+{
+    long retval;
+    //from <functional>
+    // more details at http://www.cplusplus.com/reference/functional/hash/
+    //should think about a non-c++11 approach if needed
+    //  std::hash<std::wstring> localhash;
+    //  return localhash(toString());
+
+    // Use Portable MurmurHash implementation from http://code.google.com/p/smhasher/
+    std::wstring strval = toString();
+    // if long a 32 bits integer then hash is computed in one piece
+    if (sizeof(long)==sizeof(uint32_t)) {
+        retval = PMurHash32(0,strval.c_str(),strval.length());
+    }
+    // otherwise long is 64 bits so hash should be computed in two 32 bits pieces
+    else {
+        int l = strval.length();
+        retval = PMurHash32(0,strval.c_str(),l/2);
+        retval |= (retval >> 32) | PMurHash32(0,strval.c_str()+l/2,l-l/2);
+    }
+    return retval;
 }
 
 /* Generate an encoded value that can be used to send     */
