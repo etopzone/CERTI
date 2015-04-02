@@ -2703,6 +2703,7 @@ Federation::saveXmlData()
 	return true ;
 #endif // HAVE_XML
 }
+
 // ----------------------------------------------------------------------------
 FederateHandle
 Federation::requestObjectOwner(FederateHandle theFederateHandle,
@@ -2711,40 +2712,56 @@ Federation::requestObjectOwner(FederateHandle theFederateHandle,
 		uint32_t theListSize)
 throw (ObjectNotKnown)
 {
-	FederateHandle theOwnerHandle ;
-	NM_Provide_Attribute_Value_Update mess ;
-
 	G.Out(pdGendoc,"enter Federation::requestObjectOwner");
+
+    Object* actualObject = root->getObject(theObject);
+    
+    typedef std::map<FederateHandle, std::vector<AttributeHandle> > ATTRIBUTES_FOR_FEDERATES_T;
+    ATTRIBUTES_FOR_FEDERATES_T attributesForFederates;
+    
+    for (uint32_t i = 0 ; i < theListSize ; ++i)
+    {
+        FederateHandle federateHandle = actualObject->getAttribute(theAttributeList[i])->getOwner();
+        
+        // Only attributes that are owned by someone should be asked
+        if (federateHandle != 0)
+        {
+            ATTRIBUTES_FOR_FEDERATES_T::iterator P = attributesForFederates.find(federateHandle);
+            if (P == attributesForFederates.end())
+                P = attributesForFederates.insert(std::pair<FederateHandle, std::vector<AttributeHandle> >(federateHandle, std::vector<AttributeHandle>())).first;
+        
+            P->second.push_back(theAttributeList[i]);
+        }
+    }
+    
+    for (ATTRIBUTES_FOR_FEDERATES_T::const_iterator P = attributesForFederates.begin() ; P != attributesForFederates.end() ; ++P)
+    {
+        FederateHandle theOwnerHandle = P->first;
+        NM_Provide_Attribute_Value_Update mess ;
+        
+        // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
+        mess.setFederate(theFederateHandle);
+        mess.setObject(theObject);
+        mess.setAttributesSize(P->second.size()) ;
+        for (uint32_t i = 0 ; i < P->second.size() ; ++i)
+            mess.setAttributes(P->second[i],i) ;
+        
+        mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
+    }
+
+	FederateHandle theOwnerHandle ;
 
 	// Request Object.
 	theOwnerHandle = root->requestObjectOwner(theFederateHandle,theObject) ;
 
-	// Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
-	mess.setFederate(theFederateHandle);
-	mess.setObject(theObject);
-	mess.setAttributesSize(theListSize) ;
-	for (uint32_t i = 0 ; i < theListSize ; ++i)
-	{
-		mess.setAttributes(theAttributeList[i],i) ;
-	}
-
-	// JYR : BUG if getSocketLink return NULL means
-	// owner federate has been killed and so rtig don't crash
-	// better development needed
-	if ( server->getSocketLink(theOwnerHandle) == NULL )
-	{
-		throw ObjectNotKnown ( "Owner federate killed") ;
-	}
-
-	mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
-
 	G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
 			,theOwnerHandle);
 	G.Out(pdGendoc,"exit  Federation::requestObjectOwner");
-	return(theOwnerHandle);
-
+	
+    return(theOwnerHandle);
 }
 
+// ----------------------------------------------------------------------------
 void 
 Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 								ObjectClassHandle theClassHandle,
@@ -2766,33 +2783,9 @@ Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
 	for( ObjectClass::HandleObjectMap::const_iterator it =
 		 instances.begin(); it != instances.end(); ++it )
 	{
-		FederateHandle theOwnerHandle = it->second->getOwner();
-
-		NM_Provide_Attribute_Value_Update mess ;
-
-		// Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
-		mess.setFederate(theFederateHandle);
-		mess.setObject(it->first);
-		mess.setAttributesSize(theListSize) ;
-		for (uint32_t i = 0 ; i < theListSize ; ++i)
-		{
-			mess.setAttributes(theAttributeList[i],i) ;
-		}
-
-		// JYR : BUG if getSocketLink return NULL means
-		// owner federate has been killed and so rtig don't crash
-		// better development needed
-		if ( server->getSocketLink(theOwnerHandle) == NULL )
-		{
-			throw RTIinternalError ( "Owner federate killed" ) ;
-		}
-
-		mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
-
-		G.Out(pdGendoc,"            requestClassAttributeValueUpdate ===> write PAVU to RTIA %d"
-			,theOwnerHandle);
-		G.Out(pdGendoc,"exit  Federation::requestClassAttributeValueUpdate");
+        requestObjectOwner(theFederateHandle, it->first, theAttributeList, theListSize);
 	}
+    G.Out(pdGendoc,"exit  Federation::requestClassAttributeValueUpdate");
 }
 
 }} // namespace certi/rtig
