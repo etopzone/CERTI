@@ -299,13 +299,25 @@ ELSE (SOCKET_LIBRARY_HAS_CONNECT)
     SET(SOCKET_LIBRARY)
 ENDIF (SOCKET_LIBRARY_HAS_CONNECT)
 
-IF (WIN32)
+if(WIN32)
     #FIND_LIBRARY(SOCKET_LIBRARY
-	#                          NAMES Ws2_32
-	#			DOC "The Winsock2 library")
-	SET(SOCKET_LIBRARY ws2_32)
-	SET(HAVE_WIN_CLOCK 1)
-ENDIF (WIN32)
+    #                          NAMES Ws2_32
+    #			DOC "The Winsock2 library")
+    set(SOCKET_LIBRARY ws2_32)
+    set(HAVE_WIN_CLOCK 1)
+    # We may need to bump the limit of the number of socket descriptor
+    # that may be selected on Windows
+    # See: https://msdn.microsoft.com/en-us/library/windows/desktop/ms739169%28v=vs.85%29.aspx
+    # Following error encountered by a user:
+    #   http://lists.nongnu.org/archive/html/certi-devel/2014-10/msg00002.html
+    set(CERTI_WINDOWS_FD_SETSIZE "128" CACHE STRING "Number of selectable socket (Windows only) [0-> default Winsock value]")
+    set_property(CACHE CERTI_WINDOWS_FD_SETSIZE PROPERTY STRINGS 0 64 128 256)
+endif(WIN32)
+
+if (CERTI_WINDOWS_FD_SETSIZE)
+  message(STATUS "CERTI on Windows: maximum number of selectable socket: ${CERTI_WINDOWS_FD_SETSIZE}")
+  add_definitions(-DFD_SETSIZE=${CERTI_WINDOWS_FD_SETSIZE})
+endif()
 
 ################ LIBXML2 install Check ####################
 FIND_PACKAGE(LibXml2)
