@@ -227,6 +227,7 @@ ObjectClass::sendToOwners(CDiffusion& diffusionList,
                 }
             }
             D.Out(pdDebug, "Envoi message type %s ", answer.getMessageName());
+            answer.setAttributesSize(index); 
             sendToFederate(&answer, toFederate);
         }
     }
