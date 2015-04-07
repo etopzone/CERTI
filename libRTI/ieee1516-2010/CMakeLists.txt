@@ -1,6 +1,8 @@
 # Add standard specific include directory
 include_directories(${CMAKE_SOURCE_DIR}/include/ieee1516-2010)
 include_directories(${CMAKE_BINARY_DIR}/include/ieee1516-2010)
+# Add libhla for hash function
+include_directories(${CMAKE_SOURCE_DIR}/libhla)
 
 # TO BE CONTINUED
 ##########################################################
@@ -82,7 +84,7 @@ add_library(RTI1516e ${RTI1516e_LIB_SRCS} ${RTI1516e_LIB_INCLUDE})
 # Incorrect line
 #target_link_libraries(RTI1516 CERTI)
 # Correct line
-target_link_libraries(RTI1516e CERTI FedTime1516e)
+target_link_libraries(RTI1516e CERTI FedTime1516e HLA)
 install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
 message(STATUS "libRTI variant: HLA 1516e")
 set_target_properties(RTI1516e PROPERTIES OUTPUT_NAME "RTI1516e")
