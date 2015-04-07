@@ -922,7 +922,7 @@ Billard::reflectAttributeValues(
     float x1 = 0 ;
     float y1 = 0 ;
 
-    RTI::ULong valueLength ;  
+    RTI::ULong valueLength ;
 
     D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
           theAttributes.size());
@@ -932,39 +932,41 @@ Billard::reflectAttributeValues(
         RTI::AttributeHandle parmHandle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
         assert(valueLength>0);
-        buffer.resize(valueLength);        
-        buffer.reset();        
-        theAttributes.getValue(j, static_cast<char*>(buffer(0)), valueLength);        
+        buffer.resize(valueLength);
+        buffer.reset();
+        theAttributes.getValue(j, static_cast<char*>(buffer(0)), valueLength);
         buffer.assumeSizeFromReservedBytes();
-        
+
         if (parmHandle == AttrXID) {
-           x1 = buffer.read_double();                
+           x1 = buffer.read_double();
         }
         else if (parmHandle == AttrYID) {
-           y1 = buffer.read_double();            
+          y1 = buffer.read_double();
         }
         else
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
-    
+    //cout << x1 << " - " << y1 << endl;
     vector<Ball>::iterator it = remote.begin() ;
     while (it != remote.end() && it->ID != theObject)
-	++it ;
+      ++it ;
 
     if (it == remote.end())
         D.Out(pdError, "Fed: error, id not found (%d).", theObject);
     else {
         it->erase();
-
-        float oldx = it->x ;
-        it->x = x1 ;
-        it->dx = it->x - oldx ;
-
-        float oldy = it->y ;
-        it->y = y1 ;
-        it->dy = it->y - oldy ;
-
-	it->active = true ;
+        /* We only want a single attribute per RAV*/
+        if (x1 !=0) {
+          float oldx = it->x ;
+          it->x = x1 ;
+          it->dx = it->x - oldx;
+        }
+        if (y1 !=0) {
+          float oldy = it->y ;
+          it->y = y1 ;
+          it->dy = it->y - oldy;
+        }
+        it->active = true ;
     }
 }
 
@@ -1066,3 +1068,4 @@ Billard::timeAdvanceGrant(const RTI::FedTime& theTime)
     D.Out(pdTrace, "Time advanced, local time is now %.2f.",
           localTime.getTime());
 }
+
