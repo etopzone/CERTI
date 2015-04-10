@@ -1,28 +1,34 @@
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/libCERTI 
   ${CMAKE_SOURCE_DIR}/libHLA
   )
 
 find_library(RT_LIBRARY rt)
-ADD_EXECUTABLE(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)
+add_executable(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)
 
-TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI HLA)
-IF(RT_LIBRARY)
-  TARGET_LINK_LIBRARIES(CertiProcessus_A ${RT_LIBRARY})
-ENDIF(RT_LIBRARY)
+target_link_libraries(CertiProcessus_A CERTI HLA)
+if(RT_LIBRARY)
+  target_link_libraries(CertiProcessus_A ${RT_LIBRARY})
+endif()
 
-SET_TARGET_PROPERTIES(CertiProcessus_A PROPERTIES COMPILE_FLAGS -DSIDE_SC)
+set_target_properties(CertiProcessus_A PROPERTIES COMPILE_FLAGS -DSIDE_SC)
 
-ADD_EXECUTABLE(CertiProcessus_B Main_SocketSHM.cc SharedStruct.hh)
+add_executable(CertiProcessus_B Main_SocketSHM.cc SharedStruct.hh)
 
-TARGET_LINK_LIBRARIES(CertiProcessus_B CERTI HLA)
-IF(RT_LIBRARY)
-    TARGET_LINK_LIBRARIES(CertiProcessus_B ${RT_LIBRARY})
-ENDIF(RT_LIBRARY)
+target_link_libraries(CertiProcessus_B CERTI HLA)
+if(RT_LIBRARY)
+    target_link_libraries(CertiProcessus_B ${RT_LIBRARY})
+endif()
 
-SET_TARGET_PROPERTIES(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
+set_target_properties(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
 
-INSTALL(TARGETS CertiProcessus_A CertiProcessus_B
+# Xml parsing test program
+add_executable(CertiCheckXML checkXML.cc)
+target_link_libraries(CertiCheckXML xml2)
+
+install(TARGETS CertiProcessus_A CertiProcessus_B CertiCheckXML
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
+
+
