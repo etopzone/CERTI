@@ -70,6 +70,8 @@ RTIG::RTIG()
     this->udpPort = atoi(udp_port_s);
 
     this->federations.setVerboseLevel(verboseLevel);
+    NM_msgBufSend.reset();
+    NM_msgBufReceive.reset();
 }
 
 // ----------------------------------------------------------------------------

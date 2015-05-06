@@ -35,7 +35,35 @@
 #ifdef HAVE_XML
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+
+#define NODE_OBJECT_MODEL (const xmlChar*) "objectModel"
+#define NODE_OBJECTS (const xmlChar*) "objects"
+#define NODE_OBJECT_CLASS (const xmlChar*) "objectClass"
+#define NODE_INTERACTIONS (const xmlChar*) "interactions"
+#define NODE_INTERACTION_CLASS (const xmlChar*) "interactionClass"
+#define NODE_ATTRIBUTE (const xmlChar*) "attribute"
+#define NODE_PARAMETER (const xmlChar*) "parameter"
+#define NODE_ROUTING_SPACE (const xmlChar*) "routingSpace"
+#define NODE_DIMENSIONS (const xmlChar*) "dimensions"
+#define NODE_DIMENSION (const xmlChar*) "dimension"
+#define NODE_NAME (const xmlChar*) "name"
+
+#define ATTRIBUTE_DTDVERSION  (const xmlChar*) "DTDversion"
+#define ATTRIBUTE_XMLNSVERSION  (const xmlChar*) "xmlns"
+#define ATTRIBUTE_NAME (const xmlChar*) "name"
+#define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
+#define ATTRIBUTE_ORDER (const xmlChar*) "order"
+#define ATTRIBUTE_SPACE (const xmlChar*) "space"
+
+#define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
+#define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
+#define VALUE_TSO (const xmlChar*) "TimeStamp"
+#define VALUE_RO (const xmlChar*) "Receive"
+
+#define VERSION1516      (const xmlChar*)"1516.2"
+#define VERSION1516_2010 (const xmlChar*)"1516-2010"
 #endif
+
 
 // Standard libraries
 #include <string>
@@ -48,13 +76,34 @@ namespace certi {
 class CERTI_EXPORT XmlParser
 {
 public:
+	/**
+	 * Different type of XML files.
+	 * The parse will guess which type of file it has been given.
+	 */
+	typedef enum HLAXmlStdVersion {XML_LEGACY, XML_IEEE1516_2000, XML_IEEE1516_2010}
+	HLAXmlStdVersion_t;
 	
+	/**
+	 *  infos we need to retrieve in the xml file according to the xml version used
+	 *  ntos stand for name, transportation, order, space */
+	typedef struct ntos {
+		xmlChar* name;
+		xmlChar* transportation;
+		xmlChar* order;
+		xmlChar* space;
+	} HLAntos_t ;
+
 	/**
 	 * Build a parser.
 	 * @param root the root object of the FOM.
 	 */
 	XmlParser(RootObject* root);
 	
+	/**
+	 * Destructor.
+	 */
+	virtual ~XmlParser();
+
 	/** 
 	 * Main method to parse .xml FOM file
 	 * @param[in] pathToXmlFile the path to the XML file.
@@ -70,6 +119,14 @@ public:
      * @return true if the XML parser is available
      */
     static bool exists(void);
+
+    /**
+     * give the version of the xml FOM file to be parsed
+     * it could be 1516 ou 1516-2010
+     * @param[in] pathToXmlFile the path to the XML file.
+     * @return a string containing the version of the FOM file
+     */
+    static HLAXmlStdVersion_t version (std::string pathToXmlFile);
     
 #if HAVE_XML
     /**
@@ -97,27 +154,40 @@ public:
 		~CleanXmlGetProp(){
 			xmlFree(prop);
 		}
-	private:
+
+	protected:
 		xmlChar* prop;
-	};
+	}; // end class CleanXmlGetProp
 #endif
-private:
+protected:
 	/**
 	 * Parse the current class node.
 	 * @param[in,out] parent the parent object class
 	 */
-    void parseClass(ObjectClass *parent);
+    virtual void parseClass(ObjectClass *parent);
     
     /**
      * Parse the current interaction node
      * @param[in,out] parent the parent interaction node
      */
-    void parseInteraction(Interaction *parent);
+    virtual void parseInteraction(Interaction *parent);
     
     /** 
      * Parse a routing space from current node.
      */
-    void parseRoutingSpace(void);
+    virtual void parseRoutingSpace(void);
+
+    /**
+     * Parse .
+     */
+	virtual void parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)=0;
+
+	/**
+	 * get the name of the node.
+	 * @param[in] current node
+	 * @param[out] the name
+	 */
+	virtual xmlChar * getName(xmlNodePtr cur)=0;
 
     int freeObjectClassHandle ;
     int freeInteractionClassHandle ;
@@ -135,6 +205,9 @@ private:
 };
 
 } // namespace certi
+
+#include "XmlParser2000.hh"
+#include "XmlParser2010.hh"
 
 #endif // _CERTI_XML_PARSER_HH
 

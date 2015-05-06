@@ -83,6 +83,7 @@ NetworkMessage.cc NetworkMessage_RW.cc NetworkMessage.hh
 NM_Classes.hh NM_Classes.cc
 Exception.cc Exception.hh
 XmlParser.cc XmlParser.hh
+XmlParser2000.cc XmlParser2000.hh XmlParser2010.cc XmlParser2010.hh
 PrettyDebug.cc PrettyDebug.hh
 TreeNamedAndHandledSet.hh
 )

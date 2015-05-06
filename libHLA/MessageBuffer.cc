@@ -139,7 +139,7 @@ void MessageBuffer::reset() {
 	writeOffset           = reservedBytes;
 	readOffset            = reservedBytes;
 	updateReservedBytes();
-} /* MessageBuffer::resetBuffer() */
+} /* MessageBuffer::reset() */
 
 uint32_t MessageBuffer::resize(uint32_t newSize) {
 	reallocate(newSize);

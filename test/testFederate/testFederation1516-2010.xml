@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE objectModel SYSTEM "../../xml/ieee1516-2000/1516_2-2000/HLA.dtd" >
+<objectModel DTDversion="1516.2" appDomain="CERTI testing"
+    appDomainNotes="" date="2014/03/03" dateNotes="" name="testFederation"
+    nameNotes="" other="" otherNotes="" pocEmail="eric.noulard@onera.fr"
+    pocEmailNotes="" pocName="Eric Noulard" pocNameNotes="" pocOrg="ONERA/DTIM"
+    pocOrgNotes="" pocPhone="" pocPhoneNotes=""
+    purpose="Testing the CERTI supported HLA standard (HLA 1.3, IEEE1516-2000 and IEEE-1516-2010)"
+    purposeNotes="" references="" referencesNotes="" sponsor=""
+    sponsorNotes="" type="FOM" typeNotes="" version="1.0" versionNotes="">
+    <objects>
+        <objectClass>
+            <attribute>
+            <name>HLAobjectRoot</name>
+            <nameNotes></nameNotes>
+            <semantics></semantics>
+            <semanticsNotes></semanticsNotes>
+            <sharing>Neither</sharing>
+            <sharingNotes></sharingNotes>
+            </attribute>
+            <attribute>
+                <name>HLAprivilegeToDeleteObject</name>
+                <dataType>NA</dataType>
+                <dimensions>NA</dimensions>
+                <updateCondition>NA</updateCondition>
+                <updateType>NA</updateType>
+                <ownership>NoTransfer</ownership>
+                <transportation>HLAreliable</transportation>
+                <order>Receive</order>
+            </attribute>
+            <objectClass>
+                <name>RTIprivate</name>
+            </objectClass>
+            <objectClass>
+                <name>Data</name>
+                <attribute>
+                    <name>Attr1</name>
+                    <order>TimeStamp</order>
+                    <transportation>HLAreliable</transportation>
+                </attribute>
+            </objectClass>
+        </objectClass>
+    </objects>
+    <interactions>
+        <interactionClass>
+            <dimensions>NA</dimensions>
+            <name>HLAinteractionRoot</name>
+            <order>TimeStamp</order>
+            <semantics></semantics>
+            <sharing>Neither</sharing>
+            <transportation>HLAreliable</transportation>
+        </interactionClass>
+            <interactionClass>
+                <name>Message</name>
+            </interactionClass>
+                <parameter>
+                    <name>Param1</name>
+                </parameter>
+
+
+                <parameter name="Param2" /></interactionClass>
+        </interactionClass>
+    </interactions>
+    <dimensions>
+    </dimensions>
+    <time>
+        <timeStamp dataType="nmtoken" dataTypeNotes="nmtokens"
+            semantics="" semanticsNotes="nmtokens" />
+        <lookahead dataType="nmtoken" dataTypeNotes="nmtokens"
+            semantics="" semanticsNotes="nmtokens" />
+    </time>
+    <tags>
+        <updateReflectTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+        <sendReceiveTag dataType="nmtoken" dataTypeNotes="nmtokens"
+            semantics="" semanticsNotes="nmtokens" />
+        <deleteRemoveTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+        <divestitureRequestTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+        <divestitureCompletionTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+        <acquisitionRequestTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+        <requestUpdateTag dataType="nmtoken"
+            dataTypeNotes="nmtokens" semantics="" semanticsNotes="nmtokens" />
+    </tags>
+    <synchronizations>
+        <synchronization capability="Register"
+            capabilityNotes="nmtokens" dataType="nmtoken" dataTypeNotes="nmtokens"
+            label="nmtoken" labelNotes="nmtokens" semantics=""
+            semanticsNotes="nmtokens" />
+    </synchronizations>
+    <transportations>
+        <transportation description="Provide reliable delivery of data in the sense that TCP/IP delivers its data reliably" name="HLAreliable"/><transportation
+            name="HLAbestEffort" description="Make an effort to deliver data in the sense that UDP provides best-effort delivery" />
+    </transportations>
+    <switches attributeRelevanceAdvisory="Enabled"
+        attributeRelevanceAdvisoryNotes="nmtokens"
+        attributeScopeAdvisory="Enabled" attributeScopeAdvisoryNotes="nmtokens"
+        autoProvide="Enabled" autoProvideNotes="nmtokens"
+        conveyRegionDesignatorSets="Enabled"
+        conveyRegionDesignatorSetsNotes="nmtokens"
+        interactionRelevanceAdvisory="Enabled"
+        interactionRelevanceAdvisoryNotes="nmtokens"
+        objectClassRelevanceAdvisory="Enabled"
+        objectClassRelevanceAdvisoryNotes="nmtokens" serviceReporting="Enabled"
+        serviceReportingNotes="nmtokens" />
+    <dataTypes>
+        <basicDataRepresentations>
+            <basicData encoding="" encodingNotes="nmtokens"
+                endian="Big" endianNotes="nmtokens" interpretation=""
+                interpretationNotes="nmtokens" name="nmtoken" nameNotes="nmtokens"
+                size="" sizeNotes="nmtokens" />
+        </basicDataRepresentations>
+        <simpleDataTypes>
+            <simpleData accuracy="" accuracyNotes="nmtokens"
+                name="nmtoken" nameNotes="nmtokens" representation="nmtoken"
+                representationNotes="nmtokens" resolution=""
+                resolutionNotes="nmtokens" semantics="" semanticsNotes="nmtokens"
+                units="" unitsNotes="nmtokens" />
+        </simpleDataTypes>
+        <enumeratedDataTypes>
+            <enumeratedData name="nmtoken" nameNotes="nmtokens"
+                representation="nmtoken" representationNotes="nmtokens"
+                semantics="" semanticsNotes="nmtokens">
+                <enumerator name="nmtoken" nameNotes="nmtokens"
+                    values="nmtokens" valuesNotes="nmtokens" />
+            </enumeratedData>
+        </enumeratedDataTypes>
+        <arrayDataTypes>
+            <arrayData cardinality="" cardinalityNotes="nmtokens"
+                dataType="nmtoken" dataTypeNotes="nmtokens" encoding=""
+                encodingNotes="nmtokens" name="nmtoken" nameNotes="nmtokens"
+                semantics="" semanticsNotes="nmtokens" />
+        </arrayDataTypes>
+        <fixedRecordDataTypes>
+            <fixedRecordData encoding="" encodingNotes="nmtokens"
+                name="nmtoken" nameNotes="nmtokens" semantics=""
+                semanticsNotes="nmtokens">
+                <field dataType="nmtoken" dataTypeNotes="nmtokens"
+                    name="nmtoken" nameNotes="nmtokens" semantics=""
+                    semanticsNotes="nmtokens" />
+            </fixedRecordData>
+        </fixedRecordDataTypes>
+        <variantRecordDataTypes>
+            <variantRecordData dataType="nmtoken"
+                dataTypeNotes="nmtokens" discriminant=""
+                discriminantNotes="nmtokens" encoding="" encodingNotes="nmtokens"
+                name="nmtoken" nameNotes="nmtokens" semantics=""
+                semanticsNotes="nmtokens">
+                <alternative dataType="nmtoken"
+                    dataTypeNotes="nmtokens" enumerator=""
+                    enumeratorNotes="nmtokens" name="nmtoken" nameNotes="nmtokens"
+                    semantics="" semanticsNotes="nmtokens" />
+            </variantRecordData>
+        </variantRecordDataTypes>
+    </dataTypes>
+    <notes>
+        <note name="nmtoken" semantics="" semanticsNotes="nmtokens" />
+    </notes>
+</objectModel>
