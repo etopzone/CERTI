@@ -161,10 +161,7 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
         vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
     }
     catch (NetworkError &e) {
-        std::stringstream msg;
-        msg << "NetworkError in tick() while sending TICK_REQUEST: " << e._reason;
-        std::wstring message(msg.str().begin(), msg.str().end());
-        throw rti1516e::RTIinternalError(message);
+        throw rti1516e::RTIinternalError(L"NetworkError in tick() while sending TICK_REQUEST: " + e.wreason());
     }
 
     // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
@@ -173,10 +170,7 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
             vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
         }
         catch (NetworkError &e) {
-            std::stringstream msg;
-            msg << "NetworkError in tick() while receiving response: " << e._reason;
-            std::wstring message(msg.str().begin(), msg.str().end());
-            throw rti1516e::RTIinternalError(message);
+            throw rti1516e::RTIinternalError(L"NetworkError in tick() while receiving response: " + e.wreason());
         }
 
         // If the type is TICK_REQUEST, the __tick_kernel() has terminated.
@@ -206,11 +200,7 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
             tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
         }
         catch (NetworkError &e) {
-            std::stringstream msg;
-            msg << "NetworkError in tick() while sending TICK_REQUEST_NEXT: " << e._reason;
-
-            std::wstring message(msg.str().begin(), msg.str().end());
-            throw rti1516e::RTIinternalError(message);
+            throw rti1516e::RTIinternalError(L"NetworkError in tick() while sending TICK_REQUEST_NEXT: " + e.wreason());
         }
     } // while(1)
     // should never be reached, this is there for calming down static code analysis
