@@ -33,6 +33,8 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include "XmlParser.hh"
+
 #endif
 
 static int indentLevel = 0;
@@ -72,7 +74,7 @@ void displayCurrent(xmlNodePtr curNode) {
 int
 main(int argc, char* argv[]) {
 
-    std::string filename = argv[1];
+	std::string filename = argv[1];
 #ifndef HAVE_XML
     std::cerr << "CERTI has been compiled without XML support" << std::endl;
     exit(EXIT_FAILURE);
@@ -92,9 +94,22 @@ main(int argc, char* argv[]) {
     current = xmlDocGetRootElement(doc);
     displayCurrent(current);
 
+    certi::XmlParser::HLAXmlStdVersion_t vers = certi::XmlParser::version (filename);
+    switch (vers) {
+    case certi::XmlParser::XML_IEEE1516_2000 :
+    	std::cout << "xml fom file version : IEEE1516_2000 \n"; break ;
+    case certi::XmlParser::XML_IEEE1516_2010 :
+    	std::cout << "xml fom file version : IEEE1516_2010 \n"; break ;
+    default :
+    	std::cout << "xml fom file version : Legacy \n";
+    }
+
+
     xmlFreeDoc(doc);
     xmlCleanupParser();
     exit(EXIT_SUCCESS);
 #endif
 
+
 }
+

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel>
+    <modelIdentification notes="Note2">
+        <name notes="Note3">Restaurant FOM Module Example</name>
+        <type>FOM</type>
+        <version>3.0</version>
+        <modificationDate>2010-08-16</modificationDate>
+        <securityClassification>Unclassified</securityClassification>
+    </modelIdentification>
+    <objects>
+        <objectClass>
+            <name>HLAobjectRoot</name>
+            <objectClass>
+                <name>Customer</name>
+                <sharing>PublishSubscribe</sharing>
+                <semantics>Statement of money owed by the customer</semantics>
+            </objectClass>
+            <objectClass>
+                <name>Employee</name>
+                <sharing>Neither</sharing>
+                <semantics>A person working for the restaurant</semantics>
+                <attribute>
+                    <name>PayRate</name>
+                    <dataType>DollarRate</dataType>
+                    <updateType>Conditional</updateType>
+                    <updateCondition notes="Note4 Note5">Merit increase</updateCondition>
+                    <ownership>DivestAcquire</ownership>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>TimeStamp</order>
+                    <semantics>Amount the employee is paid per hour</semantics>
+                </attribute>
+                <objectClass>
+                    <name>Waiter</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <attribute>
+                        <name>Efficiency</name>
+                        <dataType>WaiterValue</dataType>
+                        <updateType>Conditional</updateType>
+                        <updateCondition>Performance review</updateCondition>
+                        <ownership>DivestAcquire</ownership>
+                        <sharing>PublishSubscribe</sharing>
+                        <transportation>HLAreliable</transportation>
+                        <order>TimeStamp</order>
+                        <semantics>Efficiency rating of waiter</semantics>
+                    </attribute>
+                </objectClass>
+                <objectClass>
+                    <name>Cashier</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <semantics>Employee who collects money</semantics>
+                </objectClass>
+            </objectClass>
+        </objectClass>
+    </objects>
+    <interactions>
+        <interactionClass>
+            <name>HLAinteractionRoot</name>
+            <interactionClass>
+                <name>CustomerTransactions</name>
+                <sharing>Publish</sharing>
+                <transportation>HLAreliable</transportation>
+                <order>TimeStamp</order>
+                <semantics>The base class of interactions between customers and employee</semantics>
+                <interactionClass>
+                    <name>CustomerSeated</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>TimeStamp</order>
+                    <semantics>Customer has occupied a table</semantics>
+                </interactionClass>
+            </interactionClass>
+        </interactionClass>
+    </interactions>
+</objectModel>

@@ -332,7 +332,7 @@ TreeNamedAndHandledSet<ObjectType>::getObjectFromHandle(HandleType handle) const
 } /* end of getObjectFromHandle */
 
 template <typename ObjectType>
-std::ostream& operator<<(std::ostream& os, TreeNamedAndHandledSet<ObjectType> set) {
+std::ostream& operator<<(std::ostream& os, const TreeNamedAndHandledSet<ObjectType>& set) {
 	typename TreeNamedAndHandledSet<ObjectType>::const_iterator i;
 	// display the set name
 	os << set.getSetName() << " : "<< std::endl ;

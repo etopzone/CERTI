@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel>
+    <objects>
+        <objectClass>
+            <name>HLAobjectRoot</name>
+            <objectClass>
+                <name>Customer</name>
+                <sharing>PublishSubscribe</sharing>
+                <semantics>Statement of money owed by the customer</semantics>
+            </objectClass>
+            <objectClass>
+                <name>Employee</name>
+                <attribute>
+                    <name>PayRate</name>
+                    <sharing>PublishSubscribe</sharing>
+                    <transportation>HLAreliable</transportation>
+                    <order>TimeStamp</order>
+                </attribute>
+            </objectClass>
+        </objectClass>
+    </objects>
+</objectModel>

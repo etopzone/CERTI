@@ -24,7 +24,7 @@ set_target_properties(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
 
 # Xml parsing test program
 add_executable(CertiCheckXML checkXML.cc)
-target_link_libraries(CertiCheckXML xml2)
+target_link_libraries(CertiCheckXML xml2 RTI)
 
 install(TARGETS CertiProcessus_A CertiProcessus_B CertiCheckXML
     RUNTIME DESTINATION bin

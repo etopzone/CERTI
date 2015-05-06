@@ -320,8 +320,17 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
         }
         else if ( is_an_xml )
         {
+        	XmlParser *parser = NULL;
             if (XmlParser::exists()) {
-                XmlParser *parser = new XmlParser(root);
+            	switch (XmlParser::version(filename)) {
+            	case XmlParser::XML_IEEE1516_2000:
+            	case XmlParser::XML_LEGACY:
+            		parser = new XmlParser2000(root);
+            		break;
+            	case XmlParser::XML_IEEE1516_2010:
+            		parser = new XmlParser2010(root);
+            		break;
+            	}
                 server->audit << ", XML File : " << filename ;
 
                 try {
@@ -338,9 +347,9 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
                 delete parser ;
             }
             else {
-                cout << "Compiled without XML support" << endl ;
+                cerr << "CERTI was Compiled without XML support" << endl ;
                 G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
-                throw CouldNotOpenFED("Could not parse XML file. (Compiled without XML lib.)");
+                throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
             }
         }
     }

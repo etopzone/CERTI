@@ -79,9 +79,18 @@ RootObject::~RootObject()
 void
 RootObject::display() const
 {
-    cout << endl << "Root Object Tree :" << endl ;
-    cout << ObjectClasses;
-    cout << Interactions;
+    cout << endl << "Root Object Tree BEGINS:" << endl ;
+    cout << "------------------------" << endl;
+    if (NULL!=ObjectClasses) {
+    	cout << *ObjectClasses;
+    } else {
+    	cout << "ObjectClasses is NULL!!" << endl;
+    }
+    if (NULL!=Interactions) {
+        cout << *Interactions;
+    } else {
+    	cout << "Is is NULL!!" << endl;
+    }
     if (spaces.size() > 0) {
         cout << "+ Routing Spaces :" << endl ;
 	vector<RoutingSpace>::const_iterator it ;
@@ -89,6 +98,8 @@ RootObject::display() const
             it->display();
         }
     }
+    cout << endl << "Root Object Tree ENDS." << endl ;
+    cout << "------------------------" << endl ;
 }
 
 SecurityLevelID
