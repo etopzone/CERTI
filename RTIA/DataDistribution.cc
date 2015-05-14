@@ -236,6 +236,7 @@ throw (RegionNotKnown)
 	req.setObject(object);
 	req.setRegion(region) ;
 
+	req.setAttributesSize(nb);
 	for (uint32_t i=0;i<nb;++i) {
 		req.setAttributes(attr[i],i);
 	}
@@ -265,6 +266,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 	req.setFederate(fm->federate);
 	req.setObjectClass(class_handle);
 	req.setTag(name);
+	req.setAttributesSize(nb);
 	for (uint32_t i=0;i<nb;++i) {
 		req.setAttributes(attrs[i],i);
 	}
@@ -336,6 +338,7 @@ throw (RegionNotKnown)
 	req.setFederate(fm->federate);
 	req.setObjectClass(obj_class);
 	req.setRegion(region);
+	req.setAttributesSize(nb);
 	for (uint32_t i=0;i<nb;++i) {
 		req.setAttributes(attr[i],i);
 	}
