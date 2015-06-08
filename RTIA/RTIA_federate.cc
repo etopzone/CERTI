@@ -1105,7 +1105,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	case Message::DDM_MODIFY_REGION: {
 		M_Ddm_Modify_Region *DDMMRq;
-		DDMMRq = static_cast<M_Ddm_Modify_Region*>(rep);
+		DDMMRq = static_cast<M_Ddm_Modify_Region*>(req);
 		Debug(D, pdTrace) << "Receiving Message from Federate: Modify Region" << std::endl ;
 		ddm->modifyRegion(DDMMRq->getRegion(), DDMMRq->getExtents(), e);
 	}
@@ -1113,7 +1113,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 
 	case Message::DDM_DELETE_REGION: {
 		M_Ddm_Delete_Region *DDMDRq;
-				DDMDRq = static_cast<M_Ddm_Delete_Region*>(rep);
+		DDMDRq = static_cast<M_Ddm_Delete_Region*>(req);
 		Debug(D, pdTrace) << "Receiving Message from Federate: DeleteRegion" << std::endl ;
 		ddm->deleteRegion(DDMDRq->getRegion(), e);
 	}
@@ -1126,7 +1126,7 @@ RTIA::chooseFederateProcessing(Message *req, Message* rep, TypeException &e)
 		Debug(D, pdTrace) << "Receiving Message from Federate: Associate Region"
 				<< std::endl ;
 		ddm->associateRegion(DDMARq->getObject(), DDMARq->getRegion(),
-				DDMARq->getAttributes(), DDMARq->getAttributesSize(), e);
+		DDMARq->getAttributes(), DDMARq->getAttributesSize(), e);
 	}
 	break ;
 

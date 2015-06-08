@@ -738,7 +738,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    message.setFederation(server->federation());
 	    message.setFederate(federate);
 	    message.setException(e_NO_EXCEPTION) ;
-	    message.setObjectClass(i->second->getClass());
+	    message.setObjectClass(super_handle);
 	    message.setObject(i->second->getHandle());
 	    message.setLabel(i->second->getName());
 	    //BUG FIXME strange!!
