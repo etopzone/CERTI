@@ -62,6 +62,8 @@ public:
     void setOwner(FederateHandle);
 
     void unassociate(RTIRegion *);
+    
+    void killFederate(FederateHandle);
 
 private:
     /*! Owner Handle

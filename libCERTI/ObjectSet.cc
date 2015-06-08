@@ -197,6 +197,8 @@ ObjectSet::killFederate(FederateHandle the_federate)
 			i = begin();
 		}
 		else {
+            // It is safe to run this multiple times
+            (i->second)->killFederate(the_federate);
 			i++;
 		}
 	}

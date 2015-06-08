@@ -125,4 +125,16 @@ Object::unassociate(RTIRegion *region)
     }
 }
 
+// ----------------------------------------------------------------------------
+//! Remove references for killed federate from all attributes in object
+void
+Object::killFederate(FederateHandle the_federate)
+{
+    AttributeMap::const_iterator i;
+    for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {
+        if (i->second->getOwner() == the_federate)
+            i->second->setOwner(0);
+    }
+}
+
 } // namespace certi
