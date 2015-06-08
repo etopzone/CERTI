@@ -8206,3 +8206,126 @@
 2006-05-14 22:09  breholee
 
 	* VERSION: version 3.2.1
+2015-06-08 17:00:56 +0200 Jean-Loup BUSSENOT
+
+	* Preparing 3.5.0 release  (HEAD, CERTI-3_5_0, origin/master, origin/HEAD,
+          master)
+
+2015-06-08 16:53:01 +0200 Jean-Loup BUSSENOT
+
+	* Merge branch 'master' of git.sv.gnu.org:/srv/git/certi 
+
+2015-06-08 16:50:55 +0200 Jean-Loup BUSSENOT
+
+	* merge patch #8558 from Timi Tuohenmaa Clear ownership from attributes when
+          owning federate exits without releasing ownership 
+
+2015-05-26 13:28:12 +0200 Eric NOULARD
+
+	* Fix Bug #45160, merge from Timi patch proposal. Discovering existing object
+          on subcribe send wrong class handle 
+
+2015-05-14 14:51:02 +0200 Eric NOULARD
+
+	* Fix typo rep was used instead of req. This is a modified contribution of
+          Mattias Helsing 
+
+2015-05-14 14:47:41 +0200 Eric NOULARD
+
+	* set the size of the Attributes before setting the Attributes 
+
+2015-05-12 15:40:24 +0200 Eric NOULARD
+
+	* Raw update status for 1516-2010 implementation status list 
+
+2015-05-06 16:35:50 +0200 Jean-Loup BUSSENOT
+
+	* Merge branch 'exceptionHandlingFixForMSVC' 
+
+2015-05-06 16:13:53 +0200 Jean-Loup BUSSENOT
+
+	* Merge branch 'fomMod' 
+
+2015-05-06 16:08:46 +0200 Jean-Loup BUSSENOT
+
+	* add IEEE1516-2010 xml support  (fomMod)
+
+2015-04-10 15:45:28 +0200 Jean-Loup BUSSENOT
+
+	* Helper tool for parsing XML files 
+
+2015-04-07 15:55:58 +0200 Eric NOULARD
+
+	* Merge branch 'AddIEEE1516-hash-API' 
+
+2015-04-07 15:30:33 +0200 Eric NOULARD
+
+	* Fix from Pierre and Janette about single attribute RAV 
+
+2015-04-02 14:05:40 +0200 Eric NOULARD
+
+	* Merge bug 44635 fix from Timi Tuohenmaa. Ownership acquisition messages can
+          have extra 0 attribute handles 
+
+2015-04-02 12:06:18 +0200 Eric NOULARD
+
+	* Merge bug35719 fix from Timi Tuohenmaa. Attributes published by no-one will
+          be requested by requestObjectAttributeValueUpdate() 
+
+2015-04-02 11:01:23 +0200 Eric NOULARD
+
+	* Add option to configure the maximum number of sockets on Windows. 0 means use
+          default Windows value (usually 64) Other values may be 128, 256 or
+          user provided value. 
+
+2015-02-24 16:30:40 +0100 Eric NOULARD
+
+	* Implement Handle hash method using MurmurHash2 
+
+2015-02-24 12:07:01 +0100 Jean-Loup BUSSENOT
+
+	* Avoid using stringstream for converting to wstring. Add wreason method to
+          CERTI internal (libCERTI) Exception class.  (list,
+          exceptionHandlingFixForMSVC)
+
+2015-01-29 13:16:13 +0100 Eric NOULARD
+
+	* Remove unecessary .cvsignore files 
+
+2015-01-09 15:22:16 +0100 Jean-Loup BUSSENOT
+
+	* post 3.4.3 development 
+
+2015-01-09 15:10:58 +0100 Jean-Loup BUSSENOT
+
+	* suppress yacc/bison verbose error which is unsupported on some windows bison
+          version  (fixWindowsCompileErr)
+
+2015-01-09 15:03:28 +0100 Jean-Loup BUSSENOT
+
+	* add the name of the fedora packet for X11 bitmap 
+
+2015-01-09 14:53:48 +0100 Jean-Loup BUSSENOT
+
+	* remove spurious include certi.hh 
+
+2015-01-08 16:46:52 +0100 Jean-Loup BUSSENOT
+
+	* suppress unistd include in windows specific file 
+
+2015-01-08 15:58:56 +0100 Jean-Loup BUSSENOT
+
+	* cleanup rename local var with better name 
+
+2015-01-08 15:53:37 +0100 Jean-Loup BUSSENOT
+
+	* required version of cmake (we need target_include_directory) 
+
+2014-08-22 14:54:06 +0200 Eric Noulard
+
+	* Properly find candle executable when WiX is installed 
+
+2014-08-22 14:34:42 +0200 Eric Noulard
+
+	* Handle Win8 in specific system information 
+
