@@ -88,6 +88,7 @@ CERTI releases should be done with the following steps:
 
    forward the change to Savannah
    git push
+   git push --tags
 
 8) Make certi packages using cpack
      - tar.gz (sources)              [mandatory]
