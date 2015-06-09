@@ -92,8 +92,11 @@ CERTI releases should be done with the following steps:
 
 8) Make certi packages using cpack
      - tar.gz (sources)              [mandatory]
+         make package_source
      - RPM (sources and binaries)    [optional]
+         cpack -G RPM
      - Win32 NSIS binary installer   [recommended]
+     	 cpack -G NSIS
 
 9) Tests your packages or ask for help to test them
    on certi-devel
