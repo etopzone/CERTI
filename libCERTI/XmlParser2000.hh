@@ -64,20 +64,10 @@ public:
 	 */	   
     //RootObject* parse(std::string pathToXmlFile);
 
-	/**
-	 * ParseNTOS get name transportation order and space
-	 * @param[in] the current node
-	 * @param[out] name transportation order and space
-	 * @return nothing
-	 */
-    virtual void parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p);
 
-    /**
-	 * get the node name
-	 * @param[in] current node
-	 * @return the name
-	 */
-    virtual xmlChar * getName(xmlNodePtr cur);
+    virtual void parseNTOS(HLAntos_t  *ntos_p);
+
+    virtual std::string getName();
 };
 
 } // namespace certi

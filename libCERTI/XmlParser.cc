@@ -152,12 +152,12 @@ XmlParser::parseClass(ObjectClass* parent)
     xmlNodePtr prev = cur ;
 
     /* note how objectHandle counter is incremented */
-    xmlChar * tmpName = getName ( cur ) ;
-    if (NULL==tmpName) {
+    std::string tmpName = getName();
+    if (0==tmpName.length()) {
     	throw CouldNotOpenFED("Current node Name is NULL!!");
     }
 
-    ObjectClass* current = new ObjectClass(reinterpret_cast<char*>(tmpName),freeObjectClassHandle++);
+    ObjectClass* current = new ObjectClass(tmpName,freeObjectClassHandle++);
 
     root->addObjectClass(current, parent);
     cur = cur->xmlChildrenNode ;
@@ -171,7 +171,7 @@ XmlParser::parseClass(ObjectClass* parent)
             objClassProp.transportation=NULL;
             objClassProp.order=NULL;
             objClassProp.space=NULL;
-            parseNTOS(cur, &objClassProp ) ;
+            parseNTOS(&objClassProp) ;
 
             AttributeHandle attributeHandle = current->getHandleClassAttributeMap().size() + 1;
             ObjectClassAttribute *attr = new ObjectClassAttribute( (const char* ) objClassProp.name , attributeHandle);
@@ -240,7 +240,7 @@ XmlParser::parseInteraction(Interaction* parent)
     intClassProp.transportation=NULL;
     intClassProp.order=NULL;
     intClassProp.space=NULL;
-    parseNTOS(cur, &intClassProp ) ;
+    parseNTOS(&intClassProp);
     // Name
     //name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
@@ -287,10 +287,8 @@ XmlParser::parseInteraction(Interaction* parent)
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
-        	xmlChar * tmpName = getName(cur);
-        	//JLB std::string name(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
-            // JLB Parameter *param = new Parameter(tmpName, freeParameterHandle++);
-        	Parameter *param = new Parameter((const char *) tmpName, freeParameterHandle++);
+            std::string tmpName = getName();
+            Parameter *param = new Parameter(tmpName.c_str(), freeParameterHandle++);
             current->addParameter(param);
         }
         // Subinteraction
@@ -312,20 +310,16 @@ XmlParser::parseRoutingSpace()
     xmlNodePtr prev = cur ;
     RoutingSpace current ;
     current.setHandle(freeSpaceHandle++);
-    xmlChar * tmpName = getName(cur);
-    // JLB current.setName(std::string(tmpName));
-    current.setName((const char *) tmpName);
-    // JLB current.setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
+    std::string tmpName = getName();
+    current.setName(tmpName);
 
     // Dimensions
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
             Dimension dimension(freeDimensionHandle++);
-            xmlChar * tmpName = getName(cur);
-            //JLB dimension.setName(std::string(tmpName));
-            dimension.setName(( const char *) tmpName);
-            // JLB dimension.setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
+            std::string tmpName = getName();
+            dimension.setName(tmpName);
             current.addDimension(dimension);
         }
         cur = cur->next ;

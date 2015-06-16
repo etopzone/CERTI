@@ -82,16 +82,7 @@ public:
 	 */
 	typedef enum HLAXmlStdVersion {XML_LEGACY, XML_IEEE1516_2000, XML_IEEE1516_2010}
 	HLAXmlStdVersion_t;
-	
-	/**
-	 *  infos we need to retrieve in the xml file according to the xml version used
-	 *  ntos stand for name, transportation, order, space */
-	typedef struct ntos {
-		xmlChar* name;
-		xmlChar* transportation;
-		xmlChar* order;
-		xmlChar* space;
-	} HLAntos_t ;
+
 
 	/**
 	 * Build a parser.
@@ -177,17 +168,42 @@ protected:
      */
     virtual void parseRoutingSpace(void);
 
+#ifdef HAVE_XML
     /**
-     * Parse .
+     *  Infos we need to retrieve in the xml file according to the xml version used
+     *  ntos stand for name, transportation, order, space
      */
-	virtual void parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)=0;
+    typedef struct ntos {
+        xmlChar* name;
+        xmlChar* transportation;
+        xmlChar* order;
+        xmlChar* space;
+    } HLAntos_t ;
+#else
+    /**
+     *  Infos we need to retrieve in the xml file according to the xml version used
+     *  ntos stand for name, transportation, order, space
+     */
+    typedef struct ntos {
+        std::string name;
+        std::string transportation;
+        std::string order;
+        std::string space;
+    } HLAntos_t ;
+#endif
+
+    /**
+     * ParseNTOS get name transportation order and space
+     * @param[out] name transportation order and space
+     * @return nothing
+     */
+	virtual void parseNTOS(HLAntos_t *ntos_p)=0;
 
 	/**
-	 * get the name of the node.
-	 * @param[in] current node
-	 * @param[out] the name
+	 * Get the name of the current node.
+	 * @return the name
 	 */
-	virtual xmlChar * getName(xmlNodePtr cur)=0;
+	virtual std::string getName()=0;
 
     int freeObjectClassHandle ;
     int freeInteractionClassHandle ;

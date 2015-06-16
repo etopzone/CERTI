@@ -44,7 +44,7 @@ XmlParser2010::XmlParser2010(RootObject* r): XmlParser (r)
 XmlParser2010::~XmlParser2010()
 {}
 
-xmlChar* XmlParser2010::getText (xmlNodePtr node)
+xmlChar* getText (xmlNodePtr node)
 {
 	if (node->children && node->children->content)
 	{
@@ -56,23 +56,23 @@ xmlChar* XmlParser2010::getText (xmlNodePtr node)
 	}
 }
 
-xmlChar *  XmlParser2010::getName(xmlNodePtr cur)
+std::string  XmlParser2010::getName()
 {
 	xmlNodePtr tempNode = cur->children ;
 	while (tempNode != NULL)
 	{
 		if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_NAME)))
 			{
-				return getText (tempNode) ;
+				return std::string((const char*)getText (tempNode));
 			}
 		tempNode = tempNode->next ;
 	}
-	return NULL ; 
+	return std::string();
 }
 
 
 
-void XmlParser2010::parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)
+void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
 {	
 	//try to load a 1516e FOM file instead
 	xmlNodePtr tempNode = cur->children ;
@@ -112,7 +112,8 @@ XmlParser2010::XmlParser2010(RootObject *r ): XmlParser (r)
 {
 }
 
-void XmlParser2010::parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)
+
+void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
 {
 	
 }

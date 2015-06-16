@@ -44,7 +44,7 @@ XmlParser2000::XmlParser2000(RootObject* r): XmlParser(r)
 XmlParser2000::~XmlParser2000()
 {}
 
-void XmlParser2000::parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)
+void XmlParser2000::parseNTOS(HLAntos_t  *ntos_p)
 {
 	ntos_p->name = xmlGetProp(cur, ATTRIBUTE_NAME);
 	ntos_p->transportation = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
@@ -52,9 +52,9 @@ void XmlParser2000::parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)
 	ntos_p->space = xmlGetProp(cur, ATTRIBUTE_SPACE);
 }
 
-xmlChar * XmlParser2000::getName(xmlNodePtr cur)
+std::string XmlParser2000::getName()
 {
-	return  xmlGetProp(cur, ATTRIBUTE_NAME);
+	return  std::string((const char*)xmlGetProp(cur, ATTRIBUTE_NAME));
 }
 
 } // namespace certi
@@ -63,7 +63,7 @@ xmlChar * XmlParser2000::getName(xmlNodePtr cur)
 
 namespace certi {
 
-void XmlParser2000::parseNTOS(xmlNodePtr cur, HLAntos_t  *ntos_p)
+void XmlParser2000::parseNTOS(HLAntos_t  *ntos_p)
 {
 }
 
