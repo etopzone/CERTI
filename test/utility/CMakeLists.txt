@@ -26,6 +26,11 @@ set_target_properties(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
 add_executable(CertiCheckXML checkXML.cc)
 target_link_libraries(CertiCheckXML xml2 RTI)
 
+add_test(NAME CheckXML2000 COMMAND CertiCheckXML ${CMAKE_CURRENT_SOURCE_DIR}/T2000.xml)
+set_property(TEST CheckXML2000 PROPERTY PASS_REGULAR_EXPRESSION "2000")
+add_test(NAME CheckXML2010 COMMAND CertiCheckXML ${CMAKE_CURRENT_SOURCE_DIR}/T2010.xml)
+set_property(TEST CheckXML2010 PROPERTY PASS_REGULAR_EXPRESSION "2010")
+
 install(TARGETS CertiProcessus_A CertiProcessus_B CertiCheckXML
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

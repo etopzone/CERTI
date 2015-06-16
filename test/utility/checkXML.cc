@@ -92,7 +92,7 @@ main(int argc, char* argv[]) {
         xmlFreeDoc(doc);
     }
     current = xmlDocGetRootElement(doc);
-    displayCurrent(current);
+    //displayCurrent(current);
 
     certi::XmlParser::HLAXmlStdVersion_t vers = certi::XmlParser::version (filename);
     switch (vers) {
