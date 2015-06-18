@@ -78,14 +78,14 @@ main(int argc, char* argv[]) {
 
     std::cerr << "CERTI compiled with XML libmlx2 version: "<< LIBXML_VERSION_STRING << std::endl;
     xmlDocPtr doc;
-    xmlNodePtr current;
+    //xmlNodePtr current;
 
     doc = xmlParseFile(filename.c_str());
     if (NULL==doc) {
         std::cerr << "Unable to parse XML file:" << filename << "reason: "<< std::endl;
         xmlFreeDoc(doc);
     }
-    current = xmlDocGetRootElement(doc);
+    //current = xmlDocGetRootElement(doc);
     //displayCurrent(current);
 
     certi::XmlParser::HLAXmlStdVersion_t vers = certi::XmlParser::version (filename);
