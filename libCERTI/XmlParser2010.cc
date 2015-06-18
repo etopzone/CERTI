@@ -114,7 +114,7 @@ std::string XmlParser2010::getName()
 {
 	return  std::string("");
 }
+#endif // HAVE_XML
 
 } // namespace certi
 
-#endif // HAVE_XML

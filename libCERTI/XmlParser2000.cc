@@ -68,7 +68,7 @@ std::string XmlParser2000::getName()
 	return  std::string("");
 }
 
+#endif // HAVE_XML
 
 } // namespace certi
 
-#endif // HAVE_XML
