@@ -320,8 +320,11 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
         }
         else if ( is_an_xml )
         {
+
+#ifdef HAVE_XML
         	XmlParser *parser = NULL;
             if (XmlParser::exists()) {
+
             	switch (XmlParser::version(filename)) {
             	case XmlParser::XML_IEEE1516_2000:
             	case XmlParser::XML_LEGACY:
@@ -346,7 +349,9 @@ throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
                 }
                 delete parser ;
             }
-            else {
+            else 
+#endif
+			{
                 cerr << "CERTI was Compiled without XML support" << endl ;
                 G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
                 throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");

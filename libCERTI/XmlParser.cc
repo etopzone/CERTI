@@ -33,8 +33,6 @@ using std::endl ;
 
 #ifdef HAVE_XML
 
-
-
 namespace certi {
 
 static PrettyDebug D("XMLPARSER", "(XmlParser) ");
@@ -476,6 +474,10 @@ RootObject *XmlParser::parse(std::string)
 bool XmlParser::exists()
 {
     return false ;
+}
+
+XmlParser::~XmlParser()
+{
 }
 
 } // namespace certi

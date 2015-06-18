@@ -31,7 +31,7 @@ using std::string ;
 using std::cerr ;
 using std::endl ;
 
-#ifdef HAVE_XML
+
 
 namespace certi {
 
@@ -44,6 +44,7 @@ XmlParser2010::XmlParser2010(RootObject* r): XmlParser (r)
 XmlParser2010::~XmlParser2010()
 {}
 
+#ifdef HAVE_XML
 xmlChar* getText (xmlNodePtr node)
 {
 	if (node->children && node->children->content)
@@ -102,22 +103,17 @@ void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
 	}
 }
 
-} // namespace certi
-
 #else // !HAVE_XML
-
-namespace certi {
-
-XmlParser2010::XmlParser2010(RootObject *r ): XmlParser (r)
-{
-}
-
 
 void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
 {
 	
 }
 
+std::string XmlParser2010::getName()
+{
+	return  std::string("");
+}
 
 } // namespace certi
 

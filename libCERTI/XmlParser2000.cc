@@ -31,7 +31,6 @@ using std::string ;
 using std::cerr ;
 using std::endl ;
 
-#ifdef HAVE_XML
 
 namespace certi {
 
@@ -44,6 +43,7 @@ XmlParser2000::XmlParser2000(RootObject* r): XmlParser(r)
 XmlParser2000::~XmlParser2000()
 {}
 
+#ifdef HAVE_XML
 void XmlParser2000::parseNTOS(HLAntos_t  *ntos_p)
 {
 	ntos_p->name = xmlGetProp(cur, ATTRIBUTE_NAME);
@@ -57,15 +57,17 @@ std::string XmlParser2000::getName()
 	return  std::string((const char*)xmlGetProp(cur, ATTRIBUTE_NAME));
 }
 
-} // namespace certi
-
 #else // !HAVE_XML
-
-namespace certi {
 
 void XmlParser2000::parseNTOS(HLAntos_t  *ntos_p)
 {
 }
+
+std::string XmlParser2000::getName()
+{
+	return  std::string("");
+}
+
 
 } // namespace certi
 

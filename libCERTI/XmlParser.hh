@@ -150,7 +150,9 @@ public:
 		xmlChar* prop;
 	}; // end class CleanXmlGetProp
 #endif
+
 protected:
+#ifdef HAVE_XML
 	/**
 	 * Parse the current class node.
 	 * @param[in,out] parent the parent object class
@@ -168,7 +170,6 @@ protected:
      */
     virtual void parseRoutingSpace(void);
 
-#ifdef HAVE_XML
     /**
      *  Infos we need to retrieve in the xml file according to the xml version used
      *  ntos stand for name, transportation, order, space

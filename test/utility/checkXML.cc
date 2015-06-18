@@ -16,25 +16,17 @@
  * License along with this program ; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
- * ----------------------------------------------------------------------------
- * This is a modified version of tsp_check_host_and_ip.c from
- * TSP Utils Library - utilities for a generic Transport Sampling Protocol.
- *
- * Copyright (c) 2002 Yves DUFRENNE, Stephane GALLES, Eric NOULARD and Robert PAGNOT
  */
 
 #include <iostream>
 #include <algorithm>
 #include <cstdlib>
 
-#define HAVE_XML 1
-
 #ifdef HAVE_XML
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include "XmlParser.hh"
-
 #endif
 
 static int indentLevel = 0;
@@ -49,6 +41,7 @@ std::string indent() {
     return retval;
 }
 
+#ifdef HAVE_XML
 void displayCurrent(xmlNodePtr curNode) {
 
     xmlNodePtr cur = curNode;
@@ -70,6 +63,7 @@ void displayCurrent(xmlNodePtr curNode) {
         cur = cur->next;
     }
 }
+#endif
 
 int
 main(int argc, char* argv[]) {

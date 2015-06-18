@@ -23,6 +23,7 @@ endif()
 set_target_properties(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
 
 # Xml parsing test program
+IF(LIBXML2_FOUND)
 add_executable(CertiCheckXML checkXML.cc)
 target_link_libraries(CertiCheckXML xml2 RTI)
 
@@ -31,7 +32,14 @@ set_property(TEST CheckXML2000 PROPERTY PASS_REGULAR_EXPRESSION "2000")
 add_test(NAME CheckXML2010 COMMAND CertiCheckXML ${CMAKE_CURRENT_SOURCE_DIR}/T2010.xml)
 set_property(TEST CheckXML2010 PROPERTY PASS_REGULAR_EXPRESSION "2010")
 
-install(TARGETS CertiProcessus_A CertiProcessus_B CertiCheckXML
+install(TARGETS CertiCheckXML
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+
+ENDIF()
+
+install(TARGETS CertiProcessus_A CertiProcessus_B
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)

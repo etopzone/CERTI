@@ -20,7 +20,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser2000.hh,v 1.0 2015/02/10 10:45:20 JLB Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_2000_HH
@@ -73,5 +72,3 @@ public:
 } // namespace certi
 
 #endif // _CERTI_XML_PARSER_HH
-
-// $Id: XmlParser2000.hh,v 3.12 2007/08/31 13:43:20 erk Exp $
