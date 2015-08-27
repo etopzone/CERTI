@@ -2152,46 +2152,46 @@ throw (FederateNotExecutionMember,
 // isOwner (isAttributeOwnedByFederate)
 bool
 Federation::isOwner(FederateHandle federate,
-		ObjectHandle id,
-		AttributeHandle attribute)
+        ObjectHandle id,
+        AttributeHandle attribute)
 throw (FederateNotExecutionMember,
-		ObjectNotKnown,
-		AttributeNotDefined,
-		SaveInProgress,
-		RestoreInProgress,
-		RTIinternalError)
-		{
-	// It may throw FederateNotExecutionMember.
-	this->check(federate);
+        ObjectNotKnown,
+        AttributeNotDefined,
+        SaveInProgress,
+        RestoreInProgress,
+        RTIinternalError)
+        {
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
 
-	D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
+    D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
 
-	// It may throw *NotDefined
-	return root->objects->isAttributeOwnedByFederate(id, attribute, federate);
-		}
+    // It may throw *NotDefined
+    return root->objects->isAttributeOwnedByFederate(federate, id, attribute);
+        }
 
 // ----------------------------------------------------------------------------
 // queryAttributeOwnership
 
 void
 Federation::queryAttributeOwnership(FederateHandle federate,
-		ObjectHandle id,
-		AttributeHandle attribute)
+        ObjectHandle id,
+        AttributeHandle attribute)
 throw (FederateNotExecutionMember,
-		ObjectNotKnown,
-		AttributeNotDefined,
-		SaveInProgress,
-		RestoreInProgress,
-		RTIinternalError)
-		{
-	// It may throw FederateNotExecutionMember.
-	this->check(federate);
+        ObjectNotKnown,
+        AttributeNotDefined,
+        SaveInProgress,
+        RestoreInProgress,
+        RTIinternalError)
+        {
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
 
-	D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
+    D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
 
-	// It may throw *NotDefined
-	root->objects->queryAttributeOwnership(id, attribute, federate);
-		}
+    // It may throw *NotDefined
+    root->objects->queryAttributeOwnership(federate, id, attribute);
+}
 
 // ----------------------------------------------------------------------------
 // negotiateDivestiture (negotiatedAttributeOwnershipDivestiture)
