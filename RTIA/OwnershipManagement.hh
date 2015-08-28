@@ -29,6 +29,7 @@
 #include "Communications.hh"
 #include "Files.hh"
 #include "RootObject.hh"
+#include <string>
 
 namespace certi {
 namespace rtia {
@@ -48,7 +49,7 @@ public:
     ~OwnershipManagement();
 
     // Ownership Management services
-    const char *
+    std::string
     attributeOwnedByFederate(ObjectHandle theObject,
                              AttributeHandle theAttribute,
                              TypeException &e);

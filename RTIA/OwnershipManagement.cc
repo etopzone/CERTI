@@ -52,7 +52,7 @@ OwnershipManagement::~OwnershipManagement()
 
 // ----------------------------------------------------------------------------
 //! isAttributeOwnedByFederate.
-const char *
+std::string
 OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
                                               AttributeHandle theAttribute,
                                               TypeException &e)
@@ -79,10 +79,12 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
 
     e = rep->getException() ;
 
-    if (e == e_NO_EXCEPTION)
-        return(rep->getLabel().c_str());
-    else
-        return("\0");
+    if (e == e_NO_EXCEPTION) {        
+        return rep->getLabel();
+    }
+    else {
+        return ""; 
+    }
 }
 
 // ----------------------------------------------------------------------------

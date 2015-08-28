@@ -1608,9 +1608,13 @@ throw (RTI::ObjectNotKnown,
 	req.setAttribute(theAttribute);
 
 	privateRefs->executeService(&req, &rep);
-
-	return (rep.getTag() == "RTI_TRUE") ? RTI_TRUE : RTI_FALSE;
-		}
+	
+        if(rep.getTag() == "RTI_TRUE")
+                return RTI_TRUE;
+        else
+                return RTI_FALSE;
+        
+	}
 
 // ----------------------------------------------------------------------------
 // Enable Time Regulation
