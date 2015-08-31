@@ -387,12 +387,12 @@ throw (rti1516e::CouldNotCreateLogicalTimeFactory,
 
     G.Out(pdGendoc,"enter RTI1516ambassador::joinFederationExecution");
 
-    if ( &federateType == NULL || federateType.length() <= 0 ) {
+    if (federateType.length() <= 0 ) {
         throw rti1516e::RTIinternalError(L"Incorrect or empty federate type");
     }
     std::string federateTypeAsString(federateType.begin(), federateType.end());
 
-    if ( &federationExecutionName == NULL || federationExecutionName.length() <= 0 )
+    if (federationExecutionName.length() <= 0 )
         throw rti1516e::RTIinternalError(L"Incorrect or empty federation name");
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
 
@@ -447,7 +447,7 @@ throw (rti1516e::FederateNotExecutionMember,
     req.setLabel(labelString);
     // no federate set
     req.setFederateSetSize(0);
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL )
+    if (theUserSuppliedTag.data() == NULL )
     {
         throw rti1516e::RTIinternalError (L"Calling registerFederationSynchronizationPoint with Tag NULL");
     }
@@ -474,7 +474,7 @@ throw (rti1516e::FederateNotExecutionMember,
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL )
+    if (theUserSuppliedTag.data() == NULL )
     {
         throw rti1516e::RTIinternalError (L"Calling registerFederationSynchronizationPoint with Tag NULL");
     }
@@ -1036,7 +1036,7 @@ throw (rti1516e::ObjectInstanceNotKnown,
     M_Update_Attribute_Values req, rep ;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL)
+    if (theUserSuppliedTag.data() == NULL)
     {
         throw rti1516e::RTIinternalError(L"Calling updateAttributeValues with Tag NULL");
     }
@@ -1071,7 +1071,7 @@ throw (rti1516e::ObjectInstanceNotKnown,
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL)
+    if (theUserSuppliedTag.data() == NULL)
     {
         throw rti1516e::RTIinternalError(L"Calling updateAttributeValues with Tag NULL");
     }
@@ -1105,7 +1105,7 @@ throw (rti1516e::InteractionClassNotPublished,
     const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
 
-    if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL )
+    if (theUserSuppliedTag.data() == NULL )
     {
         throw rti1516e::RTIinternalError (L"Calling sendIntercation with Tag NULL") ;
     }
@@ -1139,7 +1139,7 @@ throw (rti1516e::InteractionClassNotPublished,
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL ) {
+    if (theUserSuppliedTag.data() == NULL ) {
         throw rti1516e::RTIinternalError(L"Calling sendInteraction with Tag NULL") ;
     }
 
@@ -1170,7 +1170,7 @@ throw (rti1516e::DeletePrivilegeNotHeld,
     M_Delete_Object_Instance req, rep ;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL)
+    if (theUserSuppliedTag.data() == NULL)
     {
         throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL") ;
     }
@@ -1200,7 +1200,7 @@ throw (rti1516e::DeletePrivilegeNotHeld,
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if ( &theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL)
+    if (theUserSuppliedTag.data() == NULL)
     {
         throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL") ;
     }
@@ -1411,7 +1411,7 @@ throw (rti1516e::ObjectInstanceNotKnown,
         {
     M_Negotiated_Attribute_Ownership_Divestiture req, rep ;
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL) {
+    if (theUserSuppliedTag.data() == NULL) {
         throw rti1516e::RTIinternalError (L"Calling negotiatedAttributeOwnershipDivestiture with Tag NULL") ;
     }
     req.setTag(certi::varLengthDataAsString(theUserSuppliedTag));
@@ -1465,7 +1465,7 @@ throw (rti1516e::ObjectInstanceNotKnown,
     M_Attribute_Ownership_Acquisition req, rep ;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if (&theUserSuppliedTag == NULL || theUserSuppliedTag.data() == NULL )
+    if (theUserSuppliedTag.data() == NULL )
     {
         throw rti1516e::RTIinternalError (L"Calling attributeOwnershipAcquisition with Tag NULL") ;
     }
