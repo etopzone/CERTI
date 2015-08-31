@@ -29,6 +29,7 @@
 #include <memory>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 
 #include "RTI1516fedTime.h"
 #include "certi.hh"
@@ -462,7 +463,7 @@ bool
 RTI1516fedTimeInterval::isEpsilon() const
 {
 
-	return abs(_fedInterval) <= abs(_epsilon);
+	return std::abs(_fedInterval) <= std::abs(_epsilon);
 }
 
 
