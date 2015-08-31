@@ -1,0 +1,12 @@
+# Do not analyze libc or libstdc++ functions
+fun:*open*
+# Do not analyze gengetopt generated functions/files
+## The functions
+fun:gengetopt_strdup
+fun:cmdline_parser
+fun:cmdline_parser2
+fun:update_arg
+## the files
+src:${CMAKE_SOURCE_DIR}/RTIA/RTIA_cmdline.c
+src:${CMAKE_SOURCE_DIR}/RTIA/RTIA_main.cc
+src:${CMAKE_SOURCE_DIR}/test/testFederate/testFederate_cmdline.c

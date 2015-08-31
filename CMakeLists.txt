@@ -130,6 +130,56 @@ SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "debug library postfix, usually 'd' on 
 # If you want it swicth this option to ON. 
 option(ENABLE_MINGW_AUTOIMPORT "will add -enable-auto-import to MinGW compiler option" OFF)
 
+#
+# The Clang Sanitizer are tools developped by Google in order to track
+# various erros at runtime:
+#  see presentation at CPP CON 2014 here: 
+#   https://channel9.msdn.com/Events/CPP/C-PP-Con-2014/Sanitize-your-CPP-code
+#   https://github.com/CppCon/CppCon2014
+#  - Address : ASan, i.e. address sanitizer
+#  - Memory  : MSan, i.e. memory sanitizer
+#  - Thread  : TSan, i.e. thread sanitizer
+# See Clang doc as well: http://clang.llvm.org/docs/SanitizerSpecialCaseList.html
+# Do not forget to set 
+#  MSAN_SYMBOLIZER_PATH / ASAN_SYMBOLIZER_PATH
+# to point to llvm-symbolizer
+# See example usage in
+#  http://clang.llvm.org/docs/AddressSanitizer.html
+#  http://clang.llvm.org/docs/MemorySanitizer.html
+#
+# You may have to maintain a blacklist of non-to-be-analyze files and/or functions
+# in scripts/sanitize-blacklist.txt
+#
+option(ENABLE_CLANG_SANITIZER "Will compile with clang sanitizers" OFF)
+if (ENABLE_CLANG_SANITIZER)
+    option(ENABLE_CLANG_SANITIZER_ADDRESS "Enable Address sanitizer" ON)
+    option(ENABLE_CLANG_SANITIZER_MEMORY "Enable Memory sanitizer" OFF)
+    # Pre-process sanitizer blacklist
+    configure_file(${CMAKE_SOURCE_DIR}/scripts/sanitize-blacklist.txt.in ${CMAKE_BINARY_DIR}/sanitize-blacklist.txt)
+endif()
+
+if("${CMAKE_C_COMPILER}" MATCHES "clang.*")
+    if (ENABLE_CLANG_SANITIZER_ADDRESS)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fPIE -fno-omit-frame-pointer -fsanitize-blacklist=${CMAKE_BINARY_DIR}/sanitize-blacklist.txt")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie -fsanitize=address")
+    endif()
+    if (ENABLE_CLANG_SANITIZER_MEMORY)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=memory -fsanitize-memory-track-origins -fPIE -fno-omit-frame-pointer -fsanitize-blacklist=${CMAKE_BINARY_DIR}/sanitize-blacklist.txt")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie -fsanitize=memory")
+    endif()
+endif()
+
+if("${CMAKE_CXX_COMPILER}" MATCHES "clang\\+\\+.*")
+    if (ENABLE_CLANG_SANITIZER_ADDRESS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fPIE -fno-omit-frame-pointer -fsanitize-blacklist=${CMAKE_BINARY_DIR}/sanitize-blacklist.txt")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie -fsanitize=address")
+    endif()
+    if (ENABLE_CLANG_SANITIZER_MEMORY)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -fsanitize-memory-track-origins -fPIE -fno-omit-frame-pointer -fsanitize-blacklist=${CMAKE_BINARY_DIR}/sanitize-blacklist.txt")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie -fsanitize=memory")
+    endif()
+endif()
+
 # Force CMAKE_COMPILER_IS_GNUCC even if gcc used with ccache
 IF("${CMAKE_C_COMPILER}" MATCHES "ccache")
   IF("${CMAKE_C_COMPILER_ARG1}" MATCHES "gcc")
