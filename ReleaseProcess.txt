@@ -47,7 +47,7 @@ CERTI releases should be done with the following steps:
 
 5) Do a fresh checkout somewhere
    Build certi from your pristine source tree
-
+   git clone git://git.savannah.nongnu.org/certi.git
      Better is at least 2 built:
          Linux ix86 wth gcc  (32bits)
          Windows win32 with Visual Studio
