@@ -34,6 +34,7 @@
 #include "helper.hh"
 #include <sstream>
 #include <memory>
+#include <algorithm>
 #include <iostream>
 #include <cassert>
 

@@ -19,6 +19,7 @@
 
 #include <HLAbuffer.hh>
 #include <HLAbasicType.hh>
+#include <algorithm>
 
 namespace libhla {
 

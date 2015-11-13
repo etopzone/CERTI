@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 #ifdef _WIN32
 	#ifdef max

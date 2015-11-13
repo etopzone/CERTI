@@ -17,6 +17,7 @@
 #include "HLAbuffer.hh"
 
 #include <iomanip>
+#include <algorithm>
 
 // #define HLATYPES_IEEE1516_DISPLAYPRINTABLE
 
