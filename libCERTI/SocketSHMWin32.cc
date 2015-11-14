@@ -96,8 +96,7 @@ else{
 // ************************************************
 // Destructor
 // ************************************************
-SocketSHMWin32::~SocketSHMWin32()
-                                throw(certi::SocketSHMNotDeleted) {
+SocketSHMWin32::~SocketSHMWin32() {
 
 if(_Side == SHM_SC){
     try {
@@ -105,16 +104,14 @@ if(_Side == SHM_SC){
     }
     catch(Semaphore::HandleNotClosed& e)
     {
-        std::cout << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
-        throw (certi::SocketSHMNotDeleted("~SocketSHMWin32() failed.")) ;
+        std::cerr << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     }
     try {
        _Sem_empty_SC->Delete() ;
     }
     catch(Semaphore::HandleNotClosed& e)
     {
-        std::cout << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
-        throw (certi::SocketSHMNotDeleted("~SocketSHMWin32() failed.")) ;
+        std::cerr << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     }
    }
 else{
@@ -123,16 +120,14 @@ else{
     }
     catch(Semaphore::HandleNotClosed& e)
     {
-        std::cout << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
-        throw (certi::SocketSHMNotDeleted("~SocketSHMWin32() failed.")) ;
+        std::cerr << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     }
     try {
        _Sem_empty_CS->Delete() ;
     }
     catch(Semaphore::HandleNotClosed& e)
     {
-        std::cout << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
-        throw (certi::SocketSHMNotDeleted("~SocketSHMWin32() failed.")) ;
+        std::cerr << "~SocketSHMWin32() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
     }
    }
 delete _Sem_full_SC  ;

@@ -17,8 +17,7 @@ public :
                    const int Socket_size)
                    throw (certi::SocketSHMNotCreated);
     // Destructor
-    virtual ~SocketSHMWin32 ()
-                   throw(certi::SocketSHMNotDeleted);
+    virtual ~SocketSHMWin32 ();
 
     void Open()
              throw(certi::SocketSHMNotOpen);
