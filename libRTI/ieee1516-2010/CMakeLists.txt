@@ -129,7 +129,11 @@ if(MINGW)
             DESTINATION lib)
 endif(MINGW)
 
-set_target_properties(FedTime1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
+set_target_properties(FedTime1516e PROPERTIES VERSION 1.0.0 SOVERSION 1)
+
+if(COMPILE_WITH_CXX11)
+    set_property(TARGET RTI1516e FedTime1516e PROPERTY CXX_STANDARD 11)
+endif()
 
 set(TestFedTime1516e_SRCS
   TestFedTime.cc
@@ -149,8 +153,6 @@ install(TARGETS RTI1516e FedTime1516e ${VarData1516eTarget}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-
-
 
 # mimic install directory structure in the binary tree in order to ease the linking 
 # of builtin test (i.e. testFederate)

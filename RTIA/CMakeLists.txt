@@ -1,6 +1,6 @@
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libCERTI)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libRTI)
+include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
+include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 
 find_program(GENGETOPT_PROGRAM NAMES gengetopt)
 if (GENGETOPT_PROGRAM)
@@ -17,17 +17,17 @@ set(rtia_SRCS_generated
 
 IF (CMAKE_COMPILER_IS_GNUCC) 
    message(STATUS "INHIBIT Compiler (GCC) warning for gengetopt generated files: ${rtia_SRCS_generated}.")
-   SET_SOURCE_FILES_PROPERTIES(${rtia_SRCS_generated}
+   set_source_files_properties(${rtia_SRCS_generated}
                                PROPERTIES COMPILE_FLAGS "-w")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 if (MSVC)
    message(STATUS "INHIBIT Compiler (MSVC) warning for gengetopt generated files: ${rtia_SRCS_generated}.")
-   SET_SOURCE_FILES_PROPERTIES(${rtia_SRCS_generated}
+   set_source_files_properties(${rtia_SRCS_generated}
                                PROPERTIES COMPILE_FLAGS "-D_CRT_SECURE_NO_WARNINGS")
 endif(MSVC)
 
-SET(rtia_SRCS
+set(rtia_SRCS
   Communications.cc Communications.hh
   DataDistribution.cc DataDistribution.hh
   DeclarationManagement.cc DeclarationManagement.hh
@@ -44,14 +44,18 @@ SET(rtia_SRCS
   TimeManagement.cc TimeManagement.hh  
   )
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libHLA)
+include_directories(${CMAKE_SOURCE_DIR}/libHLA)
 
-ADD_EXECUTABLE(rtia ${rtia_SRCS})
-TARGET_LINK_LIBRARIES(rtia CERTI)
-TARGET_LINK_LIBRARIES(rtia HLA)
+add_executable(rtia ${rtia_SRCS})
+target_link_libraries(rtia CERTI)
+target_link_libraries(rtia HLA)
 
-INSTALL(TARGETS rtia
-    EXPORT CERTIDepends
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+if(COMPILE_WITH_CXX11)
+    set_property(TARGET rtia PROPERTY CXX_STANDARD 11)
+endif()
+
+install(TARGETS rtia
+        EXPORT CERTIDepends
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

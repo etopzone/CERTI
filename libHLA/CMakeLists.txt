@@ -1,9 +1,9 @@
-SET(LIBHLA_EXPORTED_INCLUDES libhla.hh)
+set(LIBHLA_EXPORTED_INCLUDES libhla.hh)
 
-SET(LIBHLA_TYPES1516_SRCS
+set(LIBHLA_TYPES1516_SRCS
     HLAbuffer.hh HLAbuffer.cc
 )
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES 
+list(APPEND LIBHLA_EXPORTED_INCLUDES 
     HLAtypesIEEE1516.hh
     HLAbuffer.hh
     HLAbasicType.hh
@@ -12,102 +12,101 @@ LIST(APPEND LIBHLA_EXPORTED_INCLUDES
     HLAvariableArray.hh
     HLAfixedRecord.hh
     HLAvariantRecord.hh)
-SOURCE_GROUP("Source Files\\Types1516" FILES ${LIBHLA_TYPES1516_SRCS})
+source_group("Source Files\\Types1516" FILES ${LIBHLA_TYPES1516_SRCS})
 
 enable_language(C)
-SET(LIBHLA_HASH_SRCS sha1.c MurmurHash2.cpp MurmurHash3.cpp PMurHash.c)
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES sha1.h MurmurHash2.h MurmurHash3.h PMurHash.h)
+set(LIBHLA_HASH_SRCS sha1.c MurmurHash2.cpp MurmurHash3.cpp PMurHash.c)
+list(APPEND LIBHLA_EXPORTED_INCLUDES sha1.h MurmurHash2.h MurmurHash3.h PMurHash.h)
 set_source_files_properties(sha1.c PMurHash.c PROPERTIES LANGUAGE "C")
-SOURCE_GROUP("Source Files\\Hash" FILES ${LIBHLA_HASH_SRCS})
+source_group("Source Files\\Hash" FILES ${LIBHLA_HASH_SRCS})
 
 # Currently TLSF does not compile as-is on WIN32
-IF (NOT WIN32)
-  SET(LIBHLA_ALLOC_SRCS tlsf.c tlsf_target.h)
-  LIST(APPEND LIBHLA_EXPORTED_INCLUDES tlsf.h)
+if (NOT WIN32)
+  set(LIBHLA_ALLOC_SRCS tlsf.c tlsf_target.h)
+  list(APPEND LIBHLA_EXPORTED_INCLUDES tlsf.h)
   set_source_files_properties(tlsf.c PROPERTIES LANGUAGE "C")
   set_source_files_properties(tlsf.c PROPERTIES CFLAGS "-Wextra -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wno-long-long -Wstrict-aliasing=2")
-  SOURCE_GROUP("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS} tlsf.h)
-ENDIF (NOT WIN32)
+  source_group("Source Files\\Alloc" FILES ${LIBHLA_ALLOC_SRCS} tlsf.h)
+endif (NOT WIN32)
 
-SET(LIBHLA_MB_SRCS MessageBuffer.cc MsgBuffer.c)
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES MessageBuffer.hh MsgBuffer.h)
+set(LIBHLA_MB_SRCS MessageBuffer.cc MsgBuffer.c)
+list(APPEND LIBHLA_EXPORTED_INCLUDES MessageBuffer.hh MsgBuffer.h)
 set_source_files_properties(MsgBuffer.c PROPERTIES LANGUAGE "C")
 if (MSVC)
 	set_source_files_properties(MsgBuffer.c PROPERTIES CFLAGS "-D_CRT_SECURE_NO_WARNINGS")
 endif ()
 
-SET(LIBHLA_MB_TEST_SRCS MessageBufferTests.cc)
-ADD_EXECUTABLE(MessageBufferTests ${LIBHLA_MB_TEST_SRCS})
-TARGET_LINK_LIBRARIES(MessageBufferTests HLA)
+set(LIBHLA_MB_TEST_SRCS MessageBufferTests.cc)
+add_executable(MessageBufferTests ${LIBHLA_MB_TEST_SRCS})
+target_link_libraries(MessageBufferTests HLA)
 
 add_executable(MsgBufferTests MsgBufferTests.c)
 set_source_files_properties(MsgBufferTests.c PROPERTIES LANGUAGE "C")
 target_link_libraries(MsgBufferTests HLA)
 
-INSTALL(TARGETS MessageBufferTests MsgBufferTests
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+install(TARGETS MessageBufferTests MsgBufferTests
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 
-ADD_TEST(NAME LibHLA_MB_Tests COMMAND $<TARGET_FILE:MessageBufferTests>)
-ADD_TEST(NAME LibHLA_MB_Tests_InC COMMAND $<TARGET_FILE:MsgBufferTests>)
+add_test(NAME LibHLA_MB_Tests COMMAND $<TARGET_FILE:MessageBufferTests>)
+add_test(NAME LibHLA_MB_Tests_InC COMMAND $<TARGET_FILE:MsgBufferTests>)
 
-SET(LIBHLA_CLOCK_SRCS
+set(LIBHLA_CLOCK_SRCS
     Clock.cc
     ClockFactory.cc)
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES Clock.hh)
+list(APPEND LIBHLA_EXPORTED_INCLUDES Clock.hh)
 
-IF (HAVE_POSIX_CLOCK)
-    LIST(APPEND LIBHLA_CLOCK_SRCS PosixClock.cc)
-    LIST(APPEND LIBHLA_EXPORTED_INCLUDES PosixClock.hh)
-ENDIF(HAVE_POSIX_CLOCK)
+if (HAVE_POSIX_CLOCK)
+    list(APPEND LIBHLA_CLOCK_SRCS PosixClock.cc)
+    list(APPEND LIBHLA_EXPORTED_INCLUDES PosixClock.hh)
+endif(HAVE_POSIX_CLOCK)
 
-IF (HAVE_GETTIMEOFDAY)
-    LIST(APPEND LIBHLA_CLOCK_SRCS GettimeofdayClock.cc)
-    LIST(APPEND LIBHLA_EXPORTED_INCLUDES GettimeofdayClock.hh)
-ENDIF(HAVE_GETTIMEOFDAY)
+if (HAVE_GETTIMEOFDAY)
+    list(APPEND LIBHLA_CLOCK_SRCS GettimeofdayClock.cc)
+    list(APPEND LIBHLA_EXPORTED_INCLUDES GettimeofdayClock.hh)
+endif(HAVE_GETTIMEOFDAY)
 
-IF (HAVE_TSC_CLOCK)
-    LIST(APPEND LIBHLA_CLOCK_SRCS TSCClock.cc)
-    LIST(APPEND LIBHLA_EXPORTED_INCLUDES TSCClock.hh)
-ENDIF(HAVE_TSC_CLOCK)
+if (HAVE_TSC_CLOCK)
+    list(APPEND LIBHLA_CLOCK_SRCS TSCClock.cc)
+    list(APPEND LIBHLA_EXPORTED_INCLUDES TSCClock.hh)
+endif(HAVE_TSC_CLOCK)
 
-IF (HAVE_WIN_CLOCK)
-   LIST(APPEND LIBHLA_CLOCK_SRCS WinClock.cc WinPerfClock.cc)
-   LIST(APPEND LIBHLA_EXPORTED_INCLUDES WinClock.hh WinPerfClock.hh)
-ENDIF(HAVE_WIN_CLOCK)
+if (HAVE_WIN_CLOCK)
+   list(APPEND LIBHLA_CLOCK_SRCS WinClock.cc WinPerfClock.cc)
+   list(APPEND LIBHLA_EXPORTED_INCLUDES WinClock.hh WinPerfClock.hh)
+endif(HAVE_WIN_CLOCK)
 
-SOURCE_GROUP("Source Files\\Clock" FILES ${LIBHLA_CLOCK_SRCS})
+source_group("Source Files\\Clock" FILES ${LIBHLA_CLOCK_SRCS})
 
-SET(LIBHLA_IPC_SRCS)
-LIST(APPEND LIBHLA_EXPORTED_INCLUDES SHM.hh Semaphore.hh)
+set(LIBHLA_IPC_SRCS)
+list(APPEND LIBHLA_EXPORTED_INCLUDES SHM.hh Semaphore.hh)
 
-IF (WIN32)
-   LIST(APPEND LIBHLA_IPC_SRCS SHMWin32.cc)
-   LIST(APPEND LIBHLA_IPC_SRCS SemaphoreWin32.cc)
-   LIST(APPEND LIBHLA_EXPORTED_INCLUDES SHMWin32.hh SemaphoreWin32.hh)
-ELSE (WIN32)
-   LIST(APPEND LIBHLA_IPC_SRCS
+if (WIN32)
+   list(APPEND LIBHLA_IPC_SRCS SHMWin32.cc SemaphoreWin32.cc)
+   list(APPEND LIBHLA_EXPORTED_INCLUDES SHMWin32.hh SemaphoreWin32.hh)
+else (WIN32)
+   list(APPEND LIBHLA_IPC_SRCS
         SHMPosix.cc SHMSysV.cc
         SemaphorePosix.cc SemaphoreSysV.cc)
-   LIST(APPEND LIBHLA_EXPORTED_INCLUDES
-       SHMPosix.hh SHMSysV.hh
-       SemaphorePosix.hh SemaphoreSysV.hh)
-ENDIF (WIN32)
+   list(APPEND LIBHLA_EXPORTED_INCLUDES
+        SHMPosix.hh SHMSysV.hh
+        SemaphorePosix.hh SemaphoreSysV.hh)
+endif (WIN32)
 
-SOURCE_GROUP("Source Files\\IPC" FILES ${LIBHLA_IPC_SRCS})
+source_group("Source Files\\IPC" FILES ${LIBHLA_IPC_SRCS})
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # ISO C++ does not support 'long long', but HLAtypesIEEE1516.hh needs it
-IF(CMAKE_COMPILER_IS_GNUCC)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-long-long")
+endif(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
-ADD_LIBRARY(HLA
+add_library(HLA
     ${LIBHLA_TYPES1516_SRCS}
     ${LIBHLA_HASH_SRCS}
     ${LIBHLA_ALLOC_SRCS}
@@ -117,23 +116,31 @@ ADD_LIBRARY(HLA
     ${LIBHLA_EXPORTED_INCLUDES}
 )
 
-IF (HAVE_POSIX_CLOCK)
-    IF(RT_LIBRARY)
-       TARGET_LINK_LIBRARIES(HLA ${RT_LIBRARY})
-    ENDIF(RT_LIBRARY)
-ENDIF (HAVE_POSIX_CLOCK)
+if (HAVE_POSIX_CLOCK)
+    if(RT_LIBRARY)
+       target_link_libraries(HLA ${RT_LIBRARY})
+    endif(RT_LIBRARY)
+endif (HAVE_POSIX_CLOCK)
 
-SET_TARGET_PROPERTIES(HLA PROPERTIES PROJECT_LABEL LibHLA)
+set_target_properties(HLA PROPERTIES PROJECT_LABEL LibHLA)
 
-SET_TARGET_PROPERTIES(HLA PROPERTIES VERSION ${PACKAGE_VERSION} SOVERSION ${PACKAGE_VERSION_MAJOR})
+set_target_properties(HLA PROPERTIES VERSION ${PACKAGE_VERSION} SOVERSION ${PACKAGE_VERSION_MAJOR})
 
-ADD_EXECUTABLE(TestHLAtypes TestHLAtypes.cc)
-TARGET_LINK_LIBRARIES(TestHLAtypes HLA)
-ADD_TEST(NAME LibHLAtypes COMMAND $<TARGET_FILE:TestHLAtypes>)
+add_executable(TestHLAtypes TestHLAtypes.cc)
+target_link_libraries(TestHLAtypes HLA)
+add_test(NAME LibHLAtypes COMMAND $<TARGET_FILE:TestHLAtypes>)
 
-ADD_EXECUTABLE(TestClocks TestClocks.cc)
-TARGET_LINK_LIBRARIES(TestClocks HLA)
-ADD_TEST(NAME LibHLAClocks COMMAND $<TARGET_FILE:TestClocks>)
+add_executable(TestClocks TestClocks.cc)
+target_link_libraries(TestClocks HLA)
+add_test(NAME LibHLAClocks COMMAND $<TARGET_FILE:TestClocks>)
+
+if(COMPILE_WITH_CXX11)
+    set_property(TARGET
+                 MessageBufferTests MsgBufferTests
+                 HLA
+                 TestClocks TestHLAtypes PROPERTY CXX_STANDARD 11)
+endif()
+
 
 install(FILES
     ${LIBHLA_EXPORTED_INCLUDES}

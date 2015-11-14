@@ -4,11 +4,9 @@ include_directories(${CMAKE_BINARY_DIR}/include/hla-1_3)
 
 set(RTI_LIB_SRCS
     RTIambassador.cc
-    RTIambPrivateRefs.cc
-    RTIambPrivateRefs.hh
+    RTIambPrivateRefs.cc RTIambPrivateRefs.hh
     RTItypes.cc
-    RTItypesImp.cc
-    RTItypesImp.hh
+    RTItypesImp.cc RTItypesImp.hh
    )
 
 set(RTI_LIB_INCLUDEENDIF
@@ -51,12 +49,12 @@ endif (MINGW)
 # CERTI is provided one. The lib FedTime depends on libRTI
 # since it inherits from the RTI::FedTime abstract class.
 ##################################################################
-IF(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCC)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
-IF(CMAKE_COMPILER_IS_GNUCXX)
+endif(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCXX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(${CMAKE_SOURCE_DIR}/libHLA)
 set(FEDTIME_SRCS
@@ -72,27 +70,31 @@ target_link_libraries(FedTime)
 # Incorrect line
 # (at least the dependency exists but we cannot specify that
 #  because we would generate a circular deps RTI-->FedTime-->RTI)
-#TARGET_LINK_LIBRARIES(FedTime RTI)
+#target_link_libraries(FedTime RTI)
 
-IF (WIN32 AND CERTI_RTING_DLL_USE_LIB_PREFIX)
+if (WIN32 AND CERTI_RTING_DLL_USE_LIB_PREFIX)
    set_target_properties(FedTime PROPERTIES OUTPUT_NAME "libFedTime")
-ENDIF()
+endif()
 
 set_target_properties(FedTime PROPERTIES PROJECT_LABEL LibFedTime)
-IF (MINGW)
+if (MINGW)
     set_target_properties(FedTime PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libFedTime.def")
-    INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libFedTime.def
+    install(FILES ${LIBRARY_OUTPUT_PATH}/libFedTime.def
             DESTINATION lib)
-ENDIF (MINGW)
+endif (MINGW)
 
 set_target_properties(FedTime PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 set(TestFedTime_SRCS
-  TestFedTime.cc
+    TestFedTime.cc
 )
 add_executable(TestFedTime ${TestFedTime_SRCS})
 target_link_libraries(TestFedTime FedTime RTI)
 add_test(NAME TestLibFedTime COMMAND $<TARGET_FILE:TestFedTime>)
+
+if(COMPILE_WITH_CXX11)
+    set_property(TARGET RTI FedTime TestFedTime PROPERTY CXX_STANDARD 11)
+endif()
 
 # Install rules for both libRTI-NG and libFedTime
 install(TARGETS RTI FedTime

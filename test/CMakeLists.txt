@@ -9,6 +9,9 @@ if (NOT WIN32)
       set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/certiCheckHostAndIP.c PROPERTIES COMPILE_DEFINITIONS "LINUX")
    endif()
    add_executable(CertiCheckHostAndIP certiCheckHostAndIP.c)
+   if(COMPILE_WITH_C11)
+    set_property(TARGET CertiCheckHostAndIP PROPERTY C_STANDARD 11)
+   endif()
    install(TARGETS CertiCheckHostAndIP
            RUNTIME DESTINATION bin
            LIBRARY DESTINATION lib

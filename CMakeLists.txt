@@ -3,17 +3,17 @@ cmake_minimum_required(VERSION 2.8.11)
 project(CERTI CXX)
 
 include(${CMAKE_ROOT}/Modules/Dart.cmake)
-MARK_AS_ADVANCED(TCL_TCLSH DART_ROOT)
+mark_as_advanced(TCL_TCLSH DART_ROOT)
 # New Policy for full path library search
 # see cmake --help-policy CMP0003
-IF(COMMAND CMAKE_POLICY)
-  CMAKE_POLICY(SET CMP0003 NEW)
-ENDIF(COMMAND CMAKE_POLICY)
-ENABLE_LANGUAGE(C)
+if(COMMAND CMAKE_POLICY)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND CMAKE_POLICY)
+enable_language(C)
 
 # Use CERTI specific CMake modules first
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
-#SET(CMAKE_VERBOSE_MAKEFILE ON)
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Load Checker macros
 include(CheckFunctionExists)
@@ -42,81 +42,87 @@ endif("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
 # Test Endianess
 include(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
-IF(BIG_ENDIAN)
+if(BIG_ENDIAN)
    message(STATUS "Target is Big Endian")
-   ADD_DEFINITIONS(-DHOST_IS_BIG_ENDIAN)
-ELSE(BIG_ENDIAN)
+   add_definitions(-DHOST_IS_BIG_ENDIAN)
+else(BIG_ENDIAN)
    message(STATUS "Target is Little Endian")
-ENDIF(BIG_ENDIAN)
+endif(BIG_ENDIAN)
 
 # default behaviour is to build library as shared on all platform
-OPTION(BUILD_SHARED
-             "Build libraries as shared library" ON)
+option(BUILD_SHARED
+       "Build libraries as shared library" ON)
 
-OPTION(USE_FULL_RPATH
-             "Use the full RPATH" OFF)
-
-IF (USE_FULL_RPATH)
+option(USE_FULL_RPATH
+       "Use the full RPATH" OFF)
+if (USE_FULL_RPATH)
     # see http://www.cmake.org/Wiki/CMake_RPATH_handling#Always_full_RPATH
     # use, i.e. don't skip the full RPATH for the build tree
-    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    set(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
     # when building, don't use the install RPATH already
     # (but later on when installing)
-    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
     # the RPATH to be used when installing
-    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
     # add the automatically determined parts of the RPATH
     # which point to directories outside the build tree to the install RPATH
-    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-ENDIF(USE_FULL_RPATH)
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif(USE_FULL_RPATH)
 
-OPTION(BUILD_LEGACY_LIBRTI
-             "Build CERTI legacy libRTI" OFF)
+option(BUILD_LEGACY_LIBRTI
+       "Build CERTI legacy libRTI" OFF)
 
-IF (NOT BUILD_LEGACY_LIBRTI AND WIN32)
-   OPTION(CERTI_RTING_DLL_USE_LIB_PREFIX
+if (NOT BUILD_LEGACY_LIBRTI AND WIN32)
+   option(CERTI_RTING_DLL_USE_LIB_PREFIX
           "Use lib prefix for DLL (Windows Only)" 
           OFF)
-ENDIF()
+endif()
 
-OPTION(BUILD_DOC
-             "Build documentation (using doxygen)" OFF)
+option(COMPILE_WITH_CXX11
+       "Compile code with C++11 feature enabled" OFF)
 
-OPTION(FORCE_NO_X11
-              "Force not to use X11 (i.e. no Billard GUI)" OFF)
+option(COMPILE_WITH_C11
+       "Compile code with C11 feature enabled" OFF)
+
+option(BUILD_DOC
+       "Build documentation (using doxygen)" OFF)
+
+option(FORCE_NO_X11
+       "Force not to use X11 (i.e. no Billard GUI)" OFF)
 
 # On demand of Eric Noulard, the unsafe tsc clocksource
-OPTION(ENABLE_TSC_CLOCK
-             "Enable the usage of the timestamp counter as clock source (use with care)" OFF)
+option(ENABLE_TSC_CLOCK
+       "Enable the usage of the timestamp counter as clock source (use with care)" OFF)
 
 # The communication channel to RTIA
-OPTION(RTIA_USE_TCP
+option(RTIA_USE_TCP
            "Force TCP socket usage between RTIA and FederateAmbassador (default is Unix Socket)" OFF)
-IF(RTIA_USE_TCP)
-    ADD_DEFINITIONS(-DRTIA_USE_TCP)
-ENDIF(RTIA_USE_TCP)
+if(RTIA_USE_TCP)
+    add_definitions(-DRTIA_USE_TCP)
+endif(RTIA_USE_TCP)
 
-OPTION(RTIA_CONSOLE_SHOW
-       "Windows specific: if set to ON the RTIA console will be shown" OFF)
-IF(RTIA_CONSOLE_SHOW)
-    ADD_DEFINITIONS(-DRTIA_CONSOLE_SHOW)
-ENDIF(RTIA_CONSOLE_SHOW)
-
+if (win32)
+   option(RTIA_CONSOLE_SHOW
+          "Windows specific: if set to ON the RTIA console will be shown" OFF)
+   if(RTIA_CONSOLE_SHOW)
+     add_defintions(-DRTIA_CONSOLE_SHOW)
+   endif(RTIA_CONSOLE_SHOW)
+endif()
 # The new NULL Prime message protocol
-OPTION(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
+option(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
          "NULL PRIME MESSAGE protocol is an enhanced version of the CMB NULL MESSAGE protocol (experimental)" OFF)
 IF(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
-    ADD_DEFINITIONS(-DCERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
+    add_definitions(-DCERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
 ENDIF(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL)
 
 # The CERTI Realtime extensions
-OPTION(CERTI_REALTIME_EXTENSIONS
+option(CERTI_REALTIME_EXTENSIONS
          "CERTI proposed realtime extension to HLA API" OFF)
 IF(CERTI_REALTIME_EXTENSIONS)
-    ADD_DEFINITIONS(-DCERTI_REALTIME_EXTENSIONS)
+    add_definitions(-DCERTI_REALTIME_EXTENSIONS)
 ENDIF(CERTI_REALTIME_EXTENSIONS)
 
 IF (NOT CMAKE_BUILD_TYPE)
@@ -327,7 +333,7 @@ ENDIF (ENABLE_TSC_CLOCK)
 
 ENDIF (NOT WIN32)
 
-ADD_DEFINITIONS(-DHAVE_CONFIG_H=1)
+add_definitions(-DHAVE_CONFIG_H=1)
 
 ################## Gen library Check #####################
 CHECK_LIBRARY_EXISTS("gen" "basename" "/usr/lib" GEN_LIBRARY_HAS_BASENAME)
@@ -372,7 +378,7 @@ endif()
 ################ LIBXML2 install Check ####################
 FIND_PACKAGE(LibXml2)
 IF (LIBXML2_FOUND)
-    ADD_DEFINITIONS(-DHAVE_XML ${LIBXML2_DEFINITIONS})
+    add_definitions(-DHAVE_XML ${LIBXML2_DEFINITIONS})
     INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
 ELSE (LIBXML2_FOUND)
     SET(LIBXML2_LIBRARIES "")
@@ -475,7 +481,7 @@ include_directories(include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 # Globally used compiler flags
-ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
+add_definitions(-DRTI_USES_STD_FSTREAM)
 
 # FIXME currently on MacOS we have a "undefined symbol issue"
 # The toggle to linker flag is a "quick fix" to avoid that
