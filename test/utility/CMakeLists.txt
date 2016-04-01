@@ -29,7 +29,7 @@ endif()
 # Xml parsing test program
 if(LIBXML2_FOUND)
    add_executable(CertiCheckXML checkXML.cc)
-   target_link_libraries(CertiCheckXML xml2 RTI)
+   target_link_libraries(CertiCheckXML ${LIBXML2_LIBRARIES} RTI)
 
    add_test(NAME CheckXML2000 COMMAND CertiCheckXML ${CMAKE_CURRENT_SOURCE_DIR}/T2000.xml)
    set_property(TEST CheckXML2000 PROPERTY PASS_REGULAR_EXPRESSION "2000")
