@@ -17,6 +17,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
+// This file has been modified per jb_ch on march 2016
+// Coding style is Allman like
+
 #ifndef RING_BUFFER_H
 #define RING_BUFFER_H
 
@@ -29,55 +32,60 @@
 #include "SHM.hh"
 #include "Semaphore.hh"
 
-class CERTI_EXPORT RingBuffer {
-public :
-    // Typedef Side
-    typedef enum{BUFFER_SC,BUFFER_CS} BUFFER_SIDE_t ;
+class CERTI_EXPORT RingBuffer 
+{
+	public :
+		// Typedef Side
+		typedef enum{BUFFER_SC,BUFFER_CS} BUFFER_SIDE_t;
 
-    // Constructor
-    RingBuffer(const std::string& RingBuffer_Name,
-               const BUFFER_SIDE_t& RingBuffer_Side,
-               const int RingBuffer_Size,
-               const std::string& SHM_Sem_Type ) // SHM_Sem_Type = Posix,SysV ou Win32
-               throw(certi::RingBufferNotCreated) ;
-    // Destructor
-    ~RingBuffer () throw(certi::RingBufferNotDeleted) ;
+		// Constructor
+		RingBuffer( const std::string& RingBuffer_Name
+				  , const BUFFER_SIDE_t& RingBuffer_Side
+				  , const int RingBuffer_Size
+				  , const std::string& SHM_Sem_Type 
+				  ) // SHM_Sem_Type = Posix,SysV or  Win32
+				  throw(certi::RingBufferNotCreated);
+	
+		// Destructor
+		~RingBuffer () throw(certi::RingBufferNotDeleted);
+	
+		void Attach() throw(certi::RingBufferNotAttached);
+	
+		void Send(void* Buffer, size_t Size)     
+				 throw ( certi::MessageNotSent
+					   , certi::MessageTooLong
+					   , certi::BufferFull
+					   );
 
-    void Attach() throw(certi::RingBufferNotAttached) ;
+		void Receive(void* Buffer, size_t Size)   
+				    throw ( certi::MessageNotReceived
+						  , certi::MessageTooLong
+						  , certi::BufferEmpty
+						  );
 
-    void Send(void *Buffer, size_t Size)      // To send Data on a memory segment
-              throw (certi::MessageNotSent,
-                     certi::MessageTooLong,
-                     certi::BufferFull) ;
+		void Close() throw (certi::RingBufferNotClosed); 
 
-    void Receive(void *Buffer, size_t Size)   // To receive Data on a memory segment
-              throw (certi::MessageNotReceived,
-                     certi::MessageTooLong,
-                     certi::BufferEmpty) ;
+	protected :
+		std::string _Name;
+		BUFFER_SIDE_t _Side;
+		size_t _Size;
 
-    void Close() throw (certi::RingBufferNotClosed) ; // To Close the two SHMs
+		/***** Server -->>> Customer ******/
+		libhla::ipc::SHM *_Shm_SC;
+		libhla::ipc::SHM *_Pw_Pr_SC;
+		// _Count_SC, _Write_SC, _Read_SC
+		// int _Tab_SC[3] ;
+		int* _Tab_SC;
+		libhla::ipc::Semaphore *_Sem_SC;
 
-protected :
-    std::string _Name ;
-    BUFFER_SIDE_t _Side ;
-    size_t _Size ;
+		/***** Customer -->>> Server ******/
+		libhla::ipc::SHM *_Shm_CS;
+		libhla::ipc::SHM *_Pw_Pr_CS;
+		// _Count_CS, _Write_CS, _Read_CS
+		// int _Tab_CS[3] ;
+		int* _Tab_CS;
+		libhla::ipc::Semaphore *_Sem_CS;
 
-    /***** Server -->>> Customer ******/
-    libhla::ipc::SHM *_Shm_SC ;
-    libhla::ipc::SHM *_Pw_Pr_SC ;
-    // _Count_SC, _Write_SC, _Read_SC
-    // int _Tab_SC[3] ;
-    int* _Tab_SC ;
-    libhla::ipc::Semaphore *_Sem_SC ;
-
-    /***** Customer -->>> Server ******/
-    libhla::ipc::SHM *_Shm_CS ;
-    libhla::ipc::SHM *_Pw_Pr_CS ;
-    // _Count_CS, _Write_CS, _Read_CS
-    // int _Tab_CS[3] ;
-    int* _Tab_CS ;
-    libhla::ipc::Semaphore *_Sem_CS ;
-
-}; // End of --> class SocketSHM
+}; // End of --> class RingBuffer 
 
 #endif

@@ -157,7 +157,11 @@ throw (rti1516::SpecifiedSaveLabelDoesNotExist,
     vers_RTI.setMaxTickTime(maximum);
 
     try {
+		#if defined(RTIA_USE_SHM)
+		vers_RTI.send(privateRefs->RingBufferSHM,privateRefs->msgBufSend);
+		#else
         vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
+		#endif
     }
     catch (NetworkError &e) {
         std::stringstream msg;
@@ -169,7 +173,11 @@ throw (rti1516::SpecifiedSaveLabelDoesNotExist,
     // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
     while (1) {
         try {
-            vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
+			#if defined(RTIA_USE_SHM)
+			vers_Fed.reset(M_Factory::receive(privateRefs->RingBufferSHM));
+			#else
+			vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
+			#endif
         }
         catch (NetworkError &e) {
             std::stringstream msg;
@@ -202,7 +210,11 @@ throw (rti1516::SpecifiedSaveLabelDoesNotExist,
         try {
             // Request next callback from the RTIA
             M_Tick_Request_Next tick_next;
+			#if defined(RTIA_USE_SHM)
+			tick_next.send(privateRefs->RingBufferSHM, privateRefs->msgBufSend);
+			#else
             tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
+		    #endif
         }
         catch (NetworkError &e) {
             std::stringstream msg;

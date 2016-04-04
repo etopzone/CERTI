@@ -56,6 +56,10 @@ public:
     RootObject *_theRootObj ;
 
     SocketUN *socketUn ;
+	
+	#if defined(RTIA_USE_SHM)
+	RingBuffer *RingBufferSHM ;
+	#endif
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 

@@ -27,6 +27,7 @@
 #include "Message.hh"
 #include "RootObject.hh"
 #include "MessageBuffer.hh"
+#include "RingBuffer.hh"
 
 using namespace certi ;
 
@@ -57,6 +58,10 @@ public:
     RootObject *_theRootObj ;
 
     SocketUN *socketUn ;
+
+	#if defined(RTIA_USE_SHM)
+	RingBuffer *RingBufferSHM ;
+	#endif
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 

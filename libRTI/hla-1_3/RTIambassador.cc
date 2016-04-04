@@ -170,6 +170,12 @@ throw (RTI::MemoryExhausted, RTI::RTIinternalError)
 	PrettyDebug::setFederateName( "LibRTI::UnjoinedFederate" );
 	std::stringstream msg;
 
+	// For int to string conversion
+#if defined(RTIA_USE_SHM)
+	std::stringstream pid_RTIA_str_tmp;
+	std::string pid_RTIA_str;
+#endif
+
 	privateRefs = new RTIambPrivateRefs();
 
 	privateRefs->socketUn = new SocketUN(stIgnoreSignal);
@@ -328,6 +334,27 @@ throw (RTI::MemoryExhausted, RTI::RTIinternalError)
 	}
 #endif
 
+#if defined(RTIA_USE_SHM)
+	    //std::cout << "PID RTIA (in RTIAmbassador.cc) is: " << (int) privateRefs->pid_RTIA << std::endl ;
+	    pid_RTIA_str_tmp << (int) privateRefs->pid_RTIA;
+	    pid_RTIA_str = pid_RTIA_str_tmp.str();
+	    /* std::cout << ">> PRESS ENTER TO ATTACH SHM MEMORY TO RTIA " << std::endl;      
+        std::cin.get(); */
+		privateRefs->RingBufferSHM = new RingBuffer(pid_RTIA_str,
+                                                  RingBuffer::BUFFER_SC,
+                                                  50000,
+                                                  "Posix"
+												   ) ;
+		try {
+			privateRefs->RingBufferSHM->Attach() ;
+		}
+		catch (certi::RingBufferNotAttached& e)
+		{
+			std::cout << "Catch Exception RingBufferNotAttached" << std::endl ;
+			std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+		}
+#endif
+
 #if defined(RTIA_USE_TCP)
 	if (privateRefs->socketUn->acceptUN(10*1000) == -1) {
 #ifdef _WIN32
@@ -412,7 +439,11 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
     vers_RTI.setMaxTickTime(maximum);
 
     try {
+		#if defined(RTIA_USE_SHM)
+		vers_RTI.send(privateRefs->RingBufferSHM,privateRefs->msgBufSend);
+		#else
         vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
+		#endif
     }
     catch (NetworkError &e) {
         std::stringstream msg;
@@ -424,7 +455,11 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
     // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
     while (1) {
         try {
+			#if defined(RTIA_USE_SHM)
+            vers_Fed.reset(M_Factory::receive(privateRefs->RingBufferSHM));
+			#else
             vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
+			#endif
         }
         catch (NetworkError &e) {
             std::stringstream msg;
@@ -456,7 +491,11 @@ throw (RTI::SpecifiedSaveLabelDoesNotExist,
         try {
             // Request next callback from the RTIA
             M_Tick_Request_Next tick_next;
+			#if defined(RTIA_USE_SHM)
+			tick_next.send(privateRefs->RingBufferSHM, privateRefs->msgBufSend);
+			#else
             tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
+		    #endif
         }
         catch (NetworkError &e) {
             std::stringstream msg;

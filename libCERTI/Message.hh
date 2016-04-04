@@ -22,6 +22,7 @@
 
 #include "Exception.hh"
 #include "SocketUN.hh"
+#include "RingBuffer.hh"
 #include "BasicMessage.hh"
 #include "GAV.hh"
 #include "FedTimeD.hh"
@@ -245,14 +246,24 @@ public:
 	 * @param[in] socket the socket that should be used to send the message
 	 * @param[in] msgBuffer the buffer containing the serialized message
 	 */
+
+	#if defined(RTIA_USE_SHM)
+	void send(RingBuffer* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	#else
 	void send(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	#endif
 
 	/**
 	 * Receive a serialized message from a socket.
 	 * @param[in] socket the socket used to received the message from
 	 * @param[out] msgBuffer the buffer were the read message will be written
 	 */
+	#if defined(RTIA_USE_SHM)
+	void receive(RingBuffer* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	#else
 	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	#endif
+
 
     void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };

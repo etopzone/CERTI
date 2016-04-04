@@ -42,7 +42,8 @@ int ret ;
     ret = shm_unlink(_Name.c_str());
     _Id = shm_open(_Name.c_str(), O_CREAT | O_EXCL | O_RDWR , S_IRWXU | S_IRWXG);
     if (_Id < 0) {
-        perror("Error with shm_open() in SHMPosix::Open()");
+		std::cout << _Name.c_str() << std::endl;
+        perror("Error with shm_open() in SHMPosix::Open() Is Creator");
         exit(1);
         }
 #ifdef DEBUG
@@ -57,9 +58,10 @@ std::cout <<  "Created shared memory object : " << _Name.c_str() << std::endl ;
 
  } // End of if IsCreator()
  else{
-    _Id = shm_open(_Name.c_str(), O_RDONLY, S_IRWXU | S_IRWXG);
+    _Id = shm_open(_Name.c_str(), O_RDONLY , S_IRWXU | S_IRWXG);
     if (_Id < 0) {
-        perror("Error with shm_open() in SHMPosix::Open()");
+		std::cout << _Name.c_str() << std::endl;
+        perror("Error with shm_open() in SHMPosix::Open() Is Not Creator");
         exit(1);
         }
 #ifdef DEBUG

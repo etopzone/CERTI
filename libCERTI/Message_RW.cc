@@ -76,6 +76,26 @@ void Message::deserialize(MessageBuffer& msgBuffer) {
 	G.Out(pdGendoc,"exit Message::deserialize");
 } /* end of deserialize */
 
+#if defined(RTIA_USE_SHM)
+void
+Message::send(RingBuffer *socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
+	G.Out(pdGendoc,"enter Message::send");
+	/* 0- reset send buffer */
+	msgBuffer.reset();
+	/* 1- serialize the message
+	 * This is a polymorphic call
+	 * which may specialized in a daughter class
+	 */
+	serialize(msgBuffer);
+	/* 2- update message buffer 'reserved bytes' header */
+	msgBuffer.updateReservedBytes();
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
+	//msgBuf.show(msgBuffer(0),5);
+	/* 3- effectively send the raw message to socket */
+	socket->Send(static_cast<void*>(msgBuffer(0)), msgBuffer.size());
+	G.Out(pdGendoc,"exit  Message::send");
+} /* end of send */
+#else
 void
 Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter Message::send");
@@ -94,7 +114,34 @@ Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, N
 	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
 	G.Out(pdGendoc,"exit  Message::send");
 } /* end of send */
+#endif	
 
+#if defined(RTIA_USE_SHM)	
+void
+Message::receive(RingBuffer* socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
+	G.Out(pdGendoc,"enter Message::receive");
+	/* 0- Reset receive buffer */
+	/* FIXME this reset may not be necessary since we do
+	 * raw-receive + assume-size
+	 */
+	msgBuffer.reset();
+	/* 1- Read 'reserved bytes' header from socket */
+	D.Out(pdDebug,"(recv) Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
+	socket->Receive(static_cast<void *>(msgBuffer(0)), msgBuffer.reservedBytes);
+	//msgBuffer.show(msgBuffer(0),5);fflush(stdout);
+	/* 2- update (assume) complete message size from reserved bytes */
+	msgBuffer.assumeSizeFromReservedBytes();
+	D.Out(pdDebug,"Got a MsgBuffer of size %d bytes (including %d reserved)",msgBuffer.size(),msgBuffer.reservedBytes);
+	/* 3- receive the rest of the message */
+	socket->Receive(static_cast<void *>(msgBuffer(msgBuffer.reservedBytes)),msgBuffer.size()-msgBuffer.reservedBytes);
+	/* 4- deserialize the message
+	 * This is a polymorphic call
+	 * which may specialized in a daughter class
+	 */
+	deserialize(msgBuffer);
+	G.Out(pdGendoc,"exit  Message::receive");
+} /* end of receive */
+#else
 void
 Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter Message::receive");
@@ -119,6 +166,7 @@ Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError
 	deserialize(msgBuffer);
 	G.Out(pdGendoc,"exit  Message::receive");
 } /* end of receive */
+#endif
 
 /*
 void

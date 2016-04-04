@@ -149,11 +149,18 @@ RTI1516ambPrivateRefs::RTI1516ambPrivateRefs()
 	is_reentrant = false;
 	_theRootObj  = NULL;
 	socketUn     = NULL;
+	
+	#if defined(RTIA_USE_SHM)
+	RingBufferSHM = NULL;
+	#endif
 }
 
 RTI1516ambPrivateRefs::~RTI1516ambPrivateRefs()
 {
 	delete socketUn ;
+	#if defined(RTIA_USE_SHM)	
+	delete RingBufferSHM ;
+	#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -174,7 +181,11 @@ RTI1516ambPrivateRefs::executeService(Message *req, Message *rep)
 	D.Out(pdDebug, "sending request to RTIA.");
 
 	try {
+		#if defined(RTIA_USE_SHM)
+		req->send(RingBufferSHM,msgBufSend);
+		#else
 		req->send(socketUn,msgBufSend);
+		#endif
 	}
 	catch (certi::NetworkError) {
 		std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
@@ -192,7 +203,11 @@ RTI1516ambPrivateRefs::executeService(Message *req, Message *rep)
 
 	// waiting RTI reply.
 	try {
+		#if defined(RTIA_USE_SHM)
+		rep->receive(RingBufferSHM,msgBufReceive);
+		#else
 		rep->receive(socketUn,msgBufReceive);
+		#endif
 	}
 	catch (certi::NetworkError) {
 		std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
@@ -225,7 +240,11 @@ RTI1516ambPrivateRefs::sendTickRequestStop()
 	M_Tick_Request_Stop req, rep ;
 
 	try {
+		#if defined(RTIA_USE_SHM)
+		req.send(RingBufferSHM, msgBufSend);
+		#else
 		req.send(socketUn, msgBufSend);
+		#endif
 	}
 	catch (certi::NetworkError) {
 		std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
@@ -233,7 +252,11 @@ RTI1516ambPrivateRefs::sendTickRequestStop()
 	}
 
 	try {
+		#if defined(RTIA_USE_SHM)
+		rep.receive(RingBufferSHM, msgBufReceive);
+		#else
 		rep.receive(socketUn, msgBufReceive);
+		#endif
 	}
 	catch (certi::NetworkError) {
 		std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;

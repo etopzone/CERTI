@@ -99,6 +99,10 @@ protected:
     MessageBuffer msgBufSend;
 
     SocketUN *socketUN;
+	#if defined(RTIA_USE_SHM)
+	RingBuffer *RingBufferSHM ;
+	#endif
+	
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC *socketMC;
 #endif

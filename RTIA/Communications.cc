@@ -88,7 +88,18 @@ Communications::Communications(int RTIA_port, int RTIA_fd)
     char nom_serveur_RTIG[200] ;
     const char *default_host = "localhost" ;
 
+		
+			// For int to string conversion
+#if defined(RTIA_USE_SHM)
+	pid_t pid_RTIA;
+	std::stringstream pid_RTIA_str_tmp;
+	std::string pid_RTIA_str;
+#endif
+		
+		
+
     socketUN = new SocketUN();
+	
 #ifdef FEDERATION_USES_MULTICAST
     socketMC = new SocketMC();
 #endif
@@ -111,6 +122,25 @@ Communications::Communications(int RTIA_port, int RTIA_fd)
     } else {
       exit(EXIT_FAILURE);
     }
+#if defined(RTIA_USE_SHM)
+	pid_RTIA = getpid();
+	pid_RTIA_str_tmp << (int) pid_RTIA;
+	pid_RTIA_str = pid_RTIA_str_tmp.str();
+	// std::cout << "PID RTIA (in Communications.cc) is: " << (int) pid_RTIA << std::endl ;
+	RingBufferSHM = new RingBuffer(pid_RTIA_str,
+											  RingBuffer::BUFFER_CS,
+											  50000,
+											  "Posix"
+											   ) ;
+	try {
+		RingBufferSHM->Attach() ;
+	}
+	catch (certi::RingBufferNotAttached& e)
+	{
+		std::cout << "Catch Exception RingBufferNotAttached" << std::endl ;
+		std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+	}
+#endif
 
     // RTIG TCP link creation.
     const char *certihost = NULL ;
@@ -154,6 +184,10 @@ Communications::~Communications()
 #endif
     delete socketTCP;
     delete socketUDP;
+	
+	#if defined(RTIA_USE_SHM)	
+	delete RingBufferSHM ;
+	#endif
 
     G.Out(pdGendoc,"exit  Communications::~Communications");
 }
@@ -167,7 +201,11 @@ Communications::requestFederateService(Message *req)
     //               "type %d",req->type);
     assert(req != NULL);
     D.Out(pdRequest, "Sending Request to Federate, Name %s, Type %d.", req->getMessageName(),req->getMessageType());
+	#if defined(RTIA_USE_SHM)
+	req->send(RingBufferSHM, msgBufSend);	
+	#else
     req->send(socketUN, msgBufSend);
+	#endif
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
 
@@ -246,7 +284,11 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
     else if (msg && socketUN->isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
-    	*msg = M_Factory::receive(socketUN);
+			#if defined(RTIA_USE_SHM)
+			*msg = M_Factory::receive(RingBufferSHM);	
+			#else
+			*msg = M_Factory::receive(socketUN);
+			#endif
         n = 2 ;
     }
     else {
@@ -292,7 +334,11 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
         }
         else if (FD_ISSET(socketUN->returnSocket(), &fdset)) {
             // Read a message coming from the federate.
+			#if defined(RTIA_USE_SHM)
+			*msg = M_Factory::receive(RingBufferSHM);	
+			#else
 			*msg = M_Factory::receive(socketUN);
+			#endif
             n = 2 ;
         }
         else
@@ -345,14 +391,22 @@ Communications::sendMessage(NetworkMessage *Msg)
 void
 Communications::sendUN(Message *Msg)
 {
+	#if defined(RTIA_USE_SHM)
+	Msg->send(RingBufferSHM, msgBufSend);
+	#else
     Msg->send(socketUN, msgBufSend);
+	#endif
 }
 
 // ----------------------------------------------------------------------------
 Message*
 Communications::receiveUN()
 {
+	#if defined(RTIA_USE_SHM)
+	Message* msg = M_Factory::receive(RingBufferSHM);	
+	#else
 	Message* msg = M_Factory::receive(socketUN);
+	#endif
 	return msg;
 }
 

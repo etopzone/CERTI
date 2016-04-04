@@ -44,8 +44,12 @@ namespace certi {
    // Native types has been defined:
    //     - by included headers (see above)
    //     - with typedef (see below [if any])
-
+	
+	#if defined(RTIA_USE_SHM)	
+   typedef RingBuffer* MStreamType;
+   #else
    typedef SocketUN* MStreamType;
+   #endif
 
    typedef Message::Type M_Type;
    namespace CERTI_Message {

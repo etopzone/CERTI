@@ -104,6 +104,13 @@ if(RTIA_USE_TCP)
     add_definitions(-DRTIA_USE_TCP)
 endif(RTIA_USE_TCP)
 
+# The communication channel to RTIA
+OPTION(RTIA_USE_SHM
+           "Force SHM socket usage between RTIA and FederateAmbassador (default is Unix Socket)" ON)
+IF(RTIA_USE_SHM)
+    ADD_DEFINITIONS(-DRTIA_USE_SHM)
+ENDIF(RTIA_USE_SHM)
+
 if (win32)
    option(RTIA_CONSOLE_SHOW
           "Windows specific: if set to ON the RTIA console will be shown" OFF)
