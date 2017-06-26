@@ -1,35 +1,29 @@
 #ifndef SEMAPHORESYSV_H
 #define SEMAPHORESYSV_H
 
-// Semaphores usefull systems includes
+#include <string>
 #include <sys/types.h>
-#include <sys/ipc.h> 
-#include <sys/sem.h>
 
-// Others systems includes 
-#include <unistd.h>
-#include <cstdlib>
-#include <iostream>
-
-// Specifics includes
 #include "Semaphore.hh"
+
+#include "libhla.hh"
 
 namespace libhla {
 namespace ipc {
 
 class HLA_EXPORT SemaphoreSysV : public Semaphore {
-    private :
-    int _Sem_Id ;
-    key_t _Sem_Key ;
+private:
+    int _Sem_Id;
+    key_t _Sem_Key;
 
-    public :
-    SemaphoreSysV() ;
-    virtual ~SemaphoreSysV() ;
-    void Create_Init(const int initval, const std::string& New_Semname) ;
-    void Attach(const std::string& New_Semname ) ;
-    void P() ;
-    void V() ;
-    void Delete() ;
+public:
+    SemaphoreSysV();
+    virtual ~SemaphoreSysV();
+    void Create_Init(const int initval, const std::string& New_Semname);
+    void Attach(const std::string& New_Semname);
+    void P();
+    void V();
+    void Delete();
 
     /**
      * Build a SysV IPC key from a name and user specific value.
@@ -43,8 +37,7 @@ class HLA_EXPORT SemaphoreSysV : public Semaphore {
      *                               (for example uid).
      * @return The generated SysV IPC key corresponding to the specified entry
      */
-    key_t
-    static ntokUser(const char* name, int32_t user_specific_value);
+    key_t static ntokUser(const char* name, int32_t user_specific_value);
 
     /**
      * Build a SysV IPC key from a name.
@@ -58,10 +51,8 @@ class HLA_EXPORT SemaphoreSysV : public Semaphore {
      *                veut generer une clef.
      * @return SysV IPC key corresponding to the specified name.
      */
-    key_t
-    static ntok(const char* name);
-
-} ;
+    key_t static ntok(const char* name);
+};
 } /* end namespace ipc  */
 } /* end namespace libhla */
 #endif

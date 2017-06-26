@@ -49,16 +49,16 @@ namespace libhla {
 //! Swap <i> bytes of the <T> type
 /*! Template specializations are defined for each possible <i>.
  */
-template<class T, int i = sizeof(T)>
+template <class T, int i = sizeof(T)>
 struct __swap;
 
 //! Conversion to the Little Endian encoding
-template<class T>
-struct LittleEndian
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct LittleEndian {
+    inline const T operator()(const T& x) const
+    {
 #ifdef HOST_IS_BIG_ENDIAN
-        return __swap<T>()( x );
+        return __swap<T>()(x);
 #else
         return x;
 #endif
@@ -66,89 +66,82 @@ struct LittleEndian
 };
 
 //! Conversion to the Big Endian encoding
-template<class T>
-struct BigEndian
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct BigEndian {
+    inline const T operator()(const T& x) const
+    {
 #ifdef HOST_IS_BIG_ENDIAN
         return x;
 #else
-        return __swap<T>()( x );
+        return __swap<T>()(x);
 #endif
     }
 };
 
-template<class T>
-struct __swap<T,1>
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct __swap<T, 1> {
+    inline const T operator()(const T& x) const
+    {
         return x;
     }
 };
 
-template<class T>
-struct __swap<T,2>
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct __swap<T, 2> {
+    inline const T operator()(const T& x) const
+    {
         union {
             uint16_t u16;
             T x;
         } val, res;
         val.x = x;
-        res.u16 =
-            (val.u16<<8 | val.u16>>8);
+        res.u16 = (val.u16 << 8 | val.u16 >> 8);
         return res.x;
     }
 };
 
-template<class T>
-struct __swap<T,4>
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct __swap<T, 4> {
+    inline const T operator()(const T& x) const
+    {
         union {
             uint32_t u32;
             T x;
         } val, res;
         val.x = x;
-        res.u32 =
-            (val.u32<<24 | val.u32>>24 |
-            (val.u32 & 0x0000ff00UL)<<8 |
-            (val.u32 & 0x00ff0000UL)>>8);
+        res.u32 = (val.u32 << 24 | val.u32 >> 24 | (val.u32 & 0x0000ff00UL) << 8 | (val.u32 & 0x00ff0000UL) >> 8);
         return res.x;
     }
 };
 
-template<class T>
-struct __swap<T,8>
-{
-    inline const T operator()(const T& x) const {
+template <class T>
+struct __swap<T, 8> {
+    inline const T operator()(const T& x) const
+    {
         union {
             uint64_t u64;
             T x;
         } val, res;
         val.x = x;
-        res.u64 =
-            (val.u64<<56 | val.u64>>56 |
-            (val.u64 & 0x000000000000ff00ULL)<<40 |
-            (val.u64 & 0x0000000000ff0000ULL)<<24 |
-            (val.u64 & 0x00000000ff000000ULL)<< 8 |
-            (val.u64 & 0x000000ff00000000ULL)>> 8 |
-            (val.u64 & 0x0000ff0000000000ULL)>>24 |
-            (val.u64 & 0x00ff000000000000ULL)>>40);
+        res.u64 = (val.u64 << 56 | val.u64 >> 56 | (val.u64 & 0x000000000000ff00ULL) << 40
+                   | (val.u64 & 0x0000000000ff0000ULL) << 24
+                   | (val.u64 & 0x00000000ff000000ULL) << 8
+                   | (val.u64 & 0x000000ff00000000ULL) >> 8
+                   | (val.u64 & 0x0000ff0000000000ULL) >> 24
+                   | (val.u64 & 0x00ff000000000000ULL) >> 40);
         return res.x;
     }
 };
 
 // HLA basic type, represented by <T> type stored in <S> using <E> encoding.
-template<class T, class S, template<class W>class E>
-struct HLAbasicType
-{
-    HLAbasicType& operator = (const T& data)
+template <class T, class S, template <class W> class E>
+struct HLAbasicType {
+    HLAbasicType& operator=(const T& data)
     {
 #ifndef NDEBUG
         __HLAbuffer::__check_memory(this, __sizeof());
 #endif
-        *(S*)this = E<S>()(data);
+        *(S*) this = E<S>()(data);
         return *this;
     }
 
@@ -157,30 +150,36 @@ struct HLAbasicType
 #ifndef NDEBUG
         __HLAbuffer::__check_memory(this, __sizeof());
 #endif
-        return E<S>()(*(S*)this);
+        return E<S>()(*(S*) this);
     }
 
     static const size_t emptysizeof()
-    { return __sizeof(); }
+    {
+        return __sizeof();
+    }
 
     static const size_t __sizeof()
-    { return sizeof(S); }
+    {
+        return sizeof(S);
+    }
 
     void copy(void* source)
     {
 #ifndef NDEBUG
         __HLAbuffer::__check_memory(this, __sizeof());
 #endif
-        memcpy((char*)this, source, __sizeof());
+        memcpy((char*) this, source, __sizeof());
     }
 
     static const size_t m_octetBoundary = sizeof(S);
     static const bool m_isVariable = false;
 };
 
-template<class T, class S, template<class W>class E>
-std::ostream& PrintBuffer(std::ostream& stream, HLAbasicType<T,S,E>& buffer)
-{ return __print_buffer(stream, (void*)&buffer, buffer.__sizeof()); }
+template <class T, class S, template <class W> class E>
+std::ostream& PrintBuffer(std::ostream& stream, HLAbasicType<T, S, E>& buffer)
+{
+    return __print_buffer(stream, (void*) &buffer, buffer.__sizeof());
+}
 
 /* IEEE 1516.2, Table 23:
  * Basic data representation table
@@ -219,4 +218,3 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 #endif // _HLATYPES_BASICTYPE_HH
 
 // $Id: HLAbasicType.hh,v 1.8 2012/06/05 15:33:18 erk Exp $
-

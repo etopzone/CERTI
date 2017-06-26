@@ -51,32 +51,36 @@
 
 namespace libhla {
 
-template<class T>
-class HLAdata : public __HLAbuffer
-{
+template <class T>
+class HLAdata : public __HLAbuffer {
 public:
     //! Create new buffer
-    HLAdata(size_t capacity = T::emptysizeof())
-      : __HLAbuffer(capacity)
-    { }
+    HLAdata(size_t capacity = T::emptysizeof()) : __HLAbuffer(capacity)
+    {
+    }
 
     //! Create buffer from existing data
-    HLAdata(void *begin, size_t capacity)
-      : __HLAbuffer(begin, capacity)
+    HLAdata(void* begin, size_t capacity) : __HLAbuffer(begin, capacity)
     {
         if (capacity < size())
             throw std::length_error("HLAdata: data buffer overflow");
         // do *not* clean the data buffer, it may contain valid data
     }
 
-    T& operator *() const
-    { return *(T*)mBegin; }
+    T& operator*() const
+    {
+        return *(T*) mBegin;
+    }
 
-    T* operator ->() const
-    { return (T*)mBegin; }
+    T* operator->() const
+    {
+        return (T*) mBegin;
+    }
 
     virtual const size_t size() const
-    { return ((T*)mBegin)->__sizeof(); }
+    {
+        return ((T*) mBegin)->__sizeof();
+    }
 
     //! Shake the buffer
     /* Resizing the variable-size elements may have significant impact on padding
@@ -85,16 +89,15 @@ public:
      */
     virtual void __shake(const void* __that, int value, long resize)
     {
-        HLAdata<T> newData(size()+resize);
+        HLAdata<T> newData(size() + resize);
 
         // copy the data to the temporary buffer, while changing a <value> of <__that>
         newData.mShakeThat = __that;
         newData.mShakeValue = value;
         // create copy of the data
-        ((T*)newData.mBegin)->copy(mBegin);
+        ((T*) newData.mBegin)->copy(mBegin);
 
-        if (mUserAllocated)
-        {
+        if (mUserAllocated) {
             if (newData.size() < mCapacity)
                 // copy data back to the original buffer
                 memcpy(mBegin, newData.mBegin, newData.size());
@@ -109,17 +112,16 @@ public:
 } // namespace libhla
 
 #if defined(_WIN32)
-#pragma warning(disable:4503) // suppress warning C4503: decorated name length exceeded
+#pragma warning(disable : 4503) // suppress warning C4503: decorated name length exceeded
 #endif
 
 #include <HLAbasicType.hh>
 #include <HLAenumeratedType.hh>
 #include <HLAfixedArray.hh>
-#include <HLAvariableArray.hh>
 #include <HLAfixedRecord.hh>
+#include <HLAvariableArray.hh>
 #include <HLAvariantRecord.hh>
 
 #endif // _HLATYPES_IEEE1516_HH
 
 // $Id: HLAtypesIEEE1516.hh,v 1.6 2012/06/05 15:33:18 erk Exp $
-

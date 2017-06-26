@@ -2,8 +2,10 @@
 #define SEMAPHORE_POSIX_H
 
 // Others Systems includes
+#include <features.h>
 #include <string>
-#include <iostream>
+
+#include "libhla.hh"
 
 // Specifics includes
 #include "Semaphore.hh"
@@ -16,20 +18,19 @@ namespace libhla {
 namespace ipc {
 
 class HLA_EXPORT SemaphorePosix : public Semaphore {
-    private :
-    std::string _Semname ;
-    sem_t *_Sem ;
+private:
+    std::string _Semname;
+    sem_t* _Sem;
 
-    public :
-    SemaphorePosix() ;
-    virtual ~SemaphorePosix() ;
-    void Create_Init(const int initval, const std::string& New_Semname ) ;
-    void Attach(const std::string& New_Semname ) ;
-    void P() ;
-    void V() ;
-    void Delete() ;
-
-} ;
+public:
+    SemaphorePosix();
+    virtual ~SemaphorePosix();
+    void Create_Init(const int initval, const std::string& New_Semname);
+    void Attach(const std::string& New_Semname);
+    void P();
+    void V();
+    void Delete();
+};
 } /* end namespace ipc  */
 } /* end namespace libhla */
 #endif

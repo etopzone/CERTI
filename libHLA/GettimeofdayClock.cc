@@ -25,32 +25,33 @@
 
 #include "GettimeofdayClock.hh"
 
-#include <sys/time.h>
 #include <iostream>
+#include <sys/time.h>
 
 namespace libhla {
 namespace clock {
 
 GettimeofdayClock::GettimeofdayClock() : Clock("GettimeofdayClock")
 {
-}   
+}
 
-double 
-GettimeofdayClock::getResolution() {
+double GettimeofdayClock::getResolution()
+{
     return 1000;
 }
 
-uint64_t GettimeofdayClock::getCurrentTicksValue() {
+uint64_t GettimeofdayClock::getCurrentTicksValue()
+{
     struct timeval tv;
     if (-1 == gettimeofday(&tv, 0))
         std::cerr << "Cannot get current timestamp!" << std::endl;
-    /* convert struct timespec to number of micro-seconds */ 
-    return tv.tv_sec*1000000 + tv.tv_usec;
+    /* convert struct timespec to number of micro-seconds */
+    return tv.tv_sec * 1000000 + tv.tv_usec;
 }
 
-double   
-GettimeofdayClock::tick2NanoSecond(const uint64_t ticks) {
-    return 1e3*ticks;
+double GettimeofdayClock::tick2NanoSecond(const uint64_t ticks)
+{
+    return 1e3 * ticks;
 }
 
 GettimeofdayClock::~GettimeofdayClock()

@@ -17,15 +17,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include "config.h"
 #include "Clock.hh"
+#include "config.h"
 
 #ifdef HAVE_TSC_CLOCK
 #include "TSCClock.hh"
 #endif
+
 #ifdef HAVE_POSIX_CLOCK
 #include "PosixClock.hh"
 #endif
+
 #ifdef HAVE_GETTIMEOFDAY
 #include "GettimeofdayClock.hh"
 #endif
@@ -38,31 +40,32 @@
 namespace libhla {
 namespace clock {
 
-  Clock * Clock::getBestClock () {
+Clock* Clock::getBestClock()
+{
+// clang-format off
 #ifdef _WIN32
-#ifdef HAVE_WIN_CLOCK
-    return new WinPerfClock ( ) ;
+    #ifdef HAVE_WIN_CLOCK
+        return new WinPerfClock();
+    #else
+        return new WinClock();
+    #endif
 #else
-    return new WinClock() ;
+    #ifdef HAVE_TSC_CLOCK
+        return new TSCClock();
+    #else
+        #ifdef HAVE_POSIX_CLOCK
+            return new PosixClock();
+        #else
+            #ifdef HAVE_GETTIMEOFDAY
+                return new GettimeofdayClock();
+            #else
+                return NULL;
+            #endif
+        #endif
+    #endif
 #endif
-#else
-#ifdef HAVE_TSC_CLOCK
-    return new TSCClock () ;
-#else
-
-#ifdef HAVE_POSIX_CLOCK
-    return new PosixClock () ;
-
-#else
-#ifdef HAVE_GETTIMEOFDAY
-    return new GettimeofdayClock () ;
-#else
-    return NULL ;
-#endif
-#endif
-#endif
-#endif
-  } /* end of getBestClock */
+// clang-format off
+} /* end of getBestClock */
 
 } /* end namespace clock  */
 } /* end namespace libhla */

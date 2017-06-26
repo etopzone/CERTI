@@ -2,7 +2,7 @@
 Language:        Cpp
 BasedOnStyle:  WebKit
 #AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: true
 #AlignConsecutiveAssignments: false
 #AlignConsecutiveDeclarations: false
 #AlignEscapedNewlinesLeft: false

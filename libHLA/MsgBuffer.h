@@ -21,37 +21,38 @@
 #ifndef MSG_BUFFER_H
 #define MSG_BUFFER_H
 
+// clang-format off
 #ifdef _MSC_VER
-#ifndef FAKED_INTTYPES_DEFINED
-#define FAKED_INTTYPES_DEFINED
-typedef unsigned __int64  uint64_t;
-typedef signed __int64    int64_t;
-typedef unsigned __int32  uint32_t;
-typedef signed __int32    int32_t;
-typedef unsigned __int16  uint16_t;
-typedef signed __int16    int16_t;
-typedef unsigned __int8   uint8_t;
-typedef signed __int8     int8_t;
-typedef short int         int_least16_t;
-#endif
+    #ifndef FAKED_INTTYPES_DEFINED
+        #define FAKED_INTTYPES_DEFINED
+        typedef unsigned __int64 uint64_t;
+        typedef signed __int64 int64_t;
+        typedef unsigned __int32 uint32_t;
+        typedef signed __int32 int32_t;
+        typedef unsigned __int16 uint16_t;
+        typedef signed __int16 int16_t;
+        typedef unsigned __int8 uint8_t;
+        typedef signed __int8 int8_t;
+        typedef short int int_least16_t;
+    #endif
 #else
-#include <inttypes.h>
+    #include <stdint.h>
 #endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-    #pragma warning(disable: 4251)
+    #pragma warning(disable : 4251)
     #define ANY_DLL_EXPORT __declspec(dllexport)
     #define ANY_DLL_IMPORT __declspec(dllimport)
     #define ANY_DLL_LOCAL
 #else
     #if (__GNUC__ >= 4)
-       #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
-       #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
-       #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+        #define ANY_DLL_EXPORT __attribute__((visibility("default")))
+        #define ANY_DLL_IMPORT __attribute__((visibility("default")))
+        #define ANY_DLL_LOCAL __attribute__((visibility("hidden")))
     #else
-       #define ANY_DLL_EXPORT
-       #define ANY_DLL_IMPORT
-       #define ANY_DLL_LOCAL
+        #define ANY_DLL_EXPORT
+        #define ANY_DLL_IMPORT
+        #define ANY_DLL_LOCAL
     #endif
 #endif
 
@@ -63,88 +64,70 @@ typedef short int         int_least16_t;
 
 /* define our own boolean type */
 #ifndef bool_t
-typedef uint8_t bool_t;
-#define bFALSE  0
-#define bTRUE   1
+    typedef uint8_t bool_t;
+    #define bFALSE 0
+    #define bTRUE 1
 #endif
+// clang-format on
 
-#define MB_UINT64_SWAP_LE_BE_CONSTANT(val)  ((uint64_t) ( \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00000000000000ffU)) << 56) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x000000000000ff00U)) << 40) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x0000000000ff0000U)) << 24) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00000000ff000000U)) <<  8) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x000000ff00000000U)) >>  8) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00ff000000000000U)) >> 40) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
+#define MB_UINT64_SWAP_LE_BE_CONSTANT(val)                                                                             \
+    ((uint64_t)((((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00000000000000ffU)) << 56)                          \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x000000000000ff00U)) << 40)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x0000000000ff0000U)) << 24)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00000000ff000000U)) << 8)                         \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x000000ff00000000U)) >> 8)                         \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x0000ff0000000000U)) >> 24)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00ff000000000000U)) >> 40)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 
 #ifdef HOST_IS_BIG_ENDIAN
-  #define MB_UINT64_SWAP_LE_BE(val) (MB_UINT64_SWAP_LE_BE_CONSTANT(val))
-  #define MB_UINT64_TO_BE(val)     (val)
-  #define MB_UINT64_TO_LE(val)     (MB_UINT64_SWAP_LE_BE (val))
+#define MB_UINT64_SWAP_LE_BE(val) (MB_UINT64_SWAP_LE_BE_CONSTANT(val))
+#define MB_UINT64_TO_BE(val) (val)
+#define MB_UINT64_TO_LE(val) (MB_UINT64_SWAP_LE_BE(val))
 #else
-  #define MB_UINT64_SWAP_LE_BE(val) (MB_UINT64_SWAP_LE_BE_CONSTANT(val))
-  #define MB_UINT64_TO_BE(val)     (MB_UINT64_SWAP_LE_BE (val))
-  #define MB_UINT64_TO_LE(val)      (val)
+#define MB_UINT64_SWAP_LE_BE(val) (MB_UINT64_SWAP_LE_BE_CONSTANT(val))
+#define MB_UINT64_TO_BE(val) (MB_UINT64_SWAP_LE_BE(val))
+#define MB_UINT64_TO_LE(val) (val)
 #endif
 
-#define MB_UINT64_FROM_BE(val)              (MB_UINT64_TO_BE(val))
-#define MB_UINT64_FROM_LE(val)              (MB_UINT64_TO_LE(val))
-#define MB_ENCODE_DOUBLE_TO_UINT64BE(val)    (MB_UINT64_TO_BE   (*(uint64_t*)(val)))
-#define MB_DECODE_DOUBLE_FROM_UINT64BE(val)  (MB_UINT64_FROM_BE (*(uint64_t*)(val)))
+#define MB_UINT64_FROM_BE(val) (MB_UINT64_TO_BE(val))
+#define MB_UINT64_FROM_LE(val) (MB_UINT64_TO_LE(val))
+#define MB_ENCODE_DOUBLE_TO_UINT64BE(val) (MB_UINT64_TO_BE(*(uint64_t*) (val)))
+#define MB_DECODE_DOUBLE_FROM_UINT64BE(val) (MB_UINT64_FROM_BE(*(uint64_t*) (val)))
 
 /*
  * Basic bit swapping functions
  */
-#define MB_UINT16_SWAP_BYTES(val)   ((uint16_t) ( \
-        (((uint16_t) (val) & (uint16_t) 0x00ffU) << 8) |  \
-        (((uint16_t) (val) & (uint16_t) 0xff00U) >> 8)))
+#define MB_UINT16_SWAP_BYTES(val)                                                                                      \
+    ((uint16_t)((((uint16_t)(val) & (uint16_t) 0x00ffU) << 8) | (((uint16_t)(val) & (uint16_t) 0xff00U) >> 8)))
 
-#define MB_UINT32_SWAP_BYTES(val)   ((uint32_t) (     \
-        (((uint32_t) (val) & (uint32_t) 0x000000ffU) << 24) | \
-        (((uint32_t) (val) & (uint32_t) 0x0000ff00U) <<  8) | \
-        (((uint32_t) (val) & (uint32_t) 0x00ff0000U) >>  8) | \
-        (((uint32_t) (val) & (uint32_t) 0xff000000U) >> 24)))
+#define MB_UINT32_SWAP_BYTES(val)                                                                                      \
+    ((uint32_t)((((uint32_t)(val) & (uint32_t) 0x000000ffU) << 24) | (((uint32_t)(val) & (uint32_t) 0x0000ff00U) << 8) \
+                | (((uint32_t)(val) & (uint32_t) 0x00ff0000U) >> 8)                                                    \
+                | (((uint32_t)(val) & (uint32_t) 0xff000000U) >> 24)))
 
-#if defined (__x86_64__)
-# define MB_INT64_CONSTANT(val)  (val##L)
-# define MB_UINT64_FORMAT "lu"
-# define MB_XINT64_FORMAT "lx"
-# define MB_INT64_FORMAT "l"
+#if defined(__x86_64__)
+#define MB_INT64_CONSTANT(val) (val##L)
+#define MB_UINT64_FORMAT "lu"
+#define MB_XINT64_FORMAT "lx"
+#define MB_INT64_FORMAT "l"
 #else
-# define MB_INT64_CONSTANT(val)  (val##LL)
-# define MB_UINT64_FORMAT "llu"
-# define MB_XINT64_FORMAT "llx"
-# define MB_INT64_FORMAT "ll"
+#define MB_INT64_CONSTANT(val) (val##LL)
+#define MB_UINT64_FORMAT "llu"
+#define MB_XINT64_FORMAT "llx"
+#define MB_INT64_FORMAT "ll"
 #endif
 
-#define MB_UINT64_SWAP_BYTES(val)   ((uint64_t) (                   \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00000000000000ffU)) << 56) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x000000000000ff00U)) << 40) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x0000000000ff0000U)) << 24) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00000000ff000000U)) <<  8) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x000000ff00000000U)) >>  8) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0x00ff000000000000U)) >> 40) | \
-      (((uint64_t) (val) &                      \
-    (uint64_t) MB_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
+#define MB_UINT64_SWAP_BYTES(val)                                                                                      \
+    ((uint64_t)((((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00000000000000ffU)) << 56)                          \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x000000000000ff00U)) << 40)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x0000000000ff0000U)) << 24)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00000000ff000000U)) << 8)                         \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x000000ff00000000U)) >> 8)                         \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x0000ff0000000000U)) >> 24)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00ff000000000000U)) >> 40)                        \
+                | (((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 
-#include <string.h>
 #define DEFAULT_MESSAGE_BUFFER_SIZE 255
 /*
  * We reserve 5 bytes at the beginning of the buffer
@@ -161,11 +144,11 @@ typedef uint8_t bool_t;
 #undef BEGIN_C_DECLS
 #undef END_C_DECLS
 #ifdef __cplusplus
-#  define BEGIN_C_DECLS extern "C" {
-#  define END_C_DECLS }
+#define BEGIN_C_DECLS extern "C" {
+#define END_C_DECLS }
 #else
-# define BEGIN_C_DECLS /* empty */
-# define END_C_DECLS /* empty */
+#define BEGIN_C_DECLS /* empty */
+#define END_C_DECLS /* empty */
 #endif
 
 /**
@@ -182,7 +165,6 @@ typedef uint8_t bool_t;
  * only done when needed.
  */
 typedef struct MsgBuffer {
-
     /** The buffer itself */
     uint8_t* buffer;
     /** The provisioned buffer size */
@@ -218,15 +200,13 @@ MB_EXPORT bool_t MB_HostIsLittleEndian();
  */
 MB_EXPORT void MB_show(void* data, uint32_t n);
 
-
 /**
  * Default message buffer ructor.
  * The default message buffer size is DEFAULT_MESSAGE_BUFFER_SIZE.
  * @param[in,out] msg pointer to the message buffer structure
  */
 MB_EXPORT
-void
-MB_create(MsgBuffer_t* msg);
+void MB_create(MsgBuffer_t* msg);
 
 /**
  * Constructor with size.
@@ -235,16 +215,14 @@ MB_create(MsgBuffer_t* msg);
  * @param[in] bufferMaxSize, the [initial] maximum size of the buffer
  */
 MB_EXPORT
-void
-MB_createWithSize(MsgBuffer_t* msg, uint32_t bufferMaxSize);
+void MB_createWithSize(MsgBuffer_t* msg, uint32_t bufferMaxSize);
 
 /**
  * Destructor
  * @param[in,out] msg pointer to the message buffer structure
  */
 MB_EXPORT
-void
-MB_destroy(MsgBuffer_t* msg);
+void MB_destroy(MsgBuffer_t* msg);
 
 /**
  * Return the current buffer size (in bytes).
@@ -253,8 +231,7 @@ MB_destroy(MsgBuffer_t* msg);
  * @return the current buffer size
  */
 MB_EXPORT
-uint32_t
-MB_size(MsgBuffer_t* msg);
+uint32_t MB_size(MsgBuffer_t* msg);
 
 /**
  * Return the current maximum buffer size (in bytes).
@@ -262,22 +239,19 @@ MB_size(MsgBuffer_t* msg);
  * @return the current buffer maximum size
  */
 MB_EXPORT
-uint32_t
-MB_maxSize(MsgBuffer_t* msg);
+uint32_t MB_maxSize(MsgBuffer_t* msg);
 
 /**
  * Assume the buffer is big endian.
  */
 MB_EXPORT
-void
-MB_assumeBufferIsBigEndian(MsgBuffer_t* msg);
+void MB_assumeBufferIsBigEndian(MsgBuffer_t* msg);
 
 /**
  * Assume the buffer is little endian.
  */
 MB_EXPORT
-void
-MB_assumeBufferIsLittleEndian(MsgBuffer_t* msg);
+void MB_assumeBufferIsLittleEndian(MsgBuffer_t* msg);
 
 /**
  * Reset buffer state
@@ -285,8 +259,7 @@ MB_assumeBufferIsLittleEndian(MsgBuffer_t* msg);
  * to re-use a buffer in order to avoid reallocation.
  */
 MB_EXPORT
-void
-MB_reset(MsgBuffer_t* msg);
+void MB_reset(MsgBuffer_t* msg);
 
 /**
  * Seek buffer in order to write at specified place
@@ -327,125 +300,101 @@ void MB_assumeSize(MsgBuffer_t* msg, uint32_t size);
 MB_EXPORT
 void MB_assumeSizeFromReservedBytes(MsgBuffer_t* msg);
 
-#define MB_DECLARE_SIGNED(type)                \
-        MB_EXPORT int32_t                     \
-        MB_write_##type##s(MsgBuffer_t* msg,  type##_t* data, uint32_t n);\
-\
-MB_EXPORT int32_t                     \
-MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n);
+#define MB_DECLARE_SIGNED(type)                                                                                        \
+    MB_EXPORT int32_t MB_write_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n);                                \
+                                                                                                                       \
+    MB_EXPORT int32_t MB_read_##type##s(MsgBuffer_t* msg, type##_t* data, uint32_t n);
 
-#define MB_DECLARE_SINGLE_READ_WRITE(type,suffix)     \
-        MB_DECLARE_SINGLE_READ_WRITE_(type,type##suffix)
+#define MB_DECLARE_SINGLE_READ_WRITE(type, suffix) MB_DECLARE_SINGLE_READ_WRITE_(type, type##suffix)
 
-#define MB_DECLARE_SINGLE_READ_WRITE2(type)     \
-        MB_DECLARE_SINGLE_READ_WRITE_(type,type)
+#define MB_DECLARE_SINGLE_READ_WRITE2(type) MB_DECLARE_SINGLE_READ_WRITE_(type, type)
 
-#define MB_DECLARE_SINGLE_READ_WRITE_(type,datatype)     \
-        MB_EXPORT int32_t                     \
-        MB_write_##type(MsgBuffer_t* msg,  datatype data);\
-\
-MB_EXPORT int32_t                     \
-MB_read_##type(MsgBuffer_t* msg, datatype* data) ;\
-\
-MB_EXPORT datatype MB_get_##type(MsgBuffer_t* msg);
+#define MB_DECLARE_SINGLE_READ_WRITE_(type, datatype)                                                                  \
+    MB_EXPORT int32_t MB_write_##type(MsgBuffer_t* msg, datatype data);                                                \
+                                                                                                                       \
+    MB_EXPORT int32_t MB_read_##type(MsgBuffer_t* msg, datatype* data);                                                \
+                                                                                                                       \
+    MB_EXPORT datatype MB_get_##type(MsgBuffer_t* msg);
 
 MB_EXPORT
-int32_t
-MB_write_uint8s(MsgBuffer_t* msg,  uint8_t* data, uint32_t n);
+int32_t MB_write_uint8s(MsgBuffer_t* msg, uint8_t* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_uint8s(MsgBuffer_t* msg, uint8_t* data, uint32_t n);
+int32_t MB_read_uint8s(MsgBuffer_t* msg, uint8_t* data, uint32_t n);
 
-MB_DECLARE_SINGLE_READ_WRITE(uint8,_t)
+MB_DECLARE_SINGLE_READ_WRITE(uint8, _t)
 MB_DECLARE_SIGNED(int8)
-MB_DECLARE_SINGLE_READ_WRITE(int8,_t)
+MB_DECLARE_SINGLE_READ_WRITE(int8, _t)
 
 MB_EXPORT
-int32_t
-MB_write_chars(MsgBuffer_t* msg,  char* data, uint32_t n);
+int32_t MB_write_chars(MsgBuffer_t* msg, char* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_chars(MsgBuffer_t* msg, char* data, uint32_t n);
+int32_t MB_read_chars(MsgBuffer_t* msg, char* data, uint32_t n);
 MB_DECLARE_SINGLE_READ_WRITE2(char)
 
-#define MB_write_bytes  MB_write_chars
-#define MB_read_bytes   MB_read_chars
-#define MB_write_byte   MB_write_char
-#define MB_read_byte    MB_read_char
+#define MB_write_bytes MB_write_chars
+#define MB_read_bytes MB_read_chars
+#define MB_write_byte MB_write_char
+#define MB_read_byte MB_read_char
 
 MB_EXPORT
-int32_t
-MB_write_uint16s(MsgBuffer_t* msg,  uint16_t* data, uint32_t n);
+int32_t MB_write_uint16s(MsgBuffer_t* msg, uint16_t* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_uint16s(MsgBuffer_t* msg, uint16_t* data, uint32_t n);
+int32_t MB_read_uint16s(MsgBuffer_t* msg, uint16_t* data, uint32_t n);
 
-MB_DECLARE_SINGLE_READ_WRITE(uint16,_t)
+MB_DECLARE_SINGLE_READ_WRITE(uint16, _t)
 MB_DECLARE_SIGNED(int16)
-MB_DECLARE_SINGLE_READ_WRITE(int16,_t)
+MB_DECLARE_SINGLE_READ_WRITE(int16, _t)
 
 MB_EXPORT
-int32_t
-MB_write_uint32s(MsgBuffer_t* msg,  uint32_t* data, uint32_t n);
+int32_t MB_write_uint32s(MsgBuffer_t* msg, uint32_t* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_uint32s(MsgBuffer_t* msg, uint32_t* data, uint32_t n);
+int32_t MB_read_uint32s(MsgBuffer_t* msg, uint32_t* data, uint32_t n);
 
-MB_DECLARE_SINGLE_READ_WRITE(uint32,_t)
+MB_DECLARE_SINGLE_READ_WRITE(uint32, _t)
 MB_DECLARE_SIGNED(int32)
-MB_DECLARE_SINGLE_READ_WRITE(int32,_t)
+MB_DECLARE_SINGLE_READ_WRITE(int32, _t)
 
 MB_EXPORT
-int32_t
-MB_write_uint64s(MsgBuffer_t* msg,  uint64_t* data, uint32_t n);
+int32_t MB_write_uint64s(MsgBuffer_t* msg, uint64_t* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_uint64s(MsgBuffer_t* msg, uint64_t* data, uint32_t n);
+int32_t MB_read_uint64s(MsgBuffer_t* msg, uint64_t* data, uint32_t n);
 
-MB_DECLARE_SINGLE_READ_WRITE(uint64,_t)
+MB_DECLARE_SINGLE_READ_WRITE(uint64, _t)
 MB_DECLARE_SIGNED(int64)
-MB_DECLARE_SINGLE_READ_WRITE(int64,_t)
+MB_DECLARE_SINGLE_READ_WRITE(int64, _t)
 
 MB_EXPORT
-int32_t
-MB_write_floats(MsgBuffer_t* msg,  float* data, uint32_t n);
+int32_t MB_write_floats(MsgBuffer_t* msg, float* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_floats(MsgBuffer_t* msg, float* data, uint32_t n);
+int32_t MB_read_floats(MsgBuffer_t* msg, float* data, uint32_t n);
 
 MB_DECLARE_SINGLE_READ_WRITE2(float)
 
 MB_EXPORT
-int32_t
-MB_write_doubles(MsgBuffer_t* msg,  double* data, uint32_t n);
+int32_t MB_write_doubles(MsgBuffer_t* msg, double* data, uint32_t n);
 
 MB_EXPORT
-int32_t
-MB_read_doubles(MsgBuffer_t* msg, double* data, uint32_t n);
+int32_t MB_read_doubles(MsgBuffer_t* msg, double* data, uint32_t n);
 
 MB_DECLARE_SINGLE_READ_WRITE2(double)
 
 MB_EXPORT
-int32_t
-MB_write_string(MsgBuffer_t* msg, char* str);
+int32_t MB_write_string(MsgBuffer_t* msg, char* str);
 
 MB_EXPORT
-void
-MB_read_string(MsgBuffer_t* msg, char* str, uint32_t slen);
+void MB_read_string(MsgBuffer_t* msg, char* str, uint32_t slen);
 
 MB_EXPORT
-int32_t
-MB_write_bool(MsgBuffer_t* msg, bool_t toggle);
+int32_t MB_write_bool(MsgBuffer_t* msg, bool_t toggle);
 
 MB_EXPORT
-int32_t
-MB_read_bool(MsgBuffer_t* msg, bool_t* toggle);
+int32_t MB_read_bool(MsgBuffer_t* msg, bool_t* toggle);
 
 /**
  * Update the reserved bytes area.

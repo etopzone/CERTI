@@ -57,38 +57,45 @@ namespace libhla {
  */
 
 // HLA enumerated type, enumeration <E> with representation <R>.
-template<class E, class R>
-struct HLAenumeratedType
-{
-    HLAenumeratedType& operator = (const E& data)
+template <class E, class R>
+struct HLAenumeratedType {
+    HLAenumeratedType& operator=(const E& data)
     {
-        *(R*)this = data;
+        *(R*) this = data;
         return *this;
     }
 
-    HLAenumeratedType& operator = (const int& data)
+    HLAenumeratedType& operator=(const int& data)
     {
-        *(R*)this = data;
+        *(R*) this = data;
         return *this;
     }
 
     operator E() const
     {
-        int result = *(R*)this;
-        return (E)result;
+        int result = *(R*) this;
+        return (E) result;
     }
 
     operator int() const
-    { return *(R*)this; }
+    {
+        return *(R*) this;
+    }
 
     static const size_t emptysizeof()
-    { return R::emptysizeof(); }
+    {
+        return R::emptysizeof();
+    }
 
     static const size_t __sizeof()
-    { return R::__sizeof(); }
+    {
+        return R::__sizeof();
+    }
 
     void copy(void* source)
-    { ((R*)this)->copy(source); }
+    {
+        ((R*) this)->copy(source);
+    }
 
     static const size_t m_octetBoundary = R::m_octetBoundary;
     static const bool m_isVariable = false;
@@ -97,10 +104,7 @@ struct HLAenumeratedType
 /* IEEE 1516.2, Table 27:
  * Enumerated datatype table
  */
-enum __HLAboolean {
-    HLAfalse = 0,
-    HLAtrue = 1
-};
+enum __HLAboolean { HLAfalse = 0, HLAtrue = 1 };
 typedef HLAenumeratedType<__HLAboolean, HLAinteger32BE> HLAboolean;
 
 } // namespace libhla
@@ -108,4 +112,3 @@ typedef HLAenumeratedType<__HLAboolean, HLAinteger32BE> HLAboolean;
 #endif // _HLATYPES_ENUMERATEDTYPE_HH
 
 // $Id: HLAenumeratedType.hh,v 1.3 2009/06/24 12:33:31 gotthardp Exp $
-

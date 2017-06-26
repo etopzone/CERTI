@@ -20,8 +20,7 @@
 #ifndef CLOCK_HH_
 #define CLOCK_HH_
 
-#include <string>
-#include "libhla.hh"
+#include "libhla.hh" // IWYU pragma: export
 
 namespace libhla {
 namespace clock {
@@ -36,67 +35,70 @@ namespace clock {
  * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html
  * or other hardware assisted clock like Pentium TSC.
  */
-class HLA_EXPORT Clock
-{
+class HLA_EXPORT Clock {
 public:
-	/**
-	 * The Clock default constructor.
-	 * @param[in] newName the clock name
-	 */
-	Clock(const std::string& newName);
-	/**
-	 * Get the clock name.
-	 * @return the clock name
-	 */
-	const std::string& getName() const {return name;};
-	/**
-	 * Get the clock resolution in nano-seconds.
-	 * @return the clock resolution in nano-seconds
-	 */
-	virtual double getResolution()                 = 0;
-	/**
-	 * Get the current ticks value.
-	 * @return the current ticks value
-	 */
-	virtual uint64_t getCurrentTicksValue()          = 0;
-	/**
-	 * Get the delta between current ticks value and
-	 * the one provided as argument.
-	 * @param[in] previousTicks a previous ticks value
-	 * @return the delta tick value
-	 */
-	virtual uint64_t getDeltaTicks(const uint64_t previousTicks);
-	/**
-	 * Convert a number of ticks into a double value
-	 * representing nanoseconds.
-	 * @param[in] ticks the number of tick to convert
-	 * @return the nano-seconds value
-	 */
-	virtual double   tick2NanoSecond(const uint64_t ticks)  = 0;
-	/**
-	 * Get delta between the provided ticks values in nano-seconds.
-	 * @param[in] firstTicks the first tick value
-	 * @param[in] secondTicks the second (later) tick value
-	 * @return the delta time between the two ticks value in nano-seconds.
-	 */
-	virtual double   getDeltaNanoSecond(const uint64_t firstTicks, const uint64_t secondTicks);
+    /**
+     * The Clock default constructor.
+     * @param[in] newName the clock name
+     */
+    Clock(const std::string& newName);
+    /**
+     * Get the clock name.
+     * @return the clock name
+     */
+    const std::string& getName() const
+    {
+        return name;
+    };
+    /**
+     * Get the clock resolution in nano-seconds.
+     * @return the clock resolution in nano-seconds
+     */
+    virtual double getResolution() = 0;
+    /**
+     * Get the current ticks value.
+     * @return the current ticks value
+     */
+    virtual uint64_t getCurrentTicksValue() = 0;
+    /**
+     * Get the delta between current ticks value and
+     * the one provided as argument.
+     * @param[in] previousTicks a previous ticks value
+     * @return the delta tick value
+     */
+    virtual uint64_t getDeltaTicks(const uint64_t previousTicks);
+    /**
+     * Convert a number of ticks into a double value
+     * representing nanoseconds.
+     * @param[in] ticks the number of tick to convert
+     * @return the nano-seconds value
+     */
+    virtual double tick2NanoSecond(const uint64_t ticks) = 0;
+    /**
+     * Get delta between the provided ticks values in nano-seconds.
+     * @param[in] firstTicks the first tick value
+     * @param[in] secondTicks the second (later) tick value
+     * @return the delta time between the two ticks value in nano-seconds.
+     */
+    virtual double getDeltaNanoSecond(const uint64_t firstTicks, const uint64_t secondTicks);
 
-	/**
-	 * Get delta between current ticks value and
-	 * the one provided as argument as nano-second value
-	 * @param[in] previousTicks
-	 */
-	virtual double   getDeltaNanoSecond(const uint64_t previousTicks);
+    /**
+     * Get delta between current ticks value and
+     * the one provided as argument as nano-second value
+     * @param[in] previousTicks
+     */
+    virtual double getDeltaNanoSecond(const uint64_t previousTicks);
 
-	virtual ~Clock();
+    virtual ~Clock();
 
-       /** 
-	* Retrieve the best possible clock. 
-	* @return  the obtained clock      
-	*/
-	static Clock* getBestClock (); 
+    /** 
+    * Retrieve the best possible clock. 
+    * @return  the obtained clock      
+    */
+    static Clock* getBestClock();
+
 protected:
-	std::string name;
+    std::string name;
 };
 
 } /* end namespace clock  */

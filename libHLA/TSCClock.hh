@@ -16,50 +16,50 @@ namespace clock {
  * used on mobile device.
  * If you want a more "robust" Clock class you may use PosixClock.
  */
-class HLA_EXPORT TSCClock : public Clock
-{
+class HLA_EXPORT TSCClock : public Clock {
 public:
-	TSCClock();
-	/**
+    TSCClock();
+    /**
 	 * Get the clock resolution in nano-seconds.
 	 * @return the clock resolution in nano-seconds
 	 */
-	virtual double getResolution();
-	/**
+    virtual double getResolution();
+    /**
 	 * Get the current ticks value.
 	 * @return the current ticks value
 	 */
-	virtual uint64_t getCurrentTicksValue();
-	/**
+    virtual uint64_t getCurrentTicksValue();
+    /**
 	 * Convert a number of ticks into a double value
 	 * representing nanoseconds.
 	 * @param[in] ticks the number of tick to convert
 	 * @return the nano-seconds value
 	 */
-	virtual double   tick2NanoSecond(const uint64_t ticks);
-	virtual ~TSCClock();
+    virtual double tick2NanoSecond(const uint64_t ticks);
+    virtual ~TSCClock();
+
 private:
-	/**
+    /**
 	 * Get processor frequency
 	 * @return the processor frequency in MHz
 	 */
-	static double getProcessorFrequency();
+    static double getProcessorFrequency();
 
-	/**
+    /**
 	 * Read the Time Stamp Counter using
 	 * rdtsc assembly instruction
 	 */
-	inline uint64_t readTSC() {
-	  uint64_t tsc;
-	  __asm__ __volatile__("rdtsc" : "=A" (tsc));
-	  return tsc;
-	};
+    inline uint64_t readTSC()
+    {
+        uint64_t tsc;
+        __asm__ __volatile__("rdtsc" : "=A"(tsc));
+        return tsc;
+    };
 
-	/**
+    /**
 	 * The TSC clock resolution in nano-seconds
 	 */
-	double resolution;
-
+    double resolution;
 };
 
 } /* end namespace clock  */

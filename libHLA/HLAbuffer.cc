@@ -16,8 +16,9 @@
 
 #include "HLAbuffer.hh"
 
-#include <iomanip>
 #include <algorithm>
+#include <iomanip>
+#include <iostream>
 
 // #define HLATYPES_IEEE1516_DISPLAYPRINTABLE
 
@@ -25,55 +26,53 @@ namespace libhla {
 
 __HLAbuffer::BufferList __HLAbuffer::gBuffers;
 
-const bool
-__HLAbuffer::__is_big_endian()
+const bool __HLAbuffer::__is_big_endian()
 {
-#ifdef HOST_IS_BIG_ENDIAN 
+#ifdef HOST_IS_BIG_ENDIAN
     return true;
-#else 
+#else
     return false;
-#endif 
+#endif
 }
 
-const bool
-__HLAbuffer::__is_little_endian()
+const bool __HLAbuffer::__is_little_endian()
 {
-#ifdef HOST_IS_BIG_ENDIAN 
+#ifdef HOST_IS_BIG_ENDIAN
     return false;
-#else 
+#else
     return true;
-#endif 
+#endif
 }
 
 //! Print the physical data buffer (for debugging purposes only)
-std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t length)
+std::ostream& __print_buffer(std::ostream& stream, const void* buffer, size_t length)
 {
     static const size_t cBytesPerLine = 16;
     size_t offset = 0;
 
     while (length != 0) {
-        stream << std::hex << std::setfill('0') << std::setw(4) << (unsigned)offset << ": ";
+        stream << std::hex << std::setfill('0') << std::setw(4) << (unsigned) offset << ": ";
 
         size_t i = std::min(cBytesPerLine, length);
-        const unsigned char* p = (const unsigned char*)buffer;
+        const unsigned char* p = (const unsigned char*) buffer;
 
         for (size_t j = i; j > 0; j--)
-            stream << " " << std::hex << std::setfill('0') << std::setw(2) << (unsigned)*p++;
+            stream << " " << std::hex << std::setfill('0') << std::setw(2) << (unsigned) *p++;
 
 #ifdef HLATYPES_IEEE1516_DISPLAYPRINTABLE
-        for(size_t j = cBytesPerLine - i; j > 0; j--)
+        for (size_t j = cBytesPerLine - i; j > 0; j--)
             stream << "   ";
 
         stream << "   ";
 
-        p = (const unsigned char*)buffer;
+        p = (const unsigned char*) buffer;
         for (size_t j = i; j > 0; j--) {
             char ch = *p++;
             stream << (isprint(ch) ? ch : ' ');
         }
 #endif
         stream << std::endl;
-        buffer = (const unsigned char*)buffer + i;
+        buffer = (const unsigned char*) buffer + i;
         length -= i;
         offset += i;
     }
@@ -84,4 +83,3 @@ std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t le
 } // namespace libhla
 
 // $Id: HLAbuffer.cc,v 1.2 2008/11/19 10:25:03 gotthardp Exp $
-

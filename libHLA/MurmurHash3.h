@@ -12,11 +12,11 @@
 namespace libhla {
 namespace hash {
 
-HLA_EXPORT void MurmurHash3_x86_32  ( const void * key, int len, uint32_t seed, void * out );
+HLA_EXPORT void MurmurHash3_x86_32(const void* key, int len, uint32_t seed, void* out);
 
-HLA_EXPORT void MurmurHash3_x86_128 ( const void * key, int len, uint32_t seed, void * out );
+HLA_EXPORT void MurmurHash3_x86_128(const void* key, int len, uint32_t seed, void* out);
 
-HLA_EXPORT void MurmurHash3_x64_128 ( const void * key, int len, uint32_t seed, void * out );
+HLA_EXPORT void MurmurHash3_x64_128(const void* key, int len, uint32_t seed, void* out);
 
 } /* end of namespace hash */
 } /* end of namespace libhla */

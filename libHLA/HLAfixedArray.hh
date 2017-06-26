@@ -49,44 +49,53 @@ namespace libhla {
  */
 
 //! Fixed array of <N> elements of type <M>
-template<class M, int N, bool hasVariable = M::m_isVariable>
+template <class M, int N, bool hasVariable = M::m_isVariable>
 struct HLAfixedArray;
 
-template<class M, int N, bool hasVariable>
-std::ostream& PrintBuffer(std::ostream& stream, HLAfixedArray<M,N,hasVariable>& buffer)
-{ return __print_buffer(stream, (void*)&buffer, buffer.__sizeof()); }
+template <class M, int N, bool hasVariable>
+std::ostream& PrintBuffer(std::ostream& stream, HLAfixedArray<M, N, hasVariable>& buffer)
+{
+    return __print_buffer(stream, (void*) &buffer, buffer.__sizeof());
+}
 
 // Fixed array optimized for fixed-size elements
 // note: this is the most efficient data type
-template<class M, int N>
-struct HLAfixedArray<M, N, false>
-{
+template <class M, int N>
+struct HLAfixedArray<M, N, false> {
     static const size_t size()
-    { return N; }
+    {
+        return N;
+    }
 
     static const size_t offset(long i)
-    { return i*(M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary)); }
+    {
+        return i * (M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary));
+    }
 
     M& operator[](long i) const
     {
-        if (i < 0 || i >= (long)size())
+        if (i < 0 || i >= (long) size())
             throw std::out_of_range("HLAfixedArray: index out of range");
-        return *(M*)((char*)this + offset(i));
+        return *(M*) ((char*) this + offset(i));
     }
 
     static const size_t emptysizeof()
-    { return __sizeof(); }
+    {
+        return __sizeof();
+    }
 
     // Padding shall not be added after the last element of the array.
     static const size_t __sizeof()
-    { return offset(N-1) + M::__sizeof(); }
+    {
+        return offset(N - 1) + M::__sizeof();
+    }
 
     void copy(void* source)
     {
         size_t offs = 0;
         // copy all elements of the structure
         for (size_t i = 0; i < N; i++) {
-            ((M*)((char*)this + offs))->copy((char*)source + offs);
+            ((M*) ((char*) this + offs))->copy((char*) source + offs);
             offs += M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary);
         }
     }
@@ -96,18 +105,19 @@ struct HLAfixedArray<M, N, false>
 };
 
 // Generic fixed array, supports variable-size elements
-template<class M, int N>
-struct HLAfixedArray<M, N, true>
-{
+template <class M, int N>
+struct HLAfixedArray<M, N, true> {
     static const size_t size()
-    { return N; }
+    {
+        return N;
+    }
 
     const size_t offset(long i) const
     {
         size_t offs = 0;
         // count every member, the elements may be variable-sized
-        for (long j=0; j<i; j++) {
-            offs += ((M*)((char*)this + offs))->__sizeof();
+        for (long j = 0; j < i; j++) {
+            offs += ((M*) ((char*) this + offs))->__sizeof();
             offs += __padding(offs, M::m_octetBoundary);
         }
         return offs;
@@ -117,22 +127,22 @@ struct HLAfixedArray<M, N, true>
     {
         if (i >= size())
             throw std::out_of_range("HLAfixedArray: index out of range");
-        return *(M*)((char*)this + offset(i));
+        return *(M*) ((char*) this + offset(i));
     }
 
     static const size_t emptysizeof()
     {
-        size_t size = N*M::emptysizeof();
+        size_t size = N * M::emptysizeof();
         // padding shall not be added after the last element of the array
-        if(N > 1)
-            size += (N-1)*__padding(M::emptysizeof(), M::m_octetBoundary);
+        if (N > 1)
+            size += (N - 1) * __padding(M::emptysizeof(), M::m_octetBoundary);
         return size;
     }
 
     const size_t __sizeof() const
     {
-        size_t offs = offset(N-1);
-        return offs + ((M*)((char*)this + offs))->__sizeof();
+        size_t offs = offset(N - 1);
+        return offs + ((M*) ((char*) this + offs))->__sizeof();
     }
 
     void copy(void* source)
@@ -141,11 +151,11 @@ struct HLAfixedArray<M, N, true>
         size_t offsS = 0;
         // copy all elements of the structure, the elements may be variable-sized
         for (size_t i = 0; i < N; i++) {
-            ((M*)((char*)this + offsD))->copy((char*)source + offsS);
+            ((M*) ((char*) this + offsD))->copy((char*) source + offsS);
 
-            offsD += ((M*)((char*)this + offsD))->__sizeof(); // may differ from source size
+            offsD += ((M*) ((char*) this + offsD))->__sizeof(); // may differ from source size
             offsD += __padding(offsD, M::m_octetBoundary);
-            offsS += ((M*)((char*)source + offsS))->__sizeof();
+            offsS += ((M*) ((char*) source + offsS))->__sizeof();
             offsS += __padding(offsS, M::m_octetBoundary);
         }
     }
@@ -159,4 +169,3 @@ struct HLAfixedArray<M, N, true>
 #endif // _HLATYPES_FIXEDARRAY_HH
 
 // $Id: HLAfixedArray.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
-
