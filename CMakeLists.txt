@@ -82,10 +82,10 @@ if (NOT BUILD_LEGACY_LIBRTI AND WIN32)
 endif()
 
 option(COMPILE_WITH_CXX11
-       "Compile code with C++11 feature enabled" OFF)
+       "Compile code with C++11 feature enabled" ON)
 
 option(COMPILE_WITH_C11
-       "Compile code with C11 feature enabled" OFF)
+       "Compile code with C11 feature enabled" ON)
 
 option(BUILD_DOC
        "Build documentation (using doxygen)" OFF)
