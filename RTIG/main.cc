@@ -19,25 +19,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include "config.h"
-#include "RTIG.hh"
-#include "RTIG_cmdline.h"
-#include "certi.hh"
-
 #ifdef _WIN32
 #include <signal.h>
 #endif
 
-#include <new>
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
+#include <new>
+#include <string>
 
-using namespace certi ;
-using namespace certi::rtig ;
-using std::cerr ;
-using std::cout ;
-using std::endl ;
-using std::string ;
+#include "RTIG.hh"
+#include "RTIG_cmdline.h"
+// #include "certi.hh"
+#include "config.h"
+
+using namespace certi;
+using namespace certi::rtig;
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
 
 // ----------------------------------------------------------------------------
 //! SignalHandler.
@@ -50,9 +52,7 @@ extern "C" void SignalHandler(int sig)
 
 // ----------------------------------------------------------------------------
 //! NewHandler
-void
-NewHandler()
-throw (MemoryExhausted)
+void NewHandler() throw(MemoryExhausted)
 {
     throw MemoryExhausted("main RTIG");
 }
@@ -93,11 +93,12 @@ throw (MemoryExhausted)
  * \copydoc certi_FOM_FileSearch
  * @ingroup certi_executable
  */
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     RTIG myRTIG;
-    gengetopt_args_info args ;
-    if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
+    gengetopt_args_info args;
+    if (cmdline_parser(argc, argv, &args))
+        exit(EXIT_FAILURE);
     /* The default verbose level is 2 */
     int verboseLevel = 2;
     if (args.verbose_given)
@@ -105,21 +106,21 @@ int main(int argc, char *argv[])
 
 #if _WIN32
     string dn = string(argv[0]);
-    dn = dn.substr(0,dn.find_last_of("\\"));
-    dn = dn.substr(0,dn.find_last_of("\\"));
-    if (NULL==getenv("CERTI_HOME")) {
-        dn = "CERTI_HOME="+dn+"\\";
+    dn = dn.substr(0, dn.find_last_of("\\"));
+    dn = dn.substr(0, dn.find_last_of("\\"));
+    if (NULL == getenv("CERTI_HOME")) {
+        dn = "CERTI_HOME=" + dn + "\\";
         cout << "Updating : " << dn << endl;
         putenv(dn.c_str());
     }
 #endif
 
-    if (verboseLevel>0) {
-        cout << "CERTI RTIG " VERSION " - Copyright 2002-2008  ONERA" << endl ;
+    if (verboseLevel > 0) {
+        cout << "CERTI RTIG " VERSION " - Copyright 2002-2008  ONERA" << endl;
         cout << "This is free software ; see the source for copying "
              << "conditions. There is NO\nwarranty ; not even for "
-             << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-             << endl << endl ;
+             << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE." << endl
+             << endl;
     }
 
     std::signal(SIGINT, SignalHandler);
@@ -131,17 +132,20 @@ int main(int argc, char *argv[])
 
     myRTIG.setVerboseLevel(verboseLevel);
     try {
+        // the default is to listen on all network interface
+        // unless -l argument to rtig command line is specified
         // if a listening IP has been specified then use it
         if (args.listen_given) {
             myRTIG.setListeningIPAddress(args.listen_arg);
         }
         myRTIG.execute();
-    } catch (NetworkError& e) {
-        std::cerr << "CERTI RTIG aborted with a Network Error: [" << e._reason << "]." <<std::endl;
+    }
+    catch (NetworkError& e) {
+        std::cerr << "CERTI RTIG aborted with a Network Error: [" << e._reason << "]." << std::endl;
     }
 
-    if (verboseLevel>0) {
-        cout << "CERTI RTIG exiting." << endl ;
+    if (verboseLevel > 0) {
+        cout << "CERTI RTIG exiting." << endl;
     }
     exit(EXIT_SUCCESS);
 } /* end of main */

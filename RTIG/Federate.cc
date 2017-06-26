@@ -19,68 +19,68 @@
 // $Id: Federate.cc,v 3.19 2010/08/09 18:24:07 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
 #include "Federate.hh"
-#include "PrettyDebug.hh"
 
 #include <algorithm>
 #include <string>
 
-static PrettyDebug G("GENDOC",__FILE__);
+#include "PrettyDebug.hh"
+
+static PrettyDebug G("GENDOC", __FILE__);
 
 namespace certi {
 namespace rtig {
 
 // ----------------------------------------------------------------------------
 //! A new FederateName is allocated. theLink must have been opened before.
-Federate::Federate(const std::string& the_name, FederateHandle the_handle)
-    throw (RTIinternalError)
-    : handle(the_handle), name(the_name), regulator(false), constrained(false), usingNERx(false),
-      cras(true), iras(true), aras(false), asas(false), 
-      saving(false), restoring(false)
+Federate::Federate(const std::string& the_name, FederateHandle the_handle) throw(RTIinternalError)
+    : handle(the_handle)
+    , name(the_name)
+    , regulator(false)
+    , constrained(false)
+    , usingNERx(false)
+    , cras(true)
+    , iras(true)
+    , aras(false)
+    , asas(false)
+    , saving(false)
+    , restoring(false)
 {
     if (handle == 0)
         throw RTIinternalError("Bad initialization parameter for Federate.");
 }
 
-
-void
-Federate::addSynchronizationLabel(const std::string& label)
-    throw (RTIinternalError)
+void Federate::addSynchronizationLabel(const std::string& label) throw(RTIinternalError)
 {
-    G.Out(pdGendoc,"enter Federate::addSynchronizationLabel");
+    G.Out(pdGendoc, "enter Federate::addSynchronizationLabel");
 
     SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), label);
     if (it == syncLabels.end())
-	syncLabels.push_back(label);
+        syncLabels.push_back(label);
     else
-	throw RTIinternalError("Synchronization label pending in federate.");
+        throw RTIinternalError("Synchronization label pending in federate.");
 
-    G.Out(pdGendoc,"exit  Federate::addSynchronizationLabel");
-
+    G.Out(pdGendoc, "exit  Federate::addSynchronizationLabel");
 }
 
 // ----------------------------------------------------------------------------
 //! Removes a synchronization label from federate.
-void
-Federate::removeSynchronizationLabel(const std::string& label)
-    throw (RTIinternalError)
+void Federate::removeSynchronizationLabel(const std::string& label) throw(RTIinternalError)
 {
     SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), label);
     if (it == syncLabels.end())
-	throw RTIinternalError("Synch. label not in federate.");
+        throw RTIinternalError("Synch. label not in federate.");
     else
-	syncLabels.erase(it);    
+        syncLabels.erase(it);
 }
 
 // ----------------------------------------------------------------------------
 //! Returns whether the federate is already synchronized with this label.
-bool
-Federate::isSynchronizationLabel(const std::string& label) const
+bool Federate::isSynchronizationLabel(const std::string& label) const
 {
     return std::find(syncLabels.begin(), syncLabels.end(), label) != syncLabels.end();
 }
-
-}}
+}
+}
 
 // $Id: Federate.cc,v 3.19 2010/08/09 18:24:07 erk Exp $
