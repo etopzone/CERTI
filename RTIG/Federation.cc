@@ -1754,7 +1754,7 @@ throw (FederateNotExecutionMember,
 		strname = object_name;
 	} else {
 		// create a name if necessary
-		strname = stringize() << "HLAObject_" << new_id;
+		strname = "HLAObject_" + std::to_string(new_id);
 	}
 
 	// Register Object.
@@ -2571,7 +2571,7 @@ throw (ObjectClassNotDefined, ObjectClassNotPublished,
 		strname = object_name;
 	} else {
 		// create a name if necessary
-		strname = stringize() << "HLAObject_" << object;
+		strname = "HLAObject_" + std::to_string(object);
 	}
 
 	root->registerObjectInstance(federate, class_handle, object, strname);
