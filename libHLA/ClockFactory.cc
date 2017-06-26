@@ -59,7 +59,7 @@ Clock* Clock::getBestClock()
             #ifdef HAVE_GETTIMEOFDAY
                 return new GettimeofdayClock();
             #else
-                return NULL;
+                return nullptr;
             #endif
         #endif
     #endif
