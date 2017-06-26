@@ -34,7 +34,6 @@ set(rtig_SRCS
   main.cc
   RTIG.cc RTIG.hh
   RTIG_processing.cc
-  Trace.cc Trace.hh
   ${rtig_SRCS_generated}
   )
 
