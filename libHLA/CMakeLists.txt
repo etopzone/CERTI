@@ -36,20 +36,15 @@ if (MSVC)
 	set_source_files_properties(MsgBuffer.c PROPERTIES CFLAGS "-D_CRT_SECURE_NO_WARNINGS")
 endif ()
 
-set(LIBHLA_MB_TEST_SRCS MessageBufferTests.cc)
-add_executable(MessageBufferTests ${LIBHLA_MB_TEST_SRCS})
-target_link_libraries(MessageBufferTests HLA)
-
 add_executable(MsgBufferTests MsgBufferTests.c)
 set_source_files_properties(MsgBufferTests.c PROPERTIES LANGUAGE "C")
 target_link_libraries(MsgBufferTests HLA)
 
-install(TARGETS MessageBufferTests MsgBufferTests
+install(TARGETS MsgBufferTests
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-add_test(NAME LibHLA_MB_Tests COMMAND $<TARGET_FILE:MessageBufferTests>)
 add_test(NAME LibHLA_MB_Tests_InC COMMAND $<TARGET_FILE:MsgBufferTests>)
 
 set(LIBHLA_CLOCK_SRCS
@@ -130,15 +125,11 @@ add_executable(TestHLAtypes TestHLAtypes.cc)
 target_link_libraries(TestHLAtypes HLA)
 add_test(NAME LibHLAtypes COMMAND $<TARGET_FILE:TestHLAtypes>)
 
-add_executable(TestClocks TestClocks.cc)
-target_link_libraries(TestClocks HLA)
-add_test(NAME LibHLAClocks COMMAND $<TARGET_FILE:TestClocks>)
-
 if(COMPILE_WITH_CXX11)
     set_property(TARGET
-                 MessageBufferTests MsgBufferTests
+                 MsgBufferTests
                  HLA
-                 TestClocks TestHLAtypes PROPERTY CXX_STANDARD 11)
+                 TestHLAtypes PROPERTY CXX_STANDARD 11)
 endif()
 
 
