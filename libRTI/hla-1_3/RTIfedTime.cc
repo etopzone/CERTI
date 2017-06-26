@@ -46,6 +46,8 @@ rft(const RTI::FedTime &time)
 	return dynamic_cast<const RTIfedTime &>(time);
     }
     catch (std::bad_cast) {
+        // FIXME warning: control may reach end of non-void function [-Wreturn-type]
+        
 	//throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
     }
 }
@@ -69,7 +71,8 @@ RTI::FedTimeFactory::makeZero()
     try {
         return new RTIfedTime();
     }
-    catch (std::bad_alloc) {		
+    catch (std::bad_alloc) {	
+        // FIXME warning: control may reach end of non-void function [-Wreturn-type]	
         //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
@@ -87,6 +90,7 @@ RTI::FedTimeFactory::decode(const char *buf)
         return new RTIfedTime(value.dv);
     }
     catch (std::bad_alloc) {
+        // FIXME warning: control may reach end of non-void function [-Wreturn-type]
         //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
