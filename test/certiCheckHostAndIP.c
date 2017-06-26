@@ -24,7 +24,7 @@
  */
 
 #ifdef LINUX
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <linux/if.h>
