@@ -25,6 +25,7 @@
 #include "certi.hh"
 
 #include <limits>
+#include <list>
 
 namespace certi {
 

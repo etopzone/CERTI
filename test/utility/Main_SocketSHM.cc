@@ -36,6 +36,7 @@
   #include <process.h>
   #include "SocketSHMWin32.hh"
 #else
+  #include "unistd.h"
   #include "SocketSHMPosix.hh"
   #include "SocketSHMSysV.hh"
 #endif
