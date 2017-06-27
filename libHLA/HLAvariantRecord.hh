@@ -17,7 +17,7 @@
 #ifndef _HLATYPES_VARIANTRECORD_HH
 #define _HLATYPES_VARIANTRECORD_HH
 
-#include <HLAbuffer.hh>
+#include "HLAbuffer.hh"
 
 namespace libhla {
 

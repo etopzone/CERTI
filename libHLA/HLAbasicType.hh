@@ -17,7 +17,7 @@
 #ifndef _HLATYPES_BASICTYPE_HH
 #define _HLATYPES_BASICTYPE_HH
 
-#include <HLAbuffer.hh>
+#include "HLAbuffer.hh"
 #include <cstring>
 
 namespace libhla {

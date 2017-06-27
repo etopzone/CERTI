@@ -17,7 +17,7 @@
 #ifndef _HLATYPES_FIXEDRECORD_HH
 #define _HLATYPES_FIXEDRECORD_HH
 
-#include <HLAbuffer.hh>
+#include "HLAbuffer.hh"
 
 namespace libhla {
 

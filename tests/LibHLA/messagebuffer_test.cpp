@@ -9,9 +9,8 @@
 
 #include <libHLA/MessageBuffer.hh>
 
-using std::cout;
-using std::cerr;
-using std::endl;
+using ::std::cout;
+using ::std::endl;
 
 using libhla::MessageBuffer;
 
@@ -225,7 +224,7 @@ TEST(MessageBufferTest, TestRW_cString)
 {
     MessageBuffer msgBuf;
     
-    const char* initial = "a char* string";
+    const char* initial = "a C style string";
     char* destination;
     
     uint32_t initialSize(0), destinationSize(0);

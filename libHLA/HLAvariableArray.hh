@@ -17,9 +17,10 @@
 #ifndef _HLATYPES_VARIABLEARRAY_HH
 #define _HLATYPES_VARIABLEARRAY_HH
 
-#include <HLAbasicType.hh>
-#include <HLAbuffer.hh>
 #include <algorithm>
+
+#include "HLAbasicType.hh"
+#include "HLAbuffer.hh"
 
 namespace libhla {
 

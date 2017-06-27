@@ -46,7 +46,7 @@
  * See http://aszt.inf.elte.hu/~gsd/halado_cpp/ch06s09.html
  */
 
-#include <HLAbuffer.hh>
+#include "HLAbuffer.hh"
 #include <cstring>
 
 namespace libhla {
@@ -115,12 +115,12 @@ public:
 #pragma warning(disable : 4503) // suppress warning C4503: decorated name length exceeded
 #endif
 
-#include <HLAbasicType.hh>
-#include <HLAenumeratedType.hh>
-#include <HLAfixedArray.hh>
-#include <HLAfixedRecord.hh>
-#include <HLAvariableArray.hh>
-#include <HLAvariantRecord.hh>
+#include "HLAbasicType.hh"
+#include "HLAenumeratedType.hh"
+#include "HLAfixedArray.hh"
+#include "HLAfixedRecord.hh"
+#include "HLAvariableArray.hh"
+#include "HLAvariantRecord.hh"
 
 #endif // _HLATYPES_IEEE1516_HH
 
