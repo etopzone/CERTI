@@ -35,9 +35,9 @@
 
 // #include "NM_Classes.hh"
 #include "FedTimeD.hh"
-#include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 #include "Socket.hh"
+#include <NetworkMessage.hh>
 
 #ifdef _WIN32
 #include <signal.h>
@@ -76,6 +76,11 @@ RTIG::RTIG()
     , my_federations(my_socketServer, my_auditServer)
 {
     my_federations.setVerboseLevel(my_verboseLevel);
+
+    for (int i = pdAnswer; i < pdLast; ++i) {
+        D.enableDebugLevel(static_cast<pdDebugLevel>(i));
+        G.enableDebugLevel(static_cast<pdDebugLevel>(i));
+    }
 
     my_NM_msgBufSend.reset();
     my_NM_msgBufReceive.reset();
@@ -157,7 +162,8 @@ void RTIG::execute() throw(NetworkError)
         // Is it a message from an already opened connection?
         link = my_socketServer.getActiveSocket(&fd);
         if (link) {
-            D.Out(pdCom, "Incoming message on socket %ld.", link->returnSocket());
+            Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
+
             try {
                 do {
                     link = processIncomingMessage(link);
@@ -168,10 +174,10 @@ void RTIG::execute() throw(NetworkError)
             }
             catch (NetworkError& e) {
                 if (!e._reason.empty()) {
-                    D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason.c_str());
+                    Debug(D, pdExcept) << "Catching Network Error, reason: " << e._reason << std::endl;
                 }
                 else {
-                    D.Out(pdExcept, "Catching Network Error, no reason string.");
+                    Debug(D, pdExcept) << "Catching Network Error, no reason string" << std::endl;
                 }
                 std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
                 closeConnection(link, true);
@@ -181,7 +187,7 @@ void RTIG::execute() throw(NetworkError)
 
         // Or on the server socket ?
         if (FD_ISSET(my_tcpSocketServer.returnSocket(), &fd)) {
-            D.Out(pdCom, "Demande de connexion.");
+            Debug(D, pdCom) << "New client" << std::endl;
             openConnection();
         }
     }
@@ -189,14 +195,14 @@ void RTIG::execute() throw(NetworkError)
 
 void RTIG::signalHandler(int sig)
 {
-    D.Out(pdError, "Received Signal %d.", sig);
+    Debug(D, pdError) << "Received Signal: " << sig << std::endl;
 
     if (sig == SIGINT) {
         terminate = true;
     }
 #ifndef _WIN32
     if (sig == SIGPIPE) {
-        std::cout << "Ignoring 'Broken pipe' signal." << std::endl;
+        std::cout << "Ignoring 'Broken pipe' signal" << std::endl;
     }
 #endif
 }
@@ -228,7 +234,7 @@ void RTIG::createSocketServers()
 
 Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
 {
-    G.Out(pdGendoc, "enter RTIG::chooseProcessingMethod type (%s)", msg->getMessageName());
+    Debug(G, pdGendoc) << "enter RTIG::chooseProcessingMethod type (" << msg->getMessageName() << ")" << std::endl;
 
     // This may throw a security error.
     if (msg->getMessageType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
@@ -237,31 +243,31 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
 
     switch (msg->getMessageType()) {
     case NetworkMessage::MESSAGE_NULL:
-        D.Out(pdDebug, "Message Null.");
+        Debug(D, pdDebug) << "Message Null" << std::endl;
         my_auditServer.setLevel(0);
         processMessageNull(msg, false);
         break;
 
     case NetworkMessage::MESSAGE_NULL_PRIME:
-        D.Out(pdDebug, "Message Null.");
+        Debug(D, pdDebug) << "Message Null" << std::endl;
         my_auditServer.setLevel(0);
         processMessageNullPrime(static_cast<NM_Message_Null_Prime*>(msg));
         break;
 
     case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
-        D.Out(pdDebug, "UpdateAttributeValue.");
+        Debug(D, pdDebug) << "UpdateAttributeValue" << std::endl;
         my_auditServer.setLevel(1);
         processUpdateAttributeValues(link, static_cast<NM_Update_Attribute_Values*>(msg));
         break;
 
     case NetworkMessage::SEND_INTERACTION:
-        D.Out(pdTrace, "send interaction.");
+        Debug(D, pdTrace) << "send interaction" << std::endl;
         my_auditServer.setLevel(2);
         processSendInteraction(link, static_cast<NM_Send_Interaction*>(msg));
         break;
 
     case NetworkMessage::CLOSE_CONNEXION:
-        D.Out(pdTrace, "Close connection %ld.", link->returnSocket());
+        Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
         my_auditServer.setLevel(9);
         my_auditServer << "Socket " << int(link->returnSocket());
         closeConnection(link, false);
@@ -284,79 +290,79 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
         break;
 
     case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Federate no %u leaves federation no %u .", msg->getFederate(), msg->getFederation());
+        Debug(D, pdTrace) << "Federate (" << msg->getFederate() << ") leaves federation (" << msg->getFederation()
+                          << ")" << std::endl;
         my_auditServer.setLevel(9);
         processResignFederation(link, msg->getFederation(), msg->getFederate());
         break;
 
     case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        D.Out(
-            pdTrace, "Federation %u: registerFedSyncPoint from federate %u.", msg->getFederation(), msg->getFederate());
+        Debug(D, pdTrace) << "Federation " << msg->getFederation() << ": registerFedSyncPoint from federate "
+                          << msg->getFederate() << std::endl;
         my_auditServer.setLevel(8);
         processRegisterSynchronization(link, static_cast<NM_Register_Federation_Synchronization_Point*>(msg));
         break;
 
     case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
-        D.Out(pdTrace,
-              "Federation %u: synchronizationPointAchieved from federate %u.",
-              msg->getFederation(),
-              msg->getFederate());
+        Debug(D, pdTrace) << "Federation " << msg->getFederation() << ": synchronizationPointAchieved from federate "
+                          << msg->getFederate() << std::endl;
         my_auditServer.setLevel(8);
         processSynchronizationAchieved(link, msg);
         break;
 
     case NetworkMessage::REQUEST_FEDERATION_SAVE:
-        D.Out(pdTrace, "Request federation save from federate %u.", msg->getFederate());
+        Debug(D, pdTrace) << "Request federation save from federate " << msg->getFederate() << std::endl;
         my_auditServer.setLevel(8);
         processRequestFederationSave(link, msg);
         break;
 
     case NetworkMessage::FEDERATE_SAVE_BEGUN:
-        D.Out(pdTrace, "Federate %u begun save.", msg->getFederate());
+        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " begun save" << std::endl;
         my_auditServer.setLevel(8);
         processFederateSaveBegun(link, msg);
         break;
 
     case NetworkMessage::FEDERATE_SAVE_COMPLETE:
     case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
-        D.Out(pdTrace, "Federate %u save complete/not complete.", msg->getFederate());
+        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " save complete/not complete" << std::endl;
         my_auditServer.setLevel(8);
         processFederateSaveStatus(link, msg);
         break;
 
     case NetworkMessage::REQUEST_FEDERATION_RESTORE:
-        D.Out(pdTrace, "Federate %u request a restoration.", msg->getFederate());
+        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " request a restoration" << std::endl;
         my_auditServer.setLevel(8);
         processRequestFederationRestore(link, msg);
         break;
 
     case NetworkMessage::FEDERATE_RESTORE_COMPLETE:
     case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
-        D.Out(pdTrace, "Federate %u restore complete/not complete.", msg->getFederate());
+        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " restore complete/not complete" << std::endl;
         my_auditServer.setLevel(8);
         processFederateRestoreStatus(link, msg);
         break;
 
     case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        D.Out(pdTrace, "RequestAttributeValueUpdate.)");
+        Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
         my_auditServer.setLevel(6);
         processRequestObjectAttributeValueUpdate(link, static_cast<NM_Request_Object_Attribute_Value_Update*>(msg));
         break;
 
     case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-        D.Out(pdTrace, "RequestClassAttributeValueUpdate.)");
+        Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;
         my_auditServer.setLevel(6);
         processRequestClassAttributeValueUpdate(link, static_cast<NM_Request_Class_Attribute_Value_Update*>(msg));
         break;
 
     case NetworkMessage::SET_TIME_REGULATING:
-        D.Out(pdTrace, "SetTimeRegulating du federe %u(date=%f).", msg->getFederate(), msg->getDate().getTime());
+        Debug(D, pdTrace) << "SetTimeRegulating for federate " << msg->getFederate()
+                          << ", date:" << msg->getDate().getTime() << std::endl;
         my_auditServer.setLevel(8);
         processSetTimeRegulating(link, static_cast<NM_Set_Time_Regulating*>(msg));
         break;
 
     case NetworkMessage::SET_TIME_CONSTRAINED:
-        D.Out(pdTrace, "SetTimeConstrained du federe %u.", msg->getFederate());
+        Debug(D, pdTrace) << "SetTimeConstrained for federate " << msg->getFederate() << std::endl;
         my_auditServer.setLevel(8);
 
         processSetTimeConstrained(link, static_cast<NM_Set_Time_Constrained*>(msg));
@@ -364,7 +370,7 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
 
     case NetworkMessage::PUBLISH_OBJECT_CLASS:
     case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
-        D.Out(pdTrace, "un/publishObjectClass.");
+        Debug(D, pdTrace) << "un/publishObjectClass" << std::endl;
         my_auditServer.setLevel(7);
         /* we cast to Publish because Unpublish inherits from Publish */
         processPublishObjectClass(link, static_cast<NM_Publish_Object_Class*>(msg));
@@ -372,46 +378,46 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
 
     case NetworkMessage::PUBLISH_INTERACTION_CLASS:
     case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
-        D.Out(pdTrace, "un/publishInteractionClass.");
+        Debug(D, pdTrace) << "un/publishInteractionClass" << std::endl;
         my_auditServer.setLevel(7);
         processPublishInteractionClass(link, static_cast<NM_Publish_Interaction_Class*>(msg));
         break;
 
     case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
     case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
-        D.Out(pdTrace, "un/subscribeObjectClass.");
+        Debug(D, pdTrace) << "un/subscribeObjectClass" << std::endl;
         my_auditServer.setLevel(7);
         processSubscribeObjectClass(link, static_cast<NM_Subscribe_Object_Class*>(msg));
         break;
 
     case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
     case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
-        D.Out(pdTrace, "un/subscribeInteractionClass.");
+        Debug(D, pdTrace) << "un/subscribeInteractionClass" << std::endl;
         my_auditServer.setLevel(7);
         processSubscribeInteractionClass(link, static_cast<NM_Subscribe_Interaction_Class*>(msg));
         break;
 
     case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "setClassRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
         my_auditServer.setLevel(6);
         processSetClassRelevanceAdvisorySwitch(link, static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg));
         break;
 
     case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "setInteractionRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
         my_auditServer.setLevel(6);
         processSetInteractionRelevanceAdvisorySwitch(link,
                                                      static_cast<NM_Set_Interaction_Relevance_Advisory_Switch*>(msg));
         break;
 
     case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "setAttributeRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
         my_auditServer.setLevel(6);
         processSetAttributeRelevanceAdvisorySwitch(link, static_cast<NM_Set_Attribute_Relevance_Advisory_Switch*>(msg));
         break;
 
     case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "setAttributeScopeAdvisorySwitch.");
+        Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
         my_auditServer.setLevel(6);
         processSetAttributeScopeAdvisorySwitch(link, static_cast<NM_Set_Attribute_Scope_Advisory_Switch*>(msg));
         break;
@@ -423,68 +429,68 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
         break;
 
     case NetworkMessage::REGISTER_OBJECT:
-        D.Out(pdTrace, "registerObject.");
+        Debug(D, pdTrace) << "registerObject" << std::endl;
         my_auditServer.setLevel(6);
         processRegisterObject(link, static_cast<NM_Register_Object*>(msg));
         break;
 
     case NetworkMessage::DELETE_OBJECT:
-        D.Out(pdTrace, "DeleteObject..");
+        Debug(D, pdTrace) << "DeleteObject" << std::endl;
         my_auditServer.setLevel(6);
         processDeleteObject(link, static_cast<NM_Delete_Object*>(msg));
         break;
 
     case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        D.Out(pdTrace, "isAttributeOwnedByFederate..");
+        Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
         my_auditServer.setLevel(2);
         processAttributeOwnedByFederate(link, static_cast<NM_Is_Attribute_Owned_By_Federate*>(msg));
         break;
 
     case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
-        D.Out(pdTrace, "queryAttributeOwnership..");
+        Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
         my_auditServer.setLevel(2);
         processQueryAttributeOwnership(link, static_cast<NM_Query_Attribute_Ownership*>(msg));
         break;
 
     case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        D.Out(pdTrace, "negotiatedAttributeOwnershipDivestiture..");
+        Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
         my_auditServer.setLevel(6);
         processNegotiatedOwnershipDivestiture(link, static_cast<NM_Negotiated_Attribute_Ownership_Divestiture*>(msg));
         break;
 
     case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        D.Out(pdTrace, "attributeOwnershipAcquisitionIfAvailable..");
+        Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
         my_auditServer.setLevel(6);
         processAcquisitionIfAvailable(link, static_cast<NM_Attribute_Ownership_Acquisition_If_Available*>(msg));
         break;
 
     case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        D.Out(pdTrace, "unconditionalAttributeOwnershipDivestiture..");
+        Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
         my_auditServer.setLevel(6);
         processUnconditionalDivestiture(link, static_cast<NM_Unconditional_Attribute_Ownership_Divestiture*>(msg));
         break;
 
     case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        D.Out(pdTrace, "attributeOwnershipAcquisition..");
+        Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
         my_auditServer.setLevel(6);
         processOwnershipAcquisition(link, static_cast<NM_Attribute_Ownership_Acquisition*>(msg));
         break;
 
     case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        D.Out(pdTrace, "cancelNegociatedAttributeOwnershipDivestiture..");
+        Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
         my_auditServer.setLevel(6);
         processCancelNegotiatedDivestiture(link,
                                            static_cast<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture*>(msg));
         break;
 
     case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        D.Out(pdTrace, "attributeOwnershipReleaseResponse..");
+        Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
         my_auditServer.setLevel(6);
         processReleaseResponse(link, static_cast<NM_Attribute_Ownership_Release_Response*>(msg));
         break;
 
     case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        D.Out(pdTrace, "cancelAttributeOwnershipAcquisition..");
+        Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
         my_auditServer.setLevel(6);
         processCancelAcquisition(link, static_cast<NM_Cancel_Attribute_Ownership_Acquisition*>(msg));
         break;
@@ -551,19 +557,19 @@ Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
 
     default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        D.Out(pdError, "processMessageRecu: unknown type %u.", msg->getMessageType());
+        Debug(D, pdError) << "processMessageRecu: unknown type " << msg->getMessageType() << std::endl;
         throw RTIinternalError("Unknown Message Type");
     }
-    G.Out(pdGendoc, "exit  RTIG::chooseProcessingMethod");
+    Debug(G, pdGendoc) << "exit  RTIG::chooseProcessingMethod" << std::endl;
     return link; // It may have been set to NULL by closeConnection.
 }
 
 Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 {
-    G.Out(pdGendoc, "enter RTIG::processIncomingMessage");
+    Debug(G, pdGendoc) << "enter RTIG::processIncomingMessage" << std::endl;
 
     if (!link) {
-        D.Out(pdError, "No socket in processIncomingMessage.");
+        Debug(D, pdError) << "No socket in processIncomingMessage" << std::endl;
         return nullptr;
     }
 
@@ -586,421 +592,132 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
             strcpy(buffer, A._reason.c_str());                                                                         \
     }
 
+#define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A._name << std::endl
+
+#define BASIC_CATCH(ExceptionType, responseType)                                                                       \
+    catch (ExceptionType & e)                                                                                          \
+    {                                                                                                                  \
+        PRINT_DEBUG_MESSAGE(e);                                                                                        \
+        CPY_NOT_NULL(e);                                                                                               \
+        response->setException(responseType);                                                                          \
+    }
+
     char buffer[BUFFER_EXCEPTION_REASON_SIZE]; // To store the exception reason
     buffer[0] = 0;
 
     try {
         link = chooseProcessingMethod(link, msg);
     }
-    catch (ArrayIndexOutOfBounds& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ArrayIndexOutOfBounds);
-    }
-    catch (AttributeAlreadyOwned& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeAlreadyOwned);
-    }
-    catch (AttributeAlreadyBeingAcquired& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeAlreadyBeingAcquired);
-    }
-    catch (AttributeAlreadyBeingDivested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeAlreadyBeingDivested);
-    }
-    catch (AttributeDivestitureWasNotRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeDivestitureWasNotRequested);
-    }
-    catch (AttributeAcquisitionWasNotRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeAcquisitionWasNotRequested);
-    }
-    catch (AttributeNotDefined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeNotDefined);
-    }
-    catch (AttributeNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeNotKnown);
-    }
-    catch (AttributeNotOwned& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeNotOwned);
-    }
-    catch (AttributeNotPublished& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeNotPublished);
-    }
-    catch (AttributeNotSubscribed& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_AttributeNotSubscribed);
-    }
-    catch (ConcurrentAccessAttempted& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ConcurrentAccessAttempted);
-    }
-    catch (CouldNotDiscover& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_CouldNotDiscover);
-    }
-    catch (CouldNotOpenRID& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_CouldNotOpenRID);
-    }
-    catch (CouldNotOpenFED& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_CouldNotOpenFED);
-    }
-    catch (CouldNotRestore& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_CouldNotRestore);
-    }
-    catch (DeletePrivilegeNotHeld& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_DeletePrivilegeNotHeld);
-    }
-    catch (ErrorReadingRID& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ErrorReadingRID);
-    }
-    catch (EventNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_EventNotKnown);
-    }
-    catch (FederateAlreadyPaused& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateAlreadyPaused);
-    }
-    catch (FederateAlreadyExecutionMember& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateAlreadyExecutionMember);
-    }
-    catch (FederateDoesNotExist& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateDoesNotExist);
-    }
-    catch (FederateInternalError& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateInternalError);
-    }
-    catch (FederateNameAlreadyInUse& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateNameAlreadyInUse);
-    }
-    catch (FederateNotExecutionMember& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateNotExecutionMember);
-    }
-    catch (FederateNotPaused& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateNotPaused);
-    }
-    catch (FederateNotPublishing& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateNotPublishing);
-    }
-    catch (FederateNotSubscribing& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateNotSubscribing);
-    }
-    catch (FederateOwnsAttributes& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateOwnsAttributes);
-    }
-    catch (FederatesCurrentlyJoined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederatesCurrentlyJoined);
-    }
-    catch (FederateWasNotAskedToReleaseAttribute& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederateWasNotAskedToReleaseAttribute);
-    }
-    catch (FederationAlreadyPaused& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederationAlreadyPaused);
-    }
-    catch (FederationExecutionAlreadyExists& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederationExecutionAlreadyExists);
-    }
-    catch (FederationExecutionDoesNotExist& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederationExecutionDoesNotExist);
-    }
-    catch (FederationNotPaused& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederationNotPaused);
-    }
-    catch (FederationTimeAlreadyPassed& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_FederationTimeAlreadyPassed);
-    }
-    catch (IDsupplyExhausted& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_IDsupplyExhausted);
-    }
-    catch (InteractionClassNotDefined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InteractionClassNotDefined);
-    }
-    catch (InteractionClassNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InteractionClassNotKnown);
-    }
-    catch (InteractionClassNotPublished& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InteractionClassNotPublished);
-    }
-    catch (InteractionParameterNotDefined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InteractionParameterNotDefined);
-    }
-    catch (InteractionParameterNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InteractionParameterNotKnown);
-    }
-    catch (InvalidDivestitureCondition& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidDivestitureCondition);
-    }
-    catch (InvalidExtents& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidExtents);
-    }
-    catch (InvalidFederationTime& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidFederationTime);
-    }
-    catch (InvalidFederationTimeDelta& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidFederationTimeDelta);
-    }
-    catch (InvalidObjectHandle& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidObjectHandle);
-    }
-    catch (InvalidOrderingHandle& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidOrderingHandle);
-    }
-    catch (InvalidResignAction& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidResignAction);
-    }
-    catch (InvalidRetractionHandle& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidRetractionHandle);
-    }
-    catch (InvalidRoutingSpace& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidRoutingSpace);
-    }
-    catch (InvalidTransportationHandle& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_InvalidTransportationHandle);
-    }
-    catch (MemoryExhausted& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_MemoryExhausted);
-    }
-    catch (NameNotFound& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_NameNotFound);
-    }
-    catch (NoPauseRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_NoPauseRequested);
-    }
-    catch (NoResumeRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_NoResumeRequested);
-    }
-    catch (ObjectClassNotDefined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectClassNotDefined);
-    }
-    catch (ObjectClassNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectClassNotKnown);
-    }
-    catch (ObjectClassNotPublished& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectClassNotPublished);
-    }
-    catch (ObjectClassNotSubscribed& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectClassNotSubscribed);
-    }
-    catch (ObjectNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectNotKnown);
-    }
-    catch (ObjectAlreadyRegistered& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ObjectAlreadyRegistered);
-    }
-    catch (RegionNotKnown& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_RegionNotKnown);
-    }
-    catch (RestoreInProgress& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_RestoreInProgress);
-    }
-    catch (RestoreNotRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_RestoreNotRequested);
-    }
-    catch (RTIinternalError& e) {
-        if (e._reason.empty())
-            D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        else
-            D.Out(pdExcept, "Catching \"%s\" exception: %s.", e._name, e._reason.c_str());
+    BASIC_CATCH(ArrayIndexOutOfBounds, e_ArrayIndexOutOfBounds)
+    BASIC_CATCH(AttributeAlreadyOwned, e_AttributeAlreadyOwned)
+    BASIC_CATCH(AttributeAlreadyBeingAcquired, e_AttributeAlreadyBeingAcquired)
+    BASIC_CATCH(AttributeAlreadyBeingDivested, e_AttributeAlreadyBeingDivested)
+    BASIC_CATCH(AttributeDivestitureWasNotRequested, e_AttributeDivestitureWasNotRequested)
+    BASIC_CATCH(AttributeAcquisitionWasNotRequested, e_AttributeAcquisitionWasNotRequested)
+    BASIC_CATCH(AttributeNotDefined, e_AttributeNotDefined)
+    BASIC_CATCH(AttributeNotKnown, e_AttributeNotKnown)
+    BASIC_CATCH(AttributeNotOwned, e_AttributeNotOwned)
+    BASIC_CATCH(AttributeNotPublished, e_AttributeNotPublished)
+    BASIC_CATCH(AttributeNotSubscribed, e_AttributeNotSubscribed)
+    BASIC_CATCH(ConcurrentAccessAttempted, e_ConcurrentAccessAttempted)
+    BASIC_CATCH(CouldNotDiscover, e_CouldNotDiscover)
+    BASIC_CATCH(CouldNotOpenRID, e_CouldNotOpenRID)
+    BASIC_CATCH(CouldNotOpenFED, e_CouldNotOpenFED)
+    BASIC_CATCH(CouldNotRestore, e_CouldNotRestore)
+    BASIC_CATCH(DeletePrivilegeNotHeld, e_DeletePrivilegeNotHeld)
+    BASIC_CATCH(ErrorReadingRID, e_ErrorReadingRID)
+    BASIC_CATCH(EventNotKnown, e_EventNotKnown)
+    BASIC_CATCH(FederateAlreadyPaused, e_FederateAlreadyPaused)
+    BASIC_CATCH(FederateAlreadyExecutionMember, e_FederateAlreadyExecutionMember)
+    BASIC_CATCH(FederateDoesNotExist, e_FederateDoesNotExist)
+    BASIC_CATCH(FederateInternalError, e_FederateInternalError)
+    BASIC_CATCH(FederateNameAlreadyInUse, e_FederateNameAlreadyInUse)
+    BASIC_CATCH(FederateNotExecutionMember, e_FederateNotExecutionMember)
+    BASIC_CATCH(FederateNotPaused, e_FederateNotPaused)
+    BASIC_CATCH(FederateNotPublishing, e_FederateNotPublishing)
+    BASIC_CATCH(FederateNotSubscribing, e_FederateNotSubscribing)
+    BASIC_CATCH(FederateOwnsAttributes, e_FederateOwnsAttributes)
+    BASIC_CATCH(FederatesCurrentlyJoined, e_FederatesCurrentlyJoined)
+    BASIC_CATCH(FederateWasNotAskedToReleaseAttribute, e_FederateWasNotAskedToReleaseAttribute)
+    BASIC_CATCH(FederationAlreadyPaused, e_FederationAlreadyPaused)
+    BASIC_CATCH(FederationExecutionAlreadyExists, e_FederationExecutionAlreadyExists)
+    BASIC_CATCH(FederationExecutionDoesNotExist, e_FederationExecutionDoesNotExist)
+    BASIC_CATCH(FederationNotPaused, e_FederationNotPaused)
+    BASIC_CATCH(FederationTimeAlreadyPassed, e_FederationTimeAlreadyPassed)
+    BASIC_CATCH(IDsupplyExhausted, e_IDsupplyExhausted)
+    BASIC_CATCH(InteractionClassNotDefined, e_InteractionClassNotDefined)
+    BASIC_CATCH(InteractionClassNotKnown, e_InteractionClassNotKnown)
+    BASIC_CATCH(InteractionClassNotPublished, e_InteractionClassNotPublished)
+    BASIC_CATCH(InteractionParameterNotDefined, e_InteractionParameterNotDefined)
+    BASIC_CATCH(InteractionParameterNotKnown, e_InteractionParameterNotKnown)
+    BASIC_CATCH(InvalidDivestitureCondition, e_InvalidDivestitureCondition)
+    BASIC_CATCH(InvalidExtents, e_InvalidExtents)
+    BASIC_CATCH(InvalidFederationTime, e_InvalidFederationTime)
+    BASIC_CATCH(InvalidFederationTimeDelta, e_InvalidFederationTimeDelta)
+    BASIC_CATCH(InvalidObjectHandle, e_InvalidObjectHandle)
+    BASIC_CATCH(InvalidOrderingHandle, e_InvalidOrderingHandle)
+    BASIC_CATCH(InvalidResignAction, e_InvalidResignAction)
+    BASIC_CATCH(InvalidRetractionHandle, e_InvalidRetractionHandle)
+    BASIC_CATCH(InvalidRoutingSpace, e_InvalidRoutingSpace)
+    BASIC_CATCH(InvalidTransportationHandle, e_InvalidTransportationHandle)
+    BASIC_CATCH(MemoryExhausted, e_MemoryExhausted)
+    BASIC_CATCH(NameNotFound, e_NameNotFound)
+    BASIC_CATCH(NoPauseRequested, e_NoPauseRequested)
+    BASIC_CATCH(NoResumeRequested, e_NoResumeRequested)
+    BASIC_CATCH(ObjectClassNotDefined, e_ObjectClassNotDefined)
+    BASIC_CATCH(ObjectClassNotKnown, e_ObjectClassNotKnown)
+    BASIC_CATCH(ObjectClassNotPublished, e_ObjectClassNotPublished)
+    BASIC_CATCH(ObjectClassNotSubscribed, e_ObjectClassNotSubscribed)
+    BASIC_CATCH(ObjectNotKnown, e_ObjectNotKnown)
+    BASIC_CATCH(ObjectAlreadyRegistered, e_ObjectAlreadyRegistered)
+    BASIC_CATCH(RegionNotKnown, e_RegionNotKnown)
+    BASIC_CATCH(RestoreInProgress, e_RestoreInProgress)
+    BASIC_CATCH(RestoreNotRequested, e_RestoreNotRequested)
+    BASIC_CATCH(SaveInProgress, e_SaveInProgress)
+    BASIC_CATCH(SaveNotInitiated, e_SaveNotInitiated)
+    BASIC_CATCH(SpaceNotDefined, e_SpaceNotDefined)
+    BASIC_CATCH(SpecifiedSaveLabelDoesNotExist, e_SpecifiedSaveLabelDoesNotExist)
+    BASIC_CATCH(TimeAdvanceAlreadyInProgress, e_TimeAdvanceAlreadyInProgress)
+    BASIC_CATCH(TimeAdvanceWasNotInProgress, e_TimeAdvanceWasNotInProgress)
+    BASIC_CATCH(TooManyIDsRequested, e_TooManyIDsRequested)
+    BASIC_CATCH(UnableToPerformSave, e_UnableToPerformSave)
+    BASIC_CATCH(UnimplementedService, e_UnimplementedService)
+    BASIC_CATCH(UnknownLabel, e_UnknownLabel)
+    BASIC_CATCH(ValueCountExceeded, e_ValueCountExceeded)
+    BASIC_CATCH(ValueLengthExceeded, e_ValueLengthExceeded)
+
+    catch (RTIinternalError& e)
+    {
+        if (e._reason.empty()) {
+            PRINT_DEBUG_MESSAGE(e);
+        }
+        else {
+            Debug(D, pdExcept) << "Caught Exception: " << e._name << ", " << e._reason << std::endl;
+        }
         CPY_NOT_NULL(e);
         response->setException(e_RTIinternalError);
     }
-    catch (SaveInProgress& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_SaveInProgress);
-    }
-    catch (SaveNotInitiated& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_SaveNotInitiated);
-    }
-    catch (SecurityError& e) {
+
+    catch (SecurityError& e)
+    {
         std::cout << std::endl << "Security Error : " << e._reason << std::endl;
         CPY_NOT_NULL(e);
         response->setException(e_SecurityError);
     }
-    catch (SpaceNotDefined& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_SpaceNotDefined);
-    }
-    catch (SpecifiedSaveLabelDoesNotExist& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_SpecifiedSaveLabelDoesNotExist);
-    }
-    catch (TimeAdvanceAlreadyInProgress& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_TimeAdvanceAlreadyInProgress);
-    }
-    catch (TimeAdvanceWasNotInProgress& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_TimeAdvanceWasNotInProgress);
-    }
-    catch (TooManyIDsRequested& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_TooManyIDsRequested);
-    }
-    catch (UnableToPerformSave& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_UnableToPerformSave);
-    }
-    catch (UnimplementedService& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_UnimplementedService);
-    }
-    catch (UnknownLabel& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_UnknownLabel);
-    }
-    catch (ValueCountExceeded& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ValueCountExceeded);
-    }
-    catch (ValueLengthExceeded& e) {
-        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
-        CPY_NOT_NULL(e);
-        response->setException(e_ValueLengthExceeded);
-    }
 
     // Non RTI specific exception, Client connection problem(internal)
-    catch (NetworkError& e) {
+    catch (NetworkError& e)
+    {
         strcpy(buffer, " - NetworkError");
         my_auditServer.endLine(response->getException(), buffer);
         delete msg;
         throw e;
     }
+
     // Default Handler
-    catch (Exception& e) {
-        D.Out(pdExcept, "Unknown Exception : %s.", e._name);
+    catch (Exception& e)
+    {
+        Debug(D, pdExcept) << "Unknown Exception: " << e._name << std::endl;
         CPY_NOT_NULL(e);
         response->setException(e_RTIinternalError);
     }
@@ -1022,14 +739,12 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     /* FIXME ***/
     if (response->getException() != e_NO_EXCEPTION) {
-        G.Out(pdGendoc, "            processIncomingMessage ===> write on exception to RTIA");
+        Debug(G, pdGendoc) << "            processIncomingMessage ===> write on exception to RTIA" << std::endl;
         response->send(link, my_NM_msgBufSend);
-        D.Out(pdExcept,
-              "RTIG catched exception %d and sent it back to federate %d.",
-              response->getException(),
-              response->getFederate());
+        Debug(D, pdExcept) << "RTIG catched exception " << response->getException() << " and sent it back to federate "
+                           << response->getFederate() << std::endl;
     }
-    G.Out(pdGendoc, "exit  RTIG::processIncomingMessage");
+    Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
     return link;
 }
 
@@ -1039,10 +754,10 @@ void RTIG::openConnection()
         my_socketServer.open();
     }
     catch (RTIinternalError& e) {
-        D.Out(pdExcept, "Error while accepting new connection : %s.", e._reason.c_str());
+        Debug(D, pdExcept) << "Error while accepting new connection: " << e._reason << std::endl;
     }
 
-    D.Out(pdInit, "Accepting new connection.");
+    Debug(D, pdInit) << "Accepting new connection" << std::endl;
 }
 
 void RTIG::closeConnection(Socket* link, bool emergency)
@@ -1050,21 +765,21 @@ void RTIG::closeConnection(Socket* link, bool emergency)
     Handle federation;
     FederateHandle federate;
 
-    G.Out(pdGendoc, "enter RTIG::closeConnection");
+    Debug(G, pdGendoc) << "enter RTIG::closeConnection" << std::endl;
     try {
         my_socketServer.close(link->returnSocket(), federation, federate);
     }
     catch (RTIinternalError& e) {
-        D.Out(pdError, "Connection not found while trying to close it.");
+        Debug(D, pdError) << "Connection not found while trying to close it" << std::endl;
     }
 
     if (emergency) {
-        D.Out(pdExcept, "Killing Federate(%u, %u)...", federation, federate);
+        Debug(D, pdExcept) << "Killing Federate(" << federation << ", " << federate << ")..." << std::endl;
         my_federations.killFederate(federation, federate);
-        D.Out(pdExcept, "Federate(%u, %u)Killed... ", federation, federate);
+        Debug(D, pdExcept) << "Federate(" << federation << ", " << federate << ") killed" << std::endl;
     }
 
-    G.Out(pdGendoc, "exit  RTIG::closeConnection");
+    Debug(G, pdGendoc) << "exit  RTIG::closeConnection" << std::endl;
 }
 
 int RTIG::inferTcpPort() const
