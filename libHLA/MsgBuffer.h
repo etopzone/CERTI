@@ -21,7 +21,7 @@
 #ifndef MSG_BUFFER_H
 #define MSG_BUFFER_H
 
-// clang-format off
+/* clang-format off */
 #ifdef _MSC_VER
     #ifndef FAKED_INTTYPES_DEFINED
         #define FAKED_INTTYPES_DEFINED
@@ -68,7 +68,7 @@
     #define bFALSE 0
     #define bTRUE 1
 #endif
-// clang-format on
+/* clang-format on */
 
 #define MB_UINT64_SWAP_LE_BE_CONSTANT(val)                                                                             \
     ((uint64_t)((((uint64_t)(val) & (uint64_t) MB_INT64_CONSTANT(0x00000000000000ffU)) << 56)                          \
