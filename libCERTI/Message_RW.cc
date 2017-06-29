@@ -31,8 +31,8 @@ static PrettyDebug G("GENDOC",__FILE__);
 std::ostream& Message::show(std::ostream& out) {
 	out << "[Message -Begin]" << std::endl;
 	out << "     type = " << type << std::endl;
-	out << "     exception = " << exception << std::endl;
-	if (exception != e_NO_EXCEPTION) {
+    out << "     exception = " << static_cast<unsigned short>(exception) << std::endl;
+    if (exception != Exception::Type::NO_EXCEPTION) {
 		out << "     exceptionReason = " << exceptionReason << std::endl;
 	} else {
 		BasicMessage::show(out);
@@ -50,8 +50,8 @@ void Message::serialize(MessageBuffer& msgBuffer) {
 	//show(std::cerr);
 	/* type of message */
 	msgBuffer.write_int32(type);
-	msgBuffer.write_int32(exception);
-	if (exception != e_NO_EXCEPTION) {
+	msgBuffer.write_int32(static_cast<int32_t>(exception));
+    if (exception != Exception::Type::NO_EXCEPTION) {
 		msgBuffer.write_string(exceptionReason);
 	} else {
 		BasicMessage::serialize(msgBuffer);
@@ -67,8 +67,8 @@ void Message::deserialize(MessageBuffer& msgBuffer) {
 	Debug(D, pdDebug) << "Deserialize <" << getMessageName()<<">"<<std::endl;
 	/* deserialize common part */
 	type        = static_cast<Message::Type>(msgBuffer.read_int32());
-	exception   = static_cast<TypeException>(msgBuffer.read_int32());
-	if (exception != e_NO_EXCEPTION) {
+    exception   = static_cast<Exception::Type>(msgBuffer.read_int32());
+    if (exception != Exception::Type::NO_EXCEPTION) {
 		msgBuffer.read_string(exceptionReason);
 	} else {
 		BasicMessage::deserialize(msgBuffer);

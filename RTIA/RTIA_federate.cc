@@ -96,7 +96,7 @@ void RTIA::saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, Restor
 
 // ----------------------------------------------------------------------------
 //! Choose federate processing.
-void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e)
+void RTIA::chooseFederateProcessing(Message* req, Message* rep, Exception::Type& e)
 {
     G.Out(pdGendoc,
           "enter RTIA::chooseFederateProcessing for msg <%s> (type=%d)",
@@ -107,7 +107,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
     // May throw SaveInProgress or RestoreInProgress
     saveAndRestoreStatus(req->getMessageType());
 
-    e = e_NO_EXCEPTION;
+    e = Exception::Type::NO_EXCEPTION;
 
     switch (req->getMessageType()) {
     case Message::CLOSE_CONNEXION:
@@ -123,7 +123,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
         fm->createFederationExecution(CFEq->getFederationName(), CFEq->getFEDid(), e);
-        if (e == e_RTIinternalError) {
+        if (e == Exception::Type::RTIinternalError) {
             rep->setException(e, "Federate is yet a creator or a member !");
         }
         D.Out(pdTrace,
@@ -142,7 +142,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         D.Out(pdTrace, "Receiving Message from Federate, type DestroyFederation.");
 
         fm->destroyFederationExecution(DFEq->getFederationName(), e);
-        if (e == e_RTIinternalError) {
+        if (e == Exception::Type::RTIinternalError) {
             rep->setException(e, "Illegal federation handle");
         }
         // RTIA needs federation name into the answer (rep Message) to federate
@@ -156,7 +156,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
         JFEr->setFederate(
             fm->joinFederationExecution(JFEq->getFederateName(), JFEq->getFederationName(), rootObject, e));
-        if (e == e_NO_EXCEPTION) {
+        if (e == Exception::Type::NO_EXCEPTION) {
             /// Set RTIA PrettyDebug federate name
             PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
             // Set federation name for the answer message (rep)
@@ -166,19 +166,19 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         else {
             // JOIN FAILED
             switch (e) {
-            case e_FederateAlreadyExecutionMember:
+                case Exception::Type::FederateAlreadyExecutionMember:
                 throw FederateAlreadyExecutionMember("Federate yet joined or same name");
                 break;
-            case e_FederationExecutionDoesNotExist:
+            case Exception::Type::FederationExecutionDoesNotExist:
                 throw FederationExecutionDoesNotExist("Federation does not exist [yet]");
                 break;
-            case e_SaveInProgress:
+            case Exception::Type::SaveInProgress:
                 throw SaveInProgress("Save in progress");
                 break;
-            case e_RestoreInProgress:
+            case Exception::Type::RestoreInProgress:
                 throw RestoreInProgress("Restore in progress");
                 break;
-            case e_RTIinternalError:
+            case Exception::Type::RTIinternalError:
             default:
                 throw RTIinternalError("Internal error");
                 break;
@@ -535,7 +535,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
 
     case Message::RETRACT:
         std::cout << "retract not yet implemented in chooseFederateProcessing" << std::endl;
-        e = e_UnimplementedService;
+        e = Exception::Type::UnimplementedService;
         break;
 
     case Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE: {
@@ -585,7 +585,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
 
         AttributeHandleSet* theAttributes = owm->attributeOwnershipRealeaseResponse(
             AORRq->getObject(), AORRq->getAttributes(), AORRq->getAttributesSize(), e);
-        if (e == e_NO_EXCEPTION) {
+        if (e == Exception::Type::NO_EXCEPTION) {
             AORRr->setAttributesSize(theAttributes->size());
 
             for (unsigned int i = 0; i < theAttributes->size(); i++) {
@@ -661,7 +661,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         if (!tm->_asynchronous_delivery)
             tm->_asynchronous_delivery = true;
         else
-            e = e_AsynchronousDeliveryAlreadyEnabled;
+            e = Exception::Type::AsynchronousDeliveryAlreadyEnabled;
         break;
 
     case Message::DISABLE_ASYNCHRONOUS_DELIVERY:
@@ -671,7 +671,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         if (tm->_asynchronous_delivery)
             tm->_asynchronous_delivery = false;
         else
-            e = e_AsynchronousDeliveryAlreadyDisabled;
+            e = Exception::Type::AsynchronousDeliveryAlreadyDisabled;
         break;
 
     case Message::QUERY_FEDERATE_TIME:
@@ -732,7 +732,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
         break;
 
     case Message::FLUSH_QUEUE_REQUEST:
-        e = e_UnimplementedService;
+        e = Exception::Type::UnimplementedService;
         break;
 
     // May throw NameNotFound
@@ -747,7 +747,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
             GOCHr->setClassName(GOCHq->getClassName());
         }
         catch (Exception& egoch) {
-            rep->setException(static_cast<TypeException>(egoch.type()), egoch.reason());
+            rep->setException(static_cast<Exception::Type>(egoch.type()), egoch.reason());
         }
     } break;
 
@@ -762,10 +762,10 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
             GOCNr->setObjectClass(GOCNq->getObjectClass());
         }
         catch (ObjectClassNotDefined&) {
-            rep->setException(e_ObjectClassNotDefined);
+            rep->setException(Exception::Type::ObjectClassNotDefined);
         }
         catch (RTIinternalError&) {
-            rep->setException(e_RTIinternalError);
+            rep->setException(Exception::Type::RTIinternalError);
         }
     } break;
     case Message::GET_OBJECT_INSTANCE_HANDLE: {
@@ -800,7 +800,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
             GAHr->setObjectClass(GAHq->getObjectClass());
         }
         catch (Exception& egah) {
-            rep->setException(static_cast<TypeException>(egah.type()), egah.reason());
+            rep->setException(static_cast<Exception::Type>(egah.type()), egah.reason());
         }
     } break;
 
@@ -1136,7 +1136,7 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, TypeException& e
 
 void RTIA::processOngoingTick()
 {
-    TypeException exc = e_NO_EXCEPTION;
+    Exception::Type exc = Exception::Type::NO_EXCEPTION;
 
     while (1) {
         switch (tm->_tick_state) {
@@ -1180,7 +1180,7 @@ void RTIA::processOngoingTick()
             M_Tick_Request msg_ack;
             /* send TICK_REQUEST response
 			 */
-            if (exc != e_RTIinternalError)
+            if (exc != Exception::Type::RTIinternalError)
                 msg_ack.setException(exc);
             // terminate __tick() call in the federate
             msg_ack.setMultiple(tm->_tick_result);
@@ -1217,7 +1217,7 @@ void RTIA::initFederateProcessing(Message* req, Message* rep)
             fm->_connection_state = FederationManagement::CONNECTION_READY;
         }
         else {
-            rep->setException(e_RTIinternalError,
+            rep->setException(Exception::Type::RTIinternalError,
                               stringize() << "RTIA protocol version mismatch"
                                           << "; federate "
                                           << OCq->getVersionMajor()
@@ -1230,7 +1230,7 @@ void RTIA::initFederateProcessing(Message* req, Message* rep)
         }
     }
     else {
-        rep->setException(e_RTIinternalError, "RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
+        rep->setException(Exception::Type::RTIinternalError, "RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
     }
     stat.federateService(req->getMessageType());
 }
@@ -1250,9 +1250,9 @@ void RTIA::processFederateRequest(Message* req)
             break;
 
         case FederationManagement::CONNECTION_READY: {
-            TypeException exc;
+            Exception::Type exc;
             chooseFederateProcessing(req, rep.get(), exc);
-            if (exc != e_RTIinternalError && exc != e_NO_EXCEPTION) {
+            if (exc != Exception::Type::RTIinternalError && exc != Exception::Type::NO_EXCEPTION) {
                 rep->setException(exc);
             }
             break;
@@ -1260,277 +1260,277 @@ void RTIA::processFederateRequest(Message* req)
 
         case FederationManagement::CONNECTION_FIN:
         default:
-            rep->setException(e_RTIinternalError, "RTIA connection already closed.");
+            rep->setException(Exception::Type::RTIinternalError, "RTIA connection already closed.");
             break;
         }
     }
     // FIXME should
     // catch (Exception &e) {
-    //  rep->setException(static_cast<TypeException>(e.getMessageType()),e.reason());
+    //  rep->setException(static_cast<Exception::Type>(e.getMessageType()),e.reason());
     catch (ArrayIndexOutOfBounds& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ArrayIndexOutOfBounds);
-        rep->setException(static_cast<TypeException>(e.type()), e.reason());
+        rep->setException(Exception::Type::ArrayIndexOutOfBounds);
+        rep->setException(static_cast<Exception::Type>(e.type()), e.reason());
     }
     catch (AttributeAlreadyOwned& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeAlreadyOwned);
+        rep->setException(Exception::Type::AttributeAlreadyOwned);
     }
     catch (AttributeAlreadyBeingDivested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeAlreadyBeingDivested);
+        rep->setException(Exception::Type::AttributeAlreadyBeingDivested);
     }
     catch (AttributeAlreadyBeingAcquired& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeAlreadyBeingAcquired);
+        rep->setException(Exception::Type::AttributeAlreadyBeingAcquired);
     }
     catch (AttributeAcquisitionWasNotRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeAcquisitionWasNotRequested);
+        rep->setException(Exception::Type::AttributeAcquisitionWasNotRequested);
     }
     catch (AttributeDivestitureWasNotRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeDivestitureWasNotRequested);
+        rep->setException(Exception::Type::AttributeDivestitureWasNotRequested);
     }
     catch (AttributeNotDefined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeNotDefined);
+        rep->setException(Exception::Type::AttributeNotDefined);
     }
     catch (AttributeNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeNotKnown);
+        rep->setException(Exception::Type::AttributeNotKnown);
     }
     catch (AttributeNotOwned& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeNotOwned);
+        rep->setException(Exception::Type::AttributeNotOwned);
     }
     catch (AttributeNotPublished& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeNotPublished);
+        rep->setException(Exception::Type::AttributeNotPublished);
     }
     catch (AttributeNotSubscribed& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_AttributeNotSubscribed);
+        rep->setException(Exception::Type::AttributeNotSubscribed);
     }
     catch (ConcurrentAccessAttempted& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ConcurrentAccessAttempted);
+        rep->setException(Exception::Type::ConcurrentAccessAttempted);
     }
     catch (CouldNotDiscover& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_CouldNotDiscover);
+        rep->setException(Exception::Type::CouldNotDiscover);
     }
     catch (CouldNotOpenRID& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_CouldNotOpenRID);
+        rep->setException(Exception::Type::CouldNotOpenRID);
     }
     catch (CouldNotOpenFED& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_CouldNotOpenFED, e.reason());
+        rep->setException(Exception::Type::CouldNotOpenFED, e.reason());
     }
     catch (CouldNotRestore& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_CouldNotRestore);
+        rep->setException(Exception::Type::CouldNotRestore);
     }
     catch (DeletePrivilegeNotHeld& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_DeletePrivilegeNotHeld);
+        rep->setException(Exception::Type::DeletePrivilegeNotHeld);
     }
     catch (ErrorReadingRID& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ErrorReadingRID, e.reason());
+        rep->setException(Exception::Type::ErrorReadingRID, e.reason());
     }
     catch (ErrorReadingFED& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ErrorReadingFED, e.reason());
+        rep->setException(Exception::Type::ErrorReadingFED, e.reason());
     }
     catch (EventNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_EventNotKnown);
+        rep->setException(Exception::Type::EventNotKnown);
     }
     catch (FederateAlreadyPaused& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateAlreadyPaused);
+        rep->setException(Exception::Type::FederateAlreadyPaused);
     }
     catch (FederateAlreadyExecutionMember& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateAlreadyExecutionMember, e.reason());
+        rep->setException(Exception::Type::FederateAlreadyExecutionMember, e.reason());
     }
     catch (FederateDoesNotExist& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateDoesNotExist);
+        rep->setException(Exception::Type::FederateDoesNotExist);
     }
     catch (FederateInternalError& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateInternalError);
+        rep->setException(Exception::Type::FederateInternalError);
     }
     catch (FederateNameAlreadyInUse& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateNameAlreadyInUse);
+        rep->setException(Exception::Type::FederateNameAlreadyInUse);
     }
     catch (FederateNotExecutionMember& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateNotExecutionMember);
+        rep->setException(Exception::Type::FederateNotExecutionMember);
     }
     catch (FederateNotPaused& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateNotPaused);
+        rep->setException(Exception::Type::FederateNotPaused);
     }
     catch (FederateNotPublishing& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateNotPublishing);
+        rep->setException(Exception::Type::FederateNotPublishing);
     }
     catch (FederateNotSubscribing& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateNotSubscribing);
+        rep->setException(Exception::Type::FederateNotSubscribing);
     }
     catch (FederateOwnsAttributes& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateOwnsAttributes);
+        rep->setException(Exception::Type::FederateOwnsAttributes);
     }
     catch (FederatesCurrentlyJoined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederatesCurrentlyJoined);
+        rep->setException(Exception::Type::FederatesCurrentlyJoined);
     }
     catch (FederateWasNotAskedToReleaseAttribute& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederateWasNotAskedToReleaseAttribute);
+        rep->setException(Exception::Type::FederateWasNotAskedToReleaseAttribute);
     }
     catch (FederationAlreadyPaused& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederationAlreadyPaused);
+        rep->setException(Exception::Type::FederationAlreadyPaused);
     }
     catch (FederationExecutionAlreadyExists& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederationExecutionAlreadyExists, e.reason());
+        rep->setException(Exception::Type::FederationExecutionAlreadyExists, e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederationExecutionDoesNotExist);
+        rep->setException(Exception::Type::FederationExecutionDoesNotExist);
     }
     catch (FederationNotPaused& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederationNotPaused);
+        rep->setException(Exception::Type::FederationNotPaused);
     }
     catch (FederationTimeAlreadyPassed& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_FederationTimeAlreadyPassed);
+        rep->setException(Exception::Type::FederationTimeAlreadyPassed);
     }
     catch (IDsupplyExhausted& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_IDsupplyExhausted);
+        rep->setException(Exception::Type::IDsupplyExhausted);
     }
     catch (InteractionClassNotDefined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InteractionClassNotDefined);
+        rep->setException(Exception::Type::InteractionClassNotDefined);
     }
     catch (InteractionClassNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InteractionClassNotKnown);
+        rep->setException(Exception::Type::InteractionClassNotKnown);
     }
     catch (InteractionClassNotPublished& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InteractionClassNotPublished);
+        rep->setException(Exception::Type::InteractionClassNotPublished);
     }
     catch (InteractionParameterNotDefined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InteractionParameterNotDefined);
+        rep->setException(Exception::Type::InteractionParameterNotDefined);
     }
     catch (InteractionParameterNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InteractionParameterNotKnown);
+        rep->setException(Exception::Type::InteractionParameterNotKnown);
     }
     catch (InvalidDivestitureCondition& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidDivestitureCondition);
+        rep->setException(Exception::Type::InvalidDivestitureCondition);
     }
     catch (InvalidExtents& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidExtents);
+        rep->setException(Exception::Type::InvalidExtents);
     }
     catch (InvalidFederationTime& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidFederationTime);
+        rep->setException(Exception::Type::InvalidFederationTime);
     }
     catch (InvalidFederationTimeDelta& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidFederationTimeDelta);
+        rep->setException(Exception::Type::InvalidFederationTimeDelta);
     }
     catch (InvalidObjectHandle& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidObjectHandle);
+        rep->setException(Exception::Type::InvalidObjectHandle);
     }
     catch (InvalidOrderingHandle& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidOrderingHandle);
+        rep->setException(Exception::Type::InvalidOrderingHandle);
     }
     catch (InvalidResignAction& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidResignAction);
+        rep->setException(Exception::Type::InvalidResignAction);
     }
     catch (InvalidRetractionHandle& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidRetractionHandle);
+        rep->setException(Exception::Type::InvalidRetractionHandle);
     }
     catch (InvalidRoutingSpace& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidRoutingSpace);
+        rep->setException(Exception::Type::InvalidRoutingSpace);
     }
     catch (InvalidTransportationHandle& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_InvalidTransportationHandle);
+        rep->setException(Exception::Type::InvalidTransportationHandle);
     }
     catch (MemoryExhausted& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_MemoryExhausted);
+        rep->setException(Exception::Type::MemoryExhausted);
     }
     catch (NameNotFound& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_NameNotFound);
+        rep->setException(Exception::Type::NameNotFound);
     }
     catch (NoPauseRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_NoPauseRequested);
+        rep->setException(Exception::Type::NoPauseRequested);
     }
     catch (NoResumeRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_NoResumeRequested);
+        rep->setException(Exception::Type::NoResumeRequested);
     }
     catch (ObjectClassNotDefined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectClassNotDefined);
+        rep->setException(Exception::Type::ObjectClassNotDefined);
     }
     catch (ObjectClassNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectClassNotKnown);
+        rep->setException(Exception::Type::ObjectClassNotKnown);
     }
     catch (ObjectClassNotPublished& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectClassNotPublished);
+        rep->setException(Exception::Type::ObjectClassNotPublished);
     }
     catch (ObjectClassNotSubscribed& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectClassNotSubscribed);
+        rep->setException(Exception::Type::ObjectClassNotSubscribed);
     }
     catch (ObjectNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectNotKnown);
+        rep->setException(Exception::Type::ObjectNotKnown);
     }
     catch (ObjectAlreadyRegistered& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ObjectAlreadyRegistered);
+        rep->setException(Exception::Type::ObjectAlreadyRegistered);
     }
     catch (RegionNotKnown& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_RegionNotKnown);
+        rep->setException(Exception::Type::RegionNotKnown);
     }
     catch (RestoreInProgress& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_RestoreInProgress);
+        rep->setException(Exception::Type::RestoreInProgress);
     }
     catch (RestoreNotRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_RestoreNotRequested);
+        rep->setException(Exception::Type::RestoreNotRequested);
     }
     catch (RTIinternalError& e) {
         Debug(D, pdError) << "RTIA sends InternalError to Fed., ";
@@ -1541,61 +1541,61 @@ void RTIA::processFederateRequest(Message* req)
             Debug(D, pdError) << "no reason given." << std::endl;
         }
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_RTIinternalError);
+        rep->setException(Exception::Type::RTIinternalError);
     }
     catch (SpaceNotDefined& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_SpaceNotDefined);
+        rep->setException(Exception::Type::SpaceNotDefined);
     }
     catch (SaveInProgress& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_SaveInProgress);
+        rep->setException(Exception::Type::SaveInProgress);
     }
     catch (SaveNotInitiated& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_SaveNotInitiated);
+        rep->setException(Exception::Type::SaveNotInitiated);
     }
     catch (SpecifiedSaveLabelDoesNotExist& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_SpecifiedSaveLabelDoesNotExist);
+        rep->setException(Exception::Type::SpecifiedSaveLabelDoesNotExist);
     }
     catch (TimeAdvanceAlreadyInProgress& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_TimeAdvanceAlreadyInProgress);
+        rep->setException(Exception::Type::TimeAdvanceAlreadyInProgress);
     }
     catch (TimeAdvanceWasNotInProgress& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_TimeAdvanceWasNotInProgress);
+        rep->setException(Exception::Type::TimeAdvanceWasNotInProgress);
     }
     catch (TooManyIDsRequested& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_TooManyIDsRequested);
+        rep->setException(Exception::Type::TooManyIDsRequested);
     }
     catch (UnableToPerformSave& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_UnableToPerformSave);
+        rep->setException(Exception::Type::UnableToPerformSave);
     }
     catch (UnimplementedService& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_UnimplementedService);
+        rep->setException(Exception::Type::UnimplementedService);
     }
     catch (UnknownLabel& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_UnknownLabel);
+        rep->setException(Exception::Type::UnknownLabel);
     }
     catch (ValueCountExceeded& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ValueCountExceeded);
+        rep->setException(Exception::Type::ValueCountExceeded);
     }
     catch (ValueLengthExceeded& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << std::endl;
-        rep->setException(e_ValueLengthExceeded);
+        rep->setException(Exception::Type::ValueLengthExceeded);
     }
 
     // Default Handler
     catch (Exception& e) {
         Debug(D, pdExcept) << "Unknown Exception :" << e.name() << std::endl;
-        rep->setException(e_RTIinternalError);
+        rep->setException(Exception::Type::RTIinternalError);
     }
 
     delete req;

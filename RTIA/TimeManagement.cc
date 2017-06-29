@@ -43,7 +43,7 @@ const double epsilon2 = 1.0e-4 ;
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::advance(bool &msg_restant, TypeException &e)
+TimeManagement::advance(bool &msg_restant, Exception::Type &e)
 {
     switch(_avancee_en_cours) {
       case TAR:
@@ -437,17 +437,17 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
 // ----------------------------------------------------------------------------
 void
 TimeManagement::flushQueueRequest(FederationTime heure_logique,
-                                  TypeException &e) {
-    e = e_NO_EXCEPTION ;
+                                  Exception::Type &e) {
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_TimeAdvanceAlreadyInProgress ;
+        e = Exception::Type::TimeAdvanceAlreadyInProgress ;
 
     if (heure_logique <= _heure_courante)
-        e = e_FederationTimeAlreadyPassed ;
+        e = Exception::Type::FederationTimeAlreadyPassed ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         // BUG: Not implemented.
         D.Out(pdExcept, "flushQueueRequest not implemented.");
         throw RTIinternalError("flushQueueRequest not implemented.");
@@ -456,7 +456,7 @@ TimeManagement::flushQueueRequest(FederationTime heure_logique,
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
+TimeManagement::nextEventAdvance(bool &msg_restant, Exception::Type &e)
 {
     FederationTime dateTSO ;
     FederationTime date_min = 0.0 ;
@@ -548,25 +548,25 @@ G.Out(pdGendoc," exit  TimeManagement::nextEventAdvance");
 // ----------------------------------------------------------------------------
 void
 TimeManagement::nextEventRequest(FederationTime logicalTime,
-                                 TypeException &e)
+                                 Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_TimeAdvanceAlreadyInProgress ;
+        e = Exception::Type::TimeAdvanceAlreadyInProgress ;
 
     if (logicalTime < _heure_courante)
-        e = e_FederationTimeAlreadyPassed ;
+        e = Exception::Type::FederationTimeAlreadyPassed ;
 
 //    This is check may be overkill because
 //    if we consider that advancing in time is NOT a timestamped event
 //    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (heure_logique < _heure_courante + _lookahead_courant)
-//       e = e_InvalidFederationTime ;
+//       e = Exception::Type::InvalidFederationTime ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
@@ -589,25 +589,25 @@ TimeManagement::nextEventRequest(FederationTime logicalTime,
 // ----------------------------------------------------------------------------
 void
 TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
-                                 TypeException &e)
+                                 Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_TimeAdvanceAlreadyInProgress ;
+        e = Exception::Type::TimeAdvanceAlreadyInProgress ;
 
     if (heure_logique < _heure_courante)
-        e = e_FederationTimeAlreadyPassed ;
+        e = Exception::Type::FederationTimeAlreadyPassed ;
 
 //    This is check may be overkill because
 //    if we consider that advancing in time is NOT a timestamped event
 //    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (heure_logique < _heure_courante + _lookahead_courant)
-//       e = e_InvalidFederationTime ;
+//       e = Exception::Type::InvalidFederationTime ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
         _avancee_en_cours = NERA ;
         date_avancee = heure_logique;
@@ -655,21 +655,21 @@ TimeManagement::requestMinNextEventTime()
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
+TimeManagement::setLookahead(FederationTimeDelta lookahead, Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (lookahead < 0.0)
-        e = e_InvalidLookahead ;
+        e = Exception::Type::InvalidLookahead ;
 
     if (lookahead == epsilon2) {
     	Debug(D,pdError) << "Bad value of lookahead due to a zero lookahead implementation trick" << std::endl;
-    	e = e_RTIinternalError ;
+    	e = Exception::Type::RTIinternalError ;
     }
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         _lookahead_courant = lookahead ;
 
         // On previent les autres en leur envoyant un message NULL qui contient
@@ -683,21 +683,21 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::setTimeConstrained(bool etat, TypeException &e)
+TimeManagement::setTimeConstrained(bool etat, Exception::Type &e)
 {
     NM_Set_Time_Constrained msg ;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_is_constrained == etat)
-        e = e_RTIinternalError ;
+        e = Exception::Type::RTIinternalError ;
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_RTIinternalError ;
+        e = Exception::Type::RTIinternalError ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         _is_constrained = etat ;
 
         msg.setFederation(fm->_numero_federation);
@@ -723,27 +723,27 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 // Modifier le lookahead courant
 void
 TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
-               FederationTimeDelta the_lookahead, TypeException &e)
+               FederationTimeDelta the_lookahead, Exception::Type &e)
 {
     NM_Set_Time_Regulating msg ;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_is_regulating == etat) {
-        e = e_RTIinternalError ;
+        e = Exception::Type::RTIinternalError ;
         D.Out(pdRegister,
               "erreur e_RTIinternalError : federe deja regulateur");
     }
 
     if (_avancee_en_cours != PAS_D_AVANCEE) {
-        e = e_RTIinternalError ;
+        e = Exception::Type::RTIinternalError ;
         D.Out(pdRegister, "erreur e_RTIinternalError avancee_en_cours");
     }
 
     // Si aucune erreur, prevenir le RTIG et devenir regulateur.
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         _is_regulating = etat ;
 
         msg.setFederation(fm->_numero_federation);
@@ -776,7 +776,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) {
+TimeManagement::timeRegulationEnabled(FederationTime theTime, Exception::Type &e) {
     M_Time_Regulation_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_REGULATION_ENABLED to Federate");
@@ -786,7 +786,7 @@ TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) 
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::timeConstrainedEnabled(FederationTime theTime, TypeException &e) {
+TimeManagement::timeConstrainedEnabled(FederationTime theTime, Exception::Type &e) {
     M_Time_Constrained_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_CONSTRAINED_ENABLED to Federate");
@@ -825,7 +825,7 @@ TimeManagement::testValidTime(FederationTime theTime)
 
 // ----------------------------------------------------------------------------
 bool
-TimeManagement::tick(TypeException &e)
+TimeManagement::tick(Exception::Type &e)
 {
 	// Becomes true if there is message to give back to the federate
     bool oneMsgToHandle   = false;
@@ -889,7 +889,7 @@ TimeManagement::tick(TypeException &e)
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
+TimeManagement::timeAdvance(bool &msg_restant, Exception::Type &e)
 {
     bool msg_donne ;
     FederationTime min ;
@@ -921,7 +921,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
                 // send a timeAdvanceGrant to federate.
                 timeAdvanceGrant(date_avancee, e);
 
-                if (e != e_NO_EXCEPTION)
+                if (e != Exception::Type::NO_EXCEPTION)
                     return ;
 
                 _avancee_en_cours = PAS_D_AVANCEE ;
@@ -936,7 +936,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
     else {
         // if federate is not constrained, send a timeAdvanceGrant to federate.
         timeAdvanceGrant(date_avancee, e);
-        if (e != e_NO_EXCEPTION)
+        if (e != Exception::Type::NO_EXCEPTION)
             return ;
         _avancee_en_cours = PAS_D_AVANCEE ;
     }
@@ -946,7 +946,7 @@ G.Out(pdGendoc," exit  TimeManagement::timeAdvance");
 // ----------------------------------------------------------------------------
 void
 TimeManagement::timeAdvanceGrant(FederationTime logical_time,
-                                 TypeException &e)
+                                 Exception::Type &e)
 {
     M_Time_Advance_Grant req;
 
@@ -974,17 +974,17 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
 */
 void
 TimeManagement::timeAdvanceRequest(FederationTime logical_time,
-                                   TypeException &e)
+                                   Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_TimeAdvanceAlreadyInProgress ;
+        e = Exception::Type::TimeAdvanceAlreadyInProgress ;
 
     if (logical_time < _heure_courante)
-        e = e_FederationTimeAlreadyPassed ;
+        e = Exception::Type::FederationTimeAlreadyPassed ;
 
     //    This is check may be overkill because
     //    if we consider that advancing in time is NOT a timestamped event
@@ -993,10 +993,10 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 //
 //    D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
 //    			_lookahead_courant.getTime(),_heure_courante.getTime(),logical_time.getTime());
-//       e = e_InvalidFederationTime ;
+//       e = Exception::Type::InvalidFederationTime ;
 //    }
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
@@ -1023,25 +1023,25 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 void
 TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
-                                   TypeException &e)
+                                   Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
-        e = e_TimeAdvanceAlreadyInProgress ;
+        e = Exception::Type::TimeAdvanceAlreadyInProgress ;
 
     if (logical_time < _heure_courante)
-        e = e_FederationTimeAlreadyPassed ;
+        e = Exception::Type::FederationTimeAlreadyPassed ;
 
     //    This is check may be overkill because
     //    if we consider that advancing in time is NOT a timestamped event
     //    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (logical_time < _heure_courante + _lookahead_courant)
-//       e = e_InvalidFederationTime ;
+//       e = Exception::Type::InvalidFederationTime ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
 

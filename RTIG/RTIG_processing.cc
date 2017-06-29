@@ -104,17 +104,17 @@ void RTIG::processCreateFederation(Socket* link, NM_Create_Federation_Execution*
         my_federations.createFederation(federation, h, FEDid);
     }
     catch (CouldNotOpenFED& e) {
-        rep.setException(e_CouldNotOpenFED, e.reason());
+        rep.setException(e.type(), e.reason());
     }
     catch (ErrorReadingFED& e) {
-        rep.setException(e_ErrorReadingFED, e.reason());
+        rep.setException(e.type(), e.reason());
     }
     catch (FederationExecutionAlreadyExists& e) {
-        rep.setException(e_FederationExecutionAlreadyExists, e.reason());
+        rep.setException(e.type(), e.reason());
     }
 #endif
     // Prepare answer for RTIA : store NetworkMessage rep
-    if (rep.getException() == e_NO_EXCEPTION) {
+    if (rep.getException() == Exception::Type::NO_EXCEPTION) {
         rep.setFederation(h);
         rep.setFEDid(FEDid);
         rep.setFederationName(federation);
@@ -167,7 +167,7 @@ void RTIG::processJoinFederation(Socket* link, NM_Join_Federation_Execution* req
         Debug(G, pdGendoc) << "END ** JOIN FEDERATION (BAD) SERVICE **" << std::endl;
         // Prepare answer about JoinFederationExecution
         NM_Join_Federation_Execution rep;
-        rep.setException(e_FederateAlreadyExecutionMember,
+        rep.setException(e.type(),
                          certi::stringize() << "Federate with same name <" << federate
                                             << "> has already joined the federation");
 
@@ -265,15 +265,15 @@ void RTIG::processDestroyFederation(Socket* link, NM_Destroy_Federation_Executio
     }
     catch (RTIinternalError& e) {
         std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
-        rep.setException(e_RTIinternalError, e.reason());
+        rep.setException(e.type(), e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
         std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
-        rep.setException(e_FederationExecutionDoesNotExist, e.reason());
+        rep.setException(e.type(), e.reason());
     }
     catch (FederatesCurrentlyJoined& e) {
         std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
-        rep.setException(e_FederatesCurrentlyJoined, e.reason());
+        rep.setException(e.type(), e.reason());
     }
     catch (Exception& e) {
         std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
@@ -281,7 +281,7 @@ void RTIG::processDestroyFederation(Socket* link, NM_Destroy_Federation_Executio
 
     rep.setFederate(req->getFederate());
     rep.setFederationName(req->getFederationName());
-    if (rep.getException() == e_NO_EXCEPTION) {
+    if (rep.getException() == Exception::Type::NO_EXCEPTION) {
         my_auditServer << "Federation Name \"" << federation << "\"(" << num_federation << ") destroyed";
     }
     Debug(G, pdGendoc) << "processDestroyFederation===>write DFE to RTIA" << std::endl;
@@ -1353,7 +1353,7 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
     my_auditServer << "ObjID = " << request->getObject();
 
     // We have to do verifications about this object and we need owner
-    answer.setException(e_NO_EXCEPTION);
+    answer.setException(Exception::Type::NO_EXCEPTION);
     try {
         // While searching for the federate owner we will send
         // a NM_Provide_Attribute_Value_Update
@@ -1365,13 +1365,13 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
                                                  request->getAttributesSize());
     }
     catch (ObjectNotKnown& e) {
-        answer.setException(e_ObjectNotKnown, e.reason());
+        answer.setException(e.type(), e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
-        answer.setException(e_FederationExecutionDoesNotExist, e.reason());
+        answer.setException(e.type(), e.reason());
     }
     catch (RTIinternalError& e) {
-        answer.setException(e_RTIinternalError, e.reason());
+        answer.setException(e.type(), e.reason());
     }
 
     answer.setFederate(request->getFederate());
@@ -1391,7 +1391,7 @@ void RTIG::processRequestClassAttributeValueUpdate(Socket* link, NM_Request_Clas
     Debug(G, pdGendoc) << "enter RTIG::processRequestClassAttributeValueUpdate" << std::endl;
     Debug(G, pdGendoc) << "BEGIN ** REQUEST CLASS ATTRIBUTE VALUE UPDATE **" << std::endl;
 
-    answer.setException(e_NO_EXCEPTION);
+    answer.setException(Exception::Type::NO_EXCEPTION);
     try {
         my_federations.requestClassAttributeValueUpdate(request->getFederation(),
                                                         request->getFederate(),
@@ -1400,13 +1400,13 @@ void RTIG::processRequestClassAttributeValueUpdate(Socket* link, NM_Request_Clas
                                                         request->getAttributesSize());
     }
     catch (ObjectClassNotDefined& e) {
-        answer.setException(e_ObjectClassNotDefined, e.reason());
+        answer.setException(e.type(), e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
-        answer.setException(e_FederationExecutionDoesNotExist, e.reason());
+        answer.setException(e.type(), e.reason());
     }
     catch (RTIinternalError& e) {
-        answer.setException(e_RTIinternalError, e.reason());
+        answer.setException(e.type(), e.reason());
     }
 
     answer.setFederate(request->getFederate());

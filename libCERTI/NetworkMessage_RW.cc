@@ -43,8 +43,8 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_int32(type);
 	msgBuffer.write_uint32(federate);
 	msgBuffer.write_uint32(federation);
-	msgBuffer.write_int32(exception);
-	if (exception != e_NO_EXCEPTION) {
+	msgBuffer.write_int32(static_cast<int32_t>(exception));
+    if (exception != Exception::Type::NO_EXCEPTION) {
 		msgBuffer.write_string(exceptionReason);
 	} else {
 		BasicMessage::serialize(msgBuffer);
@@ -62,8 +62,8 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
 	federate    = msgBuffer.read_uint32();
 	federation  = msgBuffer.read_uint32();
-	exception   = static_cast<TypeException>(msgBuffer.read_int32());
-	if (exception != e_NO_EXCEPTION) {
+    exception   = static_cast<Exception::Type>(msgBuffer.read_int32());
+    if (exception != Exception::Type::NO_EXCEPTION) {
 			msgBuffer.read_string(exceptionReason);
 	} else {
 			BasicMessage::deserialize(msgBuffer);

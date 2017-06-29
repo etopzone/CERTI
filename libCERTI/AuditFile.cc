@@ -49,7 +49,7 @@ AuditFile::AuditFile(const std::string& logfile)
     }
 
     // Put a Start delimiter in the Audit File
-    putLine(AUDITEVENT_START_AUDIT, AUDIT_MAX_LEVEL, e_NO_EXCEPTION, "");
+    putLine(AUDITEVENT_START_AUDIT, AUDIT_MAX_LEVEL, static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
 }
 
 // ----------------------------------------------------------------------------
@@ -59,8 +59,8 @@ AuditFile::AuditFile(const std::string& logfile)
 */
 AuditFile::~AuditFile()
 {
-    endLine(e_NO_EXCEPTION, "");
-    putLine(AUDITEVENT_STOP_AUDIT, AUDIT_MAX_LEVEL, e_NO_EXCEPTION, "");
+    endLine(static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
+    putLine(AUDITEVENT_STOP_AUDIT, AUDIT_MAX_LEVEL, static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
     auditFile.close();
 }
 
@@ -219,3 +219,4 @@ AuditFile::operator<<(double n)
 }
 
 }
+

@@ -76,8 +76,8 @@ public:
 
 
     // Advance Time Methods
-    void nextEventRequest(FederationTime heure_logique, TypeException &e);
-    void nextEventRequestAvailable(FederationTime heure_logique, TypeException &e);
+    void nextEventRequest(FederationTime heure_logique, Exception::Type &e);
+    void nextEventRequestAvailable(FederationTime heure_logique, Exception::Type &e);
 
     /**
      * Try to deliver some message to the federate (command or FIFO)
@@ -89,17 +89,17 @@ public:
      * @param[out] e exception which may have occurred during tick
      * @return true if there is more message for the federate to handle
      */
-    bool tick(TypeException &e);
+    bool tick(Exception::Type &e);
 
-    void timeAdvanceRequest(FederationTime heure_logique, TypeException &e);
-    void timeAdvanceRequestAvailable(FederationTime heure_logique, TypeException &e);
+    void timeAdvanceRequest(FederationTime heure_logique, Exception::Type &e);
+    void timeAdvanceRequestAvailable(FederationTime heure_logique, Exception::Type &e);
     bool testValidTime(FederationTime theTime);
 
     // Change Federate Time State
-    void setLookahead(FederationTimeDelta lookahead, TypeException &e);
-    void setTimeConstrained(bool etat, TypeException &e);
+    void setLookahead(FederationTimeDelta lookahead, Exception::Type &e);
+    void setTimeConstrained(bool etat, Exception::Type &e);
     void setTimeRegulating(bool etat,FederationTime heure_logique,
-                           FederationTimeDelta lookahead, TypeException &e);
+                           FederationTimeDelta lookahead, Exception::Type &e);
     void StopperAvanceTemps() {
         _avancee_en_cours = PAS_D_AVANCEE ;
     };
@@ -160,32 +160,32 @@ private:
      * @param[out] msg_restant
      * @param[out] e exception will be updated to
      */
-    void advance(bool &msg_restant, TypeException &e);
+    void advance(bool &msg_restant, Exception::Type &e);
 
     /**
      * This method is called by @ref advance which is called by tick. This call is
      * done only if request type does correspond. It delivers TSO messages to
      * federate and if no messages are available, delivers a TimeAdvanceGrant.
      */
-    void timeAdvance(bool &msg_restant, TypeException &e);
+    void timeAdvance(bool &msg_restant, Exception::Type &e);
 
     /**
      * This method is called by @ref advance which is called by tick. This call
      * is done only if request type does correspond. It delivers TSO messages to
      * federate and if no messages are available, delivers a TimeAdvanceGrant.
      */
-    void nextEventAdvance(bool &msg_restant, TypeException &e);
+    void nextEventAdvance(bool &msg_restant, Exception::Type &e);
 
     /**
      * Once every messages has been delivered to federate, logical time can be
      * advanced and send a timeAdvanceGrant to federate.
      */
-    void timeAdvanceGrant(FederationTime, TypeException& e);
+    void timeAdvanceGrant(FederationTime, Exception::Type& e);
 
     /**
      * Not implemented.
      */
-    void flushQueueRequest(FederationTime, TypeException& e);
+    void flushQueueRequest(FederationTime, Exception::Type& e);
 
     /**
      * Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
@@ -201,8 +201,8 @@ private:
      */
     void sendNullMessage(FederationTime logicalTime);
     void sendNullPrimeMessage(FederationTime logicalTime);
-    void timeRegulationEnabled(FederationTime, TypeException &e);
-    void timeConstrainedEnabled(FederationTime, TypeException &e);
+    void timeRegulationEnabled(FederationTime, Exception::Type &e);
+    void timeConstrainedEnabled(FederationTime, Exception::Type &e);
 
     // Other RTIA Objects
     Communications *comm ;

@@ -51,33 +51,33 @@ public:
 
     // -- Create/Destroy --
     void createFederationExecution(const std::string& theName,
-                                   const std::string& fedId, TypeException &e)
+                                   const std::string& fedId, Exception::Type &e)
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError);
-    void destroyFederationExecution(const std::string& theName, TypeException &e);
+         void destroyFederationExecution(const std::string& theName, Exception::Type &e);
 
     // -- Join/Resign --
     FederateHandle joinFederationExecution(const std::string& Federate,
                                            const std::string& Federation,
                                            RootObject* rootObject,
-                                           TypeException &e);
+                                           Exception::Type &e);
 
     void resignFederationExecution(ResignAction action,
-                                   TypeException &e);
+                                   Exception::Type &e);
     void resignFederationExecutionForTermination();
 
     // Synchronization.
     void registerSynchronization(const std::string& label,
                                  const std::string& tag,
-                                 TypeException &e);
+                                 Exception::Type &e);
     void registerSynchronization(const std::string& label,
                                  const std::string& tag,
                                  unsigned short array_size,
                                  const std::vector <FederateHandle> &fed_array,
-                                 TypeException &e);
+                                 Exception::Type &e);
     void unregisterSynchronization(const std::string& label,
-                                   TypeException &e);
+                                   Exception::Type &e);
     void synchronizationPointRegistrationFailed(const std::string& label);
     void synchronizationPointRegistrationSucceeded(const std::string& label);
     void federationSynchronized(const std::string& label);
@@ -85,17 +85,17 @@ public:
                                       const std::string& tag);
 
     // Saving.
-    void requestFederationSave(const std::string& label, FederationTime the_time, TypeException &e);
-    void requestFederationSave(const std::string& label, TypeException &e);
-    void federateSaveBegun(TypeException &);
-    void federateSaveStatus(bool, TypeException &);
+    void requestFederationSave(const std::string& label, FederationTime the_time, Exception::Type &e);
+    void requestFederationSave(const std::string& label, Exception::Type &e);
+    void federateSaveBegun(Exception::Type &);
+    void federateSaveStatus(bool, Exception::Type &);
     void initiateFederateSave(const std::string& label);
     void federationSavedStatus(bool);
 
     // Restoring.
     void requestFederationRestore(const std::string& label,
-                                  TypeException &e);
-    void federateRestoreStatus(bool status, TypeException &e);
+                                  Exception::Type &e);
+    void federateRestoreStatus(bool status, Exception::Type &e);
     void requestFederationRestoreStatus(bool status,
                                         const std::string& label,
                                         const std::string& reason);

@@ -253,7 +253,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         }
 
         answer->setFederation(server->federation());
-        answer->setException(e_NO_EXCEPTION);
+        answer->setException(Exception::Type::NO_EXCEPTION);
         answer->setFederate(oa->getOwner());
 
         sendToFederate(answer, the_federate);

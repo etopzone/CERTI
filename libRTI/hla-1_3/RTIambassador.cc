@@ -413,7 +413,7 @@ RTI::Boolean RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime m
 
         // If the type is TICK_REQUEST, the __tick_kernel() has terminated.
         if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
-            if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
+            if (vers_Fed->getExceptionType() != certi::Exception::Type::NO_EXCEPTION) {
                 // tick() may only throw exceptions defined in the HLA standard
                 // the RTIA is responsible for sending 'allowed' exceptions only
                 privateRefs->processException(vers_Fed.get());
@@ -1461,7 +1461,7 @@ RTI::AttributeHandleSet* RTI::RTIambassador::attributeOwnershipReleaseResponse(
 
     privateRefs->executeService(&req, &rep);
 
-    if (rep.getExceptionType() == e_NO_EXCEPTION) {
+    if (rep.getExceptionType() == certi::Exception::Type::NO_EXCEPTION) {
         retval = new AttributeHandleSetImp(rep.getAttributesSize());
         for (uint32_t i = 0; i < rep.getAttributesSize(); ++i) {
             retval->add(rep.getAttributes()[i]);

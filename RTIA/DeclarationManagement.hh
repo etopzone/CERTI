@@ -48,30 +48,30 @@ public:
 
     void publishObjectClass(ObjectClassHandle theClassHandle,
                             const std::vector <AttributeHandle> &attribArray,
-                            TypeException &e);
+                            Exception::Type &e);
 
     void unpublishObjectClass(ObjectClassHandle theClassHandle,
-                              TypeException &e);
+                              Exception::Type &e);
 
     void publishInteractionClass(InteractionClassHandle theInteractionHandle,
-                                 TypeException &e);
+                                 Exception::Type &e);
 
     void unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
-                                   TypeException &e);
+                                   Exception::Type &e);
 
     void subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                                        const std::vector <AttributeHandle> &attribArray,
                                        uint32_t attribArraySize,
-                                       TypeException &e);
+                                       Exception::Type &e);
 
     void unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                         TypeException &e);
+                                         Exception::Type &e);
 
     void subscribeInteractionClass(InteractionClassHandle theClassHandle,
-                                   TypeException &e);
+                                   Exception::Type &e);
 
     void unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
-                                     TypeException &e);
+                                     Exception::Type &e);
 
     /**
      * Transmits the Networkmessage NM_Set_Class_Relevance_Advisory_Switch to 
@@ -84,15 +84,15 @@ public:
      * @param[in,out] e is a reference to a possible exception
      */
     void setClassRelevanceAdvisorySwitch(bool state,
-                                         TypeException &e);
+                                         Exception::Type &e);
 
     // 5.10
     void startRegistrationForObjectClass(ObjectClassHandle theClass,
-                                         TypeException &e);
+                                         Exception::Type &e);
 
     // 5.11
     void stopRegistrationForObjectClass(ObjectClassHandle theClass,
-                                        TypeException &e);
+                                        Exception::Type &e);
 
     /**
      * Transmits the Networkmessage NM_Set_Interaction_Relevance_Advisory_Switch
@@ -105,15 +105,15 @@ public:
      * @param[in,out] e is a reference to a possible exception
      */
     void setInteractionRelevanceAdvisorySwitch(bool state,
-                                               TypeException &e);
+                                               Exception::Type &e);
 
     // 5.12
     void turnInteractionsOn(InteractionClassHandle theHandle,
-                            TypeException &e);
+                            Exception::Type &e);
 
     // 5.13
     void turnInteractionsOff(InteractionClassHandle theHandle,
-                             TypeException &e);
+                             Exception::Type &e);
 
 protected:
     Communications *comm ;

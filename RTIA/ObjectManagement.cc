@@ -67,7 +67,7 @@ ObjectManagement::~ObjectManagement() { }
 
 // ----------------------------------------------------------------------------
 void
-ObjectManagement::reserveObjectName(const std::string &newObjName, TypeException &e)
+ObjectManagement::reserveObjectName(const std::string &newObjName, Exception::Type &e)
 {
     NM_Reserve_Object_Instance_Name req;
 
@@ -76,7 +76,7 @@ ObjectManagement::reserveObjectName(const std::string &newObjName, TypeException
         // According to spec, the HLA prefix is reserved for RTI-internal objects.
         newObjName.compare(0, 3, "HLA") == 0 )
     {
-        e = e_IllegalName;
+        e = Exception::Type::IllegalName;
     } else {
         req.setFederation(fm->_numero_federation);
         req.setFederate(fm->federate);
@@ -96,7 +96,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 		const std::string& theObjectName,
 		FederationTime,
 		FederationTime,
-		TypeException & e)
+		Exception::Type & e)
 {
 	NM_Register_Object req;
 
@@ -111,7 +111,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 
 	e = rep->getException() ;
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(),
 				rep->getLabel());
 		return rep->getObject() ;
@@ -139,7 +139,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 		uint32_t attribArraySize,
 		FederationTime theTime,
 		const std::string& theTag,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Update_Attribute_Values req;
 	bool validCall ;
@@ -177,7 +177,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 		errorMsg << " lookahead    =" << tm->requestLookahead()<<std::endl;
 
 		D.Out(pdDebug,errorMsg.str().c_str());
-		e = e_InvalidFederationTime;
+        e = Exception::Type::InvalidFederationTime;
 	}
 
 	// FIXME returned evtrHandle carry uninitialized value
@@ -201,7 +201,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 		const std::vector<AttributeValue_t> &valueArray,
 		uint32_t attribArraySize,
 		const std::string& theTag,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Update_Attribute_Values req;
 
@@ -236,7 +236,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 		const std::string& the_name,
 		FederationTime the_time,
 		EventRetractionHandle the_event,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Discover_Object_Instance req;
 	EventRetraction  event;
@@ -266,7 +266,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 		FederationTime the_time,
 		const std::string& the_tag,
 		EventRetractionHandle the_event,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Reflect_Attribute_Values req;
 	EventRetraction event;
@@ -297,7 +297,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 		const std::vector <AttributeValue_t> &the_values,
 		uint16_t the_size,
 		const std::string& the_tag,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Reflect_Attribute_Values req;
 
@@ -327,7 +327,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 		FederationTime theTime,
 		const std::string& theTag,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Send_Interaction req;
 	bool validCall ;
@@ -367,7 +367,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 		evtrHandle = rep->eventRetraction;
 	}
 	else {
-		e = e_InvalidFederationTime ;
+        e = Exception::Type::InvalidFederationTime ;
 	}
 
 	// FIXME returned evtrHandle carry uninitialized value
@@ -383,7 +383,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 		uint32_t paramArraySize,
 		const std::string& theTag,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Send_Interaction req;
 	G.Out(pdGendoc,"ObjectManagement::sendInteraction without time");
@@ -426,7 +426,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 		FederationTime the_time,
 		const std::string& the_tag,
 		EventRetractionHandle the_event,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Receive_Interaction req;
 	EventRetraction  event;
@@ -453,7 +453,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 		const std::vector <ParameterValue_t> &the_values,
 		uint16_t the_size,
 		const std::string& the_tag,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Receive_Interaction req;
 
@@ -474,7 +474,7 @@ EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 		FederationTime theTime,
 		const std::string& theTag,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Delete_Object req;
 
@@ -489,7 +489,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 
 	e = rep->getException() ;
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
 	}
 
@@ -501,7 +501,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 void
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 		const std::string& theTag,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Delete_Object req;
 
@@ -515,7 +515,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 
 	e = rep->getException() ;
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
 	}
 } /* end of deleteObject */
@@ -523,7 +523,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 // ----------------------------------------------------------------------------
 
 void 
-ObjectManagement::deleteAllObjects(TypeException &e)
+ObjectManagement::deleteAllObjects(Exception::Type &e)
 {
 	std::vector<ObjectHandle> ownedObjectInstances;
 
@@ -545,7 +545,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
 		FederationTime theTime,
 		const std::string& the_tag,
 		EventRetractionHandle the_event,
-		TypeException &)
+		Exception::Type &)
 
 {
 	M_Remove_Object_Instance req;
@@ -568,7 +568,7 @@ void
 ObjectManagement::removeObject(ObjectHandle the_object,
 		FederateHandle the_federate,
 		const std::string& the_tag,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Remove_Object_Instance req;
 
@@ -587,7 +587,7 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
 		const std::vector <AttributeHandle> &attribArray,
 		uint32_t attribArraySize,
 		TransportType theType,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Change_Attribute_Transport_Type req;
 	uint32_t i ;
@@ -619,7 +619,7 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
 		const std::vector <AttributeHandle> &attribArray,
 		uint32_t attribArraySize,
 		OrderType theType,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Change_Attribute_Order_Type req ;
 	uint32_t i ;
@@ -647,7 +647,7 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
 EventRetractionHandle
 ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
 		TransportType theType,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Change_Interaction_Transport_Type req;
 
@@ -668,7 +668,7 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
 EventRetractionHandle
 ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 		OrderType theType,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Change_Interaction_Order_Type req;
 
@@ -692,7 +692,7 @@ void
 ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 		const std::vector <AttributeHandle> &attribs,
 		uint32_t attribArraySize,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Request_Object_Attribute_Value_Update req;
 
@@ -721,7 +721,7 @@ void
 ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 		const std::vector <AttributeHandle> &attribs,
 		uint32_t attribArraySize,
-		TypeException &e)
+		Exception::Type &e)
 {
 	NM_Request_Class_Attribute_Value_Update req;
 	
@@ -753,7 +753,7 @@ void
 ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
 		const std::vector <AttributeHandle> &the_attributes,
 		uint32_t attribArraySize,
-		TypeException &)
+		Exception::Type &)
 {
 	M_Provide_Attribute_Value_Update req;
 
@@ -773,7 +773,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
 // ------------------
 
 void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
-		TypeException & /*e*/)
+		Exception::Type & /*e*/)
 {
 	throw RTIinternalError("ObjectManagement::retract not implemented.");
 }
@@ -785,7 +785,7 @@ void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
 
 void
 ObjectManagement::reflectRetraction(EventRetractionHandle,
-		TypeException &)
+		Exception::Type &)
 {
 	throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
 }
@@ -965,12 +965,12 @@ ObjectManagement::getOrderingName(OrderType theType)
 
 void
 ObjectManagement::
-setAttributeScopeAdvisorySwitch(bool state, TypeException &e) {
+setAttributeScopeAdvisorySwitch(bool state, Exception::Type &e) {
 	G.Out(pdGendoc,"enter ObjectManagement::setAttributeScopeAdvisorySwitch");
 
 	NM_Set_Attribute_Scope_Advisory_Switch msg ;
 
-	e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
 	msg.setFederation(fm->_numero_federation);
 	msg.setFederate(fm->federate);
@@ -995,7 +995,7 @@ ObjectManagement::
 attributesInScope(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		TypeException &e) {
+		Exception::Type &e) {
 
 	M_Attributes_In_Scope req;
 
@@ -1021,7 +1021,7 @@ ObjectManagement::
 attributesOutOfScope(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		TypeException &e) {
+		Exception::Type &e) {
 
 	M_Attributes_Out_Of_Scope req;
 
@@ -1040,12 +1040,12 @@ attributesOutOfScope(ObjectHandle theObject,
 
 void
 ObjectManagement::
-setAttributeRelevanceAdvisorySwitch(bool state, TypeException &e) {
+setAttributeRelevanceAdvisorySwitch(bool state, Exception::Type &e) {
 	G.Out(pdGendoc,"enter ObjectManagement::setAttributeRelevanceAdvisorySwitch");
 
 	NM_Set_Attribute_Relevance_Advisory_Switch msg ;
 
-	e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
 	msg.setFederation(fm->_numero_federation);
 	msg.setFederate(fm->federate);
@@ -1071,7 +1071,7 @@ ObjectManagement::
 turnUpdatesOnForObjectInstance(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		TypeException &e) {
+		Exception::Type &e) {
 
 	M_Turn_Updates_On_For_Object_Instance req;
 
@@ -1097,7 +1097,7 @@ ObjectManagement::
 turnUpdatesOffForObjectInstance(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		TypeException &e) {
+		Exception::Type &e) {
 
 	M_Turn_Updates_Off_For_Object_Instance req;
 

@@ -170,19 +170,20 @@ public:
         return type;
     };
 
-    const TypeException getException() const
+    const Exception::Type getException() const
     {
         return exception;
     };
-    TypeException& getRefException()
+    
+    Exception::Type& getRefException()
     {
         return exception;
     };
-    void setException(const TypeException e)
+    void setException(const Exception::Type e)
     {
         exception = e;
     };
-    void setException(const TypeException e, const std::string& reason)
+    void setException(const Exception::Type e, const std::string& reason)
     {
         exception = e;
         exceptionReason = reason;
@@ -259,7 +260,7 @@ protected:
 	 * The exception type
 	 * if the message is carrying an exception
 	 */
-    TypeException exception;
+    Exception::Type exception;
 
     /**
 	 * The exception reason (if the message carry one)

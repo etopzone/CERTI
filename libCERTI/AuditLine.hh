@@ -41,7 +41,7 @@ public:
 
     void write(std::ofstream &); //!< Write data to file
     void addComment(const std::string &); //!< Add str at the end of comment.
-    void end(unsigned short event_status = e_NO_EXCEPTION,
+    void end(unsigned short event_status = static_cast<unsigned short>(Exception::Type::NO_EXCEPTION),
 	     const std::string& reason = "");
     unsigned short getLevel() const { return level ; };
     unsigned short getStatus() const { return status ; };

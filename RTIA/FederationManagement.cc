@@ -91,7 +91,7 @@ void
 FederationManagement::
 createFederationExecution(const std::string& theName,
                           const std::string& fedId,
-                          TypeException &e)
+                          Exception::Type &e)
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError)
@@ -101,15 +101,15 @@ createFederationExecution(const std::string& theName,
     G.Out(pdGendoc,"enter FederationManagement::createFederationExecution");
     D.Out(pdInit, "Creating Federation %s.", theName.c_str());
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     if (_est_membre_federation)
        {
         std::cout<<"Federate "<<_nom_federe<<" is yet a federation member"<<std::endl;
-        e = e_RTIinternalError ;
+        e = Exception::Type::RTIinternalError ;
         }
 
-    if (e == e_NO_EXCEPTION)
+        if (e == Exception::Type::NO_EXCEPTION)
         {               
         requete.setFederationName(theName);
         requete.setFEDid(fedId);
@@ -125,13 +125,13 @@ createFederationExecution(const std::string& theName,
 
         // We have to see if C_F_E is OK.
 
-        if (reponse->getException() == e_NO_EXCEPTION)
+        if (reponse->getException() == Exception::Type::NO_EXCEPTION)
             {
             _nom_federation = theName;            
             _numero_federation = reponse->getFederation() ;
             D.Out(pdInit, "est createur");
             }
-        else if (reponse->getException() == e_CouldNotOpenFED)
+            else if (reponse->getException() == Exception::Type::CouldNotOpenFED)
             // RTIG encounters a problem creating federation execution
             {
             e = reponse->getException();
@@ -139,14 +139,14 @@ createFederationExecution(const std::string& theName,
                            "createFederationExecution on exception");
             throw CouldNotOpenFED (reponse->getExceptionReason()) ;
             }           
-        else if (reponse->getException() == e_FederationExecutionAlreadyExists)
+            else if (reponse->getException() == Exception::Type::FederationExecutionAlreadyExists)
             {
             e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
             throw FederationExecutionAlreadyExists (reponse->getExceptionReason()) ;
             }
-        else if (reponse->getException() == e_ErrorReadingFED)
+            else if (reponse->getException() == Exception::Type::ErrorReadingFED)
             {
             e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
@@ -173,20 +173,20 @@ createFederationExecution(const std::string& theName,
 void
 FederationManagement::
 destroyFederationExecution(const std::string& theName,
-                           TypeException &e)
+                           Exception::Type &e)
 {
     NM_Destroy_Federation_Execution requete ;
 
     D.Out(pdInit, "Destroy Federation %s.", theName.c_str());
     G.Out(pdGendoc,"enter FederationManagement::destroyFederationExecution");
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // BUG: On devrait pouvoir detruire une federation meme si on n'est
     // pas le createur.
     //if (strcmp(theName, _nom_federation))
     //    e = e_FederationExecutionDoesNotExist ;
 
-    if (e == e_NO_EXCEPTION)
+    if (e == Exception::Type::NO_EXCEPTION)
         {
         requete.setFederation(_numero_federation);
         requete.setFederate(federate);
@@ -200,7 +200,7 @@ destroyFederationExecution(const std::string& theName,
                           NetworkMessage::DESTROY_FEDERATION_EXECUTION,
                           federate));
 
-        if (reponse->getException() == e_NO_EXCEPTION) {
+        if (reponse->getException() == Exception::Type::NO_EXCEPTION) {
             _nom_federation    = "" ;
             _numero_federation = 0 ;
             }
@@ -221,7 +221,7 @@ FederationManagement::
 joinFederationExecution(const std::string& Federate,
                         const std::string& Federation,
                         RootObject* rootObject,
-                        TypeException &e)
+                        Exception::Type &e)
 {
     NM_Join_Federation_Execution requete;
     int i, nb ;
@@ -229,15 +229,15 @@ joinFederationExecution(const std::string& Federate,
     G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
     D.Out(pdInit, "Join Federation %s as %s.", Federation.c_str(), Federate.c_str());
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // this federate, may be, has yet joined federation so don't disturb RTIG
     if (_est_membre_federation){
-          e = e_FederateAlreadyExecutionMember ;
+        e = Exception::Type::FederateAlreadyExecutionMember ;
          return(0);
     }
 
-    if (e == e_NO_EXCEPTION)
+    if (e == Exception::Type::NO_EXCEPTION)
         {
         requete.setFederationName(Federation);
         requete.setFederateName(Federate);
@@ -254,7 +254,7 @@ joinFederationExecution(const std::string& Federate,
 
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
-        if (reponse->getException() == e_NO_EXCEPTION) {
+        if (reponse->getException() == Exception::Type::NO_EXCEPTION) {
             NM_Join_Federation_Execution* joinResponse = static_cast<NM_Join_Federation_Execution*>(reponse.get());
             rootObject->rebuildFromSerializedFOM(*joinResponse);
 
@@ -294,21 +294,21 @@ joinFederationExecution(const std::string& Federate,
 
 void
 FederationManagement::resignFederationExecution(ResignAction,
-                                                TypeException &e)
+                                                Exception::Type &e)
 {
     NM_Resign_Federation_Execution msg;
-    TypeException exception = e_NO_EXCEPTION ;
+    Exception::Type exception = Exception::Type::NO_EXCEPTION ;
 
     G.Out(pdGendoc,"enter FederationManagement::resignFederationExecution");
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     D.Out(pdInit, "Resign Federation.");
 
     if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
+        e = Exception::Type::FederateNotExecutionMember ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         tm->StopperAvanceTemps();
 
         if (tm->requestRegulateurState())
@@ -341,7 +341,7 @@ FederationManagement::resignFederationExecutionForTermination()
     G.Out(pdGendoc,"enter FederationManagement::resignFederationExecutionForTermination");
 
     if (_est_membre_federation) {
-        TypeException e ;
+        Exception::Type e ;
         resignFederationExecution(DELETE_OBJECTS, e);
     }
 
@@ -353,22 +353,22 @@ FederationManagement::resignFederationExecutionForTermination()
 void
 FederationManagement::registerSynchronization(const std::string& label,
                                               const std::string& tag,
-                                              TypeException &e)
+                                              Exception::Type &e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization");
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     if (_synchronizationLabels.find(label) != _synchronizationLabels.end())
-        e = e_FederationAlreadyPaused ; // Label already pending.
+        e = Exception::Type::FederationAlreadyPaused ; // Label already pending.
 
     _synchronizationLabels.insert(label);
 
     if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
+        e = Exception::Type::FederateNotExecutionMember ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         NM_Register_Federation_Synchronization_Point req ;        
         req.setFederation( _numero_federation);
         req.setFederate (federate);
@@ -393,22 +393,22 @@ FederationManagement::registerSynchronization(const std::string& label,
                                               const std::string& tag,
                                               unsigned short array_size,
                                               const std::vector <FederateHandle> &fed_array,
-                                              TypeException &e)
+                                              Exception::Type &e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization with federate set");
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     if (_synchronizationLabels.find(label) != _synchronizationLabels.end())
-        e = e_FederationAlreadyPaused ; // Label already pending.
+        e = Exception::Type::FederationAlreadyPaused ; // Label already pending.
 
     _synchronizationLabels.insert(label);
 
     if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
+        e = Exception::Type::FederateNotExecutionMember ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         NM_Register_Federation_Synchronization_Point req;        
         req.setFederation( _numero_federation);
         req.setFederate (federate);
@@ -432,23 +432,23 @@ FederationManagement::registerSynchronization(const std::string& label,
 //! Unregister synchronization.
 void
 FederationManagement::unregisterSynchronization(const std::string& label,
-                                                TypeException &e)
+                                                Exception::Type &e)
 {
     D.Out(pdProtocol, "unregisterSynchronization.");
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Find if this label has been requested by federate or RTIG.
     std::set<std::string>::iterator i = _synchronizationLabels.find(label);
     if (i == _synchronizationLabels.end())
-        e = e_UnknownLabel ;
+        e = Exception::Type::UnknownLabel ;
     else
       _synchronizationLabels.erase(i);
     
     if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
+        e = Exception::Type::FederateNotExecutionMember ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         NM_Synchronization_Point_Achieved req ;
         
         req.setFederation( _numero_federation);
@@ -530,7 +530,7 @@ FederationManagement::federationSynchronized(const std::string& label)
 void
 FederationManagement::requestFederationSave(const std::string& label,
                                             FederationTime the_time,
-                                            TypeException &e)
+                                            Exception::Type &e)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
@@ -557,7 +557,7 @@ FederationManagement::requestFederationSave(const std::string& label,
 // requestFederationSave without time
 void
 FederationManagement::requestFederationSave(const std::string& label,
-                                            TypeException &e)
+                                            Exception::Type &e)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
@@ -578,7 +578,7 @@ FederationManagement::requestFederationSave(const std::string& label,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateSaveBegun(TypeException &)
+FederationManagement::federateSaveBegun(Exception::Type &)
 {
     G.Out(pdGendoc,"enter FederationManagement::federateSaveBegun");
     D.Out(pdInit, "Beginning federate save.");
@@ -600,7 +600,7 @@ FederationManagement::federateSaveBegun(TypeException &)
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateSaveStatus(bool status, TypeException &)
+FederationManagement::federateSaveStatus(bool status, Exception::Type &)
 {
     G.Out(pdGendoc,"enter FederationManagement::federateSaveStatus");
     D.Out(pdInit, "Federate %ssaved.", status ? "" : "not ");
@@ -666,7 +666,7 @@ FederationManagement::federationSavedStatus(bool status)
 // ----------------------------------------------------------------------------
 void
 FederationManagement::requestFederationRestore(const std::string& label,
-                                               TypeException &)
+                                               Exception::Type &)
 {
     G.Out(pdGendoc,"enter FederationManagement::requestFederationRestore");
     D.Out(pdInit, "Request for federation restore \"%s\".", label.c_str());
@@ -688,7 +688,7 @@ FederationManagement::requestFederationRestore(const std::string& label,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateRestoreStatus(bool status, TypeException &)
+FederationManagement::federateRestoreStatus(bool status, Exception::Type &)
 {
     D.Out(pdInit, "Federate %srestored.", status ? "" : "not ");
 

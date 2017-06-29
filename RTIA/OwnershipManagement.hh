@@ -52,61 +52,61 @@ public:
     std::string
     attributeOwnedByFederate(ObjectHandle theObject,
                              AttributeHandle theAttribute,
-                             TypeException &e);
+                             Exception::Type &e);
 
     void
     queryAttributeOwnership(ObjectHandle theObject,
                             AttributeHandle theAttribute,
-                            TypeException &e);
+                            Exception::Type &e);
 
     void
     informAttributeOwnership(ObjectHandle theObject,
                              AttributeHandle theAttribute,
                              FederateHandle theOwner,
-                             TypeException &e);
+                             Exception::Type &e);
 
     void
     attributeIsNotOwned(ObjectHandle theObject,
                         AttributeHandle theAttribute,
                         FederateHandle theOwner,
-                        TypeException &e);
+                        Exception::Type &e);
 
     void
     negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                             const std::vector <AttributeHandle> &attribArray,
                                             uint32_t attribArraySize,
                                             const std::string& theTag,
-                                            TypeException &e);
+                                            Exception::Type &e);
     void
     cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                                   const std::vector <AttributeHandle> &,
                                                   uint32_t attribArraySize,
-                                                  TypeException &e);
+                                                  Exception::Type &e);
 
     void
     attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     		                                 const std::vector <AttributeHandle> &attribArray,
                                              uint32_t attribArraySize,
-                                             TypeException &e);
+                                             Exception::Type &e);
 
     void
     cancelattributeOwnershipAcquisition(ObjectHandle theObject,
     		                            const std::vector <AttributeHandle> &attribArray,
                                         uint32_t attribArraySize,
-                                        TypeException &e);
+                                        Exception::Type &e);
 
     void
     attributeOwnershipAcquisitionNotification(ObjectHandle theObject,
                                               const std::vector <AttributeHandle> &attribArray,
                                               uint32_t attribArraySize,
                                               FederateHandle theOwner,
-                                              TypeException &e);
+                                              Exception::Type &e);
     void
     attributeOwnershipUnavailable(ObjectHandle theObject,
                                   const std::vector <AttributeHandle> &attribArray,
                                   uint32_t attribArraySize,
                                   FederateHandle theOwner,
-                                  TypeException &e);
+                                  Exception::Type &e);
 
     void
     requestAttributeOwnershipAssumption(ObjectHandle theObject,
@@ -114,44 +114,44 @@ public:
                                         uint32_t attribArraySize,
                                         FederateHandle theOwner,
                                         const std::string& theTag,
-                                        TypeException &e);
+                                        Exception::Type &e);
 
     void
     unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
                                                const std::vector <AttributeHandle> &attribArray,
                                                uint32_t attribArraySize,
-                                               TypeException &e);
+                                               Exception::Type &e);
 
     void
     attributeOwnershipAcquisition(ObjectHandle theObject,
                                   const std::vector <AttributeHandle> &attribArray,
                                   uint32_t attribArraySize,
                                   const std::string& theTag,
-                                  TypeException &e);
+                                  Exception::Type &e);
 
     void
     requestAttributeOwnershipRelease(ObjectHandle theObject,
                                      const std::vector <AttributeHandle> &attribArray,
                                      uint32_t attribArraySize,
                                      const std::string& theTag,
-                                     TypeException &e);
+                                     Exception::Type &e);
 
     void
     attributeOwnershipDivestitureNotification(ObjectHandle theObject,
                                               const std::vector <AttributeHandle> &attribArray,
                                               uint32_t attribArraySize,
-                                              TypeException &e);
+                                              Exception::Type &e);
     AttributeHandleSet*
     attributeOwnershipRealeaseResponse(ObjectHandle theObject,
                                        const std::vector <AttributeHandle> &attribArray,
                                        uint32_t attribArraySize,
-                                       TypeException &e);
+                                       Exception::Type &e);
 
     void
     confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
                                                      const std::vector <AttributeHandle> &,
                                                      uint32_t attribArraySize,
-                                                     TypeException &e);
+                                                     Exception::Type &e);
 
 protected:
     Communications *comm ;

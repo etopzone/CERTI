@@ -180,170 +180,170 @@ RTIambPrivateRefs::processException(Message *msg)
 {
 	D.Out(pdExcept, "num de l'exception : %d .", msg->getExceptionType());
 	switch(msg->getExceptionType()) {
-	case e_NO_EXCEPTION: {
+	case Exception::Type::NO_EXCEPTION: {
 	} break ;
 
-	case e_ArrayIndexOutOfBounds: {
+	case Exception::Type::ArrayIndexOutOfBounds: {
 		D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
 		throw RTI::ArrayIndexOutOfBounds(msg->getExceptionReason());
 	} break ;
 
-	case e_AsynchronousDeliveryAlreadyEnabled: {
+	case Exception::Type::AsynchronousDeliveryAlreadyEnabled: {
 		D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyEnabled exception.");
 		throw RTI::AsynchronousDeliveryAlreadyEnabled(msg->getExceptionReason());
 	} break ;
 
-	case e_AsynchronousDeliveryAlreadyDisabled: {
+	case Exception::Type::AsynchronousDeliveryAlreadyDisabled: {
 		D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyDisabled exception.");
 		throw RTI::AsynchronousDeliveryAlreadyDisabled(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeAlreadyOwned: {
+	case Exception::Type::AttributeAlreadyOwned: {
 		D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
 		throw RTI::AttributeAlreadyOwned(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeAlreadyBeingAcquired: {
+	case Exception::Type::AttributeAlreadyBeingAcquired: {
 		D.Out(pdExcept,
 				"Throwing e_AttributeAlreadyBeingAcquired exception.");
 		throw RTI::AttributeAlreadyBeingAcquired(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeAlreadyBeingDivested: {
+	case Exception::Type::AttributeAlreadyBeingDivested: {
 		D.Out(pdExcept,
 				"Throwing e_AttributeAlreadyBeingDivested exception.");
 		throw RTI::AttributeAlreadyBeingDivested(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeDivestitureWasNotRequested: {
+	case Exception::Type::AttributeDivestitureWasNotRequested: {
 		D.Out(pdExcept,
 				"Throwing e_AttributeDivestitureWasNotRequested exception.");
 		throw RTI::AttributeDivestitureWasNotRequested(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeAcquisitionWasNotRequested: {
+	case Exception::Type::AttributeAcquisitionWasNotRequested: {
 		D.Out(pdExcept,
 				"Throwing e_AttributeAcquisitionWasNotRequested exception.");
 		throw RTI::AttributeAcquisitionWasNotRequested(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeNotDefined: {
+	case Exception::Type::AttributeNotDefined: {
 		D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
 		throw RTI::AttributeNotDefined(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeNotKnown: {
+	case Exception::Type::AttributeNotKnown: {
 		D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
 		throw RTI::AttributeNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeNotOwned: {
+	case Exception::Type::AttributeNotOwned: {
 		D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
 		throw RTI::AttributeNotOwned(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeNotPublished: {
+	case Exception::Type::AttributeNotPublished: {
 		D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
 		throw RTI::AttributeNotPublished(msg->getExceptionReason());
 	} break ;
 
-	case e_AttributeNotSubscribed: {
+	case Exception::Type::AttributeNotSubscribed: {
 		D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_ConcurrentAccessAttempted: {
+	case Exception::Type::ConcurrentAccessAttempted: {
 		D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
 		throw RTI::ConcurrentAccessAttempted(msg->getExceptionReason());
 	} break ;
 
-	case e_CouldNotDiscover: {
+	case Exception::Type::CouldNotDiscover: {
 		D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
 		throw RTI::CouldNotDiscover(msg->getExceptionReason());
 	} break ;
 
-	case e_CouldNotOpenFED: {
+	case Exception::Type::CouldNotOpenFED: {
 		D.Out(pdExcept, "Throwing e_CouldNotOpenFED exception.");
 		throw RTI::CouldNotOpenFED(msg->getExceptionReason());
 	} break ;
 
-	case e_CouldNotOpenRID: {
+	case Exception::Type::CouldNotOpenRID: {
 		D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_CouldNotRestore: {
+	case Exception::Type::CouldNotRestore: {
 		D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
 		throw RTI::CouldNotRestore(msg->getExceptionReason());
 	} break ;
 
-	case e_DeletePrivilegeNotHeld: {
+	case Exception::Type::DeletePrivilegeNotHeld: {
 		D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
 		throw RTI::DeletePrivilegeNotHeld(msg->getExceptionReason());
 	} break ;
 
-	case e_ErrorReadingRID: {
+	case Exception::Type::ErrorReadingRID: {
 		D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_ErrorReadingFED: {
+	case Exception::Type::ErrorReadingFED: {
 		D.Out(pdExcept, "Throwing e_ErrorReadingFED exception.");
 		throw RTI::ErrorReadingFED(msg->getExceptionReason());
 	} break ;
 
-	case e_EventNotKnown: {
+	case Exception::Type::EventNotKnown: {
 		D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
 		throw RTI::EventNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateAlreadyPaused: {
+	case Exception::Type::FederateAlreadyPaused: {
 		D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateAlreadyExecutionMember: {
+	case Exception::Type::FederateAlreadyExecutionMember: {
 		D.Out(pdExcept,
 				"Throwing e_FederateAlreadyExecutionMember exception.");
 		throw RTI::FederateAlreadyExecutionMember(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateDoesNotExist: {
+	case Exception::Type::FederateDoesNotExist: {
 		D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateInternalError: {
+	case Exception::Type::FederateInternalError: {
 		D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
 		throw RTI::FederateInternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateNameAlreadyInUse: {
+	case Exception::Type::FederateNameAlreadyInUse: {
 		D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateNotExecutionMember: {
+	case Exception::Type::FederateNotExecutionMember: {
 		D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
 		throw RTI::FederateNotExecutionMember(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateNotPaused: {
+	case Exception::Type::FederateNotPaused: {
 		D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateOwnsAttributes: {
+	case Exception::Type::FederateOwnsAttributes: {
 		D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
 		throw RTI::FederateOwnsAttributes(msg->getExceptionReason());
 	} break ;
 
-	case e_FederatesCurrentlyJoined: {
+	case Exception::Type::FederatesCurrentlyJoined: {
 		D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
 		throw RTI::FederatesCurrentlyJoined(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateWasNotAskedToReleaseAttribute: {
+	case Exception::Type::FederateWasNotAskedToReleaseAttribute: {
 		D.Out(pdExcept,
 				"Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
 		D.Out(pdDebug,
@@ -351,259 +351,259 @@ RTIambPrivateRefs::processException(Message *msg)
 		throw RTI::FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
 	} break ;
 
-	case e_FederationAlreadyPaused: {
+	case Exception::Type::FederationAlreadyPaused: {
 		D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederationExecutionAlreadyExists: {
+	case Exception::Type::FederationExecutionAlreadyExists: {
 		D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
 		throw RTI::FederationExecutionAlreadyExists(msg->getExceptionReason());
 	} break ;
 
-	case e_FederationExecutionDoesNotExist: {
+	case Exception::Type::FederationExecutionDoesNotExist: {
 		D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
 		throw RTI::FederationExecutionDoesNotExist(msg->getExceptionReason());
 	} break ;
 
-	case e_FederationNotPaused: {
+	case Exception::Type::FederationNotPaused: {
 		D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederationTimeAlreadyPassed: {
+	case Exception::Type::FederationTimeAlreadyPassed: {
 		D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
 		throw RTI::FederationTimeAlreadyPassed(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateNotPublishing: {
+	case Exception::Type::FederateNotPublishing: {
 		D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_FederateNotSubscribing: {
+	case Exception::Type::FederateNotSubscribing: {
 		D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_RegionNotKnown: {
+	case Exception::Type::RegionNotKnown: {
 		D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
 		throw RTI::RegionNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_IDsupplyExhausted: {
+	case Exception::Type::IDsupplyExhausted: {
 		D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_InteractionClassNotDefined: {
+	case Exception::Type::InteractionClassNotDefined: {
 		D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
 		throw RTI::InteractionClassNotDefined(msg->getExceptionReason());
 	} break ;
 
-	case e_InteractionClassNotKnown: {
+	case Exception::Type::InteractionClassNotKnown: {
 		D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
 		throw RTI::InteractionClassNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_InteractionClassNotPublished: {
+	case Exception::Type::InteractionClassNotPublished: {
 		D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
 		throw RTI::InteractionClassNotPublished(msg->getExceptionReason());
 	} break ;
 
-	case e_InteractionParameterNotDefined: {
+	case Exception::Type::InteractionParameterNotDefined: {
 		D.Out(pdExcept,
 				"Throwing e_InteractionParameterNotDefined exception.");
 		throw RTI::InteractionParameterNotDefined(msg->getExceptionReason());
 	} break ;
 
-	case e_InteractionParameterNotKnown: {
+	case Exception::Type::InteractionParameterNotKnown: {
 		D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
 		throw RTI::InteractionParameterNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidDivestitureCondition: {
+	case Exception::Type::InvalidDivestitureCondition: {
 		D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidExtents: {
+	case Exception::Type::InvalidExtents: {
 		D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
 		throw RTI::InvalidExtents(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidFederationTime: {
+	case Exception::Type::InvalidFederationTime: {
 		D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
 		throw RTI::InvalidFederationTime(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidFederationTimeDelta: {
+	case Exception::Type::InvalidFederationTimeDelta: {
 		D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidLookahead: {
+	case Exception::Type::InvalidLookahead: {
 		D.Out(pdExcept, "Throwing e_InvalidLookahead.");
 		throw RTI::InvalidLookahead(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidObjectHandle: {
+	case Exception::Type::InvalidObjectHandle: {
 		D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidOrderingHandle: {
+	case Exception::Type::InvalidOrderingHandle: {
 		D.Out(pdExcept, "Throwing e_InvalidOrderingHandle exception.");
 		throw RTI::InvalidOrderingHandle(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidResignAction: {
+	case Exception::Type::InvalidResignAction: {
 		D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
 		throw RTI::InvalidResignAction(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidRetractionHandle: {
+	case Exception::Type::InvalidRetractionHandle: {
 		D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
 		throw RTI::InvalidRetractionHandle(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidRoutingSpace: {
+	case Exception::Type::InvalidRoutingSpace: {
 		D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_InvalidTransportationHandle: {
+	case Exception::Type::InvalidTransportationHandle: {
 		D.Out(pdExcept, "Throwing e_InvalidTransportationHandle exception.");
 		throw RTI::InvalidTransportationHandle(msg->getExceptionReason());
 	} break ;
 
-	case e_MemoryExhausted: {
+	case Exception::Type::MemoryExhausted: {
 		D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
 		throw RTI::MemoryExhausted(msg->getExceptionReason());
 	} break ;
 
-	case e_NameNotFound: {
+	case Exception::Type::NameNotFound: {
 		D.Out(pdExcept, "Throwing e_NameNotFound exception.");
 		throw RTI::NameNotFound(msg->getExceptionReason());
 	} break ;
 
-	case e_NoPauseRequested: {
+	case Exception::Type::NoPauseRequested: {
 		D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_NoResumeRequested: {
+	case Exception::Type::NoResumeRequested: {
 		D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectClassNotDefined: {
+	case Exception::Type::ObjectClassNotDefined: {
 		D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
 		throw RTI::ObjectClassNotDefined(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectClassNotKnown: {
+	case Exception::Type::ObjectClassNotKnown: {
 		D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
 		throw RTI::ObjectClassNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectClassNotPublished: {
+	case Exception::Type::ObjectClassNotPublished: {
 		D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
 		throw RTI::ObjectClassNotPublished(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectClassNotSubscribed: {
+	case Exception::Type::ObjectClassNotSubscribed: {
 		D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
 		throw RTI::ObjectClassNotSubscribed(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectNotKnown: {
+	case Exception::Type::ObjectNotKnown: {
 		D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
 		throw RTI::ObjectNotKnown(msg->getExceptionReason());
 	} break ;
 
-	case e_ObjectAlreadyRegistered: {
+	case Exception::Type::ObjectAlreadyRegistered: {
 		D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
 		throw RTI::ObjectAlreadyRegistered(msg->getExceptionReason());
 	} break ;
 
-	case e_RestoreInProgress: {
+	case Exception::Type::RestoreInProgress: {
 		D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
 		throw RTI::RestoreInProgress(msg->getExceptionReason());
 	} break ;
 
-	case e_RestoreNotRequested: {
+	case Exception::Type::RestoreNotRequested: {
 		D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
 		throw RTI::RestoreNotRequested(msg->getExceptionReason());
 	} break ;
 
-	case e_RTIinternalError: {
+	case Exception::Type::RTIinternalError: {
 		D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_SpaceNotDefined: {
+	case Exception::Type::SpaceNotDefined: {
 		D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
 		throw RTI::SpaceNotDefined(msg->getExceptionReason());
 	} break ;
 
-	case e_SaveInProgress: {
+	case Exception::Type::SaveInProgress: {
 		D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
 		throw RTI::SaveInProgress(msg->getExceptionReason());
 	} break ;
 
-	case e_SaveNotInitiated: {
+	case Exception::Type::SaveNotInitiated: {
 		D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
 		throw RTI::SaveNotInitiated(msg->getExceptionReason());
 	} break ;
 
-	case e_SecurityError: {
+	case Exception::Type::SecurityError: {
 		D.Out(pdExcept, "Throwing e_SecurityError exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_SpecifiedSaveLabelDoesNotExist: {
+	case Exception::Type::SpecifiedSaveLabelDoesNotExist: {
 		D.Out(pdExcept,
 				"Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
 		throw RTI::SpecifiedSaveLabelDoesNotExist(msg->getExceptionReason());
 	} break ;
 
-	case e_TimeAdvanceAlreadyInProgress: {
+	case Exception::Type::TimeAdvanceAlreadyInProgress: {
 		D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
 		throw RTI::TimeAdvanceAlreadyInProgress(msg->getExceptionReason());
 	} break ;
 
-	case e_TimeAdvanceWasNotInProgress: {
+	case Exception::Type::TimeAdvanceWasNotInProgress: {
 		D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
 		throw RTI::TimeAdvanceWasNotInProgress(msg->getExceptionReason());
 	} break ;
 
-	case e_TooManyIDsRequested: {
+	case Exception::Type::TooManyIDsRequested: {
 		D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_UnableToPerformSave: {
+	case Exception::Type::UnableToPerformSave: {
 		D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
 		throw RTI::UnableToPerformSave(msg->getExceptionReason());
 	} break ;
 
-	case e_UnimplementedService: {
+	case Exception::Type::UnimplementedService: {
 		D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_UnknownLabel: {
+	case Exception::Type::UnknownLabel: {
 		D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
 		throw RTI::RTIinternalError(msg->getExceptionReason());
 	} break ;
 
-	case e_ValueCountExceeded: {
+	case Exception::Type::ValueCountExceeded: {
 		D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
 		throw RTI::ValueCountExceeded(msg->getExceptionReason());
 	} break ;
 
-	case e_ValueLengthExceeded: {
+	case Exception::Type::ValueLengthExceeded: {
 		D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
 		throw RTI::ValueLengthExceeded(msg->getExceptionReason());
 	} break ;

@@ -53,40 +53,40 @@ public:
     SpaceHandle getInteractionSpace(InteractionClassHandle) const
         throw (InteractionClassNotDefined);
 
-    long createRegion(SpaceHandle, unsigned long, TypeException &)
+    long createRegion(SpaceHandle, unsigned long, Exception::Type &)
         throw (SpaceNotDefined);
 
     void modifyRegion(RegionHandle, const std::vector<Extent> &,
-		      TypeException &);
+		      Exception::Type&);
     
-    void deleteRegion(long, TypeException &)
+    void deleteRegion(long, Exception::Type&)
         throw (RegionNotKnown, RegionInUse);
 
     void associateRegion(ObjectHandle, RegionHandle, const std::vector <AttributeHandle> &,
-			 uint32_t, TypeException &)
+			 uint32_t, Exception::Type&)
 	throw (RegionNotKnown);
 
     ObjectHandle registerObject(ObjectClassHandle, const std::string&,
 				const std::vector <AttributeHandle> &, uint32_t,
 				const std::vector<RegionHandle>,
-				TypeException &);
+				Exception::Type&);
 
-    void unassociateRegion(ObjectHandle, RegionHandle, TypeException &e)
+    void unassociateRegion(ObjectHandle, RegionHandle, Exception::Type&e)
 	throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown);
 
     void subscribe(ObjectClassHandle, RegionHandle, const std::vector <AttributeHandle> &, uint32_t,
-		   TypeException &)
+		   Exception::Type&)
 	throw (RegionNotKnown);
 
-    void unsubscribeAttributes(ObjectClassHandle, RegionHandle, TypeException &)
+    void unsubscribeAttributes(ObjectClassHandle, RegionHandle, Exception::Type&)
 	throw (RegionNotKnown);
 
     void subscribeInteraction(InteractionClassHandle, RegionHandle,
-			      TypeException &)
+			      Exception::Type&)
 	throw (RegionNotKnown);
 
     void unsubscribeInteraction(InteractionClassHandle, RegionHandle,
-				TypeException &)
+				Exception::Type&)
 	throw (RegionNotKnown);
     
 private:

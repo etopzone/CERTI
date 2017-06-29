@@ -119,7 +119,7 @@ private:
      * @param[out] answer answer message to be sent back to the federate
      * @param[out] e exception raised (if any).
      */
-    void chooseFederateProcessing(Message *request, Message* answer, TypeException &e);
+    void chooseFederateProcessing(Message *request, Message* answer, Exception::Type &e);
 
     /**
      * RTIA processes the TICK_REQUEST.

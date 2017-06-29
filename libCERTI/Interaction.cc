@@ -408,7 +408,7 @@ throw (FederateNotPublishing,
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
         NM_Receive_Interaction *answer = new NM_Receive_Interaction() ;
-        answer->setException (e_NO_EXCEPTION);
+        answer->setException (Exception::Type::NO_EXCEPTION);
         answer->setFederation(server->federation());
         answer->setFederate(federate_handle);
         answer->setInteractionClass(handle) ; // Interaction Class Handle
@@ -467,7 +467,7 @@ throw (FederateNotPublishing,
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
         NM_Receive_Interaction *answer = new NM_Receive_Interaction();
-        answer->setException(e_NO_EXCEPTION);
+        answer->setException(Exception::Type::NO_EXCEPTION);
         answer->setFederation(server->federation());
         answer->setFederate(federate_handle);
         answer->setInteractionClass(handle); // Interaction Class Handle

@@ -35,7 +35,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-    : type(NOT_USED), exception(e_NO_EXCEPTION)
+: type(NOT_USED), exception(Exception::Type::NO_EXCEPTION)
 {
     messageName        = "NetworkMessage (generic)";
     exceptionReason    = "Not Assigned";

@@ -254,14 +254,14 @@ public:
 	 */
 	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
-    void setException(TypeException, const std::string& the_reason = "");
-    TypeException getExceptionType() const { return exception ; };
+    void setException(const Exception::Type, const std::string& the_reason = "");
+    Exception::Type getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
 	std::wstring getExceptionReasonW() const { return std::wstring(exceptionReason.begin(), exceptionReason.end()); };
 
 protected:
     Type type ;
-    TypeException exception ;
+    Exception::Type exception ;
     std::string exceptionReason;
 
     ResignAction resignAction ;

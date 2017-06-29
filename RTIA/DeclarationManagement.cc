@@ -59,10 +59,10 @@ DeclarationManagement::~DeclarationManagement()
 void
 DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                           const std::vector <AttributeHandle> &attribArray,
-                                          TypeException &e)
+                                          Exception::Type& e)
 {
     G.Out(pdGendoc,"enter DeclarationManagement::publishObjectClass") ;
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Local update
     try {
@@ -101,12 +101,12 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 // unpublishObjectClass
 void
 DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
-                                            TypeException &e)
+                                            Exception::Type& e)
 {
     // Dummy var containing no Attribute at all
     std::vector <AttributeHandle> attribArrayVector;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Local update
     try {
@@ -140,9 +140,9 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
 void
 DeclarationManagement::
 publishInteractionClass(InteractionClassHandle theInteractionHandle,
-                        TypeException &e)
+                        Exception::Type &e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Local publish
     try {
@@ -172,9 +172,9 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
 void
 DeclarationManagement::
 unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
-                          TypeException &e)
+                          Exception::Type& e)
 {
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Partie Locale
 
@@ -207,7 +207,7 @@ DeclarationManagement::
 subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                               const std::vector <AttributeHandle> &attribArray,
                               uint32_t attribArraySize,
-                              TypeException &e)
+                              Exception::Type& e)
 {
     NM_Subscribe_Object_Class req;
 
@@ -243,11 +243,11 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 void
 DeclarationManagement::
 unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                TypeException &e)
+                                Exception::Type& e)
 {
     NM_Unsubscribe_Object_Class req;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Pas de Partie Locale pour les abonnements
 
@@ -270,11 +270,11 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 void
 DeclarationManagement::
 subscribeInteractionClass(InteractionClassHandle theClassHandle,
-                          TypeException &e)
+                          Exception::Type& e)
 {
     NM_Subscribe_Interaction_Class req;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Partie Locale
 
@@ -306,11 +306,11 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 void
 DeclarationManagement::
 unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
-                            TypeException &e)
+                            Exception::Type& e)
 {
     NM_Unsubscribe_Interaction_Class req;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     // Partie Locale
 
@@ -340,12 +340,12 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 
 void
 DeclarationManagement::
-setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
+setClassRelevanceAdvisorySwitch(bool state, Exception::Type& e) {
     G.Out(pdGendoc,"enter DeclarationManagement::setClassRelevanceAdvisorySwitch");
 
     NM_Set_Class_Relevance_Advisory_Switch msg ;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     msg.setFederation(fm->_numero_federation);
     msg.setFederate(fm->federate);
@@ -367,7 +367,7 @@ setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
 void
 DeclarationManagement::
 startRegistrationForObjectClass(ObjectClassHandle the_class,
-                                TypeException &e)
+                                Exception::Type& e)
 {
     G.Out(pdGendoc,"enter DeclarationManagement::startRegistrationForObjectClass");
 
@@ -385,7 +385,7 @@ startRegistrationForObjectClass(ObjectClassHandle the_class,
 void
 DeclarationManagement::
 stopRegistrationForObjectClass(ObjectClassHandle the_class,
-                               TypeException &e)
+                               Exception::Type& e)
 {
     M_Stop_Registration_For_Object_Class req;
     // Pas de partie Locale
@@ -408,12 +408,12 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
 
 void
 DeclarationManagement::
-setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
+setInteractionRelevanceAdvisorySwitch(bool state, Exception::Type& e) {
     G.Out(pdGendoc,"enter DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
 
     NM_Set_Interaction_Relevance_Advisory_Switch msg ;
 
-    e = e_NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION ;
 
     msg.setFederation(fm->_numero_federation);
     msg.setFederate(fm->federate);
@@ -435,7 +435,7 @@ setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
 void
 DeclarationManagement::
 turnInteractionsOn(InteractionClassHandle interaction,
-                   TypeException &e)
+                   Exception::Type& e)
 {
     M_Turn_Interactions_On req;
     req.setInteractionClass(interaction);
@@ -456,7 +456,7 @@ turnInteractionsOn(InteractionClassHandle interaction,
 void
 DeclarationManagement::
 turnInteractionsOff(InteractionClassHandle interaction,
-                    TypeException &e)
+                    Exception::Type& e)
 {
     M_Turn_Interactions_Off req ;
     req.setInteractionClass(interaction);

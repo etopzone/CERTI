@@ -119,7 +119,7 @@ throw (InteractionClassNotDefined)
 long
 DataDistribution::createRegion(SpaceHandle space,
 		unsigned long nb_extents,
-		TypeException &e)
+		Exception::Type &e)
 throw (SpaceNotDefined)
 {
 	Debug(D, pdDebug) << "Start creating region in space " << space << "..." << endl ;
@@ -134,7 +134,7 @@ throw (SpaceNotDefined)
 	std::auto_ptr<NM_DDM_Create_Region> rep(static_cast<NM_DDM_Create_Region*>(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.getFederate())));
 	e = rep->getException();
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		Debug(D, pdDebug) << "Create region " << rep->getRegion() << endl ;
 		RTIRegion *region = new RTIRegion(rep->getRegion(),
 				rootObject->getRoutingSpace(space),
@@ -155,7 +155,7 @@ throw (SpaceNotDefined)
 void
 DataDistribution::modifyRegion(RegionHandle handle,
 		const std::vector<Extent> &extents,
-		TypeException &e)
+		Exception::Type &e)
 {
 	Debug(D, pdDebug) << "Modify region " << handle << "..." << endl ;
 
@@ -174,7 +174,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.getFederate()));
 	e = rep->getException() ;
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		region->replaceExtents(extents);
 		Debug(D, pdDebug) << "Modified region " << handle << endl ;
 	}
@@ -184,7 +184,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 // deleteRegion
 //
 void
-DataDistribution::deleteRegion(long handle, TypeException &e)
+DataDistribution::deleteRegion(long handle, Exception::Type &e)
 throw (RegionNotKnown, RegionInUse)
 {
 	Debug(D, pdDebug) << "Delete region " << handle << "..." << endl ;
@@ -203,7 +203,7 @@ throw (RegionNotKnown, RegionInUse)
 	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.getFederate()));
 	e = rep->getException() ;
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		rootObject->deleteRegion(handle);
 		Debug(D, pdDebug) << "Deleted region " << handle << endl ;
 	}
@@ -215,7 +215,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 		RegionHandle region,
 		const std::vector <AttributeHandle> &attr,
 		uint32_t nb,
-		TypeException &e)
+		Exception::Type &e)
 throw (RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Associate Region " << region << std::endl ;
@@ -255,7 +255,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 		const std::vector <AttributeHandle> &attrs,
 		uint32_t nb,
 		const std::vector<RegionHandle> regions,
-		TypeException &e)
+		Exception::Type &e)
 {
 	Debug(D, pdDebug) << "Register object of class " << class_handle << " with "
 			<< regions.size() << " region(s)." << std::endl ;
@@ -277,7 +277,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 	e = rep->getException() ;
 
 
-	if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
 		rootObject->registerObjectInstance(fm->federate, class_handle, rep->getObject(),
 				rep->getLabel());
 		for (uint32_t i = 0 ; i < nb ; ++i) {
@@ -297,7 +297,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 void
 DataDistribution::unassociateRegion(ObjectHandle object,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Unassociate Region " << region << std::endl ;
@@ -326,7 +326,7 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
 		RegionHandle region,
 		const std::vector <AttributeHandle> &attr,
 		uint32_t nb,
-		TypeException &e)
+		Exception::Type &e)
 throw (RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Subscribe attributes with region " << region << endl ;
@@ -354,7 +354,7 @@ throw (RegionNotKnown)
 void
 DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 throw (RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Unsubscribe class " << obj_class
@@ -379,7 +379,7 @@ throw (RegionNotKnown)
 void
 DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 throw (RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Subscribe interaction with region " << region << endl ;
@@ -403,7 +403,7 @@ throw (RegionNotKnown)
 void
 DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 		RegionHandle region,
-		TypeException &e)
+		Exception::Type &e)
 throw (RegionNotKnown)
 {
 	Debug(D, pdDebug) << "Unsubscribe interaction with region " << region << endl ;

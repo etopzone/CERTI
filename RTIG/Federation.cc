@@ -703,7 +703,7 @@ void Federation::addRegulator(FederateHandle federate_handle, FederationTime tim
     D.Out(pdTerm, "Federation %d: Federate %d is now a regulator(Time=%f).", handle, federate_handle, time.getTime());
 
     NM_Set_Time_Regulating msg;
-    msg.setException(e_NO_EXCEPTION);
+    msg.setException(Exception::Type::NO_EXCEPTION);
     msg.setFederation(handle);
     msg.setFederate(federate_handle);
     msg.regulatorOn();

@@ -34,7 +34,7 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 Message::Message()
 {
-    exception = e_NO_EXCEPTION ;
+    exception = Exception::Type::NO_EXCEPTION ;
     exceptionReason = "" ;
     messageName = "Message (generic)";
     type = NOT_USED ;
@@ -49,7 +49,7 @@ Message::Message()
     @param the_reason : exception reason
 */
 void
-Message::setException(TypeException the_exception,
+Message::setException(const Exception::Type the_exception,
                       const std::string& the_reason)
 {
     exception = the_exception ;

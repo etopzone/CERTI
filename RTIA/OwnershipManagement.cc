@@ -55,7 +55,7 @@ OwnershipManagement::~OwnershipManagement()
 std::string
 OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
                                               AttributeHandle theAttribute,
-                                              TypeException &e)
+                                              Exception::Type &e)
 {
     NM_Is_Attribute_Owned_By_Federate req ;
 
@@ -79,7 +79,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
 
     e = rep->getException() ;
 
-    if (e == e_NO_EXCEPTION) {        
+    if (e == Exception::Type::NO_EXCEPTION) {        
         return rep->getLabel();
     }
     else {
@@ -92,7 +92,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
 void
 OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
                                              AttributeHandle theAttribute,
-                                             TypeException &e)
+                                             Exception::Type &e)
 {
     NM_Query_Attribute_Ownership req;
 
@@ -123,7 +123,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                         const std::vector <AttributeHandle> &attribArray,
                                         uint32_t attribArraySize,
                                         const std::string& theTag,
-                                        TypeException &e)
+                                        Exception::Type &e)
 
 {
     NM_Negotiated_Attribute_Ownership_Divestiture req;
@@ -155,7 +155,7 @@ OwnershipManagement::
 cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                               const std::vector <AttributeHandle> &attribArray,
                                               uint32_t attribArraySize,
-                                              TypeException &e)
+                                              Exception::Type &e)
 {
     NM_Cancel_Negotiated_Attribute_Ownership_Divestiture req;
 
@@ -186,7 +186,7 @@ OwnershipManagement::
 attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
                                          const std::vector <AttributeHandle> &attribArray,
                                          uint32_t attribArraySize,
-                                         TypeException &e)
+                                         Exception::Type &e)
 {
     NM_Attribute_Ownership_Acquisition_If_Available req;
     
@@ -215,7 +215,7 @@ OwnershipManagement::
 unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
                                            const std::vector <AttributeHandle> &attribArray,
                                            uint32_t attribArraySize,
-                                           TypeException &e)
+                                           Exception::Type &e)
 {
     NM_Unconditional_Attribute_Ownership_Divestiture req;
 
@@ -246,7 +246,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
                               const std::vector <AttributeHandle> &attribArray,
                               uint32_t attribArraySize,
                               const std::string& theTag,
-                              TypeException &e)
+                              Exception::Type &e)
 {
     NM_Attribute_Ownership_Acquisition req;
 
@@ -277,7 +277,7 @@ OwnershipManagement::
 attributeOwnershipRealeaseResponse(ObjectHandle theObject,
                                    const std::vector <AttributeHandle> &attribArray,
                                    uint32_t attribArraySize,
-                                   TypeException &e)
+                                   Exception::Type &e)
 {
     NM_Attribute_Ownership_Release_Response req;
 
@@ -301,7 +301,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 
     e = rep->getException() ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == Exception::Type::NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
         AttributeSet = new AttributeHandleSet(rep->getAttributesSize());
 
@@ -322,7 +322,7 @@ OwnershipManagement::
 cancelattributeOwnershipAcquisition(ObjectHandle theObject,
                                     const std::vector <AttributeHandle> &attribArray,
                                     uint32_t attribArraySize,
-                                    TypeException &e)
+                                    Exception::Type &e)
 {
     NM_Cancel_Attribute_Ownership_Acquisition req;
 
@@ -350,7 +350,7 @@ void
 OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
                                               AttributeHandle the_attribute,
                                               FederateHandle the_owner,
-                                              TypeException &)
+                                              Exception::Type &)
 {
     M_Inform_Attribute_Ownership req;
 
@@ -367,7 +367,7 @@ void
 OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
                                          AttributeHandle the_attribute,
                                          FederateHandle,
-                                         TypeException &)
+                                         Exception::Type &)
 {
     M_Attribute_Is_Not_Owned req;
 
@@ -386,7 +386,7 @@ attributeOwnershipUnavailable(ObjectHandle the_object,
                               const std::vector <AttributeHandle> &the_attributes,
                               uint32_t the_size,
                               FederateHandle,
-                              TypeException &)
+                              Exception::Type &)
 {
     M_Attribute_Ownership_Unavailable req;
 
@@ -407,7 +407,7 @@ attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
                                           const std::vector <AttributeHandle> &the_attributes,
                                           uint32_t the_size,
                                           FederateHandle,
-                                          TypeException &)
+                                          Exception::Type &)
 {
     M_Attribute_Ownership_Acquisition_Notification req;
 
@@ -429,7 +429,7 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
                                     uint32_t the_size,
                                     FederateHandle,
                                     const std::string& the_tag,
-                                    TypeException &)
+                                    Exception::Type &)
 {
     M_Request_Attribute_Ownership_Assumption req;
 
@@ -450,7 +450,7 @@ requestAttributeOwnershipRelease(ObjectHandle the_object,
                                  const std::vector <AttributeHandle> &the_attributes,
                                  uint32_t the_size,
                                  const std::string& the_tag,
-                                 TypeException &)
+                                 Exception::Type &)
 {
     M_Request_Attribute_Ownership_Release req;
 
@@ -470,7 +470,7 @@ OwnershipManagement::
 attributeOwnershipDivestitureNotification(ObjectHandle the_object,
                                           const std::vector <AttributeHandle> &the_attributes,
                                           uint32_t the_size,
-                                          TypeException &)
+                                          Exception::Type &)
 {
     M_Attribute_Ownership_Divestiture_Notification req;
 
@@ -489,7 +489,7 @@ OwnershipManagement::
 confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
                                                  const std::vector <AttributeHandle> &the_attributes,
                                                  uint32_t the_size,
-                                                 TypeException &)
+                                                 Exception::Type &)
 {
     M_Confirm_Attribute_Ownership_Acquisition_Cancellation req;
 

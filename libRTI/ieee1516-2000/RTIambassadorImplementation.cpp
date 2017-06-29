@@ -180,7 +180,7 @@ bool RTI1516ambassador::__tick_kernel(bool multiple,
 
         // If the type is TICK_REQUEST, the __tick_kernel() has terminated.
         if (vers_Fed->getMessageType() == Message::TICK_REQUEST) {
-            if (vers_Fed->getExceptionType() != e_NO_EXCEPTION) {
+            if (vers_Fed->getExceptionType() != Exception::Type::NO_EXCEPTION) {
                 // tick() may only throw exceptions defined in the HLA standard
                 // the RTIA is responsible for sending 'allowed' exceptions only
                 privateRefs->processException(vers_Fed.get());
@@ -1239,7 +1239,7 @@ void RTI1516ambassador::attributeOwnershipDivestitureIfWanted(
 
     assignAHSAndExecuteService(theAttributes, req, rep);
 
-    if (rep.getExceptionType() == e_NO_EXCEPTION) {
+    if (rep.getExceptionType() == Exception::Type::NO_EXCEPTION) {
         theDivestedAttributes.clear();
         for (uint32_t i = 0; i < rep.getAttributesSize(); ++i) {
             theDivestedAttributes.insert(rti1516::AttributeHandleFriend::createRTI1516Handle(rep.getAttributes()[i]));

@@ -42,13 +42,13 @@ public:
     ~ObjectManagement();
 
     // Object Management services
-    void reserveObjectName(const std::string &, TypeException &);
+    void reserveObjectName(const std::string &, Exception::Type &);
 
     ObjectHandle registerObject(ObjectClassHandle theClassHandle,
                                 const std::string& theObjectName,
                                 FederationTime date,
                                 FederationTime heure,
-                                TypeException &e);
+                                Exception::Type &e);
 
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
@@ -57,21 +57,21 @@ public:
                           uint32_t attribArraySize,
                           FederationTime theTime,
                           const std::string& theTag,
-                          TypeException &e);
+                          Exception::Type &e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
                           const std::vector<AttributeHandle> &attribArray,
                           const std::vector<AttributeValue_t> &valueArray,
                           uint32_t attribArraySize,
                           const std::string& theTag,
-                          TypeException &e);
+                          Exception::Type &e);
 
     void discoverObject(ObjectHandle theObjectHandle,
                         ObjectClassHandle theObjectClassHandle,
                         const std::string& theObjectName,
                         FederationTime theTime,
                         EventRetractionHandle theHandle,
-                        TypeException &e);
+                        Exception::Type &e);
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 const std::vector <AttributeHandle> &attribArray,
@@ -80,14 +80,14 @@ public:
                                 FederationTime theTime,
                                 const std::string& theTag,
                                 EventRetractionHandle theHandle,
-                                TypeException &e);
+                                Exception::Type &e);
 
    void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 const std::vector <AttributeHandle> &attribArray,
                                 const std::vector <AttributeValue_t> &valueArray,
                                 uint16_t attribArraySize,
                                 const std::string& theTag,
-                                TypeException &e);
+                               Exception::Type &e);
 
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
@@ -97,7 +97,7 @@ public:
                     FederationTime theTime,
                     const std::string& theTag,
 		    RegionHandle,
-                    TypeException &e);
+            Exception::Type &e);
 
     void
     sendInteraction(InteractionClassHandle theInteraction,
@@ -106,7 +106,7 @@ public:
                     uint32_t paramArraySize,
                     const std::string& theTag,
 		    RegionHandle,
-                    TypeException &e);
+            Exception::Type &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             const std::vector <ParameterHandle> &paramArray,
@@ -115,89 +115,89 @@ public:
                             FederationTime theTime,
                             const std::string& theTag,
                             EventRetractionHandle theHandle,
-                            TypeException &e);
+                            Exception::Type &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             const std::vector <ParameterHandle> &paramArray,
                             const std::vector <ParameterValue_t> &valueArray,
                             uint16_t paramArraySize,
                             const std::string& theTag,
-                            TypeException &e);
+                            Exception::Type &e);
 
     EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
     				       FederationTime theTime,
                                        const std::string& theTag,
-                                       TypeException &e);
+                                       Exception::Type &e);
 
     void deleteObject(ObjectHandle theObjectHandle,
     		      const std::string& theTag,
-		      TypeException &e);
+		      Exception::Type &e);
 
     /**
      * Delete all objects [instance] owned by this federate.
      */
-	void deleteAllObjects(TypeException &e);
+	void deleteAllObjects(Exception::Type &e);
 
     void removeObject(ObjectHandle theObjectHandle,
                       FederateHandle theFederateHandle,
 		      FederationTime theTime,
                       const std::string& theTag,
                       EventRetractionHandle theHandle,
-                      TypeException &e);
+                      Exception::Type &e);
 
     void removeObject(ObjectHandle theObjectHandle,
                       FederateHandle theFederateHandle,
                       const std::string& theTag,
-                      TypeException &e);
+                      Exception::Type &e);
 
     void removeObject(ObjectHandle theObject,
                       ObjectRemovalReason theReason,
-                      TypeException &e);
+                      Exception::Type &e);
 
     EventRetractionHandle
     changeAttributeTransportType(ObjectHandle theObjectHandle,
                                  const std::vector <AttributeHandle> &attribArray,
                                  uint32_t attribArraySize,
                                  TransportType theType,
-                                 TypeException &e);
+                                 Exception::Type &e);
 
     EventRetractionHandle
     changeAttributeOrderType(ObjectHandle theObjectHandle,
                              const std::vector <AttributeHandle> &attribArray,
                              uint32_t attribArraySize,
                              OrderType theType,
-                             TypeException &e);
+                             Exception::Type &e);
 
     EventRetractionHandle
     changeInteractionTransportType(InteractionClassHandle theClassID,
                                    TransportType theType,
-                                   TypeException &e);
+                                   Exception::Type &e);
 
     EventRetractionHandle
     changeInteractionOrderType(InteractionClassHandle theClassID,
                                OrderType theType,
-                               TypeException &e);
+                               Exception::Type &e);
 
     void
     requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
                                       const std::vector <AttributeHandle> &attribArray,
                                       uint32_t attribArraySize,
-                                      TypeException &e);
+                                      Exception::Type &e);
 
 	void requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 										  const std::vector <AttributeHandle> &attribs,
 										  uint32_t attribArraySize,
-										  TypeException &e);
+										  Exception::Type &e);
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
                                       const std::vector <AttributeHandle> &theAttributes,
                                       uint32_t attribArraySize,
-                                     TypeException &e);
+                                     Exception::Type &e);
 
-    void retract(EventRetractionHandle theHandle, TypeException &e);
+    void retract(EventRetractionHandle theHandle, Exception::Type &e);
 
     void reflectRetraction(EventRetractionHandle theHandle,
-                           TypeException &e);
+                           Exception::Type &e);
 
     /**
      * Transmits the Networkmessage NM_Set_Attribute_Scope_Advisory_Switch to 
@@ -210,21 +210,21 @@ public:
      * @param[in,out] e is a reference to a possible exception
      */
     void setAttributeScopeAdvisorySwitch(bool state,
-                                         TypeException &e);
+                                         Exception::Type &e);
 
     // 6.13
     void
     attributesInScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const uint16_t attribArraySize,
-                      TypeException &e);
+                      Exception::Type &e);
 
     // 6.14
     void
     attributesOutOfScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const uint16_t attribArraySize,
-                      TypeException &e);
+                      Exception::Type &e);
 
     /**
      * Transmits the Networkmessage NM_Set_Attribute_Relevance_Advisory_Switch 
@@ -237,21 +237,21 @@ public:
      * @param[in,out] e is a reference to a possible exception
      */
     void setAttributeRelevanceAdvisorySwitch(bool state,
-                                             TypeException &e);
+                                             Exception::Type &e);
 
     // 6.17
     void
     turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
 		      const uint16_t attribArraySize,
-                      TypeException &e);
+                      Exception::Type &e);
 
     // 6.18
     void
     turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const uint16_t attribArraySize,
-                      TypeException &e);
+                      Exception::Type &e);
 
 	// 1516 - 6.3
 	void nameReservationSucceeded(const std::string &reservedName);

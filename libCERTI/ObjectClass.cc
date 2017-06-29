@@ -328,7 +328,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         NM_Remove_Object *answer = new NM_Remove_Object();
         answer->setFederation(server->federation());
         answer->setFederate(the_federate);
-        answer->setException(e_NO_EXCEPTION);
+        answer->setException(Exception::Type::NO_EXCEPTION);
         answer->setObjectClass(handle); // Class Handle FIXME why this
         answer->setObject(object->getHandle());
 
@@ -689,7 +689,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         NM_Discover_Object *answer = new NM_Discover_Object();
         answer->setFederation(server->federation());
         answer->setFederate(the_federate);
-        answer->setException(e_NO_EXCEPTION) ;
+        answer->setException(Exception::Type::NO_EXCEPTION) ;
         answer->setObjectClass(handle); // Class Handle
         answer->setObject(the_object->getHandle());
         answer->setLabel(the_object->getName());
@@ -738,7 +738,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 
 	    message.setFederation(server->federation());
 	    message.setFederate(federate);
-	    message.setException(e_NO_EXCEPTION) ;
+        message.setException(Exception::Type::NO_EXCEPTION) ;
 	    message.setObjectClass(super_handle);
 	    message.setObject(i->second->getHandle());
 	    message.setLabel(i->second->getName());
@@ -844,7 +844,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     	NM_Reflect_Attribute_Values *answer = new NM_Reflect_Attribute_Values();
         answer->setFederation(server->federation());
         answer->setFederate(the_federate);
-        answer->setException(e_NO_EXCEPTION) ;
+        answer->setException(Exception::Type::NO_EXCEPTION) ;
         answer->setObject(object->getHandle());
         // with time
         answer->setDate(the_time);
@@ -905,7 +905,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     	NM_Reflect_Attribute_Values *answer = new NM_Reflect_Attribute_Values() ;
         answer->setFederation(server->federation());
         answer->setFederate(the_federate);
-        answer->setException(e_NO_EXCEPTION) ;
+        answer->setException(Exception::Type::NO_EXCEPTION) ;
         answer->setObject(object->getHandle());
         // without time
 
@@ -1045,7 +1045,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         if (compteur_assumption !=0) {
             AnswerAssumption->setFederation(server->federation());
             AnswerAssumption->setFederate(theFederateHandle);
-            AnswerAssumption->setException(e_NO_EXCEPTION) ;
+            AnswerAssumption->setException(Exception::Type::NO_EXCEPTION) ;
             AnswerAssumption->setObject(object->getHandle());
             AnswerAssumption->setLabel(theTag);
             AnswerAssumption->setAttributesSize(compteur_assumption);
@@ -1120,14 +1120,14 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         NM_Attribute_Ownership_Acquisition_Notification *Answer_notification = new NM_Attribute_Ownership_Acquisition_Notification();
         Answer_notification->setFederation(server->federation());
         Answer_notification->setFederate(the_federate);
-        Answer_notification->setException(e_NO_EXCEPTION) ;
+        Answer_notification->setException(Exception::Type::NO_EXCEPTION) ;
         Answer_notification->setObject(object->getHandle());
         Answer_notification->setAttributesSize(the_attributes.size());
 
         NM_Attribute_Ownership_Unavailable *Answer_unavailable = new NM_Attribute_Ownership_Unavailable();
         Answer_unavailable->setFederation(server->federation());
         Answer_unavailable->setFederate(the_federate);
-        Answer_unavailable->setException(e_NO_EXCEPTION) ;
+        Answer_unavailable->setException(Exception::Type::NO_EXCEPTION) ;
         Answer_unavailable->setObject(object->getHandle());
         Answer_unavailable->setAttributesSize(the_attributes.size()) ;
 
@@ -1279,7 +1279,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         if (compteur_assumption != 0) {
             AnswerAssumption->setFederation(server->federation());
             AnswerAssumption->setFederate(theFederateHandle);
-            AnswerAssumption->setException(e_NO_EXCEPTION) ;
+            AnswerAssumption->setException(Exception::Type::NO_EXCEPTION) ;
             AnswerAssumption->setObject(object->getHandle());
             AnswerAssumption->setLabel(std::string());
             AnswerAssumption->setAttributesSize(compteur_assumption);
@@ -1357,7 +1357,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
         AnswerNotification->setFederation(server->federation());
         AnswerNotification->setFederate(theFederateHandle);
-        AnswerNotification->setException(e_NO_EXCEPTION) ;
+        AnswerNotification->setException(Exception::Type::NO_EXCEPTION) ;
         AnswerNotification->setObject(object->getHandle());
         AnswerNotification->setAttributesSize(theAttributeList.size()) ;
 
@@ -1546,7 +1546,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
         NM_Confirm_Attribute_Ownership_Acquisition_Cancellation *answer_confirmation = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
         answer_confirmation->setFederation(server->federation());
         answer_confirmation->setFederate(federate_handle);
-        answer_confirmation->setException(e_NO_EXCEPTION) ;
+        answer_confirmation->setException(Exception::Type::NO_EXCEPTION) ;
         answer_confirmation->setObject(object->getHandle());
         answer_confirmation->setAttributesSize(attribute_list.size()) ;
 

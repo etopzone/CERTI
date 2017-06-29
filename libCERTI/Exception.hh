@@ -30,6 +30,7 @@
 
 namespace certi {
 
+#if 0
 typedef enum {
     e_NO_EXCEPTION = 0,
     e_ArrayIndexOutOfBounds,
@@ -153,9 +154,134 @@ typedef enum {
     e_IllegalName, //1516 only
     e_CustomException
 } TypeException;
+#endif
 
 class CERTI_EXPORT Exception {
 public:
+    enum class Type : unsigned char {
+        NO_EXCEPTION = 0,
+        ArrayIndexOutOfBounds,
+        AsynchronousDeliveryAlreadyEnabled,
+        AsynchronousDeliveryAlreadyDisabled,
+        AttributeAlreadyOwned,
+        AttributeAlreadyBeingAcquired,
+        AttributeAlreadyBeingDivested,
+        AttributeAcquisitionWasNotRequested,
+        AttributeDivestitureWasNotRequested,
+        AttributeNotDefined,
+        AttributeNotKnown,
+        AttributeNotOwned,
+        AttributeNotPublished,
+        AttributeNotSubscribed,
+        ConcurrentAccessAttempted,
+        CouldNotDiscover,
+        CouldNotOpenRID,
+        CouldNotOpenFED,
+        CouldNotRestore,
+        DeletePrivilegeNotHeld,
+        ErrorReadingRID,
+        ErrorReadingFED,
+        EventNotKnown,
+        FederateAlreadyPaused,
+        FederateAlreadyExecutionMember,
+        FederateDoesNotExist,
+        FederateInternalError,
+        FederateNameAlreadyInUse,
+        FederateNotExecutionMember,
+        FederateNotPaused,
+        FederateNotPublishing,
+        FederateNotSubscribing,
+        FederateOwnsAttributes,
+        FederatesCurrentlyJoined,
+        FederateWasNotAskedToReleaseAttribute,
+        FederationAlreadyPaused,
+        FederationExecutionAlreadyExists,
+        FederationExecutionDoesNotExist,
+        FederationNotPaused,
+        FederationTimeAlreadyPassed,
+        RegionNotKnown,
+        IDsupplyExhausted,
+        InteractionClassNotDefined,
+        InteractionClassNotKnown,
+        InteractionClassNotPublished,
+        InteractionParameterNotDefined,
+        InteractionParameterNotKnown,
+        InvalidDivestitureCondition,
+        InvalidExtents,
+        InvalidFederationTime,
+        InvalidFederationTimeDelta,
+        InvalidObjectHandle,
+        InvalidResignAction,
+        InvalidRetractionHandle,
+        InvalidRoutingSpace,
+        MemoryExhausted,
+        NameNotFound,
+        NoPauseRequested,
+        NoResumeRequested,
+        ObjectClassNotDefined,
+        ObjectClassNotKnown,
+        ObjectClassNotPublished,
+        ObjectClassNotSubscribed,
+        ObjectNotKnown,
+        ObjectAlreadyRegistered,
+        RestoreInProgress,
+        RestoreNotRequested,
+        RTICannotRestore,
+        RTIinternalError,
+        SpaceNotDefined,
+        SaveInProgress,
+        SaveNotInitiated,
+        SecurityError,
+        SocketNotConnected,
+        MessageNotSent,
+        MessageNotReceived,
+        SocketNotClosed,
+        RingBufferNotCreated,
+        RingBufferNotClosed,
+        RingBufferNotDeleted,
+        RingBufferNotAttached,
+        MessageTooLong,
+        BufferFull,
+        BufferEmpty,
+        SocketSHMNotCreated,
+        SocketSHMNotOpen,
+        SocketSHMNotDeleted,
+        SpecifiedSaveLabelDoesNotExist,
+        TimeAdvanceAlreadyInProgress,
+        TimeAdvanceWasNotInProgress,
+        TooManyIDsRequested,
+        UnableToPerformSave,
+        UnimplementedService,
+        UnknownLabel,
+        ValueCountExceeded,
+        ValueLengthExceeded,
+        AttributeAcquisitionWasNotCanceled,
+        DimensionNotDefined,
+        EnableTimeConstrainedPending,
+        EnableTimeConstrainedWasNotPending,
+        EnableTimeRegulationPending,
+        EnableTimeRegulationWasNotPending,
+        FederateLoggingServiceCalls,
+        HandleValuePairMaximumExceeded,
+        InteractionClassNotSubscribed,
+        InvalidHandleValuePairSetContext,
+        InvalidLookahead,
+        InvalidOrderingHandle,
+        InvalidRegionContext,
+        InvalidTransportationHandle,
+        OwnershipAcquisitionPending,
+        RegionInUse,
+        SynchronizationPointLabelWasNotAnnounced,
+        TimeConstrainedAlreadyEnabled,
+        TimeConstrainedWasNotEnabled,
+        TimeRegulationAlreadyEnabled,
+        TimeRegulationWasNotEnabled,
+        NetworkError,
+        NetworkSignal,
+        IllegalName, //1516 only
+        CustomException
+    };
+
     virtual ~Exception() = default;
 
     virtual std::string name() const
@@ -172,7 +298,8 @@ public:
     {
         return {begin(_reason), end(_reason)};
     }
-    virtual TypeException type() const = 0;
+
+    virtual Type type() const = 0;
 
     const std::string displayMe() const;
 
@@ -190,8 +317,6 @@ private:
     const std::string _reason;
 };
 
-#define ENUM_FROM_NAME(A) e_##A
-
 #define CERTI_EXCEPTION(A)                                                                                             \
     class CERTI_EXPORT A : public Exception {                                                                          \
     public:                                                                                                            \
@@ -199,9 +324,9 @@ private:
         {                                                                                                              \
         }                                                                                                              \
                                                                                                                        \
-        virtual TypeException type() const override                                                                    \
+        virtual Type type() const override                                                                             \
         {                                                                                                              \
-            return ENUM_FROM_NAME(A);                                                                                  \
+            return Type::A;                                                                                            \
         }                                                                                                              \
     };
 

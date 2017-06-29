@@ -588,19 +588,19 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
 #define CPY_NOT_NULL(A)                                                                                                \
     {                                                                                                                  \
-        if (!A.reason().empty()) {                                                                                      \
-            exceptionReason = A.reason();                                                                               \
+        if (!A.reason().empty()) {                                                                                     \
+            exceptionReason = A.reason();                                                                              \
         }                                                                                                              \
     }
 
 #define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A.name() << std::endl
 
-#define BASIC_CATCH(ExceptionType, responseType)                                                                       \
+#define BASIC_CATCH(ExceptionType)                                                                                     \
     catch (ExceptionType & e)                                                                                          \
     {                                                                                                                  \
         PRINT_DEBUG_MESSAGE(e);                                                                                        \
         CPY_NOT_NULL(e);                                                                                               \
-        response->setException(responseType);                                                                          \
+        response->setException(e.type());                                                                              \
     }
 
     std::string exceptionReason;
@@ -608,83 +608,83 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     try {
         link = chooseProcessingMethod(link, msg.get());
     }
-    BASIC_CATCH(ArrayIndexOutOfBounds, e_ArrayIndexOutOfBounds)
-    BASIC_CATCH(AttributeAlreadyOwned, e_AttributeAlreadyOwned)
-    BASIC_CATCH(AttributeAlreadyBeingAcquired, e_AttributeAlreadyBeingAcquired)
-    BASIC_CATCH(AttributeAlreadyBeingDivested, e_AttributeAlreadyBeingDivested)
-    BASIC_CATCH(AttributeDivestitureWasNotRequested, e_AttributeDivestitureWasNotRequested)
-    BASIC_CATCH(AttributeAcquisitionWasNotRequested, e_AttributeAcquisitionWasNotRequested)
-    BASIC_CATCH(AttributeNotDefined, e_AttributeNotDefined)
-    BASIC_CATCH(AttributeNotKnown, e_AttributeNotKnown)
-    BASIC_CATCH(AttributeNotOwned, e_AttributeNotOwned)
-    BASIC_CATCH(AttributeNotPublished, e_AttributeNotPublished)
-    BASIC_CATCH(AttributeNotSubscribed, e_AttributeNotSubscribed)
-    BASIC_CATCH(ConcurrentAccessAttempted, e_ConcurrentAccessAttempted)
-    BASIC_CATCH(CouldNotDiscover, e_CouldNotDiscover)
-    BASIC_CATCH(CouldNotOpenRID, e_CouldNotOpenRID)
-    BASIC_CATCH(CouldNotOpenFED, e_CouldNotOpenFED)
-    BASIC_CATCH(CouldNotRestore, e_CouldNotRestore)
-    BASIC_CATCH(DeletePrivilegeNotHeld, e_DeletePrivilegeNotHeld)
-    BASIC_CATCH(ErrorReadingRID, e_ErrorReadingRID)
-    BASIC_CATCH(EventNotKnown, e_EventNotKnown)
-    BASIC_CATCH(FederateAlreadyPaused, e_FederateAlreadyPaused)
-    BASIC_CATCH(FederateAlreadyExecutionMember, e_FederateAlreadyExecutionMember)
-    BASIC_CATCH(FederateDoesNotExist, e_FederateDoesNotExist)
-    BASIC_CATCH(FederateInternalError, e_FederateInternalError)
-    BASIC_CATCH(FederateNameAlreadyInUse, e_FederateNameAlreadyInUse)
-    BASIC_CATCH(FederateNotExecutionMember, e_FederateNotExecutionMember)
-    BASIC_CATCH(FederateNotPaused, e_FederateNotPaused)
-    BASIC_CATCH(FederateNotPublishing, e_FederateNotPublishing)
-    BASIC_CATCH(FederateNotSubscribing, e_FederateNotSubscribing)
-    BASIC_CATCH(FederateOwnsAttributes, e_FederateOwnsAttributes)
-    BASIC_CATCH(FederatesCurrentlyJoined, e_FederatesCurrentlyJoined)
-    BASIC_CATCH(FederateWasNotAskedToReleaseAttribute, e_FederateWasNotAskedToReleaseAttribute)
-    BASIC_CATCH(FederationAlreadyPaused, e_FederationAlreadyPaused)
-    BASIC_CATCH(FederationExecutionAlreadyExists, e_FederationExecutionAlreadyExists)
-    BASIC_CATCH(FederationExecutionDoesNotExist, e_FederationExecutionDoesNotExist)
-    BASIC_CATCH(FederationNotPaused, e_FederationNotPaused)
-    BASIC_CATCH(FederationTimeAlreadyPassed, e_FederationTimeAlreadyPassed)
-    BASIC_CATCH(IDsupplyExhausted, e_IDsupplyExhausted)
-    BASIC_CATCH(InteractionClassNotDefined, e_InteractionClassNotDefined)
-    BASIC_CATCH(InteractionClassNotKnown, e_InteractionClassNotKnown)
-    BASIC_CATCH(InteractionClassNotPublished, e_InteractionClassNotPublished)
-    BASIC_CATCH(InteractionParameterNotDefined, e_InteractionParameterNotDefined)
-    BASIC_CATCH(InteractionParameterNotKnown, e_InteractionParameterNotKnown)
-    BASIC_CATCH(InvalidDivestitureCondition, e_InvalidDivestitureCondition)
-    BASIC_CATCH(InvalidExtents, e_InvalidExtents)
-    BASIC_CATCH(InvalidFederationTime, e_InvalidFederationTime)
-    BASIC_CATCH(InvalidFederationTimeDelta, e_InvalidFederationTimeDelta)
-    BASIC_CATCH(InvalidObjectHandle, e_InvalidObjectHandle)
-    BASIC_CATCH(InvalidOrderingHandle, e_InvalidOrderingHandle)
-    BASIC_CATCH(InvalidResignAction, e_InvalidResignAction)
-    BASIC_CATCH(InvalidRetractionHandle, e_InvalidRetractionHandle)
-    BASIC_CATCH(InvalidRoutingSpace, e_InvalidRoutingSpace)
-    BASIC_CATCH(InvalidTransportationHandle, e_InvalidTransportationHandle)
-    BASIC_CATCH(MemoryExhausted, e_MemoryExhausted)
-    BASIC_CATCH(NameNotFound, e_NameNotFound)
-    BASIC_CATCH(NoPauseRequested, e_NoPauseRequested)
-    BASIC_CATCH(NoResumeRequested, e_NoResumeRequested)
-    BASIC_CATCH(ObjectClassNotDefined, e_ObjectClassNotDefined)
-    BASIC_CATCH(ObjectClassNotKnown, e_ObjectClassNotKnown)
-    BASIC_CATCH(ObjectClassNotPublished, e_ObjectClassNotPublished)
-    BASIC_CATCH(ObjectClassNotSubscribed, e_ObjectClassNotSubscribed)
-    BASIC_CATCH(ObjectNotKnown, e_ObjectNotKnown)
-    BASIC_CATCH(ObjectAlreadyRegistered, e_ObjectAlreadyRegistered)
-    BASIC_CATCH(RegionNotKnown, e_RegionNotKnown)
-    BASIC_CATCH(RestoreInProgress, e_RestoreInProgress)
-    BASIC_CATCH(RestoreNotRequested, e_RestoreNotRequested)
-    BASIC_CATCH(SaveInProgress, e_SaveInProgress)
-    BASIC_CATCH(SaveNotInitiated, e_SaveNotInitiated)
-    BASIC_CATCH(SpaceNotDefined, e_SpaceNotDefined)
-    BASIC_CATCH(SpecifiedSaveLabelDoesNotExist, e_SpecifiedSaveLabelDoesNotExist)
-    BASIC_CATCH(TimeAdvanceAlreadyInProgress, e_TimeAdvanceAlreadyInProgress)
-    BASIC_CATCH(TimeAdvanceWasNotInProgress, e_TimeAdvanceWasNotInProgress)
-    BASIC_CATCH(TooManyIDsRequested, e_TooManyIDsRequested)
-    BASIC_CATCH(UnableToPerformSave, e_UnableToPerformSave)
-    BASIC_CATCH(UnimplementedService, e_UnimplementedService)
-    BASIC_CATCH(UnknownLabel, e_UnknownLabel)
-    BASIC_CATCH(ValueCountExceeded, e_ValueCountExceeded)
-    BASIC_CATCH(ValueLengthExceeded, e_ValueLengthExceeded)
+    BASIC_CATCH(ArrayIndexOutOfBounds)
+    BASIC_CATCH(AttributeAlreadyOwned)
+    BASIC_CATCH(AttributeAlreadyBeingAcquired)
+    BASIC_CATCH(AttributeAlreadyBeingDivested)
+    BASIC_CATCH(AttributeDivestitureWasNotRequested)
+    BASIC_CATCH(AttributeAcquisitionWasNotRequested)
+    BASIC_CATCH(AttributeNotDefined)
+    BASIC_CATCH(AttributeNotKnown)
+    BASIC_CATCH(AttributeNotOwned)
+    BASIC_CATCH(AttributeNotPublished)
+    BASIC_CATCH(AttributeNotSubscribed)
+    BASIC_CATCH(ConcurrentAccessAttempted)
+    BASIC_CATCH(CouldNotDiscover)
+    BASIC_CATCH(CouldNotOpenRID)
+    BASIC_CATCH(CouldNotOpenFED)
+    BASIC_CATCH(CouldNotRestore)
+    BASIC_CATCH(DeletePrivilegeNotHeld)
+    BASIC_CATCH(ErrorReadingRID)
+    BASIC_CATCH(EventNotKnown)
+    BASIC_CATCH(FederateAlreadyPaused)
+    BASIC_CATCH(FederateAlreadyExecutionMember)
+    BASIC_CATCH(FederateDoesNotExist)
+    BASIC_CATCH(FederateInternalError)
+    BASIC_CATCH(FederateNameAlreadyInUse)
+    BASIC_CATCH(FederateNotExecutionMember)
+    BASIC_CATCH(FederateNotPaused)
+    BASIC_CATCH(FederateNotPublishing)
+    BASIC_CATCH(FederateNotSubscribing)
+    BASIC_CATCH(FederateOwnsAttributes)
+    BASIC_CATCH(FederatesCurrentlyJoined)
+    BASIC_CATCH(FederateWasNotAskedToReleaseAttribute)
+    BASIC_CATCH(FederationAlreadyPaused)
+    BASIC_CATCH(FederationExecutionAlreadyExists)
+    BASIC_CATCH(FederationExecutionDoesNotExist)
+    BASIC_CATCH(FederationNotPaused)
+    BASIC_CATCH(FederationTimeAlreadyPassed)
+    BASIC_CATCH(IDsupplyExhausted)
+    BASIC_CATCH(InteractionClassNotDefined)
+    BASIC_CATCH(InteractionClassNotKnown)
+    BASIC_CATCH(InteractionClassNotPublished)
+    BASIC_CATCH(InteractionParameterNotDefined)
+    BASIC_CATCH(InteractionParameterNotKnown)
+    BASIC_CATCH(InvalidDivestitureCondition)
+    BASIC_CATCH(InvalidExtents)
+    BASIC_CATCH(InvalidFederationTime)
+    BASIC_CATCH(InvalidFederationTimeDelta)
+    BASIC_CATCH(InvalidObjectHandle)
+    BASIC_CATCH(InvalidOrderingHandle)
+    BASIC_CATCH(InvalidResignAction)
+    BASIC_CATCH(InvalidRetractionHandle)
+    BASIC_CATCH(InvalidRoutingSpace)
+    BASIC_CATCH(InvalidTransportationHandle)
+    BASIC_CATCH(MemoryExhausted)
+    BASIC_CATCH(NameNotFound)
+    BASIC_CATCH(NoPauseRequested)
+    BASIC_CATCH(NoResumeRequested)
+    BASIC_CATCH(ObjectClassNotDefined)
+    BASIC_CATCH(ObjectClassNotKnown)
+    BASIC_CATCH(ObjectClassNotPublished)
+    BASIC_CATCH(ObjectClassNotSubscribed)
+    BASIC_CATCH(ObjectNotKnown)
+    BASIC_CATCH(ObjectAlreadyRegistered)
+    BASIC_CATCH(RegionNotKnown)
+    BASIC_CATCH(RestoreInProgress)
+    BASIC_CATCH(RestoreNotRequested)
+    BASIC_CATCH(SaveInProgress)
+    BASIC_CATCH(SaveNotInitiated)
+    BASIC_CATCH(SpaceNotDefined)
+    BASIC_CATCH(SpecifiedSaveLabelDoesNotExist)
+    BASIC_CATCH(TimeAdvanceAlreadyInProgress)
+    BASIC_CATCH(TimeAdvanceWasNotInProgress)
+    BASIC_CATCH(TooManyIDsRequested)
+    BASIC_CATCH(UnableToPerformSave)
+    BASIC_CATCH(UnimplementedService)
+    BASIC_CATCH(UnknownLabel)
+    BASIC_CATCH(ValueCountExceeded)
+    BASIC_CATCH(ValueLengthExceeded)
 
     catch (RTIinternalError& e)
     {
@@ -695,21 +695,21 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
             Debug(D, pdExcept) << "Caught Exception: " << e.name() << ", " << e.reason() << std::endl;
         }
         CPY_NOT_NULL(e);
-        response->setException(e_RTIinternalError);
+        response->setException(Exception::Type::RTIinternalError);
     }
 
     catch (SecurityError& e)
     {
         std::cout << std::endl << "Security Error : " << e.reason() << std::endl;
         CPY_NOT_NULL(e);
-        response->setException(e_SecurityError);
+        response->setException(Exception::Type::SecurityError);
     }
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e)
     {
         exceptionReason = " - NetworkError";
-        my_auditServer.endLine(response->getException(), exceptionReason);
+        my_auditServer.endLine(static_cast<unsigned short>(response->getException()), exceptionReason);
         throw e;
     }
 
@@ -718,13 +718,13 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     {
         Debug(D, pdExcept) << "Unknown Exception: " << e.name() << std::endl;
         CPY_NOT_NULL(e);
-        response->setException(e_RTIinternalError);
+        response->setException(Exception::Type::RTIinternalError);
     }
 
     // buffer may contain an exception reason. If not, set it to OK
     // or Exception
     if (exceptionReason.empty()) {
-        if (response->getException() == e_NO_EXCEPTION) {
+        if (response->getException() == Exception::Type::NO_EXCEPTION) {
             exceptionReason = " - OK";
         }
         else {
@@ -732,16 +732,16 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         }
     }
 
-    my_auditServer.endLine(response->getException(), exceptionReason);
+    my_auditServer.endLine(static_cast<unsigned short>(response->getException()), exceptionReason);
     if (link == nullptr) {
         return link;
     }
 
     /* FIXME ***/
-    if (response->getException() != e_NO_EXCEPTION) {
+    if (response->getException() != Exception::Type::NO_EXCEPTION) {
         Debug(G, pdGendoc) << "            processIncomingMessage ===> write on exception to RTIA" << std::endl;
         response->send(link, my_NM_msgBufSend);
-        Debug(D, pdExcept) << "RTIG catched exception " << response->getException() << " and sent it back to federate "
+        Debug(D, pdExcept) << "RTIG catched exception " << static_cast<long>(response->getException()) << " and sent it back to federate "
                            << response->getFederate() << std::endl;
     }
     Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
