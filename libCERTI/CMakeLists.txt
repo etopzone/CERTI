@@ -171,9 +171,14 @@ add_library(CERTI
 
 set_target_properties(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
 
+
 if(COMPILE_WITH_CXX11)
-    set_property(TARGET CERTI PROPERTY CXX_STANDARD 14)
+    if (CMAKE_VERSION VERSION_LESS 3.1.3)
+        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
+    else()
+        set_property(TARGET CERTI PROPERTY CXX_STANDARD 14)
 endif()
+
 
 target_link_libraries(CERTI
     ${LIBXML2_LIBRARIES}
