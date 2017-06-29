@@ -84,14 +84,17 @@
        #define  CERTI_INT64_CONSTANT(val)  (val##LL)
        #define  CERTI_INT64_FORMAT         "ll"
     #endif
-    #if (__GNUC__ >= 4)
-       #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
-       #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
-       #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
-   #else
-       #define ANY_DLL_EXPORT
-       #define ANY_DLL_IMPORT
-       #define ANY_DLL_LOCAL
+    
+    #ifndef ANY_DLL_EXPORT
+        #if (__GNUC__ >= 4)
+        #define ANY_DLL_EXPORT __attribute__ ((visibility("default")))
+        #define ANY_DLL_IMPORT __attribute__ ((visibility("default")))
+        #define ANY_DLL_LOCAL  __attribute__ ((visibility("hidden")))
+    #else
+        #define ANY_DLL_EXPORT
+        #define ANY_DLL_IMPORT
+        #define ANY_DLL_LOCAL
+        #endif
     #endif
 #endif
 

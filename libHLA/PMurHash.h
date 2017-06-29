@@ -52,6 +52,7 @@
 #define ANY_DLL_IMPORT __declspec(dllimport)
 #define ANY_DLL_LOCAL
 #else
+#ifndef ANY_DLL_EXPORT
 #if (__GNUC__ >= 4)
 #define ANY_DLL_EXPORT __attribute__((visibility("default")))
 #define ANY_DLL_IMPORT __attribute__((visibility("default")))
@@ -60,6 +61,7 @@
 #define ANY_DLL_EXPORT
 #define ANY_DLL_IMPORT
 #define ANY_DLL_LOCAL
+#endif
 #endif
 #endif
 

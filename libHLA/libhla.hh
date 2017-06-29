@@ -42,18 +42,22 @@
 
 #if defined(_WIN32) || defined(__CYGWIN__)
     #pragma warning(disable : 4251)
-    #define ANY_DLL_EXPORT __declspec(dllexport)
-    #define ANY_DLL_IMPORT __declspec(dllimport)
-    #define ANY_DLL_LOCAL
-#else
-    #if (__GNUC__ >= 4)
-        #define ANY_DLL_EXPORT __attribute__((visibility("default")))
-        #define ANY_DLL_IMPORT __attribute__((visibility("default")))
-        #define ANY_DLL_LOCAL __attribute__((visibility("hidden")))
-    #else
-        #define ANY_DLL_EXPORT
-        #define ANY_DLL_IMPORT
+    #ifndef ANY_DLL_EXPORT
+        #define ANY_DLL_EXPORT __declspec(dllexport)
+        #define ANY_DLL_IMPORT __declspec(dllimport)
         #define ANY_DLL_LOCAL
+    #endif
+#else
+    #ifndef ANY_DLL_EXPORT
+        #if (__GNUC__ >= 4)
+            #define ANY_DLL_EXPORT __attribute__((visibility("default")))
+            #define ANY_DLL_IMPORT __attribute__((visibility("default")))
+            #define ANY_DLL_LOCAL __attribute__((visibility("hidden")))
+        #else
+            #define ANY_DLL_EXPORT
+            #define ANY_DLL_IMPORT
+            #define ANY_DLL_LOCAL
+        #endif
     #endif
 #endif
 
