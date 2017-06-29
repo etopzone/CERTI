@@ -21,17 +21,15 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
 #include "InteractionBroadcastList.hh"
 #include "PrettyDebug.hh"
 
-using std::list ;
+using std::list;
 
 namespace certi {
 
 static PrettyDebug D("INTBROADCASTLIST", "(broadcas) - ");
-static PrettyDebug G("GENDOC",__FILE__) ;
+static PrettyDebug G("GENDOC", __FILE__);
 
 // ----------------------------------------------------------------------------
 /*! Add a federate to the list. If it was not present in the list, a new line
@@ -39,16 +37,14 @@ static PrettyDebug G("GENDOC",__FILE__) ;
   been sent a message for this interaction, the line's state is set to
   bsWaiting.
 */
-void
-InteractionBroadcastList::addFederate(FederateHandle federate)
+void InteractionBroadcastList::addFederate(FederateHandle federate)
 {
     // 1. Is there already a line in the list for this Federate?
-    InteractionBroadcastLine * line = getLineWithFederate(federate);
+    InteractionBroadcastLine* line = getLineWithFederate(federate);
 
     // If NO, add a new one, in the bsWaiting State.
     if (line == 0) {
-        line = new InteractionBroadcastLine(federate,
-                                            InteractionBroadcastLine::waiting);
+        line = new InteractionBroadcastLine(federate, InteractionBroadcastLine::waiting);
         lines.push_front(line);
         D.Out(pdRegister, "Adding new line in list for Federate %d.", federate);
     }
@@ -60,27 +56,23 @@ InteractionBroadcastList::addFederate(FederateHandle federate)
 /*! theMsg must have been allocated, and will be destroyed by the destructor.
   theMsg->NumeroFedere is added to the list, and its state is set as "Sent".
 */
-InteractionBroadcastList::InteractionBroadcastList(NM_Receive_Interaction *theMsg)
+InteractionBroadcastList::InteractionBroadcastList(NM_Receive_Interaction* theMsg)
 {
-
-    G.Out(pdGendoc,"enter InteractionBroadcastList::InteractionBroadcastList");
+    G.Out(pdGendoc, "enter InteractionBroadcastList::InteractionBroadcastList");
 
     if (theMsg == 0)
         throw RTIinternalError("Null Broadcast Message.");
 
-    message = theMsg ;
+    message = theMsg;
 
     // Add reference of the sender(so it does not receive its own message).
     if (message->getFederate() != 0) {
-        InteractionBroadcastLine *firstLine ;
-        firstLine =
-            new InteractionBroadcastLine(message->getFederate(),
-                                         InteractionBroadcastLine::sent);
+        InteractionBroadcastLine* firstLine;
+        firstLine = new InteractionBroadcastLine(message->getFederate(), InteractionBroadcastLine::sent);
         lines.push_front(firstLine);
     }
 
-    G.Out(pdGendoc,"exit InteractionBroadcastList::InteractionBroadcastList");
-
+    G.Out(pdGendoc, "exit InteractionBroadcastList::InteractionBroadcastList");
 }
 
 // ----------------------------------------------------------------------------
@@ -92,11 +84,10 @@ InteractionBroadcastList::~InteractionBroadcastList()
 
 // ----------------------------------------------------------------------------
 //! Empty the list so it can reused(like the destructor).
-void
-InteractionBroadcastList::clear()
+void InteractionBroadcastList::clear()
 {
-    delete message ;
-    message = NULL ;
+    delete message;
+    message = NULL;
 
     while (!lines.empty()) {
         delete lines.front();
@@ -108,16 +99,15 @@ InteractionBroadcastList::clear()
 
 // ----------------------------------------------------------------------------
 //! Return the line of the list describing federate 'federate', or 0.
-InteractionBroadcastLine*
-InteractionBroadcastList::getLineWithFederate(FederateHandle federate)
+InteractionBroadcastLine* InteractionBroadcastList::getLineWithFederate(FederateHandle federate)
 {
-    list<InteractionBroadcastLine *>::iterator i ;
+    list<InteractionBroadcastLine*>::iterator i;
     for (i = lines.begin(); i != lines.end(); i++) {
         if ((*i)->federate == federate)
             return (*i);
     }
 
-    return 0 ;
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -127,22 +117,18 @@ InteractionBroadcastList::getLineWithFederate(FederateHandle federate)
   Broadcast the message to all the Federate in the bsWaiting state, and then
   set their state to bsSent.
 */
-void
-InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
+void InteractionBroadcastList::sendPendingMessage(SecurityServer* server)
 {
+    G.Out(pdGendoc, "enter InteractionBroadcastList::sendPendingMessage");
 
-    G.Out(pdGendoc,"enter InteractionBroadcastList::sendPendingMessage");
-
-    list<InteractionBroadcastLine *>::iterator i ;
+    list<InteractionBroadcastLine*>::iterator i;
     for (i = lines.begin(); i != lines.end(); i++) {
         // If federate is waiting for a message.
         if ((*i)->state == InteractionBroadcastLine::waiting) {
-
             // 1. Send message to federate.
-            D.Out(pdProtocol, "Broadcasting message to Federate %d.",
-                  (*i)->federate);
+            D.Out(pdProtocol, "Broadcasting message to Federate %d.", (*i)->federate);
 
-            Socket *socket = 0 ;
+            Socket* socket = 0;
             try {
 #ifdef HLA_USES_UDP
                 socket = server->getSocketLink((*i)->federate, BEST_EFFORT);
@@ -150,28 +136,25 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
                 socket = server->getSocketLink((*i)->federate);
 #endif
 
-                G.Out(pdGendoc,"sendPendingMessage===>write");
+                G.Out(pdGendoc, "sendPendingMessage===>write");
 
-                message->send(socket,NM_msgBufSend);
+                message->send(socket, NM_msgBufSend);
             }
-            catch (RTIinternalError &e) {
-                D.Out(pdExcept,
-                      "Reference to a killed Federate while broadcasting.");
+            catch (RTIinternalError& e) {
+                D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
             }
-            catch (NetworkError &e) {
+            catch (NetworkError& e) {
                 D.Out(pdExcept, "Network error while broadcasting, ignoring.");
             }
 
             // 2. Mark federate as having received the message.
-            (*i)->state = InteractionBroadcastLine::sent ;
+            (*i)->state = InteractionBroadcastLine::sent;
         }
         else
-            D.Out(pdProtocol, "No message sent to Federate %d.",
-                  (*i)->federate);
+            D.Out(pdProtocol, "No message sent to Federate %d.", (*i)->federate);
     }
 
-    G.Out(pdGendoc,"exit InteractionBroadcastList::sendPendingMessage");
-
+    G.Out(pdGendoc, "exit InteractionBroadcastList::sendPendingMessage");
 }
 
 } // namespace certi

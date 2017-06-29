@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
         myRTIG.execute();
     }
     catch (NetworkError& e) {
-        std::cerr << "CERTI RTIG aborted with a Network Error: [" << e._reason << "]." << std::endl;
+        std::cerr << "CERTI RTIG aborted with a Network Error: [" << e.reason() << "]." << std::endl;
     }
 
     if (verboseLevel > 0) {

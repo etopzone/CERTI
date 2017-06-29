@@ -172,7 +172,7 @@ add_library(CERTI
 set_target_properties(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
 
 if(COMPILE_WITH_CXX11)
-    set_property(TARGET CERTI PROPERTY CXX_STANDARD 11)
+    set_property(TARGET CERTI PROPERTY CXX_STANDARD 14)
 endif()
 
 target_link_libraries(CERTI

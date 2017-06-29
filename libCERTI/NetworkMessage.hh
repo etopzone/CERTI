@@ -22,14 +22,14 @@
 #ifndef CERTI_NETWORK_MESSAGE_HH
 #define CERTI_NETWORK_MESSAGE_HH
 
-#include "FedTimeD.hh"
-#include "Exception.hh"
-#include "Socket.hh"
-#include "RTIRegion.hh"
 #include "BasicMessage.hh"
+#include "Exception.hh"
+#include "FedTimeD.hh"
+#include "RTIRegion.hh"
+#include "Socket.hh"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #ifdef FEDERATION_USES_MULTICAST
 #define MC_PORT 60123
@@ -47,168 +47,197 @@ namespace certi {
  * NetworkMessage is the base class of a class hierarchy.
  * Each specific message is a (direct of indirect)
  * daughter class of NetworkMessage.    
- */ 
-class CERTI_EXPORT NetworkMessage : public BasicMessage
-{
+ */
+class CERTI_EXPORT NetworkMessage : public BasicMessage {
 public:
+    typedef enum Type {
+        NOT_USED = 0, // Not used.
+        CLOSE_CONNEXION,
+        MESSAGE_NULL,
+        CREATE_FEDERATION_EXECUTION,
+        DESTROY_FEDERATION_EXECUTION,
+        JOIN_FEDERATION_EXECUTION,
+        RESIGN_FEDERATION_EXECUTION,
+        SET_TIME_REGULATING,
+        SET_TIME_CONSTRAINED,
+        TIME_REGULATION_ENABLED, // RTIG to RTIA
+        TIME_CONSTRAINED_ENABLED, // RTIG to RTIA
+        REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
+        CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION, // RTIG to RTIA
+        ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
+        SYNCHRONIZATION_POINT_ACHIEVED,
+        FEDERATION_SYNCHRONIZED, // RTIG to RTIA
+        REQUEST_FEDERATION_SAVE,
+        FEDERATE_SAVE_BEGUN,
+        FEDERATE_SAVE_COMPLETE,
+        FEDERATE_SAVE_NOT_COMPLETE,
+        INITIATE_FEDERATE_SAVE, // RTIG to RTIA
+        FEDERATION_SAVED, // RTIG to RTIA
+        FEDERATION_NOT_SAVED, // RTIG to RTIA
+        REQUEST_FEDERATION_RESTORE,
+        FEDERATE_RESTORE_COMPLETE,
+        FEDERATE_RESTORE_NOT_COMPLETE,
+        REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
+        REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
+        FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
+        INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
+        FEDERATION_RESTORED, // RTIG to RTIA
+        FEDERATION_NOT_RESTORED, // RTIG to RTIA
+        PUBLISH_OBJECT_CLASS,
+        UNPUBLISH_OBJECT_CLASS,
+        PUBLISH_INTERACTION_CLASS,
+        UNPUBLISH_INTERACTION_CLASS,
+        SUBSCRIBE_OBJECT_CLASS,
+        UNSUBSCRIBE_OBJECT_CLASS,
+        SUBSCRIBE_INTERACTION_CLASS,
+        UNSUBSCRIBE_INTERACTION_CLASS,
+        TURN_INTERACTIONS_ON, // only RTIG->RTIA
+        TURN_INTERACTIONS_OFF, // only RTIG->RTIA
+        REGISTER_OBJECT,
+        DISCOVER_OBJECT, // only RTIG->RTIA
+        UPDATE_ATTRIBUTE_VALUES,
+        REFLECT_ATTRIBUTE_VALUES, // only RTIG->RTIA
+        SEND_INTERACTION,
+        RECEIVE_INTERACTION, // only RTIG->RTIA
+        DELETE_OBJECT,
+        REMOVE_OBJECT, // only RTIG->RTIA
+        CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
+        CHANGE_ATTRIBUTE_ORDER_TYPE,
+        CHANGE_INTERACTION_TRANSPORT_TYPE,
+        CHANGE_INTERACTION_ORDER_TYPE,
+        REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
+        REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
+        IS_ATTRIBUTE_OWNED_BY_FEDERATE,
+        QUERY_ATTRIBUTE_OWNERSHIP,
+        ATTRIBUTE_IS_NOT_OWNED,
+        INFORM_ATTRIBUTE_OWNERSHIP,
+        ATTRIBUTE_OWNERSHIP_BASE, /* NOT USED */
+        NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+        ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
+        ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
+        REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION,
+        ATTRIBUTE_OWNERSHIP_UNAVAILABLE,
+        ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
+        UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+        ATTRIBUTE_OWNERSHIP_ACQUISITION,
+        REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE,
+        CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+        ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
+        CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
+        CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
+        DDM_CREATE_REGION,
+        DDM_MODIFY_REGION,
+        DDM_DELETE_REGION,
+        DDM_ASSOCIATE_REGION,
+        DDM_REGISTER_OBJECT,
+        DDM_UNASSOCIATE_REGION,
+        DDM_SUBSCRIBE_ATTRIBUTES,
+        DDM_UNSUBSCRIBE_ATTRIBUTES,
+        DDM_SUBSCRIBE_INTERACTION,
+        DDM_UNSUBSCRIBE_INTERACTION,
+        PROVIDE_ATTRIBUTE_VALUE_UPDATE,
+        /* GET_FED_FILE_SUPPRESSED, */
+        SET_CLASS_RELEVANCE_ADVISORY_SWITCH,
+        SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
+        SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH,
+        SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
+        START_REGISTRATION_FOR_OBJECT_CLASS,
+        STOP_REGISTRATION_FOR_OBJECT_CLASS,
+        RESERVE_OBJECT_INSTANCE_NAME, // HLA1516, only RTIA->RTIG
+        RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516, only RTIG->RTIA
+        RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516, only RTIG->RTIA
+        MESSAGE_NULL_PRIME, // CERTI specific for handling NER or NERA and zero-lk
+        LAST
+    } Message_T;
 
-	typedef enum Type {
-		NOT_USED = 0, // Not used.
-				CLOSE_CONNEXION,
-				MESSAGE_NULL,
-				CREATE_FEDERATION_EXECUTION,
-				DESTROY_FEDERATION_EXECUTION,
-				JOIN_FEDERATION_EXECUTION,
-				RESIGN_FEDERATION_EXECUTION,
-				SET_TIME_REGULATING,
-				SET_TIME_CONSTRAINED,
-				TIME_REGULATION_ENABLED, // RTIG to RTIA
-				TIME_CONSTRAINED_ENABLED, // RTIG to RTIA
-				REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
-				CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION, // RTIG to RTIA
-				ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
-				SYNCHRONIZATION_POINT_ACHIEVED,
-				FEDERATION_SYNCHRONIZED, // RTIG to RTIA
-				REQUEST_FEDERATION_SAVE,
-				FEDERATE_SAVE_BEGUN,
-				FEDERATE_SAVE_COMPLETE,
-				FEDERATE_SAVE_NOT_COMPLETE,
-				INITIATE_FEDERATE_SAVE, // RTIG to RTIA
-				FEDERATION_SAVED, // RTIG to RTIA
-				FEDERATION_NOT_SAVED, // RTIG to RTIA
-				REQUEST_FEDERATION_RESTORE,
-				FEDERATE_RESTORE_COMPLETE,
-				FEDERATE_RESTORE_NOT_COMPLETE,
-				REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
-				REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
-				FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
-				INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
-				FEDERATION_RESTORED, // RTIG to RTIA
-				FEDERATION_NOT_RESTORED, // RTIG to RTIA
-				PUBLISH_OBJECT_CLASS,
-				UNPUBLISH_OBJECT_CLASS,
-				PUBLISH_INTERACTION_CLASS,
-				UNPUBLISH_INTERACTION_CLASS,
-				SUBSCRIBE_OBJECT_CLASS,
-				UNSUBSCRIBE_OBJECT_CLASS,
-				SUBSCRIBE_INTERACTION_CLASS,
-				UNSUBSCRIBE_INTERACTION_CLASS,
-				TURN_INTERACTIONS_ON, // only RTIG->RTIA
-				TURN_INTERACTIONS_OFF, // only RTIG->RTIA
-				REGISTER_OBJECT,
-				DISCOVER_OBJECT, // only RTIG->RTIA
-				UPDATE_ATTRIBUTE_VALUES,
-				REFLECT_ATTRIBUTE_VALUES, // only RTIG->RTIA
-				SEND_INTERACTION,
-				RECEIVE_INTERACTION, // only RTIG->RTIA
-				DELETE_OBJECT,
-				REMOVE_OBJECT, // only RTIG->RTIA
-				CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
-				CHANGE_ATTRIBUTE_ORDER_TYPE,
-				CHANGE_INTERACTION_TRANSPORT_TYPE,
-				CHANGE_INTERACTION_ORDER_TYPE,
-				REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
-				REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
-				IS_ATTRIBUTE_OWNED_BY_FEDERATE,
-				QUERY_ATTRIBUTE_OWNERSHIP,
-				ATTRIBUTE_IS_NOT_OWNED,
-				INFORM_ATTRIBUTE_OWNERSHIP,
-				ATTRIBUTE_OWNERSHIP_BASE, /* NOT USED */
-				NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-				ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
-				ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
-				REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION,
-				ATTRIBUTE_OWNERSHIP_UNAVAILABLE,
-				ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
-				UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-				ATTRIBUTE_OWNERSHIP_ACQUISITION,
-				REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE,
-				CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-				ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
-				CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
-				CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
-				DDM_CREATE_REGION,
-				DDM_MODIFY_REGION,
-				DDM_DELETE_REGION,
-				DDM_ASSOCIATE_REGION,
-				DDM_REGISTER_OBJECT,
-				DDM_UNASSOCIATE_REGION,
-				DDM_SUBSCRIBE_ATTRIBUTES,
-				DDM_UNSUBSCRIBE_ATTRIBUTES,
-				DDM_SUBSCRIBE_INTERACTION,
-				DDM_UNSUBSCRIBE_INTERACTION,
-				PROVIDE_ATTRIBUTE_VALUE_UPDATE,
-				/* GET_FED_FILE_SUPPRESSED, */
-				SET_CLASS_RELEVANCE_ADVISORY_SWITCH,
-				SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
-				SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH,
-				SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
-				START_REGISTRATION_FOR_OBJECT_CLASS,
-				STOP_REGISTRATION_FOR_OBJECT_CLASS,
-				RESERVE_OBJECT_INSTANCE_NAME, // HLA1516, only RTIA->RTIG
-				RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516, only RTIG->RTIA
-				RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516, only RTIG->RTIA
-				MESSAGE_NULL_PRIME, // CERTI specific for handling NER or NERA and zero-lk
-				LAST
-	} Message_T;	
+    NetworkMessage();
+    virtual ~NetworkMessage();
 
-	NetworkMessage();
-	virtual ~NetworkMessage();
-
-	/**
+    /**
 	 * Get the name of [the type of] the message.
 	 * @return the message type name.
 	 */
-	const char* getMessageName() const {return messageName;}
-	/**
+    const char* getMessageName() const
+    {
+        return messageName;
+    }
+    /**
 	 * Get the message type.
 	 * @return the type of the message
 	 */
-	const NetworkMessage::Message_T getMessageType() const {return type;};
+    const NetworkMessage::Message_T getMessageType() const
+    {
+        return type;
+    };
 
-	const TypeException getException() const {return exception;};
-	TypeException& getRefException() {return exception;};
-	void setException(const TypeException e) {exception=e;};
-	void setException(const TypeException e, const std::string& reason)
-		{exception=e;exceptionReason=reason;};
-	const std::string& getExceptionReason(){return exceptionReason;};
+    const TypeException getException() const
+    {
+        return exception;
+    };
+    TypeException& getRefException()
+    {
+        return exception;
+    };
+    void setException(const TypeException e)
+    {
+        exception = e;
+    };
+    void setException(const TypeException e, const std::string& reason)
+    {
+        exception = e;
+        exceptionReason = reason;
+    };
+    const std::string& getExceptionReason()
+    {
+        return exceptionReason;
+    };
 
-	/**
+    /**
 	 * Serialize the message into a buffer
 	 * @param[in] msgBuffer the serialization buffer
 	 */
-	virtual void serialize(MessageBuffer& msgBuffer);
+    virtual void serialize(MessageBuffer& msgBuffer);
 
-	virtual std::ostream& show(std::ostream& out);
+    virtual std::ostream& show(std::ostream& out);
 
-	/**
+    /**
 	 * DeSerialize the message from a buffer
 	 * @param[in] msgBuffer the deserialization buffer
 	 */
-	virtual void deserialize(MessageBuffer& msgBuffer);
+    virtual void deserialize(MessageBuffer& msgBuffer);
 
-	/**
+    /**
 	 * Send a message buffer to the socket
 	 */
-	void send(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+    void send(Socket* socket, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
 
-	/**
+    /**
 	 * Receive a message buffer from the socket
 	 */
-	void receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+    void receive(Socket* socket, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
 
-	EventRetractionHandle eventRetraction ; /* FIXME to be suppressed */
+    EventRetractionHandle eventRetraction; /* FIXME to be suppressed */
 
-	Handle getFederation() const {return federation;};
-	void setFederation(Handle federation) {this->federation=federation;};
+    Handle getFederation() const
+    {
+        return federation;
+    };
+    void setFederation(Handle federation)
+    {
+        this->federation = federation;
+    };
 
-	FederateHandle getFederate() const {return federate;};
-	void setFederate(FederateHandle federate) {this->federate=federate;};
-
+    FederateHandle getFederate() const
+    {
+        return federate;
+    };
+    void setFederate(FederateHandle federate)
+    {
+        this->federate = federate;
+    };
 
 protected:
-
-	/** 
+    /** 
 	 * The message name.
 	 * It should be initialized by the specialized
 	 * network message constructor.
@@ -216,40 +245,39 @@ protected:
 	 * this as a plain char* because it won't be changed
 	 * it's thus cheaper to build than an std::string.
 	 */
-	const char* messageName;
+    const char* messageName;
 
-	/** 
+    /** 
 	 * The network message type
 	 * type field cannot be accessed directly 
 	 *   - only NM constructor may set it.
 	 *   - getter should be used to get it. 
 	 */
-	Message_T type;
+    Message_T type;
 
-	/**
+    /**
 	 * The exception type
 	 * if the message is carrying an exception
 	 */
-	TypeException exception ;
+    TypeException exception;
 
-	/**
+    /**
 	 * The exception reason (if the message carry one)
 	 */
-	std::string exceptionReason;
+    std::string exceptionReason;
 
-	/**
+    /**
 	 * The federation handle
 	 * the message is part of this federation activity
 	 */
-	Handle federation ;
-	/**
+    Handle federation;
+    /**
 	 * The federate handle
 	 * the message is for this particular federate
 	 */
-	FederateHandle federate ;
+    FederateHandle federate;
 
 private:
-
 };
 
 // BUG: FIXME this is used by SocketMC and should

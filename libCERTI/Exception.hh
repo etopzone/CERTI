@@ -150,34 +150,60 @@ typedef enum {
     e_TimeRegulationWasNotEnabled,
     e_NetworkError,
     e_NetworkSignal,
-	e_IllegalName //1516 only
-} TypeException ;
+    e_IllegalName, //1516 only
+    e_CustomException
+} TypeException;
 
-class CERTI_EXPORT Exception
-{
+class CERTI_EXPORT Exception {
 public:
-    const std::string _reason;
-    const char *_name;
+    virtual ~Exception() = default;
 
-    Exception(const std::string &reason)
-        : _reason(reason), _name("Exception") { }
-
-    const std::wstring wreason() const {
-    	std::wstring wval(_reason.begin(),_reason.end());
-    	return wval;
+    virtual std::string name() const
+    {
+        return _name;
     }
-    virtual ~Exception() { }
+
+    std::string reason() const
+    {
+        return _reason;
+    }
+
+    const std::wstring wreason() const
+    {
+        return {begin(_reason), end(_reason)};
+    }
+    virtual TypeException type() const = 0;
+
     const std::string displayMe() const;
-    virtual long getType() const = 0;
+
+protected:
+    /**
+     * For official exceptions
+     */
+    Exception(const std::string& name, const std::string& reason) : _name{name}, _reason{reason}
+    {
+        displayMe();
+    }
+
+private:
+    const std::string _name;
+    const std::string _reason;
 };
 
-#define CERTI_EXCEPTION(A) \
-    class CERTI_EXPORT A : public Exception { \
-    public: \
-        static long _type; \
-        A(const std::string &reason) : Exception(reason) { _name = #A; this->displayMe();} \
-        long getType() const { return _type; } \
-};
+#define ENUM_FROM_NAME(A) e_##A
+
+#define CERTI_EXCEPTION(A)                                                                                             \
+    class CERTI_EXPORT A : public Exception {                                                                          \
+    public:                                                                                                            \
+        A(const std::string& reason) : Exception{#A, reason}                                                           \
+        {                                                                                                              \
+        }                                                                                                              \
+                                                                                                                       \
+        virtual TypeException type() const override                                                                    \
+        {                                                                                                              \
+            return ENUM_FROM_NAME(A);                                                                                  \
+        }                                                                                                              \
+    };
 
 // RTI Exceptions for use inside libCERTI
 CERTI_EXCEPTION(ArrayIndexOutOfBounds)
@@ -260,19 +286,16 @@ CERTI_EXCEPTION(UnableToPerformSave)
 CERTI_EXCEPTION(ValueCountExceeded)
 CERTI_EXCEPTION(ValueLengthExceeded)
 
-// RTI1516 Exceptions for use inside libCERTI
-CERTI_EXCEPTION(IllegalName)
-
 // Additional CERTI exceptions
 CERTI_EXCEPTION(FederateNotPublishing)
 CERTI_EXCEPTION(FederateNotSubscribing)
 CERTI_EXCEPTION(InvalidObjectHandle)
-CERTI_EXCEPTION(SecurityError)
 CERTI_EXCEPTION(CouldNotOpenRID)
 CERTI_EXCEPTION(ErrorReadingRID)
+CERTI_EXCEPTION(AttributeNotSubscribed)
 CERTI_EXCEPTION(FederationAlreadyPaused)
 CERTI_EXCEPTION(FederationNotPaused)
-CERTI_EXCEPTION(AttributeNotSubscribed)
+CERTI_EXCEPTION(SecurityError)
 CERTI_EXCEPTION(FederateAlreadyPaused)
 CERTI_EXCEPTION(FederateDoesNotExist)
 CERTI_EXCEPTION(FederateNameAlreadyInUse)
@@ -286,8 +309,8 @@ CERTI_EXCEPTION(NoResumeRequested)
 CERTI_EXCEPTION(TooManyIDsRequested)
 CERTI_EXCEPTION(UnimplementedService)
 CERTI_EXCEPTION(UnknownLabel)
-CERTI_EXCEPTION(NetworkSignal)
 CERTI_EXCEPTION(NetworkError)
+CERTI_EXCEPTION(NetworkSignal)
 CERTI_EXCEPTION(SocketNotConnected)
 CERTI_EXCEPTION(MessageNotSent)
 CERTI_EXCEPTION(MessageNotReceived)
@@ -297,11 +320,14 @@ CERTI_EXCEPTION(RingBufferNotClosed)
 CERTI_EXCEPTION(RingBufferNotDeleted)
 CERTI_EXCEPTION(RingBufferNotAttached)
 CERTI_EXCEPTION(MessageTooLong)
-CERTI_EXCEPTION(BufferEmpty)
 CERTI_EXCEPTION(BufferFull)
+CERTI_EXCEPTION(BufferEmpty)
 CERTI_EXCEPTION(SocketSHMNotCreated)
 CERTI_EXCEPTION(SocketSHMNotOpen)
 CERTI_EXCEPTION(SocketSHMNotDeleted)
+
+// RTI1516 Exceptions for use inside libCERTI
+CERTI_EXCEPTION(IllegalName)
 
 } // namespace certi
 

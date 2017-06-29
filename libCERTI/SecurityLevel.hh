@@ -59,3 +59,4 @@ public:
 #endif // _CERTI_SECURITY_LEVEL_HH
 
 // $Id: SecurityLevel.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
+

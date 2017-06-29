@@ -267,12 +267,12 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
     catch (CouldNotOpenFED& e) {
         D.Out(pdInit, "Federation constructor : Could not open FED file.");
         G.Out(pdGendoc, "exit FederationsList::createFederation on exception CouldNotOpenFED");
-        throw CouldNotOpenFED(e._reason);
+        throw CouldNotOpenFED(e.reason());
     }
     catch (ErrorReadingFED& e) {
         D.Out(pdInit, "Federation constructor : Could not read FED file (maybe incorrect).");
         G.Out(pdGendoc, "exit FederationsList::createFederation on exception ErrorReadingFED");
-        throw ErrorReadingFED(e._reason);
+        throw ErrorReadingFED(e.reason());
     }
 
 #endif

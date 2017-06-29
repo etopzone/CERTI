@@ -29,21 +29,19 @@
 
 namespace certi {
 
-class CERTI_EXPORT FederateLevelList
-{
+class CERTI_EXPORT FederateLevelList {
 public:
     FederateLevelList();
     ~FederateLevelList();
 
-    void addFederate(const std::string &the_name,
-		     SecurityLevelID the_level_id);
+    void addFederate(const std::string& the_name, SecurityLevelID the_level_id);
 
     // Try to find the given principal name in the database, and return
     // its associated level. If not found, return PublicLevelID.
-    SecurityLevelID getLevel(const std::string &theName) const ;
+    SecurityLevelID getLevel(const std::string& theName) const;
 
 protected:
-    std::map<std::string, SecurityLevelID> tuple ;
+    std::map<std::string, SecurityLevelID> tuple;
 };
 
 } // namespace certi

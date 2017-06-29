@@ -104,13 +104,13 @@ void RTIG::processCreateFederation(Socket* link, NM_Create_Federation_Execution*
         my_federations.createFederation(federation, h, FEDid);
     }
     catch (CouldNotOpenFED& e) {
-        rep.setException(e_CouldNotOpenFED, e._reason);
+        rep.setException(e_CouldNotOpenFED, e.reason());
     }
     catch (ErrorReadingFED& e) {
-        rep.setException(e_ErrorReadingFED, e._reason);
+        rep.setException(e_ErrorReadingFED, e.reason());
     }
     catch (FederationExecutionAlreadyExists& e) {
-        rep.setException(e_FederationExecutionAlreadyExists, e._reason);
+        rep.setException(e_FederationExecutionAlreadyExists, e.reason());
     }
 #endif
     // Prepare answer for RTIA : store NetworkMessage rep
@@ -263,17 +263,20 @@ void RTIG::processDestroyFederation(Socket* link, NM_Destroy_Federation_Executio
         my_federationHandles.free(num_federation);
         Debug(D, pdInit) << "Federation \"" << federation << "\" has been destroyed" << std::endl;
     }
+    catch (RTIinternalError& e) {
+        std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
+        rep.setException(e_RTIinternalError, e.reason());
+    }
+    catch (FederationExecutionDoesNotExist& e) {
+        std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
+        rep.setException(e_FederationExecutionDoesNotExist, e.reason());
+    }
+    catch (FederatesCurrentlyJoined& e) {
+        std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
+        rep.setException(e_FederatesCurrentlyJoined, e.reason());
+    }
     catch (Exception& e) {
-        std::cerr << "ERROR : " << e._name << "  reason :" << e._reason << std::endl;
-        if (strcmp(e._name, "RTIinternalError") == 0) {
-            rep.setException(e_RTIinternalError, e._reason);
-        }
-        else if (strcmp(e._name, "FederationExecutionDoesNotExist") == 0) {
-            rep.setException(e_FederationExecutionDoesNotExist, e._reason);
-        }
-        else if (strcmp(e._name, "FederatesCurrentlyJoined") == 0) {
-            rep.setException(e_FederatesCurrentlyJoined, "at least one federate joined");
-        }
+        std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << std::endl;
     }
 
     rep.setFederate(req->getFederate());
@@ -545,7 +548,7 @@ void RTIG::processRegisterSynchronization(Socket* link, NM_Register_Federation_S
     catch (Exception& e) {
         /* the registration did fail */
         rep.setSuccessIndicator(false);
-        rep.setFailureReason(std::string(e._name) + ":" + std::string(e._reason));
+        rep.setFailureReason(std::string(e.name()) + ":" + std::string(e.reason()));
     }
     Debug(D, pdTerm) << "Federation " << req->getFederation() << " is now synchronizing" << std::endl;
 
@@ -1362,13 +1365,13 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
                                                  request->getAttributesSize());
     }
     catch (ObjectNotKnown& e) {
-        answer.setException(e_ObjectNotKnown, e._reason);
+        answer.setException(e_ObjectNotKnown, e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
-        answer.setException(e_FederationExecutionDoesNotExist, e._reason);
+        answer.setException(e_FederationExecutionDoesNotExist, e.reason());
     }
     catch (RTIinternalError& e) {
-        answer.setException(e_RTIinternalError, e._reason);
+        answer.setException(e_RTIinternalError, e.reason());
     }
 
     answer.setFederate(request->getFederate());
@@ -1397,13 +1400,13 @@ void RTIG::processRequestClassAttributeValueUpdate(Socket* link, NM_Request_Clas
                                                         request->getAttributesSize());
     }
     catch (ObjectClassNotDefined& e) {
-        answer.setException(e_ObjectClassNotDefined, e._reason);
+        answer.setException(e_ObjectClassNotDefined, e.reason());
     }
     catch (FederationExecutionDoesNotExist& e) {
-        answer.setException(e_FederationExecutionDoesNotExist, e._reason);
+        answer.setException(e_FederationExecutionDoesNotExist, e.reason());
     }
     catch (RTIinternalError& e) {
-        answer.setException(e_RTIinternalError, e._reason);
+        answer.setException(e_RTIinternalError, e.reason());
     }
 
     answer.setFederate(request->getFederate());

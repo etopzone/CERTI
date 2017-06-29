@@ -26,8 +26,8 @@
 #include "RTIA.hh"
 #include "RTIA_cmdline.h"
 
-#include <sys/types.h>
 #include <csignal>
+#include <sys/types.h>
 
 using namespace certi;
 using namespace rtia;
@@ -36,7 +36,8 @@ using namespace std;
 int normal_end;
 
 // ----------------------------------------------------------------------------
-void SignalHandler(int signal) {
+void SignalHandler(int signal)
+{
     printf("\nRTIA: Received signal %d. Exiting peacefully.\n", signal);
     normal_end = 1;
     // Catch signal again.
@@ -44,7 +45,8 @@ void SignalHandler(int signal) {
 }
 
 // ----------------------------------------------------------------------------
-void NewHandler() {
+void NewHandler()
+{
     throw MemoryExhausted("RTIA (main) has exhausted memory error");
 }
 
@@ -68,67 +70,67 @@ void NewHandler() {
  *
  * @ingroup certi_executable
  */
-int
-main(int argc, char **argv) {
-	signal(SIGINT, SignalHandler);
+int main(int argc, char** argv)
+{
+    signal(SIGINT, SignalHandler);
 #ifndef _WIN32
-	signal(SIGPIPE, SignalHandler);
+    signal(SIGPIPE, SignalHandler);
 #endif
 
-	set_new_handler(NewHandler);
+    set_new_handler(NewHandler);
     normal_end = 0;
 
-	// Command line
-	gengetopt_args_info args ;
-	if (cmdline_parser(argc, argv, &args))
-	    exit(EXIT_FAILURE);
+    // Command line
+    gengetopt_args_info args;
+    if (cmdline_parser(argc, argv, &args))
+        exit(EXIT_FAILURE);
 
-	try {
-		int rtia_port = 0;
-		if (args.port_given) {
-			rtia_port = args.port_arg;
-		}
-		int rtia_fd = -1;
-		if (args.fd_given) {
-			rtia_fd = args.fd_arg;
-		}
+    try {
+        int rtia_port = 0;
+        if (args.port_given) {
+            rtia_port = args.port_arg;
+        }
+        int rtia_fd = -1;
+        if (args.fd_given) {
+            rtia_fd = args.fd_arg;
+        }
 
-		RTIA rtia(rtia_port, rtia_fd);
+        RTIA rtia(rtia_port, rtia_fd);
 
-		PrettyDebug::setFederateName("RTIA::UnknownFederate");
+        PrettyDebug::setFederateName("RTIA::UnknownFederate");
 
-		try {
-			rtia.execute();
-		}
-		catch (Exception &e) {
-                        if (! normal_end) {
-			        cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
-			        cerr.flush();
-                        }
-			if (!e._reason.empty()) {
-                                if (! normal_end) {
-				      cerr << "RTIA:: Reason: " << e._reason << endl;
-				      cerr.flush();
-                                }
-				rtia.displayStatistics();
-			}
-
-			return (EXIT_FAILURE);
-		}
-
-		rtia.displayStatistics();
-	} catch (Exception &e) {
-                if (! normal_end) {
-		      cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
-		      if (!e._reason.empty()) {
-		 	  cerr << "RTIA:: Reason: " << e._reason << endl;
-		      }
+        try {
+            rtia.execute();
+        }
+        catch (Exception& e) {
+            if (!normal_end) {
+                cerr << "RTIA:: RTIA has thrown " << e.name() << " exception." << endl;
+                cerr.flush();
+            }
+            if (!e.reason().empty()) {
+                if (!normal_end) {
+                    cerr << "RTIA:: Reason: " << e.reason() << endl;
+                    cerr.flush();
                 }
-	}
-	cout << "RTIA:: End execution."<< endl ;
+                rtia.displayStatistics();
+            }
 
-	return (EXIT_SUCCESS);
+            return (EXIT_FAILURE);
+        }
+
+        rtia.displayStatistics();
+    }
+    catch (Exception& e) {
+        if (!normal_end) {
+            cerr << "RTIA:: RTIA has thrown " << e.name() << " exception." << endl;
+            if (!e.reason().empty()) {
+                cerr << "RTIA:: Reason: " << e.reason() << endl;
+            }
+        }
+    }
+    cout << "RTIA:: End execution." << endl;
+
+    return (EXIT_SUCCESS);
 }
-
 
 // EOF

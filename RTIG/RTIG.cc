@@ -173,8 +173,8 @@ void RTIG::execute() throw(NetworkError)
                 } while (link->isDataReady());
             }
             catch (NetworkError& e) {
-                if (!e._reason.empty()) {
-                    Debug(D, pdExcept) << "Catching Network Error, reason: " << e._reason << std::endl;
+                if (!e.reason().empty()) {
+                    Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
                 }
                 else {
                     Debug(D, pdExcept) << "Catching Network Error, no reason string" << std::endl;
@@ -574,7 +574,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     }
 
     /* virtual constructor call */
-    NetworkMessage* msg = NM_Factory::receive(link);
+    auto msg = std::unique_ptr<NetworkMessage>(NM_Factory::receive(link));
 
     // Server Answer(only if an exception is raised)
     //         std::auto_ptr<NetworkMessage> rep();
@@ -588,12 +588,12 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
 #define CPY_NOT_NULL(A)                                                                                                \
     {                                                                                                                  \
-        if (!A._reason.empty()) {                                                                                      \
-            exceptionReason = A._reason;                                                                               \
+        if (!A.reason().empty()) {                                                                                      \
+            exceptionReason = A.reason();                                                                               \
         }                                                                                                              \
     }
 
-#define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A._name << std::endl
+#define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A.name() << std::endl
 
 #define BASIC_CATCH(ExceptionType, responseType)                                                                       \
     catch (ExceptionType & e)                                                                                          \
@@ -606,7 +606,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     std::string exceptionReason;
 
     try {
-        link = chooseProcessingMethod(link, msg);
+        link = chooseProcessingMethod(link, msg.get());
     }
     BASIC_CATCH(ArrayIndexOutOfBounds, e_ArrayIndexOutOfBounds)
     BASIC_CATCH(AttributeAlreadyOwned, e_AttributeAlreadyOwned)
@@ -688,11 +688,11 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     catch (RTIinternalError& e)
     {
-        if (e._reason.empty()) {
+        if (e.reason().empty()) {
             PRINT_DEBUG_MESSAGE(e);
         }
         else {
-            Debug(D, pdExcept) << "Caught Exception: " << e._name << ", " << e._reason << std::endl;
+            Debug(D, pdExcept) << "Caught Exception: " << e.name() << ", " << e.reason() << std::endl;
         }
         CPY_NOT_NULL(e);
         response->setException(e_RTIinternalError);
@@ -700,7 +700,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     catch (SecurityError& e)
     {
-        std::cout << std::endl << "Security Error : " << e._reason << std::endl;
+        std::cout << std::endl << "Security Error : " << e.reason() << std::endl;
         CPY_NOT_NULL(e);
         response->setException(e_SecurityError);
     }
@@ -710,14 +710,13 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     {
         exceptionReason = " - NetworkError";
         my_auditServer.endLine(response->getException(), exceptionReason);
-        delete msg;
         throw e;
     }
 
     // Default Handler
     catch (Exception& e)
     {
-        Debug(D, pdExcept) << "Unknown Exception: " << e._name << std::endl;
+        Debug(D, pdExcept) << "Unknown Exception: " << e.name() << std::endl;
         CPY_NOT_NULL(e);
         response->setException(e_RTIinternalError);
     }
@@ -734,7 +733,6 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     }
 
     my_auditServer.endLine(response->getException(), exceptionReason);
-    delete msg;
     if (link == nullptr) {
         return link;
     }
@@ -756,7 +754,7 @@ void RTIG::openConnection()
         my_socketServer.open();
     }
     catch (RTIinternalError& e) {
-        Debug(D, pdExcept) << "Error while accepting new connection: " << e._reason << std::endl;
+        Debug(D, pdExcept) << "Error while accepting new connection: " << e.reason() << std::endl;
     }
 
     Debug(D, pdInit) << "Accepting new connection" << std::endl;
