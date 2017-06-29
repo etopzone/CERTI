@@ -55,8 +55,13 @@ if(X_DISPLAY_MISSING)
 else(X_DISPLAY_MISSING)
   add_executable(billard ${billard_SRCS})
   target_link_libraries(billard graph RTI FedTime)  
+
   if(COMPILE_WITH_CXX11)
-     set_property(TARGET billard PROPERTY CXX_STANDARD 11)
+    if (CMAKE_VERSION VERSION_LESS 3.1.3)
+      SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+    else()
+      set_property(TARGET billard PROPERTY CXX_STANDARD 11)
+    endif()
   endif()
   install(TARGETS billard
     RUNTIME DESTINATION bin
@@ -67,9 +72,15 @@ endif(X_DISPLAY_MISSING)
 add_executable(billard-nogui ${billard_SRCS})
 set_target_properties(billard-nogui PROPERTIES COMPILE_FLAGS "-DX_DISPLAY_MISSING=1")
 target_link_libraries(billard-nogui graph-nogui RTI FedTime)
+
 if(COMPILE_WITH_CXX11)
-   set_property(TARGET billard-nogui PROPERTY CXX_STANDARD 11)
+    if (CMAKE_VERSION VERSION_LESS 3.1.3)
+        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+    else()
+        set_property(TARGET billard-nogui PROPERTY CXX_STANDARD 11)
+    endif()
 endif()
+
 install(TARGETS billard-nogui
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

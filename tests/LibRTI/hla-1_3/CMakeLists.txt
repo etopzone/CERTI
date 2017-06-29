@@ -6,6 +6,7 @@ include_directories(${CMAKE_BINARY_DIR}/include/hla-1_3)
 include_directories(${CERTI_BINARY_DIR}) # for config.h
 
 find_package(GTest REQUIRED)
+find_package(Threads REQUIRED)
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
@@ -14,10 +15,17 @@ add_executable(TestRTI-HLA-1_3
                 )
 
 target_link_libraries(TestRTI-HLA-1_3
-                ${GTEST_BOTH_LIBRARIES}
-                RTI)
+                      RTI
+                      ${GTEST_BOTH_LIBRARIES}
+                      ${CMAKE_THREAD_LIBS_INIT}
+                      )
                 
-set_property(TARGET TestRTI-HLA-1_3 PROPERTY CXX_STANDARD 11)
+
+if (CMAKE_VERSION VERSION_LESS 3.1.3)
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    set_property(TARGET TestRTI-HLA-1_3 PROPERTY CXX_STANDARD 11)
+endif()
 
 add_test(AllTests TestRTI-HLA-1_3)
 

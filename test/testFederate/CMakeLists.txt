@@ -80,8 +80,14 @@ install(TARGETS ${FEDERATE_TARGETNAME}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
 
+
 if(COMPILE_WITH_CXX11)
-   set_property(TARGET CertiTestFederate-HLA13 CertiTestFederate-IEEE1516_2000 CertiTestFederate-IEEE1516_2010 PROPERTY CXX_STANDARD 11)
+    if (CMAKE_VERSION VERSION_LESS 3.1.3)
+        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+    else()
+        set_property(TARGET billard-nogui PROPERTY CXX_STANDARD 11)
+        set_property(TARGET CertiTestFederate-HLA13 CertiTestFederate-IEEE1516_2000 CertiTestFederate-IEEE1516_2010 PROPERTY CXX_STANDARD 11)
+    endif()
 endif()
 
 # DTest script not ready [yet]

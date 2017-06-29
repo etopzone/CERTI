@@ -177,6 +177,7 @@ if(COMPILE_WITH_CXX11)
         SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
     else()
         set_property(TARGET CERTI PROPERTY CXX_STANDARD 14)
+    endif()
 endif()
 
 

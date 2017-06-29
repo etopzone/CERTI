@@ -118,8 +118,6 @@ if(COMPILE_WITH_CXX11)
     endif()
 endif()
 
-
-
 install(FILES
     ${LIBHLA_EXPORTED_INCLUDES}
     DESTINATION include/libhla)
