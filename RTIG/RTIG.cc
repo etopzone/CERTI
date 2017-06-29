@@ -588,8 +588,9 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
 #define CPY_NOT_NULL(A)                                                                                                \
     {                                                                                                                  \
-        if (!A._reason.empty())                                                                                        \
-            strcpy(buffer, A._reason.c_str());                                                                         \
+        if (!A._reason.empty()) {                                                                                      \
+            exceptionReason = A._reason;                                                                               \
+        }                                                                                                              \
     }
 
 #define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A._name << std::endl
@@ -602,8 +603,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         response->setException(responseType);                                                                          \
     }
 
-    char buffer[BUFFER_EXCEPTION_REASON_SIZE]; // To store the exception reason
-    buffer[0] = 0;
+    std::string exceptionReason;
 
     try {
         link = chooseProcessingMethod(link, msg);
@@ -708,8 +708,8 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e)
     {
-        strcpy(buffer, " - NetworkError");
-        my_auditServer.endLine(response->getException(), buffer);
+        exceptionReason = " - NetworkError";
+        my_auditServer.endLine(response->getException(), exceptionReason);
         delete msg;
         throw e;
     }
@@ -724,14 +724,16 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     // buffer may contain an exception reason. If not, set it to OK
     // or Exception
-    if (strlen(buffer) == 0) {
-        if (response->getException() == e_NO_EXCEPTION)
-            strcpy(buffer, " - OK");
-        else
-            strcpy(buffer, " - Exception");
+    if (exceptionReason.empty()) {
+        if (response->getException() == e_NO_EXCEPTION) {
+            exceptionReason = " - OK";
+        }
+        else {
+            exceptionReason = " - Exception";
+        }
     }
 
-    my_auditServer.endLine(response->getException(), buffer);
+    my_auditServer.endLine(response->getException(), exceptionReason);
     delete msg;
     if (link == nullptr) {
         return link;

@@ -144,8 +144,6 @@
  * The CERTI library contains CERTI specific HLA implementation
  */
 
-// next used in RTIG::processIncomingMessage method
-#define BUFFER_EXCEPTION_REASON_SIZE 256
 
 namespace certi {
 
