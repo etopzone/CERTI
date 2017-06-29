@@ -823,52 +823,52 @@ throw ()
 
 // Returns a LogicalTime with a value of "initial"
 
-std::auto_ptr< rti1516e::LogicalTime >
+std::unique_ptr< rti1516e::LogicalTime >
 RTI1516fedTimeFactory::makeLogicalTime()
 throw (rti1516e::InternalError)
 {
     RTI1516fedTime *fedTime = new RTI1516fedTime(0);
 
-    return std::auto_ptr< rti1516e::LogicalTime >(fedTime);
+    return std::unique_ptr< rti1516e::LogicalTime >(fedTime);
 }
 
 
-std::auto_ptr< rti1516e::LogicalTime >
+std::unique_ptr< rti1516e::LogicalTime >
 RTI1516fedTimeFactory::makeLogicalTime(double timeVal)
 throw (rti1516e::InternalError)
 {
     RTI1516fedTime *fedTime = new RTI1516fedTime(timeVal);
 
-    return std::auto_ptr< rti1516e::LogicalTime >(fedTime);
+    return std::unique_ptr< rti1516e::LogicalTime >(fedTime);
 }
 
 // Returns a LogicalTimeInterval with a value of "zero"
 
-std::auto_ptr< rti1516e::LogicalTimeInterval >
+std::unique_ptr< rti1516e::LogicalTimeInterval >
 RTI1516fedTimeFactory::makeLogicalTimeInterval()
 throw (rti1516e::InternalError)
 {
     RTI1516fedTimeInterval *fedTimeInterval = new RTI1516fedTimeInterval(0);
 
-    return std::auto_ptr< rti1516e::LogicalTimeInterval >(fedTimeInterval);
+    return std::unique_ptr< rti1516e::LogicalTimeInterval >(fedTimeInterval);
 }
 
 
-std::auto_ptr< rti1516e::LogicalTimeInterval >
+std::unique_ptr< rti1516e::LogicalTimeInterval >
 RTI1516fedTimeFactory::makeLogicalTimeInterval(double timeInterval)
 throw (rti1516e::InternalError)
 {
     RTI1516fedTimeInterval *fedTimeInterval = new RTI1516fedTimeInterval(timeInterval);
 
-    return std::auto_ptr< rti1516e::LogicalTimeInterval >(fedTimeInterval);
+    return std::unique_ptr< rti1516e::LogicalTimeInterval >(fedTimeInterval);
 }
 
 
 
-std::auto_ptr< rti1516e::LogicalTimeFactory >
+std::unique_ptr< rti1516e::LogicalTimeFactory >
 rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(std::wstring const & implementationName)
 {
     RTI1516fedTimeFactory *fedTimeFactory = new RTI1516fedTimeFactory();
 
-    return std::auto_ptr< rti1516e::LogicalTimeFactory >(fedTimeFactory);
+    return std::unique_ptr< rti1516e::LogicalTimeFactory >(fedTimeFactory);
 }

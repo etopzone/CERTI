@@ -39,7 +39,7 @@ namespace rti1516e
       virtual ~HLAfixedRecord ();
 
       // Return a new copy of the DataElement
-      virtual std::auto_ptr<DataElement> clone () const;
+      virtual std::unique_ptr<DataElement> clone () const;
 
       // Encode this element into a new VariableLengthData
       virtual VariableLengthData encode () const

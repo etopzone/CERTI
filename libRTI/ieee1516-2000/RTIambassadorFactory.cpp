@@ -53,14 +53,14 @@ static PrettyDebug D1516("LIBRTI1516", __FILE__);
 static PrettyDebug G1516("GENDOC1516",__FILE__) ;
 }
 
-std::auto_ptr< rti1516::RTIambassador >
+std::unique_ptr< rti1516::RTIambassador >
 rti1516::RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & args)
 throw (BadInitializationParameter,
         RTIinternalError)
         {
     certi::RTI1516ambassador* p_ambassador(new certi::RTI1516ambassador());
 
-    std::auto_ptr< rti1516::RTIambassador > ap_ambassador(p_ambassador);
+    std::unique_ptr< rti1516::RTIambassador > ap_ambassador(p_ambassador);
 
     G1516.Out(pdGendoc,"enter RTIambassador::RTIambassador");
     PrettyDebug::setFederateName( "LibRTI::UnjoinedFederate" );

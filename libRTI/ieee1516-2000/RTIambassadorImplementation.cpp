@@ -149,7 +149,7 @@ bool RTI1516ambassador::__tick_kernel(bool multiple,
                                                               rti1516::RTIinternalError)
 {
     M_Tick_Request vers_RTI;
-    std::auto_ptr<Message> vers_Fed(NULL);
+    std::unique_ptr<Message> vers_Fed;
 
     // Request callback(s) from the local RTIA
     vers_RTI.setMultiple(multiple);

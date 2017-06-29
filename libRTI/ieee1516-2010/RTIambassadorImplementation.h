@@ -34,7 +34,7 @@ namespace certi
 {
 class RTI_EXPORT RTI1516ambassador : rti1516e::RTIambassador
 {
-    friend std::auto_ptr< rti1516e::RTIambassador >
+    friend std::unique_ptr< rti1516e::RTIambassador >
     rti1516e::RTIambassadorFactory::createRTIambassador()
     throw (rti1516e::RTIinternalError);
 
@@ -1653,7 +1653,7 @@ public:
             rti1516e::RTIinternalError);
 
     // Return instance of time factory being used by the federation
-    virtual std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory () const
+    virtual std::unique_ptr<rti1516e::LogicalTimeFactory> getTimeFactory () const
                      throw (
                              rti1516e::FederateNotExecutionMember,
                              rti1516e::NotConnected,

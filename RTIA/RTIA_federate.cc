@@ -1239,7 +1239,7 @@ void RTIA::processFederateRequest(Message* req)
 {
     /* use virtual constructor in order to build  *
 	 * appropriate answer message.                */
-    std::auto_ptr<Message> rep(M_Factory::create(req->getMessageType()));
+    std::unique_ptr<Message> rep(M_Factory::create(req->getMessageType()));
 
     G.Out(pdGendoc, "enter RTIA::processFederateRequest");
 

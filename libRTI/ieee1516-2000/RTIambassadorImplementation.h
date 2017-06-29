@@ -34,7 +34,7 @@ namespace certi
 {
 class RTI_EXPORT RTI1516ambassador : rti1516::RTIambassador
 {
-    friend std::auto_ptr< rti1516::RTIambassador >
+    friend std::unique_ptr< rti1516::RTIambassador >
     rti1516::RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & args)
     throw (rti1516::BadInitializationParameter, rti1516::RTIinternalError);
 

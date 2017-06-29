@@ -50,34 +50,34 @@ namespace rti1516e
          throw () = 0;
 
       // Return a LogicalTime with a value of "initial"
-      virtual std::auto_ptr< LogicalTime > makeInitial()
+      virtual std::unique_ptr< LogicalTime > makeInitial()
          throw (
             InternalError) = 0;
 
       // Return a LogicalTime with a value of "final"
-      virtual std::auto_ptr< LogicalTime > makeFinal()
+            virtual std::unique_ptr< LogicalTime > makeFinal()
          throw (
             InternalError) = 0;
 
       // Return a LogicalTimeInterval with a value of "zero"
-      virtual std::auto_ptr< LogicalTimeInterval > makeZero()
+            virtual std::unique_ptr< LogicalTimeInterval > makeZero()
          throw (
             InternalError) = 0;
 
       // Return a LogicalTimeInterval with a value of "epsilon"
-      virtual std::auto_ptr< LogicalTimeInterval > makeEpsilon()
+            virtual std::unique_ptr< LogicalTimeInterval > makeEpsilon()
          throw (
             InternalError) = 0;
 
       // LogicalTime decode from an encoded LogicalTime
-      virtual std::auto_ptr< LogicalTime > decodeLogicalTime (
+            virtual std::unique_ptr< LogicalTime > decodeLogicalTime (
          VariableLengthData const & encodedLogicalTime)
          throw (
             InternalError,
             CouldNotDecode) = 0;
 
       // Alternate LogicalTime decode that reads directly from a buffer
-      virtual std::auto_ptr< LogicalTime > decodeLogicalTime (
+            virtual std::unique_ptr< LogicalTime > decodeLogicalTime (
          void* buffer,
          size_t bufferSize)
          throw (
@@ -85,14 +85,14 @@ namespace rti1516e
             CouldNotDecode) = 0;
 
       // LogicalTimeInterval decode from an encoded LogicalTimeInterval
-      virtual std::auto_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
+      virtual std::unique_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
          VariableLengthData const & encodedValue)
          throw (
             InternalError,
             CouldNotDecode) = 0;
 
       // Alternate LogicalTimeInterval decode that reads directly from a buffer
-      virtual std::auto_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
+      virtual std::unique_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
          void* buffer,
          size_t bufferSize)
          throw (
@@ -110,7 +110,7 @@ namespace rti1516e
       // Provides a factory for the standard logical time types HLAfloat64Time
       // and HLAinteger64Time. The RTI reference time library's
       // LogicalTimeFactoryFactory should just forward requests to here.
-      static std::auto_ptr< LogicalTimeFactory > makeLogicalTimeFactory (
+      static std::unique_ptr< LogicalTimeFactory > makeLogicalTimeFactory (
          std::wstring const & implementationName);
    };
 }
@@ -127,7 +127,7 @@ namespace rti1516e
       // If the supplied name is the empty string, a default LogicalTimeFactory is
       // returned.  If the supplied implementation name does not match any name
       // supported by the library, then a NULL pointer is returned.
-      static std::auto_ptr< LogicalTimeFactory > makeLogicalTimeFactory (
+      static std::unique_ptr< LogicalTimeFactory > makeLogicalTimeFactory (
          std::wstring const & implementationName);
    };
 }

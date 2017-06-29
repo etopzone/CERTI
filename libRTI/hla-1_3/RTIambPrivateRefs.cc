@@ -835,7 +835,7 @@ throw (RTI::RTIinternalError)
 	case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 		try {
 			M_Provide_Attribute_Value_Update* PAVU = static_cast<M_Provide_Attribute_Value_Update *>(msg);
-			std::auto_ptr<RTI::AttributeHandleSet> attributeSet(
+			std::unique_ptr<RTI::AttributeHandleSet> attributeSet(
 					new AttributeHandleSetImp(PAVU->getAttributes()));
 
 			fed_amb->provideAttributeValueUpdate(PAVU->getObject(),*attributeSet);			

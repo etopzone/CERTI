@@ -16,7 +16,7 @@
 #ifndef RTI_RTIambassador_h
 #define RTI_RTIambassador_h
 
-#include <memory> /* need that for auto_ptr usage */
+#include <memory> /* need that for unique_ptr usage */
 
 namespace rti1516e
 {
@@ -1768,7 +1768,7 @@ namespace rti1516e
       // API-specific services
 
       // Return instance of time factory being used by the federation
-      virtual std::auto_ptr<LogicalTimeFactory> getTimeFactory () const
+      virtual std::unique_ptr<LogicalTimeFactory> getTimeFactory () const
          throw (
             FederateNotExecutionMember,
             NotConnected,

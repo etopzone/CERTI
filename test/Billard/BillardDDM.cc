@@ -44,7 +44,7 @@
 #include <memory>
 
 using std::string ;
-using std::auto_ptr ;
+using std::unique_ptr ;
 using std::vector ;
 
 // ============================================================================
@@ -132,7 +132,7 @@ BillardStaticDDM::checkRegions()
     int region = static_cast<int>(local.x) / width ;
 
     if (region != subRegion || region != pubRegion) {
-	auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+	unique_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
 	attributes->add(AttrXID);
 	attributes->add(AttrYID);
 
@@ -163,7 +163,7 @@ BillardStaticDDM::checkRegions()
 void
 BillardStaticDDM::publishAndSubscribe()
 {
-    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+    unique_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
 
     getHandles();
     attributes->add(AttrXID);
@@ -219,7 +219,7 @@ BillardDynamicDDM::declare()
     local.ID = registerBallInstance(federateName.c_str());
     Debug(D, pdDebug) << "Object created (handle " << local.ID << ")" << std::endl ;
 
-    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+    unique_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
     attributes->add(AttrXID);
     attributes->add(AttrYID);
 
@@ -255,7 +255,7 @@ BillardDynamicDDM::checkRegions()
 void
 BillardDynamicDDM::publishAndSubscribe()
 {
-    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+    unique_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
 
     getHandles();
     attributes->add(AttrXID);

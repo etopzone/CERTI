@@ -93,8 +93,8 @@ bool testFederate::specificInitialize() {
     try {
         std::vector< std::wstring > constructorArgs;
 
-        std::auto_ptr <rti1516e::RTIambassadorFactory> rtiAmbFactory(new rti1516e::RTIambassadorFactory());
-        std::auto_ptr <rti1516e::RTIambassador > rtiAmbAP = rtiAmbFactory->createRTIambassador();
+        std::unique_ptr <rti1516e::RTIambassadorFactory> rtiAmbFactory(new rti1516e::RTIambassadorFactory());
+        std::unique_ptr <rti1516e::RTIambassador > rtiAmbAP = rtiAmbFactory->createRTIambassador();
         rtiAmb = rtiAmbAP.release();
     } catch (rti1516e::Exception& e) {
         std::wcout << L"RTIambassador creation caught Error " << e.what() <<std::endl;

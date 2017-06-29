@@ -69,7 +69,7 @@ public:                                                                       \
                                                                               \
    /* Return a new copy of the DataElement                                 */ \
    /* Copy uses internal memory.                                           */ \
-   virtual std::auto_ptr<DataElement> clone () const;                         \
+   virtual std::unique_ptr<DataElement> clone () const;                         \
                                                                               \
    /* Encode this element into a new VariableLengthData                    */ \
    virtual VariableLengthData encode () const                                 \

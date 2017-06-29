@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <cassert>
 
-using std::auto_ptr ;
+using std::unique_ptr ;
 using std::string ;
 using std::endl ;
 using std::cout ;
@@ -583,7 +583,7 @@ Billard::publishAndSubscribe()
     getHandles();
 
     // Add PositionX et PositionY to the attribute set
-    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+    unique_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
     attributes->add(AttrXID);
     attributes->add(AttrYID);
 

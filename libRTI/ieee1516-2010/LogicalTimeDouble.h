@@ -84,7 +84,7 @@ public:
    virtual void decreaseBy(rti1516::LogicalTimeInterval const & subtrahend)
       throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
 
-   virtual std::auto_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTime const & subtrahend) const
+   virtual std::unique_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTime const & subtrahend) const
       throw (rti1516::InvalidLogicalTime);
 
    virtual bool isGreaterThan(rti1516::LogicalTime const & value) const
@@ -192,7 +192,7 @@ public:
 
 	// JvY End
 
-   //virtual std::auto_ptr< rti1516::EncodedLogicalTime > encode() const;
+   //virtual std::unique_ptr< rti1516::EncodedLogicalTime > encode() const;
 
    virtual std::wstring toString() const;
 
@@ -232,7 +232,7 @@ public:
    virtual void setTo(rti1516::LogicalTimeInterval const & value)
       throw (rti1516::InvalidLogicalTimeInterval);
    
-   virtual std::auto_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTimeInterval const & subtrahend) const
+   virtual std::unique_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTimeInterval const & subtrahend) const
       throw (rti1516::InvalidLogicalTimeInterval);
    
    virtual bool isGreaterThan(rti1516::LogicalTimeInterval const & value) const
@@ -250,7 +250,7 @@ public:
    virtual bool isLessThanOrEqualTo(rti1516::LogicalTimeInterval const & value) const
       throw (rti1516::InvalidLogicalTimeInterval);
    
-   //virtual std::auto_ptr< rti1516::EncodedLogicalTimeInterval > encode() const;
+   //virtual std::unique_ptr< rti1516::EncodedLogicalTimeInterval > encode() const;
    
    virtual std::wstring toString() const;
 
@@ -369,12 +369,12 @@ public:
    virtual ~LogicalTimeDoubleFactory()
       throw ();
  
-   virtual std::auto_ptr< rti1516::LogicalTime > makeInitial()
+   virtual std::unique_ptr< rti1516::LogicalTime > makeInitial()
       throw (rti1516::InternalError);
 
    // Returns a LogicalTime with a value of "initial"
     virtual
-    std::auto_ptr< rti1516::LogicalTime >
+    std::unique_ptr< rti1516::LogicalTime >
     makeLogicalTime()
 	throw (rti1516::InternalError)
 	{
@@ -383,20 +383,20 @@ public:
     
     // Returns a LogicalTimeInterval with a value of "zero"
     virtual 
-    std::auto_ptr< rti1516::LogicalTimeInterval >
+    std::unique_ptr< rti1516::LogicalTimeInterval >
     makeLogicalTimeInterval() 
       throw (rti1516::InternalError)
 	{
 		return makeZero();
 	}
 
-   virtual std::auto_ptr< rti1516::LogicalTimeInterval > makeZero()
+   virtual std::unique_ptr< rti1516::LogicalTimeInterval > makeZero()
       throw (rti1516::InternalError);
  
-   virtual std::auto_ptr< rti1516::LogicalTimeInterval > epsilon()
+   virtual std::unique_ptr< rti1516::LogicalTimeInterval > epsilon()
       throw (rti1516::InternalError);
 
-   //virtual std::auto_ptr< rti1516::LogicalTime > decode(rti1516::EncodedLogicalTime const & encodedLogicalTime)
+   //virtual std::unique_ptr< rti1516::LogicalTime > decode(rti1516::EncodedLogicalTime const & encodedLogicalTime)
    //   throw (rti1516::InternalError, rti1516::CouldNotDecode);
 };
 
@@ -429,7 +429,7 @@ public:
 class RTI_EXPORT_FEDTIME LogicalTimeDoubleFactoryFactory : public rti1516::LogicalTimeFactoryFactory
 {
 public:
-    static std::auto_ptr< rti1516::LogicalTimeFactory > 
+    static std::unique_ptr< rti1516::LogicalTimeFactory > 
        makeLogicalTimeFactory(std::wstring const & implementationName);
 
 };

@@ -191,12 +191,12 @@ throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeDouble::subtract(rti1516::LogicalTime const & subtrahend) const
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeDouble::subtract(rti1516::LogicalTime const & subtrahend) const
 throw (rti1516::InvalidLogicalTime)
 {
 	try {
 		const LogicalTimeDouble& p = dynamic_cast<const LogicalTimeDouble&>(subtrahend);
-		return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(_value - p._value));
+		return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(_value - p._value));
 	} catch (std::bad_cast)
 	{
 	    throw std::wstring(L"Invalid LogicalTimeDouble");
@@ -399,22 +399,22 @@ throw ()
 {
 }
 
-std::auto_ptr< rti1516::LogicalTime > LogicalTimeDoubleFactory::makeInitial()
+std::unique_ptr< rti1516::LogicalTime > LogicalTimeDoubleFactory::makeInitial()
    throw (rti1516::InternalError)
 {
-   return std::auto_ptr< rti1516::LogicalTime >(new LogicalTimeDouble((int64_t)0));
+   return std::unique_ptr< rti1516::LogicalTime >(new LogicalTimeDouble((int64_t)0));
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeDoubleFactory::makeZero()
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeDoubleFactory::makeZero()
    throw (rti1516::InternalError)
 {
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)0));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)0));
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeDoubleFactory::epsilon()
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeDoubleFactory::epsilon()
    throw (rti1516::InternalError)
 {
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)1));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)1));
 }
 
 
@@ -493,7 +493,7 @@ void LogicalTimeIntervalDouble::setTo(rti1516::LogicalTimeInterval const & value
 	}
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval >
+std::unique_ptr< rti1516::LogicalTimeInterval >
 LogicalTimeIntervalDouble::subtract(rti1516::LogicalTimeInterval const & subtrahend) const
    throw (rti1516::InvalidLogicalTimeInterval)
 {
@@ -503,7 +503,7 @@ LogicalTimeIntervalDouble::subtract(rti1516::LogicalTimeInterval const & subtrah
    if (d < 0) {
       d = -d;
    }
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(d));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(d));
 }
 
 bool LogicalTimeIntervalDouble::isGreaterThan(rti1516::LogicalTimeInterval const & value) const
@@ -723,19 +723,19 @@ LogicalTimeIntervalFactoryDouble::~LogicalTimeIntervalFactoryDouble()
 {
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::makeZero()
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::makeZero()
    throw (rti1516::InternalError)
 {
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)0));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)0));
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::epsilon()
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::epsilon()
    throw (rti1516::InternalError)
 {
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)1));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble((int64_t)1));
 }
 
-std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::decode(rti1516::EncodedLogicalTimeInterval const & encodedLogicalTimeInterval)
+std::unique_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::decode(rti1516::EncodedLogicalTimeInterval const & encodedLogicalTimeInterval)
   // throw (InternalError, CouldNotDecode)
   throw ()
 {
@@ -750,6 +750,6 @@ std::auto_ptr< rti1516::LogicalTimeInterval > LogicalTimeIntervalFactoryDouble::
    value = (value << 8) | buf[pos++];
    value = (value << 8) | buf[pos++];
    value = (value << 8) | buf[pos++];
-   return std::auto_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(value));
+   return std::unique_ptr< rti1516::LogicalTimeInterval >(new LogicalTimeIntervalDouble(value));
 }
 */

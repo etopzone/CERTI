@@ -383,7 +383,7 @@ RTI::Boolean RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime m
     RTI::SpecifiedSaveLabelDoesNotExist, RTI::ConcurrentAccessAttempted, RTI::RTIinternalError)
 {
     M_Tick_Request vers_RTI;
-    std::auto_ptr<Message> vers_Fed(NULL);
+    std::unique_ptr<Message> vers_Fed;
 
     // Request callback(s) from the local RTIA
     vers_RTI.setMultiple(multiple);

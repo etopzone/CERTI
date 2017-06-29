@@ -91,7 +91,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Receive RTIG answer
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
     G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass") ;
@@ -130,7 +130,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Receive RTIG answer
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishObjectClass */
@@ -162,7 +162,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     req.setInteractionClass(theInteractionHandle);
 
     comm->sendMessage(&req);    
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of publishInteractionClass */
@@ -195,7 +195,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 
     comm->sendMessage(&req);
     
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishInteractionClass */
@@ -229,7 +229,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Wait for the RTIG answer
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
                       req.getFederate()));
     G.Out(pdGendoc,"                              =====> received S_O_C from RTIG");
@@ -258,7 +258,7 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     comm->sendMessage(&req);
 
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS,
                       req.getFederate()));
 
@@ -295,7 +295,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     comm->sendMessage(&req);
 
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SUBSCRIBE_INTERACTION_CLASS,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SUBSCRIBE_INTERACTION_CLASS,
 		      req.getFederate()));
 
     e = rep->getException() ;
@@ -331,7 +331,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     comm->sendMessage(&req);
 
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS,
                       req.getFederate()));
 
@@ -395,7 +395,7 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
     req.setObjectClass(the_class);
     comm->sendUN(&req);
 
-    std::auto_ptr<Message>  rep(comm->receiveUN());
+    std::unique_ptr<Message>  rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept, "Unknown response type when waiting for "
@@ -440,7 +440,7 @@ turnInteractionsOn(InteractionClassHandle interaction,
     M_Turn_Interactions_On req;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
-    std::auto_ptr<Message> rep(comm->receiveUN());
+    std::unique_ptr<Message> rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept,
@@ -461,7 +461,7 @@ turnInteractionsOff(InteractionClassHandle interaction,
     M_Turn_Interactions_Off req ;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
-    std::auto_ptr<Message> rep(comm->receiveUN());
+    std::unique_ptr<Message> rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
         D.Out(pdExcept,

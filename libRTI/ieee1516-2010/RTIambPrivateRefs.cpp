@@ -122,11 +122,11 @@ getAHSFromRequest(T* request)
 	return result;
 }
 
-std::auto_ptr< rti1516e::LogicalTime >
+std::unique_ptr< rti1516e::LogicalTime >
 getLogicalTime()
 throw ( rti1516e::RTIinternalError )
 {
-	std::auto_ptr< rti1516e::LogicalTimeFactory > timeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(L"");
+	std::unique_ptr< rti1516e::LogicalTimeFactory > timeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(L"");
 	if (timeFactory.get() != 0)
 	{
 		return timeFactory->makeLogicalTime();
@@ -898,7 +898,7 @@ throw (rti1516e::RTIinternalError)
 				certi::FederateHandle certiHandle = RAV->getEventRetraction().getSendingFederate();
 				rti1516e::MessageRetractionHandle event = rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
+				std::unique_ptr< rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 
 				fed_amb->reflectAttributeValues(instance, //ObjectInstanceHandle
@@ -941,7 +941,7 @@ throw (rti1516e::RTIinternalError)
 				certi::FederateHandle certiHandle = RI->getEventRetraction().getSendingFederate();
 				rti1516e::MessageRetractionHandle event = rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
+				std::unique_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 				fed_amb->receiveInteraction(
 						interactionHandle,						// InteractionClassHandle
@@ -984,7 +984,7 @@ throw (rti1516e::RTIinternalError)
 				certi::FederateHandle certiHandle = ROI->getEventRetraction().getSendingFederate();
 				rti1516e::MessageRetractionHandle event = rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, sn);
 
-				std::auto_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
+				std::unique_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 
 				fed_amb->removeObjectInstance(
 						instance,
@@ -1177,7 +1177,7 @@ throw (rti1516e::RTIinternalError)
 
 	case Message::TIME_REGULATION_ENABLED:
 		try {
-			std::auto_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
+			std::unique_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 			fed_amb->timeRegulationEnabled(*fedTime);
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeRegulationEnabled")
@@ -1185,7 +1185,7 @@ throw (rti1516e::RTIinternalError)
 
 	case Message::TIME_CONSTRAINED_ENABLED:
 		try {
-			std::auto_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
+			std::unique_ptr < rti1516e::LogicalTime > fedTime (new RTI1516fedTime(msg->getDate().getTime()));
 			fed_amb->timeConstrainedEnabled(*fedTime);
 		}
 		CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(L"timeConstrainedEnabled")

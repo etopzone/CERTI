@@ -577,7 +577,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     auto msg = std::unique_ptr<NetworkMessage>(NM_Factory::receive(link));
 
     // Server Answer(only if an exception is raised)
-    //         std::auto_ptr<NetworkMessage> rep();
+    //         std::unique_ptr<NetworkMessage> rep();
     auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(msg->getMessageType()));
     response->setFederate(msg->getFederate());
 

@@ -1241,7 +1241,7 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
     }
 
     // Send end save message.
-    std::auto_ptr<NetworkMessage> msg(
+    std::unique_ptr<NetworkMessage> msg(
         NM_Factory::create(saveStatus ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED));
 
     msg->setFederate(the_federate);
@@ -1370,7 +1370,7 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
     }
 
     // Send end restore message.
-    std::auto_ptr<NetworkMessage> msg(NM_Factory::create(restoreStatus ? NetworkMessage::FEDERATION_RESTORED
+    std::unique_ptr<NetworkMessage> msg(NM_Factory::create(restoreStatus ? NetworkMessage::FEDERATION_RESTORED
                                                                        : NetworkMessage::FEDERATION_NOT_RESTORED));
 
     msg->setFederate(the_federate);

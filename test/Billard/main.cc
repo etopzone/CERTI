@@ -110,7 +110,7 @@ main(int argc, char **argv)
         string fedfile = args.filename_arg ;
 
 	// Create billard
-	std::auto_ptr<Billard> billard(createBillard(args.demo_given, args.demo_arg, federate));
+	std::unique_ptr<Billard> billard(createBillard(args.demo_given, args.demo_arg, federate));
 	billard->setVerbose(verbose);
 
         // With or without timestamp ?
@@ -137,7 +137,7 @@ main(int argc, char **argv)
 	RTI::FederateHandle handle = billard->getHandle();
 
 	// Display...
-	std::auto_ptr<Display> display(Display::instance());
+	std::unique_ptr<Display> display(Display::instance());
 	int y_default = 25 + (handle - 1) * (display->getHeight() + 20);
 	display->setWindow(
 	    args.xoffset_given ? args.xoffset_arg : 400,
