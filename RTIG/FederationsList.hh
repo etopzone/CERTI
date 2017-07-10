@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.60 2011/12/31 13:25:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -33,11 +32,6 @@
 #include "Exception.hh"
 #include "FedTimeD.hh"
 #include "certi.hh"
-// #include "AuditFile.hh"
-// #include "Federation.hh"
-// #include "PrettyDebug.hh"
-// #include "SocketMC.hh"
-// #include "SocketServer.hh"
 
 namespace certi {
 
@@ -53,18 +47,15 @@ namespace rtig {
 class Federation;
 
 /**
-     * FederationsList keeps track on federation operations.
-     * There is one federation list in each RTIG instance.
-     * You usually have only one RTIG instance.
-     */
+ * FederationsList keeps track on federation operations.
+ * There is one federation list in each RTIG instance.
+ * You usually have only one RTIG instance.
+ */
 class FederationsList {
-private:
-    SocketServer& socketServer;
-    AuditFile& auditFile;
 
 public:
     // constructor/destructor
-    FederationsList(SocketServer&, AuditFile&);
+    FederationsList(SocketServer& server, AuditFile& audit);
     ~FederationsList();
 
 // ---------------------------
@@ -636,8 +627,9 @@ public:
      * @return the Null Prime value of the federation
      */
     FederationTime getNullPrimeValue(FederationHandle federation);
-
+    
 private:
+    
     /**
      * Search federation from handle.
      * @param[in] federationHandle, the handle of the search federation
@@ -646,6 +638,9 @@ private:
      */
     Federation* searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist);
 
+    SocketServer& socketServer;
+    AuditFile& auditFile;
+    
     int verboseLevel;
 
     typedef std::map<Handle, Federation*> HandleFederationMap;
@@ -655,5 +650,3 @@ private:
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
-
-// $Id: FederationsList.hh,v 3.60 2011/12/31 13:25:58 erk Exp $

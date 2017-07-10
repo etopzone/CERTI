@@ -18,18 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.77 2012/04/26 07:49:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
-// #include <config.h>
 
 #include "AuditFile.hh"
 #include "Federation.hh"
 #include "PrettyDebug.hh"
 #include <ostream>
 #include <utility>
-// #include "GAV.hh"
 
 using std::endl;
 
@@ -1297,5 +1294,3 @@ FederationTime FederationsList::getNullPrimeValue(FederationHandle federation)
 } /* end of handleMessageNullPrime */
 }
 } // certi::rtig
-
-// EOF $Id: FederationsList.cc,v 3.77 2012/04/26 07:49:35 erk Exp $
