@@ -23,7 +23,7 @@
 #ifndef CERTI_RTIG_HH
 #define CERTI_RTIG_HH
 
-#include <netinet/in.h>
+// #include <netinet/in.h>
 #include <string>
 
 #include "AuditFile.hh"
