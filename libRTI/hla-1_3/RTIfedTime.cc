@@ -32,6 +32,15 @@
 
 using std::stringstream ;
 
+// Circular dependency avoidance
+// see http://lists.nongnu.org/archive/html/certi-devel/2016-04/msg00000.html
+RTI::Exception::~Exception()
+{
+    if (NULL!=_reason) {
+        free(_reason);
+    }
+}
+
 namespace
 {
 
@@ -47,8 +56,8 @@ rft(const RTI::FedTime &time)
     }
     catch (std::bad_cast) {
         // FIXME warning: control may reach end of non-void function [-Wreturn-type]
-        
-	//throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
+        // Commented out to avoid circular dependency
+        //throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
     }
 }
 
@@ -72,7 +81,8 @@ RTI::FedTimeFactory::makeZero()
         return new RTIfedTime();
     }
     catch (std::bad_alloc) {	
-        // FIXME warning: control may reach end of non-void function [-Wreturn-type]	
+        // FIXME warning: control may reach end of non-void function [-Wreturn-type]
+        // Commented out to avoid circular dependency	
         //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
@@ -91,6 +101,7 @@ RTI::FedTimeFactory::decode(const char *buf)
     }
     catch (std::bad_alloc) {
         // FIXME warning: control may reach end of non-void function [-Wreturn-type]
+        // Commented out to avoid circular dependency
         //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
