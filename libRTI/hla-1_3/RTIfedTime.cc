@@ -32,14 +32,16 @@
 
 using std::stringstream ;
 
-// Circular dependency avoidance
+// Circular dependency avoidance (some gcc only)
 // see http://lists.nongnu.org/archive/html/certi-devel/2016-04/msg00000.html
+#ifndef _WIN32
 RTI::Exception::~Exception()
 {
     if (NULL!=_reason) {
         free(_reason);
     }
 }
+#endif
 
 namespace
 {
