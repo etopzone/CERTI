@@ -3,16 +3,14 @@ enable_testing()
 include_directories(${CERTI_SOURCE_DIR}) # include root to enable syntax #include <libHLA/...>
 include_directories(${CERTI_BINARY_DIR})
 
-find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
-
-include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(TestHLA
                clock_test.cpp
                hlatypes_test.cpp
                messagebuffer_test.cpp
                msgbuffer_test.cpp
+               ../main.cpp
                )
 
 target_link_libraries(TestHLA

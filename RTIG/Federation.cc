@@ -29,7 +29,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <ext/alloc_traits.h>
+// #include <ext/alloc_traits.h>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -58,7 +58,6 @@
 #include "XmlParser2000.hh"
 #include "XmlParser2010.hh"
 #include "fed.hh"
-#include "libxml/xmlstring.h"
 
 using std::pair;
 using std::ifstream;
@@ -73,6 +72,7 @@ using std::vector;
 // Definitions
 #ifdef HAVE_XML
 // #include <libxml/xmlmemory.h>
+#include "libxml/xmlstring.h"
 #include <libxml/parser.h>
 // #include <libxml/tree.h>
 #define ROOT_NODE (const xmlChar*) "rtigSaveData"

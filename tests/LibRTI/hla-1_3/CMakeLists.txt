@@ -5,13 +5,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include/hla-1_3)
 include_directories(${CMAKE_BINARY_DIR}/include/hla-1_3)
 include_directories(${CERTI_BINARY_DIR}) # for config.h
 
-find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
-
-include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(TestRTI-HLA-1_3
                 fedtime_test.cpp
+                ../../main.cpp
                 )
 
 target_link_libraries(TestRTI-HLA-1_3
