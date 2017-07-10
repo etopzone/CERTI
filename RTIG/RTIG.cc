@@ -116,10 +116,10 @@ void RTIG::execute() throw(NetworkError)
             int test;
 
             FD_ZERO(&fd);
-            FD_SET(tcpSocketServer.returnSocket(), &fd);
+            FD_SET(my_tcpSocketServer.returnSocket(), &fd);
 
-            int highest_fd = socketServer.addToFDSet(&fd);
-            int server_socket = tcpSocketServer.returnSocket();
+            int highest_fd = my_socketServer.addToFDSet(&fd);
+            int server_socket = my_tcpSocketServer.returnSocket();
 
             // typedef struct timeval {  long tv_sec;  long tv_usec; }
             timeval watchDog;
@@ -128,7 +128,7 @@ void RTIG::execute() throw(NetworkError)
 
             highest_fd = server_socket > highest_fd ? server_socket : highest_fd;
 
-            result = select(highest_fd + 1, &fd, NULL, NULL, &watchDog);
+            result = select(highest_fd + 1, &fd, nullptr, nullptr, &watchDog);
             if (result < 0) {
                 test = WSAGetLastError();
             }
