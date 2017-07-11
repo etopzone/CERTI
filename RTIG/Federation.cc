@@ -90,6 +90,7 @@ std::vector<std::string>& split(const std::string& s, char delim, std::vector<st
     }
     return elems;
 }
+
 std::vector<std::string> split(const std::string& s, char delim)
 {
     std::vector<std::string> elems;
@@ -160,11 +161,11 @@ Federation::Federation(const std::string& federation_name,
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
     if (mc_link == NULL) {
-        D.Out(pdExcept, "Null Multicast socket for new Federation.");
+        Debug(D, pdExcept) << "Null Multicast socket for new Federation." << std::endl;
         throw RTIinternalError("NULL Multicast socket for new Federation.");
     }
 
-    D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
+    Debug(D, pdInit) << "New Federation " << federation_handle << " will use Multicast." << std::endl;
     MCLink = mc_link;
 #endif // FEDERATION_USES_MULTICAST // --------------
 
@@ -179,7 +180,7 @@ Federation::Federation(const std::string& federation_name,
     handle = federation_handle;
     FEDid = FEDid_name;
 
-    D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.", handle);
+    Debug(D, pdInit) << "New Federation created with Handle " << handle << ", now reading FOM." << std::endl;
 
     // Initialize the Security Server.
     server = new SecurityServer(socket_server, audit_server, handle);
@@ -288,14 +289,14 @@ Federation::Federation(const std::string& federation_name,
     }
 
     string extension = filename.substr(nbcar_filename - 3, 3);
-    D.Out(pdTrace, "filename is: %s (extension is <%s>", filename.c_str(), extension.c_str());
+    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << std::endl;
     if (!strcasecmp(extension.c_str(), "fed")) {
         is_a_fed = true;
-        D.Out(pdTrace, "Trying to use .fed file");
+        Debug(D, pdTrace) << "Trying to use .fed file" << std::endl;
     }
     else if (!strcasecmp(extension.c_str(), "xml")) {
         is_an_xml = true;
-        D.Out(pdTrace, "Trying to use .xml file");
+        Debug(D, pdTrace) << "Trying to use .xml file" << std::endl;
     }
     else {
         G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
@@ -380,7 +381,7 @@ Federation::Federation(const std::string& federation_name,
 // Destructor
 Federation::~Federation()
 {
-    D.Out(pdInit, "Destroying Federation %d...", handle);
+    Debug(D, pdInit) << "Destroying Federation " << handle << std::endl;
 
     // If there are Federates, delete them all!
     //     for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
@@ -421,7 +422,7 @@ Handle Federation::getHandle() const
 
 // ----------------------------------------------------------------------------
 //! Returns the federation name given in 'Create Federation Execution'.
-const std::string& Federation::getName() const
+std::string Federation::getName() const
 {
     return name;
 }
@@ -435,7 +436,7 @@ int Federation::getNbRegulators() const
 
 // ----------------------------------------------------------------------------
 //! Returns the FEDid name given in 'Create Federation Execution'.
-const std::string& Federation::getFEDid() const
+std::string Federation::getFEDid() const
 {
     return FEDid;
 }
@@ -461,7 +462,7 @@ Federation::add(const std::string& federate_name,
     FederateHandle federate_handle = federateHandles.provide();
     _handleFederateMap.insert(HandleFederateMap::value_type(federate_handle, Federate(federate_name, federate_handle)));
     Federate& federate = getFederate(federate_handle);
-    D.Out(pdInit, "Federate %d joined Federation %d.", federate_handle, handle);
+    Debug(D, pdInit) << "Federate " << federate_handle << " joined Federation " << handle << std::endl;
 
     // Send, to the newly added federate, a Null message from each regulating
     // federate (i) with their logical time h(i). This permits to calculate
@@ -476,10 +477,7 @@ Federation::add(const std::string& federate_name,
             nullMessage.setFederation(handle);
             nullMessage.setFederate(v[i].first);
             nullMessage.setDate(v[i].second);
-            D.Out(pdTerm,
-                  "Sending NULL message(type %d) from %d to new federate.",
-                  nullMessage.getMessageType(),
-                  nullMessage.getFederate());
+            Debug(D, pdTerm) << "Sending NULL message(type " << nullMessage.getMessageType() << ") from " << nullMessage.getFederate() << " to new federate." << std::endl;
 
             nullMessage.send(tcp_link, NM_msgBufSend);
         }
@@ -494,11 +492,7 @@ Federation::add(const std::string& federate_name,
             for (; i != synchronizationLabels.end(); i++) {
                 ASPMessage.setLabel((*i).first);
                 ASPMessage.setTag((*i).second);
-                D.Out(pdTerm,
-                      "Sending synchronization message %s (type %d)"
-                      " to the new Federate.",
-                      (*i).first.c_str(),
-                      ASPMessage.getMessageType());
+                Debug(D, pdTerm) << "Sending synchronization message " << (*i).first << " (type " << ASPMessage.getMessageType() << ") to the new Federate" << std::endl;
 
                 ASPMessage.send(tcp_link, NM_msgBufSend);
                 federate.addSynchronizationLabel((*i).first);
@@ -525,12 +519,12 @@ void Federation::addConstrained(FederateHandle federate_handle) throw(FederateNo
     Federate& federate = getFederate(federate_handle);
 
     if (federate.isConstrained()) {
-        D.Out(pdExcept, "Federate %d already constrained.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " already constrained" << std::endl;
         throw RTIinternalError("Time Constrained already enabled.");
     }
 
     federate.setConstrained(true);
-    D.Out(pdTerm, "Federation %d: Federate %d is now constrained.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is now constrained" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -544,12 +538,12 @@ void Federation::setClassRelevanceAdvisorySwitch(FederateHandle federate_handle)
     Federate& federate = getFederate(federate_handle);
 
     if (federate.isClassRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d already set CRA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " already set CRA switch" << std::endl;
         throw RTIinternalError("CRA switch already enabled.");
     }
 
     federate.setClassRelevanceAdvisorySwitch(true);
-    D.Out(pdTerm, "Federation %d: Federate %d sets CRA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets CRA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -563,12 +557,12 @@ void Federation::setInteractionRelevanceAdvisorySwitch(FederateHandle federate_h
     Federate& federate = getFederate(federate_handle);
 
     if (federate.isInteractionRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d already set IRA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " already set IRA switch" << std::endl;
         throw RTIinternalError("IRA switch already enabled.");
     }
 
     federate.setInteractionRelevanceAdvisorySwitch(true);
-    D.Out(pdTerm, "Federation %d: Federate %d sets IRA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets IRA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -582,12 +576,12 @@ void Federation::setAttributeRelevanceAdvisorySwitch(FederateHandle federate_han
     Federate& federate = getFederate(federate_handle);
 
     if (federate.isAttributeRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d already set ARA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " already set ARA switch" << std::endl;
         throw RTIinternalError("ARA switch already enabled.");
     }
 
     federate.setAttributeRelevanceAdvisorySwitch(true);
-    D.Out(pdTerm, "Federation %d: Federate %d sets ARA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets ARA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -601,12 +595,12 @@ void Federation::setAttributeScopeAdvisorySwitch(FederateHandle federate_handle)
     Federate& federate = getFederate(federate_handle);
 
     if (federate.isAttributeScopeAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d already set ASA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " already set ASA switch" << std::endl;
         throw RTIinternalError("ASA switch already enabled.");
     }
 
     federate.setAttributeScopeAdvisorySwitch(true);
-    D.Out(pdTerm, "Federation %d: Federate %d sets ASA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets ASA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -620,12 +614,12 @@ void Federation::unsetClassRelevanceAdvisorySwitch(FederateHandle federate_handl
     Federate& federate = getFederate(federate_handle);
 
     if (!federate.isClassRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d did not set CRA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " did not set CRA switch" << std::endl;
         throw RTIinternalError("CRA switch not enabled.");
     }
 
     federate.setClassRelevanceAdvisorySwitch(false);
-    D.Out(pdTerm, "Federation %d: Federate %d clears CRA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears CRA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -637,12 +631,12 @@ void Federation::unsetInteractionRelevanceAdvisorySwitch(FederateHandle federate
     Federate& federate = getFederate(federate_handle);
 
     if (!federate.isInteractionRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d did not set IRA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " did not set IRA switch" << std::endl;
         throw RTIinternalError("IRA switch not enabled.");
     }
 
     federate.setInteractionRelevanceAdvisorySwitch(false);
-    D.Out(pdTerm, "Federation %d: Federate %d clears IRA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears IRA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -656,12 +650,12 @@ void Federation::unsetAttributeRelevanceAdvisorySwitch(FederateHandle federate_h
     Federate& federate = getFederate(federate_handle);
 
     if (!federate.isAttributeRelevanceAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d did not set ARA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " did not set ARA switch" << std::endl;
         throw RTIinternalError("ARA switch not enabled.");
     }
 
     federate.setAttributeRelevanceAdvisorySwitch(false);
-    D.Out(pdTerm, "Federation %d: Federate %d clears ARA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears ARA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -675,12 +669,12 @@ void Federation::unsetAttributeScopeAdvisorySwitch(FederateHandle federate_handl
     Federate& federate = getFederate(federate_handle);
 
     if (!federate.isAttributeScopeAdvisorySwitch()) {
-        D.Out(pdExcept, "Federate %d did not set ASA switch.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " did not set ASA switch" << std::endl;
         throw RTIinternalError("ASA switch not enabled.");
     }
 
     federate.setAttributeScopeAdvisorySwitch(false);
-    D.Out(pdTerm, "Federation %d: Federate %d clears ASA switch.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears ASA switch" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -700,7 +694,7 @@ void Federation::addRegulator(FederateHandle federate_handle, FederationTime tim
     regulators.insert(federate_handle, time);
     federate.setRegulator(true);
 
-    D.Out(pdTerm, "Federation %d: Federate %d is now a regulator(Time=%f).", handle, federate_handle, time.getTime());
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is now a regulator, Time=" << time.getTime() << std::endl;
 
     NM_Set_Time_Regulating msg;
     msg.setException(Exception::Type::NO_EXCEPTION);
@@ -784,6 +778,11 @@ FederationTime Federation::computeMinNERx()
     return retval;
 } /* end of computeMinNERx */
 
+FederationTime Federation::getMinNERx() const
+{
+    return minNERx;
+};
+
 void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous)
 {
     Socket* socket = NULL;
@@ -805,7 +804,7 @@ void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_
                                    << "broadcasting." << endl;
             }
             catch (NetworkError& e) {
-                D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+                Debug(D, pdExcept) << "Network error while broadcasting, ignoring" << std::endl;
             }
         }
     }
@@ -843,11 +842,10 @@ void Federation::broadcastSomeMessage(NetworkMessage* msg,
                             msg->send(socket, NM_msgBufSend);
                         }
                         catch (RTIinternalError& e) {
-                            Debug(D, pdExcept) << "Reference to a killed Federate while "
-                                               << "broadcasting." << endl;
+                            Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting" << endl;
                         }
                         catch (NetworkError& e) {
-                            D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+                            Debug(D, pdExcept) << "Network error while broadcasting, ignoring" << std::endl;
                         }
                     }
                     ifed++;
@@ -887,13 +885,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
 
     root->Interactions->broadcastInteraction(
         federate_handle, interaction, parameter_handles, parameter_values, list_size, time, region, tag);
-    D.Out(pdRequest,
-          "Federation %d: Broadcasted Interaction %d from Federate "
-          "%d nb params %d.",
-          handle,
-          interaction,
-          federate_handle,
-          list_size);
+    Debug(D, pdRequest) << "Federation " << handle << ": Broadcasted Interaction " << interaction << " from Federate " << federate_handle << " nb params " << list_size << std::endl;
 
     G.Out(pdGendoc, "exit Federation::broadcastInteraction with time");
 }
@@ -925,18 +917,13 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
 
     root->Interactions->broadcastInteraction(
         federate_handle, interaction, parameter_handles, parameter_values, list_size, region, tag);
-    D.Out(pdRequest,
-          "Federation %d: Broadcasted Interaction %d from Federate "
-          "%d nb params %d.",
-          handle,
-          interaction,
-          federate_handle,
-          list_size);
-    for (int i = 0; i < list_size; i++)
-        D.Out(pdRequest,
-              " Param %d Value %s",
-              parameter_handles[i],
-              string(&(parameter_values[i][0]), parameter_values[i].size()).c_str());
+    Debug(D, pdRequest) << 
+          "Federation " << handle << ": Broadcasted Interaction " << interaction << " from Federate " << federate_handle << " nb params " << list_size << std::endl;
+    for (int i = 0; i < list_size; i++) {
+        Debug(D, pdRequest) << 
+        " Param " << parameter_handles[i] << " Value " << 
+        string(&(parameter_values[i][0]), parameter_values[i].size()) << std::endl;
+    }
 
     G.Out(pdGendoc, "exit Federation::broadcastInteraction without time");
 }
@@ -962,7 +949,7 @@ void Federation::deleteObject(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdRegister, "Federation %d: Federate %d destroys object %d.", this->handle, federate, id);
+    Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " destroys object " << id << std::endl;
 
     root->deleteObjectInstance(federate, id, theTime, tag);
     objectHandles.free(id);
@@ -985,7 +972,7 @@ void Federation::deleteObject(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdRegister, "Federation %d: Federate %d destroys object %d.", this->handle, federate, id);
+    Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " destroys object " << id << std::endl;
 
     root->deleteObjectInstance(federate, id, tag);
     objectHandles.free(id);
@@ -1453,12 +1440,12 @@ bool Federation::check(FederateHandle federate_handle) const throw(FederateNotEx
 void Federation::kill(FederateHandle federate) throw()
 {
     // NOTE: Connection to the federate is already closed.
-    D.Out(pdInit, "Killing Federate %d.", federate);
+    Debug(D, pdInit) << "Killing Federate " << federate << std::endl;
 
     // is regulator ?
     try {
         removeRegulator(federate);
-        D.Out(pdInit, "Regulator Federate %d removed...", federate);
+        Debug(D, pdInit) << "Regulator Federate " << federate << " removed" << std::endl;
     }
     catch (Exception& e) {
     }
@@ -1466,7 +1453,7 @@ void Federation::kill(FederateHandle federate) throw()
     // is constrained ?
     try {
         removeConstrained(federate);
-        D.Out(pdInit, "Constrained Federate %d removed...", federate);
+        Debug(D, pdInit) << "Constrained Federate " << federate << " removed" << std::endl;
     }
     catch (Exception& e) {
     }
@@ -1478,7 +1465,7 @@ void Federation::kill(FederateHandle federate) throw()
     // delete from federations list
     try {
         remove(federate);
-        D.Out(pdInit, "Federate %d removed...", federate);
+        Debug(D, pdInit) << "Federate " << federate << " removed" << std::endl;
     }
     catch (Exception& e) {
     }
@@ -1501,7 +1488,7 @@ void Federation::publishInteraction(FederateHandle federate,
 
     // It may throw InteractionClassNotDefined
     root->Interactions->publish(federate, interaction, pub);
-    D.Out(pdRequest, "Federation %d: Federate %d has(un)published Interaction %d.", handle, federate, interaction);
+    Debug(D, pdRequest) << "Federation " << handle << ": Federate " << federate << " has(un)published Interaction " << interaction << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1587,12 +1574,8 @@ void Federation::publishObject(FederateHandle federate,
         //
     }
 
-    D.Out(pdRegister,
-          "Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
-          handle,
-          federate,
-          attributes.size(),
-          object);
+    Debug(D, pdRegister) <<
+          "Federation " << handle << ": Federate " << federate << "(un)publishes " << attributes.size() << " attrib. of ObjClass " << object << std::endl;
     G.Out(pdGendoc, "exit  Federation::publishObject");
 }
 
@@ -1647,12 +1630,8 @@ ObjectHandle Federation::registerObject(FederateHandle federate,
     ObjectHandle new_id = objectHandles.provide();
 
     G.Out(pdGendoc, "enter Federation::registerObject");
-    D.Out(pdRegister,
-          "Federation %d: Federate %d registering Object %d of Class %d.",
-          handle,
-          federate,
-          new_id,
-          class_handle);
+    Debug(D, pdRegister) << 
+          "Federation " << handle << ": Federate " << federate << " registering Object " << new_id << " of Class " << class_handle << std::endl;
 
     string strname;
     if (!object_name.empty()) {
@@ -1691,11 +1670,11 @@ void Federation::remove(FederateHandle federate_handle) throw(FederateOwnsAttrib
         federateHandles.free(federate_handle);
         _handleFederateMap.erase(i);
 
-        D.Out(pdInit, "Federation %d: Removed Federate %d.", handle, federate_handle);
+        Debug(D, pdInit) << "Federation " << handle << ": Removed Federate " << federate_handle << std::endl;
         return;
     }
 
-    D.Out(pdExcept, "Federation %d could not remove unknown federate %d.", handle, federate_handle);
+    Debug(D, pdExcept) << "Federation " << handle << " could not remove unknown federate " << federate_handle << std::endl;
     throw FederateNotExecutionMember(certi::stringize() << "Federate Handle=<" << federate_handle << ">");
 }
 
@@ -1710,12 +1689,12 @@ void Federation::removeConstrained(FederateHandle federate_handle) throw(Federat
     Federate& federate = getFederate(federate_handle);
 
     if (!federate.isConstrained()) {
-        D.Out(pdExcept, "Federate %d was not constrained.", federate_handle);
+        Debug(D, pdExcept) << "Federate " << federate_handle << " was not constrained" << std::endl;
         throw RTIinternalError("Time constrained not enabled.");
     }
 
     federate.setConstrained(false);
-    D.Out(pdTerm, "Federation %d: Federate %d is not constrained anymore.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is not constrained anymore" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1733,7 +1712,7 @@ void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateN
 
     federate.setRegulator(false);
 
-    D.Out(pdTerm, "Federation %d: Federate %d is not a regulator anymore.", handle, federate_handle);
+    Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is not a regulator anymore" << std::endl;
 
     NM_Set_Time_Regulating msg;
     msg.setFederation(handle);
@@ -1767,7 +1746,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
     // All federates from federation has called synchronizationPointAchieved.
 
-    D.Out(pdTerm, "Federation %d is not Paused anymore.", handle);
+    Debug(D, pdTerm) << "Federation " << handle << " is not Paused anymore" << std::endl;
     // Remove label from federation list.
     std::map<std::string, std::string>::iterator i = synchronizationLabels.find(label);
     if (i != synchronizationLabels.end()) {
@@ -1782,7 +1761,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
     broadcastAnyMessage(&msg, 0, false);
 
-    D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label.c_str());
+    Debug(D, pdTerm) << "Federation " << handle << " is synchronized on " << label << std::endl;
 
     G.Out(pdGendoc, "exit  Federation::unregisterSynchronization");
 }
@@ -1804,7 +1783,7 @@ void Federation::subscribeInteraction(FederateHandle federate,
 
     // It may throw *NotDefined
     root->Interactions->subscribe(federate, interaction, 0, sub);
-    D.Out(pdRegister, "Federation %d: Federate %d(un)subscribes to Interaction %d.", handle, federate, interaction);
+    Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << "(un)subscribes to Interaction " << interaction << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1911,12 +1890,8 @@ void Federation::subscribeObject(FederateHandle federate,
          */
     }
 
-    D.Out(pdRegister,
-          "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
-          handle,
-          federate,
-          attributes.size(),
-          object);
+    Debug(D, pdRegister) <<
+          "Federation " << handle << ": Federate " << federate << "(un)sub. to " << attributes.size() << " attrib. of ObjClass " << object << std::endl;
     G.Out(pdGendoc, "exit  Federation::subscribeObject");
 }
 
@@ -1947,7 +1922,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
     // It may throw *NotDefined
     root->ObjectClasses->updateAttributeValues(federate, object, attributes, values, time, tag);
 
-    D.Out(pdRegister, "Federation %d: Federate %d updated attributes of Object %d.", handle, federate, objectHandle);
+    Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " updated attributes of Object " << objectHandle << std::endl;
     G.Out(pdGendoc, "exit  Federation::updateAttributeValues with time");
 }
 
@@ -1977,7 +1952,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
     // It may throw *NotDefined
     root->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
 
-    D.Out(pdRegister, "Federation %d: Federate %d updated attributes of Object %d.", handle, federate, objectHandle);
+    Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " updated attributes of Object " << objectHandle << std::endl;
     G.Out(pdGendoc, "exit  Federation::updateAttributeValues without time");
 }
 // ----------------------------------------------------------------------------
@@ -1994,11 +1969,11 @@ void Federation::updateRegulator(FederateHandle federate_handle,
         Federate& federate = getFederate(federate_handle);
 
         if (!federate.isRegulator()) {
-            D.Out(pdExcept, "Federate %d is not a regulator.", federate_handle);
+            Debug(D, pdExcept) << "Federate " << federate_handle << " is not a regulator" << std::endl;
             throw RTIinternalError("Time regulation not enabled.");
         }
 
-        D.Out(pdDebug, "Federation %d: Federate %d's new time is %f.", handle, federate_handle, time.getTime());
+        Debug(D, pdDebug) << "Federation " << handle << ": Federate " << federate_handle << "'s new time is " << time.getTime() << std::endl;
         regulators.update(federate_handle, time);
     }
 
@@ -2029,7 +2004,7 @@ bool Federation::isOwner(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
+    Debug(D, pdDebug) << "Owner of Object " << id << " Atrribute " << attribute << std::endl;
 
     // It may throw *NotDefined
     return root->objects->isAttributeOwnedByFederate(federate, id, attribute);
@@ -2050,7 +2025,7 @@ void Federation::queryAttributeOwnership(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
+    Debug(D, pdDebug) << "Owner of Object " << id << " Atrribute " << attribute << std::endl;
 
     // It may throw *NotDefined
     root->objects->queryAttributeOwnership(federate, id, attribute);
@@ -2159,7 +2134,7 @@ void Federation::acquire(FederateHandle federate,
     // It may throw *NotDefined
     root->ObjectClasses->attributeOwnershipAcquisition(federate, object, attributes, tag);
 
-    D.Out(pdDebug, "Acquisition on Object %u ", objectHandle);
+    Debug(D, pdDebug) << "Acquisition on Object " << objectHandle << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -2183,7 +2158,7 @@ void Federation::cancelDivestiture(FederateHandle federate,
     // It may throw *NotDefined
     root->objects->cancelNegotiatedAttributeOwnershipDivestiture(federate, id, attributes, list_size);
 
-    D.Out(pdDebug, "CancelDivestiture sur Objet %u ", id);
+    Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -2204,7 +2179,7 @@ AttributeHandleSet* Federation::respondRelease(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "RespondRelease on Object %u.", objectHandle);
+    Debug(D, pdDebug) << "RespondRelease on Object " << objectHandle << std::endl;
 
     // Get the object pointer by id from the root object
     Object* object = root->objects->getObject(objectHandle);
@@ -2231,7 +2206,7 @@ void Federation::cancelAcquisition(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "CancelAcquisition sur Objet %u ", objectHandle);
+    Debug(D, pdDebug) << "CancelAcquisition sur Objet " << objectHandle << std::endl;
 
     // Get the object pointer by id from the root object
     Object* object = root->objects->getObject(objectHandle);
@@ -2621,4 +2596,3 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
 }
 } // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.152 2013/09/24 14:27:58 erk Exp $

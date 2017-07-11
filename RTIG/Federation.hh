@@ -57,34 +57,6 @@ class SocketTCP;
 namespace rtig {
 
 class Federation {
-    // ATTRIBUTES --------------------------------------------------------------
-private:
-    Handle handle;
-    std::string name;
-    std::string FEDid;
-
-    //! Labels and Tags not on synchronization.
-    std::map<std::string, std::string> synchronizationLabels;
-
-    HandleManager<FederateHandle> federateHandles;
-    HandleManager<ObjectHandle> objectHandles;
-
-    // This object is initialized when the Federation is created, with
-    // the reference of the RTIG managed Socket Server. The reference of
-    // this object is passed down the Classes Tree with the help of RootObj.
-    SecurityServer* server;
-    RootObject* root;
-
-    LBTS regulators;
-
-#ifdef FEDERATION_USES_MULTICAST
-    SocketMC* MCLink;
-#endif
-
-    bool saveXmlData();
-    bool restoreXmlData(std::string docFilename);
-
-    // METHODS -----------------------------------------------------------------
 public:
 #ifdef FEDERATION_USES_MULTICAST
     /**
@@ -100,15 +72,15 @@ public:
     Federation(const std::string&, FederationHandle, SocketServer&, AuditFile&, SocketMC*, int theVerboseLevel)
 #else
     /**
-                * Allocates memory the Name's storage, and read its FED file to store the
-                * result in RootObj.
-                * with FEDERATION_USES_MULTICAST not defined
-                * @param federation_name
-                * @param federation_handle
-                * @param socket_server
-                * @param audit_server
-                * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
-                */
+     * Allocates memory the Name's storage, and read its FED file to store the
+     * result in RootObj.
+     * with FEDERATION_USES_MULTICAST not defined
+     * @param federation_name
+     * @param federation_handle
+     * @param socket_server
+     * @param audit_server
+     * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
+     */
     Federation(const std::string&, Handle, SocketServer&, AuditFile&, const std::string&, int theVerboseLevel)
 #endif
         throw(CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError, RTIinternalError);
@@ -119,8 +91,8 @@ public:
     int getNbRegulators() const;
     bool isSynchronizing() const;
     Handle getHandle() const;
-    const std::string& getName() const;
-    const std::string& getFEDid() const;
+    std::string getName() const;
+    std::string getFEDid() const;
 
     // -------------------------
     // -- Federate Management --
@@ -613,15 +585,37 @@ public:
      * for all Federates using NERx messages.
      * @return the minimum if at least one federate is using NERx, 0 otherwise
      */
-    FederationTime getMinNERx() const
-    {
-        return minNERx;
-    };
+    FederationTime getMinNERx() const;
 
 private:
-    /**
-     * Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
+    Handle handle;
+    std::string name;
+    std::string FEDid;
+
+    /// Labels and Tags not on synchronization.
+    std::map<std::string, std::string> synchronizationLabels;
+
+    HandleManager<FederateHandle> federateHandles;
+    HandleManager<ObjectHandle> objectHandles;
+
+    /** This object is initialized when the Federation is created
+     * 
+     *  with the reference of the RTIG managed Socket Server. The reference of
+     *  this object is passed down the Classes Tree with the help of RootObj.
      */
+    SecurityServer* server;
+    RootObject* root;
+
+    LBTS regulators;
+
+#ifdef FEDERATION_USES_MULTICAST
+    SocketMC* MCLink;
+#endif
+
+    bool saveXmlData();
+    bool restoreXmlData(std::string docFilename);
+
+    /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
     void broadcastAnyMessage(NetworkMessage* msg, FederateHandle Except, bool anonymous);
 
     void broadcastSomeMessage(NetworkMessage* msg,
@@ -638,21 +632,18 @@ private:
     HandleFederateMap _handleFederateMap;
     bool saveInProgress;
     bool restoreInProgress;
-    bool saveStatus; //!< True if saving was correctly done, false otherwise.
-    bool restoreStatus; //!< True if restoring was correctly done.
+    bool saveStatus; /// True if saving was correctly done, false otherwise.
+    bool restoreStatus; /// True if restoring was correctly done.
     int verboseLevel;
-    std::string saveLabel; //!< The label associated with the save request.
+    std::string saveLabel; /// The label associated with the save request.
 
-    /**
-     * The minimum NERx timestamp for this federation
-     */
+    /// The minimum NERx timestamp for this federation
     FederationTime minNERx;
-    /* The message buffer used to send Network messages */
+    
+    /// The message buffer used to send Network messages
     MessageBuffer NM_msgBufSend;
 };
 }
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
-
-// $Id: Federation.hh,v 3.75 2013/09/24 14:27:58 erk Exp $
