@@ -30,7 +30,7 @@ static PrettyDebug G("GENDOC", __FILE__);
 namespace certi {
 namespace rtig {
 
-    Federate::Federate(const std::string& name, const FederateHandle handle) : my_handle(handle), my_name(name)
+Federate::Federate(const std::string& name, const FederateHandle handle) : my_handle{handle}, my_name{name}
 {
     if (my_handle == 0) {
         throw RTIinternalError("Bad initialization parameter for Federate.");

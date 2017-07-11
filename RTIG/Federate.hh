@@ -122,10 +122,10 @@ public:
      */
     void addSynchronizationLabel(const std::string& label);
 
-    /** Removes a synchronization label from federate. */
+    /// Removes a synchronization label from federate.
     void removeSynchronizationLabel(const std::string&);
 
-    /** Returns whether the federate is already synchronized with this label. */
+    /// Returns whether the federate is already synchronized with this label.
     bool isSynchronizationLabel(const std::string&) const;
 
 private:
@@ -133,9 +133,10 @@ private:
     std::string my_name; /// Federate name.
 
     /** Used only on the RTIA, because on RTIG there is a
-      upper level list of regulator Federates (in Federation).
+     *  upper level list of regulator Federates (in Federation).
     */
     bool my_isRegulator{false};
+
     bool my_isConstrained{false};
 
     /**
@@ -149,9 +150,7 @@ private:
      */
     bool my_isUsingNERx{false};
 
-    /**
-     * The last NERx timestamp value received for this federate.
-     */
+    /// The last NERx timestamp value received for this federate.
     FederationTime my_lastNERxValueReceived{};
 
     bool my_classRelevanceAdvisorySwitch{true};
@@ -162,7 +161,8 @@ private:
     bool my_isCurrentlySaving{false};
     bool my_isCurrentlyRestoring{false};
 
-    std::vector<std::string> my_syncLabels{}; /// List of labels to synchronize.
+    /// List of labels to synchronize.
+    std::vector<std::string> my_syncLabels{};
 };
 }
 } // namespace certi::rtig
