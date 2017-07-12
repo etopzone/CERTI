@@ -27,7 +27,10 @@ set(rtig_SRCS
     )
 
 add_executable(TestRTIG
+               temporaryenvironmentlocation.cpp temporaryenvironmentlocation.h
+               temporaryfedfile.cpp temporaryfedfile.h
                federate_test.cpp
+               federation_test.cpp
                ${rtig_SRCS}
                ../main.cpp
                )

@@ -69,7 +69,12 @@ public:
 	 *  @param audit_server
 	 *  @param mc_link
 	 */
-    Federation(const std::string&, FederationHandle, SocketServer&, AuditFile&, SocketMC*, int theVerboseLevel)
+    Federation(const std::string& federation_name,
+               FederationHandle federation_handle,
+               SocketServer& socket_server,
+               AuditFile& audit_server,
+               SocketMC* mc_link,
+               int theVerboseLevel)
 #else
     /**
      * Allocates memory the Name's storage, and read its FED file to store the
@@ -81,29 +86,57 @@ public:
      * @param audit_server
      * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
      */
-    Federation(const std::string&, Handle, SocketServer&, AuditFile&, const std::string&, int theVerboseLevel)
+    Federation(const std::string& federation_name,
+               Handle federation_handle,
+               SocketServer& socket_server,
+               AuditFile& audit_server,
+               const std::string& FEDid_name,
+               int theVerboseLevel)
 #endif
         throw(CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError, RTIinternalError);
 
     ~Federation();
 
-    int getNbFederates() const;
-    int getNbRegulators() const;
-    bool isSynchronizing() const;
+    /// Returns the federation handle.
     Handle getHandle() const;
+
+    /// Returns the federation name given in 'Create Federation Execution'.
     std::string getName() const;
+
+    /// Returns the FEDid name given in 'Create Federation Execution'.
     std::string getFEDid() const;
+
+    /// Returns the number of federates in federation.
+    int getNbFederates() const;
+
+    /// Returns the number of federates regulator.
+    int getNbRegulators() const;
+
+    /// Return true if federation is being synchronized.
+    bool isSynchronizing() const;
 
     // -------------------------
     // -- Federate Management --
     // -------------------------
+
+    /** Add the Federate to the Federation, and return its new federate handle.
+     * 
+     * Also send Null messages from all others federates to initialize its LBTS, and
+     * finally a RequestPause message if the Federation is already paused.
+     */
     FederateHandle add(const std::string& theName,
                        SocketTCP* theTCPLink) throw(FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError);
 
+    /** Return true if there are no Federates left in the Federation
+     * 
+     * else throw FederatesCurrentlyJoined.
+     * 
+     * FIXME This is very strange
+     */
     bool empty() const throw(FederatesCurrentlyJoined);
 
-    /**
-     * Check whether if the federate is part of the federation.
+    /** Check whether if the federate is part of the federation.
+     * 
      * @param[in] theHandle
      * @return true if the federate is part of the Federation,
      *              else throw an exception.
@@ -111,19 +144,37 @@ public:
      */
     bool check(FederateHandle theHandle) const throw(FederateNotExecutionMember);
 
+    /** Make a federate resign the federation.
+     *
+     * This function tries to remove all references to this federate in the federation.
+     * To be used when a Federate is supposed to have crashed.
+     * @param federate Handle of the federate to kill
+     */
     void kill(FederateHandle theFederate) throw();
 
+    /** Remove a federate.
+     * 
+     * @param federate_handle Handle of the federate to remove.
+     * @bug Currently does not check if Federate owns attributes. The
+     * Federate Object is deleted.
+     */
     void remove(FederateHandle theHandle) throw(FederateOwnsAttributes, FederateNotExecutionMember);
 
     // ---------------------
     // -- Time Management --
     // ---------------------
+
+    /** Add the Federate to the Regulators List.
+     * 
+     * Check if it's already present, but not if the Time 'theTime' is allowed or not.
+     */
     void addRegulator(FederateHandle theHandle,
                       FederationTime theTime) throw(FederateNotExecutionMember,
                                                     SaveInProgress,
                                                     RestoreInProgress,
                                                     RTIinternalError); // includes Time Regulation already enabled.
 
+    /// Update the current time of a regulator federate.
     void updateRegulator(FederateHandle theHandle,
                          FederationTime theTime,
                          bool anonymous) throw(FederateNotExecutionMember, RTIinternalError);
@@ -134,6 +185,10 @@ public:
                                                     RestoreInProgress,
                                                     RTIinternalError); // includes Time Regulation already disabled.
 
+    /** Set Federate's attribute IsConstrained to true.
+     * 
+     *  FIXME: name/ merge with removeConstrained.
+     */
     void addConstrained(FederateHandle theHandle) throw(FederateNotExecutionMember,
                                                         SaveInProgress,
                                                         RestoreInProgress,
@@ -146,6 +201,8 @@ public:
                                                       RTIinternalError); // includes Time constrained already disabled.
 
     // Synchronization Management.
+
+    /// Add a new synchronization point to federation.
     void registerSynchronization(FederateHandle the_federate,
                                  const std::string& the_label,
                                  const std::string& the_tag) throw(FederateNotExecutionMember,
@@ -154,6 +211,7 @@ public:
                                                                    RestoreInProgress,
                                                                    RTIinternalError);
 
+    /// Add a new synchronization point (with federates set) to federation.
     void registerSynchronization(FederateHandle the_federate,
                                  const std::string& the_label,
                                  const std::string& the_tag,
@@ -167,10 +225,12 @@ public:
     void unregisterSynchronization(FederateHandle theFederate, const std::string& theLabel) throw(
         FederateNotExecutionMember, FederationNotPaused, SaveInProgress, RestoreInProgress, RTIinternalError);
 
+    /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
     void broadcastSynchronization(FederateHandle federate,
                                   const std::string& label,
                                   const std::string& tag) throw(RTIinternalError);
 
+    /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
     void broadcastSynchronization(FederateHandle federate,
                                   const std::string& label,
                                   const std::string& tag,
@@ -178,23 +238,52 @@ public:
                                   const std::vector<FederateHandle>& federate_set) throw(RTIinternalError);
 
     // Save Management.
+
+    /** Request a federation save with time.
+     * 
+     * This service puts each federate from federation in saving state.
+     * the_time is not managed yet.
+     */
     void requestFederationSave(FederateHandle, const std::string&, FederationTime) throw(FederateNotExecutionMember,
                                                                                          SaveInProgress);
+
+    /** Request a federation save without time.
+     * 
+     * This service puts each federate from federation in saving state.
+     * the_time is not managed yet.
+     */
     void requestFederationSave(FederateHandle, const std::string&) throw(FederateNotExecutionMember, SaveInProgress);
 
+    /** Received from a federate to inform a save has been received and is being processed.
+     * 
+     * Maybe, a timeout should be set to determine if federate still alive.
+     */
     void federateSaveBegun(FederateHandle) throw(FederateNotExecutionMember);
 
+    /// Informs that a federate returns a save end message (with success or not!).
     void federateSaveStatus(FederateHandle, bool) throw(FederateNotExecutionMember);
 
+    /// Informs that a federate is requesting a save.
     void requestFederationRestore(FederateHandle the_federate,
                                   const std::string& the_label) throw(FederateNotExecutionMember);
 
+    /** Informs that a federate has ended a restore.
+     * 
+     * If each federate in federation has ended restoring, this service send a federation restore status.
+     */
     void federateRestoreStatus(FederateHandle the_federate, bool the_status) throw(FederateNotExecutionMember);
 
     // -----------------------
     // -- Object Management --
     // -----------------------
 
+    /** Removes an object instance from federation.
+     * 
+     *  @param federate Federate requesting removal
+     *  @param id Object handle
+     *  @param theTime Federation Time
+     *  @param tag Label for this operation
+     */
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
                       FederationTime theTime,
@@ -206,6 +295,12 @@ public:
                                                            InvalidFederationTime,
                                                            RTIinternalError);
 
+    /** Removes an object instance from federation.
+     * 
+     *  @param federate Federate requesting removal
+     *  @param id Object handle
+     *  @param tag Label for this operation
+     */
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
                       const std::string& theUserTag) throw(FederateNotExecutionMember,
@@ -301,6 +396,7 @@ public:
     // -- Interaction Management --
     // ----------------------------
 
+    /// broadcastInteraction with time
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               const std::vector<ParameterHandle>& theParameterList,
@@ -316,6 +412,7 @@ public:
                                                                RestoreInProgress,
                                                                RTIinternalError);
 
+    /// broadcastInteraction without time
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               const std::vector<ParameterHandle>& theParameterList,
@@ -524,6 +621,7 @@ public:
                                                                                      RTIinternalError);
 
     // switches
+
     void setClassRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
                                                                          SaveInProgress,
                                                                          RestoreInProgress,
@@ -618,13 +716,16 @@ private:
     /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
     void broadcastAnyMessage(NetworkMessage* msg, FederateHandle Except, bool anonymous);
 
+    /// Broadcast 'msg' to some Federates except the specified one
     void broadcastSomeMessage(NetworkMessage* msg,
                               FederateHandle Except,
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
 
+    /// Return the Federate whose Name is theName, if found.
     Federate& getFederate(const std::string& theName) throw(FederateNotExecutionMember);
 
+    /// Return the Federate whose Handle is theHandle, if found.
     Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
 
     // Private attributes
@@ -639,7 +740,7 @@ private:
 
     /// The minimum NERx timestamp for this federation
     FederationTime minNERx;
-    
+
     /// The message buffer used to send Network messages
     MessageBuffer NM_msgBufSend;
 };
