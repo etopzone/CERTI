@@ -262,7 +262,7 @@ SocketServer::getWithReferences(Handle the_federation,
             return (*i);
     }
 
-    throw FederateNotExecutionMember(certi::stringize() << "Federate handle" << the_federate << "is not a member of Federation" << the_federation);
+    throw FederateNotExecutionMember(certi::stringize() << "Federate handle " << the_federate << " is not a member of Federation " << the_federation);
 }
 
 // ----------------------------------------------------------------------------

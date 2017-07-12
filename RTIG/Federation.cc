@@ -166,7 +166,7 @@ Federation::Federation(const std::string& federation_name,
     MCLink = mc_link;
 #endif // FEDERATION_USES_MULTICAST // --------------
 
-    G.Out(pdGendoc, "enter Federation::Federation");
+    Debug(G, pdGendoc) << "enter Federation::Federation" << std::endl;
     // Allocates Name
     if (federation_name.empty() || (federation_handle == 0)) {
         throw RTIinternalError("Null init parameter in Federation creation.");
@@ -254,7 +254,7 @@ Federation::Federation(const std::string& federation_name,
             cout << " --> cannot access." << endl;
         }
         cerr << "Next step will fail" << endl;
-        G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("RTIG cannot find FED file.");
     }
 
@@ -267,7 +267,7 @@ Federation::Federation(const std::string& federation_name,
         if (verboseLevel > 0) {
             cout << "... failed : ";
         }
-        G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
     }
     else {
@@ -283,7 +283,7 @@ Federation::Federation(const std::string& federation_name,
 
     // hope there is a . before fed or xml
     if (filename[nbcar_filename - 4] != '.') {
-        G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("Incorrect FED file name, cannot find "
                               "extension (character '.' is missing [or not in reverse 4th place])");
     }
@@ -299,7 +299,7 @@ Federation::Federation(const std::string& federation_name,
         Debug(D, pdTrace) << "Trying to use .xml file" << std::endl;
     }
     else {
-        G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
     }
 
@@ -311,7 +311,7 @@ Federation::Federation(const std::string& federation_name,
             // parse FED file and show the parse on stdout if verboseLevel>=2
             int err = fedparser::build(filename.c_str(), root, (verboseLevel >= 2));
             if (err != 0) {
-                G.Out(pdGendoc, "exit Federation::Federation on exception ErrorReadingFED");
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << std::endl;
                 throw ErrorReadingFED("fed parser found error in FED file");
             }
 
@@ -367,14 +367,14 @@ Federation::Federation(const std::string& federation_name,
 #endif
             {
                 cerr << "CERTI was Compiled without XML support" << endl;
-                G.Out(pdGendoc, "exit Federation::Federation on exception CouldNotOpenFED");
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
                 throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
             }
         }
     }
 
     minNERx.setZero();
-    G.Out(pdGendoc, "exit Federation::Federation");
+    Debug(G, pdGendoc) << "exit Federation::Federation" << std::endl;
 }
 
 Federation::~Federation()
@@ -833,7 +833,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                                                     RestoreInProgress,
                                                                     RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::broadcastInteraction with time");
+    Debug(G, pdGendoc) << "enter Federation::broadcastInteraction with time" << std::endl;
 
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -847,7 +847,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(D, pdRequest) << "Federation " << handle << ": Broadcasted Interaction " << interaction << " from Federate "
                         << federate_handle << " nb params " << list_size << std::endl;
 
-    G.Out(pdGendoc, "exit Federation::broadcastInteraction with time");
+    Debug(G, pdGendoc) << "exit Federation::broadcastInteraction with time" << std::endl;
 }
 
 void Federation::broadcastInteraction(FederateHandle federate_handle,
@@ -864,7 +864,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                                                     RestoreInProgress,
                                                                     RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::broadcastInteraction without time");
+    Debug(G, pdGendoc) << "enter Federation::broadcastInteraction without time" << std::endl;
 
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -882,7 +882,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                             << string(&(parameter_values[i][0]), parameter_values[i].size()) << std::endl;
     }
 
-    G.Out(pdGendoc, "exit Federation::broadcastInteraction without time");
+    Debug(G, pdGendoc) << "exit Federation::broadcastInteraction without time" << std::endl;
 }
 
 void Federation::deleteObject(FederateHandle federate,
@@ -933,7 +933,7 @@ void Federation::registerSynchronization(FederateHandle federate,
                                                                        RestoreInProgress,
                                                                        RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::registerSynchronization for all federates");
+    Debug(G, pdGendoc) << "enter Federation::registerSynchronization for all federates" << std::endl;
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
@@ -956,7 +956,7 @@ void Federation::registerSynchronization(FederateHandle federate,
 
     Debug(D, pdTerm) << "Federation " << handle << " is now synchronizing for label " << label << endl;
 
-    G.Out(pdGendoc, "exit  Federation::registerSynchronization for all federates");
+    Debug(G, pdGendoc) << "exit  Federation::registerSynchronization for all federates" << std::endl;
 }
 
 void Federation::registerSynchronization(
@@ -970,7 +970,7 @@ void Federation::registerSynchronization(
                                                            RestoreInProgress,
                                                            RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::registerSynchronization for federate set");
+    Debug(G, pdGendoc) << "enter Federation::registerSynchronization for federate set" << std::endl;
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
@@ -996,14 +996,14 @@ void Federation::registerSynchronization(
 
     Debug(D, pdTerm) << "Federation " << handle << " is now synchronizing for label " << label << endl;
 
-    G.Out(pdGendoc, "exit  Federation::registerSynchronization for federate set");
+    Debug(G, pdGendoc) << "exit  Federation::registerSynchronization for federate set" << std::endl;
 }
 
 void Federation::broadcastSynchronization(FederateHandle federate,
                                           const std::string& label,
                                           const std::string& tag) throw(RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::broadcastSynchronization");
+    Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << std::endl;
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
@@ -1017,11 +1017,12 @@ void Federation::broadcastSynchronization(FederateHandle federate,
     msg.setLabel(label);
     msg.setTag(tag);
 
-    G.Out(pdGendoc, "      broadcastSynchronization is calling broadcastAnyMessage for all federates");
+    Debug(G, pdGendoc) << "      broadcastSynchronization is calling broadcastAnyMessage for all federates"
+                       << std::endl;
 
     broadcastAnyMessage(&msg, 0, false);
 
-    G.Out(pdGendoc, "exit  Federation::broadcastSynchronization");
+    Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization" << std::endl;
 }
 
 void Federation::broadcastSynchronization(FederateHandle federate,
@@ -1030,7 +1031,7 @@ void Federation::broadcastSynchronization(FederateHandle federate,
                                           unsigned short federate_setSize,
                                           const std::vector<FederateHandle>& federate_set) throw(RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::broadcastSynchronization to some federates");
+    Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << std::endl;
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
@@ -1044,18 +1045,18 @@ void Federation::broadcastSynchronization(FederateHandle federate,
     msg.setLabel(label);
     msg.setTag(tag);
 
-    G.Out(pdGendoc, "      broadcastSynchronization is calling broadcastSomeMessage");
+    Debug(G, pdGendoc) << "      broadcastSynchronization is calling broadcastSomeMessage" << std::endl;
 
     broadcastSomeMessage(&msg, 0, federate_set, federate_setSize);
 
-    G.Out(pdGendoc, "exit  Federation::broadcastSynchronization to some federates");
+    Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << std::endl;
 }
 
 void Federation::requestFederationSave(FederateHandle the_federate,
                                        const std::string& the_label,
                                        FederationTime time) throw(FederateNotExecutionMember, SaveInProgress)
 {
-    G.Out(pdGendoc, "enter Federation::requestFederationSave with time");
+    Debug(G, pdGendoc) << "enter Federation::requestFederationSave with time" << std::endl;
 
     check(the_federate);
 
@@ -1077,17 +1078,17 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     // timed message
     msg.setDate(time);
 
-    G.Out(pdGendoc, "      requestFederationSave====>broadcast I_F_S to all");
+    Debug(G, pdGendoc) << "      requestFederationSave====>broadcast I_F_S to all" << std::endl;
 
     broadcastAnyMessage(&msg, 0, false);
 
-    G.Out(pdGendoc, "exit  Federation::requestFederationSave with time");
+    Debug(G, pdGendoc) << "exit  Federation::requestFederationSave with time" << std::endl;
 }
 
 void Federation::requestFederationSave(FederateHandle the_federate,
                                        const std::string& the_label) throw(FederateNotExecutionMember, SaveInProgress)
 {
-    G.Out(pdGendoc, "enter Federation::requestFederationSave without time");
+    Debug(G, pdGendoc) << "enter Federation::requestFederationSave without time" << std::endl;
 
     check(the_federate);
 
@@ -1107,25 +1108,25 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     msg.setFederation(handle);
     msg.setLabel(the_label);
 
-    G.Out(pdGendoc,
-          "                  requestFederationSave====>broadcast I_F_S"
-          " to all");
+    Debug(G, pdGendoc) << "                  requestFederationSave====>broadcast I_F_S"
+                          " to all"
+                       << std::endl;
 
     broadcastAnyMessage(&msg, 0, false);
 
-    G.Out(pdGendoc, "exit  Federation::requestFederationSave without time");
+    Debug(G, pdGendoc) << "exit  Federation::requestFederationSave without time" << std::endl;
 }
 
 void Federation::federateSaveBegun(FederateHandle the_federate) throw(FederateNotExecutionMember)
 {
-    G.Out(pdGendoc, "enter Federation::federateSaveBegun");
+    Debug(G, pdGendoc) << "enter Federation::federateSaveBegun" << std::endl;
     check(the_federate);
-    G.Out(pdGendoc, "exit  Federation::federateSaveBegun");
+    Debug(G, pdGendoc) << "exit  Federation::federateSaveBegun" << std::endl;
 }
 
 void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status) throw(FederateNotExecutionMember)
 {
-    G.Out(pdGendoc, "enter Federation::federateSaveStatus");
+    Debug(G, pdGendoc) << "enter Federation::federateSaveStatus" << std::endl;
 
     Federate& federate = getFederate(the_federate);
     federate.setSaving(false);
@@ -1136,7 +1137,7 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
     // Verify that all federates save ended (complete or not).
     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
         if (j->second.isSaving()) {
-            G.Out(pdGendoc, "exit  Federation::federateSaveStatus one federate has not save ended");
+            Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus one federate has not save ended" << std::endl;
             return;
         }
     }
@@ -1155,19 +1156,19 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
 
     broadcastAnyMessage(msg.get(), 0, false);
 
-    G.Out(pdGendoc, "            =======> broadcast F_S or F_N_S");
+    Debug(G, pdGendoc) << "            =======> broadcast F_S or F_N_S" << std::endl;
 
     // Reinitialize state.
     saveStatus = true;
     saveInProgress = false;
 
-    G.Out(pdGendoc, "exit  Federation::federateSaveStatus");
+    Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus" << std::endl;
 }
 
 void Federation::requestFederationRestore(FederateHandle the_federate,
                                           const std::string& the_label) throw(FederateNotExecutionMember)
 {
-    G.Out(pdGendoc, "enter Federation::requestFederationRestore");
+    Debug(G, pdGendoc) << "enter Federation::requestFederationRestore" << std::endl;
 
     check(the_federate);
 
@@ -1203,17 +1204,19 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
 
     socket = server->getSocketLink(msg->getFederate());
 
-    if (success)
-        G.Out(pdGendoc, "             =====> send message R_F_R_S to RTIA");
-    else
-        G.Out(pdGendoc, "             =====> send message R_F_R_F to RTIA");
+    if (success) {
+        Debug(G, pdGendoc) << "             =====> send message R_F_R_S to RTIA" << std::endl;
+    }
+    else {
+        Debug(G, pdGendoc) << "             =====> send message R_F_R_F to RTIA" << std::endl;
+    }
 
     msg->send(socket, NM_msgBufSend);
     delete msg;
 
     // Reading file failed: not restoring !
     if (!success) {
-        G.Out(pdGendoc, "exit  Federation::requestFederationRestore on success false");
+        Debug(G, pdGendoc) << "exit  Federation::requestFederationRestore on success false" << std::endl;
         return;
     }
 
@@ -1229,7 +1232,7 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     msg->setFederate(the_federate);
     msg->setFederation(handle);
 
-    G.Out(pdGendoc, "             =====> broadcast message F_R_B");
+    Debug(G, pdGendoc) << "             =====> broadcast message F_R_B" << std::endl;
 
     broadcastAnyMessage(msg, 0, false);
     delete msg;
@@ -1244,16 +1247,16 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
 
         // send message.
         socket = server->getSocketLink(msg->getFederate());
-        G.Out(pdGendoc, "             =====> send message I_F_R to federate %d", msg->getFederate());
+        Debug(G, pdGendoc) << "             =====> send message I_F_R to federate " << msg->getFederate() << std::endl;
         msg->send(socket, NM_msgBufSend);
     }
     delete msg;
-    G.Out(pdGendoc, "exit  Federation::requestFederationRestore");
+    Debug(G, pdGendoc) << "exit  Federation::requestFederationRestore" << std::endl;
 }
 
 void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_status) throw(FederateNotExecutionMember)
 {
-    G.Out(pdGendoc, "enter Federation::federateRestoreStatus");
+    Debug(G, pdGendoc) << "enter Federation::federateRestoreStatus" << std::endl;
     Federate& federate = getFederate(the_federate);
     federate.setRestoring(false);
 
@@ -1278,7 +1281,7 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
     // Reinitialize state.
     restoreStatus = true;
     restoreInProgress = false;
-    G.Out(pdGendoc, "exit  Federation::federateRestoreStatus");
+    Debug(G, pdGendoc) << "exit  Federation::federateRestoreStatus" << std::endl;
 }
 
 Federate& Federation::getFederate(FederateHandle federate_handle) throw(FederateNotExecutionMember)
@@ -1392,7 +1395,7 @@ void Federation::publishObject(FederateHandle federate,
                                                RestoreInProgress,
                                                RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::publishObject");
+    Debug(G, pdGendoc) << "enter Federation::publishObject" << std::endl;
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1463,7 +1466,7 @@ void Federation::publishObject(FederateHandle federate,
 
     Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << "(un)publishes "
                          << attributes.size() << " attrib. of ObjClass " << object << std::endl;
-    G.Out(pdGendoc, "exit  Federation::publishObject");
+    Debug(G, pdGendoc) << "exit  Federation::publishObject" << std::endl;
 }
 
 void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, std::string newObjName) throw(
@@ -1482,14 +1485,16 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, std
             = dynamic_cast<NM_Reserve_Object_Instance_Name_Succeeded*>(msg);
 
         okMsg->setObjectName(newObjName);
-        G.Out(pdGendoc, "             =====> send message R_O_I_N_S to federate %d", msg->getFederate());
+        Debug(G, pdGendoc) << "             =====> send message R_O_I_N_S to federate " << msg->getFederate()
+                           << std::endl;
     }
     else {
         msg = NM_Factory::create(NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED);
         NM_Reserve_Object_Instance_Name_Failed* nokMsg = dynamic_cast<NM_Reserve_Object_Instance_Name_Failed*>(msg);
 
         nokMsg->setObjectName(newObjName);
-        G.Out(pdGendoc, "             =====> send message R_O_I_N_F to federate %d", msg->getFederate());
+        Debug(G, pdGendoc) << "             =====> send message R_O_I_N_F to federate " << msg->getFederate()
+                           << std::endl;
     }
 
     msg->setFederation(handle);
@@ -1514,7 +1519,7 @@ ObjectHandle Federation::registerObject(FederateHandle federate,
 {
     ObjectHandle new_id = objectHandles.provide();
 
-    G.Out(pdGendoc, "enter Federation::registerObject");
+    Debug(G, pdGendoc) << "enter Federation::registerObject" << std::endl;
     Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " registering Object " << new_id
                          << " of Class " << class_handle << std::endl;
 
@@ -1537,7 +1542,7 @@ ObjectHandle Federation::registerObject(FederateHandle federate,
         objectHandles.free(new_id);
         throw;
     }
-    G.Out(pdGendoc, "exit Federation::registerObject");
+    Debug(G, pdGendoc) << "exit Federation::registerObject" << std::endl;
     return new_id;
 }
 
@@ -1603,7 +1608,7 @@ void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateN
 void Federation::unregisterSynchronization(FederateHandle federate_handle, const std::string& label) throw(
     FederateNotExecutionMember, FederationNotPaused, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::unregisterSynchronization");
+    Debug(G, pdGendoc) << "enter Federation::unregisterSynchronization" << std::endl;
 
     this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
@@ -1639,7 +1644,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
     Debug(D, pdTerm) << "Federation " << handle << " is synchronized on " << label << std::endl;
 
-    G.Out(pdGendoc, "exit  Federation::unregisterSynchronization");
+    Debug(G, pdGendoc) << "exit  Federation::unregisterSynchronization" << std::endl;
 }
 
 void Federation::subscribeInteraction(FederateHandle federate,
@@ -1670,7 +1675,7 @@ void Federation::subscribeObject(FederateHandle federate,
                                                                                        RestoreInProgress,
                                                                                        RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::subscribeObject");
+    Debug(G, pdGendoc) << "enter Federation::subscribeObject" << std::endl;
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1763,7 +1768,7 @@ void Federation::subscribeObject(FederateHandle federate,
 
     Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << "(un)sub. to " << attributes.size()
                          << " attrib. of ObjClass " << object << std::endl;
-    G.Out(pdGendoc, "exit  Federation::subscribeObject");
+    Debug(G, pdGendoc) << "exit  Federation::subscribeObject" << std::endl;
 }
 
 void Federation::updateAttributeValues(FederateHandle federate,
@@ -1780,7 +1785,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                                                      RestoreInProgress,
                                                                      RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "enter Federation::updateAttributeValues with time" << std::endl;
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1792,7 +1797,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
     Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " updated attributes of Object "
                          << objectHandle << std::endl;
-    G.Out(pdGendoc, "exit  Federation::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "exit  Federation::updateAttributeValues with time" << std::endl;
 }
 
 void Federation::updateAttributeValues(FederateHandle federate,
@@ -1808,7 +1813,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                                                      RestoreInProgress,
                                                                      RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "enter Federation::updateAttributeValues without time" << std::endl;
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1820,7 +1825,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
     Debug(D, pdRegister) << "Federation " << handle << ": Federate " << federate << " updated attributes of Object "
                          << objectHandle << std::endl;
-    G.Out(pdGendoc, "exit  Federation::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "exit  Federation::updateAttributeValues without time" << std::endl;
 }
 
 void Federation::updateRegulator(FederateHandle federate_handle,
@@ -2188,7 +2193,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
                                                                                            RestoreInProgress,
                                                                                            RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::registerObjectWithRegion");
+    Debug(G, pdGendoc) << "enter Federation::registerObjectWithRegion" << std::endl;
     check(federate);
 
     // Register object
@@ -2217,7 +2222,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
     }
 
     Debug(D, pdDebug) << "- " << nb << " attribute(s) associated with region " << region_handle << std::endl;
-    G.Out(pdGendoc, "exit  Federation::registerObjectWithRegion");
+    Debug(G, pdGendoc) << "exit  Federation::registerObjectWithRegion" << std::endl;
     return object;
 }
 
@@ -2344,7 +2349,7 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
                                               const std::vector<AttributeHandle>& theAttributeList,
                                               uint32_t theListSize) throw(ObjectNotKnown)
 {
-    G.Out(pdGendoc, "enter Federation::requestObjectOwner");
+    Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << std::endl;
 
     Object* actualObject = root->getObject(theObject);
 
@@ -2388,8 +2393,8 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     // Request Object.
     theOwnerHandle = root->requestObjectOwner(theFederateHandle, theObject);
 
-    G.Out(pdGendoc, "            requestObjectOwner ===> write PAVU to RTIA %d", theOwnerHandle);
-    G.Out(pdGendoc, "exit  Federation::requestObjectOwner");
+    Debug(G, pdGendoc) << "            requestObjectOwner ===> write PAVU to RTIA " << theOwnerHandle << std::endl;
+    Debug(G, pdGendoc) << "exit  Federation::requestObjectOwner" << std::endl;
 
     return (theOwnerHandle);
 }
@@ -2399,7 +2404,7 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
                                                   const std::vector<AttributeHandle>& theAttributeList,
                                                   uint32_t theListSize) throw(ObjectClassNotDefined, RTIinternalError)
 {
-    G.Out(pdGendoc, "enter Federation::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << std::endl;
 
     // get object class
     ObjectClass* oClass = root->getObjectClass(theClassHandle);
@@ -2412,7 +2417,7 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
     for (ObjectClass::HandleObjectMap::const_iterator it = instances.begin(); it != instances.end(); ++it) {
         requestObjectOwner(theFederateHandle, it->first, theAttributeList, theListSize);
     }
-    G.Out(pdGendoc, "exit  Federation::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << std::endl;
 }
 }
 } // namespace certi/rtig

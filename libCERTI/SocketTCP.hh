@@ -53,8 +53,8 @@ public :
 	void createServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
 
 	int accept(SocketTCP *serveur) throw (NetworkError);
-	virtual void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
-	virtual void receive(void *Buffer, unsigned long Size)	throw (NetworkError, NetworkSignal);
+	virtual void send(const unsigned char *, size_t); //		throw (NetworkError, NetworkSignal);
+	virtual void receive(void *Buffer, unsigned long Size); //	throw (NetworkError, NetworkSignal);
 
 	virtual bool isDataReady() const ;
 

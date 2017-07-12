@@ -338,7 +338,7 @@ _est_init_tcp = true ;
 // ----------------------------------------------------------------------------
 void
 SocketTCP::send(const unsigned char *buffer, size_t size)
-					 throw (NetworkError, NetworkSignal)
+// 					 throw (NetworkError, NetworkSignal)
 {
 long total_sent = 0 ;
 long expected_size = size ;
@@ -461,7 +461,7 @@ return(*this);
 // ----------------------------------------------------------------------------
 void
 SocketTCP::receive(void *buffer, unsigned long size)
-						throw (NetworkError, NetworkSignal)
+// 						throw (NetworkError, NetworkSignal)
 {
 // G.Out(pdGendoc,"enter SocketTCP::receive");
 assert(_est_init_tcp);

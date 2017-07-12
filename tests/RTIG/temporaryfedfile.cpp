@@ -5,7 +5,14 @@
 
 #include <unistd.h>
 
-#define CERR ::std::cerr << "[TemporaryFedFile]\t"
+namespace {
+    static constexpr bool debug_disabled {true};
+}
+
+#define CERR \
+if (debug_disabled) { \
+} \
+else ::std::cerr << "[TemporaryFedFile]\t"
 
 TemporaryFedFile::TemporaryFedFile(const std::string& path) : my_path{path}
 {

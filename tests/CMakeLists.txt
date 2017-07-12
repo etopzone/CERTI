@@ -1,9 +1,14 @@
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 find_package(GTest)
+find_package(GMock)
 
-if(GTest_FOUND)
-    message( STATUS "GoogleTest: Found on the build systemp")
+if(GTest_FOUND AND GMock_FOUND)
+    message( STATUS "GoogleTest: Found on the build system")
+    
     include_directories(${GTEST_INCLUDE_DIRS})
+    
+    include_directories(${GMOCK_INCLUDE_DIRS})
 
 else()
     message( STATUS "GoogleTest: Not found on the build system, fetching and building locally")
@@ -46,7 +51,8 @@ else()
     include_directories("${source_dir}/googletest/include"
                         "${source_dir}/googlemock/include")
 
-    set(GTEST_BOTH_LIBRARIES libgtest libgmock)
+    set(GTEST_BOTH_LIBRARIES libgtest)
+    set(GMOCK_BOTH_LIBRARIES libgmock)
 endif()
 
 add_subdirectory( LibHLA )

@@ -9,7 +9,14 @@ namespace {
     
 }
 
-#define CERR ::std::cerr << "[TemporaryEnvironmentLocation]\t"
+namespace {
+    static constexpr bool debug_disabled {true};
+}
+
+#define CERR \
+if (debug_disabled) { \
+} \
+else ::std::cerr << "[TemporaryEnvironmentLocation]\t"
 
 TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& name) : my_name{name}, my_lastValue{ENV_VARIABLE_DID_NOT_EXIST}
 {

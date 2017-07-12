@@ -1,0 +1,29 @@
+;; testFederation
+;; This is a sample FOM used by CERTI as a test federation
+;; This is meant to be used with testFederate
+(Fed
+  (Federation testFederation)
+  (FedVersion v1.3)
+  (Spaces
+  )
+  (Objects
+    (Class ObjectRoot
+      (Attribute privilegeToDelete RELIABLE TIMESTAMP)
+      (Class RTIprivate)
+      (Class Data
+            (Attribute Attr1 RELIABLE TIMESTAMP)
+            (Attribute Attr2 RELIABLE TIMESTAMP)
+      )
+    )
+  )
+  
+  (Interactions
+    (Class InteractionRoot RELIABLE RECEIVE
+        (Class RTIprivate RELIABLE RECEIVE)
+        (Class Message RELIABLE TIMESTAMP
+            (Parameter Param1)
+            (Parameter Param2)
+        )
+    )
+  )
+)

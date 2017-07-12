@@ -29,6 +29,9 @@ set(rtig_SRCS
 add_executable(TestRTIG
                temporaryenvironmentlocation.cpp temporaryenvironmentlocation.h
                temporaryfedfile.cpp temporaryfedfile.h
+               
+               sockettcp_mock.h
+               
                federate_test.cpp
                federation_test.cpp
                ${rtig_SRCS}
@@ -38,6 +41,7 @@ add_executable(TestRTIG
 target_link_libraries(TestRTIG
                       CERTI
                       ${GTEST_BOTH_LIBRARIES}
+                      ${GMOCK_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
 
