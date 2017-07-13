@@ -141,6 +141,8 @@ public:
      * @return true if the federate is part of the Federation,
      *              else throw an exception.
      * @throws FederateNotExecutionMember
+     * 
+     * FIXME This behavior is very strange
      */
     bool check(FederateHandle theHandle) const throw(FederateNotExecutionMember);
 
@@ -686,6 +688,24 @@ public:
     FederationTime getMinNERx() const;
 
 private:
+    bool saveXmlData();
+    bool restoreXmlData(std::string docFilename);
+
+    /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
+    void broadcastAnyMessage(NetworkMessage* msg, FederateHandle Except, bool anonymous);
+
+    /// Broadcast 'msg' to some Federates except the specified one
+    void broadcastSomeMessage(NetworkMessage* msg,
+                              FederateHandle Except,
+                              const std::vector<FederateHandle>& fede_array,
+                              uint32_t nbfed);
+
+    /// Return the Federate whose Name is theName, if found.
+    Federate& getFederate(const std::string& theName) throw(FederateNotExecutionMember);
+
+    /// Return the Federate whose Handle is theHandle, if found.
+    Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
+    
     Handle handle;
     std::string name;
     std::string FEDid;
@@ -709,24 +729,6 @@ private:
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC* MCLink;
 #endif
-
-    bool saveXmlData();
-    bool restoreXmlData(std::string docFilename);
-
-    /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
-    void broadcastAnyMessage(NetworkMessage* msg, FederateHandle Except, bool anonymous);
-
-    /// Broadcast 'msg' to some Federates except the specified one
-    void broadcastSomeMessage(NetworkMessage* msg,
-                              FederateHandle Except,
-                              const std::vector<FederateHandle>& fede_array,
-                              uint32_t nbfed);
-
-    /// Return the Federate whose Name is theName, if found.
-    Federate& getFederate(const std::string& theName) throw(FederateNotExecutionMember);
-
-    /// Return the Federate whose Handle is theHandle, if found.
-    Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
 
     // Private attributes
     typedef std::map<FederateHandle, Federate> HandleFederateMap;

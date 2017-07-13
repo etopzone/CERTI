@@ -1309,17 +1309,14 @@ bool Federation::empty() const throw(FederatesCurrentlyJoined)
     if (_handleFederateMap.empty()) {
         return true;
     }
-    else {
-        // build the list of name of the federate currently joined
-        HandleFederateMap::const_iterator it;
-        std::stringstream msg;
-        msg << "<";
-        for (it = _handleFederateMap.begin(); it != _handleFederateMap.end(); it++) {
-            msg << " " << (it->second).getName();
-        }
-        msg << " >";
-        throw FederatesCurrentlyJoined(msg.str().c_str());
+
+    std::string reason{"<"};
+    for (auto& fed : _handleFederateMap) {
+        reason += " " + (fed.second).getName();
     }
+
+    reason += " >";
+    throw FederatesCurrentlyJoined(reason);
 }
 
 bool Federation::check(FederateHandle federate_handle) const throw(FederateNotExecutionMember)

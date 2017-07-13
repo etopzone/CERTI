@@ -45,11 +45,16 @@ target_link_libraries(TestRTIG
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
 
-
 if (CMAKE_VERSION VERSION_LESS 3.1.3)
-    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
+    include(CheckCXXCompilerFlag)
+	check_cxx_compiler_flag(-std=c++14 HAVE_FLAG_STD_CXX14)
+	if(HAVE_FLAG_STD_CXX14)
+            SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
+	else()
+            SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
+	endif()
 else()
-    set_property(TARGET TestRTIG PROPERTY CXX_STANDARD 11)
+    set_property(TARGET TestRTIG PROPERTY CXX_STANDARD 14)
 endif()
 
 add_test(AllTests TestRTIG)

@@ -1,26 +1,28 @@
 #include "temporaryenvironmentlocation.h"
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 namespace {
-    static constexpr int SETENV_REPLACE {1};
-    static const std::string ENV_VARIABLE_DID_NOT_EXIST {"DefaultLastValue"};
+static constexpr int SETENV_REPLACE{1};
+static const std::string ENV_VARIABLE_DID_NOT_EXIST{"DefaultLastValue"};
 }
 
 namespace {
-    static constexpr bool debug_disabled {true};
+static constexpr bool debug_disabled{true};
 }
 
-#define CERR \
-if (debug_disabled) { \
-} \
-else ::std::cerr << "[TemporaryEnvironmentLocation]\t"
+#define CERR                                                                                                           \
+    if (debug_disabled) {                                                                                              \
+    }                                                                                                                  \
+    else                                                                                                               \
+        ::std::cerr << "[TemporaryEnvironmentLocation]\t"
 
-TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& name) : my_name{name}, my_lastValue{ENV_VARIABLE_DID_NOT_EXIST}
+TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& name)
+    : my_name{name}, my_lastValue{ENV_VARIABLE_DID_NOT_EXIST}
 {
     CERR << "Create temporary folder " << path() << std::endl;
-    system(std::string("mkdir -p " + path()).c_str());
+    system(std::string("mkdir " + path()).c_str());
 
     auto lastValue = std::getenv(my_name.c_str());
     if (lastValue) {
@@ -38,7 +40,11 @@ TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& na
 TemporaryEnvironmentLocation::~TemporaryEnvironmentLocation()
 {
     CERR << "Destroy temporary folder " << path() << std::endl;
+#ifdef _WIN32
+    system(std::string("rmdir /S /Q " + path()).c_str());
+#else
     system(std::string("rm -rf " + path()).c_str());
+#endif
 
     if (my_lastValue == ENV_VARIABLE_DID_NOT_EXIST) {
         CERR << "Rollback environment, unset " << my_name << std::endl;
@@ -52,5 +58,9 @@ TemporaryEnvironmentLocation::~TemporaryEnvironmentLocation()
 
 std::string TemporaryEnvironmentLocation::path() const
 {
+#ifdef _WIN32
+    return ".\\test-temp\\" + my_name + "\\";
+#else
     return "/tmp/" + my_name + "/";
+#endif
 }
