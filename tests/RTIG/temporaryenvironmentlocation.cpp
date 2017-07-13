@@ -5,8 +5,7 @@
 
 namespace {
     static constexpr int SETENV_REPLACE {1};
-    static constexpr auto ENV_VARIABLE_DID_NOT_EXIST {"DefaultLastValue"};
-    
+    static const std::string ENV_VARIABLE_DID_NOT_EXIST {"DefaultLastValue"};
 }
 
 namespace {

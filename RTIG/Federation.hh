@@ -131,7 +131,7 @@ public:
      * 
      * else throw FederatesCurrentlyJoined.
      * 
-     * FIXME This is very strange
+     * FIXME This behavior is very strange
      */
     bool empty() const throw(FederatesCurrentlyJoined);
 
