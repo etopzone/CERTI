@@ -48,13 +48,13 @@ target_link_libraries(TestRTIG
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(
         NAME TestRTIG_coverage
-        EXECUTABLE TestRTIG -j ${PROCESSOR_COUNT}
+        EXECUTABLE TestRTIG --gtest_output=xml:../output/results-TestRTIG.xml
         DEPENDENCIES TestRTIG
     )
 
     SETUP_TARGET_FOR_COVERAGE_COBERTURA(
         NAME TestRTIG_cobertura
-        EXECUTABLE TestRTIG -j ${PROCESSOR_COUNT}
+        EXECUTABLE TestRTIG --gtest_output=xml:../output/results-TestRTIG.xml
         DEPENDENCIES TestRTIG
     )
     endif()

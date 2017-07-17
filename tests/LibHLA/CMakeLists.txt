@@ -22,13 +22,13 @@ target_link_libraries(TestHLA
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(
         NAME TestHLA_coverage
-        EXECUTABLE TestHLA -j ${PROCESSOR_COUNT}
+        EXECUTABLE TestHLA --gtest_output=xml:../output/results-TestHLA.xml
         DEPENDENCIES TestHLA
     )
 
     SETUP_TARGET_FOR_COVERAGE_COBERTURA(
         NAME TestHLA_cobertura
-        EXECUTABLE TestHLA -j ${PROCESSOR_COUNT}
+        EXECUTABLE TestHLA --gtest_output=xml:../output/results-TestHLA.xml
         DEPENDENCIES TestHLA
     )
 endif()
