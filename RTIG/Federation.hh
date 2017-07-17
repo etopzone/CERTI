@@ -43,6 +43,12 @@
 #include "SocketMC.hh"
 #endif
 
+#ifdef TEST_FOR_FEDERATION
+#define PRIVATE_TESTABLE public
+#else
+#define PRIVATE_TESTABLE private
+#endif
+
 namespace certi {
 class AttributeHandleSet;
 class AuditFile;
@@ -133,34 +139,38 @@ public:
      * 
      * FIXME This behavior is very strange
      */
-    bool empty() const throw(FederatesCurrentlyJoined);
+    bool empty() const;
 
     /** Check whether if the federate is part of the federation.
      * 
-     * @param[in] theHandle
+     * @param federate_handle federate to check
      * @return true if the federate is part of the Federation,
      *              else throw an exception.
-     * @throws FederateNotExecutionMember
      * 
      * FIXME This behavior is very strange
      */
-    bool check(FederateHandle theHandle) const throw(FederateNotExecutionMember);
+    bool check(FederateHandle federate_handle) const;
 
     /** Make a federate resign the federation.
      *
      * This function tries to remove all references to this federate in the federation.
      * To be used when a Federate is supposed to have crashed.
+     * 
+     * NOTE: Connection to the federate is already closed.
+     *
      * @param federate Handle of the federate to kill
      */
-    void kill(FederateHandle theFederate) throw();
+    void kill(FederateHandle federate) noexcept;
 
     /** Remove a federate.
+     * 
+     * NOTE: Is it normal it does not check if federate is used, e.g is regulator ?
      * 
      * @param federate_handle Handle of the federate to remove.
      * @bug Currently does not check if Federate owns attributes. The
      * Federate Object is deleted.
      */
-    void remove(FederateHandle theHandle) throw(FederateOwnsAttributes, FederateNotExecutionMember);
+    void remove(FederateHandle federate_handle) throw(FederateOwnsAttributes, FederateNotExecutionMember);
 
     // ---------------------
     // -- Time Management --
@@ -687,6 +697,14 @@ public:
      */
     FederationTime getMinNERx() const;
 
+PRIVATE_TESTABLE :
+    /// Return the Federate whose Name is theName, if found.
+    Federate&
+    getFederate(const std::string& theName) throw(FederateNotExecutionMember);
+
+    /// Return the Federate whose Handle is theHandle, if found.
+    Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
+
 private:
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
@@ -700,12 +718,6 @@ private:
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
 
-    /// Return the Federate whose Name is theName, if found.
-    Federate& getFederate(const std::string& theName) throw(FederateNotExecutionMember);
-
-    /// Return the Federate whose Handle is theHandle, if found.
-    Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
-    
     Handle handle;
     std::string name;
     std::string FEDid;

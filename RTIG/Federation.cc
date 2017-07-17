@@ -1304,7 +1304,7 @@ Federate& Federation::getFederate(const std::string& federate_name) throw(Federa
         stringize() << "Federate <" << federate_name << "> not [yet] member of Federation <" << getName() << ">.");
 }
 
-bool Federation::empty() const throw(FederatesCurrentlyJoined)
+bool Federation::empty() const
 {
     if (_handleFederateMap.empty()) {
         return true;
@@ -1319,19 +1319,18 @@ bool Federation::empty() const throw(FederatesCurrentlyJoined)
     throw FederatesCurrentlyJoined(reason);
 }
 
-bool Federation::check(FederateHandle federate_handle) const throw(FederateNotExecutionMember)
+bool Federation::check(FederateHandle federate_handle) const
 {
-    HandleFederateMap::const_iterator i = _handleFederateMap.find(federate_handle);
-    if (i == _handleFederateMap.end()) {
+    if (_handleFederateMap.find(federate_handle) == end(_handleFederateMap)) {
         throw FederateNotExecutionMember(
-            certi::stringize() << "Federate Handle <" << federate_handle << "> not found in federation <" << handle);
+            certi::stringize() << "Federate Handle <" << federate_handle << "> not found in federation <" << handle
+                               << ">");
     }
     return true;
 }
 
-void Federation::kill(FederateHandle federate) throw()
+void Federation::kill(FederateHandle federate) noexcept
 {
-    // NOTE: Connection to the federate is already closed.
     Debug(D, pdInit) << "Killing Federate " << federate << std::endl;
 
     // is regulator ?
