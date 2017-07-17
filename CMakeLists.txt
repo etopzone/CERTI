@@ -19,6 +19,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 
+
 # Display some information on host and target (when cross-compiling)
 if (CMAKE_CROSSCOMPILING)
    message(STATUS "Cross-compiling build.")
@@ -86,6 +87,9 @@ option(COMPILE_WITH_CXX11
 
 option(COMPILE_WITH_C11
        "Compile code with C11 feature enabled" ON)
+
+option(COMPILE_WITH_COVERAGE
+       "Compile code with coverage flags" OFF)
 
 option(BUILD_DOC
        "Build documentation (using doxygen)" OFF)
@@ -235,6 +239,15 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
+
+if (COMPILE_WITH_COVERAGE)
+    MESSAGE(STATUS "Compiling with code coverage flags")
+    
+    include (CodeCoverage)
+    
+    APPEND_COVERAGE_COMPILER_FLAGS()
+    set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+endif()
 
 IF (WIN32)
     IF (MINGW)

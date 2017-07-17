@@ -19,6 +19,19 @@ target_link_libraries(TestHLA
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
 
+if (COMPILE_WITH_COVERAGE)
+    SETUP_TARGET_FOR_COVERAGE(
+        NAME TestHLA_coverage
+        EXECUTABLE TestHLA -j ${PROCESSOR_COUNT}
+        DEPENDENCIES TestHLA
+    )
+
+    SETUP_TARGET_FOR_COVERAGE_COBERTURA(
+        NAME TestHLA_cobertura
+        EXECUTABLE TestHLA -j ${PROCESSOR_COUNT}
+        DEPENDENCIES TestHLA
+    )
+endif()
 
 if (CMAKE_VERSION VERSION_LESS 3.1.3)
     SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")

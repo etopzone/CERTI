@@ -45,6 +45,20 @@ target_link_libraries(TestRTIG
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
 
+if (COMPILE_WITH_COVERAGE)
+    SETUP_TARGET_FOR_COVERAGE(
+        NAME TestRTIG_coverage
+        EXECUTABLE TestRTIG -j ${PROCESSOR_COUNT}
+        DEPENDENCIES TestRTIG
+    )
+
+    SETUP_TARGET_FOR_COVERAGE_COBERTURA(
+        NAME TestRTIG_cobertura
+        EXECUTABLE TestRTIG -j ${PROCESSOR_COUNT}
+        DEPENDENCIES TestRTIG
+    )
+    endif()
+
 if (CMAKE_VERSION VERSION_LESS 3.1.3)
     include(CheckCXXCompilerFlag)
 	check_cxx_compiler_flag(-std=c++14 HAVE_FLAG_STD_CXX14)
