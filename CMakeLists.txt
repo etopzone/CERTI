@@ -246,7 +246,10 @@ if (COMPILE_WITH_COVERAGE)
     include (CodeCoverage)
     
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+    set (CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+    
+    set (COVERAGE_EXCLUDES 'test/*' 'build.test.gtest/*')
+
 endif()
 
 IF (WIN32)
