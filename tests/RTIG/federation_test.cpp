@@ -306,17 +306,19 @@ TEST_F(FederationTest, CheckThrowsOnUnknownFederate)
 
 TEST_F(FederationTest, SetUnsetCRASAlterUnderlyingFederate)
 {
-    auto fed = f.add("fed", nullptr);
+    auto handle = f.add("fed", nullptr);
     
-    ASSERT_TRUE(f.getFederate(fed).isClassRelevanceAdvisorySwitch()) << "Federate starts with CRAS == true";
+    auto& fed = f.getFederate(handle);
     
-    f.unsetClassRelevanceAdvisorySwitch(fed);
+    ASSERT_TRUE(fed.isClassRelevanceAdvisorySwitch()) << "Federate starts with CRAS == true";
     
-    ASSERT_FALSE(f.getFederate(fed).isClassRelevanceAdvisorySwitch());
+    f.unsetClassRelevanceAdvisorySwitch(handle);
     
-    f.setClassRelevanceAdvisorySwitch(fed);
+    ASSERT_FALSE(fed.isClassRelevanceAdvisorySwitch());
     
-    ASSERT_TRUE(f.getFederate(fed).isClassRelevanceAdvisorySwitch());
+    f.setClassRelevanceAdvisorySwitch(handle);
+    
+    ASSERT_TRUE(fed.isClassRelevanceAdvisorySwitch());
 }
 
 TEST_F(FederationTest, SetCRASThrowsOnUnknownFederate)
@@ -349,17 +351,19 @@ TEST_F(FederationTest, UnsetCRASDoesNotWorkTwice)
 
 TEST_F(FederationTest, SetUnsetIRASAlterUnderlyingFederate)
 {
-    auto fed = f.add("fed", nullptr);
+    auto handle = f.add("fed", nullptr);
     
-    ASSERT_TRUE(f.getFederate(fed).isInteractionRelevanceAdvisorySwitch()) << "Federate starts with IRAS == true";
+    auto& fed = f.getFederate(handle);
     
-    f.unsetInteractionRelevanceAdvisorySwitch(fed);
+    ASSERT_TRUE(fed.isInteractionRelevanceAdvisorySwitch()) << "Federate starts with IRAS == true";
     
-    ASSERT_FALSE(f.getFederate(fed).isInteractionRelevanceAdvisorySwitch());
+    f.unsetInteractionRelevanceAdvisorySwitch(handle);
     
-    f.setInteractionRelevanceAdvisorySwitch(fed);
+    ASSERT_FALSE(fed.isInteractionRelevanceAdvisorySwitch());
     
-    ASSERT_TRUE(f.getFederate(fed).isInteractionRelevanceAdvisorySwitch());
+    f.setInteractionRelevanceAdvisorySwitch(handle);
+    
+    ASSERT_TRUE(fed.isInteractionRelevanceAdvisorySwitch());
 }
 
 TEST_F(FederationTest, SetIRASThrowsOnUnknownFederate)
@@ -392,17 +396,19 @@ TEST_F(FederationTest, UnsetIRASDoesNotWorkTwice)
 
 TEST_F(FederationTest, SetUnsetARASAlterUnderlyingFederate)
 {
-    auto fed = f.add("fed", nullptr);
+    auto handle = f.add("fed", nullptr);
     
-    ASSERT_FALSE(f.getFederate(fed).isAttributeRelevanceAdvisorySwitch()) << "Federate starts with ARAS == false";
+    auto& fed = f.getFederate(handle);
     
-    f.setAttributeRelevanceAdvisorySwitch(fed);
+    ASSERT_FALSE(fed.isAttributeRelevanceAdvisorySwitch()) << "Federate starts with ARAS == false";
     
-    ASSERT_TRUE(f.getFederate(fed).isAttributeRelevanceAdvisorySwitch());
+    f.setAttributeRelevanceAdvisorySwitch(handle);
     
-    f.unsetAttributeRelevanceAdvisorySwitch(fed);
+    ASSERT_TRUE(fed.isAttributeRelevanceAdvisorySwitch());
     
-    ASSERT_FALSE(f.getFederate(fed).isAttributeRelevanceAdvisorySwitch());
+    f.unsetAttributeRelevanceAdvisorySwitch(handle);
+    
+    ASSERT_FALSE(fed.isAttributeRelevanceAdvisorySwitch());
 }
 
 TEST_F(FederationTest, SetARASThrowsOnUnknownFederate)
@@ -435,17 +441,19 @@ TEST_F(FederationTest, UnsetARASDoesNotWorkTwice)
 
 TEST_F(FederationTest, SetUnsetASASAlterUnderlyingFederate)
 {
-    auto fed = f.add("fed", nullptr);
+    auto handle = f.add("fed", nullptr);
     
-    ASSERT_FALSE(f.getFederate(fed).isAttributeScopeAdvisorySwitch()) << "Federate starts with ASAS == false";
+    auto& fed = f.getFederate(handle);
     
-    f.setAttributeScopeAdvisorySwitch(fed);
+    ASSERT_FALSE(fed.isAttributeScopeAdvisorySwitch()) << "Federate starts with ASAS == false";
     
-    ASSERT_TRUE(f.getFederate(fed).isAttributeScopeAdvisorySwitch());
+    f.setAttributeScopeAdvisorySwitch(handle);
     
-    f.unsetAttributeScopeAdvisorySwitch(fed);
+    ASSERT_TRUE(fed.isAttributeScopeAdvisorySwitch());
     
-    ASSERT_FALSE(f.getFederate(fed).isAttributeScopeAdvisorySwitch());
+    f.unsetAttributeScopeAdvisorySwitch(handle);
+    
+    ASSERT_FALSE(fed.isAttributeScopeAdvisorySwitch());
 }
 
 TEST_F(FederationTest, SetASASThrowsOnUnknownFederate)
@@ -478,17 +486,19 @@ TEST_F(FederationTest, UnsetASASDoesNotWorkTwice)
 
 TEST_F(FederationTest, AddRemoveConstrainedAlterUnderlyingFederate)
 {
-    auto fed = f.add("new_federate", nullptr);
+    auto handle = f.add("new_federate", nullptr);
     
-    ASSERT_FALSE(f.getFederate(fed).isConstrained()) << "Federate starts with constrained == false";
+    auto& fed = f.getFederate(handle);
     
-    f.addConstrained(fed);
+    ASSERT_FALSE(fed.isConstrained()) << "Federate starts with constrained == false";
     
-    ASSERT_TRUE(f.getFederate(fed).isConstrained());
+    f.addConstrained(handle);
     
-    f.removeConstrained(fed);
+    ASSERT_TRUE(fed.isConstrained());
     
-    ASSERT_FALSE(f.getFederate(fed).isConstrained());
+    f.removeConstrained(handle);
+    
+    ASSERT_FALSE(fed.isConstrained());
 }
 
 TEST_F(FederationTest, AddConstrainedThrowsOnUnknownFederate)
@@ -521,12 +531,14 @@ TEST_F(FederationTest, RemoveConstrainedDoesNotWorkTwice)
 
 TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
 {
-    auto fed = f.add("new_federate", nullptr);
+    auto handle = f.add("new_federate", nullptr);
     
-    ASSERT_FALSE(f.getFederate(fed).isRegulator()) << "Federate starts with constrained == false";
+    auto& fed = f.getFederate(handle);
+    
+    ASSERT_FALSE(fed.isRegulator()) << "Federate starts with constrained == false";
     
     try {
-        f.addRegulator(fed, {});
+        f.addRegulator(handle, {});
     }
     catch (certi::FederateNotExecutionMember& e) {
         // SocketServer is empty, so we will throw from broadcastAnyMessage, but the regulator should be registered
@@ -537,10 +549,10 @@ TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
     
     ASSERT_EQ(1, f.getNbRegulators());
     
-    ASSERT_TRUE(f.getFederate(fed).isRegulator());
+    ASSERT_TRUE(fed.isRegulator());
     
     try {
-        f.removeRegulator(fed);
+        f.removeRegulator(handle);
     }
     catch (certi::FederateNotExecutionMember& e) {
         // SocketServer is empty, so we will throw from broadcastAnyMessage, but the regulator should be registered
@@ -549,7 +561,7 @@ TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
         FAIL() << "Add regulator may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
     
-    ASSERT_FALSE(f.getFederate(fed).isRegulator());
+    ASSERT_FALSE(fed.isRegulator());
 }
 
 TEST_F(FederationTest, AddRegulatorThrowsOnUnknownFederate)
@@ -588,6 +600,116 @@ TEST_F(FederationTest, RemoveRegulatorDoesNotWorkTwice)
     ASSERT_THROW(f.removeRegulator(fed), ::certi::RTIinternalError);
 }
 
-// TODO There is a lot of Federate manipulation. Shouldn't we get those details (like cannot set flag if flag already set) down to federate to improve size and readability of federation ?
+TEST_F(FederationTest, UpdateRegulatorNeedsValidFederateIfNotAnonymous)
+{
+    ASSERT_THROW(f.updateRegulator(1, {}, false), ::certi::FederateNotExecutionMember);
+}
 
-// addRegulator
+TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
+{
+    auto handle = f.add("regulator", nullptr);
+    
+    ASSERT_THROW(f.updateRegulator(1, {}, false), ::certi::RTIinternalError);
+}
+
+// TODO UpdateRegulator not tested
+
+TEST_F(FederationTest, RegisterSynchronizationAddsLabelToAllFederates)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    auto& fed = f.getFederate(handle);
+    
+    auto& fed1 = f.getFederate(f.add("fed 1", nullptr));
+    auto& fed2 = f.getFederate(f.add("fed 2", nullptr));
+    auto& fed3 = f.getFederate(f.add("fed 3", nullptr));
+    
+    f.registerSynchronization(handle, "label", "tag");
+    
+    ASSERT_TRUE(fed.isSynchronizationLabel("label"));
+    
+    ASSERT_TRUE(fed1.isSynchronizationLabel("label"));
+    ASSERT_TRUE(fed2.isSynchronizationLabel("label"));
+    ASSERT_TRUE(fed3.isSynchronizationLabel("label"));
+}
+
+TEST_F(FederationTest, RegisterSynchronizationThrowsIfUknFederate)
+{
+    ASSERT_THROW(f.registerSynchronization(1, "label", "tag"), ::certi::FederateNotExecutionMember);
+}
+
+TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelEmpty)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    ASSERT_THROW(f.registerSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
+}
+
+TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelAlreadyExists)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    f.registerSynchronization(handle, "label", "tag");
+    
+    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag"), ::certi::FederationAlreadyPaused);
+}
+
+// FIXME Possible bug here !!
+TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchronized)
+{
+    auto handle = f.add("emitter", nullptr);
+    
+    auto& fed = f.getFederate(handle);
+    
+    ::std::vector<::certi::FederateHandle> federatesToUpdate;
+    
+    f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
+    
+    ASSERT_FALSE(fed.isSynchronizationLabel("label")) << "Emitter is not synchronizing if set was empty";
+}
+
+TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederates)
+{
+    auto handle = f.add("emitter", nullptr);
+    
+    auto& fed = f.getFederate(handle);
+    
+    auto h1 = f.add("fed 1", nullptr);
+    auto h2 = f.add("fed 2", nullptr);
+    auto h3 = f.add("fed 3", nullptr);
+    
+    ::std::vector<::certi::FederateHandle> federatesToUpdate;
+    federatesToUpdate.push_back(h2);
+    //     federatesToUpdate.push_back(h3);
+    
+    f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
+    
+    ASSERT_TRUE(fed.isSynchronizationLabel("label")) << "The sync label must also be set to the emitter";
+    
+    ASSERT_FALSE(f.getFederate(h1).isSynchronizationLabel("label"));
+    ASSERT_TRUE(f.getFederate(h2).isSynchronizationLabel("label"));
+    ASSERT_FALSE(f.getFederate(h3).isSynchronizationLabel("label"));
+}
+
+TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
+{
+    ASSERT_THROW(f.registerSynchronization(1, "label", "tag"), ::certi::FederateNotExecutionMember);
+}
+
+TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelEmpty)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    ASSERT_THROW(f.registerSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
+}
+
+TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    f.registerSynchronization(handle, "label", "tag");
+    
+    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag"), ::certi::FederationAlreadyPaused);
+}
+
+// TODO There is a lot of Federate manipulation. Shouldn't we get those details (like cannot set flag if flag already set) down to federate to improve size and readability of federation ?

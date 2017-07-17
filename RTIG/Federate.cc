@@ -160,7 +160,7 @@ void Federate::addSynchronizationLabel(const std::string& label)
     Debug(G, pdGendoc) << "enter Federate::addSynchronizationLabel" << std::endl;
 
     if (isSynchronizationLabel(label)) {
-        throw RTIinternalError("Synchronization label pending in federate.");
+        throw RTIinternalError(getName() + "Synchronization label pending in federate.");
     }
 
     my_syncLabels.push_back(label);

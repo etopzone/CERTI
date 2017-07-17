@@ -248,7 +248,7 @@ if (COMPILE_WITH_COVERAGE)
     APPEND_COVERAGE_COMPILER_FLAGS()
     set (CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
     
-    set (COVERAGE_EXCLUDES 'test/*' 'build.test.gtest/*')
+    set (COVERAGE_EXCLUDES 'test/*' 'build.tests.gtest/*')
 
 endif()
 
