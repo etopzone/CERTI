@@ -1015,7 +1015,7 @@ void Federation::broadcastSynchronization(FederateHandle federate,
                                           const string& label,
                                           const string& tag,
                                           unsigned short federate_setSize,
-                                          const vector<FederateHandle>& federate_set) throw(RTIinternalError)
+                                          const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember, RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
 

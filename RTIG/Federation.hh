@@ -247,7 +247,7 @@ public:
                                   const std::string& label,
                                   const std::string& tag,
                                   unsigned short federate_setSize,
-                                  const std::vector<FederateHandle>& federate_set) throw(RTIinternalError);
+                                  const std::vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember, RTIinternalError);
 
     // Save Management.
 

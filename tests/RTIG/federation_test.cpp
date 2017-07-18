@@ -746,4 +746,31 @@ TEST_F(FederationTest, BroadcastSynchronizationThrowOnEmptyLabel)
     ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
+TEST_F(FederationTest, broadcastSynchronizationSendsNM)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    try {
+        f.broadcastSynchronization(handle, "label", "tag");
+    }
+    catch (certi::FederateNotExecutionMember& e) {
+        // SocketServer is empty, so we will throw from broadcastSynchronization, but the regulator should be registered
+    }
+    catch (::certi::RTIinternalError& e) {
+        FAIL() << e.name() << " - " << e.reason() << " : broadcastSynchronization may throw from SocketServer::getWithReferences, but not from anywhere else";
+    }
+}
+
+TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnUknFederate)
+{
+    ASSERT_THROW(f.broadcastSynchronization(1, "label", "tag", 0, {}), ::certi::FederateNotExecutionMember);
+}
+
+TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnEmptyLabel)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
+}
+
 // TODO There is a lot of Federate manipulation. Shouldn't we get those details (like cannot set flag if flag already set) down to federate to improve size and readability of federation ?
