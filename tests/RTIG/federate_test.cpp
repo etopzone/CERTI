@@ -13,6 +13,18 @@ TEST(FederateTest, ConstructorThrowsOnNullHandle)
     ASSERT_THROW(Federate("", 0), RTIinternalError);
 }
 
+// FIXME Possible bug here !!
+TEST(FederateTest, SetHandleAcceptsNullHandle)
+{
+    Federate f("test", 1);
+    
+    ASSERT_EQ(1, f.getHandle());
+    
+    f.setHandle(0);
+    
+    ASSERT_EQ(0, f.getHandle());
+}
+
 TEST(FederateTest, BasicSyncLabelManipulation)
 {
     Federate f("test", 1);
