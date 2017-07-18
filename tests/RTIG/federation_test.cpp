@@ -116,6 +116,27 @@ TEST_F(FederationTest, CtorFailsIfXmlFedWithoutXmlSupport)
 }
 #endif
 
+TEST_F(FederationTest, VerboseLevelChangesOutput)
+{
+    std::ostringstream oss;
+    std::streambuf* original_cout_rdbuf = std::cout.rdbuf();
+    std::cout.rdbuf(oss.rdbuf());
+    
+    Federation f{"name", 1, s, a, "Sample.fed", 0};
+    
+    std::ostringstream oss2;
+    std::cout.rdbuf(oss2.rdbuf());
+    
+    Federation f2{"name", 1, s, a, "Sample.fed", 1};
+    
+    std::cout.rdbuf(original_cout_rdbuf); // restore
+    
+    // test your oss content...
+    ASSERT_TRUE(oss);
+    ASSERT_TRUE(oss2);
+    ASSERT_TRUE(oss.str().size() < oss2.str().size());
+}
+
 TEST_F(FederationTest, GetHandle)
 {
     ASSERT_EQ(1, f.getHandle());
@@ -609,7 +630,7 @@ TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 {
     auto handle = f.add("regulator", nullptr);
     
-    ASSERT_THROW(f.updateRegulator(1, {}, false), ::certi::RTIinternalError);
+    ASSERT_THROW(f.updateRegulator(handle, {}, false), ::certi::RTIinternalError);
 }
 
 // TODO UpdateRegulator not tested
@@ -693,14 +714,14 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederate
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
 {
-    ASSERT_THROW(f.registerSynchronization(1, "label", "tag"), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.registerSynchronization(1, "label", "tag", 0, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
     auto handle = f.add("fed", nullptr);
     
-    ASSERT_THROW(f.registerSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
+    ASSERT_THROW(f.registerSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
@@ -709,7 +730,20 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
     
     f.registerSynchronization(handle, "label", "tag");
     
-    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag"), ::certi::FederationAlreadyPaused);
+    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag", 0, {}), ::certi::FederationAlreadyPaused);
+}
+
+// BUG: std::terminate is called, thanks to bad throw list...
+TEST_F(FederationTest, BroadcastSynchronizationThrowOnUknFederate)
+{
+    ASSERT_THROW(f.broadcastSynchronization(1, "label", "tag"), ::certi::FederateNotExecutionMember);
+}
+
+TEST_F(FederationTest, BroadcastSynchronizationThrowOnEmptyLabel)
+{
+    auto handle = f.add("fed", nullptr);
+    
+    ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
 // TODO There is a lot of Federate manipulation. Shouldn't we get those details (like cannot set flag if flag already set) down to federate to improve size and readability of federation ?

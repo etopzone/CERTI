@@ -988,7 +988,7 @@ void Federation::registerSynchronization(FederateHandle federate,
 
 void Federation::broadcastSynchronization(FederateHandle federate,
                                           const string& label,
-                                          const string& tag) throw(RTIinternalError)
+                                          const string& tag) throw(FederateNotExecutionMember, RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
 

@@ -240,7 +240,7 @@ public:
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
     void broadcastSynchronization(FederateHandle federate,
                                   const std::string& label,
-                                  const std::string& tag) throw(RTIinternalError);
+                                  const std::string& tag) throw(FederateNotExecutionMember, RTIinternalError);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
     void broadcastSynchronization(FederateHandle federate,
