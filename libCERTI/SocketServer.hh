@@ -19,111 +19,140 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.11 2014/04/16 12:24:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
 #define _CERTI_SOCKET_SERVER_HH
 
-#include "certi.hh"
+#include "NetworkMessage.hh"
+#include "SecureTCPSocket.hh"
+#include "SecurityLevel.hh"
 #include "Socket.hh"
 #include "SocketTCP.hh"
 #include "SocketUDP.hh"
-#include "NetworkMessage.hh"
-#include "SecurityLevel.hh"
-#include "SecureTCPSocket.hh"
+#include "certi.hh"
 
 #include <list>
 
 namespace certi {
 
-// ----------------------------------------------------------------------------
-//! Element of the SocketServer internal list.
-class SocketTuple
-{
+/// Element of the SocketServer internal list.
+class SocketTuple {
 public:
-    Handle Federation ;
-    FederateHandle Federate ;
+    Handle Federation;
+    FederateHandle Federate;
 
-    SocketTCP *ReliableLink ;
-    SocketUDP *BestEffortLink ;
+    SocketTCP* ReliableLink;
+    SocketUDP* BestEffortLink;
 
-    SocketTuple(Socket *theTCPLink);
+    SocketTuple(Socket* theTCPLink);
     ~SocketTuple();
 };
 
-// ----------------------------------------------------------------------------
-/*! Liste dynamique mettant en relation un couple(Federation, Federe)
-  avec une Socket TCP. Sont decritent les classes : SocketTuple
-  (l'element de la liste) SocketServer(la liste au niveau du RTIG)
-  CFederationSocketServer (l'interface de la liste precedente au
-  niveau de la federation et de ses objets, qui contient en plus des
-  fonctionnalites de securite)
-*/
-class CERTI_EXPORT SocketServer : private std::list<SocketTuple *>
-{
+/** Liste dynamique mettant en relation un couple(Federation, Federe)
+ * avec une Socket TCP. Sont decritent les classes : SocketTuple
+ * (l'element de la liste) SocketServer(la liste au niveau du RTIG)
+ * CFederationSocketServer (l'interface de la liste precedente au
+ * niveau de la federation et de ses objets, qui contient en plus des
+ * fonctionnalites de securite)
+ */
+class CERTI_EXPORT SocketServer : private std::list<SocketTuple*> {
 public:
-    SocketServer(SocketTCP *tcp_socket,
-                 SocketUDP *udp_socket);
+    SocketServer(SocketTCP* tcp_socket, SocketUDP* udp_socket);
 
+    /// Destructor frees tuple list.
     ~SocketServer();
 
     // --------------------------------
     // -- Connection related methods --
     // --------------------------------
-    void open()
-        throw (RTIinternalError);
 
+    /** Allocate a new SocketTuple by Accepting on the ServerSocket.
+     * 
+     * The SocketTuple references are empty.
+     * Throw RTIinternalError in case of a memory allocation problem.
+     */
+    void open() throw(RTIinternalError);
+
+    /** Close and delete the Socket object whose socket is "Socket",
+     * and return the former references associated with this socket in
+     * the last two parameters. Those returned references can be
+     * used for example to force the Federate out of the Federation.
+     * Further call to GetSocket with those references will return a
+     * NULL Socket object.
+     * 
+     * Throw RTIinternalError if the socket is not found.
+     */
     void close(long socket, // Provided
-               Handle &federation_referenced, // Returned
-               FederateHandle &federate_referenced) // Returned
-        throw (RTIinternalError);
+               Handle& federation_referenced, // Returned
+               FederateHandle& federate_referenced) // Returned
+        throw(RTIinternalError);
 
+    /** Change the FederationHandle and the FederateHandle associated with
+     * "socket". Once the references have been set for a Socket, they can't
+     * be changed. References can be zeros(but should not).
+     * Throw RTIinternalError if the References have already been set, or
+     * if the Socket is not found.
+     */
     void setReferences(long the_socket,
                        Handle federation_reference,
                        FederateHandle federate_reference,
                        unsigned long the_address,
-                       unsigned int the_port)
-        throw (RTIinternalError);
+                       unsigned int the_port) throw(RTIinternalError);
 
     // -----------------------------
     // -- Message related methods --
     // -----------------------------
-    void checkMessage(long socket, NetworkMessage *message) const
-        throw (SecurityError);
+
+    /** Check if 'message' coming from socket link 'Socket' has a valid
+     * Federate field, that is, the Federate number linked to the socket is
+     * the same as the Federate Number specified in the message.
+     * If not, throw SecurityError.
+     */
+    void checkMessage(long socket, NetworkMessage* message) const throw(SecurityError);
 
     // --------------------------
     // -- RTIG related methods --
     // --------------------------
-    int addToFDSet(fd_set *select_fdset);
-    Socket *getActiveSocket(fd_set *select_fdset) const ;
+    int addToFDSet(fd_set* select_fdset);
+
+    /** This method return the first socket object who has been declared active
+     * in the fd_set. It can be called several times to get all active sockets.
+     */
+    Socket* getActiveSocket(fd_set* select_fdset) const;
 
     // ------------------------------------------
     // -- Message Broadcasting related Methods --
     // ------------------------------------------
-    Socket *getSocketLink(Handle the_federation,
-                          FederateHandle the_federate,
-                          TransportType the_type = RELIABLE) const
-        throw (FederateNotExecutionMember, RTIinternalError);
 
-    SocketTuple *getWithReferences(Handle the_federation,
-                                   FederateHandle the_federate) const
-        throw (FederateNotExecutionMember);
+    /** Return the Socket object associated with(theFederation, theFederate). If
+     * the couple(Federation, Federate) is not found, a
+     * FederateNotExecutionMember exception is thrown.
+     * 
+     * If the Federate has crashed, it should return a NULL socket object, but
+     * this should not happen. In fact, when a Client(Federate) crashes, the
+     * RTIG is supposed be remove all references to this federate. That's the
+     * reason why a RTIinternalError is thrown in that case.
+     * 
+     * JYR : sorry but we return NULL (avoid rtig crash) because development needed
+     */
+    Socket* getSocketLink(Handle the_federation, FederateHandle the_federate, TransportType the_type = RELIABLE) const
+        throw(FederateNotExecutionMember, RTIinternalError);
+
+    SocketTuple* getWithReferences(Handle the_federation, FederateHandle the_federate) const
+        throw(FederateNotExecutionMember);
 
 private:
     // The Server socket object(used for Accepts)
-    SocketTCP *ServerSocketTCP ;
-    SocketUDP *ServerSocketUDP ;
+    SocketTCP* ServerSocketTCP;
+    SocketUDP* ServerSocketUDP;
 
     // ---------------------
     // -- Private Methods --
     // ---------------------
-    SocketTuple *getWithSocket(long socket_descriptor) const
-        throw (RTIinternalError);
+    SocketTuple* getWithSocket(long socket_descriptor) const throw(RTIinternalError);
 };
 
 } // namespace certi
 
 #endif // _CERTI_SOCKET_SERVER_HH
-
-// $Id: SocketServer.hh,v 3.11 2014/04/16 12:24:01 erk Exp $
