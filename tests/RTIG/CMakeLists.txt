@@ -34,6 +34,7 @@ add_executable(TestRTIG
                
                federate_test.cpp
                federation_test.cpp
+               federationlist_test.cpp
                
                ${rtig_SRCS}
                ../main.cpp

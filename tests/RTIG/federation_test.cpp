@@ -19,6 +19,65 @@ using ::certi::rtig::Federation;
 
 // TODO There is a lot of Federate manipulation. Shouldn't we get those details (like cannot set flag if flag already set) down to federate to improve size and readability of federation ?
 
+/* TODO
+ * fw_root
+ * 
+ *    getFOM
+ *    void broadcastInteraction()
+ *    void broadcastInteraction()
+ *    void deleteObject()
+ *    void deleteObject()
+ *    void publishInteraction()
+ *    void publishObject()
+ *    void reserveObjectInstanceName()
+ *    ObjectHandle registerObject()
+ *    void subscribeInteraction()
+ *    void subscribeObject()
+ *    void updateAttributeValues()
+ *    void updateAttributeValues()
+ *    bool isOwner()
+ *    void queryAttributeOwnership()
+ *    void negotiateDivestiture()
+ *    void acquireIfAvailable()
+ *    void divest()
+ *    void acquire()
+ *    void cancelDivestiture()
+ *    AttributeHandleSet* respondRelease()
+ *    void cancelAcquisition()
+ *    long createRegion()
+ *    void modifyRegion()
+ *    void deleteRegion()
+ *    void associateRegion()
+ *    void unassociateRegion()
+ *    void subscribeAttributesWR()
+ *    void unsubscribeAttributesWR()
+ *    void subscribeInteractionWR()
+ *    void unsubscribeInteractionWR()
+ * 
+ *    ObjectHandle registerObjectWithRegion()
+ *    void requestClassAttributeValueUpdate()
+ * 
+ * network
+ * 
+ *    void broadcastAnyMessage();
+ *    void broadcastSomeMessage();
+ *    void subscribeObject()
+ * 
+ * todo
+ *    uptadelastnerxforfederate
+ * 
+ *    FederationTime computeMinNERx();
+ *    void federateSaveStatus()
+ *    void requestFederationRestore()
+ *    void federateRestoreStatus()
+ *    void updateRegulator()
+ * 
+ *    void deleteRegion()
+ *    ObjectHandle registerObjectWithRegion()
+ * 
+ *    FederateHandle requestObjectOwner()
+ */
+
 namespace {
     static constexpr ::certi::Handle invalid_handle {0};
     
