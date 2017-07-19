@@ -1015,7 +1015,8 @@ void Federation::broadcastSynchronization(FederateHandle federate,
                                           const string& label,
                                           const string& tag,
                                           unsigned short federate_setSize,
-                                          const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember, RTIinternalError)
+                                          const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
+                                                                                            RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
 
@@ -2043,7 +2044,7 @@ void Federation::cancelAcquisition(FederateHandle federate,
 }
 
 long Federation::createRegion(FederateHandle federate, SpaceHandle space, long nb_extents) throw(
-    SpaceNotDefined, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
+    FederateNotExecutionMember, SpaceNotDefined, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     this->check(federate);
 
@@ -2051,14 +2052,14 @@ long Federation::createRegion(FederateHandle federate, SpaceHandle space, long n
 }
 
 void Federation::modifyRegion(FederateHandle federate, RegionHandle region, const vector<Extent>& extents) throw(
-    RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
+    FederateNotExecutionMember, RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     check(federate);
     root->modifyRegion(region, extents);
 }
 
 void Federation::deleteRegion(FederateHandle federate, long region) throw(
-    RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError)
+    FederateNotExecutionMember, RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     this->check(federate);
 
@@ -2077,7 +2078,8 @@ void Federation::associateRegion(FederateHandle federate,
                                  ObjectHandle object,
                                  RegionHandle the_handle,
                                  unsigned short nb,
-                                 const vector<AttributeHandle>& attributes) throw(RegionNotKnown,
+                                 const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
+                                                                                  RegionNotKnown,
                                                                                   SaveInProgress,
                                                                                   RestoreInProgress,
                                                                                   RTIinternalError)
@@ -2094,7 +2096,7 @@ void Federation::associateRegion(FederateHandle federate,
 }
 
 void Federation::unassociateRegion(FederateHandle federate, ObjectHandle object, RegionHandle the_handle) throw(
-    RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError)
+    FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     check(federate);
 
@@ -2106,7 +2108,7 @@ void Federation::subscribeAttributesWR(FederateHandle federate,
                                        ObjectClassHandle c,
                                        RegionHandle region_handle,
                                        unsigned short nb,
-                                       const vector<AttributeHandle>& attributes) throw(RegionNotKnown,
+                                       const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                                         SaveInProgress,
                                                                                         RestoreInProgress,
                                                                                         RTIinternalError)
@@ -2117,7 +2119,7 @@ void Federation::subscribeAttributesWR(FederateHandle federate,
 
 void Federation::unsubscribeAttributesWR(FederateHandle federate,
                                          ObjectClassHandle object_class,
-                                         RegionHandle region_handle) throw(RegionNotKnown,
+                                         RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                            SaveInProgress,
                                                                            RestoreInProgress,
                                                                            RTIinternalError)
@@ -2131,7 +2133,7 @@ void Federation::unsubscribeAttributesWR(FederateHandle federate,
 
 void Federation::subscribeInteractionWR(FederateHandle federate,
                                         InteractionClassHandle interaction,
-                                        RegionHandle region_handle) throw(RegionNotKnown,
+                                        RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                           SaveInProgress,
                                                                           RestoreInProgress,
                                                                           RTIinternalError)
@@ -2145,7 +2147,7 @@ void Federation::subscribeInteractionWR(FederateHandle federate,
 
 void Federation::unsubscribeInteractionWR(FederateHandle federate,
                                           InteractionClassHandle interaction,
-                                          RegionHandle region_handle) throw(RegionNotKnown,
+                                          RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                             SaveInProgress,
                                                                             RestoreInProgress,
                                                                             RTIinternalError)
@@ -2163,7 +2165,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
                                      const string& object_name,
                                      RegionHandle region_handle,
                                      int nb,
-                                     const vector<AttributeHandle>& attributes) throw(ObjectClassNotDefined,
+                                     const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember, ObjectClassNotDefined,
                                                                                       ObjectClassNotPublished,
                                                                                       AttributeNotDefined,
                                                                                       AttributeNotPublished,

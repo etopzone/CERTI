@@ -247,7 +247,8 @@ public:
                                   const std::string& label,
                                   const std::string& tag,
                                   unsigned short federate_setSize,
-                                  const std::vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember, RTIinternalError);
+                                  const std::vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
+                                                                                         RTIinternalError);
 
     // Save Management.
 
@@ -569,49 +570,56 @@ public:
 
     // Data Distribution Management
 
-    long createRegion(FederateHandle,
-                      SpaceHandle,
-                      long) throw(SpaceNotDefined, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError);
+    long createRegion(FederateHandle, SpaceHandle, long) throw(FederateNotExecutionMember,
+                                                               SpaceNotDefined,
+                                                               InvalidExtents,
+                                                               SaveInProgress,
+                                                               RestoreInProgress,
+                                                               RTIinternalError);
 
-    void modifyRegion(FederateHandle, RegionHandle, const std::vector<Extent>&) throw(
-        RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void modifyRegion(FederateHandle, RegionHandle, const std::vector<Extent>&) throw(FederateNotExecutionMember,
+                                                                                      RegionNotKnown,
+                                                                                      InvalidExtents,
+                                                                                      SaveInProgress,
+                                                                                      RestoreInProgress,
+                                                                                      RTIinternalError);
 
-    void deleteRegion(FederateHandle,
-                      long) throw(RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void deleteRegion(FederateHandle, long) throw(
+        FederateNotExecutionMember, RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError);
 
     void associateRegion(FederateHandle,
                          ObjectHandle,
                          RegionHandle,
                          unsigned short,
-                         const std::vector<AttributeHandle>&) throw(RegionNotKnown,
+                         const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember,
+                                                                    RegionNotKnown,
                                                                     SaveInProgress,
                                                                     RestoreInProgress,
                                                                     RTIinternalError);
 
-    void unassociateRegion(FederateHandle,
-                           ObjectHandle,
-                           RegionHandle) throw(RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void unassociateRegion(FederateHandle, ObjectHandle, RegionHandle) throw(
+        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
     void subscribeAttributesWR(FederateHandle,
                                ObjectClassHandle,
                                RegionHandle,
                                unsigned short,
-                               const std::vector<AttributeHandle>&) throw(RegionNotKnown,
+                               const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                           SaveInProgress,
                                                                           RestoreInProgress,
                                                                           RTIinternalError);
 
-    void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle) throw(RegionNotKnown,
+                               void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                                         SaveInProgress,
                                                                                         RestoreInProgress,
                                                                                         RTIinternalError);
 
-    void subscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(RegionNotKnown,
+                               void subscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                                             SaveInProgress,
                                                                                             RestoreInProgress,
                                                                                             RTIinternalError);
 
-    void unsubscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(RegionNotKnown,
+                               void unsubscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
                                                                                               SaveInProgress,
                                                                                               RestoreInProgress,
                                                                                               RTIinternalError);
@@ -621,7 +629,7 @@ public:
                                           const std::string&,
                                           RegionHandle,
                                           int,
-                                          const std::vector<AttributeHandle>&) throw(ObjectClassNotDefined,
+                                          const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember, ObjectClassNotDefined,
                                                                                      ObjectClassNotPublished,
                                                                                      AttributeNotDefined,
                                                                                      AttributeNotPublished,
@@ -697,10 +705,10 @@ public:
      */
     FederationTime getMinNERx() const;
 
-PRIVATE_TESTABLE :
-    /// Return the Federate whose Name is theName, if found.
-    Federate&
-    getFederate(const std::string& theName) throw(FederateNotExecutionMember);
+    PRIVATE_TESTABLE :
+        /// Return the Federate whose Name is theName, if found.
+        Federate&
+        getFederate(const std::string& theName) throw(FederateNotExecutionMember);
 
     /// Return the Federate whose Handle is theHandle, if found.
     Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
