@@ -213,6 +213,7 @@ function(SETUP_TARGET_FOR_COVERAGE_COBERTURA)
 
         # Running gcovr
         COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES}
+            --exclude-unreachable-branches
             -o ${Coverage_NAME}.xml
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         DEPENDS ${Coverage_DEPENDENCIES}
