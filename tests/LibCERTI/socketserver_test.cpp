@@ -18,6 +18,10 @@ TEST(SocketServer, CtorAcceptsNullUdpSocket)
     SocketServer(&socket, nullptr);
 }
 
-TEST(SocketServer, )
-{
-}
+// BUG Throws a network error, but not in throw list
+// TEST(SocketServer, Open)
+// {
+//     MockSocketTcp socket;
+//     
+//     SocketServer s(&socket, nullptr);
+// }

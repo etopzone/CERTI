@@ -116,8 +116,6 @@ void SocketServer::close(long socket,
     }
 }
 
-// ----------------------------------------------------------------------------
-//! socketServer.
 SocketServer::SocketServer(SocketTCP* tcp_socket, SocketUDP* udp_socket) : list<SocketTuple*>()
 {
     if (tcp_socket == NULL)
@@ -136,8 +134,6 @@ SocketServer::~SocketServer()
     }
 }
 
-// ----------------------------------------------------------------------------
-//! SocketTuple constructor.
 SocketTuple::SocketTuple(Socket* tcp_link) : Federation(0), Federate(0)
 {
     if (tcp_link != NULL)
@@ -148,8 +144,6 @@ SocketTuple::SocketTuple(Socket* tcp_link) : Federation(0), Federate(0)
     BestEffortLink = new SocketUDP();
 }
 
-// ----------------------------------------------------------------------------
-//! SocketTuple destructor.
 SocketTuple::~SocketTuple()
 {
     if (ReliableLink != NULL) {
@@ -199,8 +193,6 @@ Socket* SocketServer::getSocketLink(Handle the_federation, FederateHandle the_fe
     // G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
 }
 
-// ----------------------------------------------------------------------------
-//! getWithReferences.
 SocketTuple* SocketServer::getWithReferences(Handle the_federation, FederateHandle the_federate) const
     throw(FederateNotExecutionMember)
 {
@@ -215,8 +207,6 @@ SocketTuple* SocketServer::getWithReferences(Handle the_federation, FederateHand
                                                         << the_federation);
 }
 
-// ----------------------------------------------------------------------------
-//! getWithSocket (private).
 SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const throw(RTIinternalError)
 {
     list<SocketTuple*>::const_iterator i;
