@@ -43,15 +43,11 @@ namespace rtig {
 static PrettyDebug D("FEDERATIONSLIST", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 
-// ----------------------------------------------------------------------------
-// Constructor
 FederationsList::FederationsList(SocketServer& server, AuditFile& audit)
     : socketServer(server), auditFile(audit), verboseLevel(0)
 {
 }
 
-// ----------------------------------------------------------------------------
-// Destructor
 FederationsList::~FederationsList()
 {
     if (!_handleFederationMap.empty())
@@ -62,8 +58,6 @@ FederationsList::~FederationsList()
     }
 }
 
-// ----------------------------------------------------------------------------
-//! Sets Class Relevance Advisory Switch
 void FederationsList::setClassRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -74,8 +68,6 @@ void FederationsList::setClassRelevanceAdvisorySwitch(Handle federationHandle, F
     federation->setClassRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Clears Class Relevance Advisory Switch
 void FederationsList::unsetClassRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -86,8 +78,6 @@ void FederationsList::unsetClassRelevanceAdvisorySwitch(Handle federationHandle,
     federation->unsetClassRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Sets Interaction Relevance Advisory Switch
 void FederationsList::setInteractionRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -98,8 +88,6 @@ void FederationsList::setInteractionRelevanceAdvisorySwitch(Handle federationHan
     federation->setInteractionRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Clears Interaction Relevance Advisory Switch
 void FederationsList::unsetInteractionRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -110,8 +98,6 @@ void FederationsList::unsetInteractionRelevanceAdvisorySwitch(Handle federationH
     federation->unsetInteractionRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Sets Attribute Relevance Advisory Switch
 void FederationsList::setAttributeRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -122,8 +108,6 @@ void FederationsList::setAttributeRelevanceAdvisorySwitch(Handle federationHandl
     federation->setAttributeRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Clears Attribute Relevance Advisory Switch
 void FederationsList::unsetAttributeRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -134,8 +118,6 @@ void FederationsList::unsetAttributeRelevanceAdvisorySwitch(Handle federationHan
     federation->unsetAttributeRelevanceAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Sets Attribute Scope Advisory Switch
 void FederationsList::setAttributeScopeAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -146,8 +128,6 @@ void FederationsList::setAttributeScopeAdvisorySwitch(Handle federationHandle, F
     federation->setAttributeScopeAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Clears Attribute Scope Advisory Switch
 void FederationsList::unsetAttributeScopeAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -158,8 +138,6 @@ void FederationsList::unsetAttributeScopeAdvisorySwitch(Handle federationHandle,
     federation->unsetAttributeScopeAdvisorySwitch(federate);
 }
 
-// ----------------------------------------------------------------------------
-//! Adds a constrained federate to federation.
 void FederationsList::addConstrained(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -170,12 +148,6 @@ void FederationsList::addConstrained(Handle federationHandle, FederateHandle fed
     federation->addConstrained(federate);
 }
 
-// ----------------------------------------------------------------------------
-/*! Creates a new Federate if its name is unique, and returns its new
-  Federate Handle. Also sends Null messages from all other federates
-  to initialize its LBTS, and finally a RequestPause message if the
-  Federation is already paused.
-*/
 FederateHandle
 FederationsList::addFederate(Handle federationHandle,
                              const std::string& name,
@@ -213,8 +185,6 @@ Federation* FederationsList::searchFederation(Handle federationHandle) throw(Fed
     throw FederationExecutionDoesNotExist("Bad Federation Handle.");
 }
 
-// ----------------------------------------------------------------------------
-// createFederation
 #ifdef FEDERATION_USES_MULTICAST
 /** createFederation (with FEDERATION_USES_MULTICAST defined)
 /   @param name Federation name
@@ -282,8 +252,6 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
     G.Out(pdGendoc, "exit FederationsList::createFederation");
 }
 
-// ----------------------------------------------------------------------------
-// createRegulator
 void FederationsList::createRegulator(Handle federationHandle, FederateHandle federate, FederationTime time) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -294,8 +262,6 @@ void FederationsList::createRegulator(Handle federationHandle, FederateHandle fe
     federation->addRegulator(federate, time);
 }
 
-// ----------------------------------------------------------------------------
-// destroyObject with time
 void FederationsList::destroyObject(Handle federationHandle,
                                     FederateHandle federate,
                                     ObjectHandle id,
@@ -315,8 +281,6 @@ void FederationsList::destroyObject(Handle federationHandle,
     federation->deleteObject(federate, id, theTime, tag);
 }
 
-// ----------------------------------------------------------------------------
-// destroyObject without time
 void FederationsList::destroyObject(Handle federationHandle,
                                     FederateHandle federate,
                                     ObjectHandle id,
@@ -334,10 +298,6 @@ void FederationsList::destroyObject(Handle federationHandle,
     federation->deleteObject(federate, id, tag);
 }
 
-// ----------------------------------------------------------------------------
-/*! Return the Handle of the Federation named "name" if it is found in the
-  FederationList, else throw FederationExecutionDoesNotExist.
-*/
 Handle FederationsList::getFederationHandle(const std::string& name) throw(FederationExecutionDoesNotExist)
 {
     G.Out(pdGendoc, "enter FederationsList::getFederationHandle");
@@ -354,8 +314,6 @@ Handle FederationsList::getFederationHandle(const std::string& name) throw(Feder
     throw FederationExecutionDoesNotExist(name);
 }
 
-// ----------------------------------------------------------------------------
-// info
 #ifdef FEDERATION_USES_MULTICAST
 void FederationsList::info(
     Handle federationHandle, int& nb_federates, int& nb_regulators, bool& is_syncing, SocketMC*& comm_mc)
@@ -378,8 +336,6 @@ void FederationsList::info(Handle federationHandle, int& nb_federates, int& nb_r
     G.Out(pdGendoc, "exit  FederationsList::info");
 }
 
-// ----------------------------------------------------------------------------
-// registerObject
 ObjectHandle FederationsList::registerObject(Handle federationHandle,
                                              FederateHandle federate,
                                              ObjectClassHandle object_class,
@@ -414,8 +370,6 @@ void FederationsList::updateRegulator(FederationHandle federationHandle,
     federation->updateRegulator(federate, time, anonymous);
 }
 
-// ----------------------------------------------------------------------------
-// updateAttribute with time
 void FederationsList::updateAttribute(Handle federationHandle,
                                       FederateHandle federate,
                                       ObjectHandle id,
@@ -438,8 +392,6 @@ void FederationsList::updateAttribute(Handle federationHandle,
     federation->updateAttributeValues(federate, id, attributes, values, list_size, time, tag);
 }
 
-// ----------------------------------------------------------------------------
-// updateAttribute without time
 void FederationsList::updateAttribute(Handle federationHandle,
                                       FederateHandle federate,
                                       ObjectHandle id,
@@ -460,8 +412,7 @@ void FederationsList::updateAttribute(Handle federationHandle,
 
     federation->updateAttributeValues(federate, id, attributes, values, list_size, tag);
 }
-// ----------------------------------------------------------------------------
-// updateParameter with time
+
 void FederationsList::updateParameter(Handle federationHandle,
                                       FederateHandle federate,
                                       InteractionClassHandle interaction,
@@ -489,8 +440,6 @@ void FederationsList::updateParameter(Handle federationHandle,
     G.Out(pdGendoc, "exit FederationsList::updateParameter with time");
 }
 
-// ----------------------------------------------------------------------------
-// updateParameter without time
 void FederationsList::updateParameter(Handle federationHandle,
                                       FederateHandle federate,
                                       InteractionClassHandle interaction,
@@ -515,10 +464,7 @@ void FederationsList::updateParameter(Handle federationHandle,
 
     G.Out(pdGendoc, "exit FederationsList::updateParameter without time");
 }
-// ----------------------------------------------------------------------------
-/*! Called by processRegisterSynchronization and
-  processSynchronizationAchieved.
-*/
+
 void FederationsList::manageSynchronization(Handle federationHandle,
                                             FederateHandle federate,
                                             bool state,
@@ -544,7 +490,6 @@ void FederationsList::manageSynchronization(Handle federationHandle,
     G.Out(pdGendoc, "exit  FederationsList::manageSynchronization for all federates");
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::manageSynchronization(
     Handle federationHandle,
     FederateHandle federate,
@@ -574,8 +519,6 @@ void FederationsList::manageSynchronization(
     G.Out(pdGendoc, "exit  FederationsList::manageSynchronization with federates set");
 }
 
-// ----------------------------------------------------------------------------
-//! Called by processRegisterSynchronization.
 void FederationsList::broadcastSynchronization(Handle federationHandle,
                                                FederateHandle federate,
                                                const std::string& label,
@@ -592,9 +535,6 @@ void FederationsList::broadcastSynchronization(Handle federationHandle,
     G.Out(pdGendoc, "exit  FederationsList::broadcastSynchronization");
 }
 
-// ----------------------------------------------------------------------------
-//! Called by processRegisterSynchronization.
-// Broadcast only on the federates into a set
 void FederationsList::broadcastSynchronization(
     Handle federationHandle,
     FederateHandle federate,
@@ -613,8 +553,6 @@ void FederationsList::broadcastSynchronization(
     G.Out(pdGendoc, "exit  FederationsList::broadcastSynchronization onto a federate set");
 }
 
-// ----------------------------------------------------------------------------
-// publishInteraction
 void FederationsList::publishInteraction(Handle federationHandle,
                                          FederateHandle federate,
                                          InteractionClassHandle interaction,
@@ -632,8 +570,6 @@ void FederationsList::publishInteraction(Handle federationHandle,
     federation->publishInteraction(federate, interaction, pub);
 }
 
-// ----------------------------------------------------------------------------
-// publishObject
 void FederationsList::publishObject(Handle federationHandle,
                                     FederateHandle federate,
                                     ObjectClassHandle object_class,
@@ -654,8 +590,6 @@ void FederationsList::publishObject(Handle federationHandle,
     federation->publishObject(federate, object_class, attributes, pub);
 }
 
-// ----------------------------------------------------------------------------
-// subscribeInteraction
 void FederationsList::subscribeInteraction(Handle federationHandle,
                                            FederateHandle federate,
                                            InteractionClassHandle interaction,
@@ -673,7 +607,6 @@ void FederationsList::subscribeInteraction(Handle federationHandle,
     federation->subscribeInteraction(federate, interaction, sub);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::subscribeObject(
     Handle federationHandle,
     FederateHandle federate,
@@ -693,8 +626,6 @@ void FederationsList::subscribeObject(
     federation->subscribeObject(federate, object_class, attributes);
 }
 
-// ----------------------------------------------------------------------------
-// removeConstrained
 void FederationsList::removeConstrained(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -705,8 +636,6 @@ void FederationsList::removeConstrained(Handle federationHandle, FederateHandle 
     federation->removeConstrained(federate);
 }
 
-// ----------------------------------------------------------------------------
-// destroyFederation
 void FederationsList::destroyFederation(Handle federationHandle) throw(FederatesCurrentlyJoined,
                                                                        FederationExecutionDoesNotExist,
                                                                        RTIinternalError)
@@ -725,8 +654,6 @@ void FederationsList::destroyFederation(Handle federationHandle) throw(Federates
     G.Out(pdGendoc, "exit FederationsList::destroyFederation");
 }
 
-// ----------------------------------------------------------------------------
-// remove
 void FederationsList::remove(Handle federationHandle, FederateHandle federate) throw(FederationExecutionDoesNotExist,
                                                                                      FederateOwnsAttributes,
                                                                                      FederateNotExecutionMember,
@@ -743,8 +670,6 @@ void FederationsList::remove(Handle federationHandle, FederateHandle federate) t
     G.Out(pdGendoc, "exit FederationsList::remove");
 }
 
-// ----------------------------------------------------------------------------
-// removeRegulator
 void FederationsList::removeRegulator(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -754,10 +679,6 @@ void FederationsList::removeRegulator(Handle federationHandle, FederateHandle fe
     federation->removeRegulator(federate);
 }
 
-// ----------------------------------------------------------------------------
-/*! This Method tries to remove all references to this Federate in the
-  Federation. To be used when a Federate is supposed to have crashed.
-*/
 void FederationsList::killFederate(Handle federationHandle, FederateHandle federate) throw()
 {
     try {
@@ -770,8 +691,6 @@ void FederationsList::killFederate(Handle federationHandle, FederateHandle feder
     }
 }
 
-// ----------------------------------------------------------------------------
-// isOwner
 bool FederationsList::isOwner(Handle federationHandle,
                               FederateHandle federate,
                               ObjectHandle id,
@@ -790,8 +709,6 @@ bool FederationsList::isOwner(Handle federationHandle,
     return federation->isOwner(federate, id, attribute);
 }
 
-// ----------------------------------------------------------------------------
-// searchOwner
 void FederationsList::searchOwner(Handle federationHandle,
                                   FederateHandle federate,
                                   ObjectHandle id,
@@ -810,8 +727,6 @@ void FederationsList::searchOwner(Handle federationHandle,
     federation->queryAttributeOwnership(federate, id, attribute);
 }
 
-// ----------------------------------------------------------------------------
-// negotiateDivestiture
 void FederationsList::negotiateDivestiture(Handle federationHandle,
                                            FederateHandle federate,
                                            ObjectHandle id,
@@ -834,8 +749,6 @@ void FederationsList::negotiateDivestiture(Handle federationHandle,
     federation->negotiateDivestiture(federate, id, attributes, list_size, tag);
 }
 
-// ----------------------------------------------------------------------------
-// acquireIfAvailable
 void FederationsList::acquireIfAvailable(Handle federationHandle,
                                          FederateHandle federate,
                                          ObjectHandle id,
@@ -857,8 +770,6 @@ void FederationsList::acquireIfAvailable(Handle federationHandle,
     federation->acquireIfAvailable(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
-// divest
 void FederationsList::divest(Handle federationHandle,
                              FederateHandle federate,
                              ObjectHandle id,
@@ -876,8 +787,6 @@ void FederationsList::divest(Handle federationHandle,
     federation->divest(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
-// acquire
 void FederationsList::acquire(Handle federationHandle,
                               FederateHandle federate,
                               ObjectHandle id,
@@ -899,8 +808,6 @@ void FederationsList::acquire(Handle federationHandle,
     federation->acquire(federate, id, attributes, list_size, tag);
 }
 
-// ----------------------------------------------------------------------------
-// cancelNegotiatedAttributeOwnershipDivestiture
 void FederationsList::cancelDivestiture(Handle federationHandle,
                                         FederateHandle federate,
                                         ObjectHandle id,
@@ -922,8 +829,6 @@ void FederationsList::cancelDivestiture(Handle federationHandle,
     federation->cancelDivestiture(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
-// respondRelease
 AttributeHandleSet* FederationsList::respondRelease(Handle federationHandle,
                                                     FederateHandle federate,
                                                     ObjectHandle id,
@@ -945,8 +850,6 @@ AttributeHandleSet* FederationsList::respondRelease(Handle federationHandle,
     return federation->respondRelease(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
-// cancelAcquisition
 void FederationsList::cancelAcquisition(Handle federationHandle,
                                         FederateHandle federate,
                                         ObjectHandle id,
@@ -968,7 +871,6 @@ void FederationsList::cancelAcquisition(Handle federationHandle,
     federation->cancelAcquisition(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
 long FederationsList::createRegion(Handle federationHandle,
                                    FederateHandle federate,
                                    SpaceHandle space,
@@ -987,7 +889,6 @@ long FederationsList::createRegion(Handle federationHandle,
     return federation->createRegion(federate, space, nb_extents);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::modifyRegion(Handle federationHandle,
                                    FederateHandle federate,
                                    RegionHandle region,
@@ -1002,7 +903,6 @@ void FederationsList::modifyRegion(Handle federationHandle,
     federation->modifyRegion(federate, region, extents);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::deleteRegion(Handle federationHandle, FederateHandle federate, long region) throw(
     RegionNotKnown, RegionInUse, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -1013,7 +913,6 @@ void FederationsList::deleteRegion(Handle federationHandle, FederateHandle feder
     federation->deleteRegion(federate, region);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::associateRegion(Handle federationHandle,
                                       FederateHandle federate,
                                       ObjectHandle object,
@@ -1032,7 +931,6 @@ void FederationsList::associateRegion(Handle federationHandle,
     federation->associateRegion(federate, object, region, nb_attributes, attributes);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::unassociateRegion(Handle federationHandle,
                                         FederateHandle federate,
                                         ObjectHandle object,
@@ -1049,7 +947,6 @@ void FederationsList::unassociateRegion(Handle federationHandle,
     federation->unassociateRegion(federate, object, region);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::subscribeAttributesWR(
     Handle federationHandle,
     FederateHandle federate,
@@ -1068,7 +965,6 @@ void FederationsList::subscribeAttributesWR(
     federation->subscribeAttributesWR(federate, object_class, region, nb, attributes);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::unsubscribeAttributesWR(Handle federationHandle,
                                               FederateHandle federate,
                                               ObjectClassHandle object_class,
@@ -1084,7 +980,6 @@ void FederationsList::unsubscribeAttributesWR(Handle federationHandle,
     federation->unsubscribeAttributesWR(federate, object_class, region);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::subscribeInteractionWR(Handle federationHandle,
                                              FederateHandle federate,
                                              InteractionClassHandle ic,
@@ -1100,7 +995,6 @@ void FederationsList::subscribeInteractionWR(Handle federationHandle,
     federation->subscribeInteractionWR(federate, ic, region);
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::unsubscribeInteractionWR(Handle federationHandle,
                                                FederateHandle federate,
                                                InteractionClassHandle ic,
@@ -1116,8 +1010,6 @@ void FederationsList::unsubscribeInteractionWR(Handle federationHandle,
     federation->unsubscribeInteractionWR(federate, ic, region);
 }
 
-// ----------------------------------------------------------------------------
-// registerObjectWithRegion
 ObjectHandle
 FederationsList::registerObjectWithRegion(Handle federationHandle,
                                           FederateHandle federate,
@@ -1142,8 +1034,6 @@ FederationsList::registerObjectWithRegion(Handle federationHandle,
     return federation->registerObjectWithRegion(federate, handle, tag, region, nb, attrs);
 }
 
-// ----------------------------------------------------------------------------
-// requestFederationSave with time
 void FederationsList::requestFederationSave(Handle federationHandle,
                                             FederateHandle the_federate,
                                             const std::string& the_label,
@@ -1159,8 +1049,6 @@ void FederationsList::requestFederationSave(Handle federationHandle,
     G.Out(pdGendoc, "exit  FederationsList::requestFederationSave with time");
 }
 
-// ----------------------------------------------------------------------------
-// requestFederationSave without time
 void FederationsList::requestFederationSave(Handle federationHandle,
                                             FederateHandle the_federate,
                                             const std::string& the_label)
@@ -1174,7 +1062,7 @@ void FederationsList::requestFederationSave(Handle federationHandle,
 
     G.Out(pdGendoc, "exit  FederationsList::requestFederationSave without time");
 }
-// ----------------------------------------------------------------------------
+
 void FederationsList::federateSaveBegun(Handle federationHandle, FederateHandle the_federate)
 {
     G.Out(pdGendoc, "enter FederationsList::federateSaveBegun");
@@ -1187,7 +1075,6 @@ void FederationsList::federateSaveBegun(Handle federationHandle, FederateHandle 
     G.Out(pdGendoc, "exit  FederationsList::federateSaveBegun");
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::federateSaveStatus(Handle federationHandle, FederateHandle the_federate, bool the_status)
 {
     G.Out(pdGendoc, "enter FederationsList::federateSaveStatus");
@@ -1200,7 +1087,6 @@ void FederationsList::federateSaveStatus(Handle federationHandle, FederateHandle
     G.Out(pdGendoc, "exit  FederationsList::federateSaveStatus");
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::requestFederationRestore(Handle federationHandle,
                                                FederateHandle the_federate,
                                                const std::string& the_label)
@@ -1214,7 +1100,6 @@ void FederationsList::requestFederationRestore(Handle federationHandle,
     G.Out(pdGendoc, "exit  FederationsList::requestFederationRestore");
 }
 
-// ----------------------------------------------------------------------------
 void FederationsList::federateRestoreStatus(Handle federationHandle, FederateHandle the_federate, bool the_status)
 {
     G.Out(pdGendoc, "enter FederationsList::federateRestoreStatus");
@@ -1226,8 +1111,6 @@ void FederationsList::federateRestoreStatus(Handle federationHandle, FederateHan
     G.Out(pdGendoc, "exit  FederationsList::federateRestoreStatus");
 }
 
-// ----------------------------------------------------------------------------
-// requestAttribute
 FederateHandle FederationsList::requestObjectOwner(Handle federationHandle,
                                                    FederateHandle federate,
                                                    ObjectHandle id,
@@ -1244,8 +1127,6 @@ FederateHandle FederationsList::requestObjectOwner(Handle federationHandle,
     return federation->requestObjectOwner(federate, id, attributes, list_size);
 }
 
-// ----------------------------------------------------------------------------
-// requestClassAttribute
 void FederationsList::requestClassAttributeValueUpdate(Handle federationHandle,
                                                        FederateHandle federate,
                                                        ObjectClassHandle classHandle,
@@ -1284,13 +1165,13 @@ bool FederationsList::handleMessageNullPrime(FederationHandle federation, Federa
     Federation* fed = searchFederation(federation);
 
     return fed->updateLastNERxForFederate(federate, date);
-} /* end of handleMessageNullPrime */
+}
 
 FederationTime FederationsList::getNullPrimeValue(FederationHandle federation)
 {
     Federation* fed = searchFederation(federation);
 
     return fed->getMinNERx();
-} /* end of handleMessageNullPrime */
+}
 }
 } // certi::rtig

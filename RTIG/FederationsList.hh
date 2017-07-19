@@ -52,7 +52,6 @@ class Federation;
  * You usually have only one RTIG instance.
  */
 class FederationsList {
-
 public:
     // constructor/destructor
     FederationsList(SocketServer& server, AuditFile& audit);
@@ -62,7 +61,6 @@ public:
 // -- Federation Management --
 // ---------------------------
 
-// MAX_FEDERATION is the maximum number of federations.
 #ifdef FEDERATION_USES_MULTICAST
     void createFederation(const std::string&, FederationHandle, SocketMC*)
 #else
@@ -75,6 +73,9 @@ public:
               SecurityError,
               RTIinternalError);
 
+    /** Return the Handle of the Federation named "name" if it is found in the
+     * FederationList, else throw FederationExecutionDoesNotExist.
+     */
     Handle getFederationHandle(const std::string& name) throw(FederationExecutionDoesNotExist);
 
     void destroyFederation(Handle) throw(FederatesCurrentlyJoined, FederationExecutionDoesNotExist, RTIinternalError);
@@ -87,6 +88,10 @@ public:
         throw(FederationExecutionDoesNotExist, RTIinternalError);
 
     // Synchronization Management
+
+    /** Called by processRegisterSynchronization and
+     * processSynchronizationAchieved.
+     */
     void manageSynchronization(Handle theHandle,
                                FederateHandle theFederate,
                                bool state,
@@ -111,11 +116,16 @@ public:
                                                                                       RestoreInProgress,
                                                                                       RTIinternalError);
 
+    /// Called by processRegisterSynchronization.
     void broadcastSynchronization(Handle handle,
                                   FederateHandle federate,
                                   const std::string& label,
                                   const std::string& tag) throw(FederationExecutionDoesNotExist, RTIinternalError);
 
+    /** Called by processRegisterSynchronization.
+     * 
+     * Broadcast only on the federates into a set
+     */
     void
     broadcastSynchronization(Handle handle,
                              FederateHandle federate,
@@ -142,6 +152,12 @@ public:
     // -------------------------
     // -- Federate Management --
     // -------------------------
+
+    /** Creates a new Federate if its name is unique, and returns its new
+     * Federate Handle. Also sends Null messages from all other federates
+     * to initialize its LBTS, and finally a RequestPause message if the
+     * Federation is already paused.
+     */
     FederateHandle addFederate(Handle theHandle,
                                const std::string& theFederateName,
                                SocketTCP* theTCPLink,
@@ -212,6 +228,9 @@ public:
                                                                                    RestoreInProgress,
                                                                                    RTIinternalError);
 
+    /** This Method tries to remove all references to this Federate in the
+     * Federation. To be used when a Federate is supposed to have crashed.
+     */
     void killFederate(Handle, FederateHandle) throw();
 
     // ---------------------
@@ -226,9 +245,6 @@ public:
                                                        RestoreInProgress,
                                                        RTIinternalError);
 
-    /**
-     *  updateRegulator
-     */
     void updateRegulator(FederationHandle theHandle,
                          FederateHandle theFederateHandle,
                          FederationTime heure_logique,
@@ -242,6 +258,7 @@ public:
                                                                                    RestoreInProgress,
                                                                                    RTIinternalError);
 
+    /// Adds a constrained federate to federation.
     void addConstrained(Handle theHandle, FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
                                                                                   FederateNotExecutionMember,
                                                                                   SaveInProgress,
@@ -611,8 +628,8 @@ public:
         this->verboseLevel = theVerboseLevel;
     }
 
-    /**
-     * Handle a Null Prime message.
+    /** Handle a Null Prime message.
+     * 
      * @param[in] federation the federation handle
      * @param[in] federate the handle of the federate which is sending a NULL PRIME message.
      * @param[in] date the date of the NULL PRIME message
@@ -621,18 +638,17 @@ public:
      */
     bool handleMessageNullPrime(FederationHandle federation, FederateHandle federate, FederationTime date);
 
-    /**
-     * Get the Null Prime value of the specified federation
-     * @param[in] federation
+    /** Get the Null Prime value of the specified federation
+     * 
+     * @param[in] federation specific federation
      * @return the Null Prime value of the federation
      */
     FederationTime getNullPrimeValue(FederationHandle federation);
-    
+
 private:
-    
-    /**
-     * Search federation from handle.
-     * @param[in] federationHandle, the handle of the search federation
+    /** Search federation from handle.
+     * 
+     * @param[in] federationHandle the handle of the search federation
      * @throw FederationExecutionDoesNotExist if the provided federation handle
      *        does not match any created federation.
      */
@@ -640,7 +656,7 @@ private:
 
     SocketServer& socketServer;
     AuditFile& auditFile;
-    
+
     int verboseLevel;
 
     typedef std::map<Handle, Federation*> HandleFederationMap;
