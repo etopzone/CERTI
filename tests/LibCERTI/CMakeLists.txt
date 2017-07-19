@@ -11,35 +11,16 @@ include_directories(${CERTI_SOURCE_DIR}/libHLA)
 include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
 include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 
-set(rtig_SRCS
-    ${CERTI_SOURCE_DIR}/RTIG/Federate.hh
-    ${CERTI_SOURCE_DIR}/RTIG/Federate.cc
-    
-    ${CERTI_SOURCE_DIR}/RTIG/Federation.hh
-    ${CERTI_SOURCE_DIR}/RTIG/Federation.cc
-    
-    ${CERTI_SOURCE_DIR}/RTIG/FederationsList.hh
-    ${CERTI_SOURCE_DIR}/RTIG/FederationsList.cc
-    
-    ${CERTI_SOURCE_DIR}/RTIG/RTIG.hh
-    ${CERTI_SOURCE_DIR}/RTIG/RTIG.cc
-    ${CERTI_SOURCE_DIR}/RTIG/RTIG_processing.cc
-    )
-
-add_executable(TestRTIG
-               temporaryenvironmentlocation.cpp temporaryenvironmentlocation.h
-               temporaryfedfile.cpp temporaryfedfile.h
+add_executable(TestLibCERTI
                
                ../mocks/sockettcp_mock.h
                
-               federate_test.cpp
-               federation_test.cpp
+               socketserver_test.cpp
                
-               ${rtig_SRCS}
                ../main.cpp
                )
 
-target_link_libraries(TestRTIG
+target_link_libraries(TestLibCERTI
                       CERTI
                       ${GTEST_BOTH_LIBRARIES}
                       ${GMOCK_BOTH_LIBRARIES}
@@ -48,15 +29,15 @@ target_link_libraries(TestRTIG
 
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(
-        NAME TestRTIG_coverage
-        EXECUTABLE TestRTIG --gtest_output=xml:../output/results-TestRTIG.xml
-        DEPENDENCIES TestRTIG
+        NAME TestLibCERTI_coverage
+        EXECUTABLE TestLibCERTI --gtest_output=xml:../output/results-TestLibCERTI.xml
+        DEPENDENCIES TestLibCERTI
     )
 
     SETUP_TARGET_FOR_COVERAGE_COBERTURA(
-        NAME TestRTIG_cobertura
-        EXECUTABLE TestRTIG --gtest_output=xml:../output/results-TestRTIG.xml
-        DEPENDENCIES TestRTIG
+        NAME TestLibCERTI_cobertura
+        EXECUTABLE TestLibCERTI --gtest_output=xml:../output/results-TestLibCERTI.xml
+        DEPENDENCIES TestLibCERTI
     )
     endif()
 
@@ -69,7 +50,7 @@ if (CMAKE_VERSION VERSION_LESS 3.1.3)
             SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
 	endif()
 else()
-    set_property(TARGET TestRTIG PROPERTY CXX_STANDARD 14)
+    set_property(TARGET TestLibCERTI PROPERTY CXX_STANDARD 14)
 endif()
 
-add_test(AllTests TestRTIG)
+add_test(AllTests TestLibCERTI)

@@ -11,7 +11,7 @@
 #include "temporaryenvironmentlocation.h"
 #include "temporaryfedfile.h"
 
-#include "sockettcp_mock.h"
+#include "../mocks/sockettcp_mock.h"
 
 using ::testing::_;
 
