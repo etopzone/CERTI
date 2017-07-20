@@ -31,7 +31,6 @@ add_executable(TestRTIG
                temporaryfedfile.cpp temporaryfedfile.h
                
                ../mocks/sockettcp_mock.h
-               ../mocks/federation_mock.h
                
                federate_test.cpp
                federation_test.cpp

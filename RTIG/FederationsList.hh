@@ -670,7 +670,6 @@ public:
                                                                                      RestoreInProgress,
                                                                                      RTIinternalError);
 
-    [[deprecated("never used")]]
     void setVerboseLevel(int theVerboseLevel);
 
     /** Handle a Null Prime message.
