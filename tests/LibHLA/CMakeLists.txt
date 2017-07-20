@@ -18,6 +18,8 @@ target_link_libraries(TestHLA
                       ${GTEST_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
+                      
+target_compile_definitions(TestHLA PRIVATE CERTI_TEST)
 
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(

@@ -17,6 +17,8 @@ target_link_libraries(TestRTI-HLA-1_3
                       ${GTEST_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
+                      
+target_compile_definitions(TestRTI-HLA-1_3 PRIVATE CERTI_TEST)
                 
 
 if (COMPILE_WITH_COVERAGE)

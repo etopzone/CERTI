@@ -43,7 +43,7 @@
 #include "SocketMC.hh"
 #endif
 
-#ifdef TEST_FOR_FEDERATION
+#ifdef CERTI_TEST
 #define PRIVATE_TESTABLE public
 #else
 #define PRIVATE_TESTABLE private

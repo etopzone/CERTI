@@ -31,6 +31,7 @@ add_executable(TestRTIG
                temporaryfedfile.cpp temporaryfedfile.h
                
                ../mocks/sockettcp_mock.h
+               ../mocks/federation_mock.h
                
                federate_test.cpp
                federation_test.cpp
@@ -46,6 +47,8 @@ target_link_libraries(TestRTIG
                       ${GMOCK_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
+                      
+target_compile_definitions(TestRTIG PRIVATE CERTI_TEST)
 
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(

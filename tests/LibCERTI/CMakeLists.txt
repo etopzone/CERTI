@@ -26,6 +26,8 @@ target_link_libraries(TestLibCERTI
                       ${GMOCK_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )
+                      
+target_compile_definitions(TestLibCERTI PRIVATE CERTI_TEST)
 
 if (COMPILE_WITH_COVERAGE)
     SETUP_TARGET_FOR_COVERAGE(
