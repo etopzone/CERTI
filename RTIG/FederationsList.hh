@@ -173,28 +173,31 @@ public:
                                               FederateNotExecutionMember,
                                               RTIinternalError);
 
-    void setClassRelevanceAdvisorySwitch(Handle theHandle,
-                                         FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                 FederateNotExecutionMember,
-                                                                                 SaveInProgress,
-                                                                                 RestoreInProgress,
-                                                                                 RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    setClassRelevanceAdvisorySwitch(Handle theHandle,
+                                    FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                            FederateNotExecutionMember,
+                                                                            SaveInProgress,
+                                                                            RestoreInProgress,
+                                                                            RTIinternalError);
 
-    void unsetClassRelevanceAdvisorySwitch(Handle theHandle,
-                                           FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                   FederateNotExecutionMember,
-                                                                                   SaveInProgress,
-                                                                                   RestoreInProgress,
-                                                                                   RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    unsetClassRelevanceAdvisorySwitch(Handle theHandle,
+                                      FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                              FederateNotExecutionMember,
+                                                                              SaveInProgress,
+                                                                              RestoreInProgress,
+                                                                              RTIinternalError);
 
-    void setInteractionRelevanceAdvisorySwitch(Handle theHandle,
-                                               FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                       FederateNotExecutionMember,
-                                                                                       SaveInProgress,
-                                                                                       RestoreInProgress,
-                                                                                       RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    setInteractionRelevanceAdvisorySwitch(Handle theHandle,
+                                          FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                                  FederateNotExecutionMember,
+                                                                                  SaveInProgress,
+                                                                                  RestoreInProgress,
+                                                                                  RTIinternalError);
 
-    void
+    [[deprecated("forwarder, use getFederation instead")]] void
     unsetInteractionRelevanceAdvisorySwitch(Handle theHandle,
                                             FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
                                                                                     FederateNotExecutionMember,
@@ -202,33 +205,37 @@ public:
                                                                                     RestoreInProgress,
                                                                                     RTIinternalError);
 
-    void setAttributeRelevanceAdvisorySwitch(Handle theHandle,
-                                             FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                     FederateNotExecutionMember,
-                                                                                     SaveInProgress,
-                                                                                     RestoreInProgress,
-                                                                                     RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    setAttributeRelevanceAdvisorySwitch(Handle theHandle,
+                                        FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                                FederateNotExecutionMember,
+                                                                                SaveInProgress,
+                                                                                RestoreInProgress,
+                                                                                RTIinternalError);
 
-    void unsetAttributeRelevanceAdvisorySwitch(Handle theHandle,
-                                               FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                       FederateNotExecutionMember,
-                                                                                       SaveInProgress,
-                                                                                       RestoreInProgress,
-                                                                                       RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    unsetAttributeRelevanceAdvisorySwitch(Handle theHandle,
+                                          FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                                  FederateNotExecutionMember,
+                                                                                  SaveInProgress,
+                                                                                  RestoreInProgress,
+                                                                                  RTIinternalError);
 
-    void setAttributeScopeAdvisorySwitch(Handle theHandle,
-                                         FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                 FederateNotExecutionMember,
-                                                                                 SaveInProgress,
-                                                                                 RestoreInProgress,
-                                                                                 RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    setAttributeScopeAdvisorySwitch(Handle theHandle,
+                                    FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                            FederateNotExecutionMember,
+                                                                            SaveInProgress,
+                                                                            RestoreInProgress,
+                                                                            RTIinternalError);
 
-    void unsetAttributeScopeAdvisorySwitch(Handle theHandle,
-                                           FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                   FederateNotExecutionMember,
-                                                                                   SaveInProgress,
-                                                                                   RestoreInProgress,
-                                                                                   RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    unsetAttributeScopeAdvisorySwitch(Handle theHandle,
+                                      FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                              FederateNotExecutionMember,
+                                                                              SaveInProgress,
+                                                                              RestoreInProgress,
+                                                                              RTIinternalError);
 
     /** This Method tries to remove all references to this Federate in the
      * Federation. To be used when a Federate is supposed to have crashed.
@@ -261,17 +268,19 @@ public:
                                                                                    RTIinternalError);
 
     /// Adds a constrained federate to federation.
-    void addConstrained(Handle theHandle, FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                  FederateNotExecutionMember,
-                                                                                  SaveInProgress,
-                                                                                  RestoreInProgress,
-                                                                                  RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    addConstrained(Handle theHandle, FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                             FederateNotExecutionMember,
+                                                                             SaveInProgress,
+                                                                             RestoreInProgress,
+                                                                             RTIinternalError);
 
-    void removeConstrained(Handle theHandle, FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
-                                                                                     FederateNotExecutionMember,
-                                                                                     SaveInProgress,
-                                                                                     RestoreInProgress,
-                                                                                     RTIinternalError);
+    [[deprecated("forwarder, use getFederation instead")]] void
+    removeConstrained(Handle theHandle, FederateHandle theFederateHandle) throw(FederationExecutionDoesNotExist,
+                                                                                FederateNotExecutionMember,
+                                                                                SaveInProgress,
+                                                                                RestoreInProgress,
+                                                                                RTIinternalError);
 
     // -------------------------------------------
     // -- Object Classes & Instances Management --
@@ -688,8 +697,7 @@ public:
      * @return the Null Prime value of the federation
      */
     FederationTime getNullPrimeValue(FederationHandle federation);
-
-private:
+    
     /** Search federation from handle.
      * 
      * @param[in] federationHandle the handle of the search federation
@@ -697,6 +705,7 @@ private:
      *        does not match any created federation.
      */
     Federation* searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist);
+private:
 
     SocketServer& socketServer;
     AuditFile& auditFile;

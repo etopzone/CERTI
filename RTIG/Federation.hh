@@ -197,23 +197,6 @@ public:
                                                     RestoreInProgress,
                                                     RTIinternalError); // includes Time Regulation already disabled.
 
-    /** Set Federate's attribute IsConstrained to true.
-     * 
-     *  FIXME: name/ merge with removeConstrained.
-     */
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    addConstrained(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                   SaveInProgress,
-                                                   RestoreInProgress,
-                                                   RTIinternalError); // includes Time constrained already enabled.
-    
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] 
-    void
-    removeConstrained(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                      SaveInProgress,
-                                                      RestoreInProgress,
-                                                      RTIinternalError); // includes Time constrained already disabled.
-
     // Synchronization Management.
 
     /// Add a new synchronization point to federation.
@@ -637,56 +620,6 @@ public:
                                                                                      SaveInProgress,
                                                                                      RestoreInProgress,
                                                                                      RTIinternalError);
-
-    // switches
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    setClassRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                    SaveInProgress,
-                                                                    RestoreInProgress,
-                                                                    RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    unsetClassRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                      SaveInProgress,
-                                                                      RestoreInProgress,
-                                                                      RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    setInteractionRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                          SaveInProgress,
-                                                                          RestoreInProgress,
-                                                                          RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    unsetInteractionRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                            SaveInProgress,
-                                                                            RestoreInProgress,
-                                                                            RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    setAttributeRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                        SaveInProgress,
-                                                                        RestoreInProgress,
-                                                                        RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    unsetAttributeRelevanceAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                          SaveInProgress,
-                                                                          RestoreInProgress,
-                                                                          RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    setAttributeScopeAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                    SaveInProgress,
-                                                                    RestoreInProgress,
-                                                                    RTIinternalError);
-
-    [[deprecated("this method only forwards to federate, use getFederate instead")]] void
-    unsetAttributeScopeAdvisorySwitch(FederateHandle theHandle) throw(FederateNotExecutionMember,
-                                                                      SaveInProgress,
-                                                                      RestoreInProgress,
-                                                                      RTIinternalError);
 
     void getFOM(NM_Join_Federation_Execution& objectModelData);
 

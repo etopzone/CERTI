@@ -61,127 +61,55 @@ FederationsList::~FederationsList()
 void FederationsList::setClassRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->setClassRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setClassRelevanceAdvisorySwitch(true);
-#endif
 }
 
 void FederationsList::unsetClassRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->unsetClassRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setClassRelevanceAdvisorySwitch(false);
-#endif
 }
 
 void FederationsList::setInteractionRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->setInteractionRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setInteractionRelevanceAdvisorySwitch(true);
-#endif
 }
 
 void FederationsList::unsetInteractionRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->unsetInteractionRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setInteractionRelevanceAdvisorySwitch(false);
-#endif
 }
 
 void FederationsList::setAttributeRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->setAttributeRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setAttributeRelevanceAdvisorySwitch(true);
-#endif
 }
 
 void FederationsList::unsetAttributeRelevanceAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->unsetAttributeRelevanceAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setAttributeRelevanceAdvisorySwitch(false);
-#endif
 }
 
 void FederationsList::setAttributeScopeAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->setAttributeScopeAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setAttributeScopeAdvisorySwitch(true);
-#endif
 }
 
 void FederationsList::unsetAttributeScopeAdvisorySwitch(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->unsetAttributeScopeAdvisorySwitch(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setAttributeScopeAdvisorySwitch(false);
-#endif
 }
 
 void FederationsList::addConstrained(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if 0
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->addConstrained(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setConstrained(true);
-#endif
 }
 
 FederateHandle
@@ -668,15 +596,7 @@ void FederationsList::subscribeObject(
 void FederationsList::removeConstrained(Handle federationHandle, FederateHandle federate) throw(
     FederationExecutionDoesNotExist, FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-#if OLD
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    // It may throw a bunch of exceptions.
-    federation->removeConstrained(federate);
-#else
     searchFederation(federationHandle)->getFederate(federate).setConstrained(false);
-#endif
 }
 
 void FederationsList::destroyFederation(Handle federationHandle) throw(FederatesCurrentlyJoined,
