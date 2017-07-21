@@ -14,16 +14,16 @@ TEST(FederateTest, ConstructorThrowsOnNullHandle)
 }
 
 // FIXME Possible bug here !!
-TEST(FederateTest, SetHandleAcceptsNullHandle)
-{
-    Federate f("test", 1);
-    
-    ASSERT_EQ(1, f.getHandle());
-    
-    f.setHandle(0);
-    
-    ASSERT_EQ(0, f.getHandle());
-}
+// TEST(FederateTest, SetHandleAcceptsNullHandle)
+// {
+//     Federate f("test", 1);
+//     
+//     ASSERT_EQ(1, f.getHandle());
+//     
+//     f.setHandle(0);
+//     
+//     ASSERT_EQ(0, f.getHandle());
+// }
 
 TEST(FederateTest, BasicSyncLabelManipulation)
 {

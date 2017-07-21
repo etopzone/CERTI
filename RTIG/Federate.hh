@@ -39,31 +39,31 @@ public:
 
     FederateHandle getHandle() const noexcept;
     
-    [[deprecated("use new version")]]
-    void setHandle(const FederateHandle h);
-    void new_setHandle(const FederateHandle h); //
+//     [[deprecated("use new version")]]
+//     void setHandle(const FederateHandle h);
+    void new_setHandle(const FederateHandle h);
 
     std::string getName() const noexcept;
 
     bool isConstrained() const noexcept;
     
-    [[deprecated("use new version")]]
-    void setConstrained(const bool c);
-    void new_setConstrained(const bool c); //
+//     [[deprecated("use new version")]]
+//     void setConstrained(const bool c);
+    void new_setConstrained(const bool c);
 
     bool isRegulator() const noexcept;
     
-    [[deprecated("use new version")]]
-    void setRegulator(const bool r);
-    void new_setRegulator(const bool r); //
+//     [[deprecated("use new version")]]
+//     void setRegulator(const bool r);
+    void new_setRegulator(const bool r);
 
     bool isUsingNERx() const noexcept;
     
-    void setIsUsingNERx(const bool unx);
+    void setIsUsingNERx(const bool unx) noexcept;
 
     const FederationTime getLastNERxValue() const noexcept;
     
-    void setLastNERxValue(const FederationTime t);
+    void setLastNERxValue(const FederationTime t) noexcept;
 
     /**
      * Returns the current state of the ClassRelevanceAdvisory switch.
@@ -77,9 +77,9 @@ public:
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
-    [[deprecated("use new version")]]
-    void setClassRelevanceAdvisorySwitch(const bool val);
-    void new_setClassRelevanceAdvisorySwitch(const bool val); //
+//     [[deprecated("use new version")]]
+//     void setClassRelevanceAdvisorySwitch(const bool val);
+    void new_setClassRelevanceAdvisorySwitch(const bool val);
 
     /**
      * Returns the current state of the InteractionRelevanceAdvisory switch.
@@ -93,9 +93,9 @@ public:
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
-    [[deprecated("use new version")]]
-    void setInteractionRelevanceAdvisorySwitch(const bool val);
-    void new_setInteractionRelevanceAdvisorySwitch(const bool val); //
+//     [[deprecated("use new version")]]
+//     void setInteractionRelevanceAdvisorySwitch(const bool val);
+    void new_setInteractionRelevanceAdvisorySwitch(const bool val);
 
     /**
      * Returns the current state of the AttributeRelevanceAdvisory switch.
@@ -109,9 +109,9 @@ public:
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
-    [[deprecated("use new version")]]
-    void setAttributeRelevanceAdvisorySwitch(const bool val);
-    void new_setAttributeRelevanceAdvisorySwitch(const bool val); //
+//     [[deprecated("use new version")]]
+//     void setAttributeRelevanceAdvisorySwitch(const bool val);
+    void new_setAttributeRelevanceAdvisorySwitch(const bool val);
 
     /**
      * Returns the current state of the AttributeScopeAdvisory switch.
@@ -125,17 +125,17 @@ public:
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
-    [[deprecated("use new version")]]
-    void setAttributeScopeAdvisorySwitch(const bool val);
-    void new_setAttributeScopeAdvisorySwitch(const bool val); //
+//     [[deprecated("use new version")]]
+//     void setAttributeScopeAdvisorySwitch(const bool val);
+    void new_setAttributeScopeAdvisorySwitch(const bool val);
 
     bool isSaving() const noexcept;
     
-    void setSaving(const bool s);
+    void setSaving(const bool s) noexcept;
 
     bool isRestoring() const noexcept;
     
-    void setRestoring(const bool r);
+    void setRestoring(const bool r) noexcept;
 
     /**
      *  Add a synchronization label to federate.

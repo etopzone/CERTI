@@ -42,12 +42,12 @@ FederateHandle Federate::getHandle() const noexcept
     return my_handle;
 };
 
-void Federate::setHandle(const FederateHandle h)
-{
-    // FIXME if we cannot construct with a zero handle,
-    // shouldn't we throw here too ?
-    my_handle = h;
-};
+// void Federate::setHandle(const FederateHandle h)
+// {
+//     // FIXME if we cannot construct with a zero handle,
+//     // shouldn't we throw here too ?
+//     my_handle = h;
+// };
 
 void Federate::new_setHandle(const FederateHandle h)
 {
@@ -71,10 +71,10 @@ bool Federate::isConstrained() const noexcept
     return my_isConstrained;
 };
 
-void Federate::setConstrained(const bool c)
-{
-    my_isConstrained = c;
-};
+// void Federate::setConstrained(const bool c)
+// {
+//     my_isConstrained = c;
+// };
 
 void Federate::new_setConstrained(const bool c)
 {
@@ -90,10 +90,10 @@ bool Federate::isRegulator() const noexcept
     return my_isRegulator;
 };
 
-void Federate::setRegulator(const bool r)
-{
-    my_isRegulator = r;
-};
+// void Federate::setRegulator(const bool r)
+// {
+//     my_isRegulator = r;
+// };
 
 void Federate::new_setRegulator(const bool r)
 {
@@ -109,7 +109,7 @@ bool Federate::isUsingNERx() const noexcept
     return my_isUsingNERx;
 };
 
-void Federate::setIsUsingNERx(const bool unx)
+void Federate::setIsUsingNERx(const bool unx) noexcept
 {
     my_isUsingNERx = unx;
 };
@@ -119,7 +119,7 @@ const FederationTime Federate::getLastNERxValue() const noexcept
     return my_lastNERxValueReceived;
 };
 
-void Federate::setLastNERxValue(const FederationTime t)
+void Federate::setLastNERxValue(const FederationTime t) noexcept
 {
     my_lastNERxValueReceived = t;
     my_isUsingNERx = true;
@@ -130,10 +130,10 @@ bool Federate::isClassRelevanceAdvisorySwitch() const noexcept
     return my_classRelevanceAdvisorySwitch;
 };
 
-void Federate::setClassRelevanceAdvisorySwitch(const bool val)
-{
-    my_classRelevanceAdvisorySwitch = val;
-};
+// void Federate::setClassRelevanceAdvisorySwitch(const bool val)
+// {
+//     my_classRelevanceAdvisorySwitch = val;
+// };
 
 void Federate::new_setClassRelevanceAdvisorySwitch(const bool val)
 {
@@ -149,10 +149,10 @@ bool Federate::isInteractionRelevanceAdvisorySwitch() const noexcept
     return my_interactionRelevanceAdvisorySwitch;
 };
 
-void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
-{
-    my_interactionRelevanceAdvisorySwitch = val;
-};
+// void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
+// {
+//     my_interactionRelevanceAdvisorySwitch = val;
+// };
 
 void Federate::new_setInteractionRelevanceAdvisorySwitch(const bool val)
 {
@@ -168,10 +168,10 @@ bool Federate::isAttributeRelevanceAdvisorySwitch() const noexcept
     return my_attributeRelevanceAdvisorySwitch;
 };
 
-void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
-{
-    my_attributeRelevanceAdvisorySwitch = val;
-};
+// void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
+// {
+//     my_attributeRelevanceAdvisorySwitch = val;
+// };
 
 void Federate::new_setAttributeRelevanceAdvisorySwitch(const bool val)
 {
@@ -187,10 +187,10 @@ bool Federate::isAttributeScopeAdvisorySwitch() const noexcept
     return my_attributeScopeAdvisorySwitch;
 };
 
-void Federate::setAttributeScopeAdvisorySwitch(const bool val)
-{
-    my_attributeScopeAdvisorySwitch = val;
-};
+// void Federate::setAttributeScopeAdvisorySwitch(const bool val)
+// {
+//     my_attributeScopeAdvisorySwitch = val;
+// };
 
 void Federate::new_setAttributeScopeAdvisorySwitch(const bool val)
 {
@@ -206,7 +206,7 @@ bool Federate::isSaving() const noexcept
     return my_isCurrentlySaving;
 };
 
-void Federate::setSaving(const bool s)
+void Federate::setSaving(const bool s) noexcept
 {
     my_isCurrentlySaving = s;
 };
@@ -216,7 +216,7 @@ bool Federate::isRestoring() const noexcept
     return my_isCurrentlyRestoring;
 };
 
-void Federate::setRestoring(const bool r)
+void Federate::setRestoring(const bool r) noexcept
 {
     my_isCurrentlyRestoring = r;
 };
