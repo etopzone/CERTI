@@ -493,6 +493,7 @@ void Federation::addConstrained(FederateHandle federate_handle) throw(FederateNo
                                                                       RestoreInProgress,
                                                                       RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -503,6 +504,9 @@ void Federation::addConstrained(FederateHandle federate_handle) throw(FederateNo
 
     federate.setConstrained(true);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is now constrained" << endl;
+#else
+    getFederate(federate_handle).new_setConstrained(true);
+#endif
 }
 
 void Federation::setClassRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -510,6 +514,7 @@ void Federation::setClassRelevanceAdvisorySwitch(FederateHandle federate_handle)
                                                                                        RestoreInProgress,
                                                                                        RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -520,6 +525,9 @@ void Federation::setClassRelevanceAdvisorySwitch(FederateHandle federate_handle)
 
     federate.setClassRelevanceAdvisorySwitch(true);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets CRA switch" << endl;
+#else
+    getFederate(federate_handle).new_setClassRelevanceAdvisorySwitch(true);
+#endif
 }
 
 void Federation::setInteractionRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -527,6 +535,7 @@ void Federation::setInteractionRelevanceAdvisorySwitch(FederateHandle federate_h
                                                                                              RestoreInProgress,
                                                                                              RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -537,6 +546,9 @@ void Federation::setInteractionRelevanceAdvisorySwitch(FederateHandle federate_h
 
     federate.setInteractionRelevanceAdvisorySwitch(true);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets IRA switch" << endl;
+#else
+    getFederate(federate_handle).new_setInteractionRelevanceAdvisorySwitch(true);
+#endif
 }
 
 void Federation::setAttributeRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -544,6 +556,7 @@ void Federation::setAttributeRelevanceAdvisorySwitch(FederateHandle federate_han
                                                                                            RestoreInProgress,
                                                                                            RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -554,6 +567,9 @@ void Federation::setAttributeRelevanceAdvisorySwitch(FederateHandle federate_han
 
     federate.setAttributeRelevanceAdvisorySwitch(true);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets ARA switch" << endl;
+#else
+    getFederate(federate_handle).new_setAttributeRelevanceAdvisorySwitch(true);
+#endif
 }
 
 void Federation::setAttributeScopeAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -561,6 +577,7 @@ void Federation::setAttributeScopeAdvisorySwitch(FederateHandle federate_handle)
                                                                                        RestoreInProgress,
                                                                                        RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -571,6 +588,9 @@ void Federation::setAttributeScopeAdvisorySwitch(FederateHandle federate_handle)
 
     federate.setAttributeScopeAdvisorySwitch(true);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " sets ASA switch" << endl;
+#else
+    getFederate(federate_handle).new_setAttributeScopeAdvisorySwitch(true);
+#endif
 }
 
 void Federation::unsetClassRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -578,6 +598,7 @@ void Federation::unsetClassRelevanceAdvisorySwitch(FederateHandle federate_handl
                                                                                          RestoreInProgress,
                                                                                          RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -588,11 +609,15 @@ void Federation::unsetClassRelevanceAdvisorySwitch(FederateHandle federate_handl
 
     federate.setClassRelevanceAdvisorySwitch(false);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears CRA switch" << endl;
+#else
+    getFederate(federate_handle).new_setClassRelevanceAdvisorySwitch(false);
+#endif
 }
 
 void Federation::unsetInteractionRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(
     FederateNotExecutionMember, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -603,6 +628,9 @@ void Federation::unsetInteractionRelevanceAdvisorySwitch(FederateHandle federate
 
     federate.setInteractionRelevanceAdvisorySwitch(false);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears IRA switch" << endl;
+#else
+    getFederate(federate_handle).new_setInteractionRelevanceAdvisorySwitch(false);
+#endif
 }
 
 void Federation::unsetAttributeRelevanceAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -610,6 +638,7 @@ void Federation::unsetAttributeRelevanceAdvisorySwitch(FederateHandle federate_h
                                                                                              RestoreInProgress,
                                                                                              RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -620,6 +649,9 @@ void Federation::unsetAttributeRelevanceAdvisorySwitch(FederateHandle federate_h
 
     federate.setAttributeRelevanceAdvisorySwitch(false);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears ARA switch" << endl;
+#else
+    getFederate(federate_handle).new_setAttributeRelevanceAdvisorySwitch(false);
+#endif
 }
 
 void Federation::unsetAttributeScopeAdvisorySwitch(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -627,6 +659,7 @@ void Federation::unsetAttributeScopeAdvisorySwitch(FederateHandle federate_handl
                                                                                          RestoreInProgress,
                                                                                          RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -637,6 +670,9 @@ void Federation::unsetAttributeScopeAdvisorySwitch(FederateHandle federate_handl
 
     federate.setAttributeScopeAdvisorySwitch(false);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " clears ASA switch" << endl;
+#else
+    getFederate(federate_handle).new_setAttributeScopeAdvisorySwitch(false);
+#endif
 }
 
 void Federation::addRegulator(FederateHandle federate_handle, FederationTime time) throw(FederateNotExecutionMember,
@@ -649,7 +685,7 @@ void Federation::addRegulator(FederateHandle federate_handle, FederationTime tim
 
     // It may throw RTIinternalError if Federate was not regulators.
     regulators.insert(federate_handle, time);
-    federate.setRegulator(true);
+    federate.new_setRegulator(true);
 
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle
                      << " is now a regulator, Time=" << time.getTime() << endl;
@@ -1550,6 +1586,7 @@ void Federation::removeConstrained(FederateHandle federate_handle) throw(Federat
                                                                          RestoreInProgress,
                                                                          RTIinternalError)
 {
+#if 0
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
 
@@ -1561,6 +1598,9 @@ void Federation::removeConstrained(FederateHandle federate_handle) throw(Federat
     federate.setConstrained(false);
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is not constrained anymore"
                      << endl;
+#else
+    getFederate(federate_handle).new_setConstrained(false);
+#endif
 }
 
 void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateNotExecutionMember,
@@ -1574,7 +1614,7 @@ void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateN
     // It may throw RTIinternalError if Federate was not regulators.
     regulators.remove(federate_handle);
 
-    federate.setRegulator(false);
+    federate.new_setRegulator(false);
 
     Debug(D, pdTerm) << "Federation " << handle << ": Federate " << federate_handle << " is not a regulator anymore"
                      << endl;
@@ -2108,7 +2148,8 @@ void Federation::subscribeAttributesWR(FederateHandle federate,
                                        ObjectClassHandle c,
                                        RegionHandle region_handle,
                                        unsigned short nb,
-                                       const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember, RegionNotKnown,
+                                       const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
+                                                                                        RegionNotKnown,
                                                                                         SaveInProgress,
                                                                                         RestoreInProgress,
                                                                                         RTIinternalError)
@@ -2119,7 +2160,8 @@ void Federation::subscribeAttributesWR(FederateHandle federate,
 
 void Federation::unsubscribeAttributesWR(FederateHandle federate,
                                          ObjectClassHandle object_class,
-                                         RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
+                                         RegionHandle region_handle) throw(FederateNotExecutionMember,
+                                                                           RegionNotKnown,
                                                                            SaveInProgress,
                                                                            RestoreInProgress,
                                                                            RTIinternalError)
@@ -2133,7 +2175,8 @@ void Federation::unsubscribeAttributesWR(FederateHandle federate,
 
 void Federation::subscribeInteractionWR(FederateHandle federate,
                                         InteractionClassHandle interaction,
-                                        RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
+                                        RegionHandle region_handle) throw(FederateNotExecutionMember,
+                                                                          RegionNotKnown,
                                                                           SaveInProgress,
                                                                           RestoreInProgress,
                                                                           RTIinternalError)
@@ -2147,7 +2190,8 @@ void Federation::subscribeInteractionWR(FederateHandle federate,
 
 void Federation::unsubscribeInteractionWR(FederateHandle federate,
                                           InteractionClassHandle interaction,
-                                          RegionHandle region_handle) throw(FederateNotExecutionMember, RegionNotKnown,
+                                          RegionHandle region_handle) throw(FederateNotExecutionMember,
+                                                                            RegionNotKnown,
                                                                             SaveInProgress,
                                                                             RestoreInProgress,
                                                                             RTIinternalError)
@@ -2165,7 +2209,8 @@ Federation::registerObjectWithRegion(FederateHandle federate,
                                      const string& object_name,
                                      RegionHandle region_handle,
                                      int nb,
-                                     const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember, ObjectClassNotDefined,
+                                     const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
+                                                                                      ObjectClassNotDefined,
                                                                                       ObjectClassNotPublished,
                                                                                       AttributeNotDefined,
                                                                                       AttributeNotPublished,
@@ -2263,14 +2308,42 @@ bool Federation::restoreXmlData(string docFilename)
                         status = false;
                     }
 
+#if 0
                     i->second.setConstrained(status);
+#else
+                    try {
+                        i->second.new_setConstrained(status);
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate was already constrained, no issue" << endl;
+                    }
+#endif
 
                     // Set federate regulating status
                     status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "regulator"));
 
+#if 0
                     i->second.setRegulator(status);
+#else
+                    try {
+                        i->second.new_setRegulator(status);
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate was already regulator, no issue" << endl;
+                    }
+#endif
 
+#if 0
                     i->second.setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
+#else
+                    try {
+                        i->second.new_setHandle(
+                            strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate handle was already set, no issue" << endl;
+                    }
+#endif
                     break;
                 }
             }

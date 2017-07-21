@@ -404,6 +404,27 @@ TEST_F(FederationTest, CheckThrowsOnUnknownFederate)
     ASSERT_THROW(f.check(ukn_federate), ::certi::FederateNotExecutionMember);
 }
 
+TEST_F(FederationTest, GetFederateThrowsOnUnknownFederate)
+{
+    ASSERT_THROW(f.getFederate(ukn_federate), ::certi::FederateNotExecutionMember);
+}
+
+TEST_F(FederationTest, GetFederateReturnsGoodFederate)
+{
+    auto handle1 = f.add("fed1", nullptr);
+    auto handle2 = f.add("fed2", nullptr);
+    
+    auto& fed1 = f.getFederate(handle1);
+    
+    ASSERT_EQ(handle1, fed1.getHandle());
+    ASSERT_EQ("fed1", fed1.getName());
+    
+    auto& fed2 = f.getFederate(handle2);
+    
+    ASSERT_EQ(handle2, fed2.getHandle());
+    ASSERT_EQ("fed2", fed2.getName());
+}
+
 TEST_F(FederationTest, SetUnsetCRASAlterUnderlyingFederate)
 {
     auto handle = f.add("fed", nullptr);
