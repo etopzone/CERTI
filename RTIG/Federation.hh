@@ -604,32 +604,28 @@ public:
                                ObjectClassHandle,
                                RegionHandle,
                                unsigned short,
-                               const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember, RegionNotKnown,
+                               const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember,
+                                                                          RegionNotKnown,
                                                                           SaveInProgress,
                                                                           RestoreInProgress,
                                                                           RTIinternalError);
 
-                               void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
-                                                                                        SaveInProgress,
-                                                                                        RestoreInProgress,
-                                                                                        RTIinternalError);
+    void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle) throw(
+        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-                               void subscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
-                                                                                            SaveInProgress,
-                                                                                            RestoreInProgress,
-                                                                                            RTIinternalError);
+    void subscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(
+        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-                               void unsubscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(FederateNotExecutionMember, RegionNotKnown,
-                                                                                              SaveInProgress,
-                                                                                              RestoreInProgress,
-                                                                                              RTIinternalError);
+    void unsubscribeInteractionWR(FederateHandle, InteractionClassHandle, RegionHandle) throw(
+        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
     ObjectHandle registerObjectWithRegion(FederateHandle,
                                           ObjectClassHandle,
                                           const std::string&,
                                           RegionHandle,
                                           int,
-                                          const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember, ObjectClassNotDefined,
+                                          const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember,
+                                                                                     ObjectClassNotDefined,
                                                                                      ObjectClassNotPublished,
                                                                                      AttributeNotDefined,
                                                                                      AttributeNotPublished,
@@ -705,10 +701,8 @@ public:
      */
     FederationTime getMinNERx() const;
 
-    PRIVATE_TESTABLE :
-        /// Return the Federate whose Name is theName, if found.
-        Federate&
-        getFederate(const std::string& theName) throw(FederateNotExecutionMember);
+    /// Return the Federate whose Name is theName, if found.
+    Federate& getFederate(const std::string& theName) throw(FederateNotExecutionMember);
 
     /// Return the Federate whose Handle is theHandle, if found.
     Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
