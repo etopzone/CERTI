@@ -66,11 +66,11 @@ TEST(FederateTest, HandleGetterSetter)
     
     ASSERT_EQ(1, f.getHandle());
     
-    f.new_setHandle(7);
+    f.setHandle(7);
     
     ASSERT_EQ(7, f.getHandle());
     
-    f.new_setHandle(1);
+    f.setHandle(1);
     
     ASSERT_EQ(1, f.getHandle());
 }
@@ -79,9 +79,9 @@ TEST(FederateTest, CannotSetNullHandle)
 {
     Federate f("test", 1);
     
-    ASSERT_THROW(f.new_setHandle(0), RTIinternalError);
+    ASSERT_THROW(f.setHandle(0), RTIinternalError);
     
-    ASSERT_THROW(f.new_setHandle(1), RTIinternalError);
+    ASSERT_THROW(f.setHandle(1), RTIinternalError);
 }
 
 TEST(FederateTest, NameGetter)
@@ -97,11 +97,11 @@ TEST(FederateTest, ConstrainedGetterSetter)
     
     ASSERT_FALSE(f.isConstrained());
     
-    f.new_setConstrained(true);
+    f.setConstrained(true);
     
     ASSERT_TRUE(f.isConstrained());
     
-    f.new_setConstrained(false);
+    f.setConstrained(false);
     
     ASSERT_FALSE(f.isConstrained());
 }
@@ -110,13 +110,13 @@ TEST(FederateTest, CannotSetConstrainedTwice)
 {
     Federate f("test", 1);
     
-    f.new_setConstrained(true);
+    f.setConstrained(true);
     
-    ASSERT_THROW(f.new_setConstrained(true), RTIinternalError);
+    ASSERT_THROW(f.setConstrained(true), RTIinternalError);
     
-    f.new_setConstrained(false);
+    f.setConstrained(false);
     
-    ASSERT_THROW(f.new_setConstrained(false), RTIinternalError);
+    ASSERT_THROW(f.setConstrained(false), RTIinternalError);
 }
 
 TEST(FederateTest, RegulatorGetterSetter)
@@ -125,11 +125,11 @@ TEST(FederateTest, RegulatorGetterSetter)
     
     ASSERT_FALSE(f.isRegulator());
     
-    f.new_setRegulator(true);
+    f.setRegulator(true);
     
     ASSERT_TRUE(f.isRegulator());
     
-    f.new_setRegulator(false);
+    f.setRegulator(false);
     
     ASSERT_FALSE(f.isRegulator());
 }
@@ -138,13 +138,13 @@ TEST(FederateTest, CannotSetRegulatorTwice)
 {
     Federate f("test", 1);
     
-    f.new_setRegulator(true);
+    f.setRegulator(true);
     
-    ASSERT_THROW(f.new_setRegulator(true), RTIinternalError);
+    ASSERT_THROW(f.setRegulator(true), RTIinternalError);
     
-    f.new_setRegulator(false);
+    f.setRegulator(false);
     
-    ASSERT_THROW(f.new_setRegulator(false), RTIinternalError);
+    ASSERT_THROW(f.setRegulator(false), RTIinternalError);
 }
 
 TEST(FederateTest, UsingNERxGetterSetter)
@@ -187,11 +187,11 @@ TEST(FederateTest, CRASGetterSetter)
     
     ASSERT_TRUE(f.isClassRelevanceAdvisorySwitch());
     
-    f.new_setClassRelevanceAdvisorySwitch(false);
+    f.setClassRelevanceAdvisorySwitch(false);
     
     ASSERT_FALSE(f.isClassRelevanceAdvisorySwitch());
     
-    f.new_setClassRelevanceAdvisorySwitch(true);
+    f.setClassRelevanceAdvisorySwitch(true);
     
     ASSERT_TRUE(f.isClassRelevanceAdvisorySwitch());
 }
@@ -200,13 +200,13 @@ TEST(FederateTest, CannotSetCRASTwice)
 {
     Federate f("test", 1);
     
-    f.new_setClassRelevanceAdvisorySwitch(false);
+    f.setClassRelevanceAdvisorySwitch(false);
     
-    ASSERT_THROW(f.new_setClassRelevanceAdvisorySwitch(false), RTIinternalError);
+    ASSERT_THROW(f.setClassRelevanceAdvisorySwitch(false), RTIinternalError);
     
-    f.new_setClassRelevanceAdvisorySwitch(true);
+    f.setClassRelevanceAdvisorySwitch(true);
     
-    ASSERT_THROW(f.new_setClassRelevanceAdvisorySwitch(true), RTIinternalError);
+    ASSERT_THROW(f.setClassRelevanceAdvisorySwitch(true), RTIinternalError);
 }
 
 TEST(FederateTest, IRASGetterSetter)
@@ -215,11 +215,11 @@ TEST(FederateTest, IRASGetterSetter)
     
     ASSERT_TRUE(f.isInteractionRelevanceAdvisorySwitch());
     
-    f.new_setInteractionRelevanceAdvisorySwitch(false);
+    f.setInteractionRelevanceAdvisorySwitch(false);
     
     ASSERT_FALSE(f.isInteractionRelevanceAdvisorySwitch());
     
-    f.new_setInteractionRelevanceAdvisorySwitch(true);
+    f.setInteractionRelevanceAdvisorySwitch(true);
     
     ASSERT_TRUE(f.isInteractionRelevanceAdvisorySwitch());
 }
@@ -228,13 +228,13 @@ TEST(FederateTest, CannotSetIRASTwice)
 {
     Federate f("test", 1);
     
-    f.new_setInteractionRelevanceAdvisorySwitch(false);
+    f.setInteractionRelevanceAdvisorySwitch(false);
     
-    ASSERT_THROW(f.new_setInteractionRelevanceAdvisorySwitch(false), RTIinternalError);
+    ASSERT_THROW(f.setInteractionRelevanceAdvisorySwitch(false), RTIinternalError);
     
-    f.new_setInteractionRelevanceAdvisorySwitch(true);
+    f.setInteractionRelevanceAdvisorySwitch(true);
     
-    ASSERT_THROW(f.new_setInteractionRelevanceAdvisorySwitch(true), RTIinternalError);
+    ASSERT_THROW(f.setInteractionRelevanceAdvisorySwitch(true), RTIinternalError);
 }
 
 TEST(FederateTest, ARASGetterSetter)
@@ -243,11 +243,11 @@ TEST(FederateTest, ARASGetterSetter)
     
     ASSERT_FALSE(f.isAttributeRelevanceAdvisorySwitch());
     
-    f.new_setAttributeRelevanceAdvisorySwitch(true);
+    f.setAttributeRelevanceAdvisorySwitch(true);
     
     ASSERT_TRUE(f.isAttributeRelevanceAdvisorySwitch());
     
-    f.new_setAttributeRelevanceAdvisorySwitch(false);
+    f.setAttributeRelevanceAdvisorySwitch(false);
     
     ASSERT_FALSE(f.isAttributeRelevanceAdvisorySwitch());
 }
@@ -256,13 +256,13 @@ TEST(FederateTest, CannotSetARASTwice)
 {
     Federate f("test", 1);
     
-    f.new_setAttributeRelevanceAdvisorySwitch(true);
+    f.setAttributeRelevanceAdvisorySwitch(true);
     
-    ASSERT_THROW(f.new_setAttributeRelevanceAdvisorySwitch(true), RTIinternalError);
+    ASSERT_THROW(f.setAttributeRelevanceAdvisorySwitch(true), RTIinternalError);
     
-    f.new_setAttributeRelevanceAdvisorySwitch(false);
+    f.setAttributeRelevanceAdvisorySwitch(false);
     
-    ASSERT_THROW(f.new_setAttributeRelevanceAdvisorySwitch(false), RTIinternalError);
+    ASSERT_THROW(f.setAttributeRelevanceAdvisorySwitch(false), RTIinternalError);
 }
 
 TEST(FederateTest, ASASGetterSetter)
@@ -271,11 +271,11 @@ TEST(FederateTest, ASASGetterSetter)
     
     ASSERT_FALSE(f.isAttributeScopeAdvisorySwitch());
     
-    f.new_setAttributeScopeAdvisorySwitch(true);
+    f.setAttributeScopeAdvisorySwitch(true);
     
     ASSERT_TRUE(f.isAttributeScopeAdvisorySwitch());
     
-    f.new_setAttributeScopeAdvisorySwitch(false);
+    f.setAttributeScopeAdvisorySwitch(false);
     
     ASSERT_FALSE(f.isAttributeScopeAdvisorySwitch());
 }
@@ -284,13 +284,13 @@ TEST(FederateTest, CannotSetASASTwice)
 {
     Federate f("test", 1);
     
-    f.new_setAttributeScopeAdvisorySwitch(true);
+    f.setAttributeScopeAdvisorySwitch(true);
     
-    ASSERT_THROW(f.new_setAttributeScopeAdvisorySwitch(true), RTIinternalError);
+    ASSERT_THROW(f.setAttributeScopeAdvisorySwitch(true), RTIinternalError);
     
-    f.new_setAttributeScopeAdvisorySwitch(false);
+    f.setAttributeScopeAdvisorySwitch(false);
     
-    ASSERT_THROW(f.new_setAttributeScopeAdvisorySwitch(false), RTIinternalError);
+    ASSERT_THROW(f.setAttributeScopeAdvisorySwitch(false), RTIinternalError);
 }
 
 TEST(FederateTest, SavingGetterSetter)
