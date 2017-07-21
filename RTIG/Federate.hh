@@ -37,21 +37,32 @@ public:
     /** A new FederateName is allocated. theLink must have been opened before. */
     Federate(const std::string& name, const FederateHandle handle);
 
-    FederateHandle getHandle() const;
+    FederateHandle getHandle() const noexcept;
+    
+    [[deprecated("use new version")]]
     void setHandle(const FederateHandle h);
+    void new_setHandle(const FederateHandle h); //
 
-    std::string getName() const;
+    std::string getName() const noexcept;
 
-    bool isConstrained() const;
+    bool isConstrained() const noexcept;
+    
+    [[deprecated("use new version")]]
     void setConstrained(const bool c);
+    void new_setConstrained(const bool c); //
 
-    bool isRegulator() const;
+    bool isRegulator() const noexcept;
+    
+    [[deprecated("use new version")]]
     void setRegulator(const bool r);
+    void new_setRegulator(const bool r); //
 
-    bool isUsingNERx() const;
+    bool isUsingNERx() const noexcept;
+    
     void setIsUsingNERx(const bool unx);
 
-    const FederationTime getLastNERxValue() const;
+    const FederationTime getLastNERxValue() const noexcept;
+    
     void setLastNERxValue(const FederationTime t);
 
     /**
@@ -59,61 +70,71 @@ public:
      * @return a boolean indicating the current state of the switch,
      * true means enabled, false means disabled
      */
-    bool isClassRelevanceAdvisorySwitch() const;
+    bool isClassRelevanceAdvisorySwitch() const noexcept;
     /**
      * Sets the ClassRelevanceAdvisorySwitch of the federate to the value of 
      * the input parameter val. The CRA switch is enabled by default.
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
+    [[deprecated("use new version")]]
     void setClassRelevanceAdvisorySwitch(const bool val);
+    void new_setClassRelevanceAdvisorySwitch(const bool val); //
 
     /**
      * Returns the current state of the InteractionRelevanceAdvisory switch.
      * @return a boolean indicating the current state of the switch,
      * true means enabled, false means disabled
      */
-    bool isInteractionRelevanceAdvisorySwitch() const;
+    bool isInteractionRelevanceAdvisorySwitch() const noexcept;
     /**
      * Sets the InteractionRelevanceAdvisorySwitch of the federate to the 
      * value of the input parameter val. The IRA switch is enabled by default.
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
+    [[deprecated("use new version")]]
     void setInteractionRelevanceAdvisorySwitch(const bool val);
+    void new_setInteractionRelevanceAdvisorySwitch(const bool val); //
 
     /**
      * Returns the current state of the AttributeRelevanceAdvisory switch.
      * @return a boolean indicating the current state of the switch,
      * true means enabled, false means disabled
      */
-    bool isAttributeRelevanceAdvisorySwitch() const;
+    bool isAttributeRelevanceAdvisorySwitch() const noexcept;
     /**
      * Sets the AttributeRelevanceAdvisorySwitch of the federate to the value
      * of the input parameter val. The ARA switch is disabled by default.
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
+    [[deprecated("use new version")]]
     void setAttributeRelevanceAdvisorySwitch(const bool val);
+    void new_setAttributeRelevanceAdvisorySwitch(const bool val); //
 
     /**
      * Returns the current state of the AttributeScopeAdvisory switch.
      * @return a boolean indicating the current state of the switch,
      * true means enabled, false means disabled
      */
-    bool isAttributeScopeAdvisorySwitch() const;
+    bool isAttributeScopeAdvisorySwitch() const noexcept;
     /**
      * Sets the AttributeScopeAdvisorySwitch of the federate to the value of 
      * the input parameter val. The ASA switch is disabled by default.
      * @param[in] val new value for the switch true means enable
      * false means disable. 
      */
+    [[deprecated("use new version")]]
     void setAttributeScopeAdvisorySwitch(const bool val);
+    void new_setAttributeScopeAdvisorySwitch(const bool val); //
 
-    bool isSaving() const;
+    bool isSaving() const noexcept;
+    
     void setSaving(const bool s);
 
-    bool isRestoring() const;
+    bool isRestoring() const noexcept;
+    
     void setRestoring(const bool r);
 
     /**
@@ -162,6 +183,7 @@ private:
     bool my_isCurrentlyRestoring{false};
 
     /// List of labels to synchronize.
+    /// TODO use set
     std::vector<std::string> my_syncLabels{};
 };
 }

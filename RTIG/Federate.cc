@@ -37,7 +37,7 @@ Federate::Federate(const std::string& name, const FederateHandle handle) : my_ha
     }
 }
 
-FederateHandle Federate::getHandle() const
+FederateHandle Federate::getHandle() const noexcept
 {
     return my_handle;
 };
@@ -49,12 +49,24 @@ void Federate::setHandle(const FederateHandle h)
     my_handle = h;
 };
 
-std::string Federate::getName() const
+void Federate::new_setHandle(const FederateHandle h)
+{
+    if(h == 0) {
+        throw RTIinternalError("Federate Handle cannot be null.");
+    }
+    if(my_handle == h) {
+        throw RTIinternalError("Federate Handle already set.");
+    }
+    
+    my_handle = h;
+};
+
+std::string Federate::getName() const noexcept
 {
     return my_name;
 };
 
-bool Federate::isConstrained() const
+bool Federate::isConstrained() const noexcept
 {
     return my_isConstrained;
 };
@@ -64,7 +76,16 @@ void Federate::setConstrained(const bool c)
     my_isConstrained = c;
 };
 
-bool Federate::isRegulator() const
+void Federate::new_setConstrained(const bool c)
+{
+    if(my_isConstrained == c) {
+        throw RTIinternalError("Constrained already set.");
+    }
+    
+    my_isConstrained = c;
+};
+
+bool Federate::isRegulator() const noexcept
 {
     return my_isRegulator;
 };
@@ -74,7 +95,16 @@ void Federate::setRegulator(const bool r)
     my_isRegulator = r;
 };
 
-bool Federate::isUsingNERx() const
+void Federate::new_setRegulator(const bool r)
+{
+    if(my_isRegulator == r) {
+        throw RTIinternalError("Regulator already set.");
+    }
+    
+    my_isRegulator = r;
+};
+
+bool Federate::isUsingNERx() const noexcept
 {
     return my_isUsingNERx;
 };
@@ -84,7 +114,7 @@ void Federate::setIsUsingNERx(const bool unx)
     my_isUsingNERx = unx;
 };
 
-const FederationTime Federate::getLastNERxValue() const
+const FederationTime Federate::getLastNERxValue() const noexcept
 {
     return my_lastNERxValueReceived;
 };
@@ -95,7 +125,7 @@ void Federate::setLastNERxValue(const FederationTime t)
     my_isUsingNERx = true;
 };
 
-bool Federate::isClassRelevanceAdvisorySwitch() const
+bool Federate::isClassRelevanceAdvisorySwitch() const noexcept
 {
     return my_classRelevanceAdvisorySwitch;
 };
@@ -105,7 +135,16 @@ void Federate::setClassRelevanceAdvisorySwitch(const bool val)
     my_classRelevanceAdvisorySwitch = val;
 };
 
-bool Federate::isInteractionRelevanceAdvisorySwitch() const
+void Federate::new_setClassRelevanceAdvisorySwitch(const bool val)
+{
+    if(my_classRelevanceAdvisorySwitch == val) {
+        throw RTIinternalError("CRAS already set.");
+    }
+    
+    my_classRelevanceAdvisorySwitch = val;
+};
+
+bool Federate::isInteractionRelevanceAdvisorySwitch() const noexcept
 {
     return my_interactionRelevanceAdvisorySwitch;
 };
@@ -115,7 +154,16 @@ void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
     my_interactionRelevanceAdvisorySwitch = val;
 };
 
-bool Federate::isAttributeRelevanceAdvisorySwitch() const
+void Federate::new_setInteractionRelevanceAdvisorySwitch(const bool val)
+{
+    if(my_interactionRelevanceAdvisorySwitch == val) {
+        throw RTIinternalError("IRAS already set.");
+    }
+    
+    my_interactionRelevanceAdvisorySwitch = val;
+};
+
+bool Federate::isAttributeRelevanceAdvisorySwitch() const noexcept
 {
     return my_attributeRelevanceAdvisorySwitch;
 };
@@ -125,7 +173,16 @@ void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
     my_attributeRelevanceAdvisorySwitch = val;
 };
 
-bool Federate::isAttributeScopeAdvisorySwitch() const
+void Federate::new_setAttributeRelevanceAdvisorySwitch(const bool val)
+{
+    if(my_attributeRelevanceAdvisorySwitch == val) {
+        throw RTIinternalError("ARAS already set.");
+    }
+    
+    my_attributeRelevanceAdvisorySwitch = val;
+};
+
+bool Federate::isAttributeScopeAdvisorySwitch() const noexcept
 {
     return my_attributeScopeAdvisorySwitch;
 };
@@ -135,7 +192,16 @@ void Federate::setAttributeScopeAdvisorySwitch(const bool val)
     my_attributeScopeAdvisorySwitch = val;
 };
 
-bool Federate::isSaving() const
+void Federate::new_setAttributeScopeAdvisorySwitch(const bool val)
+{
+    if(my_attributeScopeAdvisorySwitch == val) {
+        throw RTIinternalError("ASAS already set.");
+    }
+    
+    my_attributeScopeAdvisorySwitch = val;
+};
+
+bool Federate::isSaving() const noexcept
 {
     return my_isCurrentlySaving;
 };
@@ -145,7 +211,7 @@ void Federate::setSaving(const bool s)
     my_isCurrentlySaving = s;
 };
 
-bool Federate::isRestoring() const
+bool Federate::isRestoring() const noexcept
 {
     return my_isCurrentlyRestoring;
 };
@@ -160,7 +226,7 @@ void Federate::addSynchronizationLabel(const std::string& label)
     Debug(G, pdGendoc) << "enter Federate::addSynchronizationLabel" << std::endl;
 
     if (isSynchronizationLabel(label)) {
-        throw RTIinternalError(getName() + "Synchronization label pending in federate.");
+        throw RTIinternalError(getName() + " Synchronization label pending in federate.");
     }
 
     my_syncLabels.push_back(label);
@@ -171,7 +237,7 @@ void Federate::addSynchronizationLabel(const std::string& label)
 void Federate::removeSynchronizationLabel(const std::string& label)
 {
     if (!isSynchronizationLabel(label)) {
-        throw RTIinternalError("Synch. label not in federate.");
+        throw RTIinternalError(getName() + " Sync. label not in federate.");
     }
 
     my_syncLabels.erase(std::remove(begin(my_syncLabels), end(my_syncLabels), label), end(my_syncLabels));
