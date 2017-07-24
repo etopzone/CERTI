@@ -24,7 +24,7 @@
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
 #include <cstdint>
-#include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -124,9 +124,20 @@ private:
     AuditFile& auditFile;
 
     int verboseLevel;
+    
+    struct FederationComparator {
+        using is_transparent = void;
+        
+        bool operator()(Federation* lhs, Federation* rhs) const;
+        bool operator()(Federation* lhs, const FederationHandle rhsHandle) const;
+        bool operator()(const FederationHandle lhsHandle, Federation* rhs) const;
+        bool operator()(Federation* lhs, const std::string& rhsName) const;
+        bool operator()(const std::string& lhsName, Federation* rhs) const;
+    };
 
-    typedef std::map<Handle, Federation*> HandleFederationMap;
-    HandleFederationMap _handleFederationMap;
+//     typedef std::map<Handle, Federation*> HandleFederationMap;
+//     HandleFederationMap _handleFederationMap;
+    std::set<Federation*, FederationComparator> my_federations;
 };
 }
 } // namespace certi/rtig

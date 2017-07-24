@@ -50,11 +50,11 @@ FederationsList::FederationsList(SocketServer& server, AuditFile& audit)
 
 FederationsList::~FederationsList()
 {
-    if (!_handleFederationMap.empty())
+    if (!my_federations.empty())
         D.Out(pdError, "ListeFederation not empty at destruction time.");
 
-    for (HandleFederationMap::const_iterator i = _handleFederationMap.begin(); i != _handleFederationMap.end(); ++i) {
-        delete i->second;
+    for (auto* element: my_federations) {
+        delete element;
     }
 }
 
@@ -86,13 +86,14 @@ FederationsList::addFederate(Handle federationHandle,
 
 Federation* FederationsList::searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist)
 {
-    HandleFederationMap::const_iterator i = _handleFederationMap.find(federationHandle);
-    if (i != _handleFederationMap.end()) {
-        return i->second;
+    auto it = my_federations.find(federationHandle);
+    
+    if (it == end(my_federations)) {
+        D.Out(pdExcept, "Unknown Federation Handle %d.", federationHandle);
+        throw FederationExecutionDoesNotExist("Bad Federation Handle.");
     }
-
-    D.Out(pdExcept, "Unknown Federation Handle %d.", federationHandle);
-    throw FederationExecutionDoesNotExist("Bad Federation Handle.");
+    
+    return *it;
 }
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -119,8 +120,9 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
 {
     G.Out(pdGendoc, "enter FederationsList::createFederation");
     auditFile << ", Handle : " << federationHandle;
-    if (name.empty())
+    if (name.empty()) {
         throw RTIinternalError("Invalid Federation Name.");
+    }
 
     // It should throw FederationExecutionDoesNotExist.
     try {
@@ -153,10 +155,15 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
     }
 
 #endif
-    if (federation == nullptr)
+    if (federation == nullptr) {
         throw MemoryExhausted("No memory left for new Federation.");
+    }
 
-    _handleFederationMap[federationHandle] = federation;
+    auto result = my_federations.insert(federation).second;
+    if (!result) {
+        throw FederationExecutionAlreadyExists(name);
+    }
+    
     D.Out(pdInit, "New Federation created with Handle %d.", federationHandle);
 
     G.Out(pdGendoc, "exit FederationsList::createFederation");
@@ -165,17 +172,18 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
 Handle FederationsList::getFederationHandle(const std::string& name) throw(FederationExecutionDoesNotExist)
 {
     G.Out(pdGendoc, "enter FederationsList::getFederationHandle");
+    
+    auto it = my_federations.find(name);
+    
+    if (it == end(my_federations)) {
+        G.Out(pdGendoc, "exit  FederationsList::getFederationHandle on exception");
 
-    for (HandleFederationMap::const_iterator i = _handleFederationMap.begin(); i != _handleFederationMap.end(); ++i) {
-        if (i->second->getName() == name) {
-            G.Out(pdGendoc, "exit  FederationsList::getFederationHandle");
-            return i->second->getHandle();
-        }
+        D.Out(pdDebug, "getFederationHandle throws FederationExecutionDoesNotExist.");
+        throw FederationExecutionDoesNotExist(name);
     }
-    G.Out(pdGendoc, "exit  FederationsList::getFederationHandle on exception");
-
-    D.Out(pdDebug, "getFederationHandle throws FederationExecutionDoesNotExist.");
-    throw FederationExecutionDoesNotExist(name);
+    
+    G.Out(pdGendoc, "exit  FederationsList::getFederationHandle");
+    return (*it)->getHandle();
 }
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -212,7 +220,7 @@ void FederationsList::destroyFederation(Handle federationHandle) throw(Federates
 
     // It may throw FederatesCurrentlyJoined if federation not empty (in empty)
     if (federation->empty()) {
-        _handleFederationMap.erase(_handleFederationMap.find(federationHandle));
+        my_federations.erase(my_federations.find(federationHandle));
         delete federation;
     }
     G.Out(pdGendoc, "exit FederationsList::destroyFederation");
@@ -233,5 +241,32 @@ void FederationsList::setVerboseLevel(int theVerboseLevel)
 {
     this->verboseLevel = theVerboseLevel;
 }
+
+bool FederationsList::FederationComparator::operator()(Federation* lhs, Federation* rhs) const
+{
+    return lhs->getHandle() < rhs->getHandle();
+}
+
+bool FederationsList::FederationComparator::operator()(Federation* lhs, const FederationHandle rhsHandle) const
+{
+    return lhs->getHandle() < rhsHandle;
+}
+
+bool FederationsList::FederationComparator::operator()(const FederationHandle lhsHandle, Federation* rhs) const
+{
+    return lhsHandle < rhs->getHandle();
+}
+
+bool FederationsList::FederationComparator::operator()(Federation* lhs, const std::string& rhsName) const
+{
+    return lhs->getName() < rhsName;
+}
+
+bool FederationsList::FederationComparator::operator()(const std::string& lhsName, Federation* rhs) const
+{
+    return lhsName < rhs->getName();
+}
+
+
 }
 } // certi::rtig
