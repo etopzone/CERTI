@@ -11,12 +11,20 @@ include_directories(${CERTI_SOURCE_DIR}/libHLA)
 include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
 include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 
+## Used for testing libcerti internal classes
+set(lib_certi_SRCS
+    ${CERTI_SOURCE_DIR}/libCERTI/ObjectClassBroadcastList.cc
+    )
+
 add_executable(TestLibCERTI
                
                ../mocks/sockettcp_mock.h
                
                socketserver_test.cpp
                
+               objectclassbroadcastlist_test.cpp
+               
+               ${lib_certi_SRCS}
                ../main.cpp
                )
 

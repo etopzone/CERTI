@@ -134,10 +134,9 @@ T* ObjectClassBroadcastList::createReducedMessageWithValue(T* msg, ObjectBroadca
  */
 ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
 		ObjectBroadcastLine::State init_state)
+: Federate{theFederate}
 {
-	Federate = theFederate ;
-	for (AttributeHandle i = 0 ; i <= MAX_STATE_SIZE ; i++)
-		state[i] = init_state ;
+    std::fill_n(state, MAX_STATE_SIZE+1, init_state);
 }
 
 // ============================================================================
