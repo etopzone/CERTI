@@ -26,7 +26,7 @@
 #include "certi.hh"
 
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace certi {
 namespace rtig {
@@ -34,7 +34,10 @@ namespace rtig {
 /** This class manages the federate status and other relevant information. */
 class Federate {
 public:
-    /** A new FederateName is allocated. theLink must have been opened before. */
+    /** Construct new federate
+     * 
+     * handle must be valid
+     */
     Federate(const std::string& name, const FederateHandle handle);
 
     FederateHandle getHandle() const noexcept;
@@ -125,15 +128,15 @@ public:
 
     /**
      *  Add a synchronization label to federate.
-     *  @param[in] label the synchronization label to be added
+     *  @param label the synchronization label to be added
      */
     void addSynchronizationLabel(const std::string& label);
 
     /// Removes a synchronization label from federate.
-    void removeSynchronizationLabel(const std::string&);
+    void removeSynchronizationLabel(const std::string& label);
 
     /// Returns whether the federate is already synchronized with this label.
-    bool isSynchronizationLabel(const std::string&) const;
+    bool isSynchronizationLabel(const std::string& label) const;
 
 private:
     FederateHandle my_handle; /// Federate ID.
@@ -169,8 +172,7 @@ private:
     bool my_isCurrentlyRestoring{false};
 
     /// List of labels to synchronize.
-    /// TODO use set
-    std::vector<std::string> my_syncLabels{};
+    std::unordered_set<std::string> my_syncLabels{};
 };
 }
 } // namespace certi::rtig

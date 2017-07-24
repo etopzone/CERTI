@@ -187,28 +187,26 @@ void Federate::setRestoring(const bool r) noexcept
 void Federate::addSynchronizationLabel(const std::string& label)
 {
     Debug(G, pdGendoc) << "enter Federate::addSynchronizationLabel" << std::endl;
-
-    if (isSynchronizationLabel(label)) {
+    
+    auto result = my_syncLabels.insert(label).second;
+    if (!result) {
         throw RTIinternalError(getName() + " Synchronization label pending in federate.");
     }
-
-    my_syncLabels.push_back(label);
 
     Debug(G, pdGendoc) << "exit  Federate::addSynchronizationLabel" << std::endl;
 }
 
 void Federate::removeSynchronizationLabel(const std::string& label)
 {
-    if (!isSynchronizationLabel(label)) {
+    auto result = my_syncLabels.erase(label);
+    if (!result) {
         throw RTIinternalError(getName() + " Sync. label not in federate.");
     }
-
-    my_syncLabels.erase(std::remove(begin(my_syncLabels), end(my_syncLabels), label), end(my_syncLabels));
 }
 
 bool Federate::isSynchronizationLabel(const std::string& label) const
 {
-    return std::find(begin(my_syncLabels), end(my_syncLabels), label) != end(my_syncLabels);
+    return my_syncLabels.find(label) != end(my_syncLabels);
 }
 }
 }
