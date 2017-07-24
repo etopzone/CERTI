@@ -49,6 +49,15 @@
 // using std::endl;
 // using std::cerr;
 
+#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
+
+#include <chrono>
+#include <numeric>
+
+std::map<std::pair<int, std::string>, std::vector<std::chrono::nanoseconds>> the_timings;
+
+#endif
+
 namespace {
 static constexpr auto defaultTcpPort = PORT_TCP_RTIG;
 static constexpr auto tcpPortEnvironmentVariable = "CERTI_TCP_PORT";
@@ -76,11 +85,6 @@ RTIG::RTIG()
     , my_federations(my_socketServer, my_auditServer)
 {
     my_federations.setVerboseLevel(my_verboseLevel);
-
-    for (int i = pdAnswer; i < pdLast; ++i) {
-        D.enableDebugLevel(static_cast<pdDebugLevel>(i));
-        G.enableDebugLevel(static_cast<pdDebugLevel>(i));
-    }
 
     my_NM_msgBufSend.reset();
     my_NM_msgBufReceive.reset();
@@ -195,6 +199,36 @@ void RTIG::execute() throw(NetworkError)
 
 void RTIG::signalHandler(int sig)
 {
+#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
+    std::cerr << "//////////////////////" << std::endl;
+    std::cerr << "/////  TIMINGS  //////" << std::endl;
+    std::cerr << "//////////////////////" << std::endl;
+
+    for (auto& kv : the_timings) {
+        std::cerr << kv.first.first << " - " << kv.first.second << std::endl;
+
+        auto& values = kv.second;
+        std::sort(begin(values), end(values));
+
+        std::cerr << "\tmin: " << values.front().count() << " ns" << std::endl;
+        std::cerr << "\tmax: " << values.back().count() << " ns" << std::endl;
+        std::cerr << "\taverage: "
+                  << std::accumulate(begin(values), end(values), std::chrono::nanoseconds{}).count() / values.size()
+                  << " ns" << std::endl;
+        std::cerr << "\tmedian: " << values.at(values.size() / 2).count() << " ns" << std::endl;
+
+        std::cerr << "\t\t";
+        for (auto& time : values) {
+            std::cerr << time.count() << " ";
+        }
+        std::cerr << std::endl;
+    }
+
+    std::cerr << "//////////////////////" << std::endl;
+    std::cerr << "/////  TIMINGS  //////" << std::endl;
+    std::cerr << "//////////////////////" << std::endl;
+#endif
+
     Debug(D, pdError) << "Received Signal: " << sig << std::endl;
 
     if (sig == SIGINT) {
@@ -568,6 +602,10 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 {
     Debug(G, pdGendoc) << "enter RTIG::processIncomingMessage" << std::endl;
 
+#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
+    auto start = std::chrono::high_resolution_clock::now();
+#endif
+
     if (!link) {
         Debug(D, pdError) << "No socket in processIncomingMessage" << std::endl;
         return nullptr;
@@ -741,9 +779,16 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     if (response->getException() != Exception::Type::NO_EXCEPTION) {
         Debug(G, pdGendoc) << "            processIncomingMessage ===> write on exception to RTIA" << std::endl;
         response->send(link, my_NM_msgBufSend);
-        Debug(D, pdExcept) << "RTIG catched exception " << static_cast<long>(response->getException()) << " and sent it back to federate "
-                           << response->getFederate() << std::endl;
+        Debug(D, pdExcept) << "RTIG catched exception " << static_cast<long>(response->getException())
+                           << " and sent it back to federate " << response->getFederate() << std::endl;
     }
+
+#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
+    auto end = std::chrono::high_resolution_clock::now();
+
+    the_timings[std::make_pair(msg->getMessageType(), msg->getMessageName())].push_back(end - start);
+#endif
+
     Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
     return link;
 }
