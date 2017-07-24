@@ -109,22 +109,6 @@ public:
      */
     void killFederate(Handle, FederateHandle) noexcept;
 
-    // -------------------------------------------
-    // -- Object Classes & Instances Management --
-    // -------------------------------------------
-
-    void subscribeObject(Handle theHandle,
-                         FederateHandle theFederateHandle,
-                         ObjectClassHandle theObjectHandle,
-                         const std::vector<AttributeHandle>& theAttributeList) throw(ObjectClassNotDefined,
-                                                                                     AttributeNotDefined,
-                                                                                     FederationExecutionDoesNotExist,
-                                                                                     FederateNotExecutionMember,
-                                                                                     SaveInProgress,
-                                                                                     RestoreInProgress,
-                                                                                     SecurityError,
-                                                                                     RTIinternalError);
-
     void setVerboseLevel(int theVerboseLevel);
 
     /** Search federation from handle.

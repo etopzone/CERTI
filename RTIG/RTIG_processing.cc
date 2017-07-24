@@ -857,11 +857,16 @@ void RTIG::processSubscribeObjectClass(Socket* link, NM_Subscribe_Object_Class* 
 
     my_auditServer << "Subscribe Object Class = " << req->getObjectClass()
                    << ", # of att. = " << req->getAttributesSize();
-
+#if OLD
     my_federations.subscribeObject(req->getFederation(),
                                    req->getFederate(),
                                    req->getObjectClass(),
                                    sub ? req->getAttributes() : emptyAttributeList);
+#else
+    my_federations.searchFederation(req->getFederation())->subscribeObject(req->getFederate(),
+                                                                           req->getObjectClass(),
+                                                                           sub ? req->getAttributes() : emptyAttributeList);
+#endif
 
     Debug(D, pdRegister) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
                          << " subscribed to object class " << req->getObjectClass() << std::endl;

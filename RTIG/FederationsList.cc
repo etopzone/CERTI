@@ -200,25 +200,6 @@ void FederationsList::info(Handle federationHandle, int& nb_federates, int& nb_r
     G.Out(pdGendoc, "exit  FederationsList::info");
 }
 
-void FederationsList::subscribeObject(
-    Handle federationHandle,
-    FederateHandle federate,
-    ObjectClassHandle object_class,
-    const std::vector<AttributeHandle>& attributes) throw(ObjectClassNotDefined,
-                                                          AttributeNotDefined,
-                                                          FederationExecutionDoesNotExist,
-                                                          FederateNotExecutionMember,
-                                                          SaveInProgress,
-                                                          RestoreInProgress,
-                                                          SecurityError,
-                                                          RTIinternalError)
-{
-    // It may throw FederationExecutionDoesNotExist.
-    Federation* federation = searchFederation(federationHandle);
-
-    federation->subscribeObject(federate, object_class, attributes);
-}
-
 void FederationsList::destroyFederation(Handle federationHandle) throw(FederatesCurrentlyJoined,
                                                                        FederationExecutionDoesNotExist,
                                                                        RTIinternalError)

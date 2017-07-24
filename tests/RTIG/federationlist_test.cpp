@@ -111,9 +111,3 @@ TEST_F(FederationsListTest, addFederateThrowsOnUknFederation)
     ASSERT_THROW(f.addFederate(ukn_federation, "", nullptr, message),
                  ::certi::FederationExecutionDoesNotExist);
 }
-
-TEST_F(FederationsListTest, subscribeObjectThrowsOnUknFederation)
-{
-    ASSERT_THROW(f.subscribeObject(ukn_federation, invalid_handle, invalid_handle, {}),
-                 ::certi::FederationExecutionDoesNotExist);
-}
