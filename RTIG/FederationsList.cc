@@ -52,10 +52,6 @@ FederationsList::~FederationsList()
 {
     if (!my_federations.empty())
         D.Out(pdError, "ListeFederation not empty at destruction time.");
-
-    for (auto* element: my_federations) {
-        delete element;
-    }
 }
 
 FederateHandle
@@ -71,20 +67,20 @@ FederationsList::addFederate(Handle federationHandle,
 
     // It may throw FederationExecutionDoesNotExist
     // Return  federation address giving its handle
-    Federation* federation = searchFederation(federationHandle);
+    auto& federation = searchFederation(federationHandle);
 
     // It may raise a bunch of exceptions
     // adding the federate and return its handle
-    FederateHandle federate = federation->add(name, tcp_link);
+    FederateHandle federate = federation.add(name, tcp_link);
 
-    federation->getFOM(objectModelData);
+    federation.getFOM(objectModelData);
 
     G.Out(pdGendoc, "exit FederationsList::addFederate");
 
     return federate;
 }
 
-Federation* FederationsList::searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist)
+Federation& FederationsList::searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist)
 {
     auto it = my_federations.find(federationHandle);
     
@@ -93,7 +89,7 @@ Federation* FederationsList::searchFederation(Handle federationHandle) throw(Fed
         throw FederationExecutionDoesNotExist("Bad Federation Handle.");
     }
     
-    return *it;
+    return **it;
 }
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -135,13 +131,22 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
         D.Out(pdDebug, "CreerFederation catches FederationExecutionDoesNotExist.");
     }
 
-    Federation* federation = nullptr;
-#ifdef FEDERATION_USES_MULTICAST
-    federation = new Federation(name, federationHandle, socketServer, auditFile, mc_link, verboseLevel);
-#else
     try {
-        federation = new Federation(name, federationHandle, socketServer, auditFile, FEDid, verboseLevel);
+#ifdef FEDERATION_USES_MULTICAST
+        auto federation = std::make_unique<Federation>(name, federationHandle, socketServer, auditFile, mc_link, verboseLevel);
+#else
+        auto federation = std::make_unique<Federation>(name, federationHandle, socketServer, auditFile, FEDid, verboseLevel);
+#endif
         D.Out(pdDebug, "new Federation created.");
+
+        auto result = my_federations.insert(std::move(federation)).second;
+        if (!result) {
+            throw FederationExecutionAlreadyExists(name);
+        }
+        
+        D.Out(pdInit, "New Federation created with Handle %d.", federationHandle);
+
+        G.Out(pdGendoc, "exit FederationsList::createFederation");
     }
     catch (CouldNotOpenFED& e) {
         D.Out(pdInit, "Federation constructor : Could not open FED file.");
@@ -153,20 +158,6 @@ void FederationsList::createFederation(const std::string& name, Handle federatio
         G.Out(pdGendoc, "exit FederationsList::createFederation on exception ErrorReadingFED");
         throw ErrorReadingFED(e.reason());
     }
-
-#endif
-    if (federation == nullptr) {
-        throw MemoryExhausted("No memory left for new Federation.");
-    }
-
-    auto result = my_federations.insert(federation).second;
-    if (!result) {
-        throw FederationExecutionAlreadyExists(name);
-    }
-    
-    D.Out(pdInit, "New Federation created with Handle %d.", federationHandle);
-
-    G.Out(pdGendoc, "exit FederationsList::createFederation");
 }
 
 Handle FederationsList::getFederationHandle(const std::string& name) throw(FederationExecutionDoesNotExist)
@@ -197,13 +188,13 @@ void FederationsList::info(Handle federationHandle, int& nb_federates, int& nb_r
     G.Out(pdGendoc, "enter FederationsList::info");
 
     // It may throw FederationExecutionNotFound
-    Federation* federation = searchFederation(federationHandle);
+    auto& federation = searchFederation(federationHandle);
 
-    nb_federates = federation->getNbFederates();
-    nb_regulators = federation->getNbRegulators();
-    is_syncing = federation->isSynchronizing();
+    nb_federates = federation.getNbFederates();
+    nb_regulators = federation.getNbRegulators();
+    is_syncing = federation.isSynchronizing();
 #ifdef FEDERATION_USES_MULTICAST
-    comm_mc = federation->MCLink;
+    comm_mc = federation.MCLink;
 #endif
     G.Out(pdGendoc, "exit  FederationsList::info");
 }
@@ -216,12 +207,11 @@ void FederationsList::destroyFederation(Handle federationHandle) throw(Federates
 
     // It may throw :
     // FederationExecutionDoesNotExist during search federation
-    Federation* federation = searchFederation(federationHandle);
+    auto& federation = searchFederation(federationHandle);
 
     // It may throw FederatesCurrentlyJoined if federation not empty (in empty)
-    if (federation->empty()) {
+    if (federation.empty()) {
         my_federations.erase(my_federations.find(federationHandle));
-        delete federation;
     }
     G.Out(pdGendoc, "exit FederationsList::destroyFederation");
 }
@@ -229,7 +219,7 @@ void FederationsList::destroyFederation(Handle federationHandle) throw(Federates
 void FederationsList::killFederate(Handle federationHandle, FederateHandle federate) noexcept
 {
     try {
-        searchFederation(federationHandle)->kill(federate);
+        searchFederation(federationHandle).kill(federate);
     }
     catch (Exception& e) {
         // It may have thrown FederationExecutionDoesNotExist
@@ -239,30 +229,30 @@ void FederationsList::killFederate(Handle federationHandle, FederateHandle feder
 
 void FederationsList::setVerboseLevel(int theVerboseLevel)
 {
-    this->verboseLevel = theVerboseLevel;
+    verboseLevel = theVerboseLevel;
 }
 
-bool FederationsList::FederationComparator::operator()(Federation* lhs, Federation* rhs) const
+bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs, const std::unique_ptr<Federation>& rhs) const
 {
     return lhs->getHandle() < rhs->getHandle();
 }
 
-bool FederationsList::FederationComparator::operator()(Federation* lhs, const FederationHandle rhsHandle) const
+bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs, const FederationHandle rhsHandle) const
 {
     return lhs->getHandle() < rhsHandle;
 }
 
-bool FederationsList::FederationComparator::operator()(const FederationHandle lhsHandle, Federation* rhs) const
+bool FederationsList::FederationComparator::operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federation>& rhs) const
 {
     return lhsHandle < rhs->getHandle();
 }
 
-bool FederationsList::FederationComparator::operator()(Federation* lhs, const std::string& rhsName) const
+bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs, const std::string& rhsName) const
 {
     return lhs->getName() < rhsName;
 }
 
-bool FederationsList::FederationComparator::operator()(const std::string& lhsName, Federation* rhs) const
+bool FederationsList::FederationComparator::operator()(const std::string& lhsName, const std::unique_ptr<Federation>& rhs) const
 {
     return lhsName < rhs->getName();
 }

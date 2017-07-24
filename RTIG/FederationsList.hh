@@ -24,6 +24,7 @@
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
 #include <cstdint>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -117,7 +118,7 @@ public:
      * @throw FederationExecutionDoesNotExist if the provided federation handle
      *        does not match any created federation.
      */
-    Federation* searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist);
+    Federation& searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist);
 
 private:
     SocketServer& socketServer;
@@ -128,16 +129,16 @@ private:
     struct FederationComparator {
         using is_transparent = void;
         
-        bool operator()(Federation* lhs, Federation* rhs) const;
-        bool operator()(Federation* lhs, const FederationHandle rhsHandle) const;
-        bool operator()(const FederationHandle lhsHandle, Federation* rhs) const;
-        bool operator()(Federation* lhs, const std::string& rhsName) const;
-        bool operator()(const std::string& lhsName, Federation* rhs) const;
+        bool operator()(const std::unique_ptr<Federation>& lhs, const std::unique_ptr<Federation>& rhs) const;
+        bool operator()(const std::unique_ptr<Federation>& lhs, const FederationHandle rhsHandle) const;
+        bool operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federation>& rhs) const;
+        bool operator()(const std::unique_ptr<Federation>& lhs, const std::string& rhsName) const;
+        bool operator()(const std::string& lhsName, const std::unique_ptr<Federation>& rhs) const;
     };
 
 //     typedef std::map<Handle, Federation*> HandleFederationMap;
 //     HandleFederationMap _handleFederationMap;
-    std::set<Federation*, FederationComparator> my_federations;
+    std::set<std::unique_ptr<Federation>, FederationComparator> my_federations;
 };
 }
 } // namespace certi/rtig
