@@ -59,6 +59,8 @@
 #include "XmlParser2010.hh"
 #include "fed.hh"
 
+#include "make_unique.hh"
+
 using std::pair;
 using std::ifstream;
 using std::ios;

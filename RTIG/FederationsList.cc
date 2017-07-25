@@ -29,6 +29,8 @@
 #include <ostream>
 #include <utility>
 
+#include "make_unique.hh"
+
 using std::endl;
 
 namespace certi {
