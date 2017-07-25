@@ -28,6 +28,9 @@
 #include <string>
 #include <vector>
 
+#include <memory>
+#include <set>
+
 #include "certi.hh"
 
 #include "BaseRegion.hh"
@@ -663,45 +666,58 @@ private:
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
 
-    Handle handle;
-    std::string name;
-    std::string FEDid;
+    Handle my_handle;
+    std::string my_name;
+    std::string my_FED_id;
 
     /// Labels and Tags not on synchronization.
-    std::map<std::string, std::string> synchronizationLabels;
+    std::map<std::string, std::string> my_synchronization_labels;
 
-    HandleManager<FederateHandle> federateHandles;
-    HandleManager<ObjectHandle> objectHandles;
+    HandleManager<FederateHandle> my_federate_handle_generator;
+    HandleManager<ObjectHandle> my_objects_handle_generator;
 
     /** This object is initialized when the Federation is created
      * 
      *  with the reference of the RTIG managed Socket Server. The reference of
      *  this object is passed down the Classes Tree with the help of RootObj.
      */
-    SecurityServer* server;
-    RootObject* root;
+    SecurityServer* my_server;
+    RootObject* my_root_object;
 
-    LBTS regulators;
+    LBTS my_regulators;
 
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC* MCLink;
 #endif
 
     // Private attributes
-    typedef std::map<FederateHandle, Federate> HandleFederateMap;
-    HandleFederateMap _handleFederateMap;
-    bool saveInProgress;
-    bool restoreInProgress;
-    bool saveStatus; /// True if saving was correctly done, false otherwise.
-    bool restoreStatus; /// True if restoring was correctly done.
-    int verboseLevel;
-    std::string saveLabel; /// The label associated with the save request.
+    //     typedef std::map<FederateHandle, Federate> HandleFederateMap;
+    //     HandleFederateMap _handleFederateMap;
+
+    struct FederateComparator {
+        using is_transparent = void;
+
+        bool operator()(const std::unique_ptr<Federate>& lhs, const std::unique_ptr<Federate>& rhs) const;
+        bool operator()(const std::unique_ptr<Federate>& lhs, const FederationHandle rhsHandle) const;
+        bool operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federate>& rhs) const;
+        bool operator()(const std::unique_ptr<Federate>& lhs, const std::string& rhsName) const;
+        bool operator()(const std::string& lhsName, const std::unique_ptr<Federate>& rhs) const;
+    };
+
+    std::set<std::unique_ptr<Federate>, FederateComparator> my_federates;
+
+    bool my_is_save_in_progress;
+    bool my_is_restore_in_progress;
+    bool my_save_status; /// True if saving was correctly done, false otherwise.
+    bool my_restore_status; /// True if restoring was correctly done.
+    int my_verbose_level;
+    std::string my_save_label; /// The label associated with the save request.
 
     /// The minimum NERx timestamp for this federation
-    FederationTime minNERx;
+    FederationTime my_min_NERx;
 
     /// The message buffer used to send Network messages
-    MessageBuffer NM_msgBufSend;
+    MessageBuffer my_nm_buffer;
 };
 }
 } // namespace certi/rtig
