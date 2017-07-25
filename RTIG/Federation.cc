@@ -70,6 +70,7 @@ using std::string;
 using std::list;
 using std::cerr;
 using std::vector;
+using std::make_unique;
 
 // Definitions
 #ifdef HAVE_XML
@@ -443,9 +444,9 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
     //     _handleFederateMap.insert(HandleFederateMap::value_type(federate_handle, Federate(federate_name, federate_handle)));
-//     Federate& federate = getFederate(federate_handle);
-    Federate& federate = **(my_federates.insert(std::make_unique<Federate>(federate_name, federate_handle)).first);
-    
+    //     Federate& federate = getFederate(federate_handle);
+    Federate& federate = **(my_federates.insert(make_unique<Federate>(federate_name, federate_handle)).first);
+
     Debug(D, pdInit) << "Federate " << federate_handle << " joined Federation " << my_handle << endl;
 
     // Send, to the newly added federate, a Null message from each regulating
@@ -566,7 +567,7 @@ FederationTime Federation::computeMinNERx()
     /* Build a set of clocks */
     for (vector<LBTS::FederateClock>::iterator it = clocks.begin(); it != clocks.end(); ++it) {
         FederateHandle h = it->first;
-//         HandleFederateMap::iterator f = federate.find(h);
+        //         HandleFederateMap::iterator f = federate.find(h);
         Federate& f = getFederate(h);
         if (f.isUsingNERx()) {
             nbFed++;
@@ -602,8 +603,8 @@ void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_
 
     // Broadcast the message 'msg' to all Federates in the Federation
     // except to Federate whose Handle is 'Except_Federate'.
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         if (anonymous || (federate->getHandle() != except_federate)) {
             try {
 #ifdef HLA_USES_UDP
@@ -638,8 +639,8 @@ void Federation::broadcastSomeMessage(NetworkMessage* msg,
         // Broadcast the message 'msg' to some Federates (done in fede_array)
         // in the Federation
         // except to Federate whose Handle is 'Except_Federate'.
-//         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-        for(auto& federate: my_federates) {
+        //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+        for (auto& federate : my_federates) {
             if (federate->getHandle() != except_federate) {
                 ifed = 0;
                 while (ifed < nbfed) {
@@ -797,8 +798,8 @@ void Federation::registerSynchronization(FederateHandle federate, const string& 
     my_synchronization_labels.insert(pair<const string, string>(label, tag));
 
     // Add label to each federate (may throw RTIinternalError).
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         federate->addSynchronizationLabel(label);
     }
 
@@ -835,8 +836,8 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
 
     // Add label to each federate into the set only (may throw RTIinternalError).
     for (int i = 0; i < federate_setSize; i++) {
-//         for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-        for(auto& federate: my_federates) {
+        //         for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
+        for (auto& federate : my_federates) {
             if ((federate_set[i] == federate->getHandle()) || (federate_handle == federate->getHandle()))
                 federate->addSynchronizationLabel(label);
         }
@@ -912,8 +913,8 @@ void Federation::requestFederationSave(FederateHandle the_federate,
         throw SaveInProgress("Already in saving state.");
     }
 
-//     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
+    for (auto& federate : my_federates) {
         federate->setSaving(true);
     }
 
@@ -945,8 +946,8 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     if (my_is_save_in_progress)
         throw SaveInProgress("Already in saving state.");
 
-//     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
+    for (auto& federate : my_federates) {
         federate->setSaving(true);
     }
 
@@ -986,8 +987,8 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
         my_save_status = false;
 
     // Verify that all federates save ended (complete or not).
-//     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
+    for (auto& federate : my_federates) {
         if (federate->isSaving()) {
             Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus one federate has not save ended" << endl;
             return;
@@ -1073,8 +1074,8 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     }
 
     // Otherwise...
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         federate->setRestoring(true);
     }
     my_restore_status = true;
@@ -1095,8 +1096,8 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     msg->setFederation(my_handle);
     msg->setLabel(the_label);
 
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         msg->setFederate(federate->getHandle());
 
         // send message.
@@ -1118,8 +1119,8 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
         my_restore_status = false;
 
     // Verify that all federates save ended (complete or not).
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         if (federate->isRestoring()) {
             return;
         }
@@ -1142,39 +1143,38 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
 
 Federate& Federation::getFederate(FederateHandle federate_handle) throw(FederateNotExecutionMember)
 {
-//     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
-//     if (i == _handleFederateMap.end())
-//         throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <" << federate_handle
-//                                                             << "> not found.");
-//     return i->second;
-    
+    //     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
+    //     if (i == _handleFederateMap.end())
+    //         throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <" << federate_handle
+    //                                                             << "> not found.");
+    //     return i->second;
+
     auto it = my_federates.find(federate_handle);
-    
+
     if (it == end(my_federates)) {
         throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <" << federate_handle
                                                             << "> not found.");
     }
-    
+
     return **it;
 }
 
 Federate& Federation::getFederate(const string& federate_name) throw(FederateNotExecutionMember)
 {
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-//         if (i->second.getName() == federate_name)
-//             return i->second;
-//     }
-// 
-//     throw FederateNotExecutionMember(
-//         stringize() << "Federate <" << federate_name << "> not [yet] member of Federation <" << getName() << ">.");
-    
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    //         if (i->second.getName() == federate_name)
+    //             return i->second;
+    //     }
+    //
+    //     throw FederateNotExecutionMember(
+    //         stringize() << "Federate <" << federate_name << "> not [yet] member of Federation <" << getName() << ">.");
+
     auto it = my_federates.find(federate_name);
-    
+
     if (it == end(my_federates)) {
-        throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name
-        << "> not found.");
+        throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
     }
-    
+
     return **it;
 }
 
@@ -1428,26 +1428,26 @@ ObjectHandle Federation::registerObject(FederateHandle federate,
 
 void Federation::remove(FederateHandle federate_handle) throw(FederateOwnsAttributes, FederateNotExecutionMember)
 {
-//     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
-//     if (i != _handleFederateMap.end()) {
-//         // BUG: RemoveFederate: Should see if Federate owns attributes
-//         my_federate_handle_generator.free(federate_handle);
-//         _handleFederateMap.erase(i);
-// 
-//         Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
-//         return;
-//     }
-// 
-//     Debug(D, pdExcept) << "Federation " << my_handle << " could not remove unknown federate " << federate_handle
-//                        << endl;
-//     throw FederateNotExecutionMember(certi::stringize() << "Federate Handle=<" << federate_handle << ">");
-    
+    //     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
+    //     if (i != _handleFederateMap.end()) {
+    //         // BUG: RemoveFederate: Should see if Federate owns attributes
+    //         my_federate_handle_generator.free(federate_handle);
+    //         _handleFederateMap.erase(i);
+    //
+    //         Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
+    //         return;
+    //     }
+    //
+    //     Debug(D, pdExcept) << "Federation " << my_handle << " could not remove unknown federate " << federate_handle
+    //                        << endl;
+    //     throw FederateNotExecutionMember(certi::stringize() << "Federate Handle=<" << federate_handle << ">");
+
     check(federate_handle);
-    
+
     my_federate_handle_generator.free(federate_handle);
-    
+
     my_federates.erase(my_federates.find(federate_handle));
-    
+
     Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
 }
 
@@ -1490,8 +1490,8 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
     federate.removeSynchronizationLabel(label);
 
     // Test in every federate is synchronized. Otherwise, quit method.
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         if (federate->isSynchronizationLabel(label)) {
             return;
         }
@@ -2148,8 +2148,8 @@ bool Federation::restoreXmlData(string docFilename)
     bool status = false;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
-//             for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-            for(auto& federate: my_federates) {
+            //             for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+            for (auto& federate : my_federates) {
                 if (!strcmp(federate->getName().c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
                     // Set federate constrained status
                     status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "constrained"));
@@ -2207,8 +2207,8 @@ bool Federation::saveXmlData()
 
     xmlNodePtr federateXmlNode;
 
-//     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for(auto& federate: my_federates) {
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (auto& federate : my_federates) {
         federateXmlNode = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
 
         xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) federate->getName().c_str());
@@ -2219,8 +2219,9 @@ bool Federation::saveXmlData()
         xmlSetProp(federateXmlNode,
                    (const xmlChar*) "constrained",
                    (const xmlChar*) ((federate->isConstrained()) ? "true" : "false"));
-        xmlSetProp(
-            federateXmlNode, (const xmlChar*) "regulator", (const xmlChar*) ((federate->isRegulator()) ? "true" : "false"));
+        xmlSetProp(federateXmlNode,
+                   (const xmlChar*) "regulator",
+                   (const xmlChar*) ((federate->isRegulator()) ? "true" : "false"));
     }
 
     xmlSetDocCompressMode(doc, 9);
