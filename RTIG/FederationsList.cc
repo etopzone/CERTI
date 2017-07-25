@@ -32,6 +32,7 @@
 #include "make_unique.hh"
 
 using std::endl;
+using std::make_unique;
 
 namespace certi {
 
@@ -88,8 +89,8 @@ void FederationsList::createFederation(const std::string& name, const Federation
 
     try {
 #ifdef FEDERATION_USES_MULTICAST
-        auto federation = std::make_unique<Federation>(
-            name, handle, my_socket_server, my_audit_file, multicastSocket, my_verbose_level);
+        auto federation
+            = make_unique<Federation>(name, handle, my_socket_server, my_audit_file, multicastSocket, my_verbose_level);
 #else
         auto federation
             = std::make_unique<Federation>(name, handle, my_socket_server, my_audit_file, FEDid, my_verbose_level);
