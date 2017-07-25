@@ -5,8 +5,6 @@
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/SocketServer.hh>
 
-#include <config.h>
-
 #include <libCERTI/NM_Classes.hh>
 
 #include "temporaryfedfile.h"

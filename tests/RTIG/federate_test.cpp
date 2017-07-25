@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <iostream>
-#include <limits>
-
 #include <RTIG/Federate.hh>
+
+#include <libCERTI/Exception.hh>
 
 using certi::rtig::Federate;
 using certi::RTIinternalError;
@@ -64,15 +63,15 @@ TEST(FederateTest, HandleGetterSetter)
 {
     Federate f("test", 1);
     
-    ASSERT_EQ(1, f.getHandle());
+    ASSERT_EQ(1u, f.getHandle());
     
     f.setHandle(7);
     
-    ASSERT_EQ(7, f.getHandle());
+    ASSERT_EQ(7u, f.getHandle());
     
     f.setHandle(1);
     
-    ASSERT_EQ(1, f.getHandle());
+    ASSERT_EQ(1u, f.getHandle());
 }
 
 TEST(FederateTest, CannotSetNullHandle)

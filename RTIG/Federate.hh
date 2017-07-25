@@ -21,12 +21,11 @@
 #ifndef CERTI_RTIG_FEDERATE_HH
 #define CERTI_RTIG_FEDERATE_HH
 
-#include "Exception.hh"
-#include "FedTimeD.hh"
-#include "certi.hh"
-
 #include <string>
 #include <unordered_set>
+
+#include "FedTimeD.hh"
+#include "certi.hh"
 
 namespace certi {
 namespace rtig {

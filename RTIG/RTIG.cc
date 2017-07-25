@@ -82,10 +82,8 @@ RTIG::RTIG()
     , my_federationHandles(1)
     , my_socketServer(&my_tcpSocketServer, &my_udpSocketServer)
     , my_auditServer(RTIG_AUDIT_FILENAME)
-    , my_federations(my_socketServer, my_auditServer)
+    , my_federations(my_socketServer, my_auditServer, my_verboseLevel)
 {
-    my_federations.setVerboseLevel(my_verboseLevel);
-
     my_NM_msgBufSend.reset();
     my_NM_msgBufReceive.reset();
 }

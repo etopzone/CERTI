@@ -3,8 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <unistd.h>
-
 namespace {
     static constexpr bool debug_disabled {true};
 }

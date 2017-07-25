@@ -23,22 +23,15 @@
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-#include <cstdint>
 #include <memory>
 #include <set>
 #include <string>
-#include <vector>
 
-#include "BaseRegion.hh"
-#include "Exception.hh"
-#include "FedTimeD.hh"
 #include "certi.hh"
 
 namespace certi {
 
-class AttributeHandleSet;
 class AuditFile;
-class Extent;
 class NM_Join_Federation_Execution;
 class SocketServer;
 class SocketTCP;
@@ -55,38 +48,47 @@ class Federation;
 class FederationsList {
 public:
     // constructor/destructor
-    FederationsList(SocketServer& server, AuditFile& audit);
+    FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel = 0);
     ~FederationsList();
+
+    void setVerboseLevel(const int verboseLevel);
 
 // ---------------------------
 // -- Federation Management --
 // ---------------------------
 
 #ifdef FEDERATION_USES_MULTICAST
-    void createFederation(const std::string&, FederationHandle, SocketMC*)
+    /** createFederation (with FEDERATION_USES_MULTICAST defined)
+     /   @p*aram name Federation name
+     @param handle Federation handle
+     @param mc_link
+     */
+    void createFederation(const std::string& name, const FederationHandle handle, SocketMC* multicastSocket);
 #else
-    void createFederation(const std::string&, Handle, const std::string& FEDid)
+    /** createFederation (with FEDERATION_USES_MULTICAST not defined)
+     @ p*aram name Federation name
+     @param handle Federation handle
+     @param FEDid execution id. of the federation (i.e. file name)
+     */
+    void createFederation(const std::string& name, const FederationHandle handle, const std::string& FEDid);
 #endif
-        throw(FederationExecutionAlreadyExists,
-              CouldNotOpenFED,
-              ErrorReadingFED,
-              MemoryExhausted,
-              SecurityError,
-              RTIinternalError);
 
     /** Return the Handle of the Federation named "name" if it is found in the
      * FederationList, else throw FederationExecutionDoesNotExist.
      */
-    Handle getFederationHandle(const std::string& name) throw(FederationExecutionDoesNotExist);
+    Handle getFederationHandle(const std::string& name);
 
-    void destroyFederation(Handle) throw(FederatesCurrentlyJoined, FederationExecutionDoesNotExist, RTIinternalError);
+    void destroyFederation(const FederationHandle handle);
 
 #ifdef FEDERATION_USES_MULTICAST
-    void info(FederationHandle theHandle, int& nb_federes, int& nb_regulateurs, bool& is_syncing, SocketMC*& comm_mc)
+    void info(const FederationHandle handle,
+              int& out_federatesCount,
+              int& out_regulatorsCount,
+              bool& out_isSyncing,
+              SocketMC*& out_multicastSocket);
 #else
-    void info(Handle theHandle, int& nb_federes, int& nb_regulateurs, bool& is_syncing)
+    void info(const FederationHandle handle, int& out_federatesCount, int& out_regulatorsCount, bool& out_isSyncing);
 #endif
-        throw(FederationExecutionDoesNotExist, RTIinternalError);
 
     // -------------------------
     // -- Federate Management --
@@ -97,38 +99,33 @@ public:
      * to initialize its LBTS, and finally a RequestPause message if the
      * Federation is already paused.
      */
-    FederateHandle addFederate(Handle theHandle,
-                               const std::string& theFederateName,
-                               SocketTCP* theTCPLink,
-                               NM_Join_Federation_Execution& objectModelData) throw(FederationExecutionDoesNotExist,
-                                                                                    FederateAlreadyExecutionMember,
-                                                                                    MemoryExhausted,
-                                                                                    RTIinternalError);
+    FederateHandle addFederate(const FederationHandle handle,
+                               const std::string& federateName,
+                               SocketTCP* federateTcpLink,
+                               NM_Join_Federation_Execution& objectModelData);
 
     /** This Method tries to remove all references to this Federate in the
      * Federation. To be used when a Federate is supposed to have crashed.
      */
-    void killFederate(Handle, FederateHandle) noexcept;
-
-    void setVerboseLevel(int theVerboseLevel);
+    void killFederate(const FederationHandle federation, const FederateHandle federate) noexcept;
 
     /** Search federation from handle.
      * 
-     * @param[in] federationHandle the handle of the search federation
+     * @param[in] handle the handle of the search federation
      * @throw FederationExecutionDoesNotExist if the provided federation handle
      *        does not match any created federation.
      */
-    Federation& searchFederation(Handle federationHandle) throw(FederationExecutionDoesNotExist);
+    Federation& searchFederation(const FederationHandle handle);
 
 private:
-    SocketServer& socketServer;
-    AuditFile& auditFile;
+    SocketServer& my_socket_server;
+    AuditFile& my_audit_file;
 
-    int verboseLevel;
-    
+    int my_verbose_level;
+
     struct FederationComparator {
         using is_transparent = void;
-        
+
         bool operator()(const std::unique_ptr<Federation>& lhs, const std::unique_ptr<Federation>& rhs) const;
         bool operator()(const std::unique_ptr<Federation>& lhs, const FederationHandle rhsHandle) const;
         bool operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federation>& rhs) const;
@@ -136,8 +133,8 @@ private:
         bool operator()(const std::string& lhsName, const std::unique_ptr<Federation>& rhs) const;
     };
 
-//     typedef std::map<Handle, Federation*> HandleFederationMap;
-//     HandleFederationMap _handleFederationMap;
+    //     typedef std::map<Handle, Federation*> HandleFederationMap;
+    //     HandleFederationMap _handleFederationMap;
     std::set<std::unique_ptr<Federation>, FederationComparator> my_federations;
 };
 }

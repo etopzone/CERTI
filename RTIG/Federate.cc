@@ -20,9 +20,7 @@
 
 #include "Federate.hh"
 
-#include <algorithm>
-#include <string>
-
+#include "Exception.hh"
 #include "PrettyDebug.hh"
 
 static PrettyDebug G("GENDOC", __FILE__);
