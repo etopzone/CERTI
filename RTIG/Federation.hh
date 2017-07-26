@@ -675,8 +675,8 @@ private:
      *  with the reference of the RTIG managed Socket Server. The reference of
      *  this object is passed down the Classes Tree with the help of RootObj.
      */
-    SecurityServer* my_server;
-    RootObject* my_root_object;
+    std::unique_ptr<SecurityServer> my_server;
+    std::unique_ptr<RootObject> my_root_object;
 
     LBTS my_regulators;
 

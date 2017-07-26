@@ -90,7 +90,7 @@ void FederationsList::createFederation(const std::string& name, const Federation
         throw FederationExecutionAlreadyExists(name);
     }
     catch (FederationExecutionDoesNotExist& e) {
-        Debug(D, pdDebug) << "CreerFederation catches FederationExecutionDoesNotExist" << std::endl;
+        Debug(D, pdDebug) << "CreateFederation catches FederationExecutionDoesNotExist" << std::endl;
     }
 
     try {
