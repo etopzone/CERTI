@@ -46,12 +46,6 @@
 #include "SocketMC.hh"
 #endif
 
-#ifdef CERTI_TEST
-#define PRIVATE_TESTABLE public
-#else
-#define PRIVATE_TESTABLE private
-#endif
-
 namespace certi {
 class AttributeHandleSet;
 class AuditFile;

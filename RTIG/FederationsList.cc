@@ -46,7 +46,7 @@ namespace rtig {
 static PrettyDebug D("FEDERATIONSLIST", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 
-FederationsList::FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel)
+FederationsList::FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel) noexcept
     : my_socket_server(server), my_audit_file(audit), my_verbose_level(verboseLevel)
 {
 }
@@ -58,7 +58,12 @@ FederationsList::~FederationsList()
     }
 }
 
-void FederationsList::setVerboseLevel(const int verboseLevel)
+int FederationsList::getVerboseLevel() const noexcept
+{
+    return my_verbose_level;
+}
+
+void FederationsList::setVerboseLevel(const int verboseLevel) noexcept
 {
     my_verbose_level = verboseLevel;
 }
@@ -97,24 +102,17 @@ void FederationsList::createFederation(const std::string& name, const Federation
 #endif
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
-        auto result = my_federations.insert(std::make_pair(handle, std::move(federation))).second;
-        if (!result) {
-            throw FederationExecutionAlreadyExists(name);
-        }
+        // Federation's existence has already been checked above, no need to check insert's result
+        (void) my_federations.insert(std::make_pair(handle, std::move(federation))).second;
 
         Debug(D, pdInit) << "New Federation created with Handle" << handle << std::endl;
 
         Debug(G, pdGendoc) << "exit FederationsList::createFederation" << std::endl;
     }
-    catch (CouldNotOpenFED& e) {
-        Debug(D, pdInit) << "Federation constructor : Could not open FED file" << std::endl;
-        Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception CouldNotOpenFED" << std::endl;
-        throw CouldNotOpenFED(e.reason());
-    }
-    catch (ErrorReadingFED& e) {
-        Debug(D, pdInit) << "Federation constructor : Could not read FED file (maybe incorrect)" << std::endl;
-        Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception ErrorReadingFED" << std::endl;
-        throw ErrorReadingFED(e.reason());
+    catch (Exception& e) {
+        Debug(D, pdInit) << "FederationsList could not create Federation : " << e.name() << " - " << e.reason() << std::endl;
+        Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception" << std::endl;
+        throw;
     }
 }
 

@@ -1162,21 +1162,14 @@ Federate& Federation::getFederate(FederateHandle federate_handle) throw(Federate
 
 Federate& Federation::getFederate(const string& federate_name) throw(FederateNotExecutionMember)
 {
-    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    //         if (i->second.getName() == federate_name)
-    //             return i->second;
-    //     }
-    //
-    //     throw FederateNotExecutionMember(
-    //         stringize() << "Federate <" << federate_name << "> not [yet] member of Federation <" << getName() << ">.");
-
-    for(const auto& kv : my_federates) {
-        if (kv.second->getName() == federate_name) {
-            return *kv.second;
-        }
+    auto it = std::find_if(
+        begin(my_federates), end(my_federates), [&federate_name](decltype(my_federates)::value_type& kv) { return kv.second->getName() == federate_name; });
+    
+    if(it == end(my_federates)) {
+        throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
     }
-
-    throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
+    
+    return *it->second;
 }
 
 bool Federation::empty() const

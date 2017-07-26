@@ -48,10 +48,11 @@ class Federation;
 class FederationsList {
 public:
     // constructor/destructor
-    FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel = 0);
+    FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel = 0) noexcept;
     ~FederationsList();
 
-    void setVerboseLevel(const int verboseLevel);
+    int getVerboseLevel() const noexcept;
+    void setVerboseLevel(const int verboseLevel) noexcept;
 
 // ---------------------------
 // -- Federation Management --

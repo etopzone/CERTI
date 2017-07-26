@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <RTIG/FederationsList.hh>
+#include <RTIG/Federation.hh>
 
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/SocketServer.hh>
@@ -10,19 +11,10 @@
 #include "temporaryfedfile.h"
 
 using ::certi::rtig::FederationsList;
+using ::certi::rtig::Federation;
 
 /** TODO
- * 
  * killFederate
- * 
- * setVerboseLevel
- * 
- * handleMessageNullPrime
- * 
- * getNullPrimeValue(FederationHandle federation);
- * 
- * private:
- *    searchFederation(Handle federationHandle)
  */
 
 namespace {
@@ -73,6 +65,32 @@ TEST_F(FederationsListTest, getFederationHandleReturnsHandleFromCreate)
     ASSERT_EQ(federation_handle, f.getFederationHandle("fed"));
 }
 
+TEST_F(FederationsListTest, destroyFederationThrowsOnUknFederation)
+{
+    ASSERT_THROW(f.destroyFederation(ukn_federation), ::certi::FederationExecutionDoesNotExist);
+}
+
+TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
+{
+    TemporaryFedFile tmp{"FedList.fed"};
+    f.createFederation("fed", federation_handle, "FedList.fed");
+    
+    certi::NM_Join_Federation_Execution message{};
+    f.addFederate(federation_handle, "federate", nullptr, message);
+    
+    ASSERT_THROW(f.destroyFederation(federation_handle), ::certi::FederatesCurrentlyJoined);
+}
+
+TEST_F(FederationsListTest, DestroyFederationRemovesFederation)
+{
+    TemporaryFedFile tmp{"FedList.fed"};
+    f.createFederation("fed", federation_handle, "FedList.fed");
+    
+    f.destroyFederation(federation_handle);
+    
+    ASSERT_THROW(f.searchFederation(federation_handle), ::certi::FederationExecutionDoesNotExist);
+}
+
 TEST_F(FederationsListTest, infoThrowsOnUknFederation)
 {
     int nbFeds{10}, nbRegs{10};
@@ -88,11 +106,6 @@ TEST_F(FederationsListTest, infoThrowsOnUknFederation)
     ASSERT_EQ(false, isSyncing);
 }
 
-TEST_F(FederationsListTest, destroyFederationThrowsOnUknFederation)
-{
-    ASSERT_THROW(f.destroyFederation(ukn_federation), ::certi::FederationExecutionDoesNotExist);
-}
-
 TEST_F(FederationsListTest, killFederateDoesNotThrowsOnUknFederation)
 {
     ASSERT_NO_THROW(f.killFederate(ukn_federation, ukn_handle));
@@ -102,4 +115,13 @@ TEST_F(FederationsListTest, addFederateThrowsOnUknFederation)
 {
     certi::NM_Join_Federation_Execution message{};
     ASSERT_THROW(f.addFederate(ukn_federation, "", nullptr, message), ::certi::FederationExecutionDoesNotExist);
+}
+
+TEST_F(FederationsListTest, VerboseLevelGettersAndSetters)
+{
+    ASSERT_EQ(0, f.getVerboseLevel());
+    
+    f.setVerboseLevel(2);
+    
+    ASSERT_EQ(2, f.getVerboseLevel());
 }
