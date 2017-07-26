@@ -123,7 +123,7 @@ Handle FederationsList::getFederationHandle(const std::string& name)
     Debug(G, pdGendoc) << "enter FederationsList::getFederationHandle" << std::endl;
 
     auto it = std::find_if(
-        begin(my_federations), end(my_federations), [&name](auto& kv) { return kv.second->getName() == name; });
+        begin(my_federations), end(my_federations), [&name](decltype(my_federations)::value_type& kv) { return kv.second->getName() == name; });
 
     if (it == end(my_federations)) {
         Debug(G, pdGendoc) << "exit  FederationsList::getFederationHandle on exception" << std::endl;
