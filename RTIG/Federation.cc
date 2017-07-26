@@ -70,7 +70,6 @@ using std::string;
 using std::list;
 using std::cerr;
 using std::vector;
-using std::make_unique;
 
 // Definitions
 #ifdef HAVE_XML

@@ -32,7 +32,6 @@
 #include "make_unique.hh"
 
 using std::endl;
-using std::make_unique;
 
 namespace certi {
 

@@ -1,4 +1,8 @@
-#if __GNUC__ < 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ < 9))
+#if defined(__clang__)
+
+using std::make_unique;
+
+#elif __GNUC__ < 4 || (__GNUC__ == 4 && (__GNUC_MINOR__ < 9))
 
 #include <memory>
 
@@ -7,5 +11,9 @@ std::unique_ptr<T> make_unique(Args&&... args)
 {
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+#else
+
+using std::make_unique;
 
 #endif
