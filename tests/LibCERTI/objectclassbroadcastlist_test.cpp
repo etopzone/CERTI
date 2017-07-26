@@ -3,19 +3,46 @@
 #include "libCERTI/ObjectClassBroadcastList.hh"
 
 using ::certi::ObjectBroadcastLine;
+using ::certi::ObjectClassBroadcastList;
+using ::certi::NetworkMessage;
+
+namespace {
+static constexpr ::certi::Handle invalid_handle{0};
+static constexpr ::certi::Handle ukn_handle{42};
+
+static constexpr ::certi::Handle max_handle{10};
+
+static constexpr ::certi::Handle attr_handle{3};
+
+static constexpr ::certi::FederateHandle sender_handle{1};
+static constexpr ::certi::FederateHandle federate_handle{2};
+
+ObjectBroadcastLine* getLineForFederate(ObjectClassBroadcastList& list, ::certi::FederateHandle fed)
+{
+    auto it = std::find_if(begin(list.___TESTS_ONLY___lines()),
+                           end(list.___TESTS_ONLY___lines()),
+                           [&fed](ObjectBroadcastLine* line) { return line->Federate == fed; });
+
+    if (it == end(list.___TESTS_ONLY___lines())) {
+        return nullptr;
+    }
+
+    return *it;
+}
+}
 
 TEST(ObjectBroadcastLineTest, CtorCopiesFedHandle)
 {
     ObjectBroadcastLine line{42};
 
-    ASSERT_EQ(42, line.Federate);
+    ASSERT_EQ(42u, line.Federate);
 }
 
 TEST(ObjectBroadcastLineTest, CtorInitializeStateSent)
 {
     ObjectBroadcastLine line{42, ObjectBroadcastLine::sent};
 
-    for(int i{0}; i<MAX_STATE_SIZE+1; ++i) {
+    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
         ASSERT_EQ(ObjectBroadcastLine::sent, line.state[i]) << ", no" << i;
     }
 }
@@ -23,8 +50,8 @@ TEST(ObjectBroadcastLineTest, CtorInitializeStateSent)
 TEST(ObjectBroadcastLineTest, CtorInitializeStateWaiting)
 {
     ObjectBroadcastLine line{42, ObjectBroadcastLine::waiting};
-    
-    for(int i{0}; i<MAX_STATE_SIZE+1; ++i) {
+
+    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
         ASSERT_EQ(ObjectBroadcastLine::waiting, line.state[i]) << ", no" << i;
     }
 }
@@ -32,315 +59,225 @@ TEST(ObjectBroadcastLineTest, CtorInitializeStateWaiting)
 TEST(ObjectBroadcastLineTest, CtorInitializeStateNotSub)
 {
     ObjectBroadcastLine line{42, ObjectBroadcastLine::notSub};
-    
-    for(int i{0}; i<MAX_STATE_SIZE+1; ++i) {
+
+    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
         ASSERT_EQ(ObjectBroadcastLine::notSub, line.state[i]) << ", no" << i;
     }
 }
 
-#ifdef BENCHMARK_ARRAY_FILL
-
-#include <chrono>
-
-enum State {
-    sent,
-    waiting,
-    notSub
-};
-
-enum class CState: char {
-    sent,
-    waiting,
-    notSub
-};
-
-#define SIIIZE 1024*8
-
-using AttributeHandle = uint32_t;
-
-TEST(ObjectClassBroadcastList, initFor_sent)
+TEST(ObjectClassBroadcastListTest, CtorThrowsOnNullMessage)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = sent;
-    
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFor_sent: " << (end - start).count() << " ns" << std::endl;
+    ASSERT_THROW(ObjectClassBroadcastList(nullptr, 0), ::certi::RTIinternalError);
 }
 
-TEST(ObjectClassBroadcastList, initFor_waiting)
+TEST(ObjectClassBroadcastListTest, CtorThrowsOnUnexpectedMessageType)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = waiting;
-    
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFor_waiting: " << (end - start).count() << " ns" << std::endl;
+    auto message = new NetworkMessage;
+    ASSERT_THROW(ObjectClassBroadcastList(message, 0), ::certi::RTIinternalError);
 }
 
-TEST(ObjectClassBroadcastList, initFor_notSub)
+TEST(ObjectClassBroadcastListTest, CtorAcceptsNM_Remove_Object)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = notSub;
-    
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFor_notSub: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Remove_Object;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(message, l.getMsg());
+    ASSERT_EQ(message, l.getMsgRO());
+    ASSERT_EQ(nullptr, l.getMsgDO());
+    ASSERT_EQ(nullptr, l.getMsgRAV());
+    ASSERT_EQ(nullptr, l.getMsgRAOA());
+    ASSERT_EQ(nullptr, l.getMsgAODN());
 }
 
-TEST(ObjectClassBroadcastList, initCtor_sent)
+TEST(ObjectClassBroadcastListTest, CtorAcceptsNM_Discover_Object)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    auto init_state = sent;
-    
-    State state[SIIIZE+1] = {init_state};
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initCtor_sent: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Discover_Object;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(message, l.getMsg());
+    ASSERT_EQ(nullptr, l.getMsgRO());
+    ASSERT_EQ(message, l.getMsgDO());
+    ASSERT_EQ(nullptr, l.getMsgRAV());
+    ASSERT_EQ(nullptr, l.getMsgRAOA());
+    ASSERT_EQ(nullptr, l.getMsgAODN());
 }
 
-TEST(ObjectClassBroadcastList, initCtor_waiting)
+TEST(ObjectClassBroadcastListTest, CtorAcceptsNM_Reflect_Attribute_Values)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    auto init_state = waiting;
-    
-    State state[SIIIZE+1] = {init_state};
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initCtor_waiting: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(message, l.getMsg());
+    ASSERT_EQ(nullptr, l.getMsgRO());
+    ASSERT_EQ(nullptr, l.getMsgDO());
+    ASSERT_EQ(message, l.getMsgRAV());
+    ASSERT_EQ(nullptr, l.getMsgRAOA());
+    ASSERT_EQ(nullptr, l.getMsgAODN());
 }
 
-TEST(ObjectClassBroadcastList, initCtor_notSub)
+TEST(ObjectClassBroadcastListTest, CtorAcceptsNM_Request_Attribute_Ownership_Assumption)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    auto init_state = notSub;
-    
-    State state[SIIIZE+1] = {init_state};
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initCtor_notSub: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(message, l.getMsg());
+    ASSERT_EQ(nullptr, l.getMsgRO());
+    ASSERT_EQ(nullptr, l.getMsgDO());
+    ASSERT_EQ(nullptr, l.getMsgRAV());
+    ASSERT_EQ(message, l.getMsgRAOA());
+    ASSERT_EQ(nullptr, l.getMsgAODN());
 }
 
-TEST(ObjectClassBroadcastList, initMemset_sent)
+TEST(ObjectClassBroadcastListTest, CtorAcceptsNM_Attribute_Ownership_Divestiture_Notification)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = sent;
-    
-    memset(state, init_state, SIIIZE+1 * sizeof(init_state));
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initMemset_sent: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(message, l.getMsg());
+    ASSERT_EQ(nullptr, l.getMsgRO());
+    ASSERT_EQ(nullptr, l.getMsgDO());
+    ASSERT_EQ(nullptr, l.getMsgRAV());
+    ASSERT_EQ(nullptr, l.getMsgRAOA());
+    ASSERT_EQ(message, l.getMsgAODN());
 }
 
-TEST(ObjectClassBroadcastList, initMemset_waiting)
+TEST(ObjectClassBroadcastListTest, CtorKeepsLinesEmptyIfNoMessageFederate)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = waiting;
-    
-    memset(state, init_state, SIIIZE+1 * sizeof(init_state));
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initMemset_waiting: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(0, l.___TESTS_ONLY___lines().size());
 }
 
-TEST(ObjectClassBroadcastList, initMemset_notSub)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    State state[SIIIZE+1] ;
-    
-    auto init_state = notSub;
-    
-    memset(state, init_state, SIIIZE+1 * sizeof(init_state));
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initMemset_notSub: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_EQ(1, l.___TESTS_ONLY___lines().size());
+    ASSERT_EQ(sender_handle, l.___TESTS_ONLY___lines().front()->Federate);
+    ASSERT_EQ(ObjectBroadcastLine::sent, l.___TESTS_ONLY___lines().front()->state[0]);
 }
 
-TEST(ObjectClassBroadcastList, initCFor_sent)
+TEST(ObjectClassBroadcastListTest, AddFederateThrowsOnTooHighAttribute)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    CState state[SIIIZE+1] ;
-    
-    auto init_state = CState::sent;
-    
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initCFor_sent: " << (end - start).count() << " ns" << std::endl;
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, 0);
+
+    ASSERT_THROW(l.addFederate(federate_handle, 1), ::certi::RTIinternalError);
 }
 
-TEST(ObjectClassBroadcastList, initCFor_waiting)
+TEST(ObjectClassBroadcastListTest, AddFederateWithOtherFederateCreatesWaitingLine)
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    CState state[SIIIZE+1] ;
-    
-    auto init_state = CState::waiting;
-    
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    ASSERT_EQ(2, l.___TESTS_ONLY___lines().size());
+
+    auto line = getLineForFederate(l, federate_handle);
+
+    ASSERT_NE(nullptr, line);
+
+    for (int i{0}; i < max_handle; ++i) {
+        if (i == attr_handle) {
+            EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[i]);
+        }
+        else {
+            EXPECT_EQ(ObjectBroadcastLine::notSub, line->state[i]);
+        }
     }
-    
-    std::cerr << "initCFor_waiting: " << (end - start).count() << " ns" << std::endl;
 }
 
-TEST(ObjectClassBroadcastList, initCFor_notSub)
+TEST(ObjectClassBroadcastListTest, AddFederateWithSameFederateReuseLine)
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
     
-    CState state[SIIIZE+1] ;
+    l.addFederate(federate_handle, attr_handle);
     
-    auto init_state = CState::notSub;
+    l.addFederate(federate_handle, attr_handle + 1);
     
-    for (AttributeHandle i = 0 ; i <= SIIIZE ; i++)
-        state[i] = init_state ;
+    ASSERT_EQ(2, l.___TESTS_ONLY___lines().size());
     
-    auto end = std::chrono::high_resolution_clock::now();
+    auto line = getLineForFederate(l, federate_handle);
     
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
+    ASSERT_NE(nullptr, line);
     
-    std::cerr << "initCFor_notSub: " << (end - start).count() << " ns" << std::endl;
+    EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[attr_handle]);
+    EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[attr_handle+1]);
 }
 
-TEST(ObjectClassBroadcastList, initFill_sent)
+// FIXME possible BUG ?
+TEST(ObjectClassBroadcastListTest, SendWithAttributeNMThrows)
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
     
-    auto init_state = CState::sent;
-    
-    CState state[SIIIZE+1];
-    
-    std::fill_n(state, SIIIZE+1, init_state);
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFill_sent: " << (end - start).count() << " ns" << std::endl;
+    ASSERT_THROW(l.sendPendingMessage(nullptr), ::certi::RTIinternalError);
 }
 
-TEST(ObjectClassBroadcastList, initFill_waiting)
+TEST(ObjectClassBroadcastListTest, UpcastToAlterNM_Remove_Object)
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto message = new ::certi::NM_Remove_Object;
+    message->setFederate(sender_handle);
+    message->setObjectClass(ukn_handle);
+    ObjectClassBroadcastList l(message, max_handle);
     
-    auto init_state = CState::waiting;
+    l.upcastTo(attr_handle);
     
-    CState state[SIIIZE+1];
-    
-    std::fill_n(state, SIIIZE+1, init_state);
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFill_waiting: " << (end - start).count() << " ns" << std::endl;
+    ASSERT_EQ(attr_handle, message->getObjectClass());
 }
 
-TEST(ObjectClassBroadcastList, initFill_notSub)
+TEST(ObjectClassBroadcastListTest, UpcastToAlterNM_Discover_Object)
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    message->setObjectClass(ukn_handle);
+    ObjectClassBroadcastList l(message, max_handle);
     
-    auto init_state = CState::notSub;
+    l.upcastTo(attr_handle);
     
-    CState state[SIIIZE+1];
-    
-    std::fill_n(state, SIIIZE+1, init_state);
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    for(int i{0}; i<SIIIZE+1; ++i) {
-        ASSERT_EQ(init_state, state[i]) << ", no" << i;
-    }
-    
-    std::cerr << "initFill_notSub: " << (end - start).count() << " ns" << std::endl;
+    ASSERT_EQ(attr_handle, message->getObjectClass());
 }
 
-#endif
+// SPDOM
+// mock socketserver
+// no waiting == no socket claimed
+// claim one socket per sub, no matter the attr
+
+// SPRAVM
+// mock socketserver
+// no waiting == no socket claimed
+// 
+
+/*
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
+*/

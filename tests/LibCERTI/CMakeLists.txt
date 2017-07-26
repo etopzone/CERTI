@@ -23,6 +23,7 @@ add_executable(TestLibCERTI
                socketserver_test.cpp
                
                objectclassbroadcastlist_test.cpp
+               objectclassbroadcastlist_benchmark.cpp
                
                ${lib_certi_SRCS}
                ../main.cpp

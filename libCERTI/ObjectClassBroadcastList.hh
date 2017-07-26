@@ -24,10 +24,10 @@
 #ifndef CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 #define CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-#include "certi.hh"
-#include "NetworkMessage.hh"
 #include "NM_Classes.hh"
+#include "NetworkMessage.hh"
 #include "SecurityServer.hh"
+#include "certi.hh"
 
 #include <list>
 
@@ -42,29 +42,28 @@ namespace certi {
  */
 class ObjectBroadcastLine {
 public:
-	/**
+    /**
 	 * The state of the attribute
 	 * for the federate in this broadcast line
 	 */
-	enum State {
-		sent,    /**< the attribute has been sent                       */
-		waiting, /**< the attribute is waiting to be sent               */
-		notSub   /**< the federate did not subscribed to this attribute */
-	};
+    enum State {
+        sent, /**< the attribute has been sent                       */
+        waiting, /**< the attribute is waiting to be sent               */
+        notSub /**< the federate did not subscribed to this attribute */
+    };
 
-	ObjectBroadcastLine(FederateHandle fed, State init = notSub);
+    ObjectBroadcastLine(FederateHandle fed, State init = notSub);
 
-	/* The Federate Handle */
-	FederateHandle Federate ;
+    /* The Federate Handle */
+    FederateHandle Federate;
 
-	/**
+    /**
 	 * The state of the attributes.
 	 * The index of the state array is the attribute handle
 	 * FIXME we should rather use a map, because the
 	 * FIXME attribute handle may be very sparse.
 	 */
-	State state[MAX_STATE_SIZE+1] ;
-
+    State state[MAX_STATE_SIZE + 1];
 };
 
 /**
@@ -84,47 +83,64 @@ public:
  * A federate is represented by an ObjectBroadcastLine.
  */
 class ObjectClassBroadcastList {
-
 public:
-	/**
-	 * The provided msg must have been allocated, and will be destroyed
+    /**
+     * The provided message must have been allocated, and will be destroyed
 	 * by the destructor.
-	 * msg->federate is added to the list, and its state is set as "Sent"
+     * message->federate is added to the list, and its state is set as "Sent"
 	 * for all attributes. For RAVs messages, MaxAttHandle is the greatest
 	 * attribute handle of the class. For Discover_Object message, it can be 0 to
 	 * mean "any attribute".
 	 */
-	ObjectClassBroadcastList(NetworkMessage *msg, AttributeHandle maxAttributeHandles = 0)
-	throw (RTIinternalError);
+    ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttributeHandles = 0) throw(RTIinternalError);
 
-	~ObjectClassBroadcastList();
+    /// Free all structures, including Message.
+    ~ObjectClassBroadcastList();
 
-	NetworkMessage* getMsg() {return msg;}
-	NM_Remove_Object*                                getMsgRO()   {return msgRO;}
-	NM_Discover_Object*                              getMsgDO()	  {return msgDO;}
-	NM_Reflect_Attribute_Values*     		  	     getMsgRAV()  {return msgRAV;}
-	NM_Request_Attribute_Ownership_Assumption*       getMsgRAOA() {return msgRAOA;}
-	NM_Attribute_Ownership_Divestiture_Notification* getMsgAODN() {return msgAODN;}
+    NetworkMessage* getMsg();
+    NM_Remove_Object* getMsgRO();
+    NM_Discover_Object* getMsgDO();
+    NM_Reflect_Attribute_Values* getMsgRAV();
+    NM_Request_Attribute_Ownership_Assumption* getMsgRAOA();
+    NM_Attribute_Ownership_Divestiture_Notification* getMsgAODN();
 
-	/**
-	 * Clear the broadcast lines.
+    /** Clear the broadcast lines.
+     * 
+     * Empty the list so it can reused (like the destructor).
 	 */
-	void clear();
+    void clear();
 
-	/**
-	 * Add a federate interested in the broadcast.
-	 * @param[in] federate, the handle of the interested Federate
-	 * @param[in] attribute,
-	 */
-	void addFederate(FederateHandle federate, AttributeHandle attribute = 0);
+    /**Add a federate interested in the broadcast.
+     * 
+     * If it was not present in the list,
+     * a new line is added and all attributes are marked as bsNotSubscriber.
+     * Then if the Federate has not been sent a message for this attribute,
+     * the attribute (for the federate) is marked has
+     * ObjectBroadcastLine::waiting. theAttribute can be not specified in
+     * the case of a DiscoverObject message.
+     * 
+	 * @param[in] federate the handle of the interested Federate
+	 * @param[in] attribute the addribute inderested in
+     */
+    void addFederate(FederateHandle federate, AttributeHandle attribute = 0);
 
-	/**
-	 * Send all the pending message to all concerned
-	 * Federate stored in the broadcast lines.
-	 */
-	void sendPendingMessage(SecurityServer *server);
+    /** Send all the pending message to all concerned Federate stored in the broadcast lines.
+     * 
+     * IMPORTANT: Before calling this method, be sure to set the
+     * Message->federation handle.
+     
+     * Broadcast the message to all the Federate in the
+     * ObjectBroadcastLine::waiting state. If it is a DiscoverObject
+     * message, the message is sent as is, and the Federate is marked as
+     * ObjectBroadcastLine::sent for the ANY attribute. If it is a RAV
+     * message, the message is first copied, without the Attribute list,
+     * and then all pending attributes(in the bsWainting state) are added
+     * to the copy. The copy is sent, and attributes are marked as
+     * ObjectBroadcastLine::sent.
+     */
+    void sendPendingMessage(SecurityServer* server);
 
-	/**
+    /**
 	 * Upcast class to appropriate message.
 	 * The inheritance feature of HLA imply that a federate subscribing
 	 * to a superclass attribute which effectively belong to an instance
@@ -132,41 +148,46 @@ public:
 	 * Federate callback (e.g. discover object) of the appropriate level
 	 * i.e. the one he subscribed to.
 	 */
-	void upcastTo(ObjectClassHandle objectClass);
+    void upcastTo(ObjectClassHandle objectClass);
+
+    const std::list<ObjectBroadcastLine*>& ___TESTS_ONLY___lines() const
+    {
+        return lines;
+    }
 
 protected:
-	NetworkMessage                                      *msg;
-	NM_Remove_Object                                  *msgRO;
-	NM_Discover_Object                                *msgDO;
-	NM_Reflect_Attribute_Values                      *msgRAV;
-	NM_Request_Attribute_Ownership_Assumption       *msgRAOA;
-	NM_Attribute_Ownership_Divestiture_Notification *msgAODN;
+    NetworkMessage* msg;
+    NM_Remove_Object* msgRO;
+    NM_Discover_Object* msgDO;
+    NM_Reflect_Attribute_Values* msgRAV;
+    NM_Request_Attribute_Ownership_Assumption* msgRAOA;
+    NM_Attribute_Ownership_Divestiture_Notification* msgAODN;
 
 private:
+    /*! The two next methods are called by the public SendPendingMessage
+     m ethods. They respectively handle DiscoverObject *and
+     ReflectAttributeValues messages.
+     */
+    void sendPendingDOMessage(SecurityServer* server);
+    void sendPendingRAVMessage(SecurityServer* server);
 
-	template <typename T>
-	T* createReducedMessage(T* msg, ObjectBroadcastLine *line);
+    template <typename T>
+    T* createReducedMessage(T* msg, ObjectBroadcastLine* line);
 
-	template <typename T>
-	T* createReducedMessageWithValue(T* msg, ObjectBroadcastLine *line);
+    template <typename T>
+    T* createReducedMessageWithValue(T* msg, ObjectBroadcastLine* line);
 
+    //! Return the line of the list describing federate 'theFederate', or NULL.
+    ObjectBroadcastLine* getLineWithFederate(FederateHandle theFederate);
 
-	//! Return the line of the list describing federate 'theFederate', or NULL.
-	ObjectBroadcastLine *getLineWithFederate(FederateHandle theFederate);
+    /** Check if some attributes in the provided line have the "waiting" status.
+     */
+    bool isWaiting(ObjectBroadcastLine* line);
 
-	bool isWaiting(ObjectBroadcastLine *line);
-
-	/*! The two next methods are called by the public SendPendingMessage
-      methods. They respectively handle DiscoverObject and
-      ReflectAttributeValues messages.
-	 */
-	void sendPendingDOMessage(SecurityServer *server);
-	void sendPendingRAVMessage(SecurityServer *server);
-
-	AttributeHandle maxHandle ;
-	std::list<ObjectBroadcastLine *> lines ;
-	/* The message buffer used to send Network messages */
-	MessageBuffer NM_msgBufSend;
+    AttributeHandle maxHandle;
+    std::list<ObjectBroadcastLine*> lines;
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
 };
 
 } // namespace certi
