@@ -79,20 +79,18 @@ using ::certi::rtig::Federation;
  */
 
 namespace {
-    static constexpr ::certi::Handle invalid_handle {0};
-    
-    static constexpr ::certi::FederationHandle federation_handle {1};
-    
-    static constexpr ::certi::FederateHandle ukn_federate {42};
-    static constexpr ::certi::Handle ukn_handle {1337};
-    
-    static constexpr int quiet{0};
-    static constexpr int verbose{1};
-    
+static constexpr ::certi::Handle invalid_handle{0};
+
+static constexpr ::certi::FederationHandle federation_handle{1};
+
+static constexpr ::certi::FederateHandle ukn_federate{42};
+static constexpr ::certi::Handle ukn_handle{1337};
+
+static constexpr int quiet{0};
+static constexpr int verbose{1};
 }
 
 class FederationTest : public ::testing::Test {
-
 protected:
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
@@ -159,7 +157,7 @@ TEST_F(FederationTest, CtorFindsFedInPackageInstallPrefix)
 #endif
                          "SampleInstallPrefix.fed"};
 
-                         ASSERT_NO_THROW(Federation("install_prefix", federation_handle, s, a, "SampleInstallPrefix.fed", quiet));
+    ASSERT_NO_THROW(Federation("install_prefix", federation_handle, s, a, "SampleInstallPrefix.fed", quiet));
 }
 
 TEST_F(FederationTest, CtorFailsIfFileIsUnopenable)
@@ -171,14 +169,16 @@ TEST_F(FederationTest, CtorFailsIfNoExtension)
 {
     TemporaryFedFile tmp{"SampleWithoutDotfed"};
 
-    ASSERT_THROW(Federation("no_dot_fed", federation_handle, s, a, "SampleWithoutDotfed", quiet), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(Federation("no_dot_fed", federation_handle, s, a, "SampleWithoutDotfed", quiet),
+                 ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationTest, CtorFailsIfWrongExtension)
 {
     TemporaryFedFile tmp{"SampleWithout.fde"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.fde", quiet), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.fde", quiet),
+                 ::certi::CouldNotOpenFED);
 }
 
 #ifndef HAVE_XML
@@ -186,7 +186,8 @@ TEST_F(FederationTest, CtorFailsIfXmlFedWithoutXmlSupport)
 {
     TemporaryFedFile tmp{"SampleWithout.xml"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.xml", quiet), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.xml", quiet),
+                 ::certi::CouldNotOpenFED);
 }
 #endif
 
@@ -195,16 +196,16 @@ TEST_F(FederationTest, VerboseLevelChangesOutput)
     std::ostringstream oss;
     std::streambuf* original_cout_rdbuf = std::cout.rdbuf();
     std::cout.rdbuf(oss.rdbuf());
-    
+
     Federation f{"name", federation_handle, s, a, "Sample.fed", quiet};
-    
+
     std::ostringstream oss2;
     std::cout.rdbuf(oss2.rdbuf());
-    
+
     Federation f2{"name", federation_handle, s, a, "Sample.fed", verbose};
-    
+
     std::cout.rdbuf(original_cout_rdbuf); // restore
-    
+
     // test your oss content...
     ASSERT_TRUE(oss);
     ASSERT_TRUE(oss2);
@@ -254,7 +255,7 @@ TEST_F(FederationTest, FederationsDoesNotStartSynchronizing)
 TEST_F(FederationTest, AddFederateCreateUnderlying)
 {
     auto fed = f.add("fed", nullptr);
-    
+
     ASSERT_EQ("fed", f.getFederate(fed).getName());
 }
 
@@ -288,7 +289,8 @@ TEST_F(FederationTest, AddFederateReceiveNullMessageFromRegulator)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
 
     ASSERT_EQ(1, f.getNbRegulators());
@@ -317,9 +319,9 @@ TEST_F(FederationTest, AddFederateSynchronizingReceiveASPMessage)
 TEST_F(FederationTest, RemoveFederateUpdatesUnderlying)
 {
     auto fed = f.add("fed", nullptr);
-    
+
     f.remove(fed);
-    
+
     ASSERT_TRUE(f.empty());
 }
 
@@ -331,25 +333,25 @@ TEST_F(FederationTest, RemoveFederateThrowsOnUnknownFederate)
 TEST_F(FederationTest, CannotRemoveSameFederateTwice)
 {
     auto fed = f.add("new_federate", nullptr);
-    
+
     f.remove(fed);
-    
+
     ASSERT_THROW(f.remove(fed), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, KillRemoveFederate)
 {
     auto fed = f.add("new", nullptr);
-    
+
     f.kill(fed);
-    
+
     ASSERT_TRUE(f.empty());
 }
 
 TEST_F(FederationTest, KillRemoveFederateFromRegulators)
 {
     auto fed = f.add("new", nullptr);
-    
+
     try {
         f.addRegulator(fed, {});
     }
@@ -357,11 +359,12 @@ TEST_F(FederationTest, KillRemoveFederateFromRegulators)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     f.kill(fed);
-    
+
     ASSERT_EQ(0, f.getNbRegulators());
 }
 
@@ -387,7 +390,9 @@ TEST_F(FederationTest, EmptyThrowListOfFederates)
         FAIL() << "Empty should have thrown list of federates";
     }
     catch (::certi::FederatesCurrentlyJoined& e) {
-        EXPECT_EQ("< fed1 fed2 fed3 >", e.reason());
+        EXPECT_TRUE(e.reason().find("fed1") != std::string::npos);
+        EXPECT_TRUE(e.reason().find("fed2") != std::string::npos);
+        EXPECT_TRUE(e.reason().find("fed3") != std::string::npos);
     }
     catch (...) {
         FAIL() << "Empty should have thrown list of federates";
@@ -413,14 +418,14 @@ TEST_F(FederationTest, GetFederateReturnsGoodFederate)
 {
     auto handle1 = f.add("fed1", nullptr);
     auto handle2 = f.add("fed2", nullptr);
-    
+
     auto& fed1 = f.getFederate(handle1);
-    
+
     ASSERT_EQ(handle1, fed1.getHandle());
     ASSERT_EQ("fed1", fed1.getName());
-    
+
     auto& fed2 = f.getFederate(handle2);
-    
+
     ASSERT_EQ(handle2, fed2.getHandle());
     ASSERT_EQ("fed2", fed2.getName());
 }
@@ -428,11 +433,11 @@ TEST_F(FederationTest, GetFederateReturnsGoodFederate)
 TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
 {
     auto handle = f.add("new_federate", nullptr);
-    
+
     auto& fed = f.getFederate(handle);
-    
+
     ASSERT_FALSE(fed.isRegulator()) << "Federate starts with constrained == false";
-    
+
     try {
         f.addRegulator(handle, {});
     }
@@ -440,13 +445,14 @@ TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_EQ(1, f.getNbRegulators());
-    
+
     ASSERT_TRUE(fed.isRegulator());
-    
+
     try {
         f.removeRegulator(handle);
     }
@@ -454,9 +460,10 @@ TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_FALSE(fed.isRegulator());
 }
 
@@ -468,7 +475,7 @@ TEST_F(FederationTest, AddRegulatorThrowsOnUnknownFederate)
 TEST_F(FederationTest, AddRegulatorDoesNotWorkTwice)
 {
     auto fed = f.add("new_federate", nullptr);
-    
+
     try {
         f.addRegulator(fed, {});
     }
@@ -476,9 +483,10 @@ TEST_F(FederationTest, AddRegulatorDoesNotWorkTwice)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_THROW(f.addRegulator(fed, {}), ::certi::RTIinternalError);
 }
 
@@ -490,9 +498,9 @@ TEST_F(FederationTest, RemoveRegulatorThrowsOnUnknownFederate)
 TEST_F(FederationTest, RemoveRegulatorDoesNotWorkTwice)
 {
     auto fed = f.add("new_federate", nullptr);
-    
+
     // Already not regulator
-    
+
     ASSERT_THROW(f.removeRegulator(fed), ::certi::RTIinternalError);
 }
 
@@ -504,7 +512,7 @@ TEST_F(FederationTest, UpdateRegulatorNeedsValidFederateIfNotAnonymous)
 TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 {
     auto handle = f.add("regulator", nullptr);
-    
+
     ASSERT_THROW(f.updateRegulator(handle, {}, false), ::certi::RTIinternalError);
 }
 
@@ -513,17 +521,17 @@ TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 TEST_F(FederationTest, RegisterSynchronizationAddsLabelToAllFederates)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     auto& fed = f.getFederate(handle);
-    
+
     auto& fed1 = f.getFederate(f.add("fed 1", nullptr));
     auto& fed2 = f.getFederate(f.add("fed 2", nullptr));
     auto& fed3 = f.getFederate(f.add("fed 3", nullptr));
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     ASSERT_TRUE(fed.isSynchronizationLabel("label"));
-    
+
     ASSERT_TRUE(fed1.isSynchronizationLabel("label"));
     ASSERT_TRUE(fed2.isSynchronizationLabel("label"));
     ASSERT_TRUE(fed3.isSynchronizationLabel("label"));
@@ -537,16 +545,16 @@ TEST_F(FederationTest, RegisterSynchronizationThrowsIfUknFederate)
 TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelEmpty)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     ASSERT_THROW(f.registerSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelAlreadyExists)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     ASSERT_THROW(f.registerSynchronization(handle, "label", "tag"), ::certi::FederationAlreadyPaused);
 }
 
@@ -554,34 +562,34 @@ TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelAlreadyExists)
 TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchronized)
 {
     auto handle = f.add("emitter", nullptr);
-    
+
     auto& fed = f.getFederate(handle);
-    
+
     ::std::vector<::certi::FederateHandle> federatesToUpdate;
-    
+
     f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
-    
+
     ASSERT_FALSE(fed.isSynchronizationLabel("label")) << "Emitter is not synchronizing if set was empty";
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederates)
 {
     auto handle = f.add("emitter", nullptr);
-    
+
     auto& fed = f.getFederate(handle);
-    
+
     auto h1 = f.add("fed 1", nullptr);
     auto h2 = f.add("fed 2", nullptr);
     auto h3 = f.add("fed 3", nullptr);
-    
+
     ::std::vector<::certi::FederateHandle> federatesToUpdate;
     federatesToUpdate.push_back(h2);
     //     federatesToUpdate.push_back(h3);
-    
+
     f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
-    
+
     ASSERT_TRUE(fed.isSynchronizationLabel("label")) << "The sync label must also be set to the emitter";
-    
+
     ASSERT_FALSE(f.getFederate(h1).isSynchronizationLabel("label"));
     ASSERT_TRUE(f.getFederate(h2).isSynchronizationLabel("label"));
     ASSERT_FALSE(f.getFederate(h3).isSynchronizationLabel("label"));
@@ -595,16 +603,16 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     ASSERT_THROW(f.registerSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     ASSERT_THROW(f.registerSynchronization(handle, "label", "tag", 0, {}), ::certi::FederationAlreadyPaused);
 }
 
@@ -616,44 +624,44 @@ TEST_F(FederationTest, UnregisterSynchronizationPerSetThrowsIfUknFederate)
 TEST_F(FederationTest, UnregisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     ASSERT_THROW(f.unregisterSynchronization(handle, ""), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationRemovesSyncLabelFromFederate)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     // add another fed to return early
     f.add("other_fed", nullptr);
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     f.unregisterSynchronization(handle, "label");
-    
+
     ASSERT_FALSE(f.getFederate(handle).isSynchronizationLabel("label"));
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationWithOtherFederatesPausedStillSynchronizing)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     // add another fed to return early
     f.add("other_fed", nullptr);
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     f.unregisterSynchronization(handle, "label");
-    
+
     ASSERT_TRUE(f.isSynchronizing());
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationStopsSynchronizing)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     f.registerSynchronization(handle, "label", "tag");
-    
+
     try {
         f.unregisterSynchronization(handle, "label");
     }
@@ -661,9 +669,10 @@ TEST_F(FederationTest, UnregisterSynchronizationStopsSynchronizing)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_FALSE(f.isSynchronizing());
 }
 
@@ -675,14 +684,14 @@ TEST_F(FederationTest, BroadcastSynchronizationThrowOnUknFederate)
 TEST_F(FederationTest, BroadcastSynchronizationThrowOnEmptyLabel)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, broadcastSynchronizationSendsNM)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.broadcastSynchronization(handle, "label", "tag");
     }
@@ -690,7 +699,8 @@ TEST_F(FederationTest, broadcastSynchronizationSendsNM)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
 }
 
@@ -702,14 +712,14 @@ TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnUknFederate)
 TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnEmptyLabel)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, broadcastSynchronizationPerSetSendsNM)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.broadcastSynchronization(handle, "label", "tag", 0, {});
     }
@@ -717,7 +727,8 @@ TEST_F(FederationTest, broadcastSynchronizationPerSetSendsNM)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
 }
 
@@ -729,7 +740,7 @@ TEST_F(FederationTest, RequestSaveThrowOnUknFederate)
 TEST_F(FederationTest, RequestSaveSetsFederateSavingFlag)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.requestFederationSave(handle, "save");
     }
@@ -737,16 +748,17 @@ TEST_F(FederationTest, RequestSaveSetsFederateSavingFlag)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_TRUE(f.getFederate(handle).isSaving());
 }
 
 TEST_F(FederationTest, RequestSaveThrowsIfAlreadySaving)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.requestFederationSave(handle, "save");
     }
@@ -754,9 +766,10 @@ TEST_F(FederationTest, RequestSaveThrowsIfAlreadySaving)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_THROW(f.requestFederationSave(handle, "save_again"), ::certi::SaveInProgress);
 }
 
@@ -768,7 +781,7 @@ TEST_F(FederationTest, RequestTimedSaveThrowOnUknFederate)
 TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.requestFederationSave(handle, "save", {});
     }
@@ -776,16 +789,17 @@ TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_TRUE(f.getFederate(handle).isSaving());
 }
 
 TEST_F(FederationTest, RequestTimedSaveThrowsIfAlreadySaving)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.requestFederationSave(handle, "save", {});
     }
@@ -793,9 +807,10 @@ TEST_F(FederationTest, RequestTimedSaveThrowsIfAlreadySaving)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_THROW(f.requestFederationSave(handle, "save_again", {}), ::certi::SaveInProgress);
 }
 
@@ -817,7 +832,7 @@ TEST_F(FederationTest, DeleteRegionThrowsOnUknFederate)
 TEST_F(FederationTest, DeleteRegionThrowsIfSaveInProgress)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     try {
         f.requestFederationSave(handle, "save");
     }
@@ -825,9 +840,10 @@ TEST_F(FederationTest, DeleteRegionThrowsIfSaveInProgress)
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
     }
     catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
-    
+
     ASSERT_THROW(f.deleteRegion(handle, 1), ::certi::SaveInProgress);
 }
 
@@ -986,21 +1002,22 @@ TEST_F(FederationTest, FederateSaveStatusThrowsOnUknFederate)
 TEST_F(FederationTest, FederateSaveStatusUpdatesFlagAndUnderlyingFederate)
 {
     auto handle = f.add("fed", nullptr);
-    
+
     f.add("other", nullptr); // to return early
-    
+
     try {
-            f.requestFederationSave(handle, "save");
-        }
-        catch (certi::FederateNotExecutionMember& e) {
-            // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
-        }
-        catch (::certi::RTIinternalError& e) {
-            FAIL() << e.name() << " - " << e.reason() << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
-        }
-        
+        f.requestFederationSave(handle, "save");
+    }
+    catch (certi::FederateNotExecutionMember& e) {
+        // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
+    }
+    catch (::certi::RTIinternalError& e) {
+        FAIL() << e.name() << " - " << e.reason()
+               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
+    }
+
     f.federateSaveStatus(handle, true);
-    
+
     ASSERT_FALSE(f.getFederate(handle).isSaving());
 }
 

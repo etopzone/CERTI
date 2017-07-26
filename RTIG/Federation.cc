@@ -444,7 +444,9 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     FederateHandle federate_handle = my_federate_handle_generator.provide();
     //     _handleFederateMap.insert(HandleFederateMap::value_type(federate_handle, Federate(federate_name, federate_handle)));
     //     Federate& federate = getFederate(federate_handle);
-    Federate& federate = **(my_federates.insert(make_unique<Federate>(federate_name, federate_handle)).first);
+    auto result = my_federates.insert(std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_handle)));
+    
+    Federate& federate = *result.first->second;
 
     Debug(D, pdInit) << "Federate " << federate_handle << " joined Federation " << my_handle << endl;
 
@@ -542,11 +544,11 @@ bool Federation::updateLastNERxForFederate(FederateHandle federate,
 		 *            send a new NULL PRIME message.
 		 */
         //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-        for (auto& federate : my_federates) {
-            if (federate->isUsingNERx()) {
+        for(const auto& kv : my_federates) {
+            if (kv.second->isUsingNERx()) {
                 //federate.setLastNERxValue(FedTime(0.0)); // not needed
-                federate->setIsUsingNERx(false);
-                Debug(D, pdDebug) << "Federate <" << federate->getName() << "> not NERing anymore." << endl;
+                kv.second->setIsUsingNERx(false);
+                Debug(D, pdDebug) << "Federate <" << kv.second->getName() << "> not NERing anymore." << endl;
             }
         }
     }
@@ -603,13 +605,13 @@ void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_
     // Broadcast the message 'msg' to all Federates in the Federation
     // except to Federate whose Handle is 'Except_Federate'.
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        if (anonymous || (federate->getHandle() != except_federate)) {
+    for(const auto& kv : my_federates) {
+        if (anonymous || (kv.second->getHandle() != except_federate)) {
             try {
 #ifdef HLA_USES_UDP
-                socket = server->getSocketLink(federate->getHandle(), BEST_EFFORT);
+                socket = server->getSocketLink(kv.second->getHandle(), BEST_EFFORT);
 #else
-                socket = my_server->getSocketLink(federate->getHandle());
+                socket = my_server->getSocketLink(kv.second->getHandle());
 #endif
                 msg->send(socket, my_nm_buffer);
             }
@@ -639,18 +641,18 @@ void Federation::broadcastSomeMessage(NetworkMessage* msg,
         // in the Federation
         // except to Federate whose Handle is 'Except_Federate'.
         //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-        for (auto& federate : my_federates) {
-            if (federate->getHandle() != except_federate) {
+        for(const auto& kv : my_federates) {
+            if (kv.second->getHandle() != except_federate) {
                 ifed = 0;
                 while (ifed < nbfed) {
-                    if (federate->getHandle() == fede_array[ifed])
+                    if (kv.second->getHandle() == fede_array[ifed])
                     // Federate i has to be informed because into fede_array
                     {
                         try {
 #ifdef HLA_USES_UDP
-                            socket = server->getSocketLink(federate->getHandle(), BEST_EFFORT);
+                            socket = server->getSocketLink(kv.second->getHandle(), BEST_EFFORT);
 #else
-                            socket = my_server->getSocketLink(federate->getHandle());
+                            socket = my_server->getSocketLink(kv.second->getHandle());
 #endif
                             msg->send(socket, my_nm_buffer);
                         }
@@ -798,8 +800,8 @@ void Federation::registerSynchronization(FederateHandle federate, const string& 
 
     // Add label to each federate (may throw RTIinternalError).
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        federate->addSynchronizationLabel(label);
+    for(const auto& kv : my_federates) {
+        kv.second->addSynchronizationLabel(label);
     }
 
     Debug(D, pdTerm) << "Federation " << my_handle << " is now synchronizing for label " << label << endl;
@@ -836,9 +838,9 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     // Add label to each federate into the set only (may throw RTIinternalError).
     for (int i = 0; i < federate_setSize; i++) {
         //         for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-        for (auto& federate : my_federates) {
-            if ((federate_set[i] == federate->getHandle()) || (federate_handle == federate->getHandle()))
-                federate->addSynchronizationLabel(label);
+        for(const auto& kv : my_federates) {
+            if ((federate_set[i] == kv.second->getHandle()) || (federate_handle == kv.second->getHandle()))
+                kv.second->addSynchronizationLabel(label);
         }
     }
 
@@ -913,8 +915,8 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     }
 
     //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for (auto& federate : my_federates) {
-        federate->setSaving(true);
+    for(const auto& kv : my_federates) {
+        kv.second->setSaving(true);
     }
 
     my_save_status = true;
@@ -946,8 +948,8 @@ void Federation::requestFederationSave(FederateHandle the_federate,
         throw SaveInProgress("Already in saving state.");
 
     //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for (auto& federate : my_federates) {
-        federate->setSaving(true);
+    for(const auto& kv : my_federates) {
+        kv.second->setSaving(true);
     }
 
     my_save_status = true;
@@ -987,8 +989,8 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
 
     // Verify that all federates save ended (complete or not).
     //     for (HandleFederateMap::iterator j = _handleFederateMap.begin(); j != _handleFederateMap.end(); ++j) {
-    for (auto& federate : my_federates) {
-        if (federate->isSaving()) {
+    for(const auto& kv : my_federates) {
+        if (kv.second->isSaving()) {
             Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus one federate has not save ended" << endl;
             return;
         }
@@ -1074,8 +1076,8 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
 
     // Otherwise...
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        federate->setRestoring(true);
+    for(const auto& kv : my_federates) {
+        kv.second->setRestoring(true);
     }
     my_restore_status = true;
     my_is_restore_in_progress = true;
@@ -1096,12 +1098,12 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     msg->setLabel(the_label);
 
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        msg->setFederate(federate->getHandle());
+    for(const auto& kv : my_federates) {
+        msg->setFederate(kv.second->getHandle());
 
         // send message.
-        socket = my_server->getSocketLink(federate->getHandle());
-        Debug(G, pdGendoc) << "             =====> send message I_F_R to federate " << federate->getHandle() << endl;
+        socket = my_server->getSocketLink(kv.second->getHandle());
+        Debug(G, pdGendoc) << "             =====> send message I_F_R to federate " << kv.second->getHandle() << endl;
         msg->send(socket, my_nm_buffer);
     }
     delete msg;
@@ -1119,8 +1121,8 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
 
     // Verify that all federates save ended (complete or not).
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        if (federate->isRestoring()) {
+    for(const auto& kv : my_federates) {
+        if (kv.second->isRestoring()) {
             return;
         }
     }
@@ -1155,7 +1157,7 @@ Federate& Federation::getFederate(FederateHandle federate_handle) throw(Federate
                                                             << "> not found.");
     }
 
-    return **it;
+    return *it->second;
 }
 
 Federate& Federation::getFederate(const string& federate_name) throw(FederateNotExecutionMember)
@@ -1168,13 +1170,13 @@ Federate& Federation::getFederate(const string& federate_name) throw(FederateNot
     //     throw FederateNotExecutionMember(
     //         stringize() << "Federate <" << federate_name << "> not [yet] member of Federation <" << getName() << ">.");
 
-    auto it = my_federates.find(federate_name);
-
-    if (it == end(my_federates)) {
-        throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
+    for(const auto& kv : my_federates) {
+        if (kv.second->getName() == federate_name) {
+            return *kv.second;
+        }
     }
 
-    return **it;
+    throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
 }
 
 bool Federation::empty() const
@@ -1184,8 +1186,8 @@ bool Federation::empty() const
     }
 
     string reason{"<"};
-    for (auto& federate : my_federates) {
-        reason += " " + federate->getName();
+    for(const auto& kv : my_federates) {
+        reason += " " + kv.second->getName();
     }
 
     reason += " >";
@@ -1490,8 +1492,8 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
     // Test in every federate is synchronized. Otherwise, quit method.
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
-        if (federate->isSynchronizationLabel(label)) {
+    for(const auto& kv : my_federates) {
+        if (kv.second->isSynchronizationLabel(label)) {
             return;
         }
     }
@@ -2148,13 +2150,13 @@ bool Federation::restoreXmlData(string docFilename)
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
             //             for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-            for (auto& federate : my_federates) {
-                if (!strcmp(federate->getName().c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
+            for(const auto& kv : my_federates) {
+                if (!strcmp(kv.second->getName().c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
                     // Set federate constrained status
                     status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "constrained"));
 
                     try {
-                        federate->setConstrained(status);
+                        kv.second->setConstrained(status);
                     }
                     catch (RTIinternalError& e) {
                         Debug(D, pdDebug) << "Federate was already constrained, no issue" << endl;
@@ -2164,14 +2166,14 @@ bool Federation::restoreXmlData(string docFilename)
                     status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "regulator"));
 
                     try {
-                        federate->setRegulator(status);
+                        kv.second->setRegulator(status);
                     }
                     catch (RTIinternalError& e) {
                         Debug(D, pdDebug) << "Federate was already regulator, no issue" << endl;
                     }
 
                     try {
-                        federate->setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
+                        kv.second->setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
                     }
                     catch (RTIinternalError& e) {
                         Debug(D, pdDebug) << "Federate handle was already set, no issue" << endl;
@@ -2207,20 +2209,20 @@ bool Federation::saveXmlData()
     xmlNodePtr federateXmlNode;
 
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (auto& federate : my_federates) {
+    for(const auto& kv : my_federates) {
         federateXmlNode = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
 
-        xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) federate->getName().c_str());
+        xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) kv.second->getName().c_str());
 
-        sprintf(t, "%u", federate->getHandle());
+        sprintf(t, "%u", kv.second->getHandle());
         xmlSetProp(federateXmlNode, (const xmlChar*) "handle", (const xmlChar*) t);
 
         xmlSetProp(federateXmlNode,
                    (const xmlChar*) "constrained",
-                   (const xmlChar*) ((federate->isConstrained()) ? "true" : "false"));
+                   (const xmlChar*) ((kv.second->isConstrained()) ? "true" : "false"));
         xmlSetProp(federateXmlNode,
                    (const xmlChar*) "regulator",
-                   (const xmlChar*) ((federate->isRegulator()) ? "true" : "false"));
+                   (const xmlChar*) ((kv.second->isRegulator()) ? "true" : "false"));
     }
 
     xmlSetDocCompressMode(doc, 9);
@@ -2308,34 +2310,6 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
         requestObjectOwner(theFederateHandle, it->first, theAttributeList, theListSize);
     }
     Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << endl;
-}
-
-bool Federation::FederateComparator::operator()(const std::unique_ptr<Federate>& lhs,
-                                                const std::unique_ptr<Federate>& rhs) const
-{
-    return lhs->getHandle() < rhs->getHandle();
-}
-
-bool Federation::FederateComparator::operator()(const std::unique_ptr<Federate>& lhs,
-                                                const FederationHandle rhsHandle) const
-{
-    return lhs->getHandle() < rhsHandle;
-}
-
-bool Federation::FederateComparator::operator()(const FederationHandle lhsHandle,
-                                                const std::unique_ptr<Federate>& rhs) const
-{
-    return lhsHandle < rhs->getHandle();
-}
-
-bool Federation::FederateComparator::operator()(const std::unique_ptr<Federate>& lhs, const std::string& rhsName) const
-{
-    return lhs->getName() < rhsName;
-}
-
-bool Federation::FederateComparator::operator()(const std::string& lhsName, const std::unique_ptr<Federate>& rhs) const
-{
-    return lhsName < rhs->getName();
 }
 }
 } // namespace certi/rtig

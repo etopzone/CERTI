@@ -42,13 +42,13 @@ FederateHandle Federate::getHandle() const noexcept
 
 void Federate::setHandle(const FederateHandle h)
 {
-    if(h == 0) {
+    if (h == 0) {
         throw RTIinternalError("Federate Handle cannot be null.");
     }
-    if(my_handle == h) {
+    if (my_handle == h) {
         throw RTIinternalError("Federate Handle already set.");
     }
-    
+
     my_handle = h;
 };
 
@@ -64,10 +64,10 @@ bool Federate::isConstrained() const noexcept
 
 void Federate::setConstrained(const bool c)
 {
-    if(my_isConstrained == c) {
+    if (my_isConstrained == c) {
         throw RTIinternalError("Constrained already set.");
     }
-    
+
     my_isConstrained = c;
 };
 
@@ -78,10 +78,10 @@ bool Federate::isRegulator() const noexcept
 
 void Federate::setRegulator(const bool r)
 {
-    if(my_isRegulator == r) {
+    if (my_isRegulator == r) {
         throw RTIinternalError("Regulator already set.");
     }
-    
+
     my_isRegulator = r;
 };
 
@@ -113,10 +113,10 @@ bool Federate::isClassRelevanceAdvisorySwitch() const noexcept
 
 void Federate::setClassRelevanceAdvisorySwitch(const bool val)
 {
-    if(my_classRelevanceAdvisorySwitch == val) {
+    if (my_classRelevanceAdvisorySwitch == val) {
         throw RTIinternalError("CRAS already set.");
     }
-    
+
     my_classRelevanceAdvisorySwitch = val;
 };
 
@@ -127,10 +127,10 @@ bool Federate::isInteractionRelevanceAdvisorySwitch() const noexcept
 
 void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
 {
-    if(my_interactionRelevanceAdvisorySwitch == val) {
+    if (my_interactionRelevanceAdvisorySwitch == val) {
         throw RTIinternalError("IRAS already set.");
     }
-    
+
     my_interactionRelevanceAdvisorySwitch = val;
 };
 
@@ -141,10 +141,10 @@ bool Federate::isAttributeRelevanceAdvisorySwitch() const noexcept
 
 void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
 {
-    if(my_attributeRelevanceAdvisorySwitch == val) {
+    if (my_attributeRelevanceAdvisorySwitch == val) {
         throw RTIinternalError("ARAS already set.");
     }
-    
+
     my_attributeRelevanceAdvisorySwitch = val;
 };
 
@@ -155,10 +155,10 @@ bool Federate::isAttributeScopeAdvisorySwitch() const noexcept
 
 void Federate::setAttributeScopeAdvisorySwitch(const bool val)
 {
-    if(my_attributeScopeAdvisorySwitch == val) {
+    if (my_attributeScopeAdvisorySwitch == val) {
         throw RTIinternalError("ASAS already set.");
     }
-    
+
     my_attributeScopeAdvisorySwitch = val;
 };
 
@@ -185,7 +185,7 @@ void Federate::setRestoring(const bool r) noexcept
 void Federate::addSynchronizationLabel(const std::string& label)
 {
     Debug(G, pdGendoc) << "enter Federate::addSynchronizationLabel" << std::endl;
-    
+
     auto result = my_syncLabels.insert(label).second;
     if (!result) {
         throw RTIinternalError(getName() + " Synchronization label pending in federate.");

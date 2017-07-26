@@ -1,3 +1,6 @@
+#ifndef MAKE_UNIQUE_FOR_OLDER_COMPILERS
+#define MAKE_UNIQUE_FOR_OLDER_COMPILERS
+
 #if defined(__clang__)
 
 using std::make_unique;
@@ -15,5 +18,7 @@ std::unique_ptr<T> make_unique(Args&&... args)
 #else
 
 using std::make_unique;
+
+#endif
 
 #endif

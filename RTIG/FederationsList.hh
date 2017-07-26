@@ -24,8 +24,8 @@
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
 #include <memory>
-#include <set>
 #include <string>
+#include <unordered_map>
 
 #include "certi.hh"
 
@@ -123,19 +123,7 @@ private:
 
     int my_verbose_level;
 
-    struct FederationComparator {
-        using is_transparent = void;
-
-        bool operator()(const std::unique_ptr<Federation>& lhs, const std::unique_ptr<Federation>& rhs) const;
-        bool operator()(const std::unique_ptr<Federation>& lhs, const FederationHandle rhsHandle) const;
-        bool operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federation>& rhs) const;
-        bool operator()(const std::unique_ptr<Federation>& lhs, const std::string& rhsName) const;
-        bool operator()(const std::string& lhsName, const std::unique_ptr<Federation>& rhs) const;
-    };
-
-    //     typedef std::map<Handle, Federation*> HandleFederationMap;
-    //     HandleFederationMap _handleFederationMap;
-    std::set<std::unique_ptr<Federation>, FederationComparator> my_federations;
+    std::unordered_map<FederationHandle, std::unique_ptr<Federation>> my_federations;
 };
 }
 } // namespace certi/rtig

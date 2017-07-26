@@ -26,6 +26,8 @@
 #include "Exception.hh"
 #include "Federation.hh"
 #include "PrettyDebug.hh"
+
+#include <algorithm>
 #include <ostream>
 #include <utility>
 
@@ -87,16 +89,15 @@ void FederationsList::createFederation(const std::string& name, const Federation
     }
 
     try {
-#ifdef FEDERATION_USES_MULTICAST
         auto federation
+#ifdef FEDERATION_USES_MULTICAST
             = make_unique<Federation>(name, handle, my_socket_server, my_audit_file, multicastSocket, my_verbose_level);
 #else
-        auto federation
-            = std::make_unique<Federation>(name, handle, my_socket_server, my_audit_file, FEDid, my_verbose_level);
+            = make_unique<Federation>(name, handle, my_socket_server, my_audit_file, FEDid, my_verbose_level);
 #endif
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
-        auto result = my_federations.insert(std::move(federation)).second;
+        auto result = my_federations.insert(std::make_pair(handle, std::move(federation))).second;
         if (!result) {
             throw FederationExecutionAlreadyExists(name);
         }
@@ -121,7 +122,8 @@ Handle FederationsList::getFederationHandle(const std::string& name)
 {
     Debug(G, pdGendoc) << "enter FederationsList::getFederationHandle" << std::endl;
 
-    auto it = my_federations.find(name);
+    auto it = std::find_if(
+        begin(my_federations), end(my_federations), [&name](auto& kv) { return kv.second->getName() == name; });
 
     if (it == end(my_federations)) {
         Debug(G, pdGendoc) << "exit  FederationsList::getFederationHandle on exception" << std::endl;
@@ -131,7 +133,7 @@ Handle FederationsList::getFederationHandle(const std::string& name)
     }
 
     Debug(G, pdGendoc) << "exit  FederationsList::getFederationHandle" << std::endl;
-    return (*it)->getHandle();
+    return it->first;
 }
 
 void FederationsList::destroyFederation(const FederationHandle handle)
@@ -218,37 +220,7 @@ Federation& FederationsList::searchFederation(const FederationHandle handle)
         throw FederationExecutionDoesNotExist("Bad Federation Handle.");
     }
 
-    return **it;
-}
-
-bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs,
-                                                       const std::unique_ptr<Federation>& rhs) const
-{
-    return lhs->getHandle() < rhs->getHandle();
-}
-
-bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs,
-                                                       const FederationHandle rhsHandle) const
-{
-    return lhs->getHandle() < rhsHandle;
-}
-
-bool FederationsList::FederationComparator::operator()(const FederationHandle lhsHandle,
-                                                       const std::unique_ptr<Federation>& rhs) const
-{
-    return lhsHandle < rhs->getHandle();
-}
-
-bool FederationsList::FederationComparator::operator()(const std::unique_ptr<Federation>& lhs,
-                                                       const std::string& rhsName) const
-{
-    return lhs->getName() < rhsName;
-}
-
-bool FederationsList::FederationComparator::operator()(const std::string& lhsName,
-                                                       const std::unique_ptr<Federation>& rhs) const
-{
-    return lhsName < rhs->getName();
+    return *it->second;
 }
 }
 } // certi::rtig

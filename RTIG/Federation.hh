@@ -29,7 +29,7 @@
 #include <vector>
 
 #include <memory>
-#include <set>
+#include <unordered_map>
 
 #include "certi.hh"
 
@@ -691,20 +691,7 @@ private:
 #endif
 
     // Private attributes
-    //     typedef std::map<FederateHandle, Federate> HandleFederateMap;
-    //     HandleFederateMap _handleFederateMap;
-
-    struct FederateComparator {
-        using is_transparent = void;
-
-        bool operator()(const std::unique_ptr<Federate>& lhs, const std::unique_ptr<Federate>& rhs) const;
-        bool operator()(const std::unique_ptr<Federate>& lhs, const FederationHandle rhsHandle) const;
-        bool operator()(const FederationHandle lhsHandle, const std::unique_ptr<Federate>& rhs) const;
-        bool operator()(const std::unique_ptr<Federate>& lhs, const std::string& rhsName) const;
-        bool operator()(const std::string& lhsName, const std::unique_ptr<Federate>& rhs) const;
-    };
-
-    std::set<std::unique_ptr<Federate>, FederateComparator> my_federates;
+    std::unordered_map<FederationHandle, std::unique_ptr<Federate>> my_federates;
 
     bool my_is_save_in_progress;
     bool my_is_restore_in_progress;
