@@ -165,7 +165,7 @@ TEST(ObjectClassBroadcastListTest, AddFederateWithOtherFederateCreatesWaitingLin
 
     ASSERT_NE(nullptr, line);
 
-    for (auto i{0u}; i < max_handle; ++i) {
+    for (auto i(0u); i < max_handle; ++i) {
         if (i == attr_handle) {
             EXPECT_EQ(ObjectBroadcastLine::waiting, line->stateFor(i));
         }

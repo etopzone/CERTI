@@ -1100,7 +1100,7 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
         my_restore_status = false;
     }
 
-    auto a_federate_is_still_restoring = std::any_of(begin(my_federates), end(my_federates), [](const auto& kv) {
+    auto a_federate_is_still_restoring = std::any_of(begin(my_federates), end(my_federates), [](const decltype(my_federates)::value_type& kv) {
         return kv.second->isRestoring();
     });
     
