@@ -31,67 +31,74 @@
 
 #include <list>
 
-#define MAX_STATE_SIZE 1024
+#include <unordered_map>
 
 namespace certi {
 
 /**
- * An object broadcast line represents a federate
- * interested in part (or all) of the attributes of
- * the message referenced in the ObjectClassBroadcastList.
- */
+     * An object broadcast line represents a federate
+     * interested in part (or all) of the attributes of
+     * the message referenced in the ObjectClassBroadcastList.
+     */
 class ObjectBroadcastLine {
 public:
     /**
-	 * The state of the attribute
-	 * for the federate in this broadcast line
-	 */
+     * The state of the attribute
+     * for the federate in this broadcast line
+     */
     enum State {
-        sent, /**< the attribute has been sent                       */
-        waiting, /**< the attribute is waiting to be sent               */
-        notSub /**< the federate did not subscribed to this attribute */
+        sent = 0, /// the attribute has been sent
+        waiting, /// the attribute is waiting to be sent
+        notSub /// the federate did not subscribed to this attribute
     };
 
-    ObjectBroadcastLine(FederateHandle fed, State init = notSub);
+    ObjectBroadcastLine(const FederateHandle federate, const State initial_state = notSub);
 
+    FederateHandle getFederate() const;
+    
+    State stateFor(const AttributeHandle attribute) const;
+
+    void setState(const AttributeHandle attribute, const State value);
+
+    bool isWaitingAny(const AttributeHandle max_handle) const;
+
+    bool isWaitingAll(const std::vector<AttributeHandle>& attributes) const;
+
+private:
     /* The Federate Handle */
-    FederateHandle Federate;
+    FederateHandle my_federate;
 
-    /**
-	 * The state of the attributes.
-	 * The index of the state array is the attribute handle
-	 * FIXME we should rather use a map, because the
-	 * FIXME attribute handle may be very sparse.
-	 */
-    State state[MAX_STATE_SIZE + 1];
+    State my_initial_state;
+
+    std::unordered_map<AttributeHandle, State> my_states;
 };
 
 /**
- * An ObjectClassBroadcastList consist in a message associated
- * with a list of federate which could be interested by part
- * of this message because it has subscribed to part or
- * all of the object instance/class attribute.
- * Thus an instance of this class carries the necessary information for
- * broadcasting the following type of messages:
- * <ul>
- *   <li> NM_Remove_Object </li>
- * 	 <li> NM_Discover_Object </li>
- *   <li> NM_Reflect_Attribute_Values </li>
- *   <li> NM_Request_Attribute_Ownership_Assumption </li>
- *   <li> NM_Attribute_Ownership_Divestiture_Notification </li>
- * </ul>
- * A federate is represented by an ObjectBroadcastLine.
- */
+     * An ObjectClassBroadcastList consist in a message associated
+     * with a list of federate which could be interested by part
+     * of this message because it has subscribed to part or
+     * all of the object instance/class attribute.
+     * Thus an instance of this class carries the necessary information for
+     * broadcasting the following type of messages:
+     * <ul>
+     *   <li> NM_Remove_Object </li>
+     *       <li> NM_Discover_Object </li>
+     *   <li> NM_Reflect_Attribute_Values </li>
+     *   <li> NM_Request_Attribute_Ownership_Assumption </li>
+     *   <li> NM_Attribute_Ownership_Divestiture_Notification </li>
+     * </ul>
+     * A federate is represented by an ObjectBroadcastLine.
+     */
 class ObjectClassBroadcastList {
 public:
     /**
-     * The provided message must have been allocated, and will be destroyed
-	 * by the destructor.
-     * message->federate is added to the list, and its state is set as "Sent"
-	 * for all attributes. For RAVs messages, MaxAttHandle is the greatest
-	 * attribute handle of the class. For Discover_Object message, it can be 0 to
-	 * mean "any attribute".
-	 */
+         * The provided message must have been allocated, and will be destroyed
+         * by the destructor.
+         * message->federate is added to the list, and its state is set as "Sent"
+         * for all attributes. For RAVs messages, MaxAttHandle is the greatest
+         * attribute handle of the class. For Discover_Object message, it can be 0 to
+         * mean "any attribute".
+         */
     ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttributeHandles = 0) throw(RTIinternalError);
 
     /// Free all structures, including Message.
@@ -105,49 +112,49 @@ public:
     NM_Attribute_Ownership_Divestiture_Notification* getMsgAODN();
 
     /** Clear the broadcast lines.
-     * 
-     * Empty the list so it can reused (like the destructor).
-	 */
+         * 
+         * Empty the list so it can reused (like the destructor).
+         */
     void clear();
 
     /**Add a federate interested in the broadcast.
-     * 
-     * If it was not present in the list,
-     * a new line is added and all attributes are marked as bsNotSubscriber.
-     * Then if the Federate has not been sent a message for this attribute,
-     * the attribute (for the federate) is marked has
-     * ObjectBroadcastLine::waiting. theAttribute can be not specified in
-     * the case of a DiscoverObject message.
-     * 
-	 * @param[in] federate the handle of the interested Federate
-	 * @param[in] attribute the addribute inderested in
-     */
+         * 
+         * If it was not present in the list,
+         * a new line is added and all attributes are marked as bsNotSubscriber.
+         * Then if the Federate has not been sent a message for this attribute,
+         * the attribute (for the federate) is marked has
+         * ObjectBroadcastLine::waiting. theAttribute can be not specified in
+         * the case of a DiscoverObject message.
+         * 
+         * @param[in] federate the handle of the interested Federate
+         * @param[in] attribute the addribute inderested in
+         */
     void addFederate(FederateHandle federate, AttributeHandle attribute = 0);
 
     /** Send all the pending message to all concerned Federate stored in the broadcast lines.
-     * 
-     * IMPORTANT: Before calling this method, be sure to set the
-     * Message->federation handle.
-     
-     * Broadcast the message to all the Federate in the
-     * ObjectBroadcastLine::waiting state. If it is a DiscoverObject
-     * message, the message is sent as is, and the Federate is marked as
-     * ObjectBroadcastLine::sent for the ANY attribute. If it is a RAV
-     * message, the message is first copied, without the Attribute list,
-     * and then all pending attributes(in the bsWainting state) are added
-     * to the copy. The copy is sent, and attributes are marked as
-     * ObjectBroadcastLine::sent.
-     */
+         * 
+         * IMPORTANT: Before calling this method, be sure to set the
+         * Message->federation handle.
+         * 
+         * Broadcast the message to all the Federate in the
+         * ObjectBroadcastLine::waiting state. If it is a DiscoverObject
+         * message, the message is sent as is, and the Federate is marked as
+         * ObjectBroadcastLine::sent for the ANY attribute. If it is a RAV
+         * message, the message is first copied, without the Attribute list,
+         * and then all pending attributes(in the bsWainting state) are added
+         * to the copy. The copy is sent, and attributes are marked as
+         * ObjectBroadcastLine::sent.
+         */
     void sendPendingMessage(SecurityServer* server);
 
     /**
-	 * Upcast class to appropriate message.
-	 * The inheritance feature of HLA imply that a federate subscribing
-	 * to a superclass attribute which effectively belong to an instance
-	 * of object of a derived (HLA meaning) class  should receive
-	 * Federate callback (e.g. discover object) of the appropriate level
-	 * i.e. the one he subscribed to.
-	 */
+         * Upcast class to appropriate message.
+         * The inheritance feature of HLA imply that a federate subscribing
+         * to a superclass attribute which effectively belong to an instance
+         * of object of a derived (HLA meaning) class  should receive
+         * Federate callback (e.g. discover object) of the appropriate level
+         * i.e. the one he subscribed to.
+         */
     void upcastTo(ObjectClassHandle objectClass);
 
     const std::list<ObjectBroadcastLine*>& ___TESTS_ONLY___lines() const
@@ -165,9 +172,9 @@ protected:
 
 private:
     /*! The two next methods are called by the public SendPendingMessage
-     m ethods. They respectively handle DiscoverObject *and
-     ReflectAttributeValues messages.
-     */
+         m ethods. They respectively handle Discov*erObject *and
+         ReflectAttributeValues messages.
+         */
     void sendPendingDOMessage(SecurityServer* server);
     void sendPendingRAVMessage(SecurityServer* server);
 
@@ -181,9 +188,7 @@ private:
     ObjectBroadcastLine* getLineWithFederate(FederateHandle theFederate);
 
     /** Check if some attributes in the provided line have the "waiting" status.
-     */
-    bool isWaiting(ObjectBroadcastLine* line);
-
+         */
     AttributeHandle maxHandle;
     std::list<ObjectBroadcastLine*> lines;
     /* The message buffer used to send Network messages */

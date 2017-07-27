@@ -2,9 +2,16 @@
 
 #include "libCERTI/ObjectClassBroadcastList.hh"
 
+#include "../mocks/securityserver_mock.h"
+#include "../mocks/sockettcp_mock.h"
+
 using ::certi::ObjectBroadcastLine;
 using ::certi::ObjectClassBroadcastList;
 using ::certi::NetworkMessage;
+
+using ::testing::_;
+using ::testing::Return;
+using ::testing::Throw;
 
 namespace {
 static constexpr ::certi::Handle invalid_handle{0};
@@ -16,12 +23,14 @@ static constexpr ::certi::Handle attr_handle{3};
 
 static constexpr ::certi::FederateHandle sender_handle{1};
 static constexpr ::certi::FederateHandle federate_handle{2};
+static constexpr ::certi::FederateHandle federate2_handle{4};
+static constexpr ::certi::FederateHandle federate3_handle{6};
 
 ObjectBroadcastLine* getLineForFederate(ObjectClassBroadcastList& list, ::certi::FederateHandle fed)
 {
     auto it = std::find_if(begin(list.___TESTS_ONLY___lines()),
                            end(list.___TESTS_ONLY___lines()),
-                           [&fed](ObjectBroadcastLine* line) { return line->Federate == fed; });
+                           [&fed](ObjectBroadcastLine* line) { return line->getFederate() == fed; });
 
     if (it == end(list.___TESTS_ONLY___lines())) {
         return nullptr;
@@ -35,34 +44,7 @@ TEST(ObjectBroadcastLineTest, CtorCopiesFedHandle)
 {
     ObjectBroadcastLine line{42};
 
-    ASSERT_EQ(42u, line.Federate);
-}
-
-TEST(ObjectBroadcastLineTest, CtorInitializeStateSent)
-{
-    ObjectBroadcastLine line{42, ObjectBroadcastLine::sent};
-
-    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
-        ASSERT_EQ(ObjectBroadcastLine::sent, line.state[i]) << ", no" << i;
-    }
-}
-
-TEST(ObjectBroadcastLineTest, CtorInitializeStateWaiting)
-{
-    ObjectBroadcastLine line{42, ObjectBroadcastLine::waiting};
-
-    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
-        ASSERT_EQ(ObjectBroadcastLine::waiting, line.state[i]) << ", no" << i;
-    }
-}
-
-TEST(ObjectBroadcastLineTest, CtorInitializeStateNotSub)
-{
-    ObjectBroadcastLine line{42, ObjectBroadcastLine::notSub};
-
-    for (int i{0}; i < MAX_STATE_SIZE + 1; ++i) {
-        ASSERT_EQ(ObjectBroadcastLine::notSub, line.state[i]) << ", no" << i;
-    }
+    ASSERT_EQ(42u, line.getFederate());
 }
 
 TEST(ObjectClassBroadcastListTest, CtorThrowsOnNullMessage)
@@ -146,7 +128,7 @@ TEST(ObjectClassBroadcastListTest, CtorKeepsLinesEmptyIfNoMessageFederate)
     auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
     ObjectClassBroadcastList l(message, 0);
 
-    ASSERT_EQ(0, l.___TESTS_ONLY___lines().size());
+    ASSERT_EQ(0u, l.___TESTS_ONLY___lines().size());
 }
 
 TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
@@ -155,9 +137,9 @@ TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
     message->setFederate(sender_handle);
     ObjectClassBroadcastList l(message, 0);
 
-    ASSERT_EQ(1, l.___TESTS_ONLY___lines().size());
-    ASSERT_EQ(sender_handle, l.___TESTS_ONLY___lines().front()->Federate);
-    ASSERT_EQ(ObjectBroadcastLine::sent, l.___TESTS_ONLY___lines().front()->state[0]);
+    ASSERT_EQ(1u, l.___TESTS_ONLY___lines().size());
+    ASSERT_EQ(sender_handle, l.___TESTS_ONLY___lines().front()->getFederate());
+    ASSERT_EQ(ObjectBroadcastLine::sent, l.___TESTS_ONLY___lines().front()->stateFor(0));
 }
 
 TEST(ObjectClassBroadcastListTest, AddFederateThrowsOnTooHighAttribute)
@@ -177,18 +159,18 @@ TEST(ObjectClassBroadcastListTest, AddFederateWithOtherFederateCreatesWaitingLin
 
     l.addFederate(federate_handle, attr_handle);
 
-    ASSERT_EQ(2, l.___TESTS_ONLY___lines().size());
+    ASSERT_EQ(2u, l.___TESTS_ONLY___lines().size());
 
     auto line = getLineForFederate(l, federate_handle);
 
     ASSERT_NE(nullptr, line);
 
-    for (int i{0}; i < max_handle; ++i) {
+    for (auto i{0u}; i < max_handle; ++i) {
         if (i == attr_handle) {
-            EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[i]);
+            EXPECT_EQ(ObjectBroadcastLine::waiting, line->stateFor(i));
         }
         else {
-            EXPECT_EQ(ObjectBroadcastLine::notSub, line->state[i]);
+            EXPECT_EQ(ObjectBroadcastLine::notSub, line->stateFor(i));
         }
     }
 }
@@ -198,19 +180,19 @@ TEST(ObjectClassBroadcastListTest, AddFederateWithSameFederateReuseLine)
     auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
     message->setFederate(sender_handle);
     ObjectClassBroadcastList l(message, max_handle);
-    
+
     l.addFederate(federate_handle, attr_handle);
-    
+
     l.addFederate(federate_handle, attr_handle + 1);
-    
-    ASSERT_EQ(2, l.___TESTS_ONLY___lines().size());
-    
+
+    ASSERT_EQ(2u, l.___TESTS_ONLY___lines().size());
+
     auto line = getLineForFederate(l, federate_handle);
-    
+
     ASSERT_NE(nullptr, line);
-    
-    EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[attr_handle]);
-    EXPECT_EQ(ObjectBroadcastLine::waiting, line->state[attr_handle+1]);
+
+    EXPECT_EQ(ObjectBroadcastLine::waiting, line->stateFor(attr_handle));
+    EXPECT_EQ(ObjectBroadcastLine::waiting, line->stateFor(attr_handle + 1));
 }
 
 // FIXME possible BUG ?
@@ -219,7 +201,7 @@ TEST(ObjectClassBroadcastListTest, SendWithAttributeNMThrows)
     auto message = new ::certi::NM_Attribute_Ownership_Divestiture_Notification;
     message->setFederate(sender_handle);
     ObjectClassBroadcastList l(message, max_handle);
-    
+
     ASSERT_THROW(l.sendPendingMessage(nullptr), ::certi::RTIinternalError);
 }
 
@@ -229,9 +211,9 @@ TEST(ObjectClassBroadcastListTest, UpcastToAlterNM_Remove_Object)
     message->setFederate(sender_handle);
     message->setObjectClass(ukn_handle);
     ObjectClassBroadcastList l(message, max_handle);
-    
+
     l.upcastTo(attr_handle);
-    
+
     ASSERT_EQ(attr_handle, message->getObjectClass());
 }
 
@@ -241,43 +223,290 @@ TEST(ObjectClassBroadcastListTest, UpcastToAlterNM_Discover_Object)
     message->setFederate(sender_handle);
     message->setObjectClass(ukn_handle);
     ObjectClassBroadcastList l(message, max_handle);
-    
+
     l.upcastTo(attr_handle);
-    
+
     ASSERT_EQ(attr_handle, message->getObjectClass());
 }
 
-// SPDOM
-// mock socketserver
-// no waiting == no socket claimed
-// claim one socket per sub, no matter the attr
+/* SPDOM
+ * TODO check message content
+ */
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageNoWaitingNothingSent)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(_, _)).Times(0);
 
-// SPRAVM
-// mock socketserver
-// no waiting == no socket claimed
-// 
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
 
-/*
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-TEST(ObjectClassBroadcastListTest, CtorKeepsCreateLineForMessageFederate)
-*/
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageOneSentPerFederateWaitingOn0)
+{
+    // Federate 1 and 3 will wait
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
+    EXPECT_CALL(ss, getSocketLink(federate2_handle, _)).Times(0);
+    EXPECT_CALL(ss, getSocketLink(federate3_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
+
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, 0);
+    l.addFederate(federate3_handle, 0);
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageUpdatesState)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(::testing::ReturnNull());
+
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, 0);
+
+    l.sendPendingMessage(&ss);
+
+    auto line = getLineForFederate(l, federate_handle);
+
+    ASSERT_NE(nullptr, line);
+    ASSERT_EQ(ObjectBroadcastLine::sent, line->stateFor(0));
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageCatchesRTIinternalErrors)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::RTIinternalError("")));
+
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, 0);
+
+    ASSERT_NO_THROW(l.sendPendingMessage(&ss));
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageCatchesNetworkErrors)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::NetworkError("")));
+
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, 0);
+
+    ASSERT_NO_THROW(l.sendPendingMessage(&ss));
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingDOMessageSendsBaseMessage)
+{
+    auto message = new ::certi::NM_Discover_Object;
+    message->setFederate(sender_handle);
+
+    MessageBuffer mb;
+    message->serialize(mb);
+
+    MockSocketTcp socket{};
+    EXPECT_CALL(socket, send(_, mb.size())).Times(1);
+
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
+
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, 0);
+
+    l.sendPendingMessage(&ss);
+}
+
+/* SPRAV
+ * TODO check message content
+ */
+TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageNoWaitingNothingSent)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(_, _)).Times(0);
+
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageOneSentPerFederateWaiting)
+{
+    // Federate 1 and 3 will wait
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
+    EXPECT_CALL(ss, getSocketLink(federate2_handle, _)).Times(0);
+    EXPECT_CALL(ss, getSocketLink(federate3_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
+
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+    l.addFederate(federate3_handle, attr_handle);
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageUpdatesState)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(::testing::ReturnNull());
+
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    l.sendPendingMessage(&ss);
+
+    auto line = getLineForFederate(l, federate_handle);
+
+    ASSERT_NE(nullptr, line);
+    ASSERT_EQ(ObjectBroadcastLine::sent, line->stateFor(attr_handle));
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageAllWaitingSendsBaseMessage)
+{
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+
+    MessageBuffer mb;
+    message->serialize(mb);
+
+    MockSocketTcp socket{};
+    EXPECT_CALL(socket, send(_, mb.size())).Times(1);
+
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
+
+    ObjectClassBroadcastList l(message, max_handle);
+
+    for (auto i(0u); i <= max_handle; ++i) {
+        l.addFederate(federate_handle, i);
+    }
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageNotAllWaitingSendsSmallerMessage)
+{
+    auto message = new ::certi::NM_Reflect_Attribute_Values;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+
+    MessageBuffer mb;
+    message->serialize(mb);
+
+    MockSocketTcp socket{};
+    EXPECT_CALL(socket, send(_, ::testing::Lt(mb.size()))).Times(1);
+
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
+
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageNotAllWaitingSendsSmallerMessage)
+{
+    auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+
+    MessageBuffer mb;
+    message->serialize(mb);
+
+    MockSocketTcp socket{};
+    EXPECT_CALL(socket, send(_, ::testing::Lt(mb.size()))).Times(1);
+
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
+
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    l.sendPendingMessage(&ss);
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageCatchesRTIinternalErrors)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::RTIinternalError("")));
+
+    auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    ASSERT_NO_THROW(l.sendPendingMessage(&ss));
+}
+
+TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageCatchesNetworkErrors)
+{
+    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    ::certi::AuditFile a{"tmp"};
+    MockSecurityServer ss(s, a, 3);
+    EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::NetworkError("")));
+
+    auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;
+    message->setFederate(sender_handle);
+    message->setAttributesSize(max_handle);
+    ObjectClassBroadcastList l(message, max_handle);
+
+    l.addFederate(federate_handle, attr_handle);
+
+    ASSERT_NO_THROW(l.sendPendingMessage(&ss));
+}

@@ -49,14 +49,14 @@ class CERTI_EXPORT SecurityServer : private std::list<SecurityLevel *>
 {
 public:
     SecurityServer(SocketServer &, AuditFile &, Handle);
-    ~SecurityServer();
+    virtual ~SecurityServer();
 
     //! This part of the security server is linked to the RTIG Audit Server.
     AuditFile &audit ;
 
     Handle federation() const { return myFederation ; };
 
-    Socket *getSocketLink(FederateHandle theFederate,
+    virtual Socket *getSocketLink(FederateHandle theFederate,
                           TransportType theType = RELIABLE) const ;
 
     // Security related methods
