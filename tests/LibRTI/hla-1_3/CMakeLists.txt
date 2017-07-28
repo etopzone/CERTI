@@ -13,7 +13,7 @@ add_executable(TestRTI-HLA-1_3
                 )
 
 target_link_libraries(TestRTI-HLA-1_3
-                      RTI
+                      RTI FedTime
                       ${GTEST_BOTH_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT}
                       )

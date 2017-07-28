@@ -51,7 +51,7 @@ namespace
  */
 inline const RTIfedTime &
 rft(const RTI::FedTime &time)
-    throw (RTI::InvalidFederationTime)
+throw (RTI::InvalidFederationTime)
 {
     try {
 	return dynamic_cast<const RTIfedTime &>(time);
@@ -59,7 +59,7 @@ rft(const RTI::FedTime &time)
     catch (std::bad_cast) {
         // FIXME warning: control may reach end of non-void function [-Wreturn-type]
         // Commented out to avoid circular dependency
-        throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
+//         throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
     }
 }
 
@@ -77,7 +77,7 @@ const char *infinity_str = "+inf" ;
 // FedTimeFactory
 RTI::FedTime *
 RTI::FedTimeFactory::makeZero()
-    throw (RTI::MemoryExhausted)
+throw (RTI::MemoryExhausted)
 {
     try {
         return new RTIfedTime();
@@ -85,13 +85,13 @@ RTI::FedTimeFactory::makeZero()
     catch (std::bad_alloc) {	
         // FIXME warning: control may reach end of non-void function [-Wreturn-type]
         // Commented out to avoid circular dependency	
-        throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
+//         throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
 
 RTI::FedTime *
 RTI::FedTimeFactory::decode(const char *buf)
-    throw (RTI::MemoryExhausted)
+throw (RTI::MemoryExhausted)
 {
 	union ud {
 		double   dv;
@@ -104,7 +104,7 @@ RTI::FedTimeFactory::decode(const char *buf)
     catch (std::bad_alloc) {
         // FIXME warning: control may reach end of non-void function [-Wreturn-type]
         // Commented out to avoid circular dependency
-        throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
+//         throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
 
