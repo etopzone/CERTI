@@ -22,7 +22,7 @@ TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& na
     : my_name{name}, my_lastValue{ENV_VARIABLE_DID_NOT_EXIST}
 {
     CERR << "Create temporary folder " << path() << std::endl;
-    system(std::string("mkdir " + path()).c_str());
+    (void) system(std::string("mkdir " + path()).c_str());
 
     auto lastValue = std::getenv(my_name.c_str());
     if (lastValue) {
@@ -41,9 +41,9 @@ TemporaryEnvironmentLocation::~TemporaryEnvironmentLocation()
 {
     CERR << "Destroy temporary folder " << path() << std::endl;
 #ifdef _WIN32
-    system(std::string("rmdir /S /Q " + path()).c_str());
+    (void) system(std::string("rmdir /S /Q " + path()).c_str());
 #else
-    system(std::string("rm -rf " + path()).c_str());
+    (void) system(std::string("rm -rf " + path()).c_str());
 #endif
 
     if (my_lastValue == ENV_VARIABLE_DID_NOT_EXIST) {

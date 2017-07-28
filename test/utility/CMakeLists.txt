@@ -22,14 +22,6 @@ endif()
 
 set_target_properties(CertiProcessus_B PROPERTIES COMPILE_FLAGS -DSIDE_CS)
 
-if(COMPILE_WITH_CXX11)
-    if (CMAKE_VERSION VERSION_LESS 3.1.3)
-        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
-    else()
-        set_property(TARGET CertiProcessus_A CertiProcessus_B PROPERTY CXX_STANDARD 11)
-    endif()
-endif()
-
 # Xml parsing test program
 if(LIBXML2_FOUND)
    add_executable(CertiCheckXML checkXML.cc)
@@ -39,15 +31,6 @@ if(LIBXML2_FOUND)
    set_property(TEST CheckXML2000 PROPERTY PASS_REGULAR_EXPRESSION "2000")
    add_test(NAME CheckXML2010 COMMAND CertiCheckXML ${CMAKE_CURRENT_SOURCE_DIR}/T2010.xml)
    set_property(TEST CheckXML2010 PROPERTY PASS_REGULAR_EXPRESSION "2010")
-
-
-   if(COMPILE_WITH_CXX11)
-      if (CMAKE_VERSION VERSION_LESS 3.1.3)
-         SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
-      else()
-         set_property(TARGET CertiCheckXML PROPERTY CXX_STANDARD 11)
-      endif()
-   endif()
 
    install(TARGETS CertiCheckXML
    RUNTIME DESTINATION bin

@@ -247,21 +247,26 @@ XmlParser::parseInteraction(Interaction* parent)
     if (!xmlStrcmp(intClassProp.transportation, VALUE_RELIABLE)) {
         transport = RELIABLE ;
     }
+    else if (!xmlStrcmp(intClassProp.transportation,VALUE_BESTEFFORT))  {
+        transport = BEST_EFFORT ;
+    }
     else {
-    	if (!xmlStrcmp(intClassProp.transportation,VALUE_BESTEFFORT))  {
-    		transport = BEST_EFFORT ;
-    	}
+        // TODO LATER FIXME warning: variable 'transport' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+        // assert(false);
     }
 
     // Order
     if (!xmlStrcmp(intClassProp.order, VALUE_TSO)) {
         order = TIMESTAMP ;
     }
-    else {
-    	if (!xmlStrcmp(intClassProp.order, VALUE_RO)) {
-    		order = RECEIVE ;
-    	}
+    else if (!xmlStrcmp(intClassProp.order, VALUE_RO)) {
+        order = RECEIVE ;
     }
+    else {
+        // TODO LATER FIXME warning: variable 'order' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+        // assert(false);
+    }
+    
     Interaction* current = new Interaction(reinterpret_cast<char*>(intClassProp.name),freeInteractionClassHandle++,transport,order);
 
     // Routing space

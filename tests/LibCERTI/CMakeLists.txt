@@ -50,18 +50,6 @@ if (COMPILE_WITH_COVERAGE)
         EXECUTABLE TestLibCERTI --gtest_output=xml:../output/results-TestLibCERTI.xml
         DEPENDENCIES TestLibCERTI
     )
-    endif()
-
-if (CMAKE_VERSION VERSION_LESS 3.1.3)
-    include(CheckCXXCompilerFlag)
-	check_cxx_compiler_flag(-std=c++14 HAVE_FLAG_STD_CXX14)
-	if(HAVE_FLAG_STD_CXX14)
-            SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
-	else()
-            SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
-	endif()
-else()
-    set_property(TARGET TestLibCERTI PROPERTY CXX_STANDARD 14)
 endif()
 
 add_test(AllTests TestLibCERTI)

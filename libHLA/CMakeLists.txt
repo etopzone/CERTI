@@ -110,14 +110,6 @@ set_target_properties(HLA PROPERTIES PROJECT_LABEL LibHLA)
 
 set_target_properties(HLA PROPERTIES VERSION ${PACKAGE_VERSION} SOVERSION ${PACKAGE_VERSION_MAJOR})
 
-if(COMPILE_WITH_CXX11)
-    if (CMAKE_VERSION VERSION_LESS 3.1.3)
-        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
-    else()
-        set_property(TARGET HLA PROPERTY CXX_STANDARD 11)
-    endif()
-endif()
-
 install(FILES
     ${LIBHLA_EXPORTED_INCLUDES}
     DESTINATION include/libhla)

@@ -40,20 +40,6 @@ set(rtig_SRCS
 add_executable(rtig ${rtig_SRCS})
 target_link_libraries(rtig CERTI)
 
-if(COMPILE_WITH_CXX11)
-    if (CMAKE_VERSION VERSION_LESS 3.1.3)
-        include(CheckCXXCompilerFlag)
-        check_cxx_compiler_flag(-std=c++14 HAVE_FLAG_STD_CXX14)
-        if(HAVE_FLAG_STD_CXX14)
-                SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
-        else()
-                SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
-        endif()
-    else()
-        set_property(TARGET rtig PROPERTY CXX_STANDARD 14)
-    endif()
-endif()
-
 install(TARGETS rtig
     EXPORT CERTIDepends
     RUNTIME DESTINATION bin

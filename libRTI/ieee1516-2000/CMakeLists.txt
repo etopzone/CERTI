@@ -130,14 +130,6 @@ endif(MINGW)
 
 set_target_properties(FedTime1516 PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-if(COMPILE_WITH_CXX11)
-    if (CMAKE_VERSION VERSION_LESS 3.1.3)
-        SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11")
-    else()
-        set_property(TARGET RTI1516 FedTime1516 PROPERTY CXX_STANDARD 11)
-    endif()
-endif()
-
 set(TestFedTime1516_SRCS
   TestFedTime.cc
 )

@@ -142,12 +142,10 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 		Exception::Type &e)
 {
 	NM_Update_Attribute_Values req;
-	bool validCall ;
 	EventRetractionHandle evtrHandle;
 
 	G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues with time");
-	validCall = tm->testValidTime(theTime) ;
-	if (validCall) {
+    if (tm->testValidTime(theTime)) {
 
 		// Building request (req NetworkMessage)
 		req.setFederation(fm->_numero_federation);

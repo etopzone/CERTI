@@ -40,6 +40,7 @@ else("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
        set(WINXXBITS Win32)
    endif(WIN32)
 endif("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+
 # Test Endianess
 include(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
@@ -82,8 +83,22 @@ if (NOT BUILD_LEGACY_LIBRTI AND WIN32)
           OFF)
 endif()
 
-option(COMPILE_WITH_CXX11
-       "Compile code with C++11 feature enabled" ON)
+option(COMPILE_WITH_CXX14
+       "Compile code with C++14 feature enabled" ON)
+if(COMPILE_WITH_CXX14)
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wno-unused-function ")
+    if (CMAKE_VERSION VERSION_LESS 3.1.3)
+        include(CheckCXXCompilerFlag)
+        check_cxx_compiler_flag(-std=c++14 HAVE_FLAG_STD_CXX14)
+        if(HAVE_FLAG_STD_CXX14)
+                SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14")
+        else()
+                SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
+        endif()
+    else()
+        set(CMAKE_CXX_STANDARD 14)
+    endif()
+endif()
 
 option(COMPILE_WITH_C11
        "Compile code with C11 feature enabled" ON)
@@ -115,6 +130,7 @@ if (win32)
      add_defintions(-DRTIA_CONSOLE_SHOW)
    endif(RTIA_CONSOLE_SHOW)
 endif()
+
 # The new NULL Prime message protocol
 option(CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
          "NULL PRIME MESSAGE protocol is an enhanced version of the CMB NULL MESSAGE protocol (experimental)" OFF)
@@ -229,13 +245,15 @@ IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -Wall -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  # we may add -Wextra if we want gcc to _really_ scream
   set(CXXSTD "c++98")
+  
+  # we need gnu++98 for long long and uint64 definition on some architecture
+  # (e.g. Solaris 8 + gcc 3.4.x)
   if (CMAKE_SYSTEM MATCHES "SunOS")
      set(CXXSTD "gnu++98")
   endif(CMAKE_SYSTEM MATCHES "SunOS")
-  # we need gnu++98 for long long and uint64 definition on some architecture
-  # (e.g. Solaris 8 + gcc 3.4.x)
+  
+  # we may add -Wextra if we want gcc to _really_ scream
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
@@ -252,7 +270,6 @@ if (COMPILE_WITH_COVERAGE)
          'test/*'
          'build.tests.gtest/*'
          '/usr/include/*' )
-
 endif()
 
 IF (WIN32)
