@@ -244,17 +244,20 @@ IF(CMAKE_COMPILER_IS_GNUCC)
   # we may add -Wextra if we want gcc to _really_ scream
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -Wall -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  set(CXXSTD "c++98")
-  
-  # we need gnu++98 for long long and uint64 definition on some architecture
-  # (e.g. Solaris 8 + gcc 3.4.x)
-  if (CMAKE_SYSTEM MATCHES "SunOS")
-     set(CXXSTD "gnu++98")
-  endif(CMAKE_SYSTEM MATCHES "SunOS")
-  
-  # we may add -Wextra if we want gcc to _really_ scream
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
+## made obsolete by c++11/14 migration, TODO remove
+#  set(CXXSTD "c++98")
+#  
+#  # we need gnu++98 for long long and uint64 definition on some architecture
+#  # (e.g. Solaris 8 + gcc 3.4.x)
+#  if (CMAKE_SYSTEM MATCHES "SunOS")
+#     set(CXXSTD "gnu++98")
+#  endif(CMAKE_SYSTEM MATCHES "SunOS")
+#  
+#  # we may add -Wextra if we want gcc to _really_ scream
+#  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CXXSTD} -Wall -Woverloaded-virtual -Wno-unused-function")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
 
