@@ -86,13 +86,13 @@ bool ObjectBroadcastLine::isWaitingAll(const std::vector<AttributeHandle>& attri
 
 ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message,
                                                    AttributeHandle maxAttHandle) throw(RTIinternalError)
-    : maxHandle{maxAttHandle}
-    , msg{message}
+    : msg{message}
     , msgRO{nullptr}
     , msgDO{nullptr}
     , msgRAV{nullptr}
     , msgRAOA{nullptr}
     , msgAODN{nullptr}
+    , maxHandle{maxAttHandle}
 {
     ObjectBroadcastLine* firstLine = NULL;
 

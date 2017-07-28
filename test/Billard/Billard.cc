@@ -187,7 +187,7 @@ Billard::pause_friend()
 		     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		     }
 		     */
-             scanf("%lu",&numfed);
+             (void) scanf("%lu",&numfed);
              if (numfed != 0)
                  {
                  // We store numfed into the federate set
