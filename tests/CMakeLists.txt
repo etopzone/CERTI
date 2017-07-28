@@ -55,6 +55,6 @@ endif()
 
 add_subdirectory( LibHLA )
 add_subdirectory( LibRTI/hla-1_3 )
-add_subdirectory( LibRTI/ieee1516-2000 )
+#add_subdirectory( LibRTI/ieee1516-2000 )
 add_subdirectory( LibCERTI )
 add_subdirectory( RTIG )
