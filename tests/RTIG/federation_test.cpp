@@ -567,7 +567,7 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchroni
 
     ::std::vector<::certi::FederateHandle> federatesToUpdate;
 
-    f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
+    f.registerSynchronization(handle, "label", "tag", federatesToUpdate);
 
     ASSERT_FALSE(fed.isSynchronizationLabel("label")) << "Emitter is not synchronizing if set was empty";
 }
@@ -586,7 +586,7 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederate
     federatesToUpdate.push_back(h2);
     //     federatesToUpdate.push_back(h3);
 
-    f.registerSynchronization(handle, "label", "tag", federatesToUpdate.size(), federatesToUpdate);
+    f.registerSynchronization(handle, "label", "tag", federatesToUpdate);
 
     ASSERT_TRUE(fed.isSynchronizationLabel("label")) << "The sync label must also be set to the emitter";
 
@@ -597,14 +597,14 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederate
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
 {
-    ASSERT_THROW(f.registerSynchronization(ukn_federate, "label", "tag", 0, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.registerSynchronization(ukn_federate, "label", "tag", {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
     auto handle = f.add("fed", nullptr);
 
-    ASSERT_THROW(f.registerSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
+    ASSERT_THROW(f.registerSynchronization(handle, "", "tag", {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
@@ -613,7 +613,7 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
 
     f.registerSynchronization(handle, "label", "tag");
 
-    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag", 0, {}), ::certi::FederationAlreadyPaused);
+    ASSERT_THROW(f.registerSynchronization(handle, "label", "tag", {}), ::certi::FederationAlreadyPaused);
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationPerSetThrowsIfUknFederate)
@@ -706,14 +706,14 @@ TEST_F(FederationTest, broadcastSynchronizationSendsNM)
 
 TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnUknFederate)
 {
-    ASSERT_THROW(f.broadcastSynchronization(ukn_federate, "label", "tag", 0, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.broadcastSynchronization(ukn_federate, "label", "tag", {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnEmptyLabel)
 {
     auto handle = f.add("fed", nullptr);
 
-    ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag", 0, {}), ::certi::RTIinternalError);
+    ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag", {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, broadcastSynchronizationPerSetSendsNM)
@@ -721,7 +721,7 @@ TEST_F(FederationTest, broadcastSynchronizationPerSetSendsNM)
     auto handle = f.add("fed", nullptr);
 
     try {
-        f.broadcastSynchronization(handle, "label", "tag", 0, {});
+        f.broadcastSynchronization(handle, "label", "tag", {});
     }
     catch (certi::FederateNotExecutionMember& e) {
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
@@ -856,7 +856,7 @@ TEST_F(FederationTest, DeleteRegionThrowsIfSaveInProgress)
 
 TEST_F(FederationTest, AssociateRegionThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.associateRegion(ukn_federate, 1, 1, 1, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.associateRegion(ukn_federate, 1, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, UnassociateRegionThrowsOnUknFederate)
@@ -866,7 +866,7 @@ TEST_F(FederationTest, UnassociateRegionThrowsOnUknFederate)
 
 TEST_F(FederationTest, BroadcastInteractionTimedThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.broadcastInteraction(ukn_federate, 1, {}, {}, 0, {}, 1, ""), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.broadcastInteraction(ukn_federate, 1, {}, {}, {}, 1, ""), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, BroadcastInteractionThrowsOnUknFederate)
@@ -956,7 +956,7 @@ TEST_F(FederationTest, AcquireThrowsOnUknFederate)
 
 TEST_F(FederationTest, CancelDivestitureThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.cancelDivestiture(ukn_federate, 1, {}, 0), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.cancelDivestiture(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, RespondReleaseThrowsOnUknFederate)
@@ -991,7 +991,7 @@ TEST_F(FederationTest, UnsubscribeInteractionWRThrowsOnUknFederate)
 
 TEST_F(FederationTest, RegisterObjectWithRegionThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.registerObjectWithRegion(ukn_federate, 1, "name", 1, 0, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.registerObjectWithRegion(ukn_federate, 1, "name", 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, FederateSaveStatusThrowsOnUknFederate)

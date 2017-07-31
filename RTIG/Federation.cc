@@ -508,17 +508,17 @@ void Federation::addRegulator(FederateHandle federate_handle, FederationTime tim
     this->broadcastAnyMessage(&msg, 0, false);
 }
 
-void Federation::getFOM(NM_Join_Federation_Execution& objectModelData)
+void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)
 {
-    my_root_object->convertToSerializedFOM(objectModelData);
+    my_root_object->convertToSerializedFOM(object_model_data);
 }
 
-bool Federation::updateLastNERxForFederate(FederateHandle federate,
+bool Federation::updateLastNERxForFederate(FederateHandle federate_handle,
                                            FederationTime date) throw(FederateNotExecutionMember)
 {
     bool retval = false;
     FederationTime newMin;
-    Federate& f = getFederate(federate);
+    Federate& f = getFederate(federate_handle);
 
     f.setLastNERxValue(date);
     Debug(D, pdDebug) << "Federate <" << f.getName() << "> has new NERx value=" << date.getTime() << endl;
@@ -535,7 +535,7 @@ bool Federation::updateLastNERxForFederate(FederateHandle federate,
         //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
         for (const auto& kv : my_federates) {
             if (kv.second->isUsingNERx()) {
-                //federate.setLastNERxValue(FedTime(0.0)); // not needed
+                //federate_handle.setLastNERxValue(FedTime(0.0)); // not needed
                 kv.second->setIsUsingNERx(false);
                 Debug(D, pdDebug) << "Federate <" << kv.second->getName() << "> not NERing anymore." << endl;
             }
@@ -662,10 +662,9 @@ void Federation::broadcastSomeMessage(NetworkMessage* msg,
 }
 
 void Federation::broadcastInteraction(FederateHandle federate_handle,
-                                      InteractionClassHandle interaction,
+                                      InteractionClassHandle interaction_class_handle,
                                       const vector<ParameterHandle>& parameter_handles,
                                       const vector<ParameterValue_t>& parameter_values,
-                                      uint16_t list_size,
                                       FederationTime time,
                                       RegionHandle region_handle,
                                       const string& tag) throw(FederateNotExecutionMember,
@@ -686,19 +685,24 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         region = my_root_object->getRegion(region_handle);
     }
 
-    my_root_object->Interactions->broadcastInteraction(
-        federate_handle, interaction, parameter_handles, parameter_values, list_size, time, region, tag);
-    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction
-                        << " from Federate " << federate_handle << " nb params " << list_size << endl;
+    my_root_object->Interactions->broadcastInteraction(federate_handle,
+                                                       interaction_class_handle,
+                                                       parameter_handles,
+                                                       parameter_values,
+                                                       parameter_handles.size(),
+                                                       time,
+                                                       region,
+                                                       tag);
+    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
+                        << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
 
     Debug(G, pdGendoc) << "exit Federation::broadcastInteraction with time" << endl;
 }
 
 void Federation::broadcastInteraction(FederateHandle federate_handle,
-                                      InteractionClassHandle interaction,
+                                      InteractionClassHandle interaction_class_handle,
                                       const vector<ParameterHandle>& parameter_handles,
                                       const vector<ParameterValue_t>& parameter_values,
-                                      uint16_t list_size,
                                       RegionHandle region_handle,
                                       const string& tag) throw(FederateNotExecutionMember,
                                                                FederateNotPublishing,
@@ -718,11 +722,16 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         region = my_root_object->getRegion(region_handle);
     }
 
-    my_root_object->Interactions->broadcastInteraction(
-        federate_handle, interaction, parameter_handles, parameter_values, list_size, region, tag);
-    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction
-                        << " from Federate " << federate_handle << " nb params " << list_size << endl;
-    for (int i = 0; i < list_size; i++) {
+    my_root_object->Interactions->broadcastInteraction(federate_handle,
+                                                       interaction_class_handle,
+                                                       parameter_handles,
+                                                       parameter_values,
+                                                       parameter_handles.size(),
+                                                       region,
+                                                       tag);
+    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
+                        << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
+    for (int i = 0; i < parameter_handles.size(); i++) {
         Debug(D, pdRequest) << " Param " << parameter_handles[i] << " Value "
                             << string(&(parameter_values[i][0]), parameter_values[i].size()) << endl;
     }
@@ -730,9 +739,9 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit Federation::broadcastInteraction without time" << endl;
 }
 
-void Federation::deleteObject(FederateHandle federate,
-                              ObjectHandle id,
-                              FederationTime theTime,
+void Federation::deleteObject(FederateHandle federate_handle,
+                              ObjectHandle object_handle,
+                              FederationTime time,
                               const string& tag) throw(FederateNotExecutionMember,
                                                        DeletePrivilegeNotHeld,
                                                        ObjectNotKnown,
@@ -742,17 +751,17 @@ void Federation::deleteObject(FederateHandle federate,
                                                        RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    this->check(federate_handle);
 
-    Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " destroys object " << id
-                         << endl;
+    Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
+                         << object_handle << endl;
 
-    my_root_object->deleteObjectInstance(federate, id, theTime, tag);
-    my_objects_handle_generator.free(id);
+    my_root_object->deleteObjectInstance(federate_handle, object_handle, time, tag);
+    my_objects_handle_generator.free(object_handle);
 }
 
-void Federation::deleteObject(FederateHandle federate,
-                              ObjectHandle id,
+void Federation::deleteObject(FederateHandle federate_handle,
+                              ObjectHandle object_handle,
                               const string& tag) throw(FederateNotExecutionMember,
                                                        DeletePrivilegeNotHeld,
                                                        ObjectNotKnown,
@@ -761,21 +770,21 @@ void Federation::deleteObject(FederateHandle federate,
                                                        RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    this->check(federate_handle);
 
-    Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " destroys object " << id
-                         << endl;
+    Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
+                         << object_handle << endl;
 
-    my_root_object->deleteObjectInstance(federate, id, tag);
-    my_objects_handle_generator.free(id);
+    my_root_object->deleteObjectInstance(federate_handle, object_handle, tag);
+    my_objects_handle_generator.free(object_handle);
 }
 
-void Federation::registerSynchronization(FederateHandle federate, const string& label, const string& tag) throw(
+void Federation::registerSynchronization(FederateHandle federate_handle, const string& label, const string& tag) throw(
     FederateNotExecutionMember, FederationAlreadyPaused, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::registerSynchronization for all federates" << endl;
 
-    this->check(federate); // It may throw FederateNotExecutionMember.
+    this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null).");
@@ -801,7 +810,6 @@ void Federation::registerSynchronization(FederateHandle federate, const string& 
 void Federation::registerSynchronization(FederateHandle federate_handle,
                                          const string& label,
                                          const string& tag,
-                                         unsigned short federate_setSize,
                                          const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
                                                                                            FederationAlreadyPaused,
                                                                                            SaveInProgress,
@@ -823,7 +831,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     }
 
     // FIXME This check is here to avoid regression, but there is a possible BUG here
-    if (federate_setSize != 0) {
+    if (federate_set.size() != 0) {
         federate.addSynchronizationLabel(label);
     }
 
@@ -836,13 +844,13 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::registerSynchronization for federate set" << endl;
 }
 
-void Federation::broadcastSynchronization(FederateHandle federate,
+void Federation::broadcastSynchronization(FederateHandle federate_handle,
                                           const string& label,
                                           const string& tag) throw(FederateNotExecutionMember, RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
 
-    this->check(federate); // It may throw FederateNotExecutionMember.
+    this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null).");
@@ -850,7 +858,7 @@ void Federation::broadcastSynchronization(FederateHandle federate,
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
     NM_Announce_Synchronization_Point msg;
-    msg.setFederate(federate);
+    msg.setFederate(federate_handle);
     msg.setFederation(my_handle);
     msg.setLabel(label);
     msg.setTag(tag);
@@ -862,16 +870,15 @@ void Federation::broadcastSynchronization(FederateHandle federate,
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization" << endl;
 }
 
-void Federation::broadcastSynchronization(FederateHandle federate,
+void Federation::broadcastSynchronization(FederateHandle federate_handle,
                                           const string& label,
                                           const string& tag,
-                                          unsigned short federate_setSize,
                                           const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
                                                                                             RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
 
-    this->check(federate); // It may throw FederateNotExecutionMember.
+    this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null or too long).");
@@ -879,25 +886,25 @@ void Federation::broadcastSynchronization(FederateHandle federate,
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
     NM_Announce_Synchronization_Point msg;
-    msg.setFederate(federate);
+    msg.setFederate(federate_handle);
     msg.setFederation(my_handle);
     msg.setLabel(label);
     msg.setTag(tag);
 
     Debug(G, pdGendoc) << "      broadcastSynchronization is calling broadcastSomeMessage" << endl;
 
-    broadcastSomeMessage(&msg, 0, federate_set, federate_setSize);
+    broadcastSomeMessage(&msg, 0, federate_set, federate_set.size());
 
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << endl;
 }
 
-void Federation::requestFederationSave(FederateHandle the_federate,
-                                       const string& the_label,
+void Federation::requestFederationSave(FederateHandle federate_handle,
+                                       const string& label,
                                        FederationTime time) throw(FederateNotExecutionMember, SaveInProgress)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave with time" << endl;
 
-    check(the_federate);
+    check(federate_handle);
 
     if (my_is_save_in_progress) {
         throw SaveInProgress("Already in saving state.");
@@ -909,12 +916,12 @@ void Federation::requestFederationSave(FederateHandle the_federate,
 
     my_save_status = true;
     my_is_save_in_progress = true;
-    my_save_label = the_label;
+    my_save_label = label;
 
     NM_Initiate_Federate_Save msg;
-    msg.setFederate(the_federate);
+    msg.setFederate(federate_handle);
     msg.setFederation(my_handle);
-    msg.setLabel(the_label);
+    msg.setLabel(label);
     // timed message
     msg.setDate(time);
 
@@ -925,12 +932,12 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave with time" << endl;
 }
 
-void Federation::requestFederationSave(FederateHandle the_federate,
+void Federation::requestFederationSave(FederateHandle federate_handle,
                                        const string& the_label) throw(FederateNotExecutionMember, SaveInProgress)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave without time" << endl;
 
-    check(the_federate);
+    check(federate_handle);
 
     if (my_is_save_in_progress) {
         throw SaveInProgress("Already in saving state.");
@@ -946,7 +953,7 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     my_save_label = the_label;
 
     NM_Initiate_Federate_Save msg;
-    msg.setFederate(the_federate);
+    msg.setFederate(federate_handle);
     msg.setFederation(my_handle);
     msg.setLabel(the_label);
 
@@ -957,21 +964,21 @@ void Federation::requestFederationSave(FederateHandle the_federate,
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave without time" << endl;
 }
 
-void Federation::federateSaveBegun(FederateHandle the_federate) throw(FederateNotExecutionMember)
+void Federation::federateSaveBegun(FederateHandle federate_handle) throw(FederateNotExecutionMember)
 {
     Debug(G, pdGendoc) << "enter Federation::federateSaveBegun" << endl;
-    check(the_federate);
+    check(federate_handle);
     Debug(G, pdGendoc) << "exit  Federation::federateSaveBegun" << endl;
 }
 
-void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status) throw(FederateNotExecutionMember)
+void Federation::federateSaveStatus(FederateHandle federate_handle, bool status) throw(FederateNotExecutionMember)
 {
     Debug(G, pdGendoc) << "enter Federation::federateSaveStatus" << endl;
 
-    Federate& federate = getFederate(the_federate);
+    Federate& federate = getFederate(federate_handle);
     federate.setSaving(false);
 
-    if (the_status == false) {
+    if (status == false) {
         my_save_status = false;
     }
 
@@ -992,7 +999,7 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
     std::unique_ptr<NetworkMessage> msg(
         NM_Factory::create(my_save_status ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED));
 
-    msg->setFederate(the_federate);
+    msg->setFederate(federate_handle);
     msg->setFederation(my_handle);
 
     broadcastAnyMessage(msg.get(), 0, false);
@@ -1006,12 +1013,12 @@ void Federation::federateSaveStatus(FederateHandle the_federate, bool the_status
     Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus" << endl;
 }
 
-void Federation::requestFederationRestore(FederateHandle the_federate,
+void Federation::requestFederationRestore(FederateHandle federate_handle,
                                           const string& the_label) throw(FederateNotExecutionMember)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationRestore" << endl;
 
-    check(the_federate);
+    check(federate_handle);
 
     if (my_is_restore_in_progress) {
         throw RestoreInProgress("Already in restoring state.");
@@ -1033,7 +1040,7 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
                                                      : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
 
-    msg->setFederate(the_federate);
+    msg->setFederate(federate_handle);
     msg->setFederation(my_handle);
     msg->setLabel(the_label);
 
@@ -1065,7 +1072,7 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
 
     // Informs federates a new restore is being done.
     msg = NM_Factory::create(NetworkMessage::FEDERATION_RESTORE_BEGUN);
-    msg->setFederate(the_federate);
+    msg->setFederate(federate_handle);
     msg->setFederation(my_handle);
 
     Debug(G, pdGendoc) << "             =====> broadcast message F_R_B" << endl;
@@ -1832,21 +1839,20 @@ void Federation::acquire(FederateHandle federate,
 
 void Federation::cancelDivestiture(FederateHandle federate,
                                    ObjectHandle id,
-                                   const vector<AttributeHandle>& attributes,
-                                   uint16_t list_size) throw(ObjectNotKnown,
-                                                             AttributeNotDefined,
-                                                             AttributeNotOwned,
-                                                             AttributeDivestitureWasNotRequested,
-                                                             FederateNotExecutionMember,
-                                                             SaveInProgress,
-                                                             RestoreInProgress,
-                                                             RTIinternalError)
+                                   const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
+                                                                                    AttributeNotDefined,
+                                                                                    AttributeNotOwned,
+                                                                                    AttributeDivestitureWasNotRequested,
+                                                                                    FederateNotExecutionMember,
+                                                                                    SaveInProgress,
+                                                                                    RestoreInProgress,
+                                                                                    RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
     // It may throw *NotDefined
-    my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(federate, id, attributes, list_size);
+    my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(federate, id, attributes, attributes.size());
 
     Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << endl;
 }
@@ -1932,7 +1938,6 @@ void Federation::deleteRegion(FederateHandle federate, long region) throw(
 void Federation::associateRegion(FederateHandle federate,
                                  ObjectHandle object,
                                  RegionHandle the_handle,
-                                 unsigned short nb,
                                  const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
                                                                                   RegionNotKnown,
                                                                                   SaveInProgress,
@@ -1945,7 +1950,7 @@ void Federation::associateRegion(FederateHandle federate,
 
     my_root_object->getObject(object)->unassociate(region);
 
-    for (int i = 0; i < nb; ++i) {
+    for (int i = 0; i < attributes.size(); ++i) {
         my_root_object->getObjectAttribute(object, attributes[i])->associate(region);
     }
 }
@@ -2022,7 +2027,6 @@ Federation::registerObjectWithRegion(FederateHandle federate,
                                      ObjectClassHandle class_handle,
                                      const string& object_name,
                                      RegionHandle region_handle,
-                                     int nb,
                                      const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
                                                                                       ObjectClassNotDefined,
                                                                                       ObjectClassNotPublished,
@@ -2059,11 +2063,11 @@ Federation::registerObjectWithRegion(FederateHandle federate,
     RTIRegion* region = my_root_object->getRegion(region_handle);
     my_root_object->getObject(object)->unassociate(region);
 
-    for (int i = 0; i < nb; ++i) {
+    for (int i = 0; i < attributes.size(); ++i) {
         my_root_object->getObjectAttribute(object, attributes[i])->associate(region);
     }
 
-    Debug(D, pdDebug) << "- " << nb << " attribute(s) associated with region " << region_handle << endl;
+    Debug(D, pdDebug) << "- " << attributes.size() << " attribute(s) associated with region " << region_handle << endl;
     Debug(G, pdGendoc) << "exit  Federation::registerObjectWithRegion" << endl;
     return object;
 }
@@ -2201,8 +2205,7 @@ bool Federation::saveXmlData()
 
 FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
                                               ObjectHandle theObject,
-                                              const vector<AttributeHandle>& theAttributeList,
-                                              uint32_t theListSize) throw(ObjectNotKnown)
+                                              const vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown)
 {
     Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << endl;
 
@@ -2211,7 +2214,7 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     typedef std::map<FederateHandle, vector<AttributeHandle>> ATTRIBUTES_FOR_FEDERATES_T;
     ATTRIBUTES_FOR_FEDERATES_T attributesForFederates;
 
-    for (uint32_t i = 0; i < theListSize; ++i) {
+    for (uint32_t i = 0; i < theAttributeList.size(); ++i) {
         FederateHandle federateHandle = actualObject->getAttribute(theAttributeList[i])->getOwner();
 
         // Only attributes that are owned by someone should be asked
@@ -2254,10 +2257,10 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     return (theOwnerHandle);
 }
 
-void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
-                                                  ObjectClassHandle theClassHandle,
-                                                  const vector<AttributeHandle>& theAttributeList,
-                                                  uint32_t theListSize) throw(ObjectClassNotDefined, RTIinternalError)
+void Federation::requestClassAttributeValueUpdate(
+    FederateHandle theFederateHandle,
+    ObjectClassHandle theClassHandle,
+    const vector<AttributeHandle>& theAttributeList) throw(ObjectClassNotDefined, RTIinternalError)
 {
     Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
 
@@ -2270,7 +2273,7 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
     // send PAVU for all objects of this class
     ObjectClass::HandleObjectMap instances = oClass->getClassInstances();
     for (ObjectClass::HandleObjectMap::const_iterator it = instances.begin(); it != instances.end(); ++it) {
-        requestObjectOwner(theFederateHandle, it->first, theAttributeList, theListSize);
+        requestObjectOwner(theFederateHandle, it->first, theAttributeList);
     }
     Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << endl;
 }

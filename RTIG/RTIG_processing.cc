@@ -627,11 +627,7 @@ void RTIG::processRegisterSynchronization(Socket* link, NM_Register_Federation_S
                                                  req->getFederates());
 #else
             my_federations.searchFederation(req->getFederation())
-                .registerSynchronization(req->getFederate(),
-                                         req->getLabel(),
-                                         req->getTag(),
-                                         (unsigned short) req->getFederatesSize(),
-                                         req->getFederates());
+                .registerSynchronization(req->getFederate(), req->getLabel(), req->getTag(), req->getFederates());
 #endif
         }
         else {
@@ -669,8 +665,7 @@ void RTIG::processRegisterSynchronization(Socket* link, NM_Register_Federation_S
                                                     req->getFederates());
 #else
             my_federations.searchFederation(req->getFederation())
-                .broadcastSynchronization(
-                    req->getFederate(), req->getLabel(), req->getTag(), req->getFederatesSize(), req->getFederates());
+                .broadcastSynchronization(req->getFederate(), req->getLabel(), req->getTag(), req->getFederates());
 #endif
         }
         else {
@@ -785,8 +780,7 @@ void RTIG::processRequestFederationRestore(Socket*, NetworkMessage* req)
 #if OLD
     my_federations.requestFederationRestore(req->getFederation(), req->getFederate(), req->getLabel());
 #else
-    my_federations.searchFederation(req->getFederation())
-        .requestFederationRestore(req->getFederate(), req->getLabel());
+    my_federations.searchFederation(req->getFederation()).requestFederationRestore(req->getFederate(), req->getLabel());
 #endif
     Debug(G, pdGendoc) << "exit  RTIG::processRequestFederationRestore" << std::endl;
     Debug(G, pdGendoc) << "END   ** REQUEST FEDERATION RESTORE SERVICE **" << std::endl;
@@ -863,9 +857,8 @@ void RTIG::processSubscribeObjectClass(Socket* link, NM_Subscribe_Object_Class* 
                                    req->getObjectClass(),
                                    sub ? req->getAttributes() : emptyAttributeList);
 #else
-    my_federations.searchFederation(req->getFederation()).subscribeObject(req->getFederate(),
-                                                                           req->getObjectClass(),
-                                                                           sub ? req->getAttributes() : emptyAttributeList);
+    my_federations.searchFederation(req->getFederation())
+        .subscribeObject(req->getFederate(), req->getObjectClass(), sub ? req->getAttributes() : emptyAttributeList);
 #endif
 
     Debug(D, pdRegister) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1099,7 +1092,6 @@ void RTIG::processSendInteraction(Socket* link, NM_Send_Interaction* req)
                                   req->getInteractionClass(),
                                   req->getParameters(),
                                   req->getValues(),
-                                  req->getParametersSize(),
                                   req->getDate(),
                                   req->getRegion(),
                                   req->getLabel());
@@ -1250,8 +1242,7 @@ void RTIG::processNegotiatedOwnershipDivestiture(Socket* link, NM_Negotiated_Att
                                         req->getLabel());
 #else
     my_federations.searchFederation(req->getFederation())
-        .negotiateDivestiture(
-            req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
+        .negotiateDivestiture(req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1333,8 +1324,7 @@ void RTIG::processOwnershipAcquisition(Socket* link, NM_Attribute_Ownership_Acqu
                            req->getLabel());
 #else
     my_federations.searchFederation(req->getFederation())
-        .acquire(
-            req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
+        .acquire(req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1359,7 +1349,7 @@ void RTIG::processCancelNegotiatedDivestiture(Socket* link, NM_Cancel_Negotiated
         req->getFederation(), req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
 #else
     my_federations.searchFederation(req->getFederation())
-        .cancelDivestiture(req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
+        .cancelDivestiture(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1384,9 +1374,8 @@ void RTIG::processReleaseResponse(Socket* link, NM_Attribute_Ownership_Release_R
     AttributeHandleSet* attributes = my_federations.respondRelease(
         req->getFederation(), req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
 #else
-    AttributeHandleSet* attributes
-        = my_federations.searchFederation(req->getFederation())
-              .respondRelease(req->getFederate(), req->getObject(), req->getAttributes());
+    AttributeHandleSet* attributes = my_federations.searchFederation(req->getFederation())
+                                         .respondRelease(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1487,8 +1476,7 @@ void RTIG::processDeleteRegion(Socket* link, NM_DDM_Delete_Region* req)
     my_federations.deleteRegion(req->getFederation(), req->getFederate(), req->getRegion());
 
 #else
-    my_federations.searchFederation(req->getFederation())
-        .deleteRegion(req->getFederate(), req->getRegion());
+    my_federations.searchFederation(req->getFederation()).deleteRegion(req->getFederate(), req->getRegion());
 #endif
 
     NM_DDM_Delete_Region rep;
@@ -1518,8 +1506,7 @@ void RTIG::processAssociateRegion(Socket* link, NM_DDM_Associate_Region* req)
 
 #else
     my_federations.searchFederation(req->getFederation())
-        .associateRegion(
-            req->getFederate(), req->getObject(), req->getRegion(), req->getAttributesSize(), req->getAttributes());
+        .associateRegion(req->getFederate(), req->getObject(), req->getRegion(), req->getAttributes());
 #endif
 
     NM_DDM_Associate_Region rep;
@@ -1568,10 +1555,7 @@ void RTIG::processSubscribeAttributesWR(Socket* link, NM_DDM_Subscribe_Attribute
 
 #else
     my_federations.searchFederation(req->getFederation())
-        .subscribeAttributesWR(req->getFederate(),
-                               req->getObjectClass(),
-                               req->getRegion(),
-                               req->getAttributes());
+        .subscribeAttributesWR(req->getFederate(), req->getObjectClass(), req->getRegion(), req->getAttributes());
 #endif
 
     NM_DDM_Subscribe_Attributes rep;
@@ -1675,12 +1659,8 @@ void RTIG::processRegisterObjectWithRegion(Socket* link, NM_DDM_Register_Object*
 
 #else
     my_federations.searchFederation(req->getFederation())
-        .registerObjectWithRegion(req->getFederate(),
-                                  req->getObjectClass(),
-                                  req->getLabel(),
-                                  req->getRegion(),
-                                  req->getAttributesSize(),
-                                  req->getAttributes());
+        .registerObjectWithRegion(
+            req->getFederate(), req->getObjectClass(), req->getLabel(), req->getRegion(), req->getAttributes());
 #endif
 
     Debug(D, pdRegister) << "Object \"" << req->getLabel() << "\" of Federate " << req->getFederate()
@@ -1715,8 +1695,7 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
 
 #else
         (void) my_federations.searchFederation(request->getFederation())
-            .requestObjectOwner(
-                request->getFederate(), request->getObject(), request->getAttributes(), request->getAttributesSize());
+            .requestObjectOwner(request->getFederate(), request->getObject(), request->getAttributes());
 #endif
     }
     catch (ObjectNotKnown& e) {
@@ -1757,10 +1736,8 @@ void RTIG::processRequestClassAttributeValueUpdate(Socket* link, NM_Request_Clas
 
 #else
         my_federations.searchFederation(request->getFederation())
-            .requestClassAttributeValueUpdate(request->getFederate(),
-                                              request->getObjectClass(),
-                                              request->getAttributes(),
-                                              request->getAttributesSize());
+            .requestClassAttributeValueUpdate(
+                request->getFederate(), request->getObjectClass(), request->getAttributes());
 #endif
     }
     catch (ObjectClassNotDefined& e) {
