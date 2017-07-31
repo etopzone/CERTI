@@ -731,7 +731,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                                        tag);
     Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
                         << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
-    for (int i = 0; i < parameter_handles.size(); i++) {
+    for (size_t i{0u}; i < parameter_handles.size(); i++) {
         Debug(D, pdRequest) << " Param " << parameter_handles[i] << " Value "
                             << string(&(parameter_values[i][0]), parameter_values[i].size()) << endl;
     }
@@ -1950,7 +1950,7 @@ void Federation::associateRegion(FederateHandle federate,
 
     my_root_object->getObject(object)->unassociate(region);
 
-    for (int i = 0; i < attributes.size(); ++i) {
+    for (size_t i{0u}; i < attributes.size(); ++i) {
         my_root_object->getObjectAttribute(object, attributes[i])->associate(region);
     }
 }
@@ -2063,7 +2063,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
     RTIRegion* region = my_root_object->getRegion(region_handle);
     my_root_object->getObject(object)->unassociate(region);
 
-    for (int i = 0; i < attributes.size(); ++i) {
+    for (size_t i{0u}; i < attributes.size(); ++i) {
         my_root_object->getObjectAttribute(object, attributes[i])->associate(region);
     }
 
