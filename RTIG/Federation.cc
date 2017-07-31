@@ -1030,7 +1030,8 @@ void Federation::requestFederationRestore(FederateHandle the_federate,
     // JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
     success = true;
 
-    NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
+    NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
+                                                     : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
 
     msg->setFederate(the_federate);
     msg->setFederation(my_handle);
@@ -1100,10 +1101,11 @@ void Federation::federateRestoreStatus(FederateHandle the_federate, bool the_sta
         my_restore_status = false;
     }
 
-    auto a_federate_is_still_restoring = std::any_of(begin(my_federates), end(my_federates), [](const decltype(my_federates)::value_type& kv) {
-        return kv.second->isRestoring();
-    });
-    
+    auto a_federate_is_still_restoring
+        = std::any_of(begin(my_federates), end(my_federates), [](const decltype(my_federates)::value_type& kv) {
+              return kv.second->isRestoring();
+          });
+
     if (a_federate_is_still_restoring) {
         return;
     }
@@ -1128,7 +1130,7 @@ Federate& Federation::getFederate(FederateHandle federate_handle) throw(Federate
     try {
         return *my_federates.at(federate_handle);
     }
-    catch(std::out_of_range&e) {
+    catch (std::out_of_range& e) {
         throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <" << federate_handle
                                                             << "> not found.");
     }
@@ -1617,7 +1619,6 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                        ObjectHandle objectHandle,
                                        const vector<AttributeHandle>& attributes,
                                        const vector<AttributeValue_t>& values,
-                                       uint16_t list_size,
                                        FederationTime time,
                                        const string& tag) throw(FederateNotExecutionMember,
                                                                 ObjectNotKnown,
@@ -1646,7 +1647,6 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                        ObjectHandle objectHandle,
                                        const vector<AttributeHandle>& attributes,
                                        const vector<AttributeValue_t>& values,
-                                       uint16_t list_size,
                                        const string& tag) throw(FederateNotExecutionMember,
                                                                 ObjectNotKnown,
                                                                 AttributeNotDefined,
@@ -1743,7 +1743,6 @@ void Federation::queryAttributeOwnership(FederateHandle federate,
 void Federation::negotiateDivestiture(FederateHandle federate,
                                       ObjectHandle objectHandle,
                                       const vector<AttributeHandle>& attribs,
-                                      uint16_t list_size,
                                       const string& tag) throw(FederateNotExecutionMember,
                                                                ObjectNotKnown,
                                                                AttributeNotDefined,
@@ -1765,17 +1764,16 @@ void Federation::negotiateDivestiture(FederateHandle federate,
 
 void Federation::acquireIfAvailable(FederateHandle federate,
                                     ObjectHandle objectHandle,
-                                    const vector<AttributeHandle>& attribs,
-                                    uint16_t list_size) throw(ObjectNotKnown,
-                                                              ObjectClassNotPublished,
-                                                              AttributeNotDefined,
-                                                              AttributeNotPublished,
-                                                              FederateOwnsAttributes,
-                                                              AttributeAlreadyBeingAcquired,
-                                                              FederateNotExecutionMember,
-                                                              SaveInProgress,
-                                                              RestoreInProgress,
-                                                              RTIinternalError)
+                                    const vector<AttributeHandle>& attribs) throw(ObjectNotKnown,
+                                                                                  ObjectClassNotPublished,
+                                                                                  AttributeNotDefined,
+                                                                                  AttributeNotPublished,
+                                                                                  FederateOwnsAttributes,
+                                                                                  AttributeAlreadyBeingAcquired,
+                                                                                  FederateNotExecutionMember,
+                                                                                  SaveInProgress,
+                                                                                  RestoreInProgress,
+                                                                                  RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate);
@@ -1789,14 +1787,13 @@ void Federation::acquireIfAvailable(FederateHandle federate,
 
 void Federation::divest(FederateHandle federate,
                         ObjectHandle objectHandle,
-                        const vector<AttributeHandle>& attrs,
-                        uint16_t list_size) throw(ObjectNotKnown,
-                                                  AttributeNotDefined,
-                                                  AttributeNotOwned,
-                                                  FederateNotExecutionMember,
-                                                  SaveInProgress,
-                                                  RestoreInProgress,
-                                                  RTIinternalError)
+                        const vector<AttributeHandle>& attrs) throw(ObjectNotKnown,
+                                                                    AttributeNotDefined,
+                                                                    AttributeNotOwned,
+                                                                    FederateNotExecutionMember,
+                                                                    SaveInProgress,
+                                                                    RestoreInProgress,
+                                                                    RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate);
@@ -1811,7 +1808,6 @@ void Federation::divest(FederateHandle federate,
 void Federation::acquire(FederateHandle federate,
                          ObjectHandle objectHandle,
                          const vector<AttributeHandle>& attributes,
-                         uint16_t list_size,
                          const string& tag) throw(ObjectNotKnown,
                                                   ObjectClassNotPublished,
                                                   AttributeNotDefined,
@@ -1855,17 +1851,17 @@ void Federation::cancelDivestiture(FederateHandle federate,
     Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << endl;
 }
 
-AttributeHandleSet* Federation::respondRelease(FederateHandle federate,
-                                               ObjectHandle objectHandle,
-                                               const vector<AttributeHandle>& attributes,
-                                               uint16_t list_size) throw(ObjectNotKnown,
-                                                                         AttributeNotDefined,
-                                                                         AttributeNotOwned,
-                                                                         FederateWasNotAskedToReleaseAttribute,
-                                                                         FederateNotExecutionMember,
-                                                                         SaveInProgress,
-                                                                         RestoreInProgress,
-                                                                         RTIinternalError)
+AttributeHandleSet*
+Federation::respondRelease(FederateHandle federate,
+                           ObjectHandle objectHandle,
+                           const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
+                                                                            AttributeNotDefined,
+                                                                            AttributeNotOwned,
+                                                                            FederateWasNotAskedToReleaseAttribute,
+                                                                            FederateNotExecutionMember,
+                                                                            SaveInProgress,
+                                                                            RestoreInProgress,
+                                                                            RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate);
@@ -1881,15 +1877,14 @@ AttributeHandleSet* Federation::respondRelease(FederateHandle federate,
 
 void Federation::cancelAcquisition(FederateHandle federate,
                                    ObjectHandle objectHandle,
-                                   const vector<AttributeHandle>& attributes,
-                                   uint16_t list_size) throw(ObjectNotKnown,
-                                                             AttributeNotDefined,
-                                                             AttributeAlreadyOwned,
-                                                             AttributeAcquisitionWasNotRequested,
-                                                             FederateNotExecutionMember,
-                                                             SaveInProgress,
-                                                             RestoreInProgress,
-                                                             RTIinternalError)
+                                   const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
+                                                                                    AttributeNotDefined,
+                                                                                    AttributeAlreadyOwned,
+                                                                                    AttributeAcquisitionWasNotRequested,
+                                                                                    FederateNotExecutionMember,
+                                                                                    SaveInProgress,
+                                                                                    RestoreInProgress,
+                                                                                    RTIinternalError)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate);
@@ -1967,7 +1962,6 @@ void Federation::unassociateRegion(FederateHandle federate, ObjectHandle object,
 void Federation::subscribeAttributesWR(FederateHandle federate,
                                        ObjectClassHandle c,
                                        RegionHandle region_handle,
-                                       unsigned short nb,
                                        const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
                                                                                         RegionNotKnown,
                                                                                         SaveInProgress,

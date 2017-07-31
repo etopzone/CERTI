@@ -38,7 +38,7 @@ Federate::Federate(const std::string& name, const FederateHandle handle) : my_ha
 FederateHandle Federate::getHandle() const noexcept
 {
     return my_handle;
-};
+}
 
 void Federate::setHandle(const FederateHandle h)
 {
@@ -50,17 +50,17 @@ void Federate::setHandle(const FederateHandle h)
     }
 
     my_handle = h;
-};
+}
 
 std::string Federate::getName() const noexcept
 {
     return my_name;
-};
+}
 
 bool Federate::isConstrained() const noexcept
 {
     return my_isConstrained;
-};
+}
 
 void Federate::setConstrained(const bool c)
 {
@@ -69,12 +69,12 @@ void Federate::setConstrained(const bool c)
     }
 
     my_isConstrained = c;
-};
+}
 
 bool Federate::isRegulator() const noexcept
 {
     return my_isRegulator;
-};
+}
 
 void Federate::setRegulator(const bool r)
 {
@@ -83,33 +83,33 @@ void Federate::setRegulator(const bool r)
     }
 
     my_isRegulator = r;
-};
+}
 
 bool Federate::isUsingNERx() const noexcept
 {
     return my_isUsingNERx;
-};
+}
 
 void Federate::setIsUsingNERx(const bool unx) noexcept
 {
     my_isUsingNERx = unx;
-};
+}
 
 const FederationTime Federate::getLastNERxValue() const noexcept
 {
     return my_lastNERxValueReceived;
-};
+}
 
 void Federate::setLastNERxValue(const FederationTime t) noexcept
 {
     my_lastNERxValueReceived = t;
     my_isUsingNERx = true;
-};
+}
 
 bool Federate::isClassRelevanceAdvisorySwitch() const noexcept
 {
     return my_classRelevanceAdvisorySwitch;
-};
+}
 
 void Federate::setClassRelevanceAdvisorySwitch(const bool val)
 {
@@ -118,12 +118,12 @@ void Federate::setClassRelevanceAdvisorySwitch(const bool val)
     }
 
     my_classRelevanceAdvisorySwitch = val;
-};
+}
 
 bool Federate::isInteractionRelevanceAdvisorySwitch() const noexcept
 {
     return my_interactionRelevanceAdvisorySwitch;
-};
+}
 
 void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
 {
@@ -132,12 +132,12 @@ void Federate::setInteractionRelevanceAdvisorySwitch(const bool val)
     }
 
     my_interactionRelevanceAdvisorySwitch = val;
-};
+}
 
 bool Federate::isAttributeRelevanceAdvisorySwitch() const noexcept
 {
     return my_attributeRelevanceAdvisorySwitch;
-};
+}
 
 void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
 {
@@ -146,12 +146,12 @@ void Federate::setAttributeRelevanceAdvisorySwitch(const bool val)
     }
 
     my_attributeRelevanceAdvisorySwitch = val;
-};
+}
 
 bool Federate::isAttributeScopeAdvisorySwitch() const noexcept
 {
     return my_attributeScopeAdvisorySwitch;
-};
+}
 
 void Federate::setAttributeScopeAdvisorySwitch(const bool val)
 {
@@ -160,27 +160,27 @@ void Federate::setAttributeScopeAdvisorySwitch(const bool val)
     }
 
     my_attributeScopeAdvisorySwitch = val;
-};
+}
 
 bool Federate::isSaving() const noexcept
 {
     return my_isCurrentlySaving;
-};
+}
 
 void Federate::setSaving(const bool s) noexcept
 {
     my_isCurrentlySaving = s;
-};
+}
 
 bool Federate::isRestoring() const noexcept
 {
     return my_isCurrentlyRestoring;
-};
+}
 
 void Federate::setRestoring(const bool r) noexcept
 {
     my_isCurrentlyRestoring = r;
-};
+}
 
 void Federate::addSynchronizationLabel(const std::string& label)
 {

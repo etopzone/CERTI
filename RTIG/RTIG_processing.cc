@@ -1029,7 +1029,6 @@ void RTIG::processUpdateAttributeValues(Socket* link, NM_Update_Attribute_Values
                                    req->getObject(),
                                    req->getAttributes(),
                                    req->getValues(),
-                                   req->getAttributesSize(),
                                    req->getDate(),
                                    req->getLabel());
 #endif
@@ -1252,7 +1251,7 @@ void RTIG::processNegotiatedOwnershipDivestiture(Socket* link, NM_Negotiated_Att
 #else
     my_federations.searchFederation(req->getFederation())
         .negotiateDivestiture(
-            req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize(), req->getLabel());
+            req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1278,7 +1277,7 @@ void RTIG::processAcquisitionIfAvailable(Socket* link, NM_Attribute_Ownership_Ac
         req->getFederation(), req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
 #else
     my_federations.searchFederation(req->getFederation())
-        .acquireIfAvailable(req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
+        .acquireIfAvailable(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1304,7 +1303,7 @@ void RTIG::processUnconditionalDivestiture(Socket* link, NM_Unconditional_Attrib
         req->getFederation(), req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
 #else
     my_federations.searchFederation(req->getFederation())
-        .divest(req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
+        .divest(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1335,7 +1334,7 @@ void RTIG::processOwnershipAcquisition(Socket* link, NM_Attribute_Ownership_Acqu
 #else
     my_federations.searchFederation(req->getFederation())
         .acquire(
-            req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize(), req->getLabel());
+            req->getFederate(), req->getObject(), req->getAttributes(), req->getLabel());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1387,7 +1386,7 @@ void RTIG::processReleaseResponse(Socket* link, NM_Attribute_Ownership_Release_R
 #else
     AttributeHandleSet* attributes
         = my_federations.searchFederation(req->getFederation())
-              .respondRelease(req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
+              .respondRelease(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1419,7 +1418,7 @@ void RTIG::processCancelAcquisition(Socket* link, NM_Cancel_Attribute_Ownership_
         req->getFederation(), req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
 #else
     my_federations.searchFederation(req->getFederation())
-        .cancelAcquisition(req->getFederate(), req->getObject(), req->getAttributes(), req->getAttributesSize());
+        .cancelAcquisition(req->getFederate(), req->getObject(), req->getAttributes());
 #endif
 
     Debug(D, pdDebug) << "Federate " << req->getFederate() << " of Federation " << req->getFederation()
@@ -1572,7 +1571,6 @@ void RTIG::processSubscribeAttributesWR(Socket* link, NM_DDM_Subscribe_Attribute
         .subscribeAttributesWR(req->getFederate(),
                                req->getObjectClass(),
                                req->getRegion(),
-                               req->getAttributesSize(),
                                req->getAttributes());
 #endif
 

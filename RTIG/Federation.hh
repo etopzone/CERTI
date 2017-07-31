@@ -209,7 +209,7 @@ public:
     void registerSynchronization(FederateHandle the_federate,
                                  const std::string& the_label,
                                  const std::string& the_tag,
-                                 unsigned short federate_setSize,
+                                 unsigned short federate_setSize, // TODO remove
                                  const std::vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
                                                                                         FederationAlreadyPaused,
                                                                                         SaveInProgress,
@@ -228,7 +228,7 @@ public:
     void broadcastSynchronization(FederateHandle federate,
                                   const std::string& label,
                                   const std::string& tag,
-                                  unsigned short federate_setSize,
+                                  unsigned short federate_setSize, // TODO remove
                                   const std::vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
                                                                                          RTIinternalError);
 
@@ -335,12 +335,13 @@ public:
     FederateHandle requestObjectOwner(FederateHandle theFederateHandle,
                                       ObjectHandle theObject,
                                       const std::vector<AttributeHandle>& theAttributeList,
-                                      uint32_t theListSize) throw(ObjectNotKnown);
+                                      uint32_t theListSize) throw(ObjectNotKnown); // TODO remove
 
     void requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
                                           ObjectClassHandle theClassHandle,
                                           const std::vector<AttributeHandle>& theAttributeList,
-                                          uint32_t theListSize) throw(ObjectClassNotDefined, RTIinternalError);
+                                          uint32_t theListSize) throw(ObjectClassNotDefined,
+                                                                      RTIinternalError); // TODO remove
 
     /**
      * Subscribes attributes to an object class. After subscription, attribute 
@@ -364,8 +365,7 @@ public:
                                ObjectHandle theObjectHandle,
                                const std::vector<AttributeHandle>& theAttributeList,
                                const std::vector<AttributeValue_t>& theValueList,
-                               uint16_t theListSize,
-                               FederationTime theTime,
+                               FederationTime time,
                                const std::string& theTag) throw(FederateNotExecutionMember,
                                                                 ObjectNotKnown,
                                                                 AttributeNotDefined,
@@ -378,7 +378,6 @@ public:
                                ObjectHandle theObjectHandle,
                                const std::vector<AttributeHandle>& theAttributeList,
                                const std::vector<AttributeValue_t>& theValueList,
-                               uint16_t theListSize,
                                const std::string& theTag) throw(FederateNotExecutionMember,
                                                                 ObjectNotKnown,
                                                                 AttributeNotDefined,
@@ -396,7 +395,7 @@ public:
                               InteractionClassHandle theInteractionHandle,
                               const std::vector<ParameterHandle>& theParameterList,
                               const std::vector<ParameterValue_t>& theValueList,
-                              uint16_t theListSize,
+                              uint16_t theListSize, // TODO remove
                               FederationTime theTime,
                               RegionHandle region,
                               const std::string& theTag) throw(FederateNotExecutionMember,
@@ -412,7 +411,7 @@ public:
                               InteractionClassHandle theInteractionHandle,
                               const std::vector<ParameterHandle>& theParameterList,
                               const std::vector<ParameterValue_t>& theValueList,
-                              uint16_t theListSize,
+                              uint16_t theListSize, // TODO remove
                               RegionHandle region,
                               const std::string& theTag) throw(FederateNotExecutionMember,
                                                                FederateNotPublishing,
@@ -465,7 +464,6 @@ public:
     void negotiateDivestiture(FederateHandle theFederateHandle,
                               ObjectHandle theObjectHandle,
                               const std::vector<AttributeHandle>& theAttributeList,
-                              uint16_t theListSize,
                               const std::string& theTag) throw(FederateNotExecutionMember,
                                                                ObjectNotKnown,
                                                                AttributeNotDefined,
@@ -477,33 +475,30 @@ public:
 
     void acquireIfAvailable(FederateHandle theFederateHandle,
                             ObjectHandle theObjectHandle,
-                            const std::vector<AttributeHandle>& theAttributeList,
-                            uint16_t theListSize) throw(ObjectNotKnown,
-                                                        ObjectClassNotPublished,
-                                                        AttributeNotDefined,
-                                                        AttributeNotPublished,
-                                                        FederateOwnsAttributes,
-                                                        AttributeAlreadyBeingAcquired,
-                                                        FederateNotExecutionMember,
-                                                        SaveInProgress,
-                                                        RestoreInProgress,
-                                                        RTIinternalError);
+                            const std::vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown,
+                                                                                        ObjectClassNotPublished,
+                                                                                        AttributeNotDefined,
+                                                                                        AttributeNotPublished,
+                                                                                        FederateOwnsAttributes,
+                                                                                        AttributeAlreadyBeingAcquired,
+                                                                                        FederateNotExecutionMember,
+                                                                                        SaveInProgress,
+                                                                                        RestoreInProgress,
+                                                                                        RTIinternalError);
 
     void divest(FederateHandle theFederateHandle,
                 ObjectHandle theObjectHandle,
-                const std::vector<AttributeHandle>& theAttributeList,
-                uint16_t theListSize) throw(ObjectNotKnown,
-                                            AttributeNotDefined,
-                                            AttributeNotOwned,
-                                            FederateNotExecutionMember,
-                                            SaveInProgress,
-                                            RestoreInProgress,
-                                            RTIinternalError);
+                const std::vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown,
+                                                                            AttributeNotDefined,
+                                                                            AttributeNotOwned,
+                                                                            FederateNotExecutionMember,
+                                                                            SaveInProgress,
+                                                                            RestoreInProgress,
+                                                                            RTIinternalError);
 
     void acquire(FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
                  const std::vector<AttributeHandle>& theAttributeList,
-                 uint16_t theListSize,
                  const std::string& theTag) throw(ObjectNotKnown,
                                                   ObjectClassNotPublished,
                                                   AttributeNotDefined,
@@ -517,7 +512,7 @@ public:
     void cancelDivestiture(FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            const std::vector<AttributeHandle>& theAttributeList,
-                           uint16_t theListSize) throw(ObjectNotKnown,
+                           uint16_t theListSize) throw(ObjectNotKnown, // TODO remove
                                                        AttributeNotDefined,
                                                        AttributeNotOwned,
                                                        AttributeDivestitureWasNotRequested,
@@ -526,29 +521,29 @@ public:
                                                        RestoreInProgress,
                                                        RTIinternalError);
 
-    AttributeHandleSet* respondRelease(FederateHandle theFederateHandle,
-                                       ObjectHandle theObjectHandle,
-                                       const std::vector<AttributeHandle>& theAttributeList,
-                                       uint16_t theListSize) throw(ObjectNotKnown,
-                                                                   AttributeNotDefined,
-                                                                   AttributeNotOwned,
-                                                                   FederateWasNotAskedToReleaseAttribute,
-                                                                   FederateNotExecutionMember,
-                                                                   SaveInProgress,
-                                                                   RestoreInProgress,
-                                                                   RTIinternalError);
+    AttributeHandleSet*
+    respondRelease(FederateHandle theFederateHandle,
+                   ObjectHandle theObjectHandle,
+                   const std::vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown,
+                                                                               AttributeNotDefined,
+                                                                               AttributeNotOwned,
+                                                                               FederateWasNotAskedToReleaseAttribute,
+                                                                               FederateNotExecutionMember,
+                                                                               SaveInProgress,
+                                                                               RestoreInProgress,
+                                                                               RTIinternalError);
 
-    void cancelAcquisition(FederateHandle theFederateHandle,
-                           ObjectHandle theObjectHandle,
-                           const std::vector<AttributeHandle>& theAttributeList,
-                           uint16_t theListSize) throw(ObjectNotKnown,
-                                                       AttributeNotDefined,
-                                                       AttributeAlreadyOwned,
-                                                       AttributeAcquisitionWasNotRequested,
-                                                       FederateNotExecutionMember,
-                                                       SaveInProgress,
-                                                       RestoreInProgress,
-                                                       RTIinternalError);
+    void
+    cancelAcquisition(FederateHandle theFederateHandle,
+                      ObjectHandle theObjectHandle,
+                      const std::vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown,
+                                                                                  AttributeNotDefined,
+                                                                                  AttributeAlreadyOwned,
+                                                                                  AttributeAcquisitionWasNotRequested,
+                                                                                  FederateNotExecutionMember,
+                                                                                  SaveInProgress,
+                                                                                  RestoreInProgress,
+                                                                                  RTIinternalError);
 
     // Data Distribution Management
 
@@ -582,15 +577,9 @@ public:
     void unassociateRegion(FederateHandle, ObjectHandle, RegionHandle) throw(
         FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
-    void subscribeAttributesWR(FederateHandle,
-                               ObjectClassHandle,
-                               RegionHandle,
-                               unsigned short,
-                               const std::vector<AttributeHandle>&) throw(FederateNotExecutionMember,
-                                                                          RegionNotKnown,
-                                                                          SaveInProgress,
-                                                                          RestoreInProgress,
-                                                                          RTIinternalError);
+    void
+    subscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle, const std::vector<AttributeHandle>&) throw(
+        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
 
     void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle) throw(
         FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);

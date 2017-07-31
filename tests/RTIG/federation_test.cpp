@@ -916,7 +916,7 @@ TEST_F(FederationTest, SubscribeObjectThrowsOnUknFederate)
 
 TEST_F(FederationTest, UpdateAttrValuesTimedThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.updateAttributeValues(ukn_federate, 1, {}, {}, 0, {}, ""), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.updateAttributeValues(ukn_federate, 1, {}, {}, {}, ""), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, UpdateAttrValuesThrowsOnUknFederate)
@@ -936,22 +936,22 @@ TEST_F(FederationTest, QueryAttrOwnershipThrowsOnUknFederate)
 
 TEST_F(FederationTest, NegotiateDivestitureThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.negotiateDivestiture(ukn_federate, 1, {}, 0, ""), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.negotiateDivestiture(ukn_federate, 1, {}, ""), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, AcquireIfAvailableThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.acquireIfAvailable(ukn_federate, 1, {}, 0), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.acquireIfAvailable(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, DivestThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.divest(ukn_federate, 1, {}, 0), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.divest(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, AcquireThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.acquire(ukn_federate, 1, {}, 0, ""), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.acquire(ukn_federate, 1, {}, ""), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, CancelDivestitureThrowsOnUknFederate)
@@ -961,17 +961,17 @@ TEST_F(FederationTest, CancelDivestitureThrowsOnUknFederate)
 
 TEST_F(FederationTest, RespondReleaseThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.respondRelease(ukn_federate, 1, {}, 0), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.respondRelease(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, CancelAcquisitionThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.cancelAcquisition(ukn_federate, 1, {}, 0), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.cancelAcquisition(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, SubscribeAttrWRThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.subscribeAttributesWR(ukn_federate, 1, 1, 0, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.subscribeAttributesWR(ukn_federate, 1, 1, {}), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, UnsubscribeAttributesWRThrowsOnUknFederate)
