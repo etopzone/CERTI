@@ -45,12 +45,12 @@ public:
     /**
 	 * Return true if the host is BidEndian
 	 */
-    static const bool HostIsBigEndian();
+    static bool HostIsBigEndian();
 
     /**
 	 * Return true if the host is LittleEndian
 	 */
-    static const bool HostIsLittleEndian();
+    static bool HostIsLittleEndian();
 
     /**
 	 * Show n bytes of data content in hexa on stdout. 

@@ -22,7 +22,6 @@
 
 #include "NM_Classes.hh"
 #include "RTIG.hh"
-// #include <config.h>
 
 #include <cassert>
 #include <cstdint>
@@ -31,7 +30,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-// #include <memory>
 
 #include "AuditFile.hh"
 #include "Exception.hh"
@@ -40,7 +38,6 @@
 #include "Federation.hh"
 #include "FederationsList.hh"
 #include "certi.hh"
-// #include "GAV.hh"
 #include "GAV.hh"
 #include "HandleManager.hh"
 #include "NetworkMessage.hh"
@@ -949,7 +946,7 @@ void RTIG::processSubscribeInteractionClass(Socket* link, NM_Subscribe_Interacti
 
 // ----------------------------------------------------------------------------
 // processReserveObjectInstanceName
-void RTIG::processReserveObjectInstanceName(Socket* link, NM_Reserve_Object_Instance_Name* req)
+void RTIG::processReserveObjectInstanceName(Socket* /*link*/, NM_Reserve_Object_Instance_Name* req)
 {
     Debug(G, pdGendoc) << "enter RTIG::processReserveObjectInstanceName" << std::endl;
     my_auditServer << "Reserve Object Name = " << req->getObjectName();
@@ -1694,7 +1691,7 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
                                                  request->getAttributesSize());
 
 #else
-        DISCARD_RETURN my_federations.searchFederation(request->getFederation())
+        (void) my_federations.searchFederation(request->getFederation())
             .requestObjectOwner(request->getFederate(), request->getObject(), request->getAttributes());
 #endif
     }

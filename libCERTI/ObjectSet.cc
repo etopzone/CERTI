@@ -169,7 +169,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 void
 ObjectSet::deleteObjectInstance(FederateHandle,
                                 ObjectHandle the_object,
-                                const std::string& the_tag)
+                                const std::string& /*the_tag*/)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
@@ -473,7 +473,7 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 }
 // ----------------------------------------------------------------------------
 FederateHandle
-ObjectSet::requestObjectOwner(FederateHandle the_federate,
+ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/,
                                   ObjectHandle the_object)
     throw (ObjectNotKnown)
 {

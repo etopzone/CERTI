@@ -14,7 +14,6 @@ using ::testing::Return;
 using ::testing::Throw;
 
 namespace {
-static constexpr ::certi::Handle invalid_handle{0};
 static constexpr ::certi::Handle ukn_handle{42};
 
 static constexpr ::certi::Handle max_handle{10};

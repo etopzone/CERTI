@@ -18,8 +18,6 @@ using ::certi::rtig::Federation;
  */
 
 namespace {
-static constexpr ::certi::Handle invalid_handle{0};
-
 static constexpr ::certi::FederationHandle ukn_federation{42};
 static constexpr ::certi::Handle ukn_handle{1337};
 

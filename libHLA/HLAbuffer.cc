@@ -26,7 +26,7 @@ namespace libhla {
 
 __HLAbuffer::BufferList __HLAbuffer::gBuffers;
 
-const bool __HLAbuffer::__is_big_endian()
+bool __HLAbuffer::__is_big_endian()
 {
 #ifdef HOST_IS_BIG_ENDIAN
     return true;
@@ -35,7 +35,7 @@ const bool __HLAbuffer::__is_big_endian()
 #endif
 }
 
-const bool __HLAbuffer::__is_little_endian()
+bool __HLAbuffer::__is_little_endian()
 {
 #ifdef HOST_IS_BIG_ENDIAN
     return false;

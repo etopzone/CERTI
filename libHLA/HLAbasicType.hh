@@ -153,12 +153,12 @@ struct HLAbasicType {
         return E<S>()(*(S*) this);
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return __sizeof();
     }
 
-    static const size_t __sizeof()
+    static size_t __sizeof()
     {
         return sizeof(S);
     }

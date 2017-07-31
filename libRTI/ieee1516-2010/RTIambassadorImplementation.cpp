@@ -32,37 +32,36 @@
 #include "PrettyDebug.hh"
 
 #include "M_Classes.hh"
-#include "RTIHandleFactory.h"
 #include "RTI1516fedTime.h"
+#include "RTIHandleFactory.h"
 
 #include <algorithm>
 
 namespace {
 
 static PrettyDebug D("LIBRTI", __FILE__);
-static PrettyDebug G("GENDOC",__FILE__) ;
-
+static PrettyDebug G("GENDOC", __FILE__);
 }
 
-namespace certi
-{
+namespace certi {
 /* Deletor Object */
 template <class T>
 struct Deletor {
-    void operator() (T* e) {delete e;};
+    void operator()(T* e)
+    {
+        delete e;
+    };
 };
 
 /* Helper functions */
-template<typename T>
-void
-RTI1516ambassador::assignPHVMAndExecuteService(const rti1516e::ParameterHandleValueMap &PHVM, T &req, T &rep) {
-
+template <typename T>
+void RTI1516ambassador::assignPHVMAndExecuteService(const rti1516e::ParameterHandleValueMap& PHVM, T& req, T& rep)
+{
     req.setParametersSize(PHVM.size());
     req.setValuesSize(PHVM.size());
     uint32_t i = 0;
-    for ( rti1516e::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i)
-    {
-        req.setParameters(rti1516e::ParameterHandleFriend::toCertiHandle(it->first),i);
+    for (rti1516e::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i) {
+        req.setParameters(rti1516e::ParameterHandleFriend::toCertiHandle(it->first), i);
         certi::ParameterValue_t paramValue;
         paramValue.resize(it->second.size());
         memcpy(&(paramValue[0]), it->second.data(), it->second.size());
@@ -71,16 +70,14 @@ RTI1516ambassador::assignPHVMAndExecuteService(const rti1516e::ParameterHandleVa
     privateRefs->executeService(&req, &rep);
 }
 
-template<typename T>
-void
-RTI1516ambassador::assignAHVMAndExecuteService(const rti1516e::AttributeHandleValueMap &AHVM, T &req, T &rep) {
-
+template <typename T>
+void RTI1516ambassador::assignAHVMAndExecuteService(const rti1516e::AttributeHandleValueMap& AHVM, T& req, T& rep)
+{
     req.setAttributesSize(AHVM.size());
     req.setValuesSize(AHVM.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(it->first),i);
+    for (rti1516e::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(it->first), i);
         certi::AttributeValue_t attrValue;
         attrValue.resize(it->second.size());
         memcpy(&(attrValue[0]), it->second.data(), it->second.size());
@@ -89,49 +86,51 @@ RTI1516ambassador::assignAHVMAndExecuteService(const rti1516e::AttributeHandleVa
     privateRefs->executeService(&req, &rep);
 }
 
-template<typename T>
-void
-RTI1516ambassador::assignAHSAndExecuteService(const rti1516e::AttributeHandleSet &AHS, T &req, T &rep) {
+template <typename T>
+void RTI1516ambassador::assignAHSAndExecuteService(const rti1516e::AttributeHandleSet& AHS, T& req, T& rep)
+{
     req.setAttributesSize(AHS.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i)
-    {
+    for (rti1516e::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i) {
         certi::AttributeHandle certiHandle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
-        req.setAttributes(certiHandle,i);
+        req.setAttributes(certiHandle, i);
     }
     privateRefs->executeService(&req, &rep);
 }
 
-std::string varLengthDataAsString(rti1516e::VariableLengthData varLengthData) {
-    std::string retVal( (char*)varLengthData.data(), varLengthData.size() );
+std::string varLengthDataAsString(rti1516e::VariableLengthData varLengthData)
+{
+    std::string retVal((char*) varLengthData.data(), varLengthData.size());
     return retVal;
 }
 
-certi::TransportType toCertiTransportationType(rti1516e::TransportationType theType) {
+certi::TransportType toCertiTransportationType(rti1516e::TransportationType theType)
+{
     return (theType == rti1516e::RELIABLE) ? certi::RELIABLE : certi::BEST_EFFORT;
 }
-rti1516e::TransportationType toRTI1516TransportationType(certi::TransportType theType) {
+rti1516e::TransportationType toRTI1516TransportationType(certi::TransportType theType)
+{
     return (theType == certi::RELIABLE) ? rti1516e::RELIABLE : rti1516e::BEST_EFFORT;
 }
-certi::OrderType toCertiOrderType(rti1516e::OrderType theType) {
+certi::OrderType toCertiOrderType(rti1516e::OrderType theType)
+{
     return (theType == rti1516e::RECEIVE) ? certi::RECEIVE : certi::TIMESTAMP;
 }
-rti1516e::OrderType toRTI1516OrderType(certi::OrderType theType) {
+rti1516e::OrderType toRTI1516OrderType(certi::OrderType theType)
+{
     return (theType == certi::RECEIVE) ? rti1516e::RECEIVE : rti1516e::TIMESTAMP;
 }
 /* end of Helper functions */
 
-
-RTI1516ambassador::RTI1516ambassador() throw()
-		        : privateRefs(0)
+RTI1516ambassador::RTI1516ambassador() throw() : privateRefs(0)
 {
 }
 
 RTI1516ambassador::~RTI1516ambassador()
 {
-    certi::M_Close_Connexion req, rep ;
+    certi::M_Close_Connexion req, rep;
 
-    G.Out(pdGendoc,"        ====>executeService CLOSE_CONNEXION");
+    G.Out(pdGendoc, "        ====>executeService CLOSE_CONNEXION");
     privateRefs->executeService(&req, &rep);
     // after the response is received, the privateRefs->socketUn must not be used
 
@@ -144,11 +143,9 @@ RTI1516ambassador::~RTI1516ambassador()
  *  single callback.
  *  @return true if additional callbacks pending, false otherwise
  */
-bool RTI1516ambassador::__tick_kernel(bool multiple, TickTime minimum, TickTime maximum)
-throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
-       rti1516e::NotConnected,
-       rti1516e::RTIinternalError)
-        {
+bool RTI1516ambassador::__tick_kernel(bool multiple, TickTime minimum, TickTime maximum) throw(
+    rti1516e::SpecifiedSaveLabelDoesNotExist, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
     M_Tick_Request vers_RTI;
     std::unique_ptr<Message> vers_Fed;
 
@@ -158,9 +155,9 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
     vers_RTI.setMaxTickTime(maximum);
 
     try {
-        vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
+        vers_RTI.send(privateRefs->socketUn, privateRefs->msgBufSend);
     }
-    catch (NetworkError &e) {
+    catch (NetworkError& e) {
         throw rti1516e::RTIinternalError(L"NetworkError in tick() while sending TICK_REQUEST: " + e.wreason());
     }
 
@@ -169,7 +166,7 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
         try {
             vers_Fed.reset(M_Factory::receive(privateRefs->socketUn));
         }
-        catch (NetworkError &e) {
+        catch (NetworkError& e) {
             throw rti1516e::RTIinternalError(L"NetworkError in tick() while receiving response: " + e.wreason());
         }
 
@@ -199,7 +196,7 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
             M_Tick_Request_Next tick_next;
             tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
         }
-        catch (NetworkError &e) {
+        catch (NetworkError& e) {
             throw rti1516e::RTIinternalError(L"NetworkError in tick() while sending TICK_REQUEST_NEXT: " + e.wreason());
         }
     } // while(1)
@@ -207,276 +204,253 @@ throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
     return false;
 }
 
-void RTI1516ambassador::connect (
-        rti1516e::FederateAmbassador & federateAmbassador,
-        rti1516e::CallbackModel theCallbackModel,
-        std::wstring const & localSettingsDesignator)
-throw (
-        rti1516e::ConnectionFailed,
-        rti1516e::InvalidLocalSettingsDesignator,
-        rti1516e::UnsupportedCallbackModel,
-        rti1516e::AlreadyConnected,
-        rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError)
-        {
-
+void RTI1516ambassador::connect(
+    rti1516e::FederateAmbassador& federateAmbassador,
+    rti1516e::CallbackModel theCallbackModel,
+    std::wstring const& /*localSettingsDesignator*/) throw(rti1516e::ConnectionFailed,
+                                                           rti1516e::InvalidLocalSettingsDesignator,
+                                                           rti1516e::UnsupportedCallbackModel,
+                                                           rti1516e::AlreadyConnected,
+                                                           rti1516e::CallNotAllowedFromWithinCallback,
+                                                           rti1516e::RTIinternalError)
+{
     switch (theCallbackModel) {
     case rti1516e::HLA_EVOKED:
         // before rti1516-2010 this this done in CFE
-        privateRefs->fed_amb = &federateAmbassador ;
+        privateRefs->fed_amb = &federateAmbassador;
         break;
     case rti1516e::HLA_IMMEDIATE:
         throw rti1516e::UnsupportedCallbackModel(L"CONNECT callback model HLA_IMMEDIATE not implemented [yet].");
     default:
 
-        throw rti1516e::UnsupportedCallbackModel(wstringize() << L"CONNECT unsupported callback model " << theCallbackModel);
+        throw rti1516e::UnsupportedCallbackModel(wstringize() << L"CONNECT unsupported callback model "
+                                                              << theCallbackModel);
     } /* end of switch(theCallbackModel) */
 }
 
 // 4.3
-void RTI1516ambassador::disconnect ()
-throw (
-        rti1516e::FederateIsExecutionMember,
-        rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError) {
+void RTI1516ambassador::disconnect() throw(rti1516e::FederateIsExecutionMember,
+                                           rti1516e::CallNotAllowedFromWithinCallback,
+                                           rti1516e::RTIinternalError)
+{
     privateRefs->fed_amb = NULL;
-
 }
 
 // 4.5
-void RTI1516ambassador::createFederationExecution
-(std::wstring const & federationExecutionName,
-        std::wstring const & fullPathNameToTheFDDfile,
-        std::wstring const & LogicalTimeImplementationName)
-throw (rti1516e::FederationExecutionAlreadyExists,
-        rti1516e::CouldNotOpenFDD,
-        rti1516e::ErrorReadingFDD,
-        rti1516e::CouldNotCreateLogicalTimeFactory,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::createFederationExecution(
+    std::wstring const& federationExecutionName,
+    std::wstring const& fullPathNameToTheFDDfile,
+    std::wstring const& /*LogicalTimeImplementationName*/) throw(rti1516e::FederationExecutionAlreadyExists,
+                                                                 rti1516e::CouldNotOpenFDD,
+                                                                 rti1516e::ErrorReadingFDD,
+                                                                 rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
+    certi::M_Create_Federation_Execution req, rep;
 
-    certi::M_Create_Federation_Execution req, rep ;
-
-    G.Out(pdGendoc,"enter RTI1516ambassador::createFederationExecution");
+    G.Out(pdGendoc, "enter RTI1516ambassador::createFederationExecution");
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
     req.setFederationName(federationExecutionNameAsString);
 
     std::string fullPathNameToTheFDDfileAsString(fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end());
     req.setFEDid(fullPathNameToTheFDDfileAsString);
 
-    G.Out(pdGendoc,"             ====>executeService CREATE_FEDERATION_EXECUTION");
+    G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::createFederationExecution");
+    G.Out(pdGendoc, "exit RTI1516ambassador::createFederationExecution");
 
     // TODO What to do with the 'logicalTimeImplementationName'? Can't find it's use in SISO-STD-004.1-2004
     // Only exists in C++ interface.
     // Ignored for now.
-        }
+}
 
-void RTI1516ambassador::createFederationExecution (
-   std::wstring const & federationExecutionName,
-   std::vector<std::wstring> const & fomModules,
-   std::wstring const & logicalTimeImplementationName)
-   throw (
-           rti1516e::CouldNotCreateLogicalTimeFactory,
-           rti1516e::InconsistentFDD,
-           rti1516e::ErrorReadingFDD,
-           rti1516e::CouldNotOpenFDD,
-           rti1516e::FederationExecutionAlreadyExists,
-           rti1516e::NotConnected,
-           rti1516e::RTIinternalError) {
+void RTI1516ambassador::createFederationExecution(
+    std::wstring const& /*federationExecutionName*/,
+    std::vector<std::wstring> const& /*fomModules*/,
+    std::wstring const& /*logicalTimeImplementationName*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516e::InconsistentFDD,
+                                                                 rti1516e::ErrorReadingFDD,
+                                                                 rti1516e::CouldNotOpenFDD,
+                                                                 rti1516e::FederationExecutionAlreadyExists,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"Create with FOM Module Not Implemented");
 }
 
-void RTI1516ambassador::createFederationExecutionWithMIM (
-   std::wstring const & federationExecutionName,
-   std::vector<std::wstring> const & fomModules,
-   std::wstring const & mimModule,
-   std::wstring const & logicalTimeImplementationName)
-   throw (
-           rti1516e::CouldNotCreateLogicalTimeFactory,
-           rti1516e::InconsistentFDD,
-           rti1516e::ErrorReadingFDD,
-           rti1516e::CouldNotOpenFDD,
-           rti1516e::DesignatorIsHLAstandardMIM,
-           rti1516e::ErrorReadingMIM,
-           rti1516e::CouldNotOpenMIM,
-           rti1516e::FederationExecutionAlreadyExists,
-           rti1516e::NotConnected,
-           rti1516e::RTIinternalError) {
+void RTI1516ambassador::createFederationExecutionWithMIM(
+    std::wstring const& /*federationExecutionName*/,
+    std::vector<std::wstring> const& /*fomModules*/,
+    std::wstring const& /*mimModule*/,
+    std::wstring const& /*logicalTimeImplementationName*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516e::InconsistentFDD,
+                                                                 rti1516e::ErrorReadingFDD,
+                                                                 rti1516e::CouldNotOpenFDD,
+                                                                 rti1516e::DesignatorIsHLAstandardMIM,
+                                                                 rti1516e::ErrorReadingMIM,
+                                                                 rti1516e::CouldNotOpenMIM,
+                                                                 rti1516e::FederationExecutionAlreadyExists,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"Create with FOM Module and MIM Module tNot Implemented");
 }
 
 // 4.3
-void RTI1516ambassador::destroyFederationExecution
-(std::wstring const & federationExecutionName)
-throw (rti1516e::FederatesCurrentlyJoined,
-        rti1516e::FederationExecutionDoesNotExist,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Destroy_Federation_Execution req, rep ;
+void RTI1516ambassador::destroyFederationExecution(std::wstring const& federationExecutionName) throw(
+    rti1516e::FederatesCurrentlyJoined,
+    rti1516e::FederationExecutionDoesNotExist,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Destroy_Federation_Execution req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::destroyFederationExecution");
+    G.Out(pdGendoc, "enter RTI1516ambassador::destroyFederationExecution");
 
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
     req.setFederationName(federationExecutionNameAsString);
 
-    G.Out(pdGendoc,"        ====>executeService DESTROY_FEDERATION_EXECUTION");
+    G.Out(pdGendoc, "        ====>executeService DESTROY_FEDERATION_EXECUTION");
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::destroyFederationExecution");
-        }
-
-void RTI1516ambassador::listFederationExecutions ()
-             throw (
-                     rti1516e::NotConnected,
-                     rti1516e::RTIinternalError)
-                {
-throw rti1516e::RTIinternalError(L"listFederationExecutions Not Implemented");
-                }
-
-// 4.9
-rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution
-(
-        std::wstring const & federateType,
-        std::wstring const & federationExecutionName,
-        std::vector<std::wstring> const & additionalFomModules)
-throw (rti1516e::CouldNotCreateLogicalTimeFactory,
-        rti1516e::FederationExecutionDoesNotExist,
-        rti1516e::InconsistentFDD,
-        rti1516e::ErrorReadingFDD,
-        rti1516e::CouldNotOpenFDD,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateAlreadyExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError) {
-
-    // RTI shall provide a default federate name if none is provided
-    return this->joinFederationExecution(
-            L"defaultName",
-            federateType,
-            federationExecutionName,
-            additionalFomModules);
+    G.Out(pdGendoc, "exit RTI1516ambassador::destroyFederationExecution");
 }
 
-rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution
-(       std::wstring const & federateName,
-        std::wstring const & federateType,
-        std::wstring const & federationExecutionName,
-        std::vector<std::wstring> const & additionalFomModules)
-throw (rti1516e::CouldNotCreateLogicalTimeFactory,
-        rti1516e::FederationExecutionDoesNotExist,
-        rti1516e::InconsistentFDD,
-        rti1516e::ErrorReadingFDD,
-        rti1516e::CouldNotOpenFDD,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateAlreadyExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError)
-        {
-    M_Join_Federation_Execution req, rep ;
+void RTI1516ambassador::listFederationExecutions() throw(rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
+    throw rti1516e::RTIinternalError(L"listFederationExecutions Not Implemented");
+}
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::joinFederationExecution");
+// 4.9
+rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
+    std::wstring const& federateType,
+    std::wstring const& federationExecutionName,
+    std::vector<std::wstring> const& additionalFomModules) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516e::FederationExecutionDoesNotExist,
+                                                                 rti1516e::InconsistentFDD,
+                                                                 rti1516e::ErrorReadingFDD,
+                                                                 rti1516e::CouldNotOpenFDD,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::FederateAlreadyExecutionMember,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::CallNotAllowedFromWithinCallback,
+                                                                 rti1516e::RTIinternalError)
+{
+    // RTI shall provide a default federate name if none is provided
+    return this->joinFederationExecution(L"defaultName", federateType, federationExecutionName, additionalFomModules);
+}
 
-    if (federateType.length() <= 0 ) {
+rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
+    std::wstring const& /*federateName*/,
+    std::wstring const& federateType,
+    std::wstring const& federationExecutionName,
+    std::vector<std::wstring> const& /*additionalFomModules*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                     rti1516e::FederationExecutionDoesNotExist,
+                                                                     rti1516e::InconsistentFDD,
+                                                                     rti1516e::ErrorReadingFDD,
+                                                                     rti1516e::CouldNotOpenFDD,
+                                                                     rti1516e::SaveInProgress,
+                                                                     rti1516e::RestoreInProgress,
+                                                                     rti1516e::FederateAlreadyExecutionMember,
+                                                                     rti1516e::NotConnected,
+                                                                     rti1516e::CallNotAllowedFromWithinCallback,
+                                                                     rti1516e::RTIinternalError)
+{
+    M_Join_Federation_Execution req, rep;
+
+    G.Out(pdGendoc, "enter RTI1516ambassador::joinFederationExecution");
+
+    if (federateType.length() <= 0) {
         throw rti1516e::RTIinternalError(L"Incorrect or empty federate type");
     }
     std::string federateTypeAsString(federateType.begin(), federateType.end());
 
-    if (federationExecutionName.length() <= 0 )
+    if (federationExecutionName.length() <= 0)
         throw rti1516e::RTIinternalError(L"Incorrect or empty federation name");
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
 
     req.setFederateName(federateTypeAsString);
     req.setFederationName(federationExecutionNameAsString);
-    G.Out(pdGendoc,"        ====>executeService JOIN_FEDERATION_EXECUTION");
+    G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::joinFederationExecution");
-    PrettyDebug::setFederateName( "LibRTI::"+std::string(federateTypeAsString));
+    G.Out(pdGendoc, "exit  RTI1516ambassador::joinFederationExecution");
+    PrettyDebug::setFederateName("LibRTI::" + std::string(federateTypeAsString));
 
     certi::FederateHandle certiFederateHandle = rep.getFederate();
-    rti1516e::FederateHandle rti1516FederateHandle = rti1516e::FederateHandleFriend::createRTI1516Handle(certiFederateHandle);
+    rti1516e::FederateHandle rti1516FederateHandle
+        = rti1516e::FederateHandleFriend::createRTI1516Handle(certiFederateHandle);
 
     return rti1516FederateHandle;
-        }
+}
 
 // 4.5
-void RTI1516ambassador::resignFederationExecution
-(rti1516e::ResignAction resignAction)
-throw (rti1516e::InvalidResignAction,
-        rti1516e::OwnershipAcquisitionPending,
-        rti1516e::FederateOwnsAttributes,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError)
-        {
-    M_Resign_Federation_Execution req, rep ;
+void RTI1516ambassador::resignFederationExecution(rti1516e::ResignAction /*resignAction*/) throw(
+    rti1516e::InvalidResignAction,
+    rti1516e::OwnershipAcquisitionPending,
+    rti1516e::FederateOwnsAttributes,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::CallNotAllowedFromWithinCallback,
+    rti1516e::RTIinternalError)
+{
+    M_Resign_Federation_Execution req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::resignFederationExecution");
+    G.Out(pdGendoc, "enter RTI1516ambassador::resignFederationExecution");
     //req.setResignAction(static_cast<certi::ResignAction>(resignAction));
     req.setResignAction(certi::DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES);
-    G.Out(pdGendoc,"        ====>executeService RESIGN_FEDERATION_EXECUTION");
+    G.Out(pdGendoc, "        ====>executeService RESIGN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit RTI1516ambassador::resignFederationExecution");
-        }
+    G.Out(pdGendoc, "exit RTI1516ambassador::resignFederationExecution");
+}
 
 // 4.6
-void RTI1516ambassador::registerFederationSynchronizationPoint
-(std::wstring const & label,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Register_Federation_Synchronization_Point req, rep ;
+void RTI1516ambassador::registerFederationSynchronizationPoint(
+    std::wstring const& label,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
+    G.Out(pdGendoc, "enter RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
     // no federate set
     req.setFederateSetSize(0);
-    if (theUserSuppliedTag.data() == NULL )
-    {
-        throw rti1516e::RTIinternalError (L"Calling registerFederationSynchronizationPoint with Tag NULL");
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling registerFederationSynchronizationPoint with Tag NULL");
     }
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
-    G.Out(pdGendoc,"        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
-        }
+    G.Out(pdGendoc, "exit RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
+}
 
-void RTI1516ambassador::registerFederationSynchronizationPoint
-(std::wstring const & label,
-        rti1516e::VariableLengthData const & theUserSuppliedTag,
-        rti1516e::FederateHandleSet const & syncSet)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Register_Federation_Synchronization_Point req, rep ;
+void RTI1516ambassador::registerFederationSynchronizationPoint(
+    std::wstring const& label,
+    rti1516e::VariableLengthData const& theUserSuppliedTag,
+    rti1516e::FederateHandleSet const& syncSet) throw(rti1516e::FederateNotExecutionMember,
+                                                      rti1516e::SaveInProgress,
+                                                      rti1516e::RestoreInProgress,
+                                                      rti1516e::NotConnected,
+                                                      rti1516e::RTIinternalError)
+{
+    M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
+    G.Out(pdGendoc, "enter RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    if (theUserSuppliedTag.data() == NULL )
-    {
-        throw rti1516e::RTIinternalError (L"Calling registerFederationSynchronizationPoint with Tag NULL");
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling registerFederationSynchronizationPoint with Tag NULL");
     }
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
     // Federate set exists but if size=0 (set empty)
@@ -486,76 +460,70 @@ throw (rti1516e::FederateNotExecutionMember,
     req.setFederateSetSize(syncSet.size());
 
     uint32_t i = 0;
-    for ( rti1516e::FederateHandleSet::const_iterator it = syncSet.begin(); it != syncSet.end(); it++, ++i)
-    {
-        req.setFederateSet(rti1516e::FederateHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::FederateHandleSet::const_iterator it = syncSet.begin(); it != syncSet.end(); it++, ++i) {
+        req.setFederateSet(rti1516e::FederateHandleFriend::toCertiHandle(*it), i);
     }
 
-    G.Out(pdGendoc,"        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
-        }
+    G.Out(pdGendoc, "exit RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
+}
 
 // 4.14
-void RTI1516ambassador::synchronizationPointAchieved
-(std::wstring const & label, bool successfully)
-throw (rti1516e::SynchronizationPointLabelNotAnnounced,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Synchronization_Point_Achieved req, rep ;
+void RTI1516ambassador::synchronizationPointAchieved(std::wstring const& label, bool /*successfully*/) throw(
+    rti1516e::SynchronizationPointLabelNotAnnounced,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Synchronization_Point_Achieved req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::synchronizationPointAchieved");
+    G.Out(pdGendoc, "enter RTI1516ambassador::synchronizationPointAchieved");
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
 
-    G.Out(pdGendoc,"        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED");
+    G.Out(pdGendoc, "        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit  RTI1516ambassador::synchronizationPointAchieved");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::synchronizationPointAchieved");
+}
 
 // 4.16
-void RTI1516ambassador::requestFederationSave
-(std::wstring const & label)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Request_Federation_Save req, rep ;
+void RTI1516ambassador::requestFederationSave(std::wstring const& label) throw(rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::SaveInProgress,
+                                                                               rti1516e::RestoreInProgress,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::requestFederationSave without time");
+    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationSave without time");
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    G.Out(pdGendoc,"      ====>executeService REQUEST_FEDERATION_SAVE");
+    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_SAVE");
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::requestFederationSave without time");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::requestFederationSave without time");
+}
 
-void RTI1516ambassador::requestFederationSave
-(std::wstring const & label,
-        rti1516e::LogicalTime const & theTime)
-throw (rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InvalidLogicalTime,
-        rti1516e::FederateUnableToUseTime,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Request_Federation_Save req, rep ;
+void RTI1516ambassador::requestFederationSave(std::wstring const& label, rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InvalidLogicalTime,
+    rti1516e::FederateUnableToUseTime,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::requestFederationSave with time");
+    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationSave with time");
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
@@ -563,452 +531,428 @@ throw (rti1516e::LogicalTimeAlreadyPassed,
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
 
-    G.Out(pdGendoc,"        ====>executeService REQUEST_FEDERATION_SAVE");
+    G.Out(pdGendoc, "        ====>executeService REQUEST_FEDERATION_SAVE");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::requestFederationSave with time");
-        }
+    G.Out(pdGendoc, "exit RTI1516ambassador::requestFederationSave with time");
+}
 
 // 4.13
-void RTI1516ambassador::federateSaveBegun ()
-throw (rti1516e::SaveNotInitiated,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Federate_Save_Begun req, rep ;
+void RTI1516ambassador::federateSaveBegun() throw(rti1516e::SaveNotInitiated,
+                                                  rti1516e::FederateNotExecutionMember,
+                                                  rti1516e::RestoreInProgress,
+                                                  rti1516e::NotConnected,
+                                                  rti1516e::RTIinternalError)
+{
+    M_Federate_Save_Begun req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::federateSaveBegun");
+    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveBegun");
 
-    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_BEGUN");
+    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_BEGUN");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit  RTI1516ambassador::federateSaveBegun");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveBegun");
+}
 
 // 4.14
-void RTI1516ambassador::federateSaveComplete ()
-throw (rti1516e::FederateHasNotBegunSave,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Federate_Save_Complete req, rep ;
+void RTI1516ambassador::federateSaveComplete() throw(rti1516e::FederateHasNotBegunSave,
+                                                     rti1516e::FederateNotExecutionMember,
+                                                     rti1516e::RestoreInProgress,
+                                                     rti1516e::NotConnected,
+                                                     rti1516e::RTIinternalError)
+{
+    M_Federate_Save_Complete req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::federateSaveComplete");
-    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_COMPLETE");
+    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveComplete");
+    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_COMPLETE");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::federateSaveComplete");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveComplete");
+}
 
-void RTI1516ambassador::federateSaveNotComplete()
-throw (rti1516e::FederateHasNotBegunSave,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Federate_Save_Not_Complete req, rep ;
+void RTI1516ambassador::federateSaveNotComplete() throw(rti1516e::FederateHasNotBegunSave,
+                                                        rti1516e::FederateNotExecutionMember,
+                                                        rti1516e::RestoreInProgress,
+                                                        rti1516e::NotConnected,
+                                                        rti1516e::RTIinternalError)
+{
+    M_Federate_Save_Not_Complete req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::federateSaveNotComplete");
-    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_NOT_COMPLETE");
+    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveNotComplete");
+    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_NOT_COMPLETE");
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit  RTI1516ambassador::federateSaveNotComplete");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveNotComplete");
+}
 
-void RTI1516ambassador::abortFederationSave ()
-        throw (rti1516e::FederateNotExecutionMember,
-                rti1516e::SaveNotInProgress,
-                rti1516e::NotConnected,
-                rti1516e::RTIinternalError) {
+void RTI1516ambassador::abortFederationSave() throw(rti1516e::FederateNotExecutionMember,
+                                                    rti1516e::SaveNotInProgress,
+                                                    rti1516e::NotConnected,
+                                                    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"abortFederationSave Not Implemented");
 }
 
 // 4.22
-void RTI1516ambassador::queryFederationSaveStatus ()
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::queryFederationSaveStatus() throw(rti1516e::FederateNotExecutionMember,
+                                                          rti1516e::RestoreInProgress,
+                                                          rti1516e::NotConnected,
+                                                          rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"queryFederationSaveStatus Not implemented");
-        }
+}
 
 // 4.24
-void RTI1516ambassador::requestFederationRestore
-(std::wstring const & label)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Request_Federation_Restore req, rep ;
+void RTI1516ambassador::requestFederationRestore(std::wstring const& label) throw(rti1516e::FederateNotExecutionMember,
+                                                                                  rti1516e::SaveInProgress,
+                                                                                  rti1516e::RestoreInProgress,
+                                                                                  rti1516e::NotConnected,
+                                                                                  rti1516e::RTIinternalError)
+{
+    M_Request_Federation_Restore req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::requestFederationRestore");
+    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationRestore");
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    G.Out(pdGendoc,"      ====>executeService REQUEST_FEDERATION_RESTORE");
+    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_RESTORE");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::requestFederationRestore");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::requestFederationRestore");
+}
 
 // 4.28
-void RTI1516ambassador::federateRestoreComplete ()
-throw (rti1516e::RestoreNotRequested,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Federate_Restore_Complete req, rep ;
+void RTI1516ambassador::federateRestoreComplete() throw(rti1516e::RestoreNotRequested,
+                                                        rti1516e::FederateNotExecutionMember,
+                                                        rti1516e::SaveInProgress,
+                                                        rti1516e::NotConnected,
+                                                        rti1516e::RTIinternalError)
+{
+    M_Federate_Restore_Complete req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::federateRestoreComplete");
+    G.Out(pdGendoc, "enter RTI1516ambassador::federateRestoreComplete");
 
-    G.Out(pdGendoc,"      ====>executeService FEDERATE_RESTORE_COMPLETE");
+    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_COMPLETE");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::federateRestoreComplete");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::federateRestoreComplete");
+}
 
-void RTI1516ambassador::federateRestoreNotComplete ()
-throw (rti1516e::RestoreNotRequested,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Federate_Restore_Not_Complete req, rep ;
+void RTI1516ambassador::federateRestoreNotComplete() throw(rti1516e::RestoreNotRequested,
+                                                           rti1516e::FederateNotExecutionMember,
+                                                           rti1516e::SaveInProgress,
+                                                           rti1516e::NotConnected,
+                                                           rti1516e::RTIinternalError)
+{
+    M_Federate_Restore_Not_Complete req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::federateRestoreNotComplete");
-    G.Out(pdGendoc,"      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE");
+    G.Out(pdGendoc, "enter RTI1516ambassador::federateRestoreNotComplete");
+    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE");
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::federateRestoreNotComplete");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::federateRestoreNotComplete");
+}
 
 // 4.30
-void RTI1516ambassador::abortFederationRestore ()
-    throw (
-            rti1516e::RestoreNotInProgress,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError) {
+void RTI1516ambassador::abortFederationRestore() throw(rti1516e::RestoreNotInProgress,
+                                                       rti1516e::FederateNotExecutionMember,
+                                                       rti1516e::NotConnected,
+                                                       rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"abortFederationRestore Not Implemented");
 }
 
 // 4.24
-void RTI1516ambassador::queryFederationRestoreStatus ()
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::queryFederationRestoreStatus() throw(rti1516e::FederateNotExecutionMember,
+                                                             rti1516e::SaveInProgress,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"queryFederationRestoreStatus Not implemented");
-        }
+}
 
 /////////////////////////////////////
 // Declaration Management Services //
 /////////////////////////////////////
 
 // 5.2
-void RTI1516ambassador::publishObjectClassAttributes
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSet const & attributeList)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Publish_Object_Class req, rep ;
-    G.Out(pdGendoc,"enter RTI1516ambassador::publishObjectClass");
+void RTI1516ambassador::publishObjectClassAttributes(
+    rti1516e::ObjectClassHandle theClass,
+    rti1516e::AttributeHandleSet const& attributeList) throw(rti1516e::ObjectClassNotDefined,
+                                                             rti1516e::AttributeNotDefined,
+                                                             rti1516e::FederateNotExecutionMember,
+                                                             rti1516e::SaveInProgress,
+                                                             rti1516e::RestoreInProgress,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
+{
+    M_Publish_Object_Class req, rep;
+    G.Out(pdGendoc, "enter RTI1516ambassador::publishObjectClass");
 
-    const certi::ObjectClassHandle objectClassHandle =  rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass);
+    const certi::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
 
     req.setAttributesSize(attributeList.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
-    G.Out(pdGendoc,"      ====>executeService PUBLISH_OBJECT_CLASS");
+    G.Out(pdGendoc, "      ====>executeService PUBLISH_OBJECT_CLASS");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::publishObjectClass");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::publishObjectClass");
+}
 
 // 5.3
-void RTI1516ambassador::unpublishObjectClass
-(rti1516e::ObjectClassHandle theClass)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::OwnershipAcquisitionPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Unpublish_Object_Class req, rep ;
-    G.Out(pdGendoc,"enter RTI1516ambassador::unpublishObjectClass");
+void RTI1516ambassador::unpublishObjectClass(rti1516e::ObjectClassHandle theClass) throw(
+    rti1516e::ObjectClassNotDefined,
+    rti1516e::OwnershipAcquisitionPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Unpublish_Object_Class req, rep;
+    G.Out(pdGendoc, "enter RTI1516ambassador::unpublishObjectClass");
 
     const certi::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
-    G.Out(pdGendoc,"      ====>executeService UNPUBLISH_OBJECT_CLASS");
+    G.Out(pdGendoc, "      ====>executeService UNPUBLISH_OBJECT_CLASS");
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::unpublishObjectClass");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::unpublishObjectClass");
+}
 
-void RTI1516ambassador::unpublishObjectClassAttributes
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSet const & attributeList)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::OwnershipAcquisitionPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::unpublishObjectClassAttributes(
+    rti1516e::ObjectClassHandle /*theClass*/,
+    rti1516e::AttributeHandleSet const& /*attributeList*/) throw(rti1516e::ObjectClassNotDefined,
+                                                                 rti1516e::AttributeNotDefined,
+                                                                 rti1516e::OwnershipAcquisitionPending,
+                                                                 rti1516e::FederateNotExecutionMember,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 5.4
-void RTI1516ambassador::publishInteractionClass
-(rti1516e::InteractionClassHandle theInteraction)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Publish_Interaction_Class req, rep ;
-    const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
+void RTI1516ambassador::publishInteractionClass(rti1516e::InteractionClassHandle theInteraction) throw(
+    rti1516e::InteractionClassNotDefined,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Publish_Interaction_Class req, rep;
+    const certi::InteractionClassHandle classHandle
+        = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
-    G.Out(pdGendoc,"      ====>executeService PUBLISH_INTERACTION_CLASS");
+    G.Out(pdGendoc, "      ====>executeService PUBLISH_INTERACTION_CLASS");
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 5.5
-void RTI1516ambassador::unpublishInteractionClass
-(rti1516e::InteractionClassHandle theInteraction)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Unpublish_Interaction_Class req, rep ;
-    const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
+void RTI1516ambassador::unpublishInteractionClass(rti1516e::InteractionClassHandle theInteraction) throw(
+    rti1516e::InteractionClassNotDefined,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Unpublish_Interaction_Class req, rep;
+    const certi::InteractionClassHandle classHandle
+        = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 5.6
-void RTI1516ambassador::subscribeObjectClassAttributes
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSet const & attributeList,
-        bool active, std::wstring const & updateRateDesignator)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Subscribe_Object_Class_Attributes req, rep ;
-    G.Out(pdGendoc,"enter RTI1516ambassador::subscribeObjectClassAttributes");
+void RTI1516ambassador::subscribeObjectClassAttributes(
+    rti1516e::ObjectClassHandle theClass,
+    rti1516e::AttributeHandleSet const& attributeList,
+    bool active,
+    std::wstring const& /*updateRateDesignator*/) throw(rti1516e::ObjectClassNotDefined,
+                                                        rti1516e::AttributeNotDefined,
+                                                        rti1516e::FederateNotExecutionMember,
+                                                        rti1516e::SaveInProgress,
+                                                        rti1516e::RestoreInProgress,
+                                                        rti1516e::NotConnected,
+                                                        rti1516e::RTIinternalError)
+{
+    M_Subscribe_Object_Class_Attributes req, rep;
+    G.Out(pdGendoc, "enter RTI1516ambassador::subscribeObjectClassAttributes");
 
     const certi::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
 
     req.setAttributesSize(attributeList.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
     req.setActive(active);
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::subscribeObjectClassAttributes");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::subscribeObjectClassAttributes");
+}
 
 // 5.7
-void RTI1516ambassador::unsubscribeObjectClass
-(rti1516e::ObjectClassHandle theClass)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Unsubscribe_Object_Class req, rep ;
+void RTI1516ambassador::unsubscribeObjectClass(rti1516e::ObjectClassHandle theClass) throw(
+    rti1516e::ObjectClassNotDefined,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Unsubscribe_Object_Class req, rep;
 
     const certi::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
-void RTI1516ambassador::unsubscribeObjectClassAttributes
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSet const & attributeList)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::unsubscribeObjectClassAttributes(
+    rti1516e::ObjectClassHandle /*theClass*/,
+    rti1516e::AttributeHandleSet const& /*attributeList*/) throw(rti1516e::ObjectClassNotDefined,
+                                                                 rti1516e::AttributeNotDefined,
+                                                                 rti1516e::FederateNotExecutionMember,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 5.8
-void RTI1516ambassador::subscribeInteractionClass
-(rti1516e::InteractionClassHandle theClass,
-        bool active)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::FederateServiceInvocationsAreBeingReportedViaMOM,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Subscribe_Interaction_Class req, rep ;
+void RTI1516ambassador::subscribeInteractionClass(rti1516e::InteractionClassHandle theClass, bool /*active*/) throw(
+    rti1516e::InteractionClassNotDefined,
+    rti1516e::FederateServiceInvocationsAreBeingReportedViaMOM,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Subscribe_Interaction_Class req, rep;
     const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theClass);
     req.setInteractionClass(classHandle);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 5.9
-void RTI1516ambassador::unsubscribeInteractionClass
-(rti1516e::InteractionClassHandle theClass)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Unsubscribe_Interaction_Class req, rep ;
+void RTI1516ambassador::unsubscribeInteractionClass(rti1516e::InteractionClassHandle theClass) throw(
+    rti1516e::InteractionClassNotDefined,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Unsubscribe_Interaction_Class req, rep;
 
     const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theClass);
     req.setInteractionClass(classHandle);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 ////////////////////////////////
 // Object Management Services //
 ////////////////////////////////
 
 // 6.2
-void RTI1516ambassador::reserveObjectInstanceName
-(std::wstring const & theObjectInstanceName)
-throw (rti1516e::IllegalName,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::reserveObjectInstanceName(std::wstring const& theObjectInstanceName) throw(
+    rti1516e::IllegalName,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     M_Reserve_Object_Instance_Name req, rep;
 
     std::string objInstanceName(theObjectInstanceName.begin(), theObjectInstanceName.end());
     req.setObjectName(objInstanceName);
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 6.4
-void RTI1516ambassador::releaseObjectInstanceName (
-        std::wstring const & theObjectInstanceName)
-throw (
-        rti1516e::ObjectInstanceNameNotReserved,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+void RTI1516ambassador::releaseObjectInstanceName(std::wstring const& /*theObjectInstanceName*/) throw(
+    rti1516e::ObjectInstanceNameNotReserved,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"releaseObjectInstanceName Not Implemented");
 }
 
 // 6.5
-void RTI1516ambassador::reserveMultipleObjectInstanceName (
-        std::set<std::wstring> const & theObjectInstanceNames)
-throw (
-        rti1516e::IllegalName,
-        rti1516e::NameSetWasEmpty,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+void RTI1516ambassador::reserveMultipleObjectInstanceName(
+    std::set<std::wstring> const& /*theObjectInstanceNames*/) throw(rti1516e::IllegalName,
+                                                                    rti1516e::NameSetWasEmpty,
+                                                                    rti1516e::SaveInProgress,
+                                                                    rti1516e::RestoreInProgress,
+                                                                    rti1516e::FederateNotExecutionMember,
+                                                                    rti1516e::NotConnected,
+                                                                    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"reserveMultipleObjectInstanceName Not Implemented");
 }
 
 // 6.7
-void RTI1516ambassador::releaseMultipleObjectInstanceName (
-        std::set<std::wstring> const & theObjectInstanceNames)
-throw (
-        rti1516e::ObjectInstanceNameNotReserved,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+void RTI1516ambassador::releaseMultipleObjectInstanceName(
+    std::set<std::wstring> const& /*theObjectInstanceNames*/) throw(rti1516e::ObjectInstanceNameNotReserved,
+                                                                    rti1516e::SaveInProgress,
+                                                                    rti1516e::RestoreInProgress,
+                                                                    rti1516e::FederateNotExecutionMember,
+                                                                    rti1516e::NotConnected,
+                                                                    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"releaseMultipleObjectInstanceName Not Implemented");
 }
 
 // 6.8
-rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstance
-(rti1516e::ObjectClassHandle theClass)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Register_Object_Instance req, rep ;
+rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstance(rti1516e::ObjectClassHandle theClass) throw(
+    rti1516e::ObjectClassNotDefined,
+    rti1516e::ObjectClassNotPublished,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Register_Object_Instance req, rep;
 
     req.setObjectClass(rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass));
     privateRefs->executeService(&req, &rep);
     return rti1516e::ObjectInstanceHandleFriend::createRTI1516Handle(rep.getObject());
-        }
+}
 
-rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstance
-(rti1516e::ObjectClassHandle theClass,
-        std::wstring const & theObjectInstanceName)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::ObjectInstanceNameNotReserved,
-        rti1516e::ObjectInstanceNameInUse,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Register_Object_Instance req, rep ;
+rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstance(
+    rti1516e::ObjectClassHandle theClass,
+    std::wstring const& theObjectInstanceName) throw(rti1516e::ObjectClassNotDefined,
+                                                     rti1516e::ObjectClassNotPublished,
+                                                     rti1516e::ObjectInstanceNameNotReserved,
+                                                     rti1516e::ObjectInstanceNameInUse,
+                                                     rti1516e::FederateNotExecutionMember,
+                                                     rti1516e::SaveInProgress,
+                                                     rti1516e::RestoreInProgress,
+                                                     rti1516e::NotConnected,
+                                                     rti1516e::RTIinternalError)
+{
+    M_Register_Object_Instance req, rep;
 
     std::string nameString(theObjectInstanceName.begin(), theObjectInstanceName.end());
     req.setObjectName(nameString);
@@ -1016,28 +960,26 @@ throw (rti1516e::ObjectClassNotDefined,
     privateRefs->executeService(&req, &rep);
 
     return rti1516e::ObjectInstanceHandleFriend::createRTI1516Handle(rep.getObject());
-        }
+}
 
 // 6.10
-void RTI1516ambassador::updateAttributeValues
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleValueMap const & theAttributeValues,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    G.Out(pdGendoc,"enter RTI1516ambassador::updateAttributeValues without time");
-    M_Update_Attribute_Values req, rep ;
+void RTI1516ambassador::updateAttributeValues(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleValueMap const& theAttributeValues,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                  rti1516e::AttributeNotDefined,
+                                                                  rti1516e::AttributeNotOwned,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    G.Out(pdGendoc, "enter RTI1516ambassador::updateAttributeValues without time");
+    M_Update_Attribute_Values req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if (theUserSuppliedTag.data() == NULL)
-    {
+    if (theUserSuppliedTag.data() == NULL) {
         throw rti1516e::RTIinternalError(L"Calling updateAttributeValues with Tag NULL");
     }
 
@@ -1045,34 +987,32 @@ throw (rti1516e::ObjectInstanceNotKnown,
 
     assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-    G.Out(pdGendoc,"exit  RTI1516ambassador::updateAttributeValues without time");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::updateAttributeValues without time");
+}
 
-rti1516e::MessageRetractionHandle RTI1516ambassador::updateAttributeValues
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleValueMap const & theAttributeValues,
-        rti1516e::VariableLengthData const & theUserSuppliedTag,
-        rti1516e::LogicalTime const & theTime)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::InvalidLogicalTime,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    G.Out(pdGendoc,"enter RTI1516ambassador::updateAttributeValues with time");
-    M_Update_Attribute_Values req, rep ;
+rti1516e::MessageRetractionHandle RTI1516ambassador::updateAttributeValues(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleValueMap const& theAttributeValues,
+    rti1516e::VariableLengthData const& theUserSuppliedTag,
+    rti1516e::LogicalTime const& theTime) throw(rti1516e::ObjectInstanceNotKnown,
+                                                rti1516e::AttributeNotDefined,
+                                                rti1516e::AttributeNotOwned,
+                                                rti1516e::InvalidLogicalTime,
+                                                rti1516e::FederateNotExecutionMember,
+                                                rti1516e::SaveInProgress,
+                                                rti1516e::RestoreInProgress,
+                                                rti1516e::NotConnected,
+                                                rti1516e::RTIinternalError)
+{
+    G.Out(pdGendoc, "enter RTI1516ambassador::updateAttributeValues with time");
+    M_Update_Attribute_Values req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if (theUserSuppliedTag.data() == NULL)
-    {
+    if (theUserSuppliedTag.data() == NULL) {
         throw rti1516e::RTIinternalError(L"Calling updateAttributeValues with Tag NULL");
     }
 
@@ -1080,67 +1020,66 @@ throw (rti1516e::ObjectInstanceNotKnown,
 
     assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-    G.Out(pdGendoc,"return  RTI1516ambassador::updateAttributeValues with time");
+    G.Out(pdGendoc, "return  RTI1516ambassador::updateAttributeValues with time");
     certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
     uint64_t serialNum = rep.getEventRetraction().getSN();
     return rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, serialNum);
-        }
+}
 
 // 6.12
-void RTI1516ambassador::sendInteraction
-(rti1516e::InteractionClassHandle theInteraction,
-        rti1516e::ParameterHandleValueMap const & theParameterValues,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::InteractionClassNotPublished,
-        rti1516e::InteractionClassNotDefined,
-        rti1516e::InteractionParameterNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Send_Interaction req, rep ;
+void RTI1516ambassador::sendInteraction(
+    rti1516e::InteractionClassHandle theInteraction,
+    rti1516e::ParameterHandleValueMap const& theParameterValues,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::InteractionClassNotPublished,
+                                                                  rti1516e::InteractionClassNotDefined,
+                                                                  rti1516e::InteractionParameterNotDefined,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Send_Interaction req, rep;
 
-    const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
+    const certi::InteractionClassHandle classHandle
+        = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
 
-    if (theUserSuppliedTag.data() == NULL )
-    {
-        throw rti1516e::RTIinternalError (L"Calling sendIntercation with Tag NULL") ;
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling sendIntercation with Tag NULL");
     }
 
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
     req.setRegion(0);
 
     assignPHVMAndExecuteService(theParameterValues, req, rep);
-        }
+}
 
-rti1516e::MessageRetractionHandle RTI1516ambassador::sendInteraction
-(rti1516e::InteractionClassHandle theInteraction,
-        rti1516e::ParameterHandleValueMap const & theParameterValues,
-        rti1516e::VariableLengthData const & theUserSuppliedTag,
-        rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InteractionClassNotPublished,
-        rti1516e::InteractionClassNotDefined,
-        rti1516e::InteractionParameterNotDefined,
-        rti1516e::InvalidLogicalTime,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Send_Interaction req, rep ;
+rti1516e::MessageRetractionHandle
+RTI1516ambassador::sendInteraction(rti1516e::InteractionClassHandle theInteraction,
+                                   rti1516e::ParameterHandleValueMap const& theParameterValues,
+                                   rti1516e::VariableLengthData const& theUserSuppliedTag,
+                                   rti1516e::LogicalTime const& theTime) throw(rti1516e::InteractionClassNotPublished,
+                                                                               rti1516e::InteractionClassNotDefined,
+                                                                               rti1516e::InteractionParameterNotDefined,
+                                                                               rti1516e::InvalidLogicalTime,
+                                                                               rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::SaveInProgress,
+                                                                               rti1516e::RestoreInProgress,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Send_Interaction req, rep;
 
-    const certi::InteractionClassHandle classHandle = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
+    const certi::InteractionClassHandle classHandle
+        = rti1516e::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if (theUserSuppliedTag.data() == NULL ) {
-        throw rti1516e::RTIinternalError(L"Calling sendInteraction with Tag NULL") ;
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling sendInteraction with Tag NULL");
     }
 
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
@@ -1150,59 +1089,56 @@ throw (rti1516e::InteractionClassNotPublished,
 
     certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
     uint64_t serialNr = rep.getEventRetraction().getSN();
-    rti1516e::MessageRetractionHandle rti1516handle = rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, serialNr);
+    rti1516e::MessageRetractionHandle rti1516handle
+        = rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, serialNr);
 
     return rti1516handle;
-        }
+}
 
 // 6.14
-void RTI1516ambassador::deleteObjectInstance
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::DeletePrivilegeNotHeld,
-        rti1516e::ObjectInstanceNotKnown,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Delete_Object_Instance req, rep ;
+void RTI1516ambassador::deleteObjectInstance(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::DeletePrivilegeNotHeld,
+                                                                  rti1516e::ObjectInstanceNotKnown,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Delete_Object_Instance req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if (theUserSuppliedTag.data() == NULL)
-    {
-        throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL") ;
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL");
     }
 
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
-rti1516e::MessageRetractionHandle RTI1516ambassador::deleteObjectInstance
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::VariableLengthData const & theUserSuppliedTag,
-        rti1516e::LogicalTime  const & theTime)
-throw (rti1516e::DeletePrivilegeNotHeld,
-        rti1516e::ObjectInstanceNotKnown,
-        rti1516e::InvalidLogicalTime,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Delete_Object_Instance req, rep ;
+rti1516e::MessageRetractionHandle RTI1516ambassador::deleteObjectInstance(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::VariableLengthData const& theUserSuppliedTag,
+    rti1516e::LogicalTime const& theTime) throw(rti1516e::DeletePrivilegeNotHeld,
+                                                rti1516e::ObjectInstanceNotKnown,
+                                                rti1516e::InvalidLogicalTime,
+                                                rti1516e::FederateNotExecutionMember,
+                                                rti1516e::SaveInProgress,
+                                                rti1516e::RestoreInProgress,
+                                                rti1516e::NotConnected,
+                                                rti1516e::RTIinternalError)
+{
+    M_Delete_Object_Instance req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
-    if (theUserSuppliedTag.data() == NULL)
-    {
-        throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL") ;
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling deleteObjectInstance with Tag NULL");
     }
 
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
@@ -1212,156 +1148,148 @@ throw (rti1516e::DeletePrivilegeNotHeld,
     certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
     uint64_t serialNum = rep.getEventRetraction().getSN();
     return rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, serialNum);
-        }
+}
 
 // 6.12
-void RTI1516ambassador::localDeleteObjectInstance
-(rti1516e::ObjectInstanceHandle theObject)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::FederateOwnsAttributes,
-        rti1516e::OwnershipAcquisitionPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::localDeleteObjectInstance(rti1516e::ObjectInstanceHandle theObject) throw(
+    rti1516e::ObjectInstanceNotKnown,
+    rti1516e::FederateOwnsAttributes,
+    rti1516e::OwnershipAcquisitionPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"unimplemented service localDeleteObjectInstance");
-    M_Local_Delete_Object_Instance req, rep ;
+    M_Local_Delete_Object_Instance req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 6.19
-void RTI1516ambassador::requestAttributeValueUpdate
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Request_Object_Attribute_Value_Update req, rep ;
+void RTI1516ambassador::requestAttributeValueUpdate(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                  rti1516e::AttributeNotDefined,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Request_Object_Attribute_Value_Update req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::requestObjectAttributeValueUpdate");
+    G.Out(pdGendoc, "enter RTI1516ambassador::requestObjectAttributeValueUpdate");
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     size_t attr_num = theAttributes.size();
-    req.setAttributesSize( attr_num );
+    req.setAttributesSize(attr_num);
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); i < attr_num; ++it, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); i < attr_num; ++it, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc,"exit  RTI1516ambassador::requestObjectAttributeValueUpdate");
-        }
+    G.Out(pdGendoc, "exit  RTI1516ambassador::requestObjectAttributeValueUpdate");
+}
 
-void RTI1516ambassador::requestAttributeValueUpdate
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Request_Class_Attribute_Value_Update req, rep ;
-    G.Out(pdGendoc,"enter RTI1516ambassador::requestClassAttributeValueUpdate");
+void RTI1516ambassador::requestAttributeValueUpdate(
+    rti1516e::ObjectClassHandle theClass,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516e::ObjectClassNotDefined,
+                                                                      rti1516e::AttributeNotDefined,
+                                                                      rti1516e::FederateNotExecutionMember,
+                                                                      rti1516e::SaveInProgress,
+                                                                      rti1516e::RestoreInProgress,
+                                                                      rti1516e::NotConnected,
+                                                                      rti1516e::RTIinternalError)
+{
+    M_Request_Class_Attribute_Value_Update req, rep;
+    G.Out(pdGendoc, "enter RTI1516ambassador::requestClassAttributeValueUpdate");
     req.setObjectClass(rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass));
 
     assignAHSAndExecuteService(theAttributes, req, rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::requestClassAttributeValueUpdate");
-        }
+    G.Out(pdGendoc, "exit RTI1516ambassador::requestClassAttributeValueUpdate");
+}
 
 // 6.23
-void RTI1516ambassador::requestAttributeTransportationTypeChange
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::TransportationType theType)
-throw (rti1516e::AttributeAlreadyBeingChanged,
-        rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::InvalidTransportationType,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Change_Attribute_Transportation_Type req, rep ;
+void RTI1516ambassador::requestAttributeTransportationTypeChange(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::TransportationType theType) throw(rti1516e::AttributeAlreadyBeingChanged,
+                                                rti1516e::ObjectInstanceNotKnown,
+                                                rti1516e::AttributeNotDefined,
+                                                rti1516e::AttributeNotOwned,
+                                                rti1516e::FederateNotExecutionMember,
+                                                rti1516e::InvalidTransportationType,
+                                                rti1516e::SaveInProgress,
+                                                rti1516e::RestoreInProgress,
+                                                rti1516e::NotConnected,
+                                                rti1516e::RTIinternalError)
+{
+    M_Change_Attribute_Transportation_Type req, rep;
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     req.setTransportationType(toCertiTransportationType(theType));
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 // 6.25
-void RTI1516ambassador::queryAttributeTransportationType (
-        rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandle theAttribute)
-throw (
-        rti1516e::AttributeNotDefined,
-        rti1516e::ObjectInstanceNotKnown,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+void RTI1516ambassador::queryAttributeTransportationType(
+    rti1516e::ObjectInstanceHandle /*theObject*/,
+    rti1516e::AttributeHandle /*theAttribute*/) throw(rti1516e::AttributeNotDefined,
+                                                      rti1516e::ObjectInstanceNotKnown,
+                                                      rti1516e::SaveInProgress,
+                                                      rti1516e::RestoreInProgress,
+                                                      rti1516e::FederateNotExecutionMember,
+                                                      rti1516e::NotConnected,
+                                                      rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"queryAttributeTransportationType Not Implemented");
 }
 
 // 6.27
-void RTI1516ambassador::requestInteractionTransportationTypeChange
-(rti1516e::InteractionClassHandle theClass,
-        rti1516e::TransportationType theType)
-throw (rti1516e::InteractionClassAlreadyBeingChanged,
-        rti1516e::InteractionClassNotPublished,
-        rti1516e::InteractionClassNotDefined,
-        rti1516e::InvalidTransportationType,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Change_Interaction_Transportation_Type req, rep ;
+void RTI1516ambassador::requestInteractionTransportationTypeChange(
+    rti1516e::InteractionClassHandle theClass,
+    rti1516e::TransportationType theType) throw(rti1516e::InteractionClassAlreadyBeingChanged,
+                                                rti1516e::InteractionClassNotPublished,
+                                                rti1516e::InteractionClassNotDefined,
+                                                rti1516e::InvalidTransportationType,
+                                                rti1516e::SaveInProgress,
+                                                rti1516e::RestoreInProgress,
+                                                rti1516e::FederateNotExecutionMember,
+                                                rti1516e::NotConnected,
+                                                rti1516e::RTIinternalError)
+{
+    M_Change_Interaction_Transportation_Type req, rep;
 
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(theClass));
     req.setTransportationType(toCertiTransportationType(theType));
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 6.29
-void RTI1516ambassador::queryInteractionTransportationType (
-            rti1516e::FederateHandle theFederate,
-            rti1516e::InteractionClassHandle theInteraction)
-    throw (
-            rti1516e::InteractionClassNotDefined,
-            rti1516e::SaveInProgress,
-            rti1516e::RestoreInProgress,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError) {
+void RTI1516ambassador::queryInteractionTransportationType(
+    rti1516e::FederateHandle /*theFederate*/,
+    rti1516e::InteractionClassHandle /*theInteraction*/) throw(rti1516e::InteractionClassNotDefined,
+                                                               rti1516e::SaveInProgress,
+                                                               rti1516e::RestoreInProgress,
+                                                               rti1516e::FederateNotExecutionMember,
+                                                               rti1516e::NotConnected,
+                                                               rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"queryInteractionTransportationType Not Implemented");
 }
 
@@ -1369,178 +1297,171 @@ void RTI1516ambassador::queryInteractionTransportationType (
 // Ownership Management Services //
 ///////////////////////////////////
 // 7.2
-void RTI1516ambassador::unconditionalAttributeOwnershipDivestiture
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Unconditional_Attribute_Ownership_Divestiture req, rep ;
+void RTI1516ambassador::unconditionalAttributeOwnershipDivestiture(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes) throw(rti1516e::ObjectInstanceNotKnown,
+                                                             rti1516e::AttributeNotDefined,
+                                                             rti1516e::AttributeNotOwned,
+                                                             rti1516e::FederateNotExecutionMember,
+                                                             rti1516e::SaveInProgress,
+                                                             rti1516e::RestoreInProgress,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
+{
+    M_Unconditional_Attribute_Ownership_Divestiture req, rep;
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     req.setAttributesSize(theAttributes.size());
-    uint32_t i=0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    uint32_t i = 0;
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.3
-void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::AttributeAlreadyBeingDivested,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Negotiated_Attribute_Ownership_Divestiture req, rep ;
+void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                  rti1516e::AttributeNotDefined,
+                                                                  rti1516e::AttributeNotOwned,
+                                                                  rti1516e::AttributeAlreadyBeingDivested,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Negotiated_Attribute_Ownership_Divestiture req, rep;
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     if (theUserSuppliedTag.data() == NULL) {
-        throw rti1516e::RTIinternalError (L"Calling negotiatedAttributeOwnershipDivestiture with Tag NULL") ;
+        throw rti1516e::RTIinternalError(L"Calling negotiatedAttributeOwnershipDivestiture with Tag NULL");
     }
     req.setTag(certi::varLengthDataAsString(theUserSuppliedTag));
 
     req.setAttributesSize(theAttributes.size());
-    uint32_t i=0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    uint32_t i = 0;
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.6
-void RTI1516ambassador::confirmDivestiture
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & confirmedAttributes,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::AttributeDivestitureWasNotRequested,
-        rti1516e::NoAcquisitionPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::confirmDivestiture(
+    rti1516e::ObjectInstanceHandle /*theObject*/,
+    rti1516e::AttributeHandleSet const& /*confirmedAttributes*/,
+    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                      rti1516e::AttributeNotDefined,
+                                                                      rti1516e::AttributeNotOwned,
+                                                                      rti1516e::AttributeDivestitureWasNotRequested,
+                                                                      rti1516e::NoAcquisitionPending,
+                                                                      rti1516e::FederateNotExecutionMember,
+                                                                      rti1516e::SaveInProgress,
+                                                                      rti1516e::RestoreInProgress,
+                                                                      rti1516e::NotConnected,
+                                                                      rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 7.8
-void RTI1516ambassador::attributeOwnershipAcquisition
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & desiredAttributes,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotPublished,
-        rti1516e::FederateOwnsAttributes,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Attribute_Ownership_Acquisition req, rep ;
+void RTI1516ambassador::attributeOwnershipAcquisition(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& desiredAttributes,
+    rti1516e::VariableLengthData const& theUserSuppliedTag) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                  rti1516e::ObjectClassNotPublished,
+                                                                  rti1516e::AttributeNotDefined,
+                                                                  rti1516e::AttributeNotPublished,
+                                                                  rti1516e::FederateOwnsAttributes,
+                                                                  rti1516e::FederateNotExecutionMember,
+                                                                  rti1516e::SaveInProgress,
+                                                                  rti1516e::RestoreInProgress,
+                                                                  rti1516e::NotConnected,
+                                                                  rti1516e::RTIinternalError)
+{
+    M_Attribute_Ownership_Acquisition req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
-    if (theUserSuppliedTag.data() == NULL )
-    {
-        throw rti1516e::RTIinternalError (L"Calling attributeOwnershipAcquisition with Tag NULL") ;
+    if (theUserSuppliedTag.data() == NULL) {
+        throw rti1516e::RTIinternalError(L"Calling attributeOwnershipAcquisition with Tag NULL");
     }
     req.setTag(certi::varLengthDataAsString(theUserSuppliedTag));
 
     req.setAttributesSize(desiredAttributes.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.9
-void RTI1516ambassador::attributeOwnershipAcquisitionIfAvailable
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & desiredAttributes)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotPublished,
-        rti1516e::FederateOwnsAttributes,
-        rti1516e::AttributeAlreadyBeingAcquired,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Attribute_Ownership_Acquisition_If_Available req, rep ;
+void RTI1516ambassador::attributeOwnershipAcquisitionIfAvailable(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& desiredAttributes) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                 rti1516e::ObjectClassNotPublished,
+                                                                 rti1516e::AttributeNotDefined,
+                                                                 rti1516e::AttributeNotPublished,
+                                                                 rti1516e::FederateOwnsAttributes,
+                                                                 rti1516e::AttributeAlreadyBeingAcquired,
+                                                                 rti1516e::FederateNotExecutionMember,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
+    M_Attribute_Ownership_Acquisition_If_Available req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     req.setAttributesSize(desiredAttributes.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
-void RTI1516ambassador::attributeOwnershipReleaseDenied (
-            rti1516e::ObjectInstanceHandle theObject,
-            rti1516e::AttributeHandleSet const & theAttributes)
-    throw (
-            rti1516e::AttributeNotOwned,
-            rti1516e::AttributeNotDefined,
-            rti1516e::ObjectInstanceNotKnown,
-            rti1516e::SaveInProgress,
-            rti1516e::RestoreInProgress,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError) {
+void RTI1516ambassador::attributeOwnershipReleaseDenied(
+    rti1516e::ObjectInstanceHandle /*theObject*/,
+    rti1516e::AttributeHandleSet const& /*theAttributes*/) throw(rti1516e::AttributeNotOwned,
+                                                                 rti1516e::AttributeNotDefined,
+                                                                 rti1516e::ObjectInstanceNotKnown,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::FederateNotExecutionMember,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"attributeOwnershipReleaseDenied Not Implemented");
 }
 
 // 7.13 (in RTI1.3 this function is called: AttributeOwnershipReleaseResponse)
-void RTI1516ambassador::attributeOwnershipDivestitureIfWanted
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::AttributeHandleSet & theDivestedAttributes) // filled by RTI
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Attribute_Ownership_Release_Response req, rep ;
+void RTI1516ambassador::attributeOwnershipDivestitureIfWanted(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::AttributeHandleSet& theDivestedAttributes) // filled by RTI
+    throw(rti1516e::ObjectInstanceNotKnown,
+          rti1516e::AttributeNotDefined,
+          rti1516e::AttributeNotOwned,
+          rti1516e::FederateNotExecutionMember,
+          rti1516e::SaveInProgress,
+          rti1516e::RestoreInProgress,
+          rti1516e::NotConnected,
+          rti1516e::RTIinternalError)
+{
+    M_Attribute_Ownership_Release_Response req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
@@ -1548,102 +1469,97 @@ throw (rti1516e::ObjectInstanceNotKnown,
 
     if (rep.getExceptionType() == Exception::Type::NO_EXCEPTION) {
         theDivestedAttributes.clear();
-        for (uint32_t i=0;i<rep.getAttributesSize();++i) {
+        for (uint32_t i = 0; i < rep.getAttributesSize(); ++i) {
             theDivestedAttributes.insert(rti1516e::AttributeHandleFriend::createRTI1516Handle(rep.getAttributes()[i]));
         }
     }
-
-        }
+}
 
 // 7.15
-void RTI1516ambassador::cancelNegotiatedAttributeOwnershipDivestiture
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::AttributeDivestitureWasNotRequested,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Cancel_Negotiated_Attribute_Ownership_Divestiture req, rep ;
+void RTI1516ambassador::cancelNegotiatedAttributeOwnershipDivestiture(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes) throw(rti1516e::ObjectInstanceNotKnown,
+                                                             rti1516e::AttributeNotDefined,
+                                                             rti1516e::AttributeNotOwned,
+                                                             rti1516e::AttributeDivestitureWasNotRequested,
+                                                             rti1516e::FederateNotExecutionMember,
+                                                             rti1516e::SaveInProgress,
+                                                             rti1516e::RestoreInProgress,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
+{
+    M_Cancel_Negotiated_Attribute_Ownership_Divestiture req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.15
-void RTI1516ambassador::cancelAttributeOwnershipAcquisition
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeAlreadyOwned,
-        rti1516e::AttributeAcquisitionWasNotRequested,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Cancel_Attribute_Ownership_Acquisition req, rep ;
+void RTI1516ambassador::cancelAttributeOwnershipAcquisition(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes) throw(rti1516e::ObjectInstanceNotKnown,
+                                                             rti1516e::AttributeNotDefined,
+                                                             rti1516e::AttributeAlreadyOwned,
+                                                             rti1516e::AttributeAcquisitionWasNotRequested,
+                                                             rti1516e::FederateNotExecutionMember,
+                                                             rti1516e::SaveInProgress,
+                                                             rti1516e::RestoreInProgress,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
+{
+    M_Cancel_Attribute_Ownership_Acquisition req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for ( rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i)
-    {
-        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it),i);
+    for (rti1516e::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end();
+         it++, ++i) {
+        req.setAttributes(rti1516e::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.16
-void RTI1516ambassador::queryAttributeOwnership
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandle theAttribute)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Query_Attribute_Ownership req, rep ;
+void RTI1516ambassador::queryAttributeOwnership(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandle theAttribute) throw(rti1516e::ObjectInstanceNotKnown,
+                                                  rti1516e::AttributeNotDefined,
+                                                  rti1516e::FederateNotExecutionMember,
+                                                  rti1516e::SaveInProgress,
+                                                  rti1516e::RestoreInProgress,
+                                                  rti1516e::NotConnected,
+                                                  rti1516e::RTIinternalError)
+{
+    M_Query_Attribute_Ownership req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     req.setAttribute(rti1516e::AttributeHandleFriend::toCertiHandle(theAttribute));
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 7.18
-bool RTI1516ambassador::isAttributeOwnedByFederate
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandle theAttribute)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Is_Attribute_Owned_By_Federate req, rep ;
+bool RTI1516ambassador::isAttributeOwnedByFederate(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandle theAttribute) throw(rti1516e::ObjectInstanceNotKnown,
+                                                  rti1516e::AttributeNotDefined,
+                                                  rti1516e::FederateNotExecutionMember,
+                                                  rti1516e::SaveInProgress,
+                                                  rti1516e::RestoreInProgress,
+                                                  rti1516e::NotConnected,
+                                                  rti1516e::RTIinternalError)
+{
+    M_Is_Attribute_Owned_By_Federate req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     req.setAttribute(rti1516e::AttributeHandleFriend::toCertiHandle(theAttribute));
@@ -1651,33 +1567,32 @@ throw (rti1516e::ObjectInstanceNotKnown,
     privateRefs->executeService(&req, &rep);
 
     return (rep.getTag() == "RTI_TRUE") ? true : false;
-        }
+}
 
 //////////////////////////////
 // Time Management Services //
 //////////////////////////////
 
 // 8.2
-void RTI1516ambassador::enableTimeRegulation
-(rti1516e::LogicalTimeInterval const & theLookahead)
-throw (rti1516e::TimeRegulationAlreadyEnabled,
-        rti1516e::InvalidLookahead,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Time_Regulation req, rep ;
+void RTI1516ambassador::enableTimeRegulation(rti1516e::LogicalTimeInterval const& theLookahead) throw(
+    rti1516e::TimeRegulationAlreadyEnabled,
+    rti1516e::InvalidLookahead,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Enable_Time_Regulation req, rep;
 
     //req.setDate(certi_cast<RTIfedTime>()(theFederateTime).getTime());  //JRE: DATE IS NOT USED!
 
     //JRE: is dit wel goed?
     //JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
     union ud {
-        double   dv;
+        double dv;
         uint64_t uv;
     } value;
 #ifdef HOST_IS_BIG_ENDIAN
@@ -1688,201 +1603,190 @@ throw (rti1516e::TimeRegulationAlreadyEnabled,
     double lookAheadTime = value.dv;
     req.setLookahead(lookAheadTime);
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.4
-void RTI1516ambassador::disableTimeRegulation ()
-throw (rti1516e::TimeRegulationIsNotEnabled,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Time_Regulation req, rep ;
+void RTI1516ambassador::disableTimeRegulation() throw(rti1516e::TimeRegulationIsNotEnabled,
+                                                      rti1516e::FederateNotExecutionMember,
+                                                      rti1516e::SaveInProgress,
+                                                      rti1516e::RestoreInProgress,
+                                                      rti1516e::NotConnected,
+                                                      rti1516e::RTIinternalError)
+{
+    M_Disable_Time_Regulation req, rep;
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.5
-void RTI1516ambassador::enableTimeConstrained ()
-throw (rti1516e::TimeConstrainedAlreadyEnabled,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Time_Constrained req, rep ;
+void RTI1516ambassador::enableTimeConstrained() throw(rti1516e::TimeConstrainedAlreadyEnabled,
+                                                      rti1516e::InTimeAdvancingState,
+                                                      rti1516e::RequestForTimeConstrainedPending,
+                                                      rti1516e::FederateNotExecutionMember,
+                                                      rti1516e::SaveInProgress,
+                                                      rti1516e::RestoreInProgress,
+                                                      rti1516e::NotConnected,
+                                                      rti1516e::RTIinternalError)
+{
+    M_Enable_Time_Constrained req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.7
-void RTI1516ambassador::disableTimeConstrained ()
-throw (rti1516e::TimeConstrainedIsNotEnabled,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Time_Constrained req, rep ;
+void RTI1516ambassador::disableTimeConstrained() throw(rti1516e::TimeConstrainedIsNotEnabled,
+                                                       rti1516e::FederateNotExecutionMember,
+                                                       rti1516e::SaveInProgress,
+                                                       rti1516e::RestoreInProgress,
+                                                       rti1516e::NotConnected,
+                                                       rti1516e::RTIinternalError)
+{
+    M_Disable_Time_Constrained req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.8
-void RTI1516ambassador::timeAdvanceRequest
-(rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InvalidLogicalTime,
-        rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Time_Advance_Request req, rep ;
+void RTI1516ambassador::timeAdvanceRequest(rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::InvalidLogicalTime,
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::RequestForTimeConstrainedPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Time_Advance_Request req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.9
-void RTI1516ambassador::timeAdvanceRequestAvailable
-(rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InvalidLogicalTime,
-        rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Time_Advance_Request_Available req, rep ;
+void RTI1516ambassador::timeAdvanceRequestAvailable(rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::InvalidLogicalTime,
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::RequestForTimeConstrainedPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Time_Advance_Request_Available req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.10
-void RTI1516ambassador::nextMessageRequest
-(rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InvalidLogicalTime,
-        rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Next_Event_Request req, rep ;
+void RTI1516ambassador::nextMessageRequest(rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::InvalidLogicalTime,
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::RequestForTimeConstrainedPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Next_Event_Request req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.11
-void RTI1516ambassador::nextMessageRequestAvailable
-(rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InvalidLogicalTime,
-        rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Next_Event_Request_Available req, rep ;
+void RTI1516ambassador::nextMessageRequestAvailable(rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::InvalidLogicalTime,
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::RequestForTimeConstrainedPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Next_Event_Request_Available req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.12
-void RTI1516ambassador::flushQueueRequest
-(rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InvalidLogicalTime,
-        rti1516e::LogicalTimeAlreadyPassed,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::RequestForTimeRegulationPending,
-        rti1516e::RequestForTimeConstrainedPending,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::flushQueueRequest(rti1516e::LogicalTime const& theTime) throw(
+    rti1516e::InvalidLogicalTime,
+    rti1516e::LogicalTimeAlreadyPassed,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::RequestForTimeRegulationPending,
+    rti1516e::RequestForTimeConstrainedPending,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     // JvY: Implementation copied from previous CERTI implementation, including immediate throw.
     throw rti1516e::RTIinternalError(L"Unimplemented Service flushQueueRequest");
-    M_Flush_Queue_Request req, rep ;
+    M_Flush_Queue_Request req, rep;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.14
-void RTI1516ambassador::enableAsynchronousDelivery ()
-throw (rti1516e::AsynchronousDeliveryAlreadyEnabled,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::enableAsynchronousDelivery() throw(rti1516e::AsynchronousDeliveryAlreadyEnabled,
+                                                           rti1516e::FederateNotExecutionMember,
+                                                           rti1516e::SaveInProgress,
+                                                           rti1516e::RestoreInProgress,
+                                                           rti1516e::NotConnected,
+                                                           rti1516e::RTIinternalError)
+{
     // throw AsynchronousDeliveryAlreadyEnabled("Default value (non HLA)");
 
-    M_Enable_Asynchronous_Delivery req, rep ;
+    M_Enable_Asynchronous_Delivery req, rep;
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.15
-void RTI1516ambassador::disableAsynchronousDelivery ()
-throw (rti1516e::AsynchronousDeliveryAlreadyDisabled,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Asynchronous_Delivery req, rep ;
+void RTI1516ambassador::disableAsynchronousDelivery() throw(rti1516e::AsynchronousDeliveryAlreadyDisabled,
+                                                            rti1516e::FederateNotExecutionMember,
+                                                            rti1516e::SaveInProgress,
+                                                            rti1516e::RestoreInProgress,
+                                                            rti1516e::NotConnected,
+                                                            rti1516e::RTIinternalError)
+{
+    M_Disable_Asynchronous_Delivery req, rep;
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.16
-bool RTI1516ambassador::queryGALT (rti1516e::LogicalTime & theTime)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+bool RTI1516ambassador::queryGALT(rti1516e::LogicalTime& theTime) throw(rti1516e::FederateNotExecutionMember,
+                                                                        rti1516e::SaveInProgress,
+                                                                        rti1516e::RestoreInProgress,
+                                                                        rti1516e::NotConnected,
+                                                                        rti1516e::RTIinternalError)
+{
     //TODO JRE: goed testen! Is GALT wel precies het zelfde als LBTS?
-    M_Query_Lbts req, rep ;
+    M_Query_Lbts req, rep;
 
     privateRefs->executeService(&req, &rep);
 
@@ -1896,34 +1800,32 @@ throw (rti1516e::FederateNotExecutionMember,
     certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
 
     return true;
-        }
+}
 
 // 8.17
-void RTI1516ambassador::queryLogicalTime (rti1516e::LogicalTime & theTime)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Query_Federate_Time req, rep ;
+void RTI1516ambassador::queryLogicalTime(rti1516e::LogicalTime& theTime) throw(rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::SaveInProgress,
+                                                                               rti1516e::RestoreInProgress,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Query_Federate_Time req, rep;
 
     privateRefs->executeService(&req, &rep);
 
     // JvY: TODO Controleren of dit blijft werken met andere tijdsimplementaties
     certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
-        }
+}
 
 // 8.18
-bool RTI1516ambassador::queryLITS (rti1516e::LogicalTime & theTime)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+bool RTI1516ambassador::queryLITS(rti1516e::LogicalTime& theTime) throw(rti1516e::FederateNotExecutionMember,
+                                                                        rti1516e::SaveInProgress,
+                                                                        rti1516e::RestoreInProgress,
+                                                                        rti1516e::NotConnected,
+                                                                        rti1516e::RTIinternalError)
+{
     //TODO JRE: goed testen! Is LITS wel precies het zelfde als QueryMinNextEventTime?
-    M_Query_Min_Next_Event_Time req, rep ;
+    M_Query_Min_Next_Event_Time req, rep;
 
     privateRefs->executeService(&req, &rep);
 
@@ -1936,460 +1838,428 @@ throw (rti1516e::FederateNotExecutionMember,
     certi_cast<RTI1516fedTime>()(theTime) = rep.getDate().getTime();
 
     return true;
-        }
+}
 
 // 8.19
-void RTI1516ambassador::modifyLookahead
-(rti1516e::LogicalTimeInterval const & theLookahead)
-throw (rti1516e::TimeRegulationIsNotEnabled,
-        rti1516e::InvalidLookahead,
-        rti1516e::InTimeAdvancingState,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::modifyLookahead(rti1516e::LogicalTimeInterval const& /*theLookahead*/) throw(
+    rti1516e::TimeRegulationIsNotEnabled,
+    rti1516e::InvalidLookahead,
+    rti1516e::InTimeAdvancingState,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 8.20
-void RTI1516ambassador::queryLookahead (rti1516e::LogicalTimeInterval & interval)
-throw (rti1516e::TimeRegulationIsNotEnabled,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::queryLookahead(rti1516e::LogicalTimeInterval& /*interval*/) throw(
+    rti1516e::TimeRegulationIsNotEnabled,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 8.21
-void RTI1516ambassador::retract
-(rti1516e::MessageRetractionHandle theHandle)
-throw (rti1516e::InvalidMessageRetractionHandle,
-        rti1516e::TimeRegulationIsNotEnabled,
-        rti1516e::MessageCanNoLongerBeRetracted,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::retract(rti1516e::MessageRetractionHandle theHandle) throw(
+    rti1516e::InvalidMessageRetractionHandle,
+    rti1516e::TimeRegulationIsNotEnabled,
+    rti1516e::MessageCanNoLongerBeRetracted,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"Unimplemented Service retract");
-    M_Retract req, rep ;
+    M_Retract req, rep;
 
     certi::EventRetraction event = rti1516e::MessageRetractionHandleFriend::createEventRetraction(theHandle);
     req.setEventRetraction(event);
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 8.23
-void RTI1516ambassador::changeAttributeOrderType
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSet const & theAttributes,
-        rti1516e::OrderType theType)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotOwned,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Change_Attribute_Order_Type req, rep ;
+void RTI1516ambassador::changeAttributeOrderType(
+    rti1516e::ObjectInstanceHandle theObject,
+    rti1516e::AttributeHandleSet const& theAttributes,
+    rti1516e::OrderType theType) throw(rti1516e::ObjectInstanceNotKnown,
+                                       rti1516e::AttributeNotDefined,
+                                       rti1516e::AttributeNotOwned,
+                                       rti1516e::FederateNotExecutionMember,
+                                       rti1516e::SaveInProgress,
+                                       rti1516e::RestoreInProgress,
+                                       rti1516e::NotConnected,
+                                       rti1516e::RTIinternalError)
+{
+    M_Change_Attribute_Order_Type req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     req.setOrder(certi::toCertiOrderType(theType));
 
     assignAHSAndExecuteService(theAttributes, req, rep);
-        }
+}
 
 // 8.24
-void RTI1516ambassador::changeInteractionOrderType
-(rti1516e::InteractionClassHandle theClass,
-        rti1516e::OrderType theType)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::InteractionClassNotPublished,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Change_Interaction_Order_Type req, rep ;
+void RTI1516ambassador::changeInteractionOrderType(
+    rti1516e::InteractionClassHandle theClass,
+    rti1516e::OrderType theType) throw(rti1516e::InteractionClassNotDefined,
+                                       rti1516e::InteractionClassNotPublished,
+                                       rti1516e::FederateNotExecutionMember,
+                                       rti1516e::SaveInProgress,
+                                       rti1516e::RestoreInProgress,
+                                       rti1516e::NotConnected,
+                                       rti1516e::RTIinternalError)
+{
+    M_Change_Interaction_Order_Type req, rep;
 
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(theClass));
     req.setOrder(certi::toCertiOrderType(theType));
 
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 //////////////////////////////////
 // Data Distribution Management //
 //////////////////////////////////
 
 // 9.2
-rti1516e::RegionHandle RTI1516ambassador::createRegion
-(rti1516e::DimensionHandleSet const & theDimensions)
-throw (rti1516e::InvalidDimensionHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::RegionHandle RTI1516ambassador::createRegion(rti1516e::DimensionHandleSet const& /*theDimensions*/) throw(
+    rti1516e::InvalidDimensionHandle,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.3
-void RTI1516ambassador::commitRegionModifications
-(rti1516e::RegionHandleSet const & theRegionHandleSet)
-throw (rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::commitRegionModifications(rti1516e::RegionHandleSet const& /*theRegionHandleSet*/) throw(
+    rti1516e::InvalidRegion,
+    rti1516e::RegionNotCreatedByThisFederate,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.4
-void RTI1516ambassador::deleteRegion
-(rti1516e::RegionHandle const & theRegion)
-throw (rti1516e::RegionInUseForUpdateOrSubscription,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegion,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::deleteRegion(rti1516e::RegionHandle const& /*theRegion*/) throw(
+    rti1516e::RegionInUseForUpdateOrSubscription,
+    rti1516e::RegionNotCreatedByThisFederate,
+    rti1516e::InvalidRegion,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.5
-rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotPublished,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions(
+    rti1516e::ObjectClassHandle /*theClass*/, rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516e::ObjectClassNotDefined,
+                                                              rti1516e::ObjectClassNotPublished,
+                                                              rti1516e::AttributeNotDefined,
+                                                              rti1516e::AttributeNotPublished,
+                                                              rti1516e::InvalidRegion,
+                                                              rti1516e::RegionNotCreatedByThisFederate,
+                                                              rti1516e::InvalidRegionContext,
+                                                              rti1516e::FederateNotExecutionMember,
+                                                              rti1516e::SaveInProgress,
+                                                              rti1516e::RestoreInProgress,
+                                                              rti1516e::NotConnected,
+                                                              rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
-rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector,
-        std::wstring const & theObjectInstanceName)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::ObjectClassNotPublished,
-        rti1516e::AttributeNotDefined,
-        rti1516e::AttributeNotPublished,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::ObjectInstanceNameNotReserved,
-        rti1516e::ObjectInstanceNameInUse,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions(
+    rti1516e::ObjectClassHandle /*theClass*/,
+    rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/,
+    std::wstring const& /*theObjectInstanceName*/) throw(rti1516e::ObjectClassNotDefined,
+                                                         rti1516e::ObjectClassNotPublished,
+                                                         rti1516e::AttributeNotDefined,
+                                                         rti1516e::AttributeNotPublished,
+                                                         rti1516e::InvalidRegion,
+                                                         rti1516e::RegionNotCreatedByThisFederate,
+                                                         rti1516e::InvalidRegionContext,
+                                                         rti1516e::ObjectInstanceNameNotReserved,
+                                                         rti1516e::ObjectInstanceNameInUse,
+                                                         rti1516e::FederateNotExecutionMember,
+                                                         rti1516e::SaveInProgress,
+                                                         rti1516e::RestoreInProgress,
+                                                         rti1516e::NotConnected,
+                                                         rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.6
-void RTI1516ambassador::associateRegionsForUpdates
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::associateRegionsForUpdates(
+    rti1516e::ObjectInstanceHandle /*theObject*/, rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516e::ObjectInstanceNotKnown,
+                                                              rti1516e::AttributeNotDefined,
+                                                              rti1516e::InvalidRegion,
+                                                              rti1516e::RegionNotCreatedByThisFederate,
+                                                              rti1516e::InvalidRegionContext,
+                                                              rti1516e::FederateNotExecutionMember,
+                                                              rti1516e::SaveInProgress,
+                                                              rti1516e::RestoreInProgress,
+                                                              rti1516e::NotConnected,
+                                                              rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.7
-void RTI1516ambassador::unassociateRegionsForUpdates
-(rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::unassociateRegionsForUpdates(
+    rti1516e::ObjectInstanceHandle /*theObject*/, rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516e::ObjectInstanceNotKnown,
+                                                              rti1516e::AttributeNotDefined,
+                                                              rti1516e::InvalidRegion,
+                                                              rti1516e::RegionNotCreatedByThisFederate,
+                                                              rti1516e::FederateNotExecutionMember,
+                                                              rti1516e::SaveInProgress,
+                                                              rti1516e::RestoreInProgress,
+                                                              rti1516e::NotConnected,
+                                                              rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.8
-void RTI1516ambassador::subscribeObjectClassAttributesWithRegions
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector,
-        bool active, std::wstring const & updateRateDesignator)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::subscribeObjectClassAttributesWithRegions(
+    rti1516e::ObjectClassHandle /*theClass*/,
+    rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/,
+    bool /*active*/,
+    std::wstring const& /*updateRateDesignator*/) throw(rti1516e::ObjectClassNotDefined,
+                                                        rti1516e::AttributeNotDefined,
+                                                        rti1516e::InvalidRegion,
+                                                        rti1516e::RegionNotCreatedByThisFederate,
+                                                        rti1516e::InvalidRegionContext,
+                                                        rti1516e::FederateNotExecutionMember,
+                                                        rti1516e::SaveInProgress,
+                                                        rti1516e::RestoreInProgress,
+                                                        rti1516e::NotConnected,
+                                                        rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.9
-void RTI1516ambassador::unsubscribeObjectClassAttributesWithRegions
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const &
-        theAttributeHandleSetRegionHandleSetPairVector)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::unsubscribeObjectClassAttributesWithRegions(
+    rti1516e::ObjectClassHandle /*theClass*/, rti1516e::AttributeHandleSetRegionHandleSetPairVector const&
+    /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516e::ObjectClassNotDefined,
+                                                              rti1516e::AttributeNotDefined,
+                                                              rti1516e::InvalidRegion,
+                                                              rti1516e::RegionNotCreatedByThisFederate,
+                                                              rti1516e::FederateNotExecutionMember,
+                                                              rti1516e::SaveInProgress,
+                                                              rti1516e::RestoreInProgress,
+                                                              rti1516e::NotConnected,
+                                                              rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.10
-void RTI1516ambassador::subscribeInteractionClassWithRegions
-(rti1516e::InteractionClassHandle theClass,
-        rti1516e::RegionHandleSet const & theRegionHandleSet,
-        bool active)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateServiceInvocationsAreBeingReportedViaMOM,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::subscribeInteractionClassWithRegions(
+    rti1516e::InteractionClassHandle /*theClass*/,
+    rti1516e::RegionHandleSet const& /*theRegionHandleSet*/,
+    bool /*active*/) throw(rti1516e::InteractionClassNotDefined,
+                           rti1516e::InvalidRegion,
+                           rti1516e::RegionNotCreatedByThisFederate,
+                           rti1516e::InvalidRegionContext,
+                           rti1516e::FederateServiceInvocationsAreBeingReportedViaMOM,
+                           rti1516e::FederateNotExecutionMember,
+                           rti1516e::SaveInProgress,
+                           rti1516e::RestoreInProgress,
+                           rti1516e::NotConnected,
+                           rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.11
-void RTI1516ambassador::unsubscribeInteractionClassWithRegions
-(rti1516e::InteractionClassHandle theClass,
-        rti1516e::RegionHandleSet const & theRegionHandleSet)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::unsubscribeInteractionClassWithRegions(
+    rti1516e::InteractionClassHandle /*theClass*/,
+    rti1516e::RegionHandleSet const& /*theRegionHandleSet*/) throw(rti1516e::InteractionClassNotDefined,
+                                                                   rti1516e::InvalidRegion,
+                                                                   rti1516e::RegionNotCreatedByThisFederate,
+                                                                   rti1516e::FederateNotExecutionMember,
+                                                                   rti1516e::SaveInProgress,
+                                                                   rti1516e::RestoreInProgress,
+                                                                   rti1516e::NotConnected,
+                                                                   rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.12
-void RTI1516ambassador::sendInteractionWithRegions
-(rti1516e::InteractionClassHandle theInteraction,
-        rti1516e::ParameterHandleValueMap const & theParameterValues,
-        rti1516e::RegionHandleSet const & theRegionHandleSet,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::InteractionClassNotPublished,
-        rti1516e::InteractionParameterNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::sendInteractionWithRegions(
+    rti1516e::InteractionClassHandle /*theInteraction*/,
+    rti1516e::ParameterHandleValueMap const& /*theParameterValues*/,
+    rti1516e::RegionHandleSet const& /*theRegionHandleSet*/,
+    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516e::InteractionClassNotDefined,
+                                                                      rti1516e::InteractionClassNotPublished,
+                                                                      rti1516e::InteractionParameterNotDefined,
+                                                                      rti1516e::InvalidRegion,
+                                                                      rti1516e::RegionNotCreatedByThisFederate,
+                                                                      rti1516e::InvalidRegionContext,
+                                                                      rti1516e::FederateNotExecutionMember,
+                                                                      rti1516e::SaveInProgress,
+                                                                      rti1516e::RestoreInProgress,
+                                                                      rti1516e::NotConnected,
+                                                                      rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
-rti1516e::MessageRetractionHandle RTI1516ambassador::sendInteractionWithRegions
-(rti1516e::InteractionClassHandle theInteraction,
-        rti1516e::ParameterHandleValueMap const & theParameterValues,
-        rti1516e::RegionHandleSet const & theRegionHandleSet,
-        rti1516e::VariableLengthData const & theUserSuppliedTag,
-        rti1516e::LogicalTime const & theTime)
-throw (rti1516e::InteractionClassNotDefined,
-        rti1516e::InteractionClassNotPublished,
-        rti1516e::InteractionParameterNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::InvalidLogicalTime,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::MessageRetractionHandle RTI1516ambassador::sendInteractionWithRegions(
+    rti1516e::InteractionClassHandle /*theInteraction*/,
+    rti1516e::ParameterHandleValueMap const& /*theParameterValues*/,
+    rti1516e::RegionHandleSet const& /*theRegionHandleSet*/,
+    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/,
+    rti1516e::LogicalTime const& /*theTime*/) throw(rti1516e::InteractionClassNotDefined,
+                                                    rti1516e::InteractionClassNotPublished,
+                                                    rti1516e::InteractionParameterNotDefined,
+                                                    rti1516e::InvalidRegion,
+                                                    rti1516e::RegionNotCreatedByThisFederate,
+                                                    rti1516e::InvalidRegionContext,
+                                                    rti1516e::InvalidLogicalTime,
+                                                    rti1516e::FederateNotExecutionMember,
+                                                    rti1516e::SaveInProgress,
+                                                    rti1516e::RestoreInProgress,
+                                                    rti1516e::NotConnected,
+                                                    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 // 9.13
-void RTI1516ambassador::requestAttributeValueUpdateWithRegions
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandleSetRegionHandleSetPairVector const & theSet,
-        rti1516e::VariableLengthData const & theUserSuppliedTag)
-throw (rti1516e::ObjectClassNotDefined,
-        rti1516e::AttributeNotDefined,
-        rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::InvalidRegionContext,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::requestAttributeValueUpdateWithRegions(
+    rti1516e::ObjectClassHandle /*theClass*/,
+    rti1516e::AttributeHandleSetRegionHandleSetPairVector const& /*theSet*/,
+    rti1516e::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516e::ObjectClassNotDefined,
+                                                                      rti1516e::AttributeNotDefined,
+                                                                      rti1516e::InvalidRegion,
+                                                                      rti1516e::RegionNotCreatedByThisFederate,
+                                                                      rti1516e::InvalidRegionContext,
+                                                                      rti1516e::FederateNotExecutionMember,
+                                                                      rti1516e::SaveInProgress,
+                                                                      rti1516e::RestoreInProgress,
+                                                                      rti1516e::NotConnected,
+                                                                      rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"Not yet implemented");
-        }
+}
 
 //////////////////////////
 // RTI Support Services //
 //////////////////////////
 
 // 10.2
-rti1516e::ResignAction RTI1516ambassador::getAutomaticResignDirective ()
-throw (
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+rti1516e::ResignAction RTI1516ambassador::getAutomaticResignDirective() throw(rti1516e::FederateNotExecutionMember,
+                                                                              rti1516e::NotConnected,
+                                                                              rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"getAutomaticResignDirective Not Implemented");
 }
 
 // 10.3
-void RTI1516ambassador::setAutomaticResignDirective (
-        rti1516e::ResignAction resignAction)
-throw (
-        rti1516e::InvalidResignAction,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError){
+void RTI1516ambassador::setAutomaticResignDirective(rti1516e::ResignAction /*resignAction*/) throw(
+    rti1516e::InvalidResignAction,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"setAutomaticResignDirective Not Implemented");
 }
 
 // 10.4
-rti1516e::FederateHandle RTI1516ambassador::getFederateHandle (
-        std::wstring const & theName)
-throw (
-        rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError){
+rti1516e::FederateHandle RTI1516ambassador::getFederateHandle(std::wstring const& /*theName*/) throw(
+    rti1516e::NameNotFound, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"getFederateHandle Not Implemented");
 }
 
 // 10.5
-std::wstring RTI1516ambassador::getFederateName (
-        rti1516e::FederateHandle theHandle)
-throw (
-        rti1516e::InvalidFederateHandle,
-        rti1516e::FederateHandleNotKnown,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+std::wstring RTI1516ambassador::getFederateName(rti1516e::FederateHandle /*theHandle*/) throw(
+    rti1516e::InvalidFederateHandle,
+    rti1516e::FederateHandleNotKnown,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"getFederateName Not Implemented");
 }
 
 // 10.2
-rti1516e::ObjectClassHandle RTI1516ambassador::getObjectClassHandle
-(std::wstring const & theName)
-throw (rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Object_Class_Handle req, rep ;
+rti1516e::ObjectClassHandle RTI1516ambassador::getObjectClassHandle(std::wstring const& theName) throw(
+    rti1516e::NameNotFound, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
+    M_Get_Object_Class_Handle req, rep;
 
-    G.Out(pdGendoc,"enter RTI1516ambassador::getObjectClassHandle");
+    G.Out(pdGendoc, "enter RTI1516ambassador::getObjectClassHandle");
 
     std::string nameAsString(theName.begin(), theName.end());
     req.setClassName(nameAsString);
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc,"exit RTI1516ambassador::getObjectClassHandle");
-    rti1516e::ObjectClassHandle rti1516Handle = rti1516e::ObjectClassHandleFriend::createRTI1516Handle(rep.getObjectClass());
+    G.Out(pdGendoc, "exit RTI1516ambassador::getObjectClassHandle");
+    rti1516e::ObjectClassHandle rti1516Handle
+        = rti1516e::ObjectClassHandleFriend::createRTI1516Handle(rep.getObjectClass());
 
     return rti1516Handle;
-        }
+}
 
-std::wstring RTI1516ambassador::getObjectClassName
-(rti1516e::ObjectClassHandle theHandle)
-throw (rti1516e::InvalidObjectClassHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Object_Class_Name req, rep ;
+std::wstring
+RTI1516ambassador::getObjectClassName(rti1516e::ObjectClassHandle theHandle) throw(rti1516e::InvalidObjectClassHandle,
+                                                                                   rti1516e::FederateNotExecutionMember,
+                                                                                   rti1516e::NotConnected,
+                                                                                   rti1516e::RTIinternalError)
+{
+    M_Get_Object_Class_Name req, rep;
 
     certi::ObjectClassHandle certiHandle = rti1516e::ObjectClassHandleFriend::toCertiHandle(theHandle);
     req.setObjectClass(certiHandle);
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::ObjectClassNotDefined &e)
-    {
+    }
+    catch (rti1516e::ObjectClassNotDefined& e) {
         throw rti1516e::InvalidObjectClassHandle(e.what());
     }
 
@@ -2398,47 +2268,44 @@ throw (rti1516e::InvalidObjectClassHandle,
 
     //return hla_strdup(rep.getClassName());
     return nameWString;
-        }
+}
 
-rti1516e::ObjectClassHandle RTI1516ambassador::getKnownObjectClassHandle
-(rti1516e::ObjectInstanceHandle theObject)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Object_Class req, rep ;
+rti1516e::ObjectClassHandle RTI1516ambassador::getKnownObjectClassHandle(
+    rti1516e::ObjectInstanceHandle theObject) throw(rti1516e::ObjectInstanceNotKnown,
+                                                    rti1516e::FederateNotExecutionMember,
+                                                    rti1516e::NotConnected,
+                                                    rti1516e::RTIinternalError)
+{
+    M_Get_Object_Class req, rep;
 
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theObject));
     privateRefs->executeService(&req, &rep);
     return rti1516e::ObjectClassHandleFriend::createRTI1516Handle(rep.getObjectClass());
-        }
+}
 
 // 10.10
-rti1516e::ObjectInstanceHandle RTI1516ambassador::getObjectInstanceHandle
-(std::wstring const & theName)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Object_Instance_Handle req, rep ;
+rti1516e::ObjectInstanceHandle
+RTI1516ambassador::getObjectInstanceHandle(std::wstring const& theName) throw(rti1516e::ObjectInstanceNotKnown,
+                                                                              rti1516e::FederateNotExecutionMember,
+                                                                              rti1516e::NotConnected,
+                                                                              rti1516e::RTIinternalError)
+{
+    M_Get_Object_Instance_Handle req, rep;
     std::string nameString(theName.begin(), theName.end());
     req.setObjectInstanceName(nameString);
 
     privateRefs->executeService(&req, &rep);
     return rti1516e::ObjectInstanceHandleFriend::createRTI1516Handle(rep.getObject());
-        }
+}
 
 // 10.11
-std::wstring RTI1516ambassador::getObjectInstanceName
-(rti1516e::ObjectInstanceHandle theHandle)
-throw (rti1516e::ObjectInstanceNotKnown,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Object_Instance_Name req, rep ;
+std::wstring RTI1516ambassador::getObjectInstanceName(rti1516e::ObjectInstanceHandle theHandle) throw(
+    rti1516e::ObjectInstanceNotKnown,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Get_Object_Instance_Name req, rep;
     req.setObject(rti1516e::ObjectInstanceHandleFriend::toCertiHandle(theHandle));
     privateRefs->executeService(&req, &rep);
 
@@ -2447,20 +2314,18 @@ throw (rti1516e::ObjectInstanceNotKnown,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
-
-rti1516e::AttributeHandle RTI1516ambassador::getAttributeHandle
-(rti1516e::ObjectClassHandle whichClass,
-        std::wstring const & theAttributeName)
-throw (rti1516e::InvalidObjectClassHandle,
-        rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    G.Out(pdGendoc,"enter RTI::RTI1516ambassador::getAttributeHandle");
-    M_Get_Attribute_Handle req, rep ;
+rti1516e::AttributeHandle
+RTI1516ambassador::getAttributeHandle(rti1516e::ObjectClassHandle whichClass,
+                                      std::wstring const& theAttributeName) throw(rti1516e::InvalidObjectClassHandle,
+                                                                                  rti1516e::NameNotFound,
+                                                                                  rti1516e::FederateNotExecutionMember,
+                                                                                  rti1516e::NotConnected,
+                                                                                  rti1516e::RTIinternalError)
+{
+    G.Out(pdGendoc, "enter RTI::RTI1516ambassador::getAttributeHandle");
+    M_Get_Attribute_Handle req, rep;
 
     std::string nameAsString(theAttributeName.begin(), theAttributeName.end());
     req.setAttributeName(nameAsString);
@@ -2468,51 +2333,49 @@ throw (rti1516e::InvalidObjectClassHandle,
 
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::ObjectClassNotDefined &e)
-    {
-        if ( ! whichClass.isValid() ) {
+    }
+    catch (rti1516e::ObjectClassNotDefined& e) {
+        if (!whichClass.isValid()) {
             throw rti1516e::InvalidObjectClassHandle(e.what());
-        } else {
+        }
+        else {
             throw rti1516e::NameNotFound(e.what());
         }
     }
 
-    G.Out(pdGendoc,"exit  RTI::RTI1516ambassador::getAttributeHandle");
+    G.Out(pdGendoc, "exit  RTI::RTI1516ambassador::getAttributeHandle");
     return rti1516e::AttributeHandleFriend::createRTI1516Handle(rep.getAttribute());
-        }
+}
 
-std::wstring RTI1516ambassador::getAttributeName
-(rti1516e::ObjectClassHandle whichClass,
-        rti1516e::AttributeHandle theHandle)
-throw (rti1516e::InvalidObjectClassHandle,
-        rti1516e::InvalidAttributeHandle,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Attribute_Name req, rep ;
+std::wstring
+RTI1516ambassador::getAttributeName(rti1516e::ObjectClassHandle whichClass,
+                                    rti1516e::AttributeHandle theHandle) throw(rti1516e::InvalidObjectClassHandle,
+                                                                               rti1516e::InvalidAttributeHandle,
+                                                                               rti1516e::AttributeNotDefined,
+                                                                               rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Get_Attribute_Name req, rep;
 
     req.setAttribute(rti1516e::AttributeHandleFriend::toCertiHandle(theHandle));
     req.setObjectClass(rti1516e::ObjectClassHandleFriend::toCertiHandle(whichClass));
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::ObjectClassNotDefined &e)
-    {
-        if ( !whichClass.isValid() )
-        {
+    }
+    catch (rti1516e::ObjectClassNotDefined& e) {
+        if (!whichClass.isValid()) {
             throw rti1516e::InvalidObjectClassHandle(e.what());
-        } else
-        {
+        }
+        else {
             throw;
         }
-    } catch ( rti1516e::AttributeNotDefined &e)
-    {
-        if (! theHandle.isValid() )
-        {
+    }
+    catch (rti1516e::AttributeNotDefined& e) {
+        if (!theHandle.isValid()) {
             throw rti1516e::InvalidAttributeHandle(e.what());
-        } else
-        {
+        }
+        else {
             throw;
         }
     }
@@ -2523,68 +2386,60 @@ throw (rti1516e::InvalidObjectClassHandle,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.13
-double RTI1516ambassador::getUpdateRateValue (
-        std::wstring const & updateRateDesignator)
-throw (
-        rti1516e::InvalidUpdateRateDesignator,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+double RTI1516ambassador::getUpdateRateValue(std::wstring const& /*updateRateDesignator*/) throw(
+    rti1516e::InvalidUpdateRateDesignator,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"getUpdateRateValue Not Implemented");
 }
 
 // 10.14
-double RTI1516ambassador::getUpdateRateValueForAttribute (
-        rti1516e::ObjectInstanceHandle theObject,
-        rti1516e::AttributeHandle theAttribute)
-throw (
-        rti1516e::ObjectInstanceNotKnown,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError) {
+double RTI1516ambassador::getUpdateRateValueForAttribute(
+    rti1516e::ObjectInstanceHandle /*theObject*/,
+    rti1516e::AttributeHandle /*theAttribute*/) throw(rti1516e::ObjectInstanceNotKnown,
+                                                      rti1516e::AttributeNotDefined,
+                                                      rti1516e::FederateNotExecutionMember,
+                                                      rti1516e::NotConnected,
+                                                      rti1516e::RTIinternalError)
+{
     throw rti1516e::RTIinternalError(L"getUpdateRateValueForAttributeNot Implemented");
 }
 
 // 10.6
-rti1516e::InteractionClassHandle RTI1516ambassador::getInteractionClassHandle
-(std::wstring const & theName)
-throw (rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Interaction_Class_Handle req, rep ;
+rti1516e::InteractionClassHandle RTI1516ambassador::getInteractionClassHandle(std::wstring const& theName) throw(
+    rti1516e::NameNotFound, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
+    M_Get_Interaction_Class_Handle req, rep;
     std::string nameString(theName.begin(), theName.end());
     req.setClassName(nameString);
 
     privateRefs->executeService(&req, &rep);
 
     return rti1516e::InteractionClassHandleFriend::createRTI1516Handle(rep.getInteractionClass());
-        }
+}
 
 // 10.7
-std::wstring RTI1516ambassador::getInteractionClassName
-(rti1516e::InteractionClassHandle theHandle)
-throw (rti1516e::InvalidInteractionClassHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Interaction_Class_Name req, rep ;
+std::wstring RTI1516ambassador::getInteractionClassName(rti1516e::InteractionClassHandle theHandle) throw(
+    rti1516e::InvalidInteractionClassHandle,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Get_Interaction_Class_Name req, rep;
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(theHandle));
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::InteractionClassNotDefined &e)
-    {
-        if ( !theHandle.isValid() )
-        {
+    }
+    catch (rti1516e::InteractionClassNotDefined& e) {
+        if (!theHandle.isValid()) {
             throw rti1516e::InvalidInteractionClassHandle(e.what());
-        } else
-        {
+        }
+        else {
             throw;
         }
     }
@@ -2594,64 +2449,60 @@ throw (rti1516e::InvalidInteractionClassHandle,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.8
-rti1516e::ParameterHandle RTI1516ambassador::getParameterHandle
-(rti1516e::InteractionClassHandle whichClass,
-        std::wstring const & theName)
-throw (rti1516e::InvalidInteractionClassHandle,
-        rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Parameter_Handle req, rep ;
+rti1516e::ParameterHandle
+RTI1516ambassador::getParameterHandle(rti1516e::InteractionClassHandle whichClass,
+                                      std::wstring const& theName) throw(rti1516e::InvalidInteractionClassHandle,
+                                                                         rti1516e::NameNotFound,
+                                                                         rti1516e::FederateNotExecutionMember,
+                                                                         rti1516e::NotConnected,
+                                                                         rti1516e::RTIinternalError)
+{
+    M_Get_Parameter_Handle req, rep;
     std::string nameString(theName.begin(), theName.end());
     req.setParameterName(nameString);
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(whichClass));
 
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::InteractionClassNotDefined &e)
-    {
-        if ( !whichClass.isValid() )
-        {
+    }
+    catch (rti1516e::InteractionClassNotDefined& e) {
+        if (!whichClass.isValid()) {
             throw rti1516e::InvalidInteractionClassHandle(e.what());
-        } else
-        {
+        }
+        else {
             throw;
         }
     }
 
     return rti1516e::ParameterHandleFriend::createRTI1516Handle(rep.getParameter());
-        }
+}
 
 // 10.9
-std::wstring RTI1516ambassador::getParameterName
-(rti1516e::InteractionClassHandle whichClass,
-        rti1516e::ParameterHandle theHandle)
-throw ( rti1516e::InvalidInteractionClassHandle,
-        rti1516e::InvalidParameterHandle,
-        rti1516e::InteractionParameterNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Parameter_Name req, rep ;
+std::wstring
+RTI1516ambassador::getParameterName(rti1516e::InteractionClassHandle whichClass,
+                                    rti1516e::ParameterHandle theHandle) throw(rti1516e::InvalidInteractionClassHandle,
+                                                                               rti1516e::InvalidParameterHandle,
+                                                                               rti1516e::InteractionParameterNotDefined,
+                                                                               rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Get_Parameter_Name req, rep;
 
     req.setParameter(rti1516e::ParameterHandleFriend::toCertiHandle(theHandle));
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(whichClass));
 
     try {
         privateRefs->executeService(&req, &rep);
-    } catch (rti1516e::InteractionClassNotDefined &e)
-    {
-        if ( !whichClass.isValid() )
-        {
+    }
+    catch (rti1516e::InteractionClassNotDefined& e) {
+        if (!whichClass.isValid()) {
             throw rti1516e::InvalidInteractionClassHandle(e.what());
-        } else
-        {
+        }
+        else {
             throw;
         }
     }
@@ -2661,34 +2512,31 @@ throw ( rti1516e::InvalidInteractionClassHandle,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.20
-rti1516e::OrderType RTI1516ambassador::getOrderType
-(std::wstring const & orderName)
-throw (rti1516e::InvalidOrderName,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Ordering_Handle req, rep ;
+rti1516e::OrderType
+RTI1516ambassador::getOrderType(std::wstring const& orderName) throw(rti1516e::InvalidOrderName,
+                                                                     rti1516e::FederateNotExecutionMember,
+                                                                     rti1516e::NotConnected,
+                                                                     rti1516e::RTIinternalError)
+{
+    M_Get_Ordering_Handle req, rep;
 
     std::string nameAsString(orderName.begin(), orderName.end());
     req.setOrderingName(nameAsString);
     privateRefs->executeService(&req, &rep);
 
     return certi::toRTI1516OrderType(rep.getOrdering());
-        }
+}
 
 // 10.21
-std::wstring RTI1516ambassador::getOrderName
-(rti1516e::OrderType orderType)
-throw (rti1516e::InvalidOrderType,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Ordering_Name req, rep ;
+std::wstring RTI1516ambassador::getOrderName(rti1516e::OrderType orderType) throw(rti1516e::InvalidOrderType,
+                                                                                  rti1516e::FederateNotExecutionMember,
+                                                                                  rti1516e::NotConnected,
+                                                                                  rti1516e::RTIinternalError)
+{
+    M_Get_Ordering_Name req, rep;
 
     req.setOrdering(certi::toCertiOrderType(orderType));
     privateRefs->executeService(&req, &rep);
@@ -2698,33 +2546,31 @@ throw (rti1516e::InvalidOrderType,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.18
-rti1516e::TransportationType RTI1516ambassador::getTransportationType
-(std::wstring const & transportationName)
-throw (rti1516e::InvalidTransportationName,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Transportation_Handle req, rep ;
+rti1516e::TransportationType RTI1516ambassador::getTransportationType(std::wstring const& transportationName) throw(
+    rti1516e::InvalidTransportationName,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Get_Transportation_Handle req, rep;
     std::string nameString(transportationName.begin(), transportationName.end());
     req.setTransportationName(nameString);
     privateRefs->executeService(&req, &rep);
 
     return certi::toRTI1516TransportationType(rep.getTransportation());
-        }
+}
 
 // 10.19
-std::wstring RTI1516ambassador::getTransportationName
-(rti1516e::TransportationType transportationType)
-throw (rti1516e::InvalidTransportationType,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Transportation_Name req, rep ;
+std::wstring RTI1516ambassador::getTransportationName(rti1516e::TransportationType transportationType) throw(
+    rti1516e::InvalidTransportationType,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Get_Transportation_Name req, rep;
 
     req.setTransportation(certi::toCertiTransportationType(transportationType));
     privateRefs->executeService(&req, &rep);
@@ -2734,20 +2580,19 @@ throw (rti1516e::InvalidTransportationType,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.15
-rti1516e::DimensionHandleSet RTI1516ambassador::getAvailableDimensionsForClassAttribute
-(rti1516e::ObjectClassHandle theClass,
-        rti1516e::AttributeHandle theHandle)
-throw (rti1516e::InvalidObjectClassHandle,
-        rti1516e::InvalidAttributeHandle,
-        rti1516e::AttributeNotDefined,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Attribute_Space_Handle req, rep ;
+rti1516e::DimensionHandleSet RTI1516ambassador::getAvailableDimensionsForClassAttribute(
+    rti1516e::ObjectClassHandle theClass,
+    rti1516e::AttributeHandle theHandle) throw(rti1516e::InvalidObjectClassHandle,
+                                               rti1516e::InvalidAttributeHandle,
+                                               rti1516e::AttributeNotDefined,
+                                               rti1516e::FederateNotExecutionMember,
+                                               rti1516e::NotConnected,
+                                               rti1516e::RTIinternalError)
+{
+    M_Get_Attribute_Space_Handle req, rep;
 
     req.setAttribute(rti1516e::AttributeHandleFriend::toCertiHandle(theHandle));
     req.setObjectClass(rti1516e::ObjectClassHandleFriend::toCertiHandle(theClass));
@@ -2757,17 +2602,16 @@ throw (rti1516e::InvalidObjectClassHandle,
     //return rep.getSpace();
     rti1516e::DimensionHandleSet invalidSet;
     return invalidSet;
-        }
+}
 
 // 10.17
-rti1516e::DimensionHandleSet RTI1516ambassador::getAvailableDimensionsForInteractionClass
-(rti1516e::InteractionClassHandle theClass)
-throw (rti1516e::InvalidInteractionClassHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Interaction_Space_Handle req, rep ;
+rti1516e::DimensionHandleSet RTI1516ambassador::getAvailableDimensionsForInteractionClass(
+    rti1516e::InteractionClassHandle theClass) throw(rti1516e::InvalidInteractionClassHandle,
+                                                     rti1516e::FederateNotExecutionMember,
+                                                     rti1516e::NotConnected,
+                                                     rti1516e::RTIinternalError)
+{
+    M_Get_Interaction_Space_Handle req, rep;
 
     req.setInteractionClass(rti1516e::InteractionClassHandleFriend::toCertiHandle(theClass));
     this->privateRefs->executeService(&req, &rep);
@@ -2776,35 +2620,29 @@ throw (rti1516e::InvalidInteractionClassHandle,
     //return rep.getSpace();
     rti1516e::DimensionHandleSet invalidSet;
     return invalidSet;
-        }
-
+}
 
 // 10.12
-rti1516e::DimensionHandle RTI1516ambassador::getDimensionHandle
-(std::wstring const & theName)
-throw (rti1516e::NameNotFound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Dimension_Handle req, rep ;
+rti1516e::DimensionHandle RTI1516ambassador::getDimensionHandle(std::wstring const& theName) throw(
+    rti1516e::NameNotFound, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
+    M_Get_Dimension_Handle req, rep;
 
     std::string nameString(theName.begin(), theName.end());
     req.setDimensionName(nameString);
     //req.setSpace(space);    //SPACE NIET NODIG IN 1516 STANDAARD???
     privateRefs->executeService(&req, &rep);
     return rti1516e::DimensionHandleFriend::createRTI1516Handle(rep.getDimension());
-        }
+}
 
 // 10.13
-std::wstring RTI1516ambassador::getDimensionName
-(rti1516e::DimensionHandle theHandle)
-throw (rti1516e::InvalidDimensionHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Get_Dimension_Name req, rep ;
+std::wstring
+RTI1516ambassador::getDimensionName(rti1516e::DimensionHandle theHandle) throw(rti1516e::InvalidDimensionHandle,
+                                                                               rti1516e::FederateNotExecutionMember,
+                                                                               rti1516e::NotConnected,
+                                                                               rti1516e::RTIinternalError)
+{
+    M_Get_Dimension_Name req, rep;
 
     req.setDimension(rti1516e::DimensionHandleFriend::toCertiHandle(theHandle));
     //req.setSpace(space);
@@ -2814,95 +2652,88 @@ throw (rti1516e::InvalidDimensionHandle,
     std::wstring nameWString(nameString.begin(), nameString.end());
 
     return nameWString;
-        }
+}
 
 // 10.14
-unsigned long RTI1516ambassador::getDimensionUpperBound
-(rti1516e::DimensionHandle theHandle)
-throw (rti1516e::InvalidDimensionHandle,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+unsigned long RTI1516ambassador::getDimensionUpperBound(rti1516e::DimensionHandle /*theHandle*/) throw(
+    rti1516e::InvalidDimensionHandle,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"getDimensionUpperBound Not implemented");
-        }
+}
 
 // 10.30
 
-rti1516e::DimensionHandleSet RTI1516ambassador::getDimensionHandleSet
-(rti1516e::RegionHandle theRegionHandle)
-throw (rti1516e::InvalidRegion,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::DimensionHandleSet RTI1516ambassador::getDimensionHandleSet(rti1516e::RegionHandle /*theRegionHandle*/) throw(
+    rti1516e::InvalidRegion,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"getDimensionHandleSet Not implemented");
-        }
+}
 
 // 10.31
 
-rti1516e::RangeBounds RTI1516ambassador::getRangeBounds
-(rti1516e::RegionHandle theRegionHandle,
-        rti1516e::DimensionHandle theDimensionHandle)
-throw (rti1516e::InvalidRegion,
-        rti1516e::RegionDoesNotContainSpecifiedDimension,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+rti1516e::RangeBounds RTI1516ambassador::getRangeBounds(
+    rti1516e::RegionHandle /*theRegionHandle*/,
+    rti1516e::DimensionHandle /*theDimensionHandle*/) throw(rti1516e::InvalidRegion,
+                                                            rti1516e::RegionDoesNotContainSpecifiedDimension,
+                                                            rti1516e::FederateNotExecutionMember,
+                                                            rti1516e::SaveInProgress,
+                                                            rti1516e::RestoreInProgress,
+                                                            rti1516e::NotConnected,
+                                                            rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"getRangeBounds Not implemented");
-        }
+}
 
 // 10.32
-void RTI1516ambassador::setRangeBounds
-(rti1516e::RegionHandle theRegionHandle,
-        rti1516e::DimensionHandle theDimensionHandle,
-        rti1516e::RangeBounds const & theRangeBounds)
-throw (rti1516e::InvalidRegion,
-        rti1516e::RegionNotCreatedByThisFederate,
-        rti1516e::RegionDoesNotContainSpecifiedDimension,
-        rti1516e::InvalidRangeBound,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::setRangeBounds(
+    rti1516e::RegionHandle /*theRegionHandle*/,
+    rti1516e::DimensionHandle /*theDimensionHandle*/,
+    rti1516e::RangeBounds const& /*theRangeBounds*/) throw(rti1516e::InvalidRegion,
+                                                           rti1516e::RegionNotCreatedByThisFederate,
+                                                           rti1516e::RegionDoesNotContainSpecifiedDimension,
+                                                           rti1516e::InvalidRangeBound,
+                                                           rti1516e::FederateNotExecutionMember,
+                                                           rti1516e::SaveInProgress,
+                                                           rti1516e::RestoreInProgress,
+                                                           rti1516e::NotConnected,
+                                                           rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"setRangeBounds Not implemented");
-        }
+}
 
 // 10.33
-unsigned long RTI1516ambassador::normalizeFederateHandle
-(rti1516e::FederateHandle theFederateHandle)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::InvalidFederateHandle,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+unsigned long RTI1516ambassador::normalizeFederateHandle(rti1516e::FederateHandle /*theFederateHandle*/) throw(
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::InvalidFederateHandle,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"normalizeFederateHandle Not implemented");
-        }
+}
 
 // 10.34
-unsigned long RTI1516ambassador::normalizeServiceGroup
-(rti1516e::ServiceGroup theServiceGroup)
-throw (rti1516e::FederateNotExecutionMember,
-        rti1516e::InvalidServiceGroup,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
+unsigned long RTI1516ambassador::normalizeServiceGroup(rti1516e::ServiceGroup /*theServiceGroup*/) throw(
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::InvalidServiceGroup,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"normalizeServiceGroup Not implemented");
-        }
-
+}
 
 // 10.22
 /**
@@ -2923,17 +2754,17 @@ throw (rti1516e::FederateNotExecutionMember,
  * stopRegistrationForObjectClass respectively are not invoked.
  * @see disableClassRelevanceAdvisorySwitch()
  */
-void RTI1516ambassador::enableObjectClassRelevanceAdvisorySwitch ()
-throw (rti1516e::ObjectClassRelevanceAdvisorySwitchIsOn,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Class_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::enableObjectClassRelevanceAdvisorySwitch() throw(
+    rti1516e::ObjectClassRelevanceAdvisorySwitchIsOn,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Enable_Class_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.23
 /**
@@ -2954,17 +2785,17 @@ throw (rti1516e::ObjectClassRelevanceAdvisorySwitchIsOn,
  * services startRegistrationForObjectClass and
  * stopRegistrationForObjectClass respectively are not invoked.
  */
-void RTI1516ambassador::disableObjectClassRelevanceAdvisorySwitch ()
-throw (rti1516e::ObjectClassRelevanceAdvisorySwitchIsOff,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Class_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::disableObjectClassRelevanceAdvisorySwitch() throw(
+    rti1516e::ObjectClassRelevanceAdvisorySwitchIsOff,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Disable_Class_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.24
 /**
@@ -2986,17 +2817,16 @@ throw (rti1516e::ObjectClassRelevanceAdvisorySwitchIsOff,
  * turnUpdatesOffForObjectInstance respectively are not invoked.
  * @see disableAttributeRelevanceAdvisorySwitch()
  */
-void RTI1516ambassador::enableAttributeRelevanceAdvisorySwitch ()
-throw (rti1516e::AttributeRelevanceAdvisorySwitchIsOn,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Attribute_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::enableAttributeRelevanceAdvisorySwitch() throw(rti1516e::AttributeRelevanceAdvisorySwitchIsOn,
+                                                                       rti1516e::FederateNotExecutionMember,
+                                                                       rti1516e::SaveInProgress,
+                                                                       rti1516e::RestoreInProgress,
+                                                                       rti1516e::NotConnected,
+                                                                       rti1516e::RTIinternalError)
+{
+    M_Enable_Attribute_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.25
 /**
@@ -3018,17 +2848,16 @@ throw (rti1516e::AttributeRelevanceAdvisorySwitchIsOn,
  * services turnUpdatesOnForObjectInstance and
  * turnUpdatesOffForObjectInstance respectively are not invoked.
  */
-void RTI1516ambassador::disableAttributeRelevanceAdvisorySwitch ()
-throw (rti1516e::AttributeRelevanceAdvisorySwitchIsOff,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Attribute_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::disableAttributeRelevanceAdvisorySwitch() throw(rti1516e::AttributeRelevanceAdvisorySwitchIsOff,
+                                                                        rti1516e::FederateNotExecutionMember,
+                                                                        rti1516e::SaveInProgress,
+                                                                        rti1516e::RestoreInProgress,
+                                                                        rti1516e::NotConnected,
+                                                                        rti1516e::RTIinternalError)
+{
+    M_Disable_Attribute_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.26
 /**
@@ -3049,17 +2878,16 @@ throw (rti1516e::AttributeRelevanceAdvisorySwitchIsOff,
  * not invoked.
  * @see disableAttributeScopeAdvisorySwitch()
  */
-void RTI1516ambassador::enableAttributeScopeAdvisorySwitch ()
-throw (rti1516e::AttributeScopeAdvisorySwitchIsOn,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Attribute_Scope_Advisory_Switch req, rep ;
+void RTI1516ambassador::enableAttributeScopeAdvisorySwitch() throw(rti1516e::AttributeScopeAdvisorySwitchIsOn,
+                                                                   rti1516e::FederateNotExecutionMember,
+                                                                   rti1516e::SaveInProgress,
+                                                                   rti1516e::RestoreInProgress,
+                                                                   rti1516e::NotConnected,
+                                                                   rti1516e::RTIinternalError)
+{
+    M_Enable_Attribute_Scope_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.27
 /**
@@ -3080,17 +2908,16 @@ throw (rti1516e::AttributeScopeAdvisorySwitchIsOn,
  * services attributesInScope and attributesOutScope respectively are
  * not invoked.
  */
-void RTI1516ambassador::disableAttributeScopeAdvisorySwitch ()
-throw (rti1516e::AttributeScopeAdvisorySwitchIsOff,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Attribute_Scope_Advisory_Switch req, rep ;
+void RTI1516ambassador::disableAttributeScopeAdvisorySwitch() throw(rti1516e::AttributeScopeAdvisorySwitchIsOff,
+                                                                    rti1516e::FederateNotExecutionMember,
+                                                                    rti1516e::SaveInProgress,
+                                                                    rti1516e::RestoreInProgress,
+                                                                    rti1516e::NotConnected,
+                                                                    rti1516e::RTIinternalError)
+{
+    M_Disable_Attribute_Scope_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.28
 /**
@@ -3111,17 +2938,17 @@ throw (rti1516e::AttributeScopeAdvisorySwitchIsOff,
  * not invoked.
  * @see disableInteractionRelevanceAdvisorySwitch()
  */
-void RTI1516ambassador::enableInteractionRelevanceAdvisorySwitch ()
-throw (rti1516e::InteractionRelevanceAdvisorySwitchIsOn,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Enable_Interaction_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::enableInteractionRelevanceAdvisorySwitch() throw(
+    rti1516e::InteractionRelevanceAdvisorySwitchIsOn,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Enable_Interaction_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
+}
 
 // 10.29
 /**
@@ -3142,165 +2969,124 @@ throw (rti1516e::InteractionRelevanceAdvisorySwitchIsOn,
  * services turnInteractionsOn and turnInteractionsOff respectively are
  * not invoked.
  */
-void RTI1516ambassador::disableInteractionRelevanceAdvisorySwitch ()
-throw (rti1516e::InteractionRelevanceAdvisorySwitchIsOff,
-        rti1516e::FederateNotExecutionMember,
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::NotConnected,
-        rti1516e::RTIinternalError)
-        {
-    M_Disable_Interaction_Relevance_Advisory_Switch req, rep ;
+void RTI1516ambassador::disableInteractionRelevanceAdvisorySwitch() throw(
+    rti1516e::InteractionRelevanceAdvisorySwitchIsOff,
+    rti1516e::FederateNotExecutionMember,
+    rti1516e::SaveInProgress,
+    rti1516e::RestoreInProgress,
+    rti1516e::NotConnected,
+    rti1516e::RTIinternalError)
+{
+    M_Disable_Interaction_Relevance_Advisory_Switch req, rep;
     privateRefs->executeService(&req, &rep);
-        }
-
+}
 
 // 10.37
-bool RTI1516ambassador::evokeCallback(double approximateMinimumTimeInSeconds)
-throw (rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError)
-        {
+bool RTI1516ambassador::evokeCallback(double approximateMinimumTimeInSeconds) throw(
+    rti1516e::CallNotAllowedFromWithinCallback, rti1516e::RTIinternalError)
+{
     return __tick_kernel(false, approximateMinimumTimeInSeconds, approximateMinimumTimeInSeconds);
-        }
+}
 
 // 10.38
-bool RTI1516ambassador::evokeMultipleCallbacks(double approximateMinimumTimeInSeconds,
-        double approximateMaximumTimeInSeconds)
-throw (rti1516e::CallNotAllowedFromWithinCallback,
-        rti1516e::RTIinternalError)
-        {
+bool RTI1516ambassador::evokeMultipleCallbacks(
+    double approximateMinimumTimeInSeconds,
+    double approximateMaximumTimeInSeconds) throw(rti1516e::CallNotAllowedFromWithinCallback,
+                                                  rti1516e::RTIinternalError)
+{
     return __tick_kernel(true, approximateMinimumTimeInSeconds, approximateMaximumTimeInSeconds);
-        }
+}
 
 // 10.39
-void RTI1516ambassador::enableCallbacks ()
-throw (
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::enableCallbacks() throw(rti1516e::SaveInProgress,
+                                                rti1516e::RestoreInProgress,
+                                                rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"enableCallbacks Not implemented");
-        }
+}
 
 // 10.40
-void RTI1516ambassador::disableCallbacks ()
-throw (
-        rti1516e::SaveInProgress,
-        rti1516e::RestoreInProgress,
-        rti1516e::RTIinternalError)
-        {
+void RTI1516ambassador::disableCallbacks() throw(rti1516e::SaveInProgress,
+                                                 rti1516e::RestoreInProgress,
+                                                 rti1516e::RTIinternalError)
+{
     /* TODO */
     throw rti1516e::RTIinternalError(L"disableCallbacks Not implemented");
-        }
+}
 
-std::unique_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory () const
-                     throw (
-                             rti1516e::FederateNotExecutionMember,
-                             rti1516e::NotConnected,
-                             rti1516e::RTIinternalError) {
+std::unique_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory() const
+    throw(rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
+{
     /* FIXME this must be fixed ASAP */
     throw rti1516e::RTIinternalError(L"getTimeFactory Not Implemented");
 }
 
-rti1516e::FederateHandle RTI1516ambassador::decodeFederateHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::FederateHandle RTI1516ambassador::decodeFederateHandle(rti1516e::VariableLengthData const& encodedValue) const
+    throw(rti1516e::CouldNotDecode,
+          rti1516e::FederateNotExecutionMember,
+          rti1516e::NotConnected,
+          rti1516e::RTIinternalError)
 {
     return rti1516e::FederateHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::ObjectClassHandle RTI1516ambassador::decodeObjectClassHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::ObjectClassHandle
+RTI1516ambassador::decodeObjectClassHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::ObjectClassHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::InteractionClassHandle RTI1516ambassador::decodeInteractionClassHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::InteractionClassHandle
+RTI1516ambassador::decodeInteractionClassHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::InteractionClassHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::ObjectInstanceHandle RTI1516ambassador::decodeObjectInstanceHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::ObjectInstanceHandle
+RTI1516ambassador::decodeObjectInstanceHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::ObjectInstanceHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::AttributeHandle RTI1516ambassador::decodeAttributeHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::AttributeHandle
+RTI1516ambassador::decodeAttributeHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::AttributeHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::ParameterHandle RTI1516ambassador::decodeParameterHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::ParameterHandle
+RTI1516ambassador::decodeParameterHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::ParameterHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::DimensionHandle RTI1516ambassador::decodeDimensionHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::DimensionHandle
+RTI1516ambassador::decodeDimensionHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::DimensionHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::MessageRetractionHandle RTI1516ambassador::decodeMessageRetractionHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::MessageRetractionHandle
+RTI1516ambassador::decodeMessageRetractionHandle(rti1516e::VariableLengthData const& encodedValue) const throw(
+    rti1516e::CouldNotDecode, rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     return rti1516e::MessageRetractionHandleFriend::createRTI1516Handle(encodedValue);
 }
 
-rti1516e::RegionHandle RTI1516ambassador::decodeRegionHandle(
-        rti1516e::VariableLengthData const & encodedValue) const
-throw (
-            rti1516e::CouldNotDecode,
-            rti1516e::FederateNotExecutionMember,
-            rti1516e::NotConnected,
-            rti1516e::RTIinternalError)
+rti1516e::RegionHandle RTI1516ambassador::decodeRegionHandle(rti1516e::VariableLengthData const& encodedValue) const
+    throw(rti1516e::CouldNotDecode,
+          rti1516e::FederateNotExecutionMember,
+          rti1516e::NotConnected,
+          rti1516e::RTIinternalError)
 {
     return rti1516e::RegionHandleFriend::createRTI1516Handle(encodedValue);
 }
-
 
 } // end namespace certi

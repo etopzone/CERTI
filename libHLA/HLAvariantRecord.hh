@@ -125,12 +125,12 @@ struct HLAvariantRecord<DE, DM, R, false> {
         return *(typename __DiscriminantOrFieldAt<DE, DM, R, e>::Type*) ((char*) this + emptysizeof());
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return DM::__sizeof() + __padding(DM::__sizeof(), R::m_octetBoundary);
     }
 
-    const size_t __sizeof() const
+    size_t __sizeof() const
     {
         if (R::has_field(discriminant()))
             return emptysizeof() + R::field_sizeof(discriminant());
@@ -192,12 +192,12 @@ struct HLAvariantRecord<DE, DM, R, true> {
         return *(typename __DiscriminantOrFieldAt<DE, DM, R, e>::Type*) ((char*) this + emptysizeof());
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return DM::__sizeof() + __padding(DM::__sizeof(), R::m_octetBoundary);
     }
 
-    const size_t __sizeof() const
+    size_t __sizeof() const
     {
         if (R::has_field(discriminant()))
             return emptysizeof() + ((R*) ((char*) this + emptysizeof()))->field_sizeof(discriminant());
@@ -253,7 +253,7 @@ struct HLAsetRange {
 //! Defines the "HLAother" symbol in an enumerator list
 template <class N = HLAsetEnd>
 struct HLAsetOther {
-    static int includes(int i)
+    static int includes(int /*i*/)
     {
         return 1;
     }
@@ -261,7 +261,7 @@ struct HLAsetOther {
 
 //! Defines the end of an enumerator list
 struct HLAsetEnd {
-    static int includes(int i)
+    static int includes(int /*i*/)
     {
         return 0;
     }
@@ -293,7 +293,7 @@ struct HLAvariantField<D, E, M, N, false> {
             return N::get_field(d);
     }
 
-    static const size_t field_emptysizeof(int e)
+    static size_t field_emptysizeof(int e)
     {
         if (e == E)
             return M::emptysizeof();
@@ -301,7 +301,7 @@ struct HLAvariantField<D, E, M, N, false> {
             return N::field_emptysizeof(e);
     }
 
-    static const size_t field_sizeof(int e)
+    static size_t field_sizeof(int e)
     {
         if (e == E)
             return M::__sizeof();
@@ -340,7 +340,7 @@ struct HLAvariantField<D, E, M, N, true> {
             return N::get_field(d);
     }
 
-    static const size_t field_emptysizeof(int e)
+    static size_t field_emptysizeof(int e)
     {
         if (e == E)
             return M::emptysizeof();
@@ -348,7 +348,7 @@ struct HLAvariantField<D, E, M, N, true> {
             return N::field_emptysizeof(e);
     }
 
-    const size_t field_sizeof(int e) const
+    size_t field_sizeof(int e) const
     {
         if (e == E)
             return ((M*) this)->__sizeof();
@@ -370,23 +370,23 @@ struct HLAvariantField<D, E, M, N, true> {
 
 //! Defines a last field in the fixed record
 struct HLAvariantEnd {
-    static bool has_field(int d)
+    static bool has_field(int /*d*/)
     {
         return false;
     }
-    static int get_field(int d)
+    static int get_field(int /*d*/)
     {
         throw std::out_of_range("HLAvariantRecord: unknown discriminant");
     }
-    static const size_t field_emptysizeof(int e)
+    static size_t field_emptysizeof(int /*e*/)
     {
         return 0;
     }
-    static const size_t field_sizeof(int e)
+    static size_t field_sizeof(int /*e*/)
     {
         return 0;
     }
-    void copy(int e, void* source)
+    void copy(int /*e*/, void* /*source*/)
     { /* nop */
     }
 

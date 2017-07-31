@@ -36,7 +36,7 @@
 
 
 rti1516e::LogicalTime &
-rti1516e::LogicalTime::operator=(rti1516e::LogicalTime const & value)
+rti1516e::LogicalTime::operator=(rti1516e::LogicalTime const & /*value*/)
 throw (rti1516e::InvalidLogicalTime)
 {
     throw std::wstring(L"Operator should be overloaded");
@@ -44,7 +44,7 @@ throw (rti1516e::InvalidLogicalTime)
 }
 
 rti1516e::LogicalTimeInterval &
-rti1516e::LogicalTimeInterval::operator=(rti1516e::LogicalTimeInterval const & value)
+rti1516e::LogicalTimeInterval::operator=(rti1516e::LogicalTimeInterval const & /*value*/)
 throw (rti1516e::InvalidLogicalTimeInterval)
 {
     throw std::wstring(L"Operator should be overloaded");
@@ -866,7 +866,7 @@ throw (rti1516e::InternalError)
 
 
 std::unique_ptr< rti1516e::LogicalTimeFactory >
-rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(std::wstring const & implementationName)
+rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(std::wstring const & /*implementationName*/)
 {
     RTI1516fedTimeFactory *fedTimeFactory = new RTI1516fedTimeFactory();
 

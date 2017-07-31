@@ -165,12 +165,12 @@ public:
 	 * Get the message type.
 	 * @return the type of the message
 	 */
-    const NetworkMessage::Message_T getMessageType() const
+    NetworkMessage::Message_T getMessageType() const
     {
         return type;
     };
 
-    const Exception::Type getException() const
+    Exception::Type getException() const
     {
         return exception;
     };

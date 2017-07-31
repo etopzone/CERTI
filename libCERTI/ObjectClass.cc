@@ -641,7 +641,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 ObjectClassBroadcastList *
 ObjectClass::registerObjectInstance(FederateHandle the_federate,
                                     Object *the_object,
-                                    ObjectClassHandle classHandle)
+                                    ObjectClassHandle /*classHandle*/)
     throw (ObjectClassNotPublished,
            ObjectAlreadyRegistered,
            RTIinternalError)

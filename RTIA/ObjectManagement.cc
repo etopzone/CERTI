@@ -993,7 +993,7 @@ ObjectManagement::
 attributesInScope(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		Exception::Type &e) {
+		Exception::Type &/*e*/) {
 
 	M_Attributes_In_Scope req;
 
@@ -1019,7 +1019,7 @@ ObjectManagement::
 attributesOutOfScope(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		Exception::Type &e) {
+		Exception::Type &/*e*/) {
 
 	M_Attributes_Out_Of_Scope req;
 
@@ -1069,7 +1069,7 @@ ObjectManagement::
 turnUpdatesOnForObjectInstance(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		Exception::Type &e) {
+		Exception::Type &/*e*/) {
 
 	M_Turn_Updates_On_For_Object_Instance req;
 
@@ -1095,7 +1095,7 @@ ObjectManagement::
 turnUpdatesOffForObjectInstance(ObjectHandle theObject,
 		const std::vector <AttributeHandle> &attribArray,
 		const uint16_t attribArraySize,
-		Exception::Type &e) {
+		Exception::Type &/*e*/) {
 
 	M_Turn_Updates_Off_For_Object_Instance req;
 

@@ -99,7 +99,7 @@ namespace rti1516e
 	// The allocation of inData is assumed to have been through an array
 	// alloctor (e.g., char* data = new char[20]. If the data was allocated
 	// in some other fashion, a deletion function must be supplied.
-	void VariableLengthData::takeDataPointer(void* inData, size_t inSize, VariableLengthDataDeleteFunction func)
+	void VariableLengthData::takeDataPointer(void* inData, size_t inSize, VariableLengthDataDeleteFunction /*func*/)
 	{
 		if (_impl == 0)
 		{

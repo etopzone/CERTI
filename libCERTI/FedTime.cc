@@ -120,7 +120,7 @@ FedTime::encodedLength() const
 
 // ----------------------------------------------------------------------------
 void
-FedTime::encode(char *buffer) const
+FedTime::encode(char * /*buffer*/) const
 {
 //	libhla::HLAfloat64LE encoded_fedTime;
 //	encoded_fedTime = _fedTime;

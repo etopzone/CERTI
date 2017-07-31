@@ -24,39 +24,39 @@ namespace rti1516
     // 4.7
     virtual
     void
-    synchronizationPointRegistrationSucceeded(std::wstring const & label)
+    synchronizationPointRegistrationSucceeded(std::wstring const & /*label*/)
       throw (FederateInternalError) {}
 
     virtual
     void
-    synchronizationPointRegistrationFailed(std::wstring const & label,
-                                           SynchronizationFailureReason reason)
+    synchronizationPointRegistrationFailed(std::wstring const & /*label*/,
+                                           SynchronizationFailureReason /*reason*/)
       throw (FederateInternalError) {}
 
     // 4.8
     virtual
     void
-    announceSynchronizationPoint(std::wstring  const & label,
-                                 VariableLengthData const & theUserSuppliedTag)
+    announceSynchronizationPoint(std::wstring  const & /*label*/,
+                                 VariableLengthData const & /*theUserSuppliedTag*/)
       throw (FederateInternalError) {}
 
     // 4.10
     virtual
     void
-    federationSynchronized(std::wstring const & label)
+    federationSynchronized(std::wstring const & /*label*/)
       throw (FederateInternalError) {}
 
     // 4.12
     virtual
     void
-    initiateFederateSave(std::wstring const & label)
+    initiateFederateSave(std::wstring const & /*label*/)
       throw (UnableToPerformSave,
              FederateInternalError) {}
 
     virtual
     void
-    initiateFederateSave(std::wstring const & label,
-                         LogicalTime const & theTime)
+    initiateFederateSave(std::wstring const & /*label*/,
+                         LogicalTime const & /*theTime*/)
       throw (UnableToPerformSave,
              InvalidLogicalTime,
              FederateInternalError) {}
@@ -69,7 +69,7 @@ namespace rti1516
 
     virtual
     void
-    federationNotSaved(SaveFailureReason theSaveFailureReason)
+    federationNotSaved(SaveFailureReason /*theSaveFailureReason*/)
       throw (FederateInternalError) {}
 
 
@@ -78,18 +78,18 @@ namespace rti1516
     void
     federationSaveStatusResponse(
       FederateHandleSaveStatusPairVector const & 
-      theFederateStatusVector)
+      /*theFederateStatusVector*/)
       throw (FederateInternalError) {}
 
     // 4.19
     virtual
     void
-    requestFederationRestoreSucceeded(std::wstring const & label)
+    requestFederationRestoreSucceeded(std::wstring const & /*label*/)
       throw (FederateInternalError) {}
 
     virtual
     void
-    requestFederationRestoreFailed(std::wstring const & label)
+    requestFederationRestoreFailed(std::wstring const & /*label*/)
       throw (FederateInternalError) {}
 
     // 4.20
@@ -101,8 +101,8 @@ namespace rti1516
     // 4.21
     virtual
     void
-    initiateFederateRestore(std::wstring         const & label,
-                            FederateHandle handle)
+    initiateFederateRestore(std::wstring const & /*label*/,
+                            FederateHandle /*handle*/)
       throw (SpecifiedSaveLabelDoesNotExist,
              CouldNotInitiateRestore,
              FederateInternalError) {}
@@ -115,7 +115,7 @@ namespace rti1516
 
     virtual
     void
-    federationNotRestored(RestoreFailureReason theRestoreFailureReason)
+    federationNotRestored(RestoreFailureReason /*theRestoreFailureReason*/)
       throw (FederateInternalError) {}
 
     // 4.25
@@ -123,7 +123,7 @@ namespace rti1516
     void
     federationRestoreStatusResponse(
       FederateHandleRestoreStatusPairVector  const & 
-      theFederateStatusVector)
+      /*theFederateStatusVector*/)
       throw (FederateInternalError) {}
 
     /////////////////////////////////////
@@ -133,28 +133,28 @@ namespace rti1516
     // 5.10
     virtual
     void
-    startRegistrationForObjectClass(ObjectClassHandle theClass)
+    startRegistrationForObjectClass(ObjectClassHandle /*theClass*/)
       throw (ObjectClassNotPublished,
              FederateInternalError) {}
 
     // 5.11
     virtual
     void
-    stopRegistrationForObjectClass(ObjectClassHandle theClass)
+    stopRegistrationForObjectClass(ObjectClassHandle /*theClass*/)
       throw (ObjectClassNotPublished,
              FederateInternalError) {}
 
     // 5.12
     virtual
     void
-    turnInteractionsOn(InteractionClassHandle theHandle)
+    turnInteractionsOn(InteractionClassHandle /*theHandle*/)
       throw (InteractionClassNotPublished,
              FederateInternalError) {}
 
     // 5.13
     virtual
     void
-    turnInteractionsOff(InteractionClassHandle theHandle)
+    turnInteractionsOff(InteractionClassHandle /*theHandle*/)
       throw (InteractionClassNotPublished,
              FederateInternalError) {}
 
@@ -166,14 +166,14 @@ namespace rti1516
     virtual
     void
     objectInstanceNameReservationSucceeded(std::wstring const &
-                                           theObjectInstanceName)
+                                           /*theObjectInstanceName*/)
       throw (UnknownName,
              FederateInternalError) {}
 
     virtual
     void
     objectInstanceNameReservationFailed(std::wstring const &
-                                        theObjectInstanceName)
+                                        /*theObjectInstanceName*/)
       throw (UnknownName,
              FederateInternalError) {}
 
@@ -181,9 +181,9 @@ namespace rti1516
     // 6.5
     virtual
     void
-    discoverObjectInstance(ObjectInstanceHandle theObject,
-                           ObjectClassHandle theObjectClass,
-                           std::wstring const & theObjectInstanceName)
+    discoverObjectInstance(ObjectInstanceHandle /*theObject*/,
+                           ObjectClassHandle /*theObjectClass*/,
+                           std::wstring const & /*theObjectInstanceName*/)
       throw (CouldNotDiscover,
              ObjectClassNotKnown,
              FederateInternalError) {}
@@ -192,11 +192,11 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -205,12 +205,12 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -219,13 +219,13 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -234,14 +234,14 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -250,14 +250,14 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     MessageRetractionHandle theHandle)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     MessageRetractionHandle /*theHandle*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -267,15 +267,15 @@ namespace rti1516
     virtual
     void
     reflectAttributeValues
-    (ObjectInstanceHandle theObject,
-     AttributeHandleValueMap const & theAttributeValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     MessageRetractionHandle theHandle,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleValueMap const & /*theAttributeValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     MessageRetractionHandle /*theHandle*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -286,11 +286,11 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -299,12 +299,12 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -313,13 +313,13 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -328,14 +328,14 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -344,14 +344,14 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     MessageRetractionHandle theHandle)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     MessageRetractionHandle /*theHandle*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -361,15 +361,15 @@ namespace rti1516
     virtual
     void
     receiveInteraction
-    (InteractionClassHandle theInteraction,
-     ParameterHandleValueMap const & theParameterValues,
-     VariableLengthData const & theUserSuppliedTag,
-     OrderType sentOrder,
-     TransportationType theType,
-     LogicalTime const & theTime,
-     OrderType receivedOrder,
-     MessageRetractionHandle theHandle,
-     RegionHandleSet const & theSentRegionHandleSet)
+    (InteractionClassHandle /*theInteraction*/,
+     ParameterHandleValueMap const & /*theParameterValues*/,
+     VariableLengthData const & /*theUserSuppliedTag*/,
+     OrderType /*sentOrder*/,
+     TransportationType /*theType*/,
+     LogicalTime const & /*theTime*/,
+     OrderType /*receivedOrder*/,
+     MessageRetractionHandle /*theHandle*/,
+     RegionHandleSet const & /*theSentRegionHandleSet*/)
       throw (InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
@@ -379,30 +379,30 @@ namespace rti1516
     // 6.11
     virtual
     void
-    removeObjectInstance(ObjectInstanceHandle theObject,
-                         VariableLengthData const & theUserSuppliedTag,
-                         OrderType sentOrder)
+    removeObjectInstance(ObjectInstanceHandle /*theObject*/,
+                         VariableLengthData const & /*theUserSuppliedTag*/,
+                         OrderType /*sentOrder*/)
       throw (ObjectInstanceNotKnown,
              FederateInternalError) {}
 
     virtual
     void
-    removeObjectInstance(ObjectInstanceHandle theObject,
-                         VariableLengthData const & theUserSuppliedTag,
-                         OrderType sentOrder,
-                         LogicalTime const & theTime,
-                         OrderType receivedOrder)
+    removeObjectInstance(ObjectInstanceHandle /*theObject*/,
+                         VariableLengthData const & /*theUserSuppliedTag*/,
+                         OrderType /*sentOrder*/,
+                         LogicalTime const & /*theTime*/,
+                         OrderType /*receivedOrder*/)
       throw (ObjectInstanceNotKnown,
              FederateInternalError) {}
 
     virtual
     void
-    removeObjectInstance(ObjectInstanceHandle theObject,
-                         VariableLengthData const & theUserSuppliedTag,
-                         OrderType sentOrder,
-                         LogicalTime const & theTime,
-                         OrderType receivedOrder,
-                         MessageRetractionHandle theHandle)
+    removeObjectInstance(ObjectInstanceHandle /*theObject*/,
+                         VariableLengthData const & /*theUserSuppliedTag*/,
+                         OrderType /*sentOrder*/,
+                         LogicalTime const & /*theTime*/,
+                         OrderType /*receivedOrder*/,
+                         MessageRetractionHandle /*theHandle*/)
       throw (ObjectInstanceNotKnown,
              InvalidLogicalTime,
              FederateInternalError) {}
@@ -411,8 +411,8 @@ namespace rti1516
     virtual
     void
     attributesInScope
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -422,8 +422,8 @@ namespace rti1516
     virtual
     void
     attributesOutOfScope
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
@@ -433,9 +433,9 @@ namespace rti1516
     virtual
     void
     provideAttributeValueUpdate
-    (ObjectInstanceHandle theObject,
-     AttributeHandleSet const & theAttributes,
-     VariableLengthData const & theUserSuppliedTag)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleSet const & /*theAttributes*/,
+     VariableLengthData const & /*theUserSuppliedTag*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
@@ -445,8 +445,8 @@ namespace rti1516
     virtual
     void
     turnUpdatesOnForObjectInstance
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
@@ -456,8 +456,8 @@ namespace rti1516
     virtual
     void
     turnUpdatesOffForObjectInstance
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
@@ -471,9 +471,9 @@ namespace rti1516
     virtual
     void
     requestAttributeOwnershipAssumption
-    (ObjectInstanceHandle theObject,
-     AttributeHandleSet const & offeredAttributes,
-     VariableLengthData const & theUserSuppliedTag)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleSet const & /*offeredAttributes*/,
+     VariableLengthData const & /*theUserSuppliedTag*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
@@ -484,8 +484,8 @@ namespace rti1516
     virtual
     void
     requestDivestitureConfirmation
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & releasedAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*releasedAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
@@ -496,9 +496,9 @@ namespace rti1516
     virtual
     void
     attributeOwnershipAcquisitionNotification
-    (ObjectInstanceHandle theObject,
-     AttributeHandleSet const & securedAttributes,
-     VariableLengthData const & theUserSuppliedTag)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleSet const & /*securedAttributes*/,
+     VariableLengthData const & /*theUserSuppliedTag*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAcquisitionWasNotRequested,
@@ -510,8 +510,8 @@ namespace rti1516
     virtual
     void
     attributeOwnershipUnavailable
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
@@ -522,9 +522,9 @@ namespace rti1516
     virtual
     void
     requestAttributeOwnershipRelease
-    (ObjectInstanceHandle theObject,
-     AttributeHandleSet const & candidateAttributes,
-     VariableLengthData const & theUserSuppliedTag)
+    (ObjectInstanceHandle /*theObject*/,
+     AttributeHandleSet const & /*candidateAttributes*/,
+     VariableLengthData const & /*theUserSuppliedTag*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
@@ -534,8 +534,8 @@ namespace rti1516
     virtual
     void
     confirmAttributeOwnershipAcquisitionCancellation
-    (ObjectInstanceHandle theObject,
-      AttributeHandleSet const & theAttributes)
+    (ObjectInstanceHandle /*theObject*/,
+      AttributeHandleSet const & /*theAttributes*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
@@ -545,25 +545,25 @@ namespace rti1516
     // 7.17
     virtual
     void
-    informAttributeOwnership(ObjectInstanceHandle theObject,
-                             AttributeHandle theAttribute,
-                             FederateHandle theOwner)
+    informAttributeOwnership(ObjectInstanceHandle /*theObject*/,
+                             AttributeHandle /*theAttribute*/,
+                             FederateHandle /*theOwner*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              FederateInternalError) {}
 
     virtual
     void
-    attributeIsNotOwned(ObjectInstanceHandle theObject,
-                        AttributeHandle theAttribute)
+    attributeIsNotOwned(ObjectInstanceHandle /*theObject*/,
+                        AttributeHandle /*theAttribute*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              FederateInternalError) {}
 
     virtual
     void
-    attributeIsOwnedByRTI(ObjectInstanceHandle theObject,
-                          AttributeHandle theAttribute)
+    attributeIsOwnedByRTI(ObjectInstanceHandle /*theObject*/,
+                          AttributeHandle /*theAttribute*/)
       throw (ObjectInstanceNotKnown,
              AttributeNotRecognized,
              FederateInternalError) {}
@@ -575,7 +575,7 @@ namespace rti1516
     // 8.3
     virtual
     void
-    timeRegulationEnabled(LogicalTime const & theFederateTime)
+    timeRegulationEnabled(LogicalTime const & /*theFederateTime*/)
       throw (InvalidLogicalTime,
              NoRequestToEnableTimeRegulationWasPending,
              FederateInternalError) {}
@@ -583,7 +583,7 @@ namespace rti1516
     // 8.6
     virtual
     void
-    timeConstrainedEnabled(LogicalTime const & theFederateTime)
+    timeConstrainedEnabled(LogicalTime const & /*theFederateTime*/)
       throw (InvalidLogicalTime,
              NoRequestToEnableTimeConstrainedWasPending,
              FederateInternalError) {}
@@ -591,7 +591,7 @@ namespace rti1516
     // 8.13
     virtual
     void
-    timeAdvanceGrant(LogicalTime const & theTime)
+    timeAdvanceGrant(LogicalTime const & /*theTime*/)
       throw (InvalidLogicalTime,
              JoinedFederateIsNotInTimeAdvancingState,
              FederateInternalError) {}
@@ -599,7 +599,7 @@ namespace rti1516
     // 8.22
     virtual
     void
-    requestRetraction(MessageRetractionHandle theHandle)
+    requestRetraction(MessageRetractionHandle /*theHandle*/)
       throw (FederateInternalError) {}
   };
 }

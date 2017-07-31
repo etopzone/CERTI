@@ -52,7 +52,7 @@ Named::isNamed(const std::string &newName) const
 }
 
 bool
-Named::validateHLAName(const std::string& name) {
+Named::validateHLAName(const std::string& /*name*/) {
     // FIXME EN. should implement clean validation scheme
 	// using IEEE-1516.2-2000 (§3.3.1 Names).
 	return true;

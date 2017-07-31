@@ -77,7 +77,7 @@ public:
         return (T*) mBegin;
     }
 
-    virtual const size_t size() const
+    virtual size_t size() const
     {
         return ((T*) mBegin)->__sizeof();
     }

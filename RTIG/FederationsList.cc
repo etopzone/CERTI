@@ -22,6 +22,8 @@
 
 #include "FederationsList.hh"
 
+#include <certi.hh>
+
 #include "AuditFile.hh"
 #include "Exception.hh"
 #include "Federation.hh"
@@ -103,7 +105,7 @@ void FederationsList::createFederation(const std::string& name, const Federation
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
         // Federation's existence has already been checked above, no need to check insert's result
-        DISCARD_RETURN my_federations.insert(std::make_pair(handle, std::move(federation))).second;
+        (void) my_federations.insert(std::make_pair(handle, std::move(federation))).second;
 
         Debug(D, pdInit) << "New Federation created with Handle" << handle << std::endl;
 

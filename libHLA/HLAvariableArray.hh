@@ -86,7 +86,7 @@ struct HLAvariableArray<M, false> {
             this, i, (i - size()) * (long) (M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary)));
     }
 
-    static const size_t offset(long i)
+    static size_t offset(long i)
     {
         return emptysizeof() + i * (M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary));
     }
@@ -98,13 +98,13 @@ struct HLAvariableArray<M, false> {
         return *(M*) ((char*) this + offset(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return HLAinteger32BE::__sizeof() + __padding(HLAinteger32BE::__sizeof(), M::m_octetBoundary);
     }
 
     // Padding shall not be added after the last element of the array.
-    const size_t __sizeof() const
+    size_t __sizeof() const
     {
         if (size() > 0)
             return offset(size() - 1) + M::__sizeof();
@@ -163,7 +163,7 @@ struct HLAvariableArray<M, true> {
             this, i, (i - size()) * (long) (M::emptysizeof() + __padding(M::emptysizeof(), M::m_octetBoundary)));
     }
 
-    const size_t offset(long i) const
+    size_t offset(long i) const
     {
         size_t offs = emptysizeof();
         // count every member, the elements may be variable-sized
@@ -181,13 +181,13 @@ struct HLAvariableArray<M, true> {
         return *(M*) ((char*) this + offset(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return HLAinteger32BE::__sizeof() + __padding(HLAinteger32BE::__sizeof(), M::m_octetBoundary);
     }
 
     // Padding shall not be added after the last element of the array.
-    const size_t __sizeof() const
+    size_t __sizeof() const
     {
         if (size() > 0) {
             size_t offs = offset(size() - 1);

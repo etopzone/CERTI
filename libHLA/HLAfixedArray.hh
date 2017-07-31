@@ -62,12 +62,12 @@ std::ostream& PrintBuffer(std::ostream& stream, HLAfixedArray<M, N, hasVariable>
 // note: this is the most efficient data type
 template <class M, int N>
 struct HLAfixedArray<M, N, false> {
-    static const size_t size()
+    static size_t size()
     {
         return N;
     }
 
-    static const size_t offset(long i)
+    static size_t offset(long i)
     {
         return i * (M::__sizeof() + __padding(M::__sizeof(), M::m_octetBoundary));
     }
@@ -79,13 +79,13 @@ struct HLAfixedArray<M, N, false> {
         return *(M*) ((char*) this + offset(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return __sizeof();
     }
 
     // Padding shall not be added after the last element of the array.
-    static const size_t __sizeof()
+    static size_t __sizeof()
     {
         return offset(N - 1) + M::__sizeof();
     }
@@ -107,12 +107,12 @@ struct HLAfixedArray<M, N, false> {
 // Generic fixed array, supports variable-size elements
 template <class M, int N>
 struct HLAfixedArray<M, N, true> {
-    static const size_t size()
+    static size_t size()
     {
         return N;
     }
 
-    const size_t offset(long i) const
+    size_t offset(long i) const
     {
         size_t offs = 0;
         // count every member, the elements may be variable-sized
@@ -130,7 +130,7 @@ struct HLAfixedArray<M, N, true> {
         return *(M*) ((char*) this + offset(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         size_t size = N * M::emptysizeof();
         // padding shall not be added after the last element of the array
@@ -139,7 +139,7 @@ struct HLAfixedArray<M, N, true> {
         return size;
     }
 
-    const size_t __sizeof() const
+    size_t __sizeof() const
     {
         size_t offs = offset(N - 1);
         return offs + ((M*) ((char*) this + offs))->__sizeof();

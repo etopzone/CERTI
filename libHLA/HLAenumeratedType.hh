@@ -82,12 +82,12 @@ struct HLAenumeratedType {
         return *(R*) this;
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return R::emptysizeof();
     }
 
-    static const size_t __sizeof()
+    static size_t __sizeof()
     {
         return R::__sizeof();
     }

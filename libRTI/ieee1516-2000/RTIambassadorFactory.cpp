@@ -54,7 +54,7 @@ static PrettyDebug G1516("GENDOC1516",__FILE__) ;
 }
 
 std::unique_ptr< rti1516::RTIambassador >
-rti1516::RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & args)
+rti1516::RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & /*args*/)
 throw (BadInitializationParameter,
         RTIinternalError)
         {

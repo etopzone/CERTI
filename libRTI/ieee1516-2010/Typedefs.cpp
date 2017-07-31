@@ -24,7 +24,7 @@
 
 namespace rti1516e
 {
-FederateRestoreStatus::FederateRestoreStatus(FederateHandle const & thePreHandle,
+FederateRestoreStatus::FederateRestoreStatus(FederateHandle const & /*thePreHandle*/,
         FederateHandle const & thePostHandle,
         RestoreStatus theStatus) :
                          preRestoreHandle(thePostHandle),

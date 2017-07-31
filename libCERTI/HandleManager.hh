@@ -105,7 +105,7 @@ HandleManager<T>::provide() throw (RTIinternalError)
 } /* end of provide */
 
 template<typename T> void
-HandleManager<T>::free(T handle)
+HandleManager<T>::free(T /*handle*/)
 {
 	//if (handle + 1 == highest)
 	//--highest ;

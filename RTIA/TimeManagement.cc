@@ -120,7 +120,7 @@ TimeManagement::sendNullMessage(FederationTime logicalTime) {
 } /* end of sendNullMessage */
 
 void
-TimeManagement::sendNullPrimeMessage(FederationTime logicalTime) {
+TimeManagement::sendNullPrimeMessage(FederationTime /*logicalTime*/) {
     NM_Message_Null_Prime msg ;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
     /*
@@ -722,7 +722,7 @@ TimeManagement::setTimeConstrained(bool etat, Exception::Type &e)
 // Rajouter le time et le lookahead
 // Modifier le lookahead courant
 void
-TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
+TimeManagement::setTimeRegulating(bool etat,FederationTime /*logical_time*/,
                FederationTimeDelta the_lookahead, Exception::Type &e)
 {
     NM_Set_Time_Regulating msg ;
@@ -776,7 +776,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::timeRegulationEnabled(FederationTime theTime, Exception::Type &e) {
+TimeManagement::timeRegulationEnabled(FederationTime theTime, Exception::Type &/*e*/) {
     M_Time_Regulation_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_REGULATION_ENABLED to Federate");
@@ -786,7 +786,7 @@ TimeManagement::timeRegulationEnabled(FederationTime theTime, Exception::Type &e
 
 // ----------------------------------------------------------------------------
 void
-TimeManagement::timeConstrainedEnabled(FederationTime theTime, Exception::Type &e) {
+TimeManagement::timeConstrainedEnabled(FederationTime theTime, Exception::Type &/*e*/) {
     M_Time_Constrained_Enabled req;
 
     D.Out(pdDebug,"Sending TIME_CONSTRAINED_ENABLED to Federate");
@@ -946,7 +946,7 @@ G.Out(pdGendoc," exit  TimeManagement::timeAdvance");
 // ----------------------------------------------------------------------------
 void
 TimeManagement::timeAdvanceGrant(FederationTime logical_time,
-                                 Exception::Type &e)
+                                 Exception::Type &/*e*/)
 {
     M_Time_Advance_Grant req;
 

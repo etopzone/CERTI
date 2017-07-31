@@ -31,7 +31,7 @@ static constexpr auto DEFAULT_MESSAGE_BUFFER_SIZE = 255;
 
 namespace libhla {
 
-const bool MessageBuffer::HostIsBigEndian()
+bool MessageBuffer::HostIsBigEndian()
 {
 #ifdef HOST_IS_BIG_ENDIAN
     return true;
@@ -40,7 +40,7 @@ const bool MessageBuffer::HostIsBigEndian()
 #endif
 }
 
-const bool MessageBuffer::HostIsLittleEndian()
+bool MessageBuffer::HostIsLittleEndian()
 {
 #ifdef HOST_IS_BIG_ENDIAN
     return false;

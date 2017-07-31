@@ -19,17 +19,16 @@
 // $Id: RTItypesImp.cc,v 1.1 2014/03/03 15:18:24 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "RTItypesImp.hh"
 #include "PrettyDebug.hh"
+#include "RTItypesImp.hh"
 
 #include <algorithm>
 #include <string.h>
 
-using namespace certi ;
+using namespace certi;
 
 static PrettyDebug D("LIBRTI", __FILE__);
-static PrettyDebug G("GENDOC",__FILE__);
-
+static PrettyDebug G("GENDOC", __FILE__);
 
 // ----------------------------------------------------------------------------
 AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(RTI::ULong size)
@@ -40,7 +39,7 @@ AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(RTI::ULong size)
     _set.reserve(size);
 }
 
-AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(const std::vector<AttributeHandleValuePair_t> &val)
+AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(const std::vector<AttributeHandleValuePair_t>& val)
     : _set(val)
 {
     _order = RECEIVE;
@@ -56,8 +55,7 @@ RTI::ULong AttributeHandleValuePairSetImp::size() const
     return _set.size();
 }
 
-RTI::Handle AttributeHandleValuePairSetImp::getHandle(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::Handle AttributeHandleValuePairSetImp::getHandle(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i].first;
@@ -65,8 +63,7 @@ RTI::Handle AttributeHandleValuePairSetImp::getHandle(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-RTI::ULong AttributeHandleValuePairSetImp::getValueLength(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::ULong AttributeHandleValuePairSetImp::getValueLength(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i].second.size();
@@ -74,8 +71,8 @@ RTI::ULong AttributeHandleValuePairSetImp::getValueLength(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void AttributeHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULong &len) const
-    throw (RTI::ArrayIndexOutOfBounds)
+void AttributeHandleValuePairSetImp::getValue(RTI::ULong i, char* buff, RTI::ULong& len) const
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
         const AttributeHandleValuePair_t& item = _set[i];
@@ -86,49 +83,47 @@ void AttributeHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULo
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-char *AttributeHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong &len) const
-    throw (RTI::ArrayIndexOutOfBounds)
+char* AttributeHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong& len) const
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
         const AttributeHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        return (char *)&(item.second[0]);
+        return (char*) &(item.second[0]);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
 RTI::TransportType AttributeHandleValuePairSetImp::getTransportType(RTI::ULong) const
-    throw (RTI::InvalidHandleValuePairSetContext)
+    throw(RTI::InvalidHandleValuePairSetContext)
 {
     return _transport;
 }
 
 RTI::OrderType AttributeHandleValuePairSetImp::getOrderType(RTI::ULong) const
-    throw (RTI::ArrayIndexOutOfBounds, RTI::InvalidHandleValuePairSetContext)
+    throw(RTI::ArrayIndexOutOfBounds, RTI::InvalidHandleValuePairSetContext)
 {
     return _order;
 }
 
-RTI::Region *AttributeHandleValuePairSetImp::getRegion(RTI::ULong) const
-    throw (RTI::ArrayIndexOutOfBounds, RTI::InvalidHandleValuePairSetContext)
+RTI::Region* AttributeHandleValuePairSetImp::getRegion(RTI::ULong) const
+    throw(RTI::ArrayIndexOutOfBounds, RTI::InvalidHandleValuePairSetContext)
 {
     throw RTI::RTIinternalError("unimplemented function getRegion()");
 }
 
-void AttributeHandleValuePairSetImp::add(RTI::Handle h, const char *str, RTI::ULong len)
-    throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
+void AttributeHandleValuePairSetImp::add(RTI::Handle h, const char* str, RTI::ULong len) throw(RTI::ValueLengthExceeded,
+                                                                                               RTI::ValueCountExceeded)
 {
     std::vector<char> v;
-    v.assign(str,str+len);
+    v.assign(str, str + len);
     _set.push_back(AttributeHandleValuePair_t(h, v));
 }
 
-void AttributeHandleValuePairSetImp::remove(RTI::Handle h)
-    throw (RTI::ArrayIndexOutOfBounds)
+void AttributeHandleValuePairSetImp::remove(RTI::Handle h) throw(RTI::ArrayIndexOutOfBounds)
 {
-    for (std::vector<AttributeHandleValuePair_t>::iterator pos = _set.begin();
-            pos != _set.end(); pos++) {
+    for (std::vector<AttributeHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); pos++) {
         if (pos->first == h) {
             _set.erase(pos);
             return;
@@ -138,8 +133,8 @@ void AttributeHandleValuePairSetImp::remove(RTI::Handle h)
     throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet &, RTI::ULong &)
-    throw (RTI::ValueCountExceeded, RTI::ArrayIndexOutOfBounds)
+void AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet&,
+                                              RTI::ULong&) throw(RTI::ValueCountExceeded, RTI::ArrayIndexOutOfBounds)
 {
     throw RTI::RTIinternalError("unimplemented function moveFrom()");
 }
@@ -151,24 +146,23 @@ void AttributeHandleValuePairSetImp::empty()
 
 RTI::ULong AttributeHandleValuePairSetImp::start() const
 {
-    // not implemented
-    return 0 ;
+    // TODO not implemented
+    return 0;
 }
 
-RTI::ULong AttributeHandleValuePairSetImp::valid(RTI::ULong i) const
+RTI::ULong AttributeHandleValuePairSetImp::valid(RTI::ULong /*i*/) const
 {
-    // not implemented
-    return 0 ;
+    // TODO not implemented
+    return 0;
 }
 
-RTI::ULong AttributeHandleValuePairSetImp::next(RTI::ULong i) const
+RTI::ULong AttributeHandleValuePairSetImp::next(RTI::ULong /*i*/) const
 {
-    // not implemented
-    return 0 ;
+    // TODO not implemented
+    return 0;
 }
 
-const std::vector<AttributeHandleValuePair_t>&
-AttributeHandleValuePairSetImp::getAttributeHandleValuePairs() const
+const std::vector<AttributeHandleValuePair_t>& AttributeHandleValuePairSetImp::getAttributeHandleValuePairs() const
 {
     return _set;
 }
@@ -179,15 +173,14 @@ AttributeHandleSetImp::AttributeHandleSetImp(RTI::ULong size)
     _set.reserve(size);
 }
 
-AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<RTI::AttributeHandle> &val)
-    : _set(val)
+AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<RTI::AttributeHandle>& val) : _set(val)
 {
 }
 
-AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<certi::AttributeHandle> &val)
+AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<certi::AttributeHandle>& val)
 {
-   _set.resize(val.size());
-   std::copy(val.begin(), val.end(), _set.begin());
+    _set.resize(val.size());
+    std::copy(val.begin(), val.end(), _set.begin());
 }
 
 AttributeHandleSetImp::~AttributeHandleSetImp()
@@ -199,8 +192,7 @@ RTI::ULong AttributeHandleSetImp::size() const
     return _set.size();
 }
 
-RTI::AttributeHandle AttributeHandleSetImp::getHandle(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::AttributeHandle AttributeHandleSetImp::getHandle(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i];
@@ -208,14 +200,12 @@ RTI::AttributeHandle AttributeHandleSetImp::getHandle(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void AttributeHandleSetImp::add(RTI::AttributeHandle h)
-    throw (RTI::ArrayIndexOutOfBounds, RTI::AttributeNotDefined)
+void AttributeHandleSetImp::add(RTI::AttributeHandle h) throw(RTI::ArrayIndexOutOfBounds, RTI::AttributeNotDefined)
 {
     _set.push_back(h);
 }
 
-void AttributeHandleSetImp::remove(RTI::AttributeHandle h)
-    throw (RTI::AttributeNotDefined)
+void AttributeHandleSetImp::remove(RTI::AttributeHandle h) throw(RTI::AttributeNotDefined)
 {
     std::vector<RTI::AttributeHandle>::iterator pos = std::find(_set.begin(), _set.end(), h);
     if (pos != _set.end())
@@ -239,8 +229,7 @@ RTI::Boolean AttributeHandleSetImp::isMember(RTI::AttributeHandle h) const
     return RTI::Boolean(std::find(_set.begin(), _set.end(), h) != _set.end());
 }
 
-const std::vector<RTI::AttributeHandle>&
-AttributeHandleSetImp::getAttributeHandles() const
+const std::vector<RTI::AttributeHandle>& AttributeHandleSetImp::getAttributeHandles() const
 {
     return _set;
 }
@@ -260,8 +249,7 @@ RTI::ULong FederateHandleSetImp::size() const
     return _set.size();
 }
 
-RTI::FederateHandle FederateHandleSetImp::getHandle(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::FederateHandle FederateHandleSetImp::getHandle(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i];
@@ -269,14 +257,12 @@ RTI::FederateHandle FederateHandleSetImp::getHandle(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void FederateHandleSetImp::add(RTI::FederateHandle h)
-    throw (RTI::ValueCountExceeded)
+void FederateHandleSetImp::add(RTI::FederateHandle h) throw(RTI::ValueCountExceeded)
 {
     _set.push_back(h);
 }
 
-void FederateHandleSetImp::remove(RTI::FederateHandle h)
-    throw (RTI::ArrayIndexOutOfBounds)
+void FederateHandleSetImp::remove(RTI::FederateHandle h) throw(RTI::ArrayIndexOutOfBounds)
 {
     std::vector<RTI::FederateHandle>::iterator pos = std::find(_set.begin(), _set.end(), h);
     if (pos != _set.end())
@@ -304,7 +290,7 @@ ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(RTI::ULong size)
     _set.reserve(size);
 }
 
-ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(const std::vector<ParameterHandleValuePair_t> &val)
+ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(const std::vector<ParameterHandleValuePair_t>& val)
     : _set(val)
 {
     _order = RECEIVE;
@@ -320,8 +306,7 @@ RTI::ULong ParameterHandleValuePairSetImp::size() const
     return _set.size();
 }
 
-RTI::Handle ParameterHandleValuePairSetImp::getHandle(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::Handle ParameterHandleValuePairSetImp::getHandle(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i].first;
@@ -329,8 +314,7 @@ RTI::Handle ParameterHandleValuePairSetImp::getHandle(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-RTI::ULong ParameterHandleValuePairSetImp::getValueLength(RTI::ULong i) const
-    throw (RTI::ArrayIndexOutOfBounds)
+RTI::ULong ParameterHandleValuePairSetImp::getValueLength(RTI::ULong i) const throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
         return _set[i].second.size();
@@ -338,8 +322,8 @@ RTI::ULong ParameterHandleValuePairSetImp::getValueLength(RTI::ULong i) const
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void ParameterHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULong &len) const
-    throw (RTI::ArrayIndexOutOfBounds)
+void ParameterHandleValuePairSetImp::getValue(RTI::ULong i, char* buff, RTI::ULong& len) const
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
         const ParameterHandleValuePair_t& item = _set[i];
@@ -350,49 +334,44 @@ void ParameterHandleValuePairSetImp::getValue(RTI::ULong i, char *buff, RTI::ULo
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-char *ParameterHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong &len) const
-    throw (RTI::ArrayIndexOutOfBounds)
+char* ParameterHandleValuePairSetImp::getValuePointer(RTI::ULong i, RTI::ULong& len) const
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
         const ParameterHandleValuePair_t& item = _set[i];
         len = item.second.size();
-        return (char *)&(item.second[0]);
+        return (char*) &(item.second[0]);
     }
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
-RTI::TransportType ParameterHandleValuePairSetImp::getTransportType() const
-    throw (RTI::InvalidHandleValuePairSetContext)
+RTI::TransportType ParameterHandleValuePairSetImp::getTransportType() const throw(RTI::InvalidHandleValuePairSetContext)
 {
     return _transport;
 }
 
-RTI::OrderType ParameterHandleValuePairSetImp::getOrderType() const
-    throw (RTI::InvalidHandleValuePairSetContext)
+RTI::OrderType ParameterHandleValuePairSetImp::getOrderType() const throw(RTI::InvalidHandleValuePairSetContext)
 {
     return _order;
 }
 
-RTI::Region *ParameterHandleValuePairSetImp::getRegion() const
-    throw (RTI::InvalidHandleValuePairSetContext)
+RTI::Region* ParameterHandleValuePairSetImp::getRegion() const throw(RTI::InvalidHandleValuePairSetContext)
 {
     throw RTI::RTIinternalError("unimplemented function getRegion()");
 }
 
-void ParameterHandleValuePairSetImp::add(RTI::Handle h, const char *str, RTI::ULong len)
-    throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
+void ParameterHandleValuePairSetImp::add(RTI::Handle h, const char* str, RTI::ULong len) throw(RTI::ValueLengthExceeded,
+                                                                                               RTI::ValueCountExceeded)
 {
     std::vector<char> v;
-    v.assign(str,str+len);
+    v.assign(str, str + len);
     _set.push_back(ParameterHandleValuePair_t(h, v));
 }
 
-void ParameterHandleValuePairSetImp::remove(RTI::Handle h)
-    throw (RTI::ArrayIndexOutOfBounds)
+void ParameterHandleValuePairSetImp::remove(RTI::Handle h) throw(RTI::ArrayIndexOutOfBounds)
 {
-    for (std::vector<ParameterHandleValuePair_t>::iterator pos = _set.begin();
-            pos != _set.end(); pos++) {
+    for (std::vector<ParameterHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); pos++) {
         if (pos->first == h) {
             _set.erase(pos);
             return;
@@ -402,8 +381,8 @@ void ParameterHandleValuePairSetImp::remove(RTI::Handle h)
     throw RTI::ArrayIndexOutOfBounds("");
 }
 
-void ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet &, RTI::ULong &)
-    throw (RTI::ValueCountExceeded, RTI::ArrayIndexOutOfBounds)
+void ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet&,
+                                              RTI::ULong&) throw(RTI::ValueCountExceeded, RTI::ArrayIndexOutOfBounds)
 {
     throw RTI::RTIinternalError("unimplemented function moveFrom()");
 }
@@ -415,62 +394,57 @@ void ParameterHandleValuePairSetImp::empty()
 
 RTI::ULong ParameterHandleValuePairSetImp::start() const
 {
-    // not implemented
+    // TODO not implemented
     return 0;
 }
 
-RTI::ULong ParameterHandleValuePairSetImp::valid(RTI::ULong i) const
+RTI::ULong ParameterHandleValuePairSetImp::valid(RTI::ULong /*i*/) const
 {
-    // not implemented
+    // TODO not implemented
     return 0;
 }
 
-RTI::ULong ParameterHandleValuePairSetImp::next(RTI::ULong i) const
+RTI::ULong ParameterHandleValuePairSetImp::next(RTI::ULong /*i*/) const
 {
-    // not implemented
+    // TODO not implemented
     return 0;
 }
 
-const std::vector<ParameterHandleValuePair_t> &
-ParameterHandleValuePairSetImp::getParameterHandleValuePairs() const
+const std::vector<ParameterHandleValuePair_t>& ParameterHandleValuePairSetImp::getParameterHandleValuePairs() const
 {
     return _set;
 }
 
 // ----------------------------------------------------------------------------
-RTI::AttributeHandleValuePairSet *
-RTI::AttributeSetFactory::create(RTI::ULong size)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
+RTI::AttributeHandleValuePairSet* RTI::AttributeSetFactory::create(RTI::ULong size) throw(
+    MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
 {
     return new AttributeHandleValuePairSetImp(size);
 }
 
 // ----------------------------------------------------------------------------
-RTI::AttributeHandleSet *
-RTI::AttributeHandleSetFactory::create(RTI::ULong size)
-    throw (MemoryExhausted, ValueCountExceeded)
+RTI::AttributeHandleSet* RTI::AttributeHandleSetFactory::create(RTI::ULong size) throw(MemoryExhausted,
+                                                                                       ValueCountExceeded)
 {
     return new AttributeHandleSetImp(size);
 }
 
 // ----------------------------------------------------------------------------
-RTI::FederateHandleSet *
-RTI::FederateHandleSetFactory::create(RTI::ULong size)
-    throw (MemoryExhausted, ValueCountExceeded)
+RTI::FederateHandleSet* RTI::FederateHandleSetFactory::create(RTI::ULong size) throw(MemoryExhausted,
+                                                                                     ValueCountExceeded)
 {
     return new FederateHandleSetImp(size);
 }
 
 // ----------------------------------------------------------------------------
-RTI::ParameterHandleValuePairSet *
-RTI::ParameterSetFactory::create(RTI::ULong size)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
+RTI::ParameterHandleValuePairSet* RTI::ParameterSetFactory::create(RTI::ULong size) throw(
+    MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
 {
     return new ParameterHandleValuePairSetImp(size);
 }
 
 // ----------------------------------------------------------------------------
-RegionImp::RegionImp(RegionHandle h, RTI::SpaceHandle s, const std::vector<Extent> &ext)
+RegionImp::RegionImp(RegionHandle h, RTI::SpaceHandle s, const std::vector<Extent>& ext)
     : handle(h), space(s), extents(ext), effectiveExtents(ext)
 {
 }
@@ -480,7 +454,7 @@ RegionImp::~RegionImp()
 }
 
 RTI::ULong RegionImp::getRangeLowerBound(RTI::ExtentIndex index, RTI::DimensionHandle dimension) const
-    throw (RTI::ArrayIndexOutOfBounds)
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < extents.size())
         return extents[index].getRangeLowerBound(dimension);
@@ -489,7 +463,7 @@ RTI::ULong RegionImp::getRangeLowerBound(RTI::ExtentIndex index, RTI::DimensionH
 }
 
 RTI::ULong RegionImp::getRangeUpperBound(RTI::ExtentIndex index, RTI::DimensionHandle dimension) const
-    throw (RTI::ArrayIndexOutOfBounds)
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < extents.size())
         return extents[index].getRangeUpperBound(dimension);
@@ -497,8 +471,9 @@ RTI::ULong RegionImp::getRangeUpperBound(RTI::ExtentIndex index, RTI::DimensionH
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-void RegionImp::setRangeLowerBound(RTI::ExtentIndex index, RTI::DimensionHandle dimension, RTI::ULong val)
-    throw (RTI::ArrayIndexOutOfBounds)
+void RegionImp::setRangeLowerBound(RTI::ExtentIndex index,
+                                   RTI::DimensionHandle dimension,
+                                   RTI::ULong val) throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < extents.size())
         extents[index].setRangeLowerBound(dimension, val);
@@ -506,8 +481,9 @@ void RegionImp::setRangeLowerBound(RTI::ExtentIndex index, RTI::DimensionHandle 
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-void RegionImp::setRangeUpperBound(RTI::ExtentIndex index, RTI::DimensionHandle dimension, RTI::ULong val)
-    throw (RTI::ArrayIndexOutOfBounds)
+void RegionImp::setRangeUpperBound(RTI::ExtentIndex index,
+                                   RTI::DimensionHandle dimension,
+                                   RTI::ULong val) throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < extents.size())
         extents[index].setRangeUpperBound(dimension, val);
@@ -515,20 +491,18 @@ void RegionImp::setRangeUpperBound(RTI::ExtentIndex index, RTI::DimensionHandle 
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-RTI::SpaceHandle RegionImp::getSpaceHandle() const
-    throw ()
+RTI::SpaceHandle RegionImp::getSpaceHandle() const throw()
 {
     return space;
 }
 
-RTI::ULong RegionImp::getNumberOfExtents() const
-    throw ()
+RTI::ULong RegionImp::getNumberOfExtents() const throw()
 {
     return extents.size();
 }
 
 RTI::ULong RegionImp::getRangeLowerBoundNotificationLimit(RTI::ExtentIndex index, RTI::DimensionHandle dimension) const
-    throw (RTI::ArrayIndexOutOfBounds)
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < effectiveExtents.size())
         return effectiveExtents[index].getRangeLowerBound(dimension);
@@ -537,7 +511,7 @@ RTI::ULong RegionImp::getRangeLowerBoundNotificationLimit(RTI::ExtentIndex index
 }
 
 RTI::ULong RegionImp::getRangeUpperBoundNotificationLimit(RTI::ExtentIndex index, RTI::DimensionHandle dimension) const
-    throw (RTI::ArrayIndexOutOfBounds)
+    throw(RTI::ArrayIndexOutOfBounds)
 {
     if (index < effectiveExtents.size())
         return effectiveExtents[index].getRangeUpperBound(dimension);
@@ -553,8 +527,7 @@ RegionHandle RegionImp::getHandle() const
 /** Get the region's extents 
     \return The extents, as a vector 
  */
-const std::vector<Extent> &
-RegionImp::getExtents() const
+const std::vector<Extent>& RegionImp::getExtents() const
 {
     return extents;
 }

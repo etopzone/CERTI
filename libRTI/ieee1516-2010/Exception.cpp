@@ -31,7 +31,7 @@ Exception::Exception()
 {
 }
 
-Exception::Exception(Exception const & rhs)
+Exception::Exception(Exception const & /*rhs*/)
 {
     // Nothing to copy...?
 }
@@ -41,7 +41,7 @@ Exception::~Exception()
 }
 
 Exception &
-Exception::operator=(Exception const & rhs)
+Exception::operator=(Exception const & /*rhs*/)
 {
     // Nothing to copy...?
     return *this;

@@ -367,7 +367,7 @@ setClassRelevanceAdvisorySwitch(bool state, Exception::Type& e) {
 void
 DeclarationManagement::
 startRegistrationForObjectClass(ObjectClassHandle the_class,
-                                Exception::Type& e)
+                                Exception::Type& /*e*/)
 {
     G.Out(pdGendoc,"enter DeclarationManagement::startRegistrationForObjectClass");
 

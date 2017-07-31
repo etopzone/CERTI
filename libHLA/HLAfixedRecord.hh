@@ -92,12 +92,12 @@ struct HLAfixedRecord<R, false> {
         return *(typename __FieldAt<R, i>::Type*) ((char*) this + R::field_offsetof(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return R::emptysizeof();
     }
 
-    static const size_t __sizeof()
+    static size_t __sizeof()
     {
         return R::__sizeof();
     }
@@ -120,12 +120,12 @@ struct HLAfixedRecord<R, true> {
         return *(typename __FieldAt<R, i>::Type*) ((char*) this + ((R*) this)->field_offsetof(i));
     }
 
-    static const size_t emptysizeof()
+    static size_t emptysizeof()
     {
         return R::emptysizeof();
     }
 
-    const size_t __sizeof()
+    size_t __sizeof()
     {
         return ((R*) this)->__sizeof();
     }
@@ -149,7 +149,7 @@ struct HLAfixedField;
 // List of fixed-size fields
 template <int E, class M, class N>
 struct HLAfixedField<E, M, N, false> {
-    static const size_t field_offsetof(int d, size_t offs = 0)
+    static size_t field_offsetof(int d, size_t offs = 0)
     {
         if (d != E) {
             size_t size = M::__sizeof();
@@ -162,13 +162,13 @@ struct HLAfixedField<E, M, N, false> {
 
     static const size_t memberBoundary = M::m_octetBoundary;
 
-    static const size_t emptysizeof(size_t offs = 0)
+    static size_t emptysizeof(size_t offs = 0)
     {
         return __sizeof(offs);
     }
 
     // Padding shall not be added after the last element of the array.
-    static const size_t __sizeof(size_t offs = 0)
+    static size_t __sizeof(size_t offs = 0)
     {
         size_t size = M::__sizeof();
         // if not reached HLAvariantEnd
@@ -199,7 +199,7 @@ struct HLAfixedField<E, M, N, false> {
 // List containg variable-size fields
 template <int E, class M, class N>
 struct HLAfixedField<E, M, N, true> {
-    const size_t field_offsetof(int d, size_t offs = 0) const
+    size_t field_offsetof(int d, size_t offs = 0) const
     {
         if (d != E) {
             size_t size = ((M*) this)->__sizeof();
@@ -212,7 +212,7 @@ struct HLAfixedField<E, M, N, true> {
 
     static const size_t memberBoundary = M::m_octetBoundary;
 
-    static const size_t emptysizeof(size_t offs = 0)
+    static size_t emptysizeof(size_t offs = 0)
     {
         size_t size = M::emptysizeof();
         // if not reached HLAvariantEnd
@@ -225,7 +225,7 @@ struct HLAfixedField<E, M, N, true> {
     }
 
     // Padding shall not be added after the last element of the array.
-    const size_t __sizeof(size_t offs = 0) const
+    size_t __sizeof(size_t offs = 0) const
     {
         size_t size = ((M*) this)->__sizeof();
         // if not reached HLAvariantEnd
@@ -255,22 +255,24 @@ struct HLAfixedField<E, M, N, true> {
 
 //! Defines a last field in the fixed record
 struct HLAfixedEnd {
-    static const size_t field_offsetof(int d, size_t offs = 0)
+    static size_t field_offsetof(int /*d*/, size_t offs = 0)
     {
         return offs;
     }
 
     static const size_t memberBoundary = 0;
-    static const size_t emptysizeof(size_t offs = 0)
+    static size_t emptysizeof(size_t offs = 0)
     {
         return offs;
     }
-    static const size_t __sizeof(size_t offs = 0)
+    static size_t __sizeof(size_t offs = 0)
     {
         return offs;
     }
-    void copy(void* source, size_t offsD = 0, size_t offsS = 0)
+    void copy(void* /*source*/, size_t offsD = 0, size_t offsS = 0)
     { /* nop */
+        (void)offsD;
+        (void)offsS;
     }
 
     static const size_t m_octetBoundary = 0;

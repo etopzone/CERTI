@@ -66,7 +66,7 @@ void displayCurrent(xmlNodePtr curNode) {
 #endif
 
 int
-main(int argc, char* argv[]) {
+main(int /*argc*/, char* argv[]) {
 
 	std::string filename = argv[1];
 #ifndef HAVE_XML

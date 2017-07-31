@@ -530,7 +530,7 @@ FederationManagement::federationSynchronized(const std::string& label)
 void
 FederationManagement::requestFederationSave(const std::string& label,
                                             FederationTime the_time,
-                                            Exception::Type &e)
+                                            Exception::Type &/*e*/)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
@@ -557,7 +557,7 @@ FederationManagement::requestFederationSave(const std::string& label,
 // requestFederationSave without time
 void
 FederationManagement::requestFederationSave(const std::string& label,
-                                            Exception::Type &e)
+                                            Exception::Type &/*e*/)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "

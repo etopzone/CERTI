@@ -42,8 +42,8 @@ private:
     static BufferList gBuffers;
 
     // used to verify that user set correct endianess
-    static const bool __is_big_endian();
-    static const bool __is_little_endian();
+    static bool __is_big_endian();
+    static bool __is_little_endian();
 
     void __assert_endianess()
     {
@@ -128,7 +128,7 @@ public:
     }
 #endif
 
-    virtual const size_t size() const = 0;
+    virtual size_t size() const = 0;
     virtual void __shake(const void* __that, int value, long resize) = 0;
 
     static void shake(const void* __that, int value, long resize)

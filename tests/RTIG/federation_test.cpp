@@ -84,7 +84,6 @@ static constexpr ::certi::Handle invalid_handle{0};
 static constexpr ::certi::FederationHandle federation_handle{1};
 
 static constexpr ::certi::FederateHandle ukn_federate{42};
-static constexpr ::certi::Handle ukn_handle{1337};
 
 static constexpr int quiet{0};
 static constexpr int verbose{1};

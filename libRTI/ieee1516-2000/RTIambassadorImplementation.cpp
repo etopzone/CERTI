@@ -220,11 +220,11 @@ bool RTI1516ambassador::__tick_kernel(bool multiple,
 void RTI1516ambassador::createFederationExecution(
     std::wstring const& federationExecutionName,
     std::wstring const& fullPathNameToTheFDDfile,
-    std::wstring const& LogicalTimeImplementationName) throw(rti1516::FederationExecutionAlreadyExists,
-                                                             rti1516::CouldNotOpenFDD,
-                                                             rti1516::ErrorReadingFDD,
-                                                             rti1516::CouldNotCreateLogicalTimeFactory,
-                                                             rti1516::RTIinternalError)
+    std::wstring const& /*LogicalTimeImplementationName*/) throw(rti1516::FederationExecutionAlreadyExists,
+                                                                 rti1516::CouldNotOpenFDD,
+                                                                 rti1516::ErrorReadingFDD,
+                                                                 rti1516::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516::RTIinternalError)
 {
     /* TODO */
     certi::M_Create_Federation_Execution req, rep;
@@ -312,7 +312,7 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
 }
 
 // 4.5
-void RTI1516ambassador::resignFederationExecution(rti1516::ResignAction resignAction) throw(
+void RTI1516ambassador::resignFederationExecution(rti1516::ResignAction /*resignAction*/) throw(
     rti1516::OwnershipAcquisitionPending,
     rti1516::FederateOwnsAttributes,
     rti1516::FederateNotExecutionMember,
@@ -609,8 +609,8 @@ void RTI1516ambassador::unpublishObjectClass(rti1516::ObjectClassHandle theClass
 }
 
 void RTI1516ambassador::unpublishObjectClassAttributes(
-    rti1516::ObjectClassHandle theClass,
-    rti1516::AttributeHandleSet const& attributeList) throw(rti1516::ObjectClassNotDefined,
+    rti1516::ObjectClassHandle /*theClass*/,
+    rti1516::AttributeHandleSet const& /*attributeList*/) throw(rti1516::ObjectClassNotDefined,
                                                             rti1516::AttributeNotDefined,
                                                             rti1516::OwnershipAcquisitionPending,
                                                             rti1516::FederateNotExecutionMember,
@@ -698,8 +698,8 @@ void RTI1516ambassador::unsubscribeObjectClass(rti1516::ObjectClassHandle theCla
 }
 
 void RTI1516ambassador::unsubscribeObjectClassAttributes(
-    rti1516::ObjectClassHandle theClass,
-    rti1516::AttributeHandleSet const& attributeList) throw(rti1516::ObjectClassNotDefined,
+    rti1516::ObjectClassHandle /*theClass*/,
+    rti1516::AttributeHandleSet const& /*attributeList*/) throw(rti1516::ObjectClassNotDefined,
                                                             rti1516::AttributeNotDefined,
                                                             rti1516::FederateNotExecutionMember,
                                                             rti1516::SaveInProgress,
@@ -711,7 +711,7 @@ void RTI1516ambassador::unsubscribeObjectClassAttributes(
 }
 
 // 5.8
-void RTI1516ambassador::subscribeInteractionClass(rti1516::InteractionClassHandle theClass, bool active) throw(
+void RTI1516ambassador::subscribeInteractionClass(rti1516::InteractionClassHandle theClass, bool /*active*/) throw(
     rti1516::InteractionClassNotDefined,
     rti1516::FederateServiceInvocationsAreBeingReportedViaMOM,
     rti1516::FederateNotExecutionMember,
@@ -1071,7 +1071,7 @@ void RTI1516ambassador::requestAttributeValueUpdate(
 void RTI1516ambassador::requestAttributeValueUpdate(
     rti1516::ObjectClassHandle theClass,
     rti1516::AttributeHandleSet const& theAttributes,
-    rti1516::VariableLengthData const& theUserSuppliedTag) throw(rti1516::ObjectClassNotDefined,
+    rti1516::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516::ObjectClassNotDefined,
                                                                  rti1516::AttributeNotDefined,
                                                                  rti1516::FederateNotExecutionMember,
                                                                  rti1516::SaveInProgress,
@@ -1144,9 +1144,9 @@ void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
 
 // 7.6
 void RTI1516ambassador::confirmDivestiture(
-    rti1516::ObjectInstanceHandle theObject,
-    rti1516::AttributeHandleSet const& confirmedAttributes,
-    rti1516::VariableLengthData const& theUserSuppliedTag) throw(rti1516::ObjectInstanceNotKnown,
+    rti1516::ObjectInstanceHandle /*theObject*/,
+    rti1516::AttributeHandleSet const& /*confirmedAttributes*/,
+    rti1516::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516::ObjectInstanceNotKnown,
                                                                  rti1516::AttributeNotDefined,
                                                                  rti1516::AttributeNotOwned,
                                                                  rti1516::AttributeDivestitureWasNotRequested,
@@ -1593,7 +1593,7 @@ bool RTI1516ambassador::queryLITS(rti1516::LogicalTime& theTime) throw(rti1516::
 }
 
 // 8.19
-void RTI1516ambassador::modifyLookahead(rti1516::LogicalTimeInterval const& theLookahead) throw(
+void RTI1516ambassador::modifyLookahead(rti1516::LogicalTimeInterval const& /*theLookahead*/) throw(
     rti1516::TimeRegulationIsNotEnabled,
     rti1516::InvalidLookahead,
     rti1516::InTimeAdvancingState,
@@ -1607,7 +1607,7 @@ void RTI1516ambassador::modifyLookahead(rti1516::LogicalTimeInterval const& theL
 }
 
 // 8.20
-void RTI1516ambassador::queryLookahead(rti1516::LogicalTimeInterval& interval) throw(
+void RTI1516ambassador::queryLookahead(rti1516::LogicalTimeInterval& /*interval*/) throw(
     rti1516::TimeRegulationIsNotEnabled,
     rti1516::FederateNotExecutionMember,
     rti1516::SaveInProgress,
@@ -1678,7 +1678,7 @@ void RTI1516ambassador::changeInteractionOrderType(
 //////////////////////////////////
 
 // 9.2
-rti1516::RegionHandle RTI1516ambassador::createRegion(rti1516::DimensionHandleSet const& theDimensions) throw(
+rti1516::RegionHandle RTI1516ambassador::createRegion(rti1516::DimensionHandleSet const& /*theDimensions*/) throw(
     rti1516::InvalidDimensionHandle,
     rti1516::FederateNotExecutionMember,
     rti1516::SaveInProgress,
@@ -1690,7 +1690,7 @@ rti1516::RegionHandle RTI1516ambassador::createRegion(rti1516::DimensionHandleSe
 }
 
 // 9.3
-void RTI1516ambassador::commitRegionModifications(rti1516::RegionHandleSet const& theRegionHandleSet) throw(
+void RTI1516ambassador::commitRegionModifications(rti1516::RegionHandleSet const& /*theRegionHandleSet*/) throw(
     rti1516::InvalidRegion,
     rti1516::RegionNotCreatedByThisFederate,
     rti1516::FederateNotExecutionMember,
@@ -1703,7 +1703,7 @@ void RTI1516ambassador::commitRegionModifications(rti1516::RegionHandleSet const
 }
 
 // 9.4
-void RTI1516ambassador::deleteRegion(rti1516::RegionHandle theRegion) throw(rti1516::InvalidRegion,
+void RTI1516ambassador::deleteRegion(rti1516::RegionHandle /*theRegion*/) throw(rti1516::InvalidRegion,
                                                                             rti1516::RegionNotCreatedByThisFederate,
                                                                             rti1516::RegionInUseForUpdateOrSubscription,
                                                                             rti1516::FederateNotExecutionMember,
@@ -1717,9 +1717,9 @@ void RTI1516ambassador::deleteRegion(rti1516::RegionHandle theRegion) throw(rti1
 
 // 9.5
 rti1516::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions(
-    rti1516::ObjectClassHandle theClass,
+    rti1516::ObjectClassHandle /*theClass*/,
     rti1516::AttributeHandleSetRegionHandleSetPairVector const&
-        theAttributeHandleSetRegionHandleSetPairVector) throw(rti1516::ObjectClassNotDefined,
+        /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516::ObjectClassNotDefined,
                                                               rti1516::ObjectClassNotPublished,
                                                               rti1516::AttributeNotDefined,
                                                               rti1516::AttributeNotPublished,
@@ -1736,9 +1736,9 @@ rti1516::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegio
 }
 
 rti1516::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegions(
-    rti1516::ObjectClassHandle theClass,
-    rti1516::AttributeHandleSetRegionHandleSetPairVector const& theAttributeHandleSetRegionHandleSetPairVector,
-    std::wstring const& theObjectInstanceName) throw(rti1516::ObjectClassNotDefined,
+    rti1516::ObjectClassHandle /*theClass*/,
+    rti1516::AttributeHandleSetRegionHandleSetPairVector const& /*theAttributeHandleSetRegionHandleSetPairVector*/,
+    std::wstring const& /*theObjectInstanceName*/) throw(rti1516::ObjectClassNotDefined,
                                                      rti1516::ObjectClassNotPublished,
                                                      rti1516::AttributeNotDefined,
                                                      rti1516::AttributeNotPublished,
@@ -1758,9 +1758,9 @@ rti1516::ObjectInstanceHandle RTI1516ambassador::registerObjectInstanceWithRegio
 
 // 9.6
 void RTI1516ambassador::associateRegionsForUpdates(
-    rti1516::ObjectInstanceHandle theObject,
+    rti1516::ObjectInstanceHandle /*theObject*/,
     rti1516::AttributeHandleSetRegionHandleSetPairVector const&
-        theAttributeHandleSetRegionHandleSetPairVector) throw(rti1516::ObjectInstanceNotKnown,
+        /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516::ObjectInstanceNotKnown,
                                                               rti1516::AttributeNotDefined,
                                                               rti1516::InvalidRegion,
                                                               rti1516::RegionNotCreatedByThisFederate,
@@ -1776,9 +1776,9 @@ void RTI1516ambassador::associateRegionsForUpdates(
 
 // 9.7
 void RTI1516ambassador::unassociateRegionsForUpdates(
-    rti1516::ObjectInstanceHandle theObject,
+    rti1516::ObjectInstanceHandle /*theObject*/,
     rti1516::AttributeHandleSetRegionHandleSetPairVector const&
-        theAttributeHandleSetRegionHandleSetPairVector) throw(rti1516::ObjectInstanceNotKnown,
+        /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516::ObjectInstanceNotKnown,
                                                               rti1516::AttributeNotDefined,
                                                               rti1516::InvalidRegion,
                                                               rti1516::RegionNotCreatedByThisFederate,
@@ -1793,9 +1793,9 @@ void RTI1516ambassador::unassociateRegionsForUpdates(
 
 // 9.8
 void RTI1516ambassador::subscribeObjectClassAttributesWithRegions(
-    rti1516::ObjectClassHandle theClass,
-    rti1516::AttributeHandleSetRegionHandleSetPairVector const& theAttributeHandleSetRegionHandleSetPairVector,
-    bool active) throw(rti1516::ObjectClassNotDefined,
+    rti1516::ObjectClassHandle /*theClass*/,
+    rti1516::AttributeHandleSetRegionHandleSetPairVector const& /*theAttributeHandleSetRegionHandleSetPairVector*/,
+    bool /*active*/) throw(rti1516::ObjectClassNotDefined,
                        rti1516::AttributeNotDefined,
                        rti1516::InvalidRegion,
                        rti1516::RegionNotCreatedByThisFederate,
@@ -1811,9 +1811,9 @@ void RTI1516ambassador::subscribeObjectClassAttributesWithRegions(
 
 // 9.9
 void RTI1516ambassador::unsubscribeObjectClassAttributesWithRegions(
-    rti1516::ObjectClassHandle theClass,
+    rti1516::ObjectClassHandle /*theClass*/,
     rti1516::AttributeHandleSetRegionHandleSetPairVector const&
-        theAttributeHandleSetRegionHandleSetPairVector) throw(rti1516::ObjectClassNotDefined,
+        /*theAttributeHandleSetRegionHandleSetPairVector*/) throw(rti1516::ObjectClassNotDefined,
                                                               rti1516::AttributeNotDefined,
                                                               rti1516::InvalidRegion,
                                                               rti1516::RegionNotCreatedByThisFederate,
@@ -1828,9 +1828,9 @@ void RTI1516ambassador::unsubscribeObjectClassAttributesWithRegions(
 
 // 9.10
 void RTI1516ambassador::subscribeInteractionClassWithRegions(
-    rti1516::InteractionClassHandle theClass,
-    rti1516::RegionHandleSet const& theRegionHandleSet,
-    bool active) throw(rti1516::InteractionClassNotDefined,
+    rti1516::InteractionClassHandle /*theClass*/,
+    rti1516::RegionHandleSet const& /*theRegionHandleSet*/,
+    bool /*active*/) throw(rti1516::InteractionClassNotDefined,
                        rti1516::InvalidRegion,
                        rti1516::RegionNotCreatedByThisFederate,
                        rti1516::InvalidRegionContext,
@@ -1846,8 +1846,8 @@ void RTI1516ambassador::subscribeInteractionClassWithRegions(
 
 // 9.11
 void RTI1516ambassador::unsubscribeInteractionClassWithRegions(
-    rti1516::InteractionClassHandle theClass,
-    rti1516::RegionHandleSet const& theRegionHandleSet) throw(rti1516::InteractionClassNotDefined,
+    rti1516::InteractionClassHandle /*theClass*/,
+    rti1516::RegionHandleSet const& /*theRegionHandleSet*/) throw(rti1516::InteractionClassNotDefined,
                                                               rti1516::InvalidRegion,
                                                               rti1516::RegionNotCreatedByThisFederate,
                                                               rti1516::FederateNotExecutionMember,
@@ -1861,10 +1861,10 @@ void RTI1516ambassador::unsubscribeInteractionClassWithRegions(
 
 // 9.12
 void RTI1516ambassador::sendInteractionWithRegions(
-    rti1516::InteractionClassHandle theInteraction,
-    rti1516::ParameterHandleValueMap const& theParameterValues,
-    rti1516::RegionHandleSet const& theRegionHandleSet,
-    rti1516::VariableLengthData const& theUserSuppliedTag) throw(rti1516::InteractionClassNotDefined,
+    rti1516::InteractionClassHandle /*theInteraction*/,
+    rti1516::ParameterHandleValueMap const& /*theParameterValues*/,
+    rti1516::RegionHandleSet const& /*theRegionHandleSet*/,
+    rti1516::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516::InteractionClassNotDefined,
                                                                  rti1516::InteractionClassNotPublished,
                                                                  rti1516::InteractionParameterNotDefined,
                                                                  rti1516::InvalidRegion,
@@ -1880,11 +1880,11 @@ void RTI1516ambassador::sendInteractionWithRegions(
 }
 
 rti1516::MessageRetractionHandle RTI1516ambassador::sendInteractionWithRegions(
-    rti1516::InteractionClassHandle theInteraction,
-    rti1516::ParameterHandleValueMap const& theParameterValues,
-    rti1516::RegionHandleSet const& theRegionHandleSet,
-    rti1516::VariableLengthData const& theUserSuppliedTag,
-    rti1516::LogicalTime const& theTime) throw(rti1516::InteractionClassNotDefined,
+    rti1516::InteractionClassHandle /*theInteraction*/,
+    rti1516::ParameterHandleValueMap const& /*theParameterValues*/,
+    rti1516::RegionHandleSet const& /*theRegionHandleSet*/,
+    rti1516::VariableLengthData const& /*theUserSuppliedTag*/,
+    rti1516::LogicalTime const& /*theTime*/) throw(rti1516::InteractionClassNotDefined,
                                                rti1516::InteractionClassNotPublished,
                                                rti1516::InteractionParameterNotDefined,
                                                rti1516::InvalidRegion,
@@ -1902,9 +1902,9 @@ rti1516::MessageRetractionHandle RTI1516ambassador::sendInteractionWithRegions(
 
 // 9.13
 void RTI1516ambassador::requestAttributeValueUpdateWithRegions(
-    rti1516::ObjectClassHandle theClass,
-    rti1516::AttributeHandleSetRegionHandleSetPairVector const& theSet,
-    rti1516::VariableLengthData const& theUserSuppliedTag) throw(rti1516::ObjectClassNotDefined,
+    rti1516::ObjectClassHandle /*theClass*/,
+    rti1516::AttributeHandleSetRegionHandleSetPairVector const& /*theSet*/,
+    rti1516::VariableLengthData const& /*theUserSuppliedTag*/) throw(rti1516::ObjectClassNotDefined,
                                                                  rti1516::AttributeNotDefined,
                                                                  rti1516::InvalidRegion,
                                                                  rti1516::RegionNotCreatedByThisFederate,
@@ -2191,7 +2191,7 @@ std::wstring RTI1516ambassador::getDimensionName(rti1516::DimensionHandle theHan
 }
 
 // 10.14
-unsigned long RTI1516ambassador::getDimensionUpperBound(rti1516::DimensionHandle theHandle) throw(
+unsigned long RTI1516ambassador::getDimensionUpperBound(rti1516::DimensionHandle /*theHandle*/) throw(
     rti1516::InvalidDimensionHandle, rti1516::FederateNotExecutionMember, rti1516::RTIinternalError)
 {
     /* TODO */
@@ -2543,7 +2543,7 @@ void RTI1516ambassador::disableInteractionRelevanceAdvisorySwitch() throw(
 
 // 10.30
 
-rti1516::DimensionHandleSet RTI1516ambassador::getDimensionHandleSet(rti1516::RegionHandle theRegionHandle) throw(
+rti1516::DimensionHandleSet RTI1516ambassador::getDimensionHandleSet(rti1516::RegionHandle /*theRegionHandle*/) throw(
     rti1516::InvalidRegion,
     rti1516::FederateNotExecutionMember,
     rti1516::SaveInProgress,
@@ -2557,8 +2557,8 @@ rti1516::DimensionHandleSet RTI1516ambassador::getDimensionHandleSet(rti1516::Re
 // 10.31
 
 rti1516::RangeBounds RTI1516ambassador::getRangeBounds(
-    rti1516::RegionHandle theRegionHandle,
-    rti1516::DimensionHandle theDimensionHandle) throw(rti1516::InvalidRegion,
+    rti1516::RegionHandle /*theRegionHandle*/,
+    rti1516::DimensionHandle /*theDimensionHandle*/) throw(rti1516::InvalidRegion,
                                                        rti1516::RegionDoesNotContainSpecifiedDimension,
                                                        rti1516::FederateNotExecutionMember,
                                                        rti1516::SaveInProgress,
@@ -2571,9 +2571,9 @@ rti1516::RangeBounds RTI1516ambassador::getRangeBounds(
 
 // 10.32
 void RTI1516ambassador::setRangeBounds(
-    rti1516::RegionHandle theRegionHandle,
-    rti1516::DimensionHandle theDimensionHandle,
-    rti1516::RangeBounds const& theRangeBounds) throw(rti1516::InvalidRegion,
+    rti1516::RegionHandle /*theRegionHandle*/,
+    rti1516::DimensionHandle /*theDimensionHandle*/,
+    rti1516::RangeBounds const& /*theRangeBounds*/) throw(rti1516::InvalidRegion,
                                                       rti1516::RegionNotCreatedByThisFederate,
                                                       rti1516::RegionDoesNotContainSpecifiedDimension,
                                                       rti1516::InvalidRangeBound,
@@ -2587,7 +2587,7 @@ void RTI1516ambassador::setRangeBounds(
 }
 
 // 10.33
-unsigned long RTI1516ambassador::normalizeFederateHandle(rti1516::FederateHandle theFederateHandle) throw(
+unsigned long RTI1516ambassador::normalizeFederateHandle(rti1516::FederateHandle /*theFederateHandle*/) throw(
     rti1516::FederateNotExecutionMember, rti1516::InvalidFederateHandle, rti1516::RTIinternalError)
 {
     /* TODO */
@@ -2595,7 +2595,7 @@ unsigned long RTI1516ambassador::normalizeFederateHandle(rti1516::FederateHandle
 }
 
 // 10.34
-unsigned long RTI1516ambassador::normalizeServiceGroup(rti1516::ServiceGroupIndicator theServiceGroup) throw(
+unsigned long RTI1516ambassador::normalizeServiceGroup(rti1516::ServiceGroupIndicator /*theServiceGroup*/) throw(
     rti1516::FederateNotExecutionMember, rti1516::InvalidServiceGroup, rti1516::RTIinternalError)
 {
     /* TODO */

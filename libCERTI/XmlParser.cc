@@ -19,17 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include "XmlParser.hh"
-#include "ObjectClassSet.hh"
 #include "InteractionSet.hh"
 #include "ObjectClassAttribute.hh"
-#include "RoutingSpace.hh"
+#include "ObjectClassSet.hh"
 #include "PrettyDebug.hh"
+#include "RoutingSpace.hh"
+#include "XmlParser.hh"
 #include <algorithm>
 
-using std::string ;
-using std::cerr ;
-using std::endl ;
+using std::string;
+using std::cerr;
+using std::endl;
 
 #ifdef HAVE_XML
 
@@ -40,15 +40,14 @@ static PrettyDebug D("XMLPARSER", "(XmlParser) ");
 // ----------------------------------------------------------------------------
 XmlParser::XmlParser(RootObject* r)
 {
-    root = r ;
+    root = r;
 
-    freeObjectClassHandle = 1 ;
-    freeInteractionClassHandle = 1 ;
-    freeAttributeHandle = 1 ;
-    freeParameterHandle = 1 ;
-    freeSpaceHandle = 1 ;
+    freeObjectClassHandle = 1;
+    freeInteractionClassHandle = 1;
+    freeAttributeHandle = 1;
+    freeParameterHandle = 1;
+    freeSpaceHandle = 1;
 }
-
 
 // ----------------------------------------------------------------------------
 XmlParser::~XmlParser()
@@ -56,8 +55,7 @@ XmlParser::~XmlParser()
 }
 
 // ----------------------------------------------------------------------------
-RootObject*
-XmlParser::parse(string pathToXmlFile)
+RootObject* XmlParser::parse(string pathToXmlFile)
 {
     D.Out(pdTrace, "Starting to parse XML file");
     filename = pathToXmlFile;
@@ -69,143 +67,141 @@ XmlParser::parse(string pathToXmlFile)
 
     // Did libXML manage to parse the file ?
     if (doc == 0) {
-        cerr << "XML file not parsed successfully" << endl ;
+        cerr << "XML file not parsed successfully" << endl;
         xmlFreeDoc(doc);
-        return 0 ;
+        return 0;
     }
 
     // Is there a root element ?
     cur = xmlDocGetRootElement(doc);
     if (cur == 0) {
-        cerr << "XML file is empty" << endl ;
+        cerr << "XML file is empty" << endl;
         xmlFreeDoc(doc);
-        return 0 ;
+        return 0;
     }
 
     // Is this root element an objectModel ?
-    if (xmlStrcmp(cur->name, (const xmlChar *) NODE_OBJECT_MODEL)) {
-        cerr << "Wrong XML file: not the expected root node" << endl ;
-        return 0 ;
+    if (xmlStrcmp(cur->name, (const xmlChar*) NODE_OBJECT_MODEL)) {
+        cerr << "Wrong XML file: not the expected root node" << endl;
+        return 0;
     }
     D.Out(pdTrace, "XML file looks ok, starting main loop");
 
     // First Loop (Routing Spaces)
     cur = xmlDocGetRootElement(doc);
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_ROUTING_SPACE))) {
             D.Out(pdTrace, "Found a routing space");
-            xmlNodePtr prev = cur ;
+            xmlNodePtr prev = cur;
             this->parseRoutingSpace();
-            cur = prev ;
+            cur = prev;
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
 
     // Second Loop (Object and Interaction classes)
     cur = xmlDocGetRootElement(doc);
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_OBJECTS))) {
             D.Out(pdTrace, "Found a group of object classes");
-            xmlNodePtr prev = cur ;
-            cur = cur->xmlChildrenNode ;
+            xmlNodePtr prev = cur;
+            cur = cur->xmlChildrenNode;
             while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, NODE_OBJECT_CLASS))) {
                     this->parseClass(0);
                 }
-                cur = cur->next ;
+                cur = cur->next;
             }
-            cur = prev ;
+            cur = prev;
         }
         if ((!xmlStrcmp(cur->name, NODE_INTERACTIONS))) {
             D.Out(pdTrace, "Found a group of interaction classes");
-            xmlNodePtr prev = cur ;
-            cur = cur->xmlChildrenNode ;
+            xmlNodePtr prev = cur;
+            cur = cur->xmlChildrenNode;
             while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, NODE_INTERACTION_CLASS))) {
                     this->parseInteraction(0);
                 }
-                cur = cur->next ;
+                cur = cur->next;
             }
-            cur = prev ;
+            cur = prev;
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
 
     xmlFreeDoc(doc);
 
-    Debug(D, pdTrace) << "XmlParser: finished parsing" << endl ;
+    Debug(D, pdTrace) << "XmlParser: finished parsing" << endl;
     // JLB just for debug
     // root->display();
-    return root ;
+    return root;
 }
 
 // ----------------------------------------------------------------------------
-void
-XmlParser::parseClass(ObjectClass* parent)
+void XmlParser::parseClass(ObjectClass* parent)
 {
-    Debug(D, pdTrace) << "New Object Class" << endl ;
+    Debug(D, pdTrace) << "New Object Class" << endl;
 
-    xmlNodePtr prev = cur ;
+    xmlNodePtr prev = cur;
 
     /* note how objectHandle counter is incremented */
     std::string tmpName = getName();
-    if (0==tmpName.length()) {
-    	throw CouldNotOpenFED("Current node Name is NULL!!");
+    if (0 == tmpName.length()) {
+        throw CouldNotOpenFED("Current node Name is NULL!!");
     }
 
-    ObjectClass* current = new ObjectClass(tmpName,freeObjectClassHandle++);
+    ObjectClass* current = new ObjectClass(tmpName, freeObjectClassHandle++);
 
     root->addObjectClass(current, parent);
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         // Attributes
         if ((!xmlStrcmp(cur->name, NODE_ATTRIBUTE))) {
             //std::string name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
-            HLAntos_t objClassProp ;
-            objClassProp.name=NULL;
-            objClassProp.transportation=NULL;
-            objClassProp.order=NULL;
-            objClassProp.space=NULL;
-            parseNTOS(&objClassProp) ;
+            HLAntos_t objClassProp;
+            objClassProp.name = NULL;
+            objClassProp.transportation = NULL;
+            objClassProp.order = NULL;
+            objClassProp.space = NULL;
+            parseNTOS(&objClassProp);
 
             AttributeHandle attributeHandle = current->getHandleClassAttributeMap().size() + 1;
-            ObjectClassAttribute *attr = new ObjectClassAttribute( (const char* ) objClassProp.name , attributeHandle);
+            ObjectClassAttribute* attr = new ObjectClassAttribute((const char*) objClassProp.name, attributeHandle);
 
             // Transportation
 
-            if (!xmlStrcmp(objClassProp.transportation,VALUE_RELIABLE)) {
-                attr->transport = RELIABLE ;
+            if (!xmlStrcmp(objClassProp.transportation, VALUE_RELIABLE)) {
+                attr->transport = RELIABLE;
             }
             else {
-            	if (!xmlStrcmp(objClassProp.transportation,VALUE_BESTEFFORT)) {
-            		attr->transport = BEST_EFFORT ;
-            	}
+                if (!xmlStrcmp(objClassProp.transportation, VALUE_BESTEFFORT)) {
+                    attr->transport = BEST_EFFORT;
+                }
             }
 
             // Order
 
             if (!xmlStrcmp(objClassProp.order, VALUE_TSO)) {
-                attr->order = TIMESTAMP ;
+                attr->order = TIMESTAMP;
             }
             else {
-            	if (!xmlStrcmp(objClassProp.order, VALUE_RO)) {
-            		attr->order = RECEIVE ;
-            	}
+                if (!xmlStrcmp(objClassProp.order, VALUE_RO)) {
+                    attr->order = RECEIVE;
+                }
             }
 
             // Routing space
-            char *space = (char *) objClassProp.space ;
+            char* space = (char*) objClassProp.space;
             if (space) {
-                SpaceHandle h ;
+                SpaceHandle h;
                 try {
                     h = root->getRoutingSpaceHandle(string(space));
                 }
-                catch (Exception &e) {
-                    cerr << "warning: Incorrect space name for attribute"
-                         << endl ;
+                catch (Exception& e) {
+                    cerr << "warning: Incorrect space name for attribute" << endl;
                 }
                 attr->setSpace(h);
             }
@@ -217,27 +213,26 @@ XmlParser::parseClass(ObjectClass* parent)
         if ((!xmlStrcmp(cur->name, NODE_OBJECT_CLASS))) {
             this->parseClass(current);
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
-    cur = prev ;
+    cur = prev;
 }
 
 // ----------------------------------------------------------------------------
-void
-XmlParser::parseInteraction(Interaction* parent)
+void XmlParser::parseInteraction(Interaction* parent)
 {
     Debug(D, pdTrace) << "New Interaction Class" << endl;
     std::string name;
     TransportType transport;
     OrderType order;
 
-    xmlNodePtr prev = cur ;
+    xmlNodePtr prev = cur;
 
-    HLAntos_t intClassProp ;
-    intClassProp.name=NULL;
-    intClassProp.transportation=NULL;
-    intClassProp.order=NULL;
-    intClassProp.space=NULL;
+    HLAntos_t intClassProp;
+    intClassProp.name = NULL;
+    intClassProp.transportation = NULL;
+    intClassProp.order = NULL;
+    intClassProp.space = NULL;
     parseNTOS(&intClassProp);
     // Name
     //name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
@@ -245,10 +240,10 @@ XmlParser::parseInteraction(Interaction* parent)
     // Transportation
 
     if (!xmlStrcmp(intClassProp.transportation, VALUE_RELIABLE)) {
-        transport = RELIABLE ;
+        transport = RELIABLE;
     }
-    else if (!xmlStrcmp(intClassProp.transportation,VALUE_BESTEFFORT))  {
-        transport = BEST_EFFORT ;
+    else if (!xmlStrcmp(intClassProp.transportation, VALUE_BESTEFFORT)) {
+        transport = BEST_EFFORT;
     }
     else {
         // TODO LATER FIXME warning: variable 'transport' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
@@ -257,67 +252,66 @@ XmlParser::parseInteraction(Interaction* parent)
 
     // Order
     if (!xmlStrcmp(intClassProp.order, VALUE_TSO)) {
-        order = TIMESTAMP ;
+        order = TIMESTAMP;
     }
     else if (!xmlStrcmp(intClassProp.order, VALUE_RO)) {
-        order = RECEIVE ;
+        order = RECEIVE;
     }
     else {
         // TODO LATER FIXME warning: variable 'order' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
         // assert(false);
     }
-    
-    Interaction* current = new Interaction(reinterpret_cast<char*>(intClassProp.name),freeInteractionClassHandle++,transport,order);
+
+    Interaction* current
+        = new Interaction(reinterpret_cast<char*>(intClassProp.name), freeInteractionClassHandle++, transport, order);
 
     // Routing space
-    char *space = (char *) intClassProp.space ;
+    char* space = (char*) intClassProp.space;
     if (space) {
-        SpaceHandle h ;
+        SpaceHandle h;
         try {
             h = root->getRoutingSpaceHandle(string(space));
         }
-        catch (Exception &e) {
-            cerr << "warning: Incorrect space name for interaction"
-                 << endl ;
+        catch (Exception& e) {
+            cerr << "warning: Incorrect space name for interaction" << endl;
         }
         current->setSpace(h);
     }
     xmlFree(space);
 
     // Add to interactions list, and build inheritance relation
-    root->addInteractionClass(current,parent);
+    root->addInteractionClass(current, parent);
 
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
             std::string tmpName = getName();
-            Parameter *param = new Parameter(tmpName.c_str(), freeParameterHandle++);
+            Parameter* param = new Parameter(tmpName.c_str(), freeParameterHandle++);
             current->addParameter(param);
         }
         // Subinteraction
         if ((!xmlStrcmp(cur->name, NODE_INTERACTION_CLASS))) {
             this->parseInteraction(current);
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
-    cur = prev ;
+    cur = prev;
 }
 
 // ----------------------------------------------------------------------------
-void
-XmlParser::parseRoutingSpace()
+void XmlParser::parseRoutingSpace()
 {
-    Debug(D, pdTrace) << "New Routing Space" << endl ;
+    Debug(D, pdTrace) << "New Routing Space" << endl;
 
-    DimensionHandle freeDimensionHandle = 1 ;
-    xmlNodePtr prev = cur ;
-    RoutingSpace current ;
+    DimensionHandle freeDimensionHandle = 1;
+    xmlNodePtr prev = cur;
+    RoutingSpace current;
     current.setHandle(freeSpaceHandle++);
     std::string tmpName = getName();
     current.setName(tmpName);
 
     // Dimensions
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
             Dimension dimension(freeDimensionHandle++);
@@ -325,7 +319,7 @@ XmlParser::parseRoutingSpace()
             dimension.setName(tmpName);
             current.addDimension(dimension);
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
     // Routing Space should be added after the
     // Dimension has been added since addRoutingSpace store a copy
@@ -334,19 +328,17 @@ XmlParser::parseRoutingSpace()
     // https://savannah.nongnu.org/bugs/?19534
     root->addRoutingSpace(current);
 
-    cur = prev ;
+    cur = prev;
 }
 
 // ----------------------------------------------------------------------------
-bool
-XmlParser::exists()
+bool XmlParser::exists()
 {
     return true;
 }
 
-XmlParser::HLAXmlStdVersion_t
-XmlParser::version (std::string pathToXmlFile){
-
+XmlParser::HLAXmlStdVersion_t XmlParser::version(std::string pathToXmlFile)
+{
     // transportation = HLAreliable
     // order = TimeStamp
 
@@ -354,39 +346,39 @@ XmlParser::version (std::string pathToXmlFile){
 
     // Did libXML manage to parse the file ?
     if (doc == 0) {
-        cerr << "XML file not parsed successfully" << endl ;
+        cerr << "XML file not parsed successfully" << endl;
         xmlFreeDoc(doc);
-        throw CouldNotOpenFED(stringize() << "Could not open File:" << pathToXmlFile) ;
+        throw CouldNotOpenFED(stringize() << "Could not open File:" << pathToXmlFile);
     }
 
     // Is there a root element ?
     xmlNodePtr cur = xmlDocGetRootElement(doc);
     if (cur == 0) {
-        cerr << "XML file is empty" << endl ;
+        cerr << "XML file is empty" << endl;
         xmlFreeDoc(doc);
-        throw CouldNotOpenFED(stringize() << "XML file:" << pathToXmlFile << "is empty") ;
+        throw CouldNotOpenFED(stringize() << "XML file:" << pathToXmlFile << "is empty");
     }
 
     // Is this root element an objectModel ?
-    if (xmlStrcmp(cur->name, (const xmlChar *) NODE_OBJECT_MODEL)) {
-        cerr << "Wrong XML file: not the expected root node" << endl ;
-        throw CouldNotOpenFED(stringize() << "XML File:" << pathToXmlFile<< " has an invalid root node") ;
+    if (xmlStrcmp(cur->name, (const xmlChar*) NODE_OBJECT_MODEL)) {
+        cerr << "Wrong XML file: not the expected root node" << endl;
+        throw CouldNotOpenFED(stringize() << "XML File:" << pathToXmlFile << " has an invalid root node");
     }
     D.Out(pdTrace, "XML file looks ok, starting main loop");
 
     // xmlns is not a standard property we read in a different way using cur->ns->href
-    if ( cur->ns != NULL ) {
-    	if ( xmlStrstr(cur->ns->href, VERSION1516_2010)) {
-        	return XmlParser::XML_IEEE1516_2010;
-    	}
+    if (cur->ns != NULL) {
+        if (xmlStrstr(cur->ns->href, VERSION1516_2010)) {
+            return XmlParser::XML_IEEE1516_2010;
+        }
     }
 
     // Which XML FOM version
-    xmlChar* version  = xmlGetProp(cur, ATTRIBUTE_DTDVERSION);
-    if ( version != NULL) {
-		if (!xmlStrcmp(version, VERSION1516)) {
-			return XmlParser::XML_IEEE1516_2000;
-		}
+    xmlChar* version = xmlGetProp(cur, ATTRIBUTE_DTDVERSION);
+    if (version != NULL) {
+        if (!xmlStrcmp(version, VERSION1516)) {
+            return XmlParser::XML_IEEE1516_2000;
+        }
     }
 
     // If no good, what we do ?
@@ -394,49 +386,47 @@ XmlParser::version (std::string pathToXmlFile){
     //return XmlParser::XML_LEGACY;
 
     cur = xmlDocGetRootElement(doc);
-    cur = cur->xmlChildrenNode ;
+    cur = cur->xmlChildrenNode;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_OBJECTS))) {
             //xmlNodePtr prev = cur ;
-            xmlNodePtr suite = cur->xmlChildrenNode ;
+            xmlNodePtr suite = cur->xmlChildrenNode;
             while (suite != NULL) {
                 if ((!xmlStrcmp(suite->name, NODE_OBJECT_CLASS))) {
-                	// JLB : method used to recognize the xml version used
-                	xmlChar* name  = xmlGetProp(suite, ATTRIBUTE_NAME);
-                	if ( name != NULL) {
-                		return XmlParser::XML_IEEE1516_2000;
-                	}
-                	else
-                	{
-                		// JLB default version if no property found
-                		return XmlParser::XML_IEEE1516_2010;
-//                		std::cout <<  "trying to found a name class" << endl ;
-//                		xmlNodePtr hijo = suite->xmlChildrenNode ;
-//                		while (hijo != NULL)
-//                		{
-//                			std::cout << "debut ++ " << hijo->name << "++" << endl;
-//                			//if ((!xmlStrcmp(hijo->name, NODE_NAME))) {
-//                			if(!xmlStrcmp(hijo->name,(const xmlChar*)"text")) {
-//                				std::cout <<  "Found object name 2010 format " << endl;
-//                				std::string strcontent = (const char* )hijo->content;
-//                				std::cout << " content:<" << strcontent <<">";
-//                				//strcontent.erase(remove_if(strcontent.begin(), strcontent.end(), isspace), strcontent.end());
-//                				//if (strcontent.length()>0) std::cout << " content:<" << strcontent <<">";
-//                				//return XmlParser::XML_IEEE1516_2010;
-//                			}
-//                			//}
-//                			hijo = hijo->next ;
-//                		}
-//                		return  XmlParser::XML_LEGACY;
-                	}
-
+                    // JLB : method used to recognize the xml version used
+                    xmlChar* name = xmlGetProp(suite, ATTRIBUTE_NAME);
+                    if (name != NULL) {
+                        return XmlParser::XML_IEEE1516_2000;
+                    }
+                    else {
+                        // JLB default version if no property found
+                        return XmlParser::XML_IEEE1516_2010;
+                        //                		std::cout <<  "trying to found a name class" << endl ;
+                        //                		xmlNodePtr hijo = suite->xmlChildrenNode ;
+                        //                		while (hijo != NULL)
+                        //                		{
+                        //                			std::cout << "debut ++ " << hijo->name << "++" << endl;
+                        //                			//if ((!xmlStrcmp(hijo->name, NODE_NAME))) {
+                        //                			if(!xmlStrcmp(hijo->name,(const xmlChar*)"text")) {
+                        //                				std::cout <<  "Found object name 2010 format " << endl;
+                        //                				std::string strcontent = (const char* )hijo->content;
+                        //                				std::cout << " content:<" << strcontent <<">";
+                        //                				//strcontent.erase(remove_if(strcontent.begin(), strcontent.end(), isspace), strcontent.end());
+                        //                				//if (strcontent.length()>0) std::cout << " content:<" << strcontent <<">";
+                        //                				//return XmlParser::XML_IEEE1516_2010;
+                        //                			}
+                        //                			//}
+                        //                			hijo = hijo->next ;
+                        //                		}
+                        //                		return  XmlParser::XML_LEGACY;
+                    }
                 }
-                suite = suite->next ;
+                suite = suite->next;
             }
         }
-        cur = cur->next ;
+        cur = cur->next;
     }
-    return  XmlParser::XML_LEGACY;
+    return XmlParser::XML_LEGACY;
 }
 
 //void displayCurrent(xmlNodePtr curNode) {
@@ -467,18 +457,18 @@ XmlParser::version (std::string pathToXmlFile){
 
 namespace certi {
 
-XmlParser::XmlParser(RootObject *)
+XmlParser::XmlParser(RootObject*)
 {
 }
 
-RootObject *XmlParser::parse(std::string)
+RootObject* XmlParser::parse(std::string)
 {
-    return 0 ;
+    return 0;
 }
 
 bool XmlParser::exists()
 {
-    return false ;
+    return false;
 }
 
 XmlParser::~XmlParser()

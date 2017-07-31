@@ -212,7 +212,7 @@ void MB_create(MsgBuffer_t* msg);
  * Constructor with size.
  * Build a MessageBuffer with provisioned bufSize buffer.
  * @param[in,out] msg pointer to the message buffer structure
- * @param[in] bufferMaxSize, the [initial] maximum size of the buffer
+ * @param[in] bufferMaxSize the [initial] maximum size of the buffer
  */
 MB_EXPORT
 void MB_createWithSize(MsgBuffer_t* msg, uint32_t bufferMaxSize);
@@ -271,7 +271,7 @@ void MB_seek_write(MsgBuffer_t* msg, uint32_t offset);
 /**
  * Resize the current maximum buffer size (in bytes).
  * This is the size of the allocated buffer.
- * @param[in] the new buffer maximum size
+ * @param[in] newSize the new buffer maximum size
  * @return the new buffer maximum size
  */
 MB_EXPORT
