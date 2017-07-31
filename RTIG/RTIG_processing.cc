@@ -1694,7 +1694,7 @@ void RTIG::processRequestObjectAttributeValueUpdate(Socket* link, NM_Request_Obj
                                                  request->getAttributesSize());
 
 #else
-        (void) my_federations.searchFederation(request->getFederation())
+        DISCARD_RETURN my_federations.searchFederation(request->getFederation())
             .requestObjectOwner(request->getFederate(), request->getObject(), request->getAttributes());
 #endif
     }

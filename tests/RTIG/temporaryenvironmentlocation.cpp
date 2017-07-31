@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <include/certi.hh>
+
 namespace {
 static constexpr int SETENV_REPLACE{1};
 static const std::string ENV_VARIABLE_DID_NOT_EXIST{"DefaultLastValue"};
@@ -22,7 +24,7 @@ TemporaryEnvironmentLocation::TemporaryEnvironmentLocation(const std::string& na
     : my_name{name}, my_lastValue{ENV_VARIABLE_DID_NOT_EXIST}
 {
     CERR << "Create temporary folder " << path() << std::endl;
-    (void) system(std::string("mkdir " + path()).c_str());
+    DISCARD_RETURN system(std::string("mkdir " + path()).c_str());
 
     auto lastValue = std::getenv(my_name.c_str());
     if (lastValue) {
@@ -41,9 +43,9 @@ TemporaryEnvironmentLocation::~TemporaryEnvironmentLocation()
 {
     CERR << "Destroy temporary folder " << path() << std::endl;
 #ifdef _WIN32
-    (void) system(std::string("rmdir /S /Q " + path()).c_str());
+    DISCARD_RETURN system(std::string("rmdir /S /Q " + path()).c_str());
 #else
-    (void) system(std::string("rm -rf " + path()).c_str());
+    DISCARD_RETURN system(std::string("rm -rf " + path()).c_str());
 #endif
 
     if (my_lastValue == ENV_VARIABLE_DID_NOT_EXIST) {

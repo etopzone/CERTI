@@ -585,7 +585,7 @@ FederationTime Federation::computeMinNERx()
 FederationTime Federation::getMinNERx() const
 {
     return my_min_NERx;
-};
+}
 
 void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous)
 {

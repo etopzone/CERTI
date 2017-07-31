@@ -329,4 +329,13 @@ typedef basic_stringize<wchar_t> wstringize;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
+#if __cplusplus > 201402L
+#define MAYBE_UNUSED(type, name) [[maybe_unused]] type name
+#define DISCARD_RETURN [[maybe_unused]]
+#else
+#define MAYBE_UNUSED(type, name) type
+#define DISCARD_RETURN (void)
+#endif
+
+
 // $Id: certi.hh,v 3.54 2013/09/24 14:28:49 erk Exp $
