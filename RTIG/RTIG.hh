@@ -56,7 +56,7 @@ namespace rtig {
      * <ul>
      *   <li> one part for treating the received message. </li>
      *   <li> another part generating and sending back a response. </li>
-     * </li>
+     * </ul>
      */
 class RTIG {
 public:

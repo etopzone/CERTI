@@ -83,10 +83,10 @@ public:
      * Allocates memory the Name's storage, and read its FED file to store the
      * result in RootObj.
      * with FEDERATION_USES_MULTICAST not defined
-     * @param federation_name
-     * @param federation_handle
-     * @param socket_server
-     * @param audit_server
+     * @param federation_name Name of the federation
+     * @param federation_handle Handle of the federation
+     * @param socket_server Socket server from RTIG
+     * @param audit_server Audit server from RTIG
      * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
      */
     Federation(const std::string& federation_name,
@@ -133,8 +133,6 @@ public:
     /** Return true if there are no Federates left in the Federation
      * 
      * else throw FederatesCurrentlyJoined.
-     * 
-     * FIXME This behavior is very strange
      */
     bool empty() const;
 
@@ -143,8 +141,6 @@ public:
      * @param federate_handle federate to check
      * @return true if the federate is part of the Federation,
      *              else throw an exception.
-     * 
-     * FIXME This behavior is very strange
      */
     bool check(FederateHandle federate_handle) const;
 
@@ -270,10 +266,10 @@ public:
 
     /** Removes an object instance from federation.
      * 
-     *  @param federate Federate requesting removal
-     *  @param id Object handle
+     *  @param federate_handle Federate requesting removal
+     *  @param object_handle Object handle
      *  @param time Federation Time
-     *  @param tag Label for this operation
+     *  @param user_tag Label for this operation
      */
     void deleteObject(FederateHandle federate_handle,
                       ObjectHandle object_handle,
@@ -288,9 +284,9 @@ public:
 
     /** Removes an object instance from federation.
      * 
-     *  @param federate Federate requesting removal
-     *  @param id Object handle
-     *  @param tag Label for this operation
+     *  @param federate_handle Federate requesting removal
+     *  @param object_handle Object handle
+     *  @param user_tag Label for this operation
      */
     void deleteObject(FederateHandle federate_handle,
                       ObjectHandle object_handle,
@@ -341,8 +337,8 @@ public:
      * Subscribes attributes to an object class. After subscription, attribute 
      * publishers are notified by the federate service 
      * startRegistrationForObjectClass.
-     * @param[in] federate federate handle of the subscriber
-     * @param[in] object subscripted object class handle 
+     * @param[in] federate_handle federate handle of the subscriber
+     * @param[in] object_handle subscripted object class handle 
      * @param[in] attributes subscripted vector of attributes 
      */
     void subscribeObject(FederateHandle federate_handle,
@@ -625,7 +621,7 @@ public:
 
     /**
      * Update the last NERx message date for the concerned federate.
-     * @param[in] federate the handle of the federate for which we want to update NERx time.
+     * @param[in] federate_handle the handle of the federate for which we want to update NERx time.
      * @param[in] date the new NERx date for the specified federate.
      */
     bool updateLastNERxForFederate(FederateHandle federate_handle,
