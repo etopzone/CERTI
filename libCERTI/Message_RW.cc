@@ -41,6 +41,11 @@ std::ostream& Message::show(std::ostream& out) {
 	return out;
 } /* end of show */
 
+std::ostream& operator << (std::ostream& os, const Message& msg)
+{
+    return const_cast<Message&>(msg).show(os);
+}
+
 void Message::serialize(MessageBuffer& msgBuffer) {
 	G.Out(pdGendoc,"enter Message::serialize");
 	if ((type==NOT_USED) || (type==LAST)) {

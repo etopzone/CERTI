@@ -127,7 +127,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
 '''
                              % ns)
-                self.indent()
 
     def closeNamespaces(self, stream):
         if self.AST.hasPackage():
@@ -136,137 +135,156 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
             for ns in nameSpaceList:
-                self.unIndent()
                 stream.write(self.getIndent() + '} '
                              + self.commentLineBeginWith
                              + ' end of namespace %s \n' % ns)
 
     def writeOneGetterSetter(self, stream, field):
-
         targetTypeName = self.getTargetTypeName(field.typeid.name)
 
         if field.typeid.name == 'onoff':
             if field.qualifier == 'repeated':
-                stream.write(self.getIndent())
-                stream.write('uint32_t get'
-                             + self.upperFirst(field.name)
-                             + 'Size() const')
-                stream.write(' {return ' + field.name + '.size();}\n')
+                stream.write(self.getIndent() + 'uint32_t get' + self.upperFirst(field.name) + 'Size() const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + '.size();\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + 'Size(uint32_t num)')
-                stream.write(' {' + field.name + '.resize(num);}\n')
+                stream.write(self.getIndent() + 'void set' + self.upperFirst(field.name) + 'Size(uint32_t num)\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '.resize(num);\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('const std::vector<' + targetTypeName
-                             + '>& get' + self.upperFirst(field.name)
-                             + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write(self.getIndent() + 'const std::vector<' + targetTypeName + '>& get' + self.upperFirst(field.name) + '() const\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'On(uint32_t rank)')
-                stream.write(' {' + field.name + '[rank] = true;}\n')
+                stream.write(self.getIndent() + 'void ' + field.name + 'On(uint32_t rank)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '[rank] = true;\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'Off(uint32_t rank)'
-                             )
-                stream.write(' {' + field.name + '[rank] = false;}\n')
+                stream.write(self.getIndent() + 'void ' + field.name + 'Off(uint32_t rank)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '[rank] = false;\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write(targetTypeName + ' is'
-                             + self.upperFirst(field.name)
-                             + 'On(uint32_t rank) const')
-                stream.write(' {return ' + field.name + '[rank];}\n')
+                stream.write(self.getIndent() + targetTypeName + ' is' + self.upperFirst(field.name) + 'On(uint32_t rank) const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + '[rank];\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
             else:
-                stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'On()')
-                stream.write(' {' + field.name + ' = true;}\n')
+                stream.write(self.getIndent() + 'void ' + field.name + 'On()\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + ' = true;\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void ' + field.name + 'Off()')
-                stream.write(' {' + field.name + ' = false;}\n')
+                stream.write(self.getIndent() + 'void ' + field.name + 'Off()\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + ' = false;\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write(targetTypeName + ' is'
-                             + self.upperFirst(field.name)
-                             + 'On() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write(self.getIndent() + targetTypeName + ' is' + self.upperFirst(field.name) + 'On() const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
         else:
             if field.qualifier == 'repeated':
-                stream.write(self.getIndent())
-                stream.write('uint32_t get'
-                             + self.upperFirst(field.name)
-                             + 'Size() const')
-                stream.write(' {return ' + field.name + '.size();}\n')
+                stream.write(self.getIndent() + 'uint32_t get' + self.upperFirst(field.name) + 'Size() const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + '.size();\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + 'Size(uint32_t num)')
-                stream.write(' {' + field.name + '.resize(num);}\n')
+                stream.write(self.getIndent() + 'void set' + self.upperFirst(field.name) + 'Size(uint32_t num)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '.resize(num);\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('const std::vector<' + targetTypeName
-                             + '>& get' + self.upperFirst(field.name)
-                             + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write(self.getIndent() + 'const std::vector<' + targetTypeName + '>& get' + self.upperFirst(field.name) + '() const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('const ' + targetTypeName + '& get'
-                             + self.upperFirst(field.name)
-                             + '(uint32_t rank) const')
-                stream.write(' {return ' + field.name + '[rank];}\n')
+                stream.write(self.getIndent() + 'const ' + targetTypeName + '& get' + self.upperFirst(field.name) + '(uint32_t rank) const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + '[rank];\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write(targetTypeName + '& get'
-                             + self.upperFirst(field.name)
-                             + '(uint32_t rank)')
-                stream.write(' {return ' + field.name + '[rank];}\n')
+                stream.write(self.getIndent() + targetTypeName + '& get' + self.upperFirst(field.name) + '(uint32_t rank)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + '[rank];\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + '(const ')
-                stream.write(targetTypeName + '& new'
-                             + self.upperFirst(field.name)
-                             + ', uint32_t rank)')
-                stream.write(' {' + field.name + '[rank]=new'
-                             + self.upperFirst(field.name) + ';}\n')
+                stream.write(self.getIndent() + 'void set' + self.upperFirst(field.name) + '(const ' + targetTypeName + '& new' + self.upperFirst(field.name) + ', uint32_t rank)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '[rank]=new' + self.upperFirst(field.name) + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void remove'
-                             + self.upperFirst(field.name)
-                             + '(uint32_t rank)')
-                stream.write(' {' + field.name + '.erase(' + field.name
-                             + '.begin() + rank);}\n')
+                stream.write(self.getIndent() + 'void remove' + self.upperFirst(field.name) + '(uint32_t rank)\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + field.name + '.erase(' + field.name + '.begin() + rank);\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
             else:
-                stream.write(self.getIndent())
-                stream.write('const ' + targetTypeName + '& get'
-                             + self.upperFirst(field.name) + '() const')
-                stream.write(' {return ' + field.name + ';}\n')
+                stream.write(self.getIndent() + 'const ' + targetTypeName + '& get' + self.upperFirst(field.name) + '() const\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                stream.write(self.getIndent() + 'return ' + field.name + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
 
-                stream.write(self.getIndent())
-                stream.write('void set' + self.upperFirst(field.name)
-                             + '(const ')
-                stream.write(targetTypeName + '& new'
-                             + self.upperFirst(field.name) + ') {')
+                stream.write(self.getIndent() + 'void set' + self.upperFirst(field.name) + '(const ' + targetTypeName + '& new' + self.upperFirst(field.name) + ')\n')
+                stream.write(self.getIndent() + '{\n')
+                self.indent()
+                
                 if field.qualifier == 'optional':
-                    stream.write('\n')
-                    self.indent()
-                    stream.write(self.getIndent() + '_has%s=true;\n'
-                                 % self.upperFirst(field.name))
-                    stream.write(self.getIndent() + field.name + '=new'
-                                 + self.upperFirst(field.name) + ';\n')
-                    self.unIndent()
-                    stream.write(self.getIndent())
-                else:
-                    stream.write(field.name + '=new'
-                                 + self.upperFirst(field.name) + ';')
-                stream.write('}\n')
+                    stream.write(self.getIndent() + '_has%s = true;\n' % self.upperFirst(field.name))
+                    
+                stream.write(self.getIndent() + field.name + ' = new' + self.upperFirst(field.name) + ';\n')
+                self.unIndent()
+                stream.write(self.getIndent() + '}\n\n')
+                
                 if field.qualifier == 'optional':
-                    stream.write(self.getIndent())
                     tmp = self.upperFirst(field.name)
-                    stream.write('bool has%s() {return _has%s;}\n'
-                                 % (tmp, tmp))
+                    stream.write(self.getIndent() + 'bool has%s() const\n' % tmp)
+                    stream.write(self.getIndent() + '{\n')
+                    self.indent()
+                    stream.write(self.getIndent() + 'return _has%s;\n' % tmp)
+                    self.unIndent()
+                    stream.write(self.getIndent() + '}\n\n')
 
     def writeDeclarationFieldStatement(self, stream, field):
         stream.write(self.getIndent())
@@ -448,16 +466,13 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     self.generateEnum(stream, msg.enum)
                     stream.write('\n')
 
-                if msg.hasMerge():
-                    stream.write(self.getIndent()
-                                 + 'typedef %s Super;\n'
-                                 % msg.merge.name)
-
                 # now write constructor/destructor
 
                 stream.write(self.getIndent() + msg.name + '();\n')
                 stream.write(self.getIndent() + virtual + '~'
-                             + msg.name + '();\n')
+                             + msg.name + '() = default;\n\n')
+                
+                ## TODO copy CTOR &cie
 
                 # write virtual serialize and deserialize
                 # if we have some specific field
@@ -470,14 +485,15 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                                  + 'void serialize(%s& msgBuffer);\n'
                                  % self.serializeBufferType)
                     stream.write(self.getIndent() + virtual
-                                 + 'void deserialize(%s& msgBuffer);\n'
+                                 + 'void deserialize(%s& msgBuffer);\n\n'
                                  % self.serializeBufferType)
 
                     # specific getter/setter
 
                     stream.write(self.getIndent()
                                  + self.commentLineBeginWith
-                                 + ' specific Getter(s)/Setter(s)\n')
+                                 + ' Attributes accessors and mutators\n')
+                    
                     for field in msg.fields:
                         if isinstance(field,
                                 GenMsgAST.MessageType.CombinedField):
@@ -487,14 +503,15 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         else:
                             self.writeOneGetterSetter(stream, field)
 
-                    # the show method
 
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith
-                                 + ' the show method\n')
-                    stream.write(self.getIndent() + virtual
-                                 + 'std::ostream& show(std::ostream& out);\n'
-                                 )
+
+                    # the stream operator is a friend
+
+                    if msg.hasMerge():
+                        stream.write(self.getIndent() + 'using Super = %s;\n' % msg.merge.name)
+
+                    stream.write(self.getIndent() + '\n')
+                    stream.write(self.getIndent() + 'friend std::ostream& operator << (std::ostream& os, const ' + msg.name + '& msg);\n')
 
                 self.unIndent()
 
@@ -502,8 +519,10 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
                 # begin protected
 
+                stream.write(self.getIndent() + '\n')
                 stream.write(self.getIndent() + 'protected:\n')
                 self.indent()
+                    
                 for field in msg.fields:
                     if isinstance(field,
                                   GenMsgAST.MessageType.CombinedField):
@@ -513,20 +532,20 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     else:
                         self.writeDeclarationFieldStatement(stream,
                                 field)
+                        
                 self.unIndent()
 
                 # end protected
 
-                # begin private
-
-                stream.write(self.getIndent() + 'private:\n')
-                self.indent()
-                self.unIndent()
-
-                # end private
 
                 self.unIndent()
                 stream.write(self.getIndent() + '};\n')
+
+                # stream operator
+
+                stream.write('\n')
+                stream.write('std::ostream& operator << (std::ostream& os, const ' + msg.name + '& msg);\n')
+                stream.write('\n')
 
         # Generate Factory (if any)
         # @todo
@@ -682,66 +701,50 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         elif field.qualifier == 'repeated':
             self.unIndent()
             stream.write(self.getIndent() + '}\n')
-
-    def writeShowFieldStatement(self, stream, field):
-        indexField = ''
+            
+    def writeStreamFieldStatement(self, stream, field):
+        indexField = False
         if field.qualifier == 'optional':
-            stream.write(self.getIndent())
-            stream.write('out << "(opt) %s =" ' % field.name)
+            # optionnal
+            stream.write(self.getIndent() + 'os << "  (opt) %s ="' % field.name)
         elif field.qualifier == 'repeated':
-            indexField = '[i]'
-            stream.write(self.getIndent())
-            stream.write('out << "    %s [] =" << std::endl;\n'
-                         % field.name)
-            stream.write(self.getIndent())
-            stream.write('for (uint32_t i = 0; i < get'
-                         + self.upperFirst(field.name)
-                         + 'Size(); ++i) {\n')
+            # repeated
+            indexField = True
+            stream.write(self.getIndent() + 'os << "  %s [] =" << std::endl;\n' % field.name)
+            stream.write(self.getIndent() + 'for (const auto& element: msg.%s) {\n' % field.name )
             self.indent()
-            stream.write(self.getIndent() + 'out ')
+            stream.write(self.getIndent() + 'os')
         else:
-            stream.write(self.getIndent())
-            stream.write('out << " %s = " ' % field.name)
+             # normal
+            stream.write(self.getIndent() + 'os << "  %s = "' % field.name)
 
         methodName = self.getSerializeMethodName(field.typeid.name)
-        if None == methodName:  # field has no Serialize Method Name found in the map
+        if None == methodName:
+            # field has no Serialize Method Name found in the map
 
-            # non native field case
             if field.typeid.name in [m.name for m in self.AST.messages]:
-                stream.write('<< ' + field.name + indexField
-                             + '.show(out)')
+                # non native field case
+                stream.write(' << %s' % ('element' if indexField else ('msg.' + field.name)))
             elif field.typeid.name in [m.name for m in self.AST.enums]:
-
-            # enum type field case (enum are serialized as uint32)
-
-                stream.write('<< %s << " " ' % (field.name
-                             + indexField))
+                # enum type field case (enum are serialized as uint32)
+                stream.write(' << %s' % ('element' if indexField else ('msg.' + field.name)))
             else:
-
-                # stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME inherited message\n")
-            # native field case
-
-                stream.write('<< "')
-                stream.write(self.getIndent()
-                             + self.commentLineBeginWith
-                             + "FIXME FIXME don't know how to serialize native field <%s> of type <%s>"
-                              % (field.name, field.typeid.name))
+                # native field case
+                # stream.write(self.getIndent() + self.commentLineBeginWith + " TODO FIXME inherited message\n")
+                stream.write(' << "')
+                stream.write(self.commentLineBeginWith + " TODO field <%s> of type <%s>" % (field.name, field.typeid.name))
                 stream.write('"')
         else:
+            # field has one Serialize Method Name found in the map
+            stream.write(' << %s' % ('element' if indexField else ('msg.' + field.name)))
 
-              # field has one Serialize Method Name found in the map
-
-            stream.write('<< %s << " " ' % (field.name + indexField))
-
-        if field.qualifier == 'optional':
-            stream.write(self.getIndent() + '<< std::endl;\n')
-        elif field.qualifier == 'repeated':
+        if field.qualifier == 'repeated':
             stream.write(';\n')
             self.unIndent()
             stream.write(self.getIndent() + '}\n')
-            stream.write(self.getIndent() + 'out << std::endl;\n')
+            stream.write(self.getIndent() + 'os << std::endl;\n')
         else:
-            stream.write(self.getIndent() + '<< std::endl;\n')
+            stream.write(' << std::endl;\n')
 
     def writeDeSerializeFieldStatement(self, stream, field):
         indexField = ''
@@ -1001,16 +1004,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
 ''')
 
-                # Generate Destructor
-
-                stream.write(self.getIndent() + '%s::~%s() {\n'
-                             % (msg.name, msg.name))
-                self.indent()
-                self.unIndent()
-                stream.write(self.getIndent() + '''}
-
-''')
-
                 # write virtual serialize and deserialize
                 # if we have some specific field
 
@@ -1026,7 +1019,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     if msg.hasMerge():
                         stream.write(self.getIndent()
                                 + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
+                        stream.write('Call parent class\n')
                         stream.write(self.getIndent()
                                 + 'Super::serialize(msgBuffer);\n')
                     stream.write(self.getIndent()
@@ -1051,7 +1044,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     if msg.hasMerge():
                         stream.write(self.getIndent()
                                 + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
+                        stream.write('Call parent class\n')
                         stream.write(self.getIndent()
                                 + 'Super::deserialize(msgBuffer);\n')
                     stream.write(self.getIndent()
@@ -1065,36 +1058,30 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 ''')
 
                     # end deserialize method
-                    # begin show method
 
-                    stream.write(self.getIndent()
-                                 + 'std::ostream& %s::show(std::ostream& out) {\n'
-                                  % msg.name)
+                    # begin stream operator
+
+                    stream.write(self.getIndent() + 'std::ostream& operator << (std::ostream& os, const %s& msg) {\n' % msg.name)
                     self.indent()
-                    stream.write(self.getIndent()
-                                 + 'out << "[%s -Begin]" << std::endl;'
-                                 % msg.name)
+                    stream.write(self.getIndent() + 'os << "[%s - Begin]" << std::endl;\n' % msg.name)
+
                     if msg.hasMerge():
-                        stream.write(self.getIndent()
-                                + self.commentLineBeginWith)
-                        stream.write('Call mother class\n')
-                        stream.write(self.getIndent()
-                                + 'Super::show(out);\n')
-                    stream.write(self.getIndent()
-                                 + self.commentLineBeginWith)
-                    stream.write('Specific show code\n')
-                    self.applyToFields(stream, msg.fields,
-                            self.writeShowFieldStatement)
-                    stream.write(self.getIndent()
-                                 + 'out << "[%s -End]" << std::endl;\n'
-                                 % msg.name)
-                    stream.write(self.getIndent() + 'return out;\n')
+                        stream.write(self.getIndent() + '\n')
+                        stream.write(self.getIndent() + 'os << static_cast<const ' + msg.name + '::Super&>(msg); ' + self.commentLineBeginWith + ' show parent class\n')
+
+                    stream.write(self.getIndent() + '\n')
+                    stream.write(self.getIndent() + self.commentLineBeginWith + ' === Specific show code {\n')
+
+                    self.applyToFields(stream, msg.fields, self.writeStreamFieldStatement)
+                    
+                    stream.write(self.getIndent() + self.commentLineBeginWith + ' } Specific show code ===\n')
+                    stream.write(self.getIndent() + '\n')
+                    stream.write(self.getIndent() + 'os << "[%s - End]" << std::endl;\n' % msg.name)
+                    stream.write(self.getIndent() + 'return os;\n')
                     self.unIndent()
-                    stream.write(self.getIndent() + '''}
+                    stream.write(self.getIndent() + '}\n\n')
 
-''')
-
-                    # end show method
+                    # end stream operator
 
         # Generate Factory (if any)
         # @todo

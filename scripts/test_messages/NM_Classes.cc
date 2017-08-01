@@ -1,4 +1,4 @@
-// Generated on 2017 August Tue, 01 at 16:28:13 by the CERTI message generator
+// Generated on 2017 August Tue, 01 at 15:57:09 by the CERTI message generator
 #include <vector>
 #include <string>
 #include "NM_Classes.hh"
@@ -317,7 +317,7 @@ void NM_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffe
 std::ostream& operator << (std::ostream& os, const NM_Create_Federation_Execution& msg) {
     os << "[NM_Create_Federation_Execution - Begin]" << std::endl;
     
-    os << static_cast<const NM_Create_Federation_Execution::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  federationName = " << msg.federationName << std::endl;
@@ -351,7 +351,7 @@ void NM_Destroy_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuff
 std::ostream& operator << (std::ostream& os, const NM_Destroy_Federation_Execution& msg) {
     os << "[NM_Destroy_Federation_Execution - Begin]" << std::endl;
     
-    os << static_cast<const NM_Destroy_Federation_Execution::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  federationName = " << msg.federationName << std::endl;
@@ -432,7 +432,7 @@ void NM_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
 std::ostream& operator << (std::ostream& os, const NM_Join_Federation_Execution& msg) {
     os << "[NM_Join_Federation_Execution - Begin]" << std::endl;
     
-    os << static_cast<const NM_Join_Federation_Execution::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  numberOfRegulators = " << msg.numberOfRegulators << std::endl;
@@ -490,7 +490,7 @@ void NM_Set_Time_Regulating::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Set_Time_Regulating& msg) {
     os << "[NM_Set_Time_Regulating - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Time_Regulating::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  regulator = " << msg.regulator << std::endl;
@@ -523,7 +523,7 @@ void NM_Set_Time_Constrained::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Set_Time_Constrained& msg) {
     os << "[NM_Set_Time_Constrained - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Time_Constrained::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  constrained = " << msg.constrained << std::endl;
@@ -566,7 +566,7 @@ void NM_Set_Class_Relevance_Advisory_Switch::deserialize(libhla::MessageBuffer& 
 std::ostream& operator << (std::ostream& os, const NM_Set_Class_Relevance_Advisory_Switch& msg) {
     os << "[NM_Set_Class_Relevance_Advisory_Switch - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Class_Relevance_Advisory_Switch::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  classRelevanceAdvisorySwitch = " << msg.classRelevanceAdvisorySwitch << std::endl;
@@ -599,7 +599,7 @@ void NM_Set_Interaction_Relevance_Advisory_Switch::deserialize(libhla::MessageBu
 std::ostream& operator << (std::ostream& os, const NM_Set_Interaction_Relevance_Advisory_Switch& msg) {
     os << "[NM_Set_Interaction_Relevance_Advisory_Switch - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Interaction_Relevance_Advisory_Switch::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionRelevanceAdvisorySwitch = " << msg.interactionRelevanceAdvisorySwitch << std::endl;
@@ -632,7 +632,7 @@ void NM_Set_Attribute_Relevance_Advisory_Switch::deserialize(libhla::MessageBuff
 std::ostream& operator << (std::ostream& os, const NM_Set_Attribute_Relevance_Advisory_Switch& msg) {
     os << "[NM_Set_Attribute_Relevance_Advisory_Switch - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Attribute_Relevance_Advisory_Switch::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributeRelevanceAdvisorySwitch = " << msg.attributeRelevanceAdvisorySwitch << std::endl;
@@ -665,7 +665,7 @@ void NM_Set_Attribute_Scope_Advisory_Switch::deserialize(libhla::MessageBuffer& 
 std::ostream& operator << (std::ostream& os, const NM_Set_Attribute_Scope_Advisory_Switch& msg) {
     os << "[NM_Set_Attribute_Scope_Advisory_Switch - Begin]" << std::endl;
     
-    os << static_cast<const NM_Set_Attribute_Scope_Advisory_Switch::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributeScopeAdvisorySwitch = " << msg.attributeScopeAdvisorySwitch << std::endl;
@@ -709,7 +709,7 @@ void NM_Register_Federation_Synchronization_Point::deserialize(libhla::MessageBu
 std::ostream& operator << (std::ostream& os, const NM_Register_Federation_Synchronization_Point& msg) {
     os << "[NM_Register_Federation_Synchronization_Point - Begin]" << std::endl;
     
-    os << static_cast<const NM_Register_Federation_Synchronization_Point::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  exists = " << msg.exists << std::endl;
@@ -757,7 +757,7 @@ void NM_Confirm_Synchronization_Point_Registration::deserialize(libhla::MessageB
 std::ostream& operator << (std::ostream& os, const NM_Confirm_Synchronization_Point_Registration& msg) {
     os << "[NM_Confirm_Synchronization_Point_Registration - Begin]" << std::endl;
     
-    os << static_cast<const NM_Confirm_Synchronization_Point_Registration::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  successIndicator = " << msg.successIndicator << std::endl;
@@ -897,7 +897,7 @@ void NM_Publish_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Publish_Object_Class& msg) {
     os << "[NM_Publish_Object_Class - Begin]" << std::endl;
     
-    os << static_cast<const NM_Publish_Object_Class::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -940,7 +940,7 @@ void NM_Publish_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer)
 std::ostream& operator << (std::ostream& os, const NM_Publish_Interaction_Class& msg) {
     os << "[NM_Publish_Interaction_Class - Begin]" << std::endl;
     
-    os << static_cast<const NM_Publish_Interaction_Class::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -989,7 +989,7 @@ void NM_Subscribe_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Subscribe_Object_Class& msg) {
     os << "[NM_Subscribe_Object_Class - Begin]" << std::endl;
     
-    os << static_cast<const NM_Subscribe_Object_Class::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -1065,7 +1065,7 @@ void NM_Register_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Register_Object& msg) {
     os << "[NM_Register_Object - Begin]" << std::endl;
     
-    os << static_cast<const NM_Register_Object::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -1103,7 +1103,7 @@ void NM_Discover_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Discover_Object& msg) {
     os << "[NM_Discover_Object - Begin]" << std::endl;
     
-    os << static_cast<const NM_Discover_Object::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -1171,7 +1171,7 @@ void NM_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Update_Attribute_Values& msg) {
     os << "[NM_Update_Attribute_Values - Begin]" << std::endl;
     
-    os << static_cast<const NM_Update_Attribute_Values::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1249,7 +1249,7 @@ void NM_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) 
 std::ostream& operator << (std::ostream& os, const NM_Reflect_Attribute_Values& msg) {
     os << "[NM_Reflect_Attribute_Values - Begin]" << std::endl;
     
-    os << static_cast<const NM_Reflect_Attribute_Values::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1322,7 +1322,7 @@ void NM_Send_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Send_Interaction& msg) {
     os << "[NM_Send_Interaction - Begin]" << std::endl;
     
-    os << static_cast<const NM_Send_Interaction::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -1400,7 +1400,7 @@ void NM_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Receive_Interaction& msg) {
     os << "[NM_Receive_Interaction - Begin]" << std::endl;
     
-    os << static_cast<const NM_Receive_Interaction::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -1452,7 +1452,7 @@ void NM_Delete_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Delete_Object& msg) {
     os << "[NM_Delete_Object - Begin]" << std::endl;
     
-    os << static_cast<const NM_Delete_Object::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1497,7 +1497,7 @@ void NM_Remove_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Remove_Object& msg) {
     os << "[NM_Remove_Object - Begin]" << std::endl;
     
-    os << static_cast<const NM_Remove_Object::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1546,7 +1546,7 @@ void NM_Change_Attribute_Transport_Type::deserialize(libhla::MessageBuffer& msgB
 std::ostream& operator << (std::ostream& os, const NM_Change_Attribute_Transport_Type& msg) {
     os << "[NM_Change_Attribute_Transport_Type - Begin]" << std::endl;
     
-    os << static_cast<const NM_Change_Attribute_Transport_Type::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1599,7 +1599,7 @@ void NM_Change_Attribute_Order_Type::deserialize(libhla::MessageBuffer& msgBuffe
 std::ostream& operator << (std::ostream& os, const NM_Change_Attribute_Order_Type& msg) {
     os << "[NM_Change_Attribute_Order_Type - Begin]" << std::endl;
     
-    os << static_cast<const NM_Change_Attribute_Order_Type::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1641,7 +1641,7 @@ void NM_Change_Interaction_Transport_Type::deserialize(libhla::MessageBuffer& ms
 std::ostream& operator << (std::ostream& os, const NM_Change_Interaction_Transport_Type& msg) {
     os << "[NM_Change_Interaction_Transport_Type - Begin]" << std::endl;
     
-    os << static_cast<const NM_Change_Interaction_Transport_Type::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -1678,7 +1678,7 @@ void NM_Change_Interaction_Order_Type::deserialize(libhla::MessageBuffer& msgBuf
 std::ostream& operator << (std::ostream& os, const NM_Change_Interaction_Order_Type& msg) {
     os << "[NM_Change_Interaction_Order_Type - Begin]" << std::endl;
     
-    os << static_cast<const NM_Change_Interaction_Order_Type::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -1723,7 +1723,7 @@ void NM_Request_Class_Attribute_Value_Update::deserialize(libhla::MessageBuffer&
 std::ostream& operator << (std::ostream& os, const NM_Request_Class_Attribute_Value_Update& msg) {
     os << "[NM_Request_Class_Attribute_Value_Update - Begin]" << std::endl;
     
-    os << static_cast<const NM_Request_Class_Attribute_Value_Update::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -1772,7 +1772,7 @@ void NM_Request_Object_Attribute_Value_Update::deserialize(libhla::MessageBuffer
 std::ostream& operator << (std::ostream& os, const NM_Request_Object_Attribute_Value_Update& msg) {
     os << "[NM_Request_Object_Attribute_Value_Update - Begin]" << std::endl;
     
-    os << static_cast<const NM_Request_Object_Attribute_Value_Update::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1813,7 +1813,7 @@ void NM_Is_Attribute_Owned_By_Federate::deserialize(libhla::MessageBuffer& msgBu
 std::ostream& operator << (std::ostream& os, const NM_Is_Attribute_Owned_By_Federate& msg) {
     os << "[NM_Is_Attribute_Owned_By_Federate - Begin]" << std::endl;
     
-    os << static_cast<const NM_Is_Attribute_Owned_By_Federate::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1850,7 +1850,7 @@ void NM_Query_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer)
 std::ostream& operator << (std::ostream& os, const NM_Query_Attribute_Ownership& msg) {
     os << "[NM_Query_Attribute_Ownership - Begin]" << std::endl;
     
-    os << static_cast<const NM_Query_Attribute_Ownership::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1887,7 +1887,7 @@ void NM_Attribute_Is_Not_Owned::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Is_Not_Owned& msg) {
     os << "[NM_Attribute_Is_Not_Owned - Begin]" << std::endl;
     
-    os << static_cast<const NM_Attribute_Is_Not_Owned::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1924,7 +1924,7 @@ void NM_Inform_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer
 std::ostream& operator << (std::ostream& os, const NM_Inform_Attribute_Ownership& msg) {
     os << "[NM_Inform_Attribute_Ownership - Begin]" << std::endl;
     
-    os << static_cast<const NM_Inform_Attribute_Ownership::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -1969,7 +1969,7 @@ void NM_Attribute_Ownership_Base::deserialize(libhla::MessageBuffer& msgBuffer) 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Base& msg) {
     os << "[NM_Attribute_Ownership_Base - Begin]" << std::endl;
     
-    os << static_cast<const NM_Attribute_Ownership_Base::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  object = " << msg.object << std::endl;
@@ -2092,7 +2092,7 @@ void NM_DDM_Create_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Create_Region& msg) {
     os << "[NM_DDM_Create_Region - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Create_Region::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributes [] =" << std::endl;
@@ -2147,7 +2147,7 @@ void NM_DDM_Modify_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Modify_Region& msg) {
     os << "[NM_DDM_Modify_Region - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Modify_Region::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributes [] =" << std::endl;
@@ -2186,7 +2186,7 @@ void NM_DDM_Delete_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Delete_Region& msg) {
     os << "[NM_DDM_Delete_Region - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Delete_Region::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  region = " << msg.region << std::endl;
@@ -2236,7 +2236,7 @@ void NM_DDM_Associate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Associate_Region& msg) {
     os << "[NM_DDM_Associate_Region - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Associate_Region::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributes [] =" << std::endl;
@@ -2293,7 +2293,7 @@ void NM_DDM_Unassociate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Unassociate_Region& msg) {
     os << "[NM_DDM_Unassociate_Region - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Unassociate_Region::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  attributes [] =" << std::endl;
@@ -2363,7 +2363,7 @@ void NM_DDM_Register_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_DDM_Register_Object& msg) {
     os << "[NM_DDM_Register_Object - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Register_Object::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -2422,7 +2422,7 @@ void NM_DDM_Subscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer) 
 std::ostream& operator << (std::ostream& os, const NM_DDM_Subscribe_Attributes& msg) {
     os << "[NM_DDM_Subscribe_Attributes - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Subscribe_Attributes::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -2479,7 +2479,7 @@ void NM_DDM_Unsubscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer
 std::ostream& operator << (std::ostream& os, const NM_DDM_Unsubscribe_Attributes& msg) {
     os << "[NM_DDM_Unsubscribe_Attributes - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Unsubscribe_Attributes::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -2525,7 +2525,7 @@ void NM_DDM_Subscribe_Interaction::deserialize(libhla::MessageBuffer& msgBuffer)
 std::ostream& operator << (std::ostream& os, const NM_DDM_Subscribe_Interaction& msg) {
     os << "[NM_DDM_Subscribe_Interaction - Begin]" << std::endl;
     
-    os << static_cast<const NM_DDM_Subscribe_Interaction::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  interactionClass = " << msg.interactionClass << std::endl;
@@ -2570,7 +2570,7 @@ void NM_Start_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& 
 std::ostream& operator << (std::ostream& os, const NM_Start_Registration_For_Object_Class& msg) {
     os << "[NM_Start_Registration_For_Object_Class - Begin]" << std::endl;
     
-    os << static_cast<const NM_Start_Registration_For_Object_Class::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -2603,7 +2603,7 @@ void NM_Stop_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& m
 std::ostream& operator << (std::ostream& os, const NM_Stop_Registration_For_Object_Class& msg) {
     os << "[NM_Stop_Registration_For_Object_Class - Begin]" << std::endl;
     
-    os << static_cast<const NM_Stop_Registration_For_Object_Class::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectClass = " << msg.objectClass << std::endl;
@@ -2636,7 +2636,7 @@ void NM_Reserve_Object_Instance_Name::deserialize(libhla::MessageBuffer& msgBuff
 std::ostream& operator << (std::ostream& os, const NM_Reserve_Object_Instance_Name& msg) {
     os << "[NM_Reserve_Object_Instance_Name - Begin]" << std::endl;
     
-    os << static_cast<const NM_Reserve_Object_Instance_Name::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  objectName = " << msg.objectName << std::endl;
@@ -2683,7 +2683,7 @@ void NM_Message_Null_Prime::deserialize(libhla::MessageBuffer& msgBuffer) {
 std::ostream& operator << (std::ostream& os, const NM_Message_Null_Prime& msg) {
     os << "[NM_Message_Null_Prime - Begin]" << std::endl;
     
-    os << static_cast<const NM_Message_Null_Prime::Super&>(msg); // show parent class
+    os << static_cast<const Super&>(msg); // show parent class
     
     // === Specific show code {
     os << "  timestamp = " << "// TODO field <timestamp> of type <FederationTime>" << std::endl;

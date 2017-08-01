@@ -60,7 +60,7 @@ class CodeGenerator(object):
         self.logger = logging.Logger(self.generatorName() + 'Generator')
         self.logger.setLevel(logging.ERROR)
         #self.logger.addHandler(logging.StreamHandler(sys.stdout))
-        self.__indentString = '   '
+        self.__indentString = '    '
         self.__indentLevel = 0
         self.builtinTypeMap = {
             'onoff': 'onoff',

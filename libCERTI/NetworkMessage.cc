@@ -59,4 +59,9 @@ std::ostream& NetworkMessage::show(std::ostream& out) {
 	return out;
 } /* end of show */
 
+std::ostream& operator << (std::ostream& os, const NetworkMessage& msg)
+{
+    return const_cast<NetworkMessage&>(msg).show(os);
+}
+
 } // namespace certi

@@ -281,6 +281,8 @@ protected:
 private:
 };
 
+std::ostream& operator << (std::ostream& os, const NetworkMessage& msg);
+
 // BUG: FIXME this is used by SocketMC and should
 //      be thrown away as soon as possible.
 #define TAILLE_MSG_RESEAU sizeof(NetworkMessage)

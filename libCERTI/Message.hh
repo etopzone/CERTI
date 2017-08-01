@@ -257,8 +257,8 @@ public:
     void setException(const Exception::Type, const std::string& the_reason = "");
     Exception::Type getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
-	std::wstring getExceptionReasonW() const { return std::wstring(exceptionReason.begin(), exceptionReason.end()); };
-
+    std::wstring getExceptionReasonW() const { return std::wstring(exceptionReason.begin(), exceptionReason.end()); };
+    
 protected:
     Type type ;
     Exception::Type exception ;
@@ -273,6 +273,8 @@ protected:
 private:
     Message &operator=(const Message &);
 };
+
+std::ostream& operator << (std::ostream& os, const Message& msg);
 
 } // namespace certi
 

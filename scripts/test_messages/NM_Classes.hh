@@ -1,4 +1,4 @@
-// Generated on 2017 August Tue, 01 at 16:28:12 by the CERTI message generator
+// Generated on 2017 August Tue, 01 at 15:57:08 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -69,6 +69,7 @@ class CERTI_EXPORT NM_FOM_Dimension {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const DimensionHandle& getHandle() const
         {
             return handle;
@@ -79,6 +80,7 @@ class CERTI_EXPORT NM_FOM_Dimension {
             handle = newHandle;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -109,6 +111,7 @@ class CERTI_EXPORT NM_FOM_Routing_Space {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const SpaceHandle& getSpace() const
         {
             return space;
@@ -119,6 +122,7 @@ class CERTI_EXPORT NM_FOM_Routing_Space {
             space = newSpace;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -129,6 +133,7 @@ class CERTI_EXPORT NM_FOM_Routing_Space {
             name = newName;
         }
 
+/* b1 */
         uint32_t getDimensionsSize() const
         {
             return dimensions.size();
@@ -185,6 +190,7 @@ class CERTI_EXPORT NM_FOM_Attribute {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const AttributeHandle& getHandle() const
         {
             return handle;
@@ -195,6 +201,7 @@ class CERTI_EXPORT NM_FOM_Attribute {
             handle = newHandle;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -205,6 +212,7 @@ class CERTI_EXPORT NM_FOM_Attribute {
             name = newName;
         }
 
+/* b2 */
         const SpaceHandle& getSpaceHandle() const
         {
             return spaceHandle;
@@ -215,6 +223,7 @@ class CERTI_EXPORT NM_FOM_Attribute {
             spaceHandle = newSpaceHandle;
         }
 
+/* b2 */
         const OrderType& getOrder() const
         {
             return order;
@@ -225,6 +234,7 @@ class CERTI_EXPORT NM_FOM_Attribute {
             order = newOrder;
         }
 
+/* b2 */
         const TransportType& getTransport() const
         {
             return transport;
@@ -258,6 +268,7 @@ class CERTI_EXPORT NM_FOM_Object_Class {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getHandle() const
         {
             return handle;
@@ -268,6 +279,7 @@ class CERTI_EXPORT NM_FOM_Object_Class {
             handle = newHandle;
         }
 
+/* b2 */
         const ObjectClassHandle& getSuperClass() const
         {
             return superClass;
@@ -278,6 +290,7 @@ class CERTI_EXPORT NM_FOM_Object_Class {
             superClass = newSuperClass;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -288,6 +301,7 @@ class CERTI_EXPORT NM_FOM_Object_Class {
             name = newName;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -345,6 +359,7 @@ class CERTI_EXPORT NM_FOM_Parameter {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ParameterHandle& getHandle() const
         {
             return handle;
@@ -355,6 +370,7 @@ class CERTI_EXPORT NM_FOM_Parameter {
             handle = newHandle;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -385,6 +401,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -395,6 +412,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             interactionClass = newInteractionClass;
         }
 
+/* b2 */
         const std::string& getName() const
         {
             return name;
@@ -405,6 +423,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             name = newName;
         }
 
+/* b2 */
         const InteractionClassHandle& getSuperClass() const
         {
             return superClass;
@@ -415,6 +434,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             superClass = newSuperClass;
         }
 
+/* b2 */
         const SpaceHandle& getSpace() const
         {
             return space;
@@ -425,6 +445,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             space = newSpace;
         }
 
+/* b2 */
         const OrderType& getOrder() const
         {
             return order;
@@ -435,6 +456,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             order = newOrder;
         }
 
+/* b2 */
         const TransportType& getTransport() const
         {
             return transport;
@@ -445,6 +467,7 @@ class CERTI_EXPORT NM_FOM_Interaction_Class {
             transport = newTransport;
         }
 
+/* b1 */
         uint32_t getParametersSize() const
         {
             return parameters.size();
@@ -503,6 +526,8 @@ class CERTI_EXPORT NM_Close_Connexion : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Close_Connexion& msg);
@@ -515,6 +540,8 @@ class CERTI_EXPORT NM_Message_Null : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Message_Null& msg);
@@ -529,6 +556,7 @@ class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const std::string& getFederationName() const
         {
             return federationName;
@@ -539,6 +567,7 @@ class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
             federationName = newFederationName;
         }
 
+/* b2 */
         const std::string& getFEDid() const
         {
             return FEDid;
@@ -549,11 +578,12 @@ class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
             FEDid = newFEDid;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Create_Federation_Execution& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::string federationName;// the federation name
         std::string FEDid;// the Federation ID which is in fact a filename
 };
@@ -570,6 +600,7 @@ class CERTI_EXPORT NM_Destroy_Federation_Execution : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const std::string& getFederationName() const
         {
             return federationName;
@@ -580,11 +611,12 @@ class CERTI_EXPORT NM_Destroy_Federation_Execution : public NetworkMessage {
             federationName = newFederationName;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Destroy_Federation_Execution& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::string federationName;
 };
 
@@ -600,6 +632,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const int32_t& getNumberOfRegulators() const
         {
             return numberOfRegulators;
@@ -610,6 +643,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             numberOfRegulators = newNumberOfRegulators;
         }
 
+/* b2 */
         const uint32_t& getMulticastAddress() const
         {
             return multicastAddress;
@@ -620,6 +654,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             multicastAddress = newMulticastAddress;
         }
 
+/* b2 */
         const uint32_t& getBestEffortAddress() const
         {
             return bestEffortAddress;
@@ -630,6 +665,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             bestEffortAddress = newBestEffortAddress;
         }
 
+/* b2 */
         const uint32_t& getBestEffortPeer() const
         {
             return bestEffortPeer;
@@ -640,6 +676,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             bestEffortPeer = newBestEffortPeer;
         }
 
+/* b2 */
         const std::string& getFederationName() const
         {
             return federationName;
@@ -650,6 +687,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             federationName = newFederationName;
         }
 
+/* b2 */
         const std::string& getFederateName() const
         {
             return federateName;
@@ -660,6 +698,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             federateName = newFederateName;
         }
 
+/* b1 */
         uint32_t getRoutingSpacesSize() const
         {
             return routingSpaces.size();
@@ -695,6 +734,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             routingSpaces.erase(routingSpaces.begin() + rank);
         }
 
+/* b1 */
         uint32_t getObjectClassesSize() const
         {
             return objectClasses.size();
@@ -730,6 +770,7 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             objectClasses.erase(objectClasses.begin() + rank);
         }
 
+/* b1 */
         uint32_t getInteractionClassesSize() const
         {
             return interactionClasses.size();
@@ -765,11 +806,12 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
             interactionClasses.erase(interactionClasses.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Join_Federation_Execution& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         int32_t numberOfRegulators;
         uint32_t multicastAddress;
         uint32_t bestEffortAddress;
@@ -791,6 +833,8 @@ class CERTI_EXPORT NM_Resign_Federation_Execution : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Resign_Federation_Execution& msg);
@@ -820,11 +864,12 @@ class CERTI_EXPORT NM_Set_Time_Regulating : public NetworkMessage {
             return regulator;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Time_Regulating& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool regulator;
 };
 
@@ -855,11 +900,12 @@ class CERTI_EXPORT NM_Set_Time_Constrained : public NetworkMessage {
             return constrained;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Time_Constrained& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool constrained;
 };
 
@@ -873,6 +919,8 @@ class CERTI_EXPORT NM_Time_Regulation_Enabled : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Time_Regulation_Enabled& msg);
@@ -885,6 +933,8 @@ class CERTI_EXPORT NM_Time_Constrained_Enabled : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Time_Constrained_Enabled& msg);
@@ -914,11 +964,12 @@ class CERTI_EXPORT NM_Set_Class_Relevance_Advisory_Switch : public NetworkMessag
             return classRelevanceAdvisorySwitch;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Class_Relevance_Advisory_Switch& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool classRelevanceAdvisorySwitch;// value of CRA switch 	
 };
 
@@ -949,11 +1000,12 @@ class CERTI_EXPORT NM_Set_Interaction_Relevance_Advisory_Switch : public Network
             return interactionRelevanceAdvisorySwitch;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Interaction_Relevance_Advisory_Switch& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool interactionRelevanceAdvisorySwitch;// value of IRA switch 	
 };
 
@@ -984,11 +1036,12 @@ class CERTI_EXPORT NM_Set_Attribute_Relevance_Advisory_Switch : public NetworkMe
             return attributeRelevanceAdvisorySwitch;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Attribute_Relevance_Advisory_Switch& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool attributeRelevanceAdvisorySwitch;// value of ARA switch 	
 };
 
@@ -1019,11 +1072,12 @@ class CERTI_EXPORT NM_Set_Attribute_Scope_Advisory_Switch : public NetworkMessag
             return attributeScopeAdvisorySwitch;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Set_Attribute_Scope_Advisory_Switch& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool attributeScopeAdvisorySwitch;// value of ASA switch 	
 };
 
@@ -1039,6 +1093,7 @@ class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public Network
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const bool& getExists() const
         {
             return exists;
@@ -1049,6 +1104,7 @@ class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public Network
             exists = newExists;
         }
 
+/* b1 */
         uint32_t getFederatesSize() const
         {
             return federates.size();
@@ -1084,11 +1140,12 @@ class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public Network
             federates.erase(federates.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Register_Federation_Synchronization_Point& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool exists;// tell whether if the synchronization set is specified or not
         std::vector<FederateHandle> federates;// the federate set
 };
@@ -1106,6 +1163,7 @@ class CERTI_EXPORT NM_Confirm_Synchronization_Point_Registration : public Networ
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const bool& getSuccessIndicator() const
         {
             return successIndicator;
@@ -1116,6 +1174,7 @@ class CERTI_EXPORT NM_Confirm_Synchronization_Point_Registration : public Networ
             successIndicator = newSuccessIndicator;
         }
 
+/* b2 */
         const std::string& getFailureReason() const
         {
             return failureReason;
@@ -1132,11 +1191,12 @@ class CERTI_EXPORT NM_Confirm_Synchronization_Point_Registration : public Networ
             return _hasFailureReason;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Confirm_Synchronization_Point_Registration& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         bool successIndicator;// the success indicator true=successful
         std::string failureReason;// [IEEE-1516] the failure reason.
         bool _hasFailureReason;
@@ -1152,6 +1212,8 @@ class CERTI_EXPORT NM_Announce_Synchronization_Point : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Announce_Synchronization_Point& msg);
@@ -1164,6 +1226,8 @@ class CERTI_EXPORT NM_Synchronization_Point_Achieved : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Synchronization_Point_Achieved& msg);
@@ -1176,6 +1240,8 @@ class CERTI_EXPORT NM_Federation_Synchronized : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Synchronized& msg);
@@ -1188,6 +1254,8 @@ class CERTI_EXPORT NM_Request_Federation_Save : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Federation_Save& msg);
@@ -1200,6 +1268,8 @@ class CERTI_EXPORT NM_Federate_Save_Begun : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federate_Save_Begun& msg);
@@ -1212,6 +1282,8 @@ class CERTI_EXPORT NM_Federate_Save_Complete : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federate_Save_Complete& msg);
@@ -1224,6 +1296,8 @@ class CERTI_EXPORT NM_Federate_Save_Not_Complete : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federate_Save_Not_Complete& msg);
@@ -1236,6 +1310,8 @@ class CERTI_EXPORT NM_Initiate_Federate_Save : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Initiate_Federate_Save& msg);
@@ -1248,6 +1324,8 @@ class CERTI_EXPORT NM_Federation_Saved : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Saved& msg);
@@ -1260,6 +1338,8 @@ class CERTI_EXPORT NM_Federation_Not_Saved : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Not_Saved& msg);
@@ -1272,6 +1352,8 @@ class CERTI_EXPORT NM_Request_Federation_Restore : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Federation_Restore& msg);
@@ -1284,6 +1366,8 @@ class CERTI_EXPORT NM_Federate_Restore_Complete : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federate_Restore_Complete& msg);
@@ -1296,6 +1380,8 @@ class CERTI_EXPORT NM_Federate_Restore_Not_Complete : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federate_Restore_Not_Complete& msg);
@@ -1308,6 +1394,8 @@ class CERTI_EXPORT NM_Request_Federation_Restore_Succeeded : public NetworkMessa
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Federation_Restore_Succeeded& msg);
@@ -1320,6 +1408,8 @@ class CERTI_EXPORT NM_Request_Federation_Restore_Failed : public NetworkMessage 
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Federation_Restore_Failed& msg);
@@ -1332,6 +1422,8 @@ class CERTI_EXPORT NM_Federation_Restore_Begun : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Restore_Begun& msg);
@@ -1344,6 +1436,8 @@ class CERTI_EXPORT NM_Initiate_Federate_Restore : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Initiate_Federate_Restore& msg);
@@ -1356,6 +1450,8 @@ class CERTI_EXPORT NM_Federation_Restored : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Restored& msg);
@@ -1368,6 +1464,8 @@ class CERTI_EXPORT NM_Federation_Not_Restored : public NetworkMessage {
 
     
     protected:
+        using Super = NetworkMessage;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Federation_Not_Restored& msg);
@@ -1382,6 +1480,7 @@ class CERTI_EXPORT NM_Publish_Object_Class : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -1392,6 +1491,7 @@ class CERTI_EXPORT NM_Publish_Object_Class : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -1427,11 +1527,12 @@ class CERTI_EXPORT NM_Publish_Object_Class : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Publish_Object_Class& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         std::vector<AttributeHandle> attributes;
 };
@@ -1446,6 +1547,8 @@ class CERTI_EXPORT NM_Unpublish_Object_Class : public NM_Publish_Object_Class {
 
     
     protected:
+        using Super = NM_Publish_Object_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Unpublish_Object_Class& msg);
@@ -1460,6 +1563,7 @@ class CERTI_EXPORT NM_Publish_Interaction_Class : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -1470,11 +1574,12 @@ class CERTI_EXPORT NM_Publish_Interaction_Class : public NetworkMessage {
             interactionClass = newInteractionClass;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Publish_Interaction_Class& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;// the interaction class
 };
 
@@ -1488,6 +1593,8 @@ class CERTI_EXPORT NM_Unpublish_Interaction_Class : public NM_Publish_Interactio
 
     
     protected:
+        using Super = NM_Publish_Interaction_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Unpublish_Interaction_Class& msg);
@@ -1502,6 +1609,7 @@ class CERTI_EXPORT NM_Subscribe_Object_Class : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -1512,6 +1620,7 @@ class CERTI_EXPORT NM_Subscribe_Object_Class : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -1547,11 +1656,12 @@ class CERTI_EXPORT NM_Subscribe_Object_Class : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Subscribe_Object_Class& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         std::vector<AttributeHandle> attributes;
 };
@@ -1566,6 +1676,8 @@ class CERTI_EXPORT NM_Unsubscribe_Object_Class : public NM_Subscribe_Object_Clas
 
     
     protected:
+        using Super = NM_Subscribe_Object_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Unsubscribe_Object_Class& msg);
@@ -1578,6 +1690,8 @@ class CERTI_EXPORT NM_Subscribe_Interaction_Class : public NM_Publish_Interactio
 
     
     protected:
+        using Super = NM_Publish_Interaction_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Subscribe_Interaction_Class& msg);
@@ -1590,6 +1704,8 @@ class CERTI_EXPORT NM_Unsubscribe_Interaction_Class : public NM_Publish_Interact
 
     
     protected:
+        using Super = NM_Publish_Interaction_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Unsubscribe_Interaction_Class& msg);
@@ -1602,6 +1718,8 @@ class CERTI_EXPORT NM_Turn_Interactions_On : public NM_Publish_Interaction_Class
 
     
     protected:
+        using Super = NM_Publish_Interaction_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Turn_Interactions_On& msg);
@@ -1614,6 +1732,8 @@ class CERTI_EXPORT NM_Turn_Interactions_Off : public NM_Publish_Interaction_Clas
 
     
     protected:
+        using Super = NM_Publish_Interaction_Class;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Turn_Interactions_Off& msg);
@@ -1628,6 +1748,7 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -1638,6 +1759,7 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b2 */
         const std::string& getObjectName() const
         {
             return objectName;
@@ -1654,6 +1776,7 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
             return _hasObjectName;
         }
 
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -1664,11 +1787,12 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
             object = newObject;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Register_Object& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         std::string objectName;
         bool _hasObjectName;
@@ -1687,6 +1811,7 @@ class CERTI_EXPORT NM_Discover_Object : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -1697,6 +1822,7 @@ class CERTI_EXPORT NM_Discover_Object : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -1707,11 +1833,12 @@ class CERTI_EXPORT NM_Discover_Object : public NetworkMessage {
             object = newObject;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Discover_Object& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         ObjectHandle object;
 };
@@ -1728,6 +1855,7 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -1738,6 +1866,7 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -1773,6 +1902,7 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b1 */
         uint32_t getValuesSize() const
         {
             return values.size();
@@ -1808,6 +1938,7 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
             values.erase(values.begin() + rank);
         }
 
+/* b2 */
         const EventRetractionHandle& getEvent() const
         {
             return event;
@@ -1824,11 +1955,12 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
             return _hasEvent;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Update_Attribute_Values& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
         std::vector<AttributeValue_t> values;
@@ -1848,6 +1980,7 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -1858,6 +1991,7 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -1893,6 +2027,7 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b1 */
         uint32_t getValuesSize() const
         {
             return values.size();
@@ -1928,6 +2063,7 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
             values.erase(values.begin() + rank);
         }
 
+/* b2 */
         const EventRetractionHandle& getEvent() const
         {
             return event;
@@ -1944,11 +2080,12 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
             return _hasEvent;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Reflect_Attribute_Values& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
         std::vector<AttributeValue_t> values;
@@ -1968,6 +2105,7 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -1978,6 +2116,7 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
             interactionClass = newInteractionClass;
         }
 
+/* b1 */
         uint32_t getParametersSize() const
         {
             return parameters.size();
@@ -2013,6 +2152,7 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
             parameters.erase(parameters.begin() + rank);
         }
 
+/* b1 */
         uint32_t getValuesSize() const
         {
             return values.size();
@@ -2048,6 +2188,7 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
             values.erase(values.begin() + rank);
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -2058,11 +2199,12 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
             region = newRegion;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Send_Interaction& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;
         std::vector<ParameterHandle> parameters;
         std::vector<ParameterValue_t> values;
@@ -2081,6 +2223,7 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -2091,6 +2234,7 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
             interactionClass = newInteractionClass;
         }
 
+/* b1 */
         uint32_t getParametersSize() const
         {
             return parameters.size();
@@ -2126,6 +2270,7 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
             parameters.erase(parameters.begin() + rank);
         }
 
+/* b1 */
         uint32_t getValuesSize() const
         {
             return values.size();
@@ -2161,6 +2306,7 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
             values.erase(values.begin() + rank);
         }
 
+/* b2 */
         const EventRetractionHandle& getEvent() const
         {
             return event;
@@ -2177,11 +2323,12 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
             return _hasEvent;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Receive_Interaction& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;
         std::vector<ParameterHandle> parameters;
         std::vector<ParameterValue_t> values;
@@ -2201,6 +2348,7 @@ class CERTI_EXPORT NM_Delete_Object : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2211,6 +2359,7 @@ class CERTI_EXPORT NM_Delete_Object : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const EventRetractionHandle& getEvent() const
         {
             return event;
@@ -2227,11 +2376,12 @@ class CERTI_EXPORT NM_Delete_Object : public NetworkMessage {
             return _hasEvent;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Delete_Object& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         EventRetractionHandle event;
         bool _hasEvent;
@@ -2249,6 +2399,7 @@ class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2259,6 +2410,7 @@ class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -2269,6 +2421,7 @@ class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b2 */
         const EventRetractionHandle& getEvent() const
         {
             return event;
@@ -2285,11 +2438,12 @@ class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
             return _hasEvent;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Remove_Object& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         ObjectClassHandle objectClass;
         EventRetractionHandle event;
@@ -2308,6 +2462,7 @@ class CERTI_EXPORT NM_Change_Attribute_Transport_Type : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2318,6 +2473,7 @@ class CERTI_EXPORT NM_Change_Attribute_Transport_Type : public NetworkMessage {
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -2353,6 +2509,7 @@ class CERTI_EXPORT NM_Change_Attribute_Transport_Type : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const TransportType& getTransport() const
         {
             return transport;
@@ -2363,11 +2520,12 @@ class CERTI_EXPORT NM_Change_Attribute_Transport_Type : public NetworkMessage {
             transport = newTransport;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Change_Attribute_Transport_Type& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
         TransportType transport;
@@ -2385,6 +2543,7 @@ class CERTI_EXPORT NM_Change_Attribute_Order_Type : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2395,6 +2554,7 @@ class CERTI_EXPORT NM_Change_Attribute_Order_Type : public NetworkMessage {
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -2430,6 +2590,7 @@ class CERTI_EXPORT NM_Change_Attribute_Order_Type : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const OrderType& getOrder() const
         {
             return order;
@@ -2440,11 +2601,12 @@ class CERTI_EXPORT NM_Change_Attribute_Order_Type : public NetworkMessage {
             order = newOrder;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Change_Attribute_Order_Type& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
         OrderType order;
@@ -2462,6 +2624,7 @@ class CERTI_EXPORT NM_Change_Interaction_Transport_Type : public NetworkMessage 
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -2472,6 +2635,7 @@ class CERTI_EXPORT NM_Change_Interaction_Transport_Type : public NetworkMessage 
             interactionClass = newInteractionClass;
         }
 
+/* b2 */
         const TransportType& getTransport() const
         {
             return transport;
@@ -2482,11 +2646,12 @@ class CERTI_EXPORT NM_Change_Interaction_Transport_Type : public NetworkMessage 
             transport = newTransport;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Change_Interaction_Transport_Type& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;
         TransportType transport;
 };
@@ -2503,6 +2668,7 @@ class CERTI_EXPORT NM_Change_Interaction_Order_Type : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -2513,6 +2679,7 @@ class CERTI_EXPORT NM_Change_Interaction_Order_Type : public NetworkMessage {
             interactionClass = newInteractionClass;
         }
 
+/* b2 */
         const OrderType& getOrder() const
         {
             return order;
@@ -2523,11 +2690,12 @@ class CERTI_EXPORT NM_Change_Interaction_Order_Type : public NetworkMessage {
             order = newOrder;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Change_Interaction_Order_Type& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;
         OrderType order;
 };
@@ -2544,6 +2712,7 @@ class CERTI_EXPORT NM_Request_Class_Attribute_Value_Update : public NetworkMessa
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -2554,6 +2723,7 @@ class CERTI_EXPORT NM_Request_Class_Attribute_Value_Update : public NetworkMessa
             objectClass = newObjectClass;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -2589,11 +2759,12 @@ class CERTI_EXPORT NM_Request_Class_Attribute_Value_Update : public NetworkMessa
             attributes.erase(attributes.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Request_Class_Attribute_Value_Update& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         std::vector<AttributeHandle> attributes;
 };
@@ -2610,6 +2781,7 @@ class CERTI_EXPORT NM_Request_Object_Attribute_Value_Update : public NetworkMess
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2620,6 +2792,7 @@ class CERTI_EXPORT NM_Request_Object_Attribute_Value_Update : public NetworkMess
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -2655,11 +2828,12 @@ class CERTI_EXPORT NM_Request_Object_Attribute_Value_Update : public NetworkMess
             attributes.erase(attributes.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Request_Object_Attribute_Value_Update& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
 };
@@ -2676,6 +2850,7 @@ class CERTI_EXPORT NM_Is_Attribute_Owned_By_Federate : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2686,6 +2861,7 @@ class CERTI_EXPORT NM_Is_Attribute_Owned_By_Federate : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const AttributeHandle& getAttribute() const
         {
             return attribute;
@@ -2696,11 +2872,12 @@ class CERTI_EXPORT NM_Is_Attribute_Owned_By_Federate : public NetworkMessage {
             attribute = newAttribute;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Is_Attribute_Owned_By_Federate& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         AttributeHandle attribute;
 };
@@ -2717,6 +2894,7 @@ class CERTI_EXPORT NM_Query_Attribute_Ownership : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2727,6 +2905,7 @@ class CERTI_EXPORT NM_Query_Attribute_Ownership : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const AttributeHandle& getAttribute() const
         {
             return attribute;
@@ -2737,11 +2916,12 @@ class CERTI_EXPORT NM_Query_Attribute_Ownership : public NetworkMessage {
             attribute = newAttribute;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Query_Attribute_Ownership& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         AttributeHandle attribute;
 };
@@ -2758,6 +2938,7 @@ class CERTI_EXPORT NM_Attribute_Is_Not_Owned : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2768,6 +2949,7 @@ class CERTI_EXPORT NM_Attribute_Is_Not_Owned : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const AttributeHandle& getAttribute() const
         {
             return attribute;
@@ -2778,11 +2960,12 @@ class CERTI_EXPORT NM_Attribute_Is_Not_Owned : public NetworkMessage {
             attribute = newAttribute;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Attribute_Is_Not_Owned& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         AttributeHandle attribute;
 };
@@ -2799,6 +2982,7 @@ class CERTI_EXPORT NM_Inform_Attribute_Ownership : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2809,6 +2993,7 @@ class CERTI_EXPORT NM_Inform_Attribute_Ownership : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const AttributeHandle& getAttribute() const
         {
             return attribute;
@@ -2819,11 +3004,12 @@ class CERTI_EXPORT NM_Inform_Attribute_Ownership : public NetworkMessage {
             attribute = newAttribute;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Inform_Attribute_Ownership& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         AttributeHandle attribute;
 };
@@ -2840,6 +3026,7 @@ class CERTI_EXPORT NM_Attribute_Ownership_Base : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -2850,6 +3037,7 @@ class CERTI_EXPORT NM_Attribute_Ownership_Base : public NetworkMessage {
             object = newObject;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -2885,11 +3073,12 @@ class CERTI_EXPORT NM_Attribute_Ownership_Base : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Base& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectHandle object;
         std::vector<AttributeHandle> attributes;
 };
@@ -2904,6 +3093,8 @@ class CERTI_EXPORT NM_Negotiated_Attribute_Ownership_Divestiture : public NM_Att
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Negotiated_Attribute_Ownership_Divestiture& msg);
@@ -2916,6 +3107,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_Notification : public NM_A
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Acquisition_Notification& msg);
@@ -2928,6 +3121,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Divestiture_Notification : public NM_A
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Divestiture_Notification& msg);
@@ -2940,6 +3135,8 @@ class CERTI_EXPORT NM_Request_Attribute_Ownership_Assumption : public NM_Attribu
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Attribute_Ownership_Assumption& msg);
@@ -2954,6 +3151,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Unavailable : public NM_Attribute_Owne
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Unavailable& msg);
@@ -2966,6 +3165,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_If_Available : public NM_A
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Acquisition_If_Available& msg);
@@ -2978,6 +3179,8 @@ class CERTI_EXPORT NM_Unconditional_Attribute_Ownership_Divestiture : public NM_
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Unconditional_Attribute_Ownership_Divestiture& msg);
@@ -2990,6 +3193,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition : public NM_Attribute_Owne
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Acquisition& msg);
@@ -3002,6 +3207,8 @@ class CERTI_EXPORT NM_Request_Attribute_Ownership_Release : public NM_Attribute_
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Request_Attribute_Ownership_Release& msg);
@@ -3014,6 +3221,8 @@ class CERTI_EXPORT NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : public
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Cancel_Negotiated_Attribute_Ownership_Divestiture& msg);
@@ -3026,6 +3235,8 @@ class CERTI_EXPORT NM_Attribute_Ownership_Release_Response : public NM_Attribute
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Attribute_Ownership_Release_Response& msg);
@@ -3038,6 +3249,8 @@ class CERTI_EXPORT NM_Cancel_Attribute_Ownership_Acquisition : public NM_Attribu
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Cancel_Attribute_Ownership_Acquisition& msg);
@@ -3050,6 +3263,8 @@ class CERTI_EXPORT NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : pub
 
     
     protected:
+        using Super = NM_Attribute_Ownership_Base;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Confirm_Attribute_Ownership_Acquisition_Cancellation& msg);
@@ -3064,6 +3279,7 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3099,6 +3315,7 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3109,6 +3326,7 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
+/* b2 */
         const SpaceHandle& getSpace() const
         {
             return space;
@@ -3119,6 +3337,7 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
             space = newSpace;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3129,6 +3348,7 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
             region = newRegion;
         }
 
+/* b2 */
         const uint32_t& getNbExtents() const
         {
             return nbExtents;
@@ -3139,11 +3359,12 @@ class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
             nbExtents = newNbExtents;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Create_Region& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::vector<AttributeHandle> attributes;
         bool DDM_bool;
         SpaceHandle space;
@@ -3163,6 +3384,7 @@ class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3198,6 +3420,7 @@ class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3208,6 +3431,7 @@ class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3218,11 +3442,12 @@ class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
             region = newRegion;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Modify_Region& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::vector<AttributeHandle> attributes;
         bool DDM_bool;
         RegionHandle region;
@@ -3240,6 +3465,7 @@ class CERTI_EXPORT NM_DDM_Delete_Region : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3250,11 +3476,12 @@ class CERTI_EXPORT NM_DDM_Delete_Region : public NetworkMessage {
             region = newRegion;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Delete_Region& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         RegionHandle region;
 };
 
@@ -3270,6 +3497,7 @@ class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3305,6 +3533,7 @@ class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3315,6 +3544,7 @@ class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3325,6 +3555,7 @@ class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
             region = newRegion;
         }
 
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -3335,11 +3566,12 @@ class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
             object = newObject;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Associate_Region& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::vector<AttributeHandle> attributes;
         bool DDM_bool;
         RegionHandle region;
@@ -3358,6 +3590,7 @@ class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3393,6 +3626,7 @@ class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3403,6 +3637,7 @@ class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
             region = newRegion;
         }
 
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -3413,6 +3648,7 @@ class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3423,11 +3659,12 @@ class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Unassociate_Region& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::vector<AttributeHandle> attributes;
         RegionHandle region;
         ObjectHandle object;
@@ -3446,6 +3683,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -3456,6 +3694,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3491,6 +3730,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3501,6 +3741,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             region = newRegion;
         }
 
+/* b2 */
         const std::string& getObjectInstanceName() const
         {
             return objectInstanceName;
@@ -3517,6 +3758,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             return _hasObjectInstanceName;
         }
 
+/* b2 */
         const ObjectHandle& getObject() const
         {
             return object;
@@ -3527,6 +3769,7 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             object = newObject;
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3537,11 +3780,12 @@ class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Register_Object& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         std::vector<AttributeHandle> attributes;
         RegionHandle region;
@@ -3563,6 +3807,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -3573,6 +3818,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3583,6 +3829,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
             region = newRegion;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3618,6 +3865,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3628,11 +3876,12 @@ class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Subscribe_Attributes& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         RegionHandle region;
         std::vector<AttributeHandle> attributes;
@@ -3651,6 +3900,7 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -3661,6 +3911,7 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
             objectClass = newObjectClass;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3671,6 +3922,7 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
             region = newRegion;
         }
 
+/* b1 */
         uint32_t getAttributesSize() const
         {
             return attributes.size();
@@ -3706,6 +3958,7 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
             attributes.erase(attributes.begin() + rank);
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3716,11 +3969,12 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Unsubscribe_Attributes& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
         RegionHandle region;
         std::vector<AttributeHandle> attributes;
@@ -3739,6 +3993,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const InteractionClassHandle& getInteractionClass() const
         {
             return interactionClass;
@@ -3749,6 +4004,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
             interactionClass = newInteractionClass;
         }
 
+/* b2 */
         const RegionHandle& getRegion() const
         {
             return region;
@@ -3759,6 +4015,7 @@ class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
             region = newRegion;
         }
 
+/* b2 */
         const bool& getDDM_bool() const
         {
             return DDM_bool;
@@ -3769,11 +4026,12 @@ class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
             DDM_bool = newDDM_bool;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_DDM_Subscribe_Interaction& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         InteractionClassHandle interactionClass;
         RegionHandle region;
         bool DDM_bool;
@@ -3789,6 +4047,8 @@ class CERTI_EXPORT NM_DDM_Unsubscribe_Interaction : public NM_DDM_Subscribe_Inte
 
     
     protected:
+        using Super = NM_DDM_Subscribe_Interaction;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_DDM_Unsubscribe_Interaction& msg);
@@ -3801,6 +4061,8 @@ class CERTI_EXPORT NM_Provide_Attribute_Value_Update : public NM_Request_Object_
 
     
     protected:
+        using Super = NM_Request_Object_Attribute_Value_Update;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Provide_Attribute_Value_Update& msg);
@@ -3815,6 +4077,7 @@ class CERTI_EXPORT NM_Start_Registration_For_Object_Class : public NetworkMessag
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -3825,11 +4088,12 @@ class CERTI_EXPORT NM_Start_Registration_For_Object_Class : public NetworkMessag
             objectClass = newObjectClass;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Start_Registration_For_Object_Class& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
 };
 
@@ -3845,6 +4109,7 @@ class CERTI_EXPORT NM_Stop_Registration_For_Object_Class : public NetworkMessage
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const ObjectClassHandle& getObjectClass() const
         {
             return objectClass;
@@ -3855,11 +4120,12 @@ class CERTI_EXPORT NM_Stop_Registration_For_Object_Class : public NetworkMessage
             objectClass = newObjectClass;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Stop_Registration_For_Object_Class& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         ObjectClassHandle objectClass;
 };
 
@@ -3875,6 +4141,7 @@ class CERTI_EXPORT NM_Reserve_Object_Instance_Name : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const std::string& getObjectName() const
         {
             return objectName;
@@ -3885,11 +4152,12 @@ class CERTI_EXPORT NM_Reserve_Object_Instance_Name : public NetworkMessage {
             objectName = newObjectName;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Reserve_Object_Instance_Name& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         std::string objectName;
 };
 
@@ -3903,6 +4171,8 @@ class CERTI_EXPORT NM_Reserve_Object_Instance_Name_Succeeded : public NM_Reserve
 
     
     protected:
+        using Super = NM_Reserve_Object_Instance_Name;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Reserve_Object_Instance_Name_Succeeded& msg);
@@ -3915,6 +4185,8 @@ class CERTI_EXPORT NM_Reserve_Object_Instance_Name_Failed : public NM_Reserve_Ob
 
     
     protected:
+        using Super = NM_Reserve_Object_Instance_Name;
+
 };
 
 std::ostream& operator << (std::ostream& os, const NM_Reserve_Object_Instance_Name_Failed& msg);
@@ -3929,6 +4201,7 @@ class CERTI_EXPORT NM_Message_Null_Prime : public NetworkMessage {
         virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const FederationTime& getTimestamp() const
         {
             return timestamp;
@@ -3939,11 +4212,12 @@ class CERTI_EXPORT NM_Message_Null_Prime : public NetworkMessage {
             timestamp = newTimestamp;
         }
 
-        using Super = NetworkMessage;
         
         friend std::ostream& operator << (std::ostream& os, const NM_Message_Null_Prime& msg);
     
     protected:
+        using Super = NetworkMessage;
+
         FederationTime timestamp;
 };
 
@@ -3959,6 +4233,7 @@ class CERTI_EXPORT New_NetworkMessage {
         void deserialize(libhla::MessageBuffer& msgBuffer);
 
         // Attributes accessors and mutators
+/* b2 */
         const uint32_t& getType() const
         {
             return type;
@@ -3969,6 +4244,7 @@ class CERTI_EXPORT New_NetworkMessage {
             type = newType;
         }
 
+/* b2 */
         const FederationTime& getDate() const
         {
             return date;
@@ -3985,6 +4261,7 @@ class CERTI_EXPORT New_NetworkMessage {
             return _hasDate;
         }
 
+/* b2 */
         const std::string& getLabel() const
         {
             return label;
@@ -4001,6 +4278,7 @@ class CERTI_EXPORT New_NetworkMessage {
             return _hasLabel;
         }
 
+/* b2 */
         const std::string& getTag() const
         {
             return tag;
