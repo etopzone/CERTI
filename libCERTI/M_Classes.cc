@@ -1,6 +1,6 @@
-// Generated on 2017 August Tue, 01 at 16:28:13 by the CERTI message generator
-#include <vector>
+// Generated on 2017 August Tue, 01 at 16:48:15 by the CERTI message generator
 #include <string>
+#include <vector>
 #include "M_Classes.hh"
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
@@ -44,7 +44,7 @@ void EventRetraction::deserialize(libhla::MessageBuffer& msgBuffer) {
     SN = msgBuffer.read_uint64();
 }
 
-std::ostream& operator << (std::ostream& os, const EventRetraction& msg) {
+std::ostream& operator<<(std::ostream& os, const EventRetraction& msg) {
     os << "[EventRetraction - Begin]" << std::endl;
     
     // === Specific show code {
@@ -79,7 +79,7 @@ void M_Open_Connexion::deserialize(libhla::MessageBuffer& msgBuffer) {
     versionMinor = msgBuffer.read_uint32();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Open_Connexion& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Open_Connexion& msg) {
     os << "[M_Open_Connexion - Begin]" << std::endl;
     
     os << static_cast<const M_Open_Connexion::Super&>(msg); // show parent class
@@ -121,7 +121,7 @@ void M_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer
     msgBuffer.read_string(FEDid);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Create_Federation_Execution& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg) {
     os << "[M_Create_Federation_Execution - Begin]" << std::endl;
     
     os << static_cast<const M_Create_Federation_Execution::Super&>(msg); // show parent class
@@ -155,7 +155,7 @@ void M_Destroy_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffe
     msgBuffer.read_string(federationName);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Destroy_Federation_Execution& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Destroy_Federation_Execution& msg) {
     os << "[M_Destroy_Federation_Execution - Begin]" << std::endl;
     
     os << static_cast<const M_Destroy_Federation_Execution::Super&>(msg); // show parent class
@@ -194,7 +194,7 @@ void M_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer) 
     msgBuffer.read_string(federateName);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Join_Federation_Execution& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg) {
     os << "[M_Join_Federation_Execution - Begin]" << std::endl;
     
     os << static_cast<const M_Join_Federation_Execution::Super&>(msg); // show parent class
@@ -229,7 +229,7 @@ void M_Resign_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer
     resignAction = static_cast<ResignAction>(msgBuffer.read_uint16());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Resign_Federation_Execution& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Resign_Federation_Execution& msg) {
     os << "[M_Resign_Federation_Execution - Begin]" << std::endl;
     
     os << static_cast<const M_Resign_Federation_Execution::Super&>(msg); // show parent class
@@ -270,7 +270,7 @@ void M_Register_Federation_Synchronization_Point::deserialize(libhla::MessageBuf
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Register_Federation_Synchronization_Point& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Register_Federation_Synchronization_Point& msg) {
     os << "[M_Register_Federation_Synchronization_Point - Begin]" << std::endl;
     
     os << static_cast<const M_Register_Federation_Synchronization_Point::Super&>(msg); // show parent class
@@ -372,7 +372,7 @@ void M_Request_Federation_Restore_Failed::deserialize(libhla::MessageBuffer& msg
     msgBuffer.read_string(reason);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Federation_Restore_Failed& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Federation_Restore_Failed& msg) {
     os << "[M_Request_Federation_Restore_Failed - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Federation_Restore_Failed::Super&>(msg); // show parent class
@@ -410,7 +410,7 @@ void M_Initiate_Federate_Restore::deserialize(libhla::MessageBuffer& msgBuffer) 
     federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Initiate_Federate_Restore& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Initiate_Federate_Restore& msg) {
     os << "[M_Initiate_Federate_Restore - Begin]" << std::endl;
     
     os << static_cast<const M_Initiate_Federate_Restore::Super&>(msg); // show parent class
@@ -479,7 +479,7 @@ void M_Publish_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Publish_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Publish_Object_Class& msg) {
     os << "[M_Publish_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Publish_Object_Class::Super&>(msg); // show parent class
@@ -517,7 +517,7 @@ void M_Unpublish_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
     objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Unpublish_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Unpublish_Object_Class& msg) {
     os << "[M_Unpublish_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Unpublish_Object_Class::Super&>(msg); // show parent class
@@ -550,7 +550,7 @@ void M_Publish_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer) 
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Publish_Interaction_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Publish_Interaction_Class& msg) {
     os << "[M_Publish_Interaction_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Publish_Interaction_Class::Super&>(msg); // show parent class
@@ -583,7 +583,7 @@ void M_Unpublish_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Unpublish_Interaction_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Unpublish_Interaction_Class& msg) {
     os << "[M_Unpublish_Interaction_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Unpublish_Interaction_Class::Super&>(msg); // show parent class
@@ -630,7 +630,7 @@ void M_Subscribe_Object_Class_Attributes::deserialize(libhla::MessageBuffer& msg
     active = msgBuffer.read_bool();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Subscribe_Object_Class_Attributes& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Subscribe_Object_Class_Attributes& msg) {
     os << "[M_Subscribe_Object_Class_Attributes - Begin]" << std::endl;
     
     os << static_cast<const M_Subscribe_Object_Class_Attributes::Super&>(msg); // show parent class
@@ -669,7 +669,7 @@ void M_Unsubscribe_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
     objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Unsubscribe_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Unsubscribe_Object_Class& msg) {
     os << "[M_Unsubscribe_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Unsubscribe_Object_Class::Super&>(msg); // show parent class
@@ -702,7 +702,7 @@ void M_Subscribe_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuffer
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Subscribe_Interaction_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Subscribe_Interaction_Class& msg) {
     os << "[M_Subscribe_Interaction_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Subscribe_Interaction_Class::Super&>(msg); // show parent class
@@ -735,7 +735,7 @@ void M_Unsubscribe_Interaction_Class::deserialize(libhla::MessageBuffer& msgBuff
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Unsubscribe_Interaction_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Unsubscribe_Interaction_Class& msg) {
     os << "[M_Unsubscribe_Interaction_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Unsubscribe_Interaction_Class::Super&>(msg); // show parent class
@@ -768,7 +768,7 @@ void M_Start_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& m
     objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Start_Registration_For_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Start_Registration_For_Object_Class& msg) {
     os << "[M_Start_Registration_For_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Start_Registration_For_Object_Class::Super&>(msg); // show parent class
@@ -801,7 +801,7 @@ void M_Stop_Registration_For_Object_Class::deserialize(libhla::MessageBuffer& ms
     objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Stop_Registration_For_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Stop_Registration_For_Object_Class& msg) {
     os << "[M_Stop_Registration_For_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Stop_Registration_For_Object_Class::Super&>(msg); // show parent class
@@ -834,7 +834,7 @@ void M_Turn_Interactions_On::deserialize(libhla::MessageBuffer& msgBuffer) {
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Turn_Interactions_On& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Turn_Interactions_On& msg) {
     os << "[M_Turn_Interactions_On - Begin]" << std::endl;
     
     os << static_cast<const M_Turn_Interactions_On::Super&>(msg); // show parent class
@@ -867,7 +867,7 @@ void M_Turn_Interactions_Off::deserialize(libhla::MessageBuffer& msgBuffer) {
     interactionClass = static_cast<InteractionClassHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Turn_Interactions_Off& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Turn_Interactions_Off& msg) {
     os << "[M_Turn_Interactions_Off - Begin]" << std::endl;
     
     os << static_cast<const M_Turn_Interactions_Off::Super&>(msg); // show parent class
@@ -913,7 +913,7 @@ void M_Register_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Register_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Register_Object_Instance& msg) {
     os << "[M_Register_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Register_Object_Instance::Super&>(msg); // show parent class
@@ -987,7 +987,7 @@ void M_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Update_Attribute_Values& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Update_Attribute_Values& msg) {
     os << "[M_Update_Attribute_Values - Begin]" << std::endl;
     
     os << static_cast<const M_Update_Attribute_Values::Super&>(msg); // show parent class
@@ -1048,7 +1048,7 @@ void M_Discover_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Discover_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Discover_Object_Instance& msg) {
     os << "[M_Discover_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Discover_Object_Instance::Super&>(msg); // show parent class
@@ -1123,7 +1123,7 @@ void M_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Reflect_Attribute_Values& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Reflect_Attribute_Values& msg) {
     os << "[M_Reflect_Attribute_Values - Begin]" << std::endl;
     
     os << static_cast<const M_Reflect_Attribute_Values::Super&>(msg); // show parent class
@@ -1207,7 +1207,7 @@ void M_Send_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Send_Interaction& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Send_Interaction& msg) {
     os << "[M_Send_Interaction - Begin]" << std::endl;
     
     os << static_cast<const M_Send_Interaction::Super&>(msg); // show parent class
@@ -1291,7 +1291,7 @@ void M_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Receive_Interaction& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Receive_Interaction& msg) {
     os << "[M_Receive_Interaction - Begin]" << std::endl;
     
     os << static_cast<const M_Receive_Interaction::Super&>(msg); // show parent class
@@ -1352,7 +1352,7 @@ void M_Delete_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Delete_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Delete_Object_Instance& msg) {
     os << "[M_Delete_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Delete_Object_Instance::Super&>(msg); // show parent class
@@ -1388,7 +1388,7 @@ void M_Local_Delete_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffe
     object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Local_Delete_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Local_Delete_Object_Instance& msg) {
     os << "[M_Local_Delete_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Local_Delete_Object_Instance::Super&>(msg); // show parent class
@@ -1437,7 +1437,7 @@ void M_Remove_Object_Instance::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Remove_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Remove_Object_Instance& msg) {
     os << "[M_Remove_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Remove_Object_Instance::Super&>(msg); // show parent class
@@ -1490,7 +1490,7 @@ void M_Change_Attribute_Transportation_Type::deserialize(libhla::MessageBuffer& 
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Change_Attribute_Transportation_Type& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Change_Attribute_Transportation_Type& msg) {
     os << "[M_Change_Attribute_Transportation_Type - Begin]" << std::endl;
     
     os << static_cast<const M_Change_Attribute_Transportation_Type::Super&>(msg); // show parent class
@@ -1536,7 +1536,7 @@ void M_Change_Interaction_Transportation_Type::deserialize(libhla::MessageBuffer
     orderType = static_cast<OrderType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Change_Interaction_Transportation_Type& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Change_Interaction_Transportation_Type& msg) {
     os << "[M_Change_Interaction_Transportation_Type - Begin]" << std::endl;
     
     os << static_cast<const M_Change_Interaction_Transportation_Type::Super&>(msg); // show parent class
@@ -1582,7 +1582,7 @@ void M_Request_Object_Attribute_Value_Update::deserialize(libhla::MessageBuffer&
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Object_Attribute_Value_Update& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Object_Attribute_Value_Update& msg) {
     os << "[M_Request_Object_Attribute_Value_Update - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Object_Attribute_Value_Update::Super&>(msg); // show parent class
@@ -1631,7 +1631,7 @@ void M_Request_Class_Attribute_Value_Update::deserialize(libhla::MessageBuffer& 
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Class_Attribute_Value_Update& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Class_Attribute_Value_Update& msg) {
     os << "[M_Request_Class_Attribute_Value_Update - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Class_Attribute_Value_Update::Super&>(msg); // show parent class
@@ -1680,7 +1680,7 @@ void M_Provide_Attribute_Value_Update::deserialize(libhla::MessageBuffer& msgBuf
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Provide_Attribute_Value_Update& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Provide_Attribute_Value_Update& msg) {
     os << "[M_Provide_Attribute_Value_Update - Begin]" << std::endl;
     
     os << static_cast<const M_Provide_Attribute_Value_Update::Super&>(msg); // show parent class
@@ -1729,7 +1729,7 @@ void M_Attributes_In_Scope::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attributes_In_Scope& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attributes_In_Scope& msg) {
     os << "[M_Attributes_In_Scope - Begin]" << std::endl;
     
     os << static_cast<const M_Attributes_In_Scope::Super&>(msg); // show parent class
@@ -1778,7 +1778,7 @@ void M_Attributes_Out_Of_Scope::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attributes_Out_Of_Scope& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attributes_Out_Of_Scope& msg) {
     os << "[M_Attributes_Out_Of_Scope - Begin]" << std::endl;
     
     os << static_cast<const M_Attributes_Out_Of_Scope::Super&>(msg); // show parent class
@@ -1827,7 +1827,7 @@ void M_Turn_Updates_On_For_Object_Instance::deserialize(libhla::MessageBuffer& m
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Turn_Updates_On_For_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Turn_Updates_On_For_Object_Instance& msg) {
     os << "[M_Turn_Updates_On_For_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Turn_Updates_On_For_Object_Instance::Super&>(msg); // show parent class
@@ -1876,7 +1876,7 @@ void M_Turn_Updates_Off_For_Object_Instance::deserialize(libhla::MessageBuffer& 
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Turn_Updates_Off_For_Object_Instance& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Turn_Updates_Off_For_Object_Instance& msg) {
     os << "[M_Turn_Updates_Off_For_Object_Instance - Begin]" << std::endl;
     
     os << static_cast<const M_Turn_Updates_Off_For_Object_Instance::Super&>(msg); // show parent class
@@ -1930,7 +1930,7 @@ void M_Request_Attribute_Ownership_Assumption::deserialize(libhla::MessageBuffer
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Attribute_Ownership_Assumption& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_Assumption& msg) {
     os << "[M_Request_Attribute_Ownership_Assumption - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Attribute_Ownership_Assumption::Super&>(msg); // show parent class
@@ -1979,7 +1979,7 @@ void M_Negotiated_Attribute_Ownership_Divestiture::deserialize(libhla::MessageBu
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Negotiated_Attribute_Ownership_Divestiture& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Negotiated_Attribute_Ownership_Divestiture& msg) {
     os << "[M_Negotiated_Attribute_Ownership_Divestiture - Begin]" << std::endl;
     
     os << static_cast<const M_Negotiated_Attribute_Ownership_Divestiture::Super&>(msg); // show parent class
@@ -2028,7 +2028,7 @@ void M_Attribute_Ownership_Divestiture_Notification::deserialize(libhla::Message
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Divestiture_Notification& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Divestiture_Notification& msg) {
     os << "[M_Attribute_Ownership_Divestiture_Notification - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Divestiture_Notification::Super&>(msg); // show parent class
@@ -2077,7 +2077,7 @@ void M_Attribute_Ownership_Acquisition_Notification::deserialize(libhla::Message
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Acquisition_Notification& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisition_Notification& msg) {
     os << "[M_Attribute_Ownership_Acquisition_Notification - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Acquisition_Notification::Super&>(msg); // show parent class
@@ -2126,7 +2126,7 @@ void M_Request_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffe
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Attribute_Ownership_Acquisition& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_Acquisition& msg) {
     os << "[M_Request_Attribute_Ownership_Acquisition - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Attribute_Ownership_Acquisition::Super&>(msg); // show parent class
@@ -2175,7 +2175,7 @@ void M_Request_Attribute_Ownership_Release::deserialize(libhla::MessageBuffer& m
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Request_Attribute_Ownership_Release& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_Release& msg) {
     os << "[M_Request_Attribute_Ownership_Release - Begin]" << std::endl;
     
     os << static_cast<const M_Request_Attribute_Ownership_Release::Super&>(msg); // show parent class
@@ -2216,7 +2216,7 @@ void M_Query_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer) 
     attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Query_Attribute_Ownership& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Query_Attribute_Ownership& msg) {
     os << "[M_Query_Attribute_Ownership - Begin]" << std::endl;
     
     os << static_cast<const M_Query_Attribute_Ownership::Super&>(msg); // show parent class
@@ -2256,7 +2256,7 @@ void M_Inform_Attribute_Ownership::deserialize(libhla::MessageBuffer& msgBuffer)
     federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Inform_Attribute_Ownership& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Inform_Attribute_Ownership& msg) {
     os << "[M_Inform_Attribute_Ownership - Begin]" << std::endl;
     
     os << static_cast<const M_Inform_Attribute_Ownership::Super&>(msg); // show parent class
@@ -2294,7 +2294,7 @@ void M_Is_Attribute_Owned_By_Federate::deserialize(libhla::MessageBuffer& msgBuf
     attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Is_Attribute_Owned_By_Federate& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Is_Attribute_Owned_By_Federate& msg) {
     os << "[M_Is_Attribute_Owned_By_Federate - Begin]" << std::endl;
     
     os << static_cast<const M_Is_Attribute_Owned_By_Federate::Super&>(msg); // show parent class
@@ -2334,7 +2334,7 @@ void M_Attribute_Is_Not_Owned::deserialize(libhla::MessageBuffer& msgBuffer) {
     federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Is_Not_Owned& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Is_Not_Owned& msg) {
     os << "[M_Attribute_Is_Not_Owned - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Is_Not_Owned::Super&>(msg); // show parent class
@@ -2385,7 +2385,7 @@ void M_Attribute_Ownership_Acquisition_If_Available::deserialize(libhla::Message
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Acquisition_If_Available& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisition_If_Available& msg) {
     os << "[M_Attribute_Ownership_Acquisition_If_Available - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Acquisition_If_Available::Super&>(msg); // show parent class
@@ -2434,7 +2434,7 @@ void M_Attribute_Ownership_Unavailable::deserialize(libhla::MessageBuffer& msgBu
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Unavailable& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Unavailable& msg) {
     os << "[M_Attribute_Ownership_Unavailable - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Unavailable::Super&>(msg); // show parent class
@@ -2483,7 +2483,7 @@ void M_Unconditional_Attribute_Ownership_Divestiture::deserialize(libhla::Messag
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Unconditional_Attribute_Ownership_Divestiture& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Unconditional_Attribute_Ownership_Divestiture& msg) {
     os << "[M_Unconditional_Attribute_Ownership_Divestiture - Begin]" << std::endl;
     
     os << static_cast<const M_Unconditional_Attribute_Ownership_Divestiture::Super&>(msg); // show parent class
@@ -2532,7 +2532,7 @@ void M_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffer& msgBu
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Acquisition& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisition& msg) {
     os << "[M_Attribute_Ownership_Acquisition - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Acquisition::Super&>(msg); // show parent class
@@ -2581,7 +2581,7 @@ void M_Cancel_Negotiated_Attribute_Ownership_Divestiture::deserialize(libhla::Me
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Cancel_Negotiated_Attribute_Ownership_Divestiture& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Cancel_Negotiated_Attribute_Ownership_Divestiture& msg) {
     os << "[M_Cancel_Negotiated_Attribute_Ownership_Divestiture - Begin]" << std::endl;
     
     os << static_cast<const M_Cancel_Negotiated_Attribute_Ownership_Divestiture::Super&>(msg); // show parent class
@@ -2630,7 +2630,7 @@ void M_Attribute_Ownership_Release_Response::deserialize(libhla::MessageBuffer& 
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Attribute_Ownership_Release_Response& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Release_Response& msg) {
     os << "[M_Attribute_Ownership_Release_Response - Begin]" << std::endl;
     
     os << static_cast<const M_Attribute_Ownership_Release_Response::Super&>(msg); // show parent class
@@ -2679,7 +2679,7 @@ void M_Cancel_Attribute_Ownership_Acquisition::deserialize(libhla::MessageBuffer
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Cancel_Attribute_Ownership_Acquisition& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Cancel_Attribute_Ownership_Acquisition& msg) {
     os << "[M_Cancel_Attribute_Ownership_Acquisition - Begin]" << std::endl;
     
     os << static_cast<const M_Cancel_Attribute_Ownership_Acquisition::Super&>(msg); // show parent class
@@ -2728,7 +2728,7 @@ void M_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize(libhla:
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Confirm_Attribute_Ownership_Acquisition_Cancellation& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Confirm_Attribute_Ownership_Acquisition_Cancellation& msg) {
     os << "[M_Confirm_Attribute_Ownership_Acquisition_Cancellation - Begin]" << std::endl;
     
     os << static_cast<const M_Confirm_Attribute_Ownership_Acquisition_Cancellation::Super&>(msg); // show parent class
@@ -2783,7 +2783,7 @@ void M_Change_Attribute_Order_Type::deserialize(libhla::MessageBuffer& msgBuffer
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Change_Attribute_Order_Type& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Change_Attribute_Order_Type& msg) {
     os << "[M_Change_Attribute_Order_Type - Begin]" << std::endl;
     
     os << static_cast<const M_Change_Attribute_Order_Type::Super&>(msg); // show parent class
@@ -2829,7 +2829,7 @@ void M_Change_Interaction_Order_Type::deserialize(libhla::MessageBuffer& msgBuff
     order = static_cast<OrderType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Change_Interaction_Order_Type& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Change_Interaction_Order_Type& msg) {
     os << "[M_Change_Interaction_Order_Type - Begin]" << std::endl;
     
     os << static_cast<const M_Change_Interaction_Order_Type::Super&>(msg); // show parent class
@@ -2864,7 +2864,7 @@ void M_Enable_Time_Regulation::deserialize(libhla::MessageBuffer& msgBuffer) {
     lookahead = msgBuffer.read_double();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Enable_Time_Regulation& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Enable_Time_Regulation& msg) {
     os << "[M_Enable_Time_Regulation - Begin]" << std::endl;
     
     os << static_cast<const M_Enable_Time_Regulation::Super&>(msg); // show parent class
@@ -2897,7 +2897,7 @@ void M_Disable_Time_Regulation::deserialize(libhla::MessageBuffer& msgBuffer) {
     lookahead = msgBuffer.read_double();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Disable_Time_Regulation& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Disable_Time_Regulation& msg) {
     os << "[M_Disable_Time_Regulation - Begin]" << std::endl;
     
     os << static_cast<const M_Disable_Time_Regulation::Super&>(msg); // show parent class
@@ -2955,7 +2955,7 @@ void M_Modify_Lookahead::deserialize(libhla::MessageBuffer& msgBuffer) {
     lookahead = msgBuffer.read_double();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Modify_Lookahead& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Modify_Lookahead& msg) {
     os << "[M_Modify_Lookahead - Begin]" << std::endl;
     
     os << static_cast<const M_Modify_Lookahead::Super&>(msg); // show parent class
@@ -2988,7 +2988,7 @@ void M_Query_Lookahead::deserialize(libhla::MessageBuffer& msgBuffer) {
     lookahead = msgBuffer.read_double();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Query_Lookahead& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Query_Lookahead& msg) {
     os << "[M_Query_Lookahead - Begin]" << std::endl;
     
     os << static_cast<const M_Query_Lookahead::Super&>(msg); // show parent class
@@ -3021,7 +3021,7 @@ void M_Retract::deserialize(libhla::MessageBuffer& msgBuffer) {
     eventRetraction.deserialize(msgBuffer);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Retract& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Retract& msg) {
     os << "[M_Retract - Begin]" << std::endl;
     
     os << static_cast<const M_Retract::Super&>(msg); // show parent class
@@ -3127,7 +3127,7 @@ void M_Ddm_Create_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
     region = static_cast<RegionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Create_Region& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Create_Region& msg) {
     os << "[M_Ddm_Create_Region - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Create_Region::Super&>(msg); // show parent class
@@ -3181,7 +3181,7 @@ void M_Ddm_Modify_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Modify_Region& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Modify_Region& msg) {
     os << "[M_Ddm_Modify_Region - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Modify_Region::Super&>(msg); // show parent class
@@ -3219,7 +3219,7 @@ void M_Ddm_Delete_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
     region = static_cast<RegionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Delete_Region& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Delete_Region& msg) {
     os << "[M_Ddm_Delete_Region - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Delete_Region::Super&>(msg); // show parent class
@@ -3276,7 +3276,7 @@ void M_Ddm_Register_Object::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Register_Object& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Register_Object& msg) {
     os << "[M_Ddm_Register_Object - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Register_Object::Super&>(msg); // show parent class
@@ -3330,7 +3330,7 @@ void M_Ddm_Associate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Associate_Region& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Associate_Region& msg) {
     os << "[M_Ddm_Associate_Region - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Associate_Region::Super&>(msg); // show parent class
@@ -3372,7 +3372,7 @@ void M_Ddm_Unassociate_Region::deserialize(libhla::MessageBuffer& msgBuffer) {
     region = static_cast<RegionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Unassociate_Region& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Unassociate_Region& msg) {
     os << "[M_Ddm_Unassociate_Region - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Unassociate_Region::Super&>(msg); // show parent class
@@ -3423,7 +3423,7 @@ void M_Ddm_Subscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Subscribe_Attributes& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Subscribe_Attributes& msg) {
     os << "[M_Ddm_Subscribe_Attributes - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Subscribe_Attributes::Super&>(msg); // show parent class
@@ -3466,7 +3466,7 @@ void M_Ddm_Unsubscribe_Attributes::deserialize(libhla::MessageBuffer& msgBuffer)
     region = static_cast<RegionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Unsubscribe_Attributes& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Unsubscribe_Attributes& msg) {
     os << "[M_Ddm_Unsubscribe_Attributes - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Unsubscribe_Attributes::Super&>(msg); // show parent class
@@ -3506,7 +3506,7 @@ void M_Ddm_Subscribe_Interaction::deserialize(libhla::MessageBuffer& msgBuffer) 
     passive = msgBuffer.read_bool();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Subscribe_Interaction& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Subscribe_Interaction& msg) {
     os << "[M_Ddm_Subscribe_Interaction - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Subscribe_Interaction::Super&>(msg); // show parent class
@@ -3547,7 +3547,7 @@ void M_Ddm_Unsubscribe_Interaction::deserialize(libhla::MessageBuffer& msgBuffer
     passive = msgBuffer.read_bool();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Unsubscribe_Interaction& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Unsubscribe_Interaction& msg) {
     os << "[M_Ddm_Unsubscribe_Interaction - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Unsubscribe_Interaction::Super&>(msg); // show parent class
@@ -3596,7 +3596,7 @@ void M_Ddm_Request_Update::deserialize(libhla::MessageBuffer& msgBuffer) {
     }
 }
 
-std::ostream& operator << (std::ostream& os, const M_Ddm_Request_Update& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Ddm_Request_Update& msg) {
     os << "[M_Ddm_Request_Update - Begin]" << std::endl;
     
     os << static_cast<const M_Ddm_Request_Update::Super&>(msg); // show parent class
@@ -3638,7 +3638,7 @@ void M_Get_Object_Class_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     msgBuffer.read_string(className);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Object_Class_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Object_Class_Handle& msg) {
     os << "[M_Get_Object_Class_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Object_Class_Handle::Super&>(msg); // show parent class
@@ -3675,7 +3675,7 @@ void M_Get_Object_Class_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     msgBuffer.read_string(className);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Object_Class_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Object_Class_Name& msg) {
     os << "[M_Get_Object_Class_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Object_Class_Name::Super&>(msg); // show parent class
@@ -3715,7 +3715,7 @@ void M_Get_Attribute_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Attribute_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Attribute_Handle& msg) {
     os << "[M_Get_Attribute_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Attribute_Handle::Super&>(msg); // show parent class
@@ -3756,7 +3756,7 @@ void M_Get_Attribute_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     attribute = static_cast<AttributeHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Attribute_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Attribute_Name& msg) {
     os << "[M_Get_Attribute_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Attribute_Name::Super&>(msg); // show parent class
@@ -3794,7 +3794,7 @@ void M_Get_Interaction_Class_Handle::deserialize(libhla::MessageBuffer& msgBuffe
     msgBuffer.read_string(className);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Interaction_Class_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Interaction_Class_Handle& msg) {
     os << "[M_Get_Interaction_Class_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Interaction_Class_Handle::Super&>(msg); // show parent class
@@ -3831,7 +3831,7 @@ void M_Get_Interaction_Class_Name::deserialize(libhla::MessageBuffer& msgBuffer)
     msgBuffer.read_string(className);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Interaction_Class_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Interaction_Class_Name& msg) {
     os << "[M_Get_Interaction_Class_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Interaction_Class_Name::Super&>(msg); // show parent class
@@ -3871,7 +3871,7 @@ void M_Get_Parameter_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Parameter_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Parameter_Handle& msg) {
     os << "[M_Get_Parameter_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Parameter_Handle::Super&>(msg); // show parent class
@@ -3912,7 +3912,7 @@ void M_Get_Parameter_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     parameter = static_cast<ParameterHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Parameter_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Parameter_Name& msg) {
     os << "[M_Get_Parameter_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Parameter_Name::Super&>(msg); // show parent class
@@ -3950,7 +3950,7 @@ void M_Get_Object_Instance_Handle::deserialize(libhla::MessageBuffer& msgBuffer)
     msgBuffer.read_string(objectInstanceName);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Object_Instance_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Object_Instance_Handle& msg) {
     os << "[M_Get_Object_Instance_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Object_Instance_Handle::Super&>(msg); // show parent class
@@ -3987,7 +3987,7 @@ void M_Get_Object_Instance_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     msgBuffer.read_string(objectInstanceName);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Object_Instance_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Object_Instance_Name& msg) {
     os << "[M_Get_Object_Instance_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Object_Instance_Name::Super&>(msg); // show parent class
@@ -4024,7 +4024,7 @@ void M_Get_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Space_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Space_Handle& msg) {
     os << "[M_Get_Space_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Space_Handle::Super&>(msg); // show parent class
@@ -4061,7 +4061,7 @@ void M_Get_Space_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Space_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Space_Name& msg) {
     os << "[M_Get_Space_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Space_Name::Super&>(msg); // show parent class
@@ -4101,7 +4101,7 @@ void M_Get_Dimension_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Dimension_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Dimension_Handle& msg) {
     os << "[M_Get_Dimension_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Dimension_Handle::Super&>(msg); // show parent class
@@ -4142,7 +4142,7 @@ void M_Get_Dimension_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     dimension = static_cast<DimensionHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Dimension_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Dimension_Name& msg) {
     os << "[M_Get_Dimension_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Dimension_Name::Super&>(msg); // show parent class
@@ -4183,7 +4183,7 @@ void M_Get_Attribute_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffer)
     space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Attribute_Space_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Attribute_Space_Handle& msg) {
     os << "[M_Get_Attribute_Space_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Attribute_Space_Handle::Super&>(msg); // show parent class
@@ -4221,7 +4221,7 @@ void M_Get_Object_Class::deserialize(libhla::MessageBuffer& msgBuffer) {
     object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Object_Class& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Object_Class& msg) {
     os << "[M_Get_Object_Class - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Object_Class::Super&>(msg); // show parent class
@@ -4258,7 +4258,7 @@ void M_Get_Interaction_Space_Handle::deserialize(libhla::MessageBuffer& msgBuffe
     space = static_cast<SpaceHandle>(msgBuffer.read_uint32());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Interaction_Space_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Interaction_Space_Handle& msg) {
     os << "[M_Get_Interaction_Space_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Interaction_Space_Handle::Super&>(msg); // show parent class
@@ -4295,7 +4295,7 @@ void M_Get_Transportation_Handle::deserialize(libhla::MessageBuffer& msgBuffer) 
     transportation = static_cast<TransportType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Transportation_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Transportation_Handle& msg) {
     os << "[M_Get_Transportation_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Transportation_Handle::Super&>(msg); // show parent class
@@ -4332,7 +4332,7 @@ void M_Get_Transportation_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     transportation = static_cast<TransportType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Transportation_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Transportation_Name& msg) {
     os << "[M_Get_Transportation_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Transportation_Name::Super&>(msg); // show parent class
@@ -4369,7 +4369,7 @@ void M_Get_Ordering_Handle::deserialize(libhla::MessageBuffer& msgBuffer) {
     ordering = static_cast<OrderType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Ordering_Handle& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Ordering_Handle& msg) {
     os << "[M_Get_Ordering_Handle - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Ordering_Handle::Super&>(msg); // show parent class
@@ -4406,7 +4406,7 @@ void M_Get_Ordering_Name::deserialize(libhla::MessageBuffer& msgBuffer) {
     ordering = static_cast<OrderType>(msgBuffer.read_uint8());
 }
 
-std::ostream& operator << (std::ostream& os, const M_Get_Ordering_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Get_Ordering_Name& msg) {
     os << "[M_Get_Ordering_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Get_Ordering_Name::Super&>(msg); // show parent class
@@ -4486,7 +4486,7 @@ void M_Tick_Request::deserialize(libhla::MessageBuffer& msgBuffer) {
     maxTickTime = msgBuffer.read_double();
 }
 
-std::ostream& operator << (std::ostream& os, const M_Tick_Request& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Tick_Request& msg) {
     os << "[M_Tick_Request - Begin]" << std::endl;
     
     os << static_cast<const M_Tick_Request::Super&>(msg); // show parent class
@@ -4531,7 +4531,7 @@ void M_Reserve_Object_Instance_Name::deserialize(libhla::MessageBuffer& msgBuffe
     msgBuffer.read_string(objectName);
 }
 
-std::ostream& operator << (std::ostream& os, const M_Reserve_Object_Instance_Name& msg) {
+std::ostream& operator<<(std::ostream& os, const M_Reserve_Object_Instance_Name& msg) {
     os << "[M_Reserve_Object_Instance_Name - Begin]" << std::endl;
     
     os << static_cast<const M_Reserve_Object_Instance_Name::Super&>(msg); // show parent class

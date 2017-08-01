@@ -123,10 +123,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             # we may have nested namespace
             nameSpaceList = self.AST.package.name.split('.')
             for ns in nameSpaceList:
-                stream.write(self.getIndent() + '''namespace %s {
-
-'''
-                             % ns)
+                stream.write(self.getIndent() + 'namespace %s {\n\n' % ns)
 
     def closeNamespaces(self, stream):
         if self.AST.hasPackage():
@@ -135,9 +132,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             nameSpaceList = self.AST.package.name.split('.')
             nameSpaceList.reverse()
             for ns in nameSpaceList:
-                stream.write(self.getIndent() + '} '
-                             + self.commentLineBeginWith
-                             + ' end of namespace %s \n' % ns)
+                stream.write(self.getIndent() + '} ' + self.commentLineBeginWith + ' end of namespace %s \n' % ns)
 
     def writeOneGetterSetter(self, stream, field):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
@@ -248,7 +243,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 stream.write(self.getIndent() + 'void set' + self.upperFirst(field.name) + '(const ' + targetTypeName + '& new' + self.upperFirst(field.name) + ', uint32_t rank)\n')
                 stream.write(self.getIndent() + '{\n')
                 self.indent()
-                stream.write(self.getIndent() + field.name + '[rank]=new' + self.upperFirst(field.name) + ';\n')
+                stream.write(self.getIndent() + field.name + '[rank] = new' + self.upperFirst(field.name) + ';\n')
                 self.unIndent()
                 stream.write(self.getIndent() + '}\n\n')
 
@@ -357,10 +352,10 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
         stream.write(self.commentLineBeginWith
                      + ' ****-**** Global System includes ****-****\n')
-        stream.write('#include <vector>\n')
-        self.included['#include <vector>'] = 1
         stream.write('#include <string>\n')
         self.included['#include <string>'] = 1
+        stream.write('#include <vector>\n')
+        self.included['#include <vector>'] = 1
 
         # add include coming from native type specification
 
@@ -455,8 +450,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                     stream.write(' {\n')
                     virtual = ''
 
-                self.indent()
-
                 # begin public
 
                 stream.write(self.getIndent() + 'public:\n')
@@ -511,7 +504,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                         stream.write(self.getIndent() + 'using Super = %s;\n' % msg.merge.name)
 
                     stream.write(self.getIndent() + '\n')
-                    stream.write(self.getIndent() + 'friend std::ostream& operator << (std::ostream& os, const ' + msg.name + '& msg);\n')
+                    stream.write(self.getIndent() + 'friend std::ostream& operator<<(std::ostream& os, const ' + msg.name + '& msg);\n')
 
                 self.unIndent()
 
@@ -519,7 +512,6 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
                 # begin protected
 
-                stream.write(self.getIndent() + '\n')
                 stream.write(self.getIndent() + 'protected:\n')
                 self.indent()
                     
@@ -537,15 +529,11 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
                 # end protected
 
-
-                self.unIndent()
-                stream.write(self.getIndent() + '};\n')
+                stream.write(self.getIndent() + '};\n\n')
 
                 # stream operator
 
-                stream.write('\n')
-                stream.write('std::ostream& operator << (std::ostream& os, const ' + msg.name + '& msg);\n')
-                stream.write('\n')
+                stream.write('std::ostream& operator<<(std::ostream& os, const ' + msg.name + '& msg);\n')
 
         # Generate Factory (if any)
         # @todo
@@ -954,8 +942,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         """
         self.addGeneratedByLine(stream)
         # add necessary standard includes
-        stream.write('#include <vector>\n')
         stream.write('#include <string>\n')
+        stream.write('#include <vector>\n')
         # [Try to] add corresponding header include
 
         supposedHeaderName = stream.name
@@ -1061,7 +1049,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
                     # begin stream operator
 
-                    stream.write(self.getIndent() + 'std::ostream& operator << (std::ostream& os, const %s& msg) {\n' % msg.name)
+                    stream.write(self.getIndent() + 'std::ostream& operator<<(std::ostream& os, const %s& msg) {\n' % msg.name)
                     self.indent()
                     stream.write(self.getIndent() + 'os << "[%s - Begin]" << std::endl;\n' % msg.name)
 
