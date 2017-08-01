@@ -36,8 +36,7 @@ namespace fedparser {
  * @param[in] verboseArg, if true the parsed element will printed on stdout.
  */
 CERTI_EXPORT
-int
-build(const char *filename, RootObject *root, bool verboseArg);
+int build(const char* filename, RootObject* root, bool verboseArg);
 
 // internal functions
 void indent();
@@ -69,7 +68,6 @@ void endFederate();
 void endInteraction();
 void endObject();
 void endSpace();
-
 }
 }
 

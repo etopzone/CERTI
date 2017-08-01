@@ -115,8 +115,6 @@ void RTIG::execute() throw(NetworkError)
 
         result = 0; // Wait for an incoming message.
         while (!result) {
-            int test;
-
             FD_ZERO(&fd);
             FD_SET(my_tcpSocketServer.returnSocket(), &fd);
 
@@ -132,7 +130,8 @@ void RTIG::execute() throw(NetworkError)
 
             result = select(highest_fd + 1, &fd, nullptr, nullptr, &watchDog);
             if (result < 0) {
-                test = WSAGetLastError();
+                int test = WSAGetLastError();
+                Debug(D, pdExcept) << "Catching Socket Error: " << test << std::endl;
             }
 
             if (terminate) {

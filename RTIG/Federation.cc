@@ -2075,6 +2075,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 bool Federation::restoreXmlData(string docFilename)
 {
 #ifndef HAVE_XML
+    (void) docFilename;
     return false;
 #else
 
