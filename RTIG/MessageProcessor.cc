@@ -39,7 +39,7 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
+//std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
 
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
@@ -1300,11 +1300,10 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
     }
 
     Debug(G, pdGendoc) << "exit  RTIG::processUpdateAttributeValues" << endl;
-    
-//             rep->send(request.socket(), my_messageBuffer); // send answer to RTIA
-//     return {};
-    
-    
+
+    //             rep->send(request.socket(), my_messageBuffer); // send answer to RTIA
+    //     return {};
+
     MessageEvent<NM_Update_Attribute_Values> response(request.socket(), std::move(rep));
     Responses responses;
     responses.emplace_back(MessageEvent<NetworkMessage>{std::move(response)});
