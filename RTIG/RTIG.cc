@@ -101,11 +101,11 @@ void RTIG::execute() throw(NetworkError)
     fd_set fd;
     Socket* link{nullptr};
     int result{0};
-    
+
     while (!terminate) {
 #if _WIN32
         result = 0;
-        
+
         while (!result) {
             // Initialize fd_set structure with all opened sockets.
             FD_ZERO(&fd);
@@ -131,7 +131,7 @@ void RTIG::execute() throw(NetworkError)
                 break;
             }
         }
-        
+
         if (terminate) {
             break;
         }
@@ -258,35 +258,6 @@ void RTIG::createSocketServers()
     }
 }
 
-Socket* RTIG::chooseProcessingMethod(Socket* link, std::unique_ptr<NetworkMessage> msg)
-{
-    Debug(G, pdGendoc) << "enter RTIG::chooseProcessingMethod type (" << msg->getMessageName() << ")" << std::endl;
-
-    // This may throw a security error.
-    if (msg->getMessageType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
-        my_socketServer.checkMessage(link->returnSocket(), msg.get());
-    }
-    
-    if (msg->getMessageType() == NetworkMessage::CLOSE_CONNEXION) {
-        Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
-        my_auditServer.setLevel(9);
-        my_auditServer << "Socket " << int(link->returnSocket());
-        closeConnection(link, false);
-        link = NULL;
-    }
-    else {
-        auto responses = my_processor.processEvent({link, std::move(msg)});
-        
-        for(auto& response: responses) {
-            // send message
-//             std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
-            response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
-        }
-    }
-
-    return link; // It may have been set to NULL by closeConnection.
-}
-
 Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 {
     Debug(G, pdGendoc) << "enter RTIG::processIncomingMessage" << std::endl;
@@ -303,183 +274,82 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     /* virtual constructor call */
     auto msg = std::unique_ptr<NetworkMessage>(NM_Factory::receive(link));
 
-    // Server Answer(only if an exception is raised)
-    //         std::unique_ptr<NetworkMessage> rep();
-    auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(msg->getMessageType()));
-    response->setFederate(msg->getFederate());
+    auto federate = msg->getFederate();
+    auto messageType = msg->getMessageType();
 
-    my_auditServer.startLine(msg->getFederation(), msg->getFederate(), msg->getMessageType());
+    my_auditServer.startLine(msg->getFederation(), federate, messageType);
 
-// This macro is used to copy any non null exception reason
-// string into our buffer(used for Audit purpose).
-
-#define CPY_NOT_NULL(A)                                                                                                \
-    {                                                                                                                  \
-        if (!A.reason().empty()) {                                                                                     \
-            exceptionReason = A.reason();                                                                              \
-        }                                                                                                              \
-    }
-
-#define PRINT_DEBUG_MESSAGE(A) Debug(D, pdError) << "Caught exception " << A.name() << std::endl
-
-#define BASIC_CATCH(ExceptionType)                                                                                     \
-    catch (ExceptionType & e)                                                                                          \
-    {                                                                                                                  \
-        PRINT_DEBUG_MESSAGE(e);                                                                                        \
-        CPY_NOT_NULL(e);                                                                                               \
-        response->setException(e.type());                                                                              \
-    }
-
-    std::string exceptionReason;
+    // This macro is used to copy any non null exception reason
+    // string into our buffer(used for Audit purpose).
 
     try {
-        link = chooseProcessingMethod(link, std::move(msg));
-    }
-    BASIC_CATCH(ArrayIndexOutOfBounds)
-    BASIC_CATCH(AttributeAlreadyOwned)
-    BASIC_CATCH(AttributeAlreadyBeingAcquired)
-    BASIC_CATCH(AttributeAlreadyBeingDivested)
-    BASIC_CATCH(AttributeDivestitureWasNotRequested)
-    BASIC_CATCH(AttributeAcquisitionWasNotRequested)
-    BASIC_CATCH(AttributeNotDefined)
-    BASIC_CATCH(AttributeNotKnown)
-    BASIC_CATCH(AttributeNotOwned)
-    BASIC_CATCH(AttributeNotPublished)
-    BASIC_CATCH(AttributeNotSubscribed)
-    BASIC_CATCH(ConcurrentAccessAttempted)
-    BASIC_CATCH(CouldNotDiscover)
-    BASIC_CATCH(CouldNotOpenRID)
-    BASIC_CATCH(CouldNotOpenFED)
-    BASIC_CATCH(CouldNotRestore)
-    BASIC_CATCH(DeletePrivilegeNotHeld)
-    BASIC_CATCH(ErrorReadingRID)
-    BASIC_CATCH(EventNotKnown)
-    BASIC_CATCH(FederateAlreadyPaused)
-    BASIC_CATCH(FederateAlreadyExecutionMember)
-    BASIC_CATCH(FederateDoesNotExist)
-    BASIC_CATCH(FederateInternalError)
-    BASIC_CATCH(FederateNameAlreadyInUse)
-    BASIC_CATCH(FederateNotExecutionMember)
-    BASIC_CATCH(FederateNotPaused)
-    BASIC_CATCH(FederateNotPublishing)
-    BASIC_CATCH(FederateNotSubscribing)
-    BASIC_CATCH(FederateOwnsAttributes)
-    BASIC_CATCH(FederatesCurrentlyJoined)
-    BASIC_CATCH(FederateWasNotAskedToReleaseAttribute)
-    BASIC_CATCH(FederationAlreadyPaused)
-    BASIC_CATCH(FederationExecutionAlreadyExists)
-    BASIC_CATCH(FederationExecutionDoesNotExist)
-    BASIC_CATCH(FederationNotPaused)
-    BASIC_CATCH(FederationTimeAlreadyPassed)
-    BASIC_CATCH(IDsupplyExhausted)
-    BASIC_CATCH(InteractionClassNotDefined)
-    BASIC_CATCH(InteractionClassNotKnown)
-    BASIC_CATCH(InteractionClassNotPublished)
-    BASIC_CATCH(InteractionParameterNotDefined)
-    BASIC_CATCH(InteractionParameterNotKnown)
-    BASIC_CATCH(InvalidDivestitureCondition)
-    BASIC_CATCH(InvalidExtents)
-    BASIC_CATCH(InvalidFederationTime)
-    BASIC_CATCH(InvalidFederationTimeDelta)
-    BASIC_CATCH(InvalidObjectHandle)
-    BASIC_CATCH(InvalidOrderingHandle)
-    BASIC_CATCH(InvalidResignAction)
-    BASIC_CATCH(InvalidRetractionHandle)
-    BASIC_CATCH(InvalidRoutingSpace)
-    BASIC_CATCH(InvalidTransportationHandle)
-    BASIC_CATCH(MemoryExhausted)
-    BASIC_CATCH(NameNotFound)
-    BASIC_CATCH(NoPauseRequested)
-    BASIC_CATCH(NoResumeRequested)
-    BASIC_CATCH(ObjectClassNotDefined)
-    BASIC_CATCH(ObjectClassNotKnown)
-    BASIC_CATCH(ObjectClassNotPublished)
-    BASIC_CATCH(ObjectClassNotSubscribed)
-    BASIC_CATCH(ObjectNotKnown)
-    BASIC_CATCH(ObjectAlreadyRegistered)
-    BASIC_CATCH(RegionNotKnown)
-    BASIC_CATCH(RestoreInProgress)
-    BASIC_CATCH(RestoreNotRequested)
-    BASIC_CATCH(SaveInProgress)
-    BASIC_CATCH(SaveNotInitiated)
-    BASIC_CATCH(SpaceNotDefined)
-    BASIC_CATCH(SpecifiedSaveLabelDoesNotExist)
-    BASIC_CATCH(TimeAdvanceAlreadyInProgress)
-    BASIC_CATCH(TimeAdvanceWasNotInProgress)
-    BASIC_CATCH(TooManyIDsRequested)
-    BASIC_CATCH(UnableToPerformSave)
-    BASIC_CATCH(UnimplementedService)
-    BASIC_CATCH(UnknownLabel)
-    BASIC_CATCH(ValueCountExceeded)
-    BASIC_CATCH(ValueLengthExceeded)
+        // This may throw a security error.
+        if (messageType != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
+            my_socketServer.checkMessage(link->returnSocket(), msg.get());
+        }
 
-    catch (RTIinternalError& e)
-    {
-        if (e.reason().empty()) {
-            PRINT_DEBUG_MESSAGE(e);
+        if (messageType == NetworkMessage::CLOSE_CONNEXION) {
+            Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
+            my_auditServer.setLevel(9);
+            my_auditServer << "Socket " << int(link->returnSocket());
+            closeConnection(link, false);
+            link = NULL;
         }
         else {
-            Debug(D, pdExcept) << "Caught Exception: " << e.name() << ", " << e.reason() << std::endl;
-        }
-        CPY_NOT_NULL(e);
-        response->setException(Exception::Type::RTIinternalError);
-    }
+            auto responses = my_processor.processEvent({link, std::move(msg)});
 
-    catch (SecurityError& e)
-    {
-        std::cout << std::endl << "Security Error : " << e.reason() << std::endl;
-        CPY_NOT_NULL(e);
-        response->setException(Exception::Type::SecurityError);
+            for (auto& response : responses) {
+                // send message
+                //             std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
+                response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
+            }
+        }
+
+        my_auditServer.endLine(static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), " - OK");
+
+#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
+        auto end = std::chrono::high_resolution_clock::now();
+
+        the_timings[std::make_pair(messageType, msg->getMessageName())].push_back(end - start);
+#endif
+
+        Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
+        return link;
     }
 
     // Non RTI specific exception, Client connection problem(internal)
-    catch (NetworkError& e)
-    {
-        exceptionReason = " - NetworkError";
-        my_auditServer.endLine(static_cast<unsigned short>(response->getException()), exceptionReason);
+    catch (NetworkError& e) {
+        my_auditServer.endLine(static_cast<unsigned short>(e.type()), " - NetworkError");
         throw;
     }
 
     // Default Handler
-    catch (Exception& e)
-    {
-        Debug(D, pdExcept) << "Unknown Exception: " << e.name() << std::endl;
-        CPY_NOT_NULL(e);
-        response->setException(Exception::Type::RTIinternalError);
-    }
+    catch (Exception& e) {
+        Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
 
-    // buffer may contain an exception reason. If not, set it to OK
-    // or Exception
-    if (exceptionReason.empty()) {
-        if (response->getException() == Exception::Type::NO_EXCEPTION) {
-            exceptionReason = " - OK";
+        // Server Answer(only if an exception is raised)
+        auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(messageType));
+        response->setFederate(federate);
+        response->setException(e.type());
+
+        my_auditServer.endLine(static_cast<unsigned short>(response->getException()), e.reason() + " - Exception");
+
+        if (link) {
+            Debug(G, pdGendoc) << "            processIncomingMessage ===> send exception back to RTIA" << std::endl;
+            response->send(link, my_NM_msgBufSend);
+            Debug(D, pdExcept) << "RTIG caught exception " << static_cast<long>(e.type())
+                               << " and sent it back to federate " << federate << std::endl;
         }
-        else {
-            exceptionReason = " - Exception";
-        }
-    }
-
-    my_auditServer.endLine(static_cast<unsigned short>(response->getException()), exceptionReason);
-    if (link == nullptr) {
-        return link;
-    }
-
-    /* FIXME ***/
-    if (response->getException() != Exception::Type::NO_EXCEPTION) {
-        Debug(G, pdGendoc) << "            processIncomingMessage ===> write on exception to RTIA" << std::endl;
-        response->send(link, my_NM_msgBufSend);
-        Debug(D, pdExcept) << "RTIG catched exception " << static_cast<long>(response->getException())
-                           << " and sent it back to federate " << response->getFederate() << std::endl;
-    }
 
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-    auto end = std::chrono::high_resolution_clock::now();
+        auto end = std::chrono::high_resolution_clock::now();
 
-    the_timings[std::make_pair(msg->getMessageType(), msg->getMessageName())].push_back(end - start);
+        the_timings[std::make_pair(messageType, msg->getMessageName())].push_back(end - start);
 #endif
 
-    Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
-    return link;
+        Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
+        return link;
+    }
 }
 
 void RTIG::openConnection()

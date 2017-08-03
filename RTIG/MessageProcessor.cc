@@ -39,7 +39,7 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
-//std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
+//     std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
 
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
@@ -117,7 +117,7 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
     }
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     my_auditServer.setLevel(9);
@@ -194,7 +194,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     my_auditServer.setLevel(9);
@@ -283,7 +283,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     auto federation = request.message()->getFederation();
@@ -314,7 +314,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Fed
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     my_auditServer.setLevel(9);
@@ -370,7 +370,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Fe
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
@@ -408,7 +408,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch> request)
+MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
@@ -446,7 +446,7 @@ MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Swi
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
@@ -483,7 +483,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
@@ -519,7 +519,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "SetTimeRegulating for federate " << request.message()->getFederate()
@@ -563,7 +563,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_R
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "SetTimeConstrained for federate " << request.message()->getFederate() << std::endl;
@@ -609,7 +609,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null> request, bool anonymous)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, bool anonymous)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdDebug) << "Message Null" << std::endl;
@@ -630,7 +630,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdDebug) << "Message Null Prime" << std::endl;
@@ -657,7 +657,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point> request)
+MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation() << ": registerFedSyncPoint from federate "
@@ -725,7 +725,7 @@ MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Po
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
@@ -742,7 +742,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchroniz
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Request federation save from federate " << request.message()->getFederate() << std::endl;
@@ -771,7 +771,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " begun save" << std::endl;
@@ -792,7 +792,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
@@ -812,7 +812,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
@@ -832,7 +832,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " request a restoration" << std::endl;
@@ -851,7 +851,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete/not complete"
@@ -873,7 +873,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete/not complete"
@@ -895,7 +895,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "publishObjectClass" << std::endl;
@@ -923,7 +923,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unpublishObjectClass" << std::endl;
@@ -951,7 +951,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "subscribeObjectClass" << std::endl;
@@ -982,7 +982,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unsubscribeObjectClass" << std::endl;
@@ -1013,7 +1013,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "publishInteractionClass" << std::endl;
@@ -1035,7 +1035,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_In
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unpublishInteractionClass" << std::endl;
@@ -1057,7 +1057,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "subscribeInteractionClass" << std::endl;
@@ -1079,7 +1079,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unsubscribeInteractionClass" << std::endl;
@@ -1101,7 +1101,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "reserveObjectInstanceName" << std::endl;
@@ -1118,7 +1118,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Ob
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_Object> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "registerObject" << std::endl;
@@ -1152,7 +1152,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_O
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdDebug) << "UpdateAttributeValue" << std::endl;
@@ -1212,7 +1212,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "send interaction" << std::endl;
@@ -1263,7 +1263,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Inter
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Object> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "DeleteObject" << std::endl;
@@ -1301,7 +1301,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Obj
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
@@ -1329,7 +1329,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attr
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture> request)
+MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
@@ -1358,7 +1358,7 @@ MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divesti
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available> request)
+MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
@@ -1386,7 +1386,7 @@ MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Ava
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture> request)
+MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
@@ -1413,7 +1413,7 @@ MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Dive
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
@@ -1443,7 +1443,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
 }
 
 MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture> request)
+MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
@@ -1470,7 +1470,7 @@ MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
@@ -1505,7 +1505,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribu
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
@@ -1539,7 +1539,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
@@ -1565,7 +1565,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Att
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "createRegion" << std::endl;
@@ -1588,7 +1588,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "modifyRegion" << std::endl;
@@ -1609,7 +1609,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "deleteRegion" << std::endl;
@@ -1633,7 +1633,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "associateRegionForUpdates" << std::endl;
@@ -1659,7 +1659,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associ
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unassociateRegionForUpdates" << std::endl;
@@ -1683,7 +1683,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unasso
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << std::endl;
@@ -1709,7 +1709,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << std::endl;
@@ -1732,7 +1732,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "subscribeInteraction (DDM)" << std::endl;
@@ -1757,7 +1757,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << std::endl;
@@ -1782,7 +1782,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "registerObjectWithRegion" << std::endl;
@@ -1814,7 +1814,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Regist
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
@@ -1857,7 +1857,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update> request)
+MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;

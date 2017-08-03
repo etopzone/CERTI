@@ -77,15 +77,6 @@ private:
 
     void createSocketServers();
 
-    /** Choose the right processing module to call.
-         *  
-         * This module chooses the right processing module to call.
-         * This process is done by examinating the message type.
-         * 
-         * @return the socket, because it may have been closed & deleted in the meantime
-         */
-    Socket* chooseProcessingMethod(Socket*, std::unique_ptr<NetworkMessage>);
-
     /** Process incoming messages.
          *
          * This module works as follows:
