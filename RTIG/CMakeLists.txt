@@ -32,8 +32,11 @@ set(rtig_SRCS
   Federation.cc Federation.hh
   FederationsList.cc FederationsList.hh
   main.cc
+  
+  MessageEvent.hh
+  MessageProcessor.cc MessageProcessor.hh
+  
   RTIG.cc RTIG.hh
-  RTIG_processing.cc
   ${rtig_SRCS_generated}
   )
 

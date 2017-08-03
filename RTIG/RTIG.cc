@@ -83,6 +83,7 @@ RTIG::RTIG()
     , my_socketServer(&my_tcpSocketServer, &my_udpSocketServer)
     , my_auditServer(RTIG_AUDIT_FILENAME)
     , my_federations(my_socketServer, my_auditServer, my_verboseLevel)
+    , my_processor{my_auditServer, my_socketServer, my_federationHandles, my_federations}
 {
     my_NM_msgBufSend.reset();
     my_NM_msgBufReceive.reset();
@@ -263,335 +264,32 @@ void RTIG::createSocketServers()
     }
 }
 
-Socket* RTIG::chooseProcessingMethod(Socket* link, NetworkMessage* msg)
+Socket* RTIG::chooseProcessingMethod(Socket* link, std::unique_ptr<NetworkMessage> msg)
 {
     Debug(G, pdGendoc) << "enter RTIG::chooseProcessingMethod type (" << msg->getMessageName() << ")" << std::endl;
 
     // This may throw a security error.
     if (msg->getMessageType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
-        my_socketServer.checkMessage(link->returnSocket(), msg);
+        my_socketServer.checkMessage(link->returnSocket(), msg.get());
     }
-
-    switch (msg->getMessageType()) {
-    case NetworkMessage::MESSAGE_NULL:
-        Debug(D, pdDebug) << "Message Null" << std::endl;
-        my_auditServer.setLevel(0);
-        processMessageNull(msg, false);
-        break;
-
-    case NetworkMessage::MESSAGE_NULL_PRIME:
-        Debug(D, pdDebug) << "Message Null" << std::endl;
-        my_auditServer.setLevel(0);
-        processMessageNullPrime(static_cast<NM_Message_Null_Prime*>(msg));
-        break;
-
-    case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
-        Debug(D, pdDebug) << "UpdateAttributeValue" << std::endl;
-        my_auditServer.setLevel(1);
-        processUpdateAttributeValues(link, static_cast<NM_Update_Attribute_Values*>(msg));
-        break;
-
-    case NetworkMessage::SEND_INTERACTION:
-        Debug(D, pdTrace) << "send interaction" << std::endl;
-        my_auditServer.setLevel(2);
-        processSendInteraction(link, static_cast<NM_Send_Interaction*>(msg));
-        break;
-
-    case NetworkMessage::CLOSE_CONNEXION:
+    
+    if (msg->getMessageType() == NetworkMessage::CLOSE_CONNEXION) {
         Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
         my_auditServer.setLevel(9);
         my_auditServer << "Socket " << int(link->returnSocket());
         closeConnection(link, false);
         link = NULL;
-        break;
-
-    case NetworkMessage::CREATE_FEDERATION_EXECUTION:
-        my_auditServer.setLevel(9);
-        processCreateFederation(link, static_cast<NM_Create_Federation_Execution*>(msg));
-        break;
-
-    case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
-        my_auditServer.setLevel(9);
-        processDestroyFederation(link, static_cast<NM_Destroy_Federation_Execution*>(msg));
-        break;
-
-    case NetworkMessage::JOIN_FEDERATION_EXECUTION:
-        my_auditServer.setLevel(9);
-        processJoinFederation(link, static_cast<NM_Join_Federation_Execution*>(msg));
-        break;
-
-    case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
-        Debug(D, pdTrace) << "Federate (" << msg->getFederate() << ") leaves federation (" << msg->getFederation()
-                          << ")" << std::endl;
-        my_auditServer.setLevel(9);
-        processResignFederation(link, msg->getFederation(), msg->getFederate());
-        break;
-
-    case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        Debug(D, pdTrace) << "Federation " << msg->getFederation() << ": registerFedSyncPoint from federate "
-                          << msg->getFederate() << std::endl;
-        my_auditServer.setLevel(8);
-        processRegisterSynchronization(link, static_cast<NM_Register_Federation_Synchronization_Point*>(msg));
-        break;
-
-    case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
-        Debug(D, pdTrace) << "Federation " << msg->getFederation() << ": synchronizationPointAchieved from federate "
-                          << msg->getFederate() << std::endl;
-        my_auditServer.setLevel(8);
-        processSynchronizationAchieved(link, msg);
-        break;
-
-    case NetworkMessage::REQUEST_FEDERATION_SAVE:
-        Debug(D, pdTrace) << "Request federation save from federate " << msg->getFederate() << std::endl;
-        my_auditServer.setLevel(8);
-        processRequestFederationSave(link, msg);
-        break;
-
-    case NetworkMessage::FEDERATE_SAVE_BEGUN:
-        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " begun save" << std::endl;
-        my_auditServer.setLevel(8);
-        processFederateSaveBegun(link, msg);
-        break;
-
-    case NetworkMessage::FEDERATE_SAVE_COMPLETE:
-    case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
-        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " save complete/not complete" << std::endl;
-        my_auditServer.setLevel(8);
-        processFederateSaveStatus(link, msg);
-        break;
-
-    case NetworkMessage::REQUEST_FEDERATION_RESTORE:
-        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " request a restoration" << std::endl;
-        my_auditServer.setLevel(8);
-        processRequestFederationRestore(link, msg);
-        break;
-
-    case NetworkMessage::FEDERATE_RESTORE_COMPLETE:
-    case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
-        Debug(D, pdTrace) << "Federate " << msg->getFederate() << " restore complete/not complete" << std::endl;
-        my_auditServer.setLevel(8);
-        processFederateRestoreStatus(link, msg);
-        break;
-
-    case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
-        my_auditServer.setLevel(6);
-        processRequestObjectAttributeValueUpdate(link, static_cast<NM_Request_Object_Attribute_Value_Update*>(msg));
-        break;
-
-    case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-        Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;
-        my_auditServer.setLevel(6);
-        processRequestClassAttributeValueUpdate(link, static_cast<NM_Request_Class_Attribute_Value_Update*>(msg));
-        break;
-
-    case NetworkMessage::SET_TIME_REGULATING:
-        Debug(D, pdTrace) << "SetTimeRegulating for federate " << msg->getFederate()
-                          << ", date:" << msg->getDate().getTime() << std::endl;
-        my_auditServer.setLevel(8);
-        processSetTimeRegulating(link, static_cast<NM_Set_Time_Regulating*>(msg));
-        break;
-
-    case NetworkMessage::SET_TIME_CONSTRAINED:
-        Debug(D, pdTrace) << "SetTimeConstrained for federate " << msg->getFederate() << std::endl;
-        my_auditServer.setLevel(8);
-
-        processSetTimeConstrained(link, static_cast<NM_Set_Time_Constrained*>(msg));
-        break;
-
-    case NetworkMessage::PUBLISH_OBJECT_CLASS:
-    case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
-        Debug(D, pdTrace) << "un/publishObjectClass" << std::endl;
-        my_auditServer.setLevel(7);
-        /* we cast to Publish because Unpublish inherits from Publish */
-        processPublishObjectClass(link, static_cast<NM_Publish_Object_Class*>(msg));
-        break;
-
-    case NetworkMessage::PUBLISH_INTERACTION_CLASS:
-    case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
-        Debug(D, pdTrace) << "un/publishInteractionClass" << std::endl;
-        my_auditServer.setLevel(7);
-        processPublishInteractionClass(link, static_cast<NM_Publish_Interaction_Class*>(msg));
-        break;
-
-    case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
-    case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
-        Debug(D, pdTrace) << "un/subscribeObjectClass" << std::endl;
-        my_auditServer.setLevel(7);
-        processSubscribeObjectClass(link, static_cast<NM_Subscribe_Object_Class*>(msg));
-        break;
-
-    case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
-    case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
-        Debug(D, pdTrace) << "un/subscribeInteractionClass" << std::endl;
-        my_auditServer.setLevel(7);
-        processSubscribeInteractionClass(link, static_cast<NM_Subscribe_Interaction_Class*>(msg));
-        break;
-
-    case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
-        my_auditServer.setLevel(6);
-        processSetClassRelevanceAdvisorySwitch(link, static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg));
-        break;
-
-    case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
-        my_auditServer.setLevel(6);
-        processSetInteractionRelevanceAdvisorySwitch(link,
-                                                     static_cast<NM_Set_Interaction_Relevance_Advisory_Switch*>(msg));
-        break;
-
-    case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
-        my_auditServer.setLevel(6);
-        processSetAttributeRelevanceAdvisorySwitch(link, static_cast<NM_Set_Attribute_Relevance_Advisory_Switch*>(msg));
-        break;
-
-    case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
-        my_auditServer.setLevel(6);
-        processSetAttributeScopeAdvisorySwitch(link, static_cast<NM_Set_Attribute_Scope_Advisory_Switch*>(msg));
-        break;
-
-    case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME:
-        Debug(D, pdTrace) << "reserveObjectInstanceName" << std::endl;
-        my_auditServer.setLevel(6);
-        processReserveObjectInstanceName(link, static_cast<NM_Reserve_Object_Instance_Name*>(msg));
-        break;
-
-    case NetworkMessage::REGISTER_OBJECT:
-        Debug(D, pdTrace) << "registerObject" << std::endl;
-        my_auditServer.setLevel(6);
-        processRegisterObject(link, static_cast<NM_Register_Object*>(msg));
-        break;
-
-    case NetworkMessage::DELETE_OBJECT:
-        Debug(D, pdTrace) << "DeleteObject" << std::endl;
-        my_auditServer.setLevel(6);
-        processDeleteObject(link, static_cast<NM_Delete_Object*>(msg));
-        break;
-
-    case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
-        my_auditServer.setLevel(2);
-        processAttributeOwnedByFederate(link, static_cast<NM_Is_Attribute_Owned_By_Federate*>(msg));
-        break;
-
-    case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
-        Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
-        my_auditServer.setLevel(2);
-        processQueryAttributeOwnership(link, static_cast<NM_Query_Attribute_Ownership*>(msg));
-        break;
-
-    case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
-        my_auditServer.setLevel(6);
-        processNegotiatedOwnershipDivestiture(link, static_cast<NM_Negotiated_Attribute_Ownership_Divestiture*>(msg));
-        break;
-
-    case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
-        my_auditServer.setLevel(6);
-        processAcquisitionIfAvailable(link, static_cast<NM_Attribute_Ownership_Acquisition_If_Available*>(msg));
-        break;
-
-    case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
-        my_auditServer.setLevel(6);
-        processUnconditionalDivestiture(link, static_cast<NM_Unconditional_Attribute_Ownership_Divestiture*>(msg));
-        break;
-
-    case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
-        my_auditServer.setLevel(6);
-        processOwnershipAcquisition(link, static_cast<NM_Attribute_Ownership_Acquisition*>(msg));
-        break;
-
-    case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
-        my_auditServer.setLevel(6);
-        processCancelNegotiatedDivestiture(link,
-                                           static_cast<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture*>(msg));
-        break;
-
-    case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
-        my_auditServer.setLevel(6);
-        processReleaseResponse(link, static_cast<NM_Attribute_Ownership_Release_Response*>(msg));
-        break;
-
-    case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
-        my_auditServer.setLevel(6);
-        processCancelAcquisition(link, static_cast<NM_Cancel_Attribute_Ownership_Acquisition*>(msg));
-        break;
-
-    case NetworkMessage::DDM_CREATE_REGION:
-        Debug(D, pdTrace) << "createRegion" << std::endl;
-        my_auditServer.setLevel(6);
-        processCreateRegion(link, static_cast<NM_DDM_Create_Region*>(msg));
-        break;
-
-    case NetworkMessage::DDM_MODIFY_REGION:
-        Debug(D, pdTrace) << "modifyRegion" << std::endl;
-        my_auditServer.setLevel(6);
-        processModifyRegion(link, static_cast<NM_DDM_Modify_Region*>(msg));
-        break;
-
-    case NetworkMessage::DDM_DELETE_REGION:
-        Debug(D, pdTrace) << "deleteRegion" << std::endl;
-        my_auditServer.setLevel(6);
-        processDeleteRegion(link, static_cast<NM_DDM_Delete_Region*>(msg));
-        break;
-
-    case NetworkMessage::DDM_REGISTER_OBJECT:
-        Debug(D, pdTrace) << "registerObjectWithRegion" << std::endl;
-        my_auditServer.setLevel(6);
-        processRegisterObjectWithRegion(link, static_cast<NM_DDM_Register_Object*>(msg));
-        break;
-
-    case NetworkMessage::DDM_ASSOCIATE_REGION:
-        Debug(D, pdTrace) << "associateRegionForUpdates" << std::endl;
-        my_auditServer.setLevel(6);
-        processAssociateRegion(link, static_cast<NM_DDM_Associate_Region*>(msg));
-        break;
-
-    case NetworkMessage::DDM_UNASSOCIATE_REGION:
-        Debug(D, pdTrace) << "unassociateRegionForUpdates" << std::endl;
-        my_auditServer.setLevel(6);
-        processUnassociateRegion(link, static_cast<NM_DDM_Unassociate_Region*>(msg));
-        break;
-
-    case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
-        Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << std::endl;
-        my_auditServer.setLevel(6);
-        processSubscribeAttributesWR(link, static_cast<NM_DDM_Subscribe_Attributes*>(msg));
-        break;
-
-    case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
-        Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << std::endl;
-        my_auditServer.setLevel(6);
-        processUnsubscribeAttributesWR(link, static_cast<NM_DDM_Unsubscribe_Attributes*>(msg));
-        break;
-
-    case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
-        Debug(D, pdTrace) << "subscribeInteraction (DDM)" << std::endl;
-        my_auditServer.setLevel(6);
-        processSubscribeInteractionWR(link, static_cast<NM_DDM_Subscribe_Interaction*>(msg));
-        break;
-
-    case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
-        Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << std::endl;
-        my_auditServer.setLevel(6);
-        processUnsubscribeInteractionWR(link, static_cast<NM_DDM_Unsubscribe_Interaction*>(msg));
-        break;
-
-    default:
-        // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        Debug(D, pdError) << "processMessageRecu: unknown type " << msg->getMessageType() << std::endl;
-        throw RTIinternalError("Unknown Message Type");
     }
-    Debug(G, pdGendoc) << "exit  RTIG::chooseProcessingMethod" << std::endl;
+    else {
+        auto responses = my_processor.processEvent({link, std::move(msg)});
+        
+        for(auto& response: responses) {
+            // send message
+//             std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
+            response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
+        }
+    }
+
     return link; // It may have been set to NULL by closeConnection.
 }
 
@@ -641,7 +339,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     std::string exceptionReason;
 
     try {
-        link = chooseProcessingMethod(link, msg.get());
+        link = chooseProcessingMethod(link, std::move(msg));
     }
     BASIC_CATCH(ArrayIndexOutOfBounds)
     BASIC_CATCH(AttributeAlreadyOwned)

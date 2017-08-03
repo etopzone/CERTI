@@ -21,9 +21,13 @@ set(rtig_SRCS
     ${CERTI_SOURCE_DIR}/RTIG/FederationsList.hh
     ${CERTI_SOURCE_DIR}/RTIG/FederationsList.cc
     
+    ${CERTI_SOURCE_DIR}/RTIG/MessageEvent.hh
+    
+    ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.hh
+    ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.cc
+    
     ${CERTI_SOURCE_DIR}/RTIG/RTIG.hh
     ${CERTI_SOURCE_DIR}/RTIG/RTIG.cc
-    ${CERTI_SOURCE_DIR}/RTIG/RTIG_processing.cc
     )
 
 add_executable(TestRTIG
