@@ -21,105 +21,73 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "AuditLine.hh"
 
 #include "certi.hh"
 
 #include <string>
 
-using std::ofstream ;
-using std::endl ;
-
 namespace certi {
 
-// ----------------------------------------------------------------------------
-//! AuditLine constructor.
-/*! Initialise internal parameters to null.
- */
-AuditLine::AuditLine()
-    : federation(0), federate(0), type(0), level(0), status(0),
-      modified(false), date(0)
+AuditLine::AuditLine(const AuditLine::Type type,
+                     const AuditLine::Level level,
+                     const AuditLine::Status status,
+                     const std::string& reason)
+    : my_type(type), my_level(level), my_status(status), my_comment(reason)
 {
 }
 
-// ----------------------------------------------------------------------------
-//! AuditLine constructor.
-/*! 
- */
-AuditLine::AuditLine(unsigned short event_type, unsigned short event_level,
-		     unsigned short event_status, const std::string& reason)
-    : federation(0), federate(0),
-      type(event_type), level(event_level), status(event_status),
-      modified(false), date(0), comment(reason)
-{    
+void AuditLine::addComment(const std::string& str)
+{
+    my_comment += str;
+    my_is_modified = true;
 }
 
-// ----------------------------------------------------------------------------
-//! AuditLine destructor. Nothing to be done.
-AuditLine::~AuditLine()
+void AuditLine::end(const Status status, const std::string& reason)
 {
-}
-
-// ----------------------------------------------------------------------------
-//! addComment adds information to the comment parameter.
-void
-AuditLine::addComment(const std::string &str)
-{
-    comment += str ;
-    modified = true ;
-}
-
-// ----------------------------------------------------------------------------
-//! Finish the line with a status and reason
-void
-AuditLine::end(unsigned short event_status, const std::string& reason)
-{
-    status = event_status ;    
+    my_status = status;
     addComment(reason);
 }
 
-// ----------------------------------------------------------------------------
-//! Write a line to the audit file
-/*! Write module writes a line to the AuditFile stream. Line ends by a newline.
-  Formatting is as follows :
-  - date : date of line processing start,
-  - federation : federation involved,
-  - federate : federate involved by message,
-  - type : type of information,
-  - level : level assigned to information,
-  - status : status of processing,
-  - comment : detailed comment.
-*/
-void
-AuditLine::write(std::ofstream &audit_file)
+void AuditLine::write(std::ofstream& audit_file)
 {
-    audit_file << date << ' ' << federation << ' ' << federate << ' '
-               << type << ' ' << level << ' ' << status << ' '
-               << comment << endl ;
+    audit_file << my_date << '\t' << my_federation << '\t' << my_federate << '\t' << my_type.get() << '\t' << my_level.get()
+               << '\t' << static_cast<unsigned int>(my_status.get()) << '\t' << my_comment << std::endl;
 
     audit_file.flush();
 }
 
-void 
-AuditLine::setFederation(Handle h)
-{ 
-    federation = h ; 
-    modified = true ;
-}
-
-void 
-AuditLine::setFederate(FederateHandle h) 
-{ 
-    federate = h ; 
-    modified = true ;
-}
-
-void 
-AuditLine::setLevel(unsigned short l) 
+AuditLine::Level AuditLine::getLevel() const
 {
-    level = l ; 
-    modified = true ; 
+    return my_level;
+}
+
+void AuditLine::setLevel(const Level l)
+{
+    my_level = l;
+    my_is_modified = true;
+}
+
+AuditLine::Status AuditLine::getStatus() const
+{
+    return my_status;
+}
+
+bool AuditLine::started() const
+{
+    return my_is_modified;
+}
+
+void AuditLine::setFederation(Handle h)
+{
+    my_federation = h;
+    my_is_modified = true;
+}
+
+void AuditLine::setFederate(FederateHandle h)
+{
+    my_federate = h;
+    my_is_modified = true;
 }
 
 } // namespace certi

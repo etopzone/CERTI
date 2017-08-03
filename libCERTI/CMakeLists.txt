@@ -65,6 +65,7 @@ set(CERTI_SUPPORT_SRCS
     XmlParser2010.cc XmlParser2010.hh
     PrettyDebug.cc PrettyDebug.hh
     TreeNamedAndHandledSet.hh
+    StrongType.hh
 )
 
 set(CERTI_SOCKET_SRCS

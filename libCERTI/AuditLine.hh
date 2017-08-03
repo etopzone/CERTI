@@ -24,8 +24,10 @@
 #ifndef _CERTI_AUDIT_LINE_HH
 #define _CERTI_AUDIT_LINE_HH
 
-#include "certi.hh"
 #include "Exception.hh"
+#include "certi.hh"
+
+#include "StrongType.hh"
 
 #include <fstream>
 #include <string>
@@ -33,35 +35,58 @@
 namespace certi {
 
 class CERTI_EXPORT AuditLine {
-
 public:
-    AuditLine();
-    AuditLine(unsigned short, unsigned short, unsigned short, const std::string&);
-    ~AuditLine();
+    using Type = NamedType<unsigned short, struct AuditLineTypeParameter>;
+    using Level = NamedType<unsigned short, struct AuditLineLevelParameter>;
+    using Status = NamedType<Exception::Type, struct AuditLineStatusParameter>;
+    
+    AuditLine() = default;
+    AuditLine(const Type type,
+              const Level level,
+              const Status status,
+              const std::string& reason);
 
-    void write(std::ofstream &); //!< Write data to file
-    void addComment(const std::string &); //!< Add str at the end of comment.
-    void end(unsigned short event_status = static_cast<unsigned short>(Exception::Type::NO_EXCEPTION),
-	     const std::string& reason = "");
-    unsigned short getLevel() const { return level ; };
-    unsigned short getStatus() const { return status ; };
-    bool started() const { return modified ; };
+    /** Write a line to the audit file
+     * 
+     * Write module writes a line to the AuditFile stream. Line ends by a newline.
+     * Formatting is as follows :
+     * - date : date of line processing start,
+     * - federation : federation involved,
+     * - federate : federate involved by message,
+     * - type : type of information,
+     * - level : level assigned to information,
+     * - status : status of processing,
+     * - comment : detailed comment.
+     */
+    void write(std::ofstream&);
+    
+    /// Add str at the end of comment.
+    void addComment(const std::string& str); 
+    
+    void end(const Status status,
+             const std::string& reason = "");
+    
+    Level getLevel() const;
+    void setLevel(const Level l);
+    
+    Status getStatus() const;
+    
+    bool started() const;
+    
     void setFederation(Handle h);
     void setFederate(FederateHandle h);
-    void setLevel(unsigned short l);
 
 private:
-    Handle federation ;
-    FederateHandle federate ;
-    unsigned short type ;
-    unsigned short level ;
-    unsigned short status ;
-    bool modified ;
+    Handle my_federation {0};
+    FederateHandle my_federate {0};
+    Type my_type {0};
+    Level my_level {0};
+    Status my_status {Exception::Type::NO_EXCEPTION};
+    bool my_is_modified {false};
 
-    time_t date ; //!< date, automatically set at construction time.
-    std::string comment ; //!< comment internally managed.
+    time_t my_date {0}; //!< date, automatically set at construction time.
+    std::string my_comment {}; //!< comment internally managed.
 };
-
 }
 
 #endif // _CERTI_AUDIT_LINE_HH

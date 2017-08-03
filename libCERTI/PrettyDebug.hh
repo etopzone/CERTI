@@ -108,7 +108,7 @@ public:
     { if (inName) _federateName = inName; }
 
 #ifdef NDEBUG
-    void Out(pdDebugLevel level, const char *format, ...) {}
+    void Out(pdDebugLevel /*level*/, const char */*format*/, ...) {}
 #else
     void Out(pdDebugLevel level, const char *format, ...);
     void Mes(pdDebugLevel level, const char type, const short testMess, const char *context);
@@ -131,3 +131,4 @@ private:
 #endif // PRETTYDEBUG_HH
 
 // $Id: PrettyDebug.hh,v 4.11 2013/09/24 14:27:57 erk Exp $
+

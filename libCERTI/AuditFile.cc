@@ -21,202 +21,138 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "AuditFile.hh"
 
-#include <iostream>
 #include <cstdarg>
+#include <iostream>
 #include <sstream>
 
-using std::ofstream ;
-using std::ios ;
-using std::cerr ;
-using std::endl ;
+namespace {
+static constexpr auto AuditMinLevel = certi::AuditLine::Level{0};
+static constexpr auto AuditMaxLevel = certi::AuditLine::Level{10};
+
+static constexpr auto StartAudit = certi::AuditLine::Type{128};
+static constexpr auto StopAudit = certi::AuditLine::Type{129};
+
+static constexpr auto NormalStatus = certi::AuditLine::Status(certi::Exception::Type::NO_EXCEPTION);
+}
 
 namespace certi {
 
-// ----------------------------------------------------------------------------
-//! AuditFile constructor to write to file
-/*! Audit file is used to store information about actions taken by the RTIG
- */
-AuditFile::AuditFile(const std::string& logfile)
-    : auditFile(logfile.c_str(), ios::app)
+AuditFile::AuditFile(const std::string& log_file_name) : my_audit_file{log_file_name, std::ios::app}
 {
-    if (!auditFile.is_open()) {
-        cerr << "Could not open Audit file � " << logfile 
-	     << " �." << endl ;
+    if (!my_audit_file.is_open()) {
+        std::cerr << "Could not open Audit file: " << log_file_name << std::endl;
         throw RTIinternalError("Could not open Audit file.");
     }
 
+    // Put legend
+    my_audit_file << "date\t"
+                  << "fed-o\t"
+                  << "fed\t"
+                  << "type\t"
+                  << "level\t"
+                  << "status\t"
+                  << "comment" << std::endl;
+
     // Put a Start delimiter in the Audit File
-    putLine(AUDITEVENT_START_AUDIT, AUDIT_MAX_LEVEL, static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
+    putLine(StartAudit, AuditMaxLevel, NormalStatus, "");
 }
 
-// ----------------------------------------------------------------------------
-//! delete an AuditFile instance.
-/*! if a line is currently being processed, close it. Before closing the file,
-  adds a specific end line.
-*/
 AuditFile::~AuditFile()
 {
-    endLine(static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
-    putLine(AUDITEVENT_STOP_AUDIT, AUDIT_MAX_LEVEL, static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), "");
-    auditFile.close();
+    endLine(NormalStatus, "");
+    putLine(StopAudit, AuditMaxLevel, NormalStatus, "");
+    my_audit_file.close();
 }
 
-// ----------------------------------------------------------------------------
-//! Adds last information about current line and writes it to file.
-/*! Completes a line previously initialized by a newLine call. Appends the
-  current status and a comment. Then write line to file.
-*/
-void
-AuditFile::endLine(unsigned short event_status, const std::string& reason)
-{
-    if (currentLine.started())
-	currentLine.end(event_status, reason);
-
-    // Log depending on level and non-zero status.
-    if (currentLine.getLevel() >= AUDIT_CURRENT_LEVEL || 
-	currentLine.getStatus())
-	currentLine.write(auditFile);
-    
-    currentLine = AuditLine();
-}
-
-// ----------------------------------------------------------------------------
-//! addToLine add a comment to the current line.
-// void
-// AuditFile::addToLine(const string comment)
-// {
-//     currentLine.addComment(comment);
-// }
-
-// ----------------------------------------------------------------------------
-//! addToLinef adds a formatted comment to the current line.
-// void
-// AuditFile::addToLinef(const char *Format, ...)
-// {
-//     va_list argptr ; // Variable Argument list, see cstdarg
-
-//     if ((currentLine != NULL) && (Format != NULL)) {
-//         va_start(argptr, Format);
-//         vsprintf(va_Buffer, Format, argptr);
-//         va_end(argptr);
-
-//         currentLine->addComment(va_Buffer);
-//     }
-// }
-
-// ----------------------------------------------------------------------------
-//! creates a new line with parameters and writes this line to file.
-/*! Sometimes, you may want to directly put a line in the audit without
-  calling 3 methods : you can also use the following PutLine method in case
-  of an emergency. The line is written immediatly, even before any currently
-  builded audit line. The federation and federate numbers are set to(0, 0).
-*/
-void
-AuditFile::putLine(unsigned short event_type,
-                   unsigned short event_level,
-                   unsigned short event_status,
-                   const std::string& reason)
-{
-    if (event_level >= AUDIT_CURRENT_LEVEL) {
-	AuditLine line(event_type, event_level, event_status, reason);
-	line.write(auditFile);
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! start a new line and set with parameters.
-void
-AuditFile::startLine(Handle federation,
-                     FederateHandle federate,
-                     unsigned short event_type)
+void AuditFile::startLine(const Handle federation_handle,
+                          const FederateHandle federate_handle,
+                          const AuditLine::Type type)
 {
     // Check already valid opened line
-    if (currentLine.started()) {
-        cerr << "Audit Error : Current line already valid !" << endl ;
-        return ;
+    if (my_current_line.started()) {
+        std::cerr << "Audit Error : Current line already valid !" << std::endl;
+        return;
     }
 
-    currentLine = AuditLine(event_type, AUDIT_MIN_LEVEL, 0, "");
-    currentLine.setFederation(federation);
-    currentLine.setFederate(federate);
+    my_current_line = AuditLine(type, AuditMinLevel, NormalStatus, "");
+    my_current_line.setFederation(federation_handle);
+    my_current_line.setFederate(federate_handle);
 }
 
-// ----------------------------------------------------------------------------
-//! setLevel change the event level.
-/*! event level is used to determine if information has to be inserted into
-  file. Level is only used by endLine module.
-*/
-void
-AuditFile::setLevel(unsigned short eventLevel)
+void AuditFile::setLevel(const AuditLine::Level level)
 {
-    currentLine.setLevel(eventLevel);
+    my_current_line.setLevel(level);
 }
 
-// ----------------------------------------------------------------------------
-/** operator<<
- */
-AuditFile &
-AuditFile::operator<<(const char *s)
+void AuditFile::endLine(const AuditLine::Status status, const std::string& reason)
 {
-    if (s != 0)
-	currentLine.addComment(s);
-    return *this ;
+    if (my_current_line.started()) {
+        my_current_line.end(status, reason);
+    }
+
+    // Log depending on level and non-zero status.
+    if (my_current_line.getLevel().get() >= AUDIT_CURRENT_LEVEL
+        || my_current_line.getStatus().get() != Exception::Type::NO_EXCEPTION) {
+        my_current_line.write(my_audit_file);
+    }
+
+    my_current_line = AuditLine();
 }
 
-AuditFile &
-AuditFile::operator<<(const std::string& s)
+void AuditFile::putLine(const AuditLine::Type type,
+                        const AuditLine::Level level,
+                        const AuditLine::Status status,
+                        const std::string& reason)
 {
-    currentLine.addComment(s);
-    return *this ;
+    if (level.get() >= AUDIT_CURRENT_LEVEL) {
+        AuditLine line(type, level, status, reason);
+        line.write(my_audit_file);
+    }
 }
 
-AuditFile &
-AuditFile::operator<<(int n)
+AuditFile& AuditFile::operator<<(const char* s)
 {
-    std::ostringstream s ;
-    s << n ;
-    currentLine.addComment(s.str());
-    return *this ;
+    if (s) {
+        my_current_line.addComment(s);
+    }
+    return *this;
 }
 
-AuditFile &
-AuditFile::operator<<(long n)
+AuditFile& AuditFile::operator<<(const std::string& s)
 {
-    std::ostringstream s ;
-    s << n ;
-    currentLine.addComment(s.str());
-    return *this ;
+    my_current_line.addComment(s);
+    return *this;
 }
 
-AuditFile &
-AuditFile::operator<<(unsigned int n)
+AuditFile& AuditFile::operator<<(const int n)
 {
-    std::ostringstream s ;
-    s << n ;
-    currentLine.addComment(s.str());
-    return *this ;
+    my_current_line.addComment(std::to_string(n));
+    return *this;
 }
 
-AuditFile &
-AuditFile::operator<<(unsigned long n)
+AuditFile& AuditFile::operator<<(const long n)
 {
-    std::ostringstream s ;
-    s << n ;
-    currentLine.addComment(s.str());
-    return *this ;
+    my_current_line.addComment(std::to_string(n));
+    return *this;
 }
 
-AuditFile &
-AuditFile::operator<<(double n)
+AuditFile& AuditFile::operator<<(const unsigned int n)
 {
-    std::ostringstream s ;
-    s << n ;
-    currentLine.addComment(s.str());
-    return *this ;
+    my_current_line.addComment(std::to_string(n));
+    return *this;
 }
 
+AuditFile& AuditFile::operator<<(const unsigned long n)
+{
+    my_current_line.addComment(std::to_string(n));
+    return *this;
 }
 
+AuditFile& AuditFile::operator<<(const double n)
+{
+    my_current_line.addComment(std::to_string(n));
+    return *this;
+}
+}

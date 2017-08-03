@@ -1,3 +1,5 @@
+#include <PrettyDebug.hh>
+#include <PrettyDebug.hh>
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
@@ -32,7 +34,7 @@
 #include <string>
 
 #include "FedTimeD.hh"
-#include "PrettyDebug.hh"
+#include <PrettyDebug.hh>
 #include "Socket.hh"
 #include <NetworkMessage.hh>
 
@@ -45,7 +47,7 @@
 #include <chrono>
 #include <numeric>
 
-std::map<std::pair<int, std::string>, std::vector<std::chrono::nanoseconds>> the_timings;
+std::map<int, std::vector<std::chrono::nanoseconds>> the_timings;
 
 #endif
 
@@ -197,7 +199,7 @@ void RTIG::signalHandler(int sig)
     std::cerr << "//////////////////////" << std::endl;
 
     for (auto& kv : the_timings) {
-        std::cerr << kv.first.first << " - " << kv.first.second << std::endl;
+        std::cerr << kv.first << std::endl;
 
         auto& values = kv.second;
         std::sort(begin(values), end(values));
@@ -272,12 +274,12 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     }
 
     /* virtual constructor call */
-    auto msg = std::unique_ptr<NetworkMessage>(NM_Factory::receive(link));
+    auto msg = MessageEvent<NetworkMessage>(link, std::unique_ptr<NetworkMessage>(NM_Factory::receive(link)));
 
-    auto federate = msg->getFederate();
-    auto messageType = msg->getMessageType();
+    auto federate = msg.message()->getFederate();
+    auto messageType = msg.message()->getMessageType();
 
-    my_auditServer.startLine(msg->getFederation(), federate, messageType);
+    my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(messageType));
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -285,18 +287,18 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     try {
         // This may throw a security error.
         if (messageType != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
-            my_socketServer.checkMessage(link->returnSocket(), msg.get());
+            my_socketServer.checkMessage(link->returnSocket(), msg.message());
         }
 
         if (messageType == NetworkMessage::CLOSE_CONNEXION) {
             Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
-            my_auditServer.setLevel(9);
+            my_auditServer.setLevel(AuditLine::Level(9));
             my_auditServer << "Socket " << int(link->returnSocket());
             closeConnection(link, false);
             link = NULL;
         }
         else {
-            auto responses = my_processor.processEvent({link, std::move(msg)});
+            auto responses = my_processor.processEvent(std::move(msg));
 
             for (auto& response : responses) {
                 // send message
@@ -305,12 +307,12 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
             }
         }
 
-        my_auditServer.endLine(static_cast<unsigned short>(Exception::Type::NO_EXCEPTION), " - OK");
+        my_auditServer.endLine(AuditLine::Status(Exception::Type::NO_EXCEPTION), " - OK");
 
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
         auto end = std::chrono::high_resolution_clock::now();
 
-        the_timings[std::make_pair(messageType, msg->getMessageName())].push_back(end - start);
+        the_timings[messageType].push_back(end - start);
 #endif
 
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
@@ -319,7 +321,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e) {
-        my_auditServer.endLine(static_cast<unsigned short>(e.type()), " - NetworkError");
+        my_auditServer.endLine(AuditLine::Status(e.type()), " - NetworkError");
         throw;
     }
 
@@ -332,7 +334,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         response->setFederate(federate);
         response->setException(e.type());
 
-        my_auditServer.endLine(static_cast<unsigned short>(response->getException()), e.reason() + " - Exception");
+        my_auditServer.endLine(AuditLine::Status(response->getException()), e.reason() + " - Exception");
 
         if (link) {
             Debug(G, pdGendoc) << "            processIncomingMessage ===> send exception back to RTIA" << std::endl;
@@ -344,7 +346,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
         auto end = std::chrono::high_resolution_clock::now();
 
-        the_timings[std::make_pair(messageType, msg->getMessageName())].push_back(end - start);
+        the_timings[messageType].push_back(end - start);
 #endif
 
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
@@ -356,12 +358,11 @@ void RTIG::openConnection()
 {
     try {
         my_socketServer.open();
+        Debug(D, pdInit) << "Accepting new connection" << std::endl;
     }
     catch (RTIinternalError& e) {
         Debug(D, pdExcept) << "Error while accepting new connection: " << e.reason() << std::endl;
     }
-
-    Debug(D, pdInit) << "Accepting new connection" << std::endl;
 }
 
 void RTIG::closeConnection(Socket* link, bool emergency)

@@ -25,62 +25,85 @@
 #define _CERTI_AUDIT_FILE_HH
 
 #include "AuditLine.hh"
-#include "certi.hh"
 #include "Exception.hh"
+#include "certi.hh"
 
 #include <fstream>
 #include <string>
 
-#define AUDIT_MIN_LEVEL 0
-#define AUDIT_MAX_LEVEL 10
-
-#define AUDITEVENT_START_AUDIT 128
-#define AUDITEVENT_STOP_AUDIT 129
-#define AUDITEVENT_START_RTIG 130
-#define AUDITEVENT_STOP_RTIG 131
-
 namespace certi {
 
 // ----------------------------------------------------------------------------
-//! AuditFile class is used to store information into a file for later usage.
-/*! First call the startLine method to give background information about the
-  next current audit line. The line is then prepared internally, but not yet
-  written to the audit file. You can then set the Level of the line
-  separately. If the Level is below the fixed Audit level, nothing will be
-  stored or written for this event (except in the case of an exception). The
-  default level is the lowest one. Each call to addToLine or to addToLine
-  adds the parameter string to the current line. Then a last call to EndLine
-  will set the line's status (or Result) and flush the line into the Audit
-  file.
-*/
-class CERTI_EXPORT AuditFile
-{
+/** AuditFile class is used to store information into a file for later usage.
+ * 
+ * First call the startLine method to give background information about the
+ * next current audit line. The line is then prepared internally, but not yet
+ * written to the audit file. You can then set the Level of the line
+ * separately. If the Level is below the fixed Audit level, nothing will be
+ * stored or written for this event (except in the case of an exception). The
+ * default level is the lowest one. Each call to addToLine or to addToLine
+ * adds the parameter string to the current line. Then a last call to EndLine
+ * will set the line's status (or Result) and flush the line into the Audit
+ * file.
+ */
+class CERTI_EXPORT AuditFile {
 public:
-    AuditFile(const std::string&); // Open LogFileName for writing.
+    
+    /** AuditFile constructor to write to file
+     * 
+     * Audit file is used to store information about actions taken by the RTIG
+     */
+    AuditFile(const std::string& log_file_name); // Open LogFileName for writing.
+
+    /** delete an AuditFile instance.
+     * 
+     * if a line is currently being processed, close it. Before closing the file,
+     * adds a specific end line.
+     */
     ~AuditFile();
 
-    void startLine(Handle, FederateHandle, unsigned short EventType);
-    void setLevel(unsigned short EventLevel);
-    //    void addToLine(const std::string);
-    //    void addToLinef(const char *Format, ...);
-    void endLine(unsigned short, const std::string&);
-    void putLine(unsigned short, unsigned short, unsigned short, const std::string&);
+    /// start a new line and set with parameters.
+    void startLine(const Handle federation_handle, const FederateHandle federate_handle, const AuditLine::Type type);
 
-    AuditFile &operator<<(const char *);
-    AuditFile &operator<<(const std::string& s);
-    AuditFile &operator<<(int);
-    AuditFile &operator<<(unsigned int);
-    AuditFile &operator<<(long);
-    AuditFile &operator<<(unsigned long);
-    AuditFile &operator<<(double);
+    /** setLevel change the event level.
+     * 
+     * event level is used to determine if information has to be inserted into
+     * file. Level is only used by endLine module.
+     */
+    void setLevel(const AuditLine::Level event_level);
+
+    /** Adds last information about current line and writes it to file.
+     * 
+     * Completes a line previously initialized by a newLine call. Appends the
+     * current status and a comment. Then write line to file.
+     */
+    void endLine(const AuditLine::Status status, const std::string& reason);
+
+    /** creates a new line with parameters and writes this line to file.
+     * 
+     * Sometimes, you may want to directly put a line in the audit without
+     * calling 3 methods : you can also use the following PutLine method in case
+     * of an emergency. The line is written immediatly, even before any currently
+     * builded audit line. The federation and federate numbers are set to(0, 0).
+     */
+    void putLine(const AuditLine::Type type,
+                 const AuditLine::Level level,
+                 const AuditLine::Status status,
+                 const std::string& reason);
+
+    AuditFile& operator<<(const char*);
+    AuditFile& operator<<(const std::string& s);
+    AuditFile& operator<<(const int);
+    AuditFile& operator<<(const unsigned int);
+    AuditFile& operator<<(const long);
+    AuditFile& operator<<(const unsigned long);
+    AuditFile& operator<<(const double);
 
 protected:
-    std::ofstream auditFile ; //!< Stream pointer to output file.
-    AuditLine currentLine ; //!< Line currently being processed.
-    //char va_Buffer[1024] ; //!< Static buffer for va_printf operations.
+    std::ofstream my_audit_file; /// Stream pointer to output file.
+    AuditLine my_current_line; /// Line currently being processed.
 };
 
 } // namespace certi
 
 #endif // _CERTI_AUDIT_FILE_HH
-
