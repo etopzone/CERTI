@@ -109,8 +109,8 @@ private:
     void closeConnection(Socket*, bool emergency);
 
 private:
-    int inferTcpPort() const;
-    int inferUdpPort() const;
+    static int inferTcpPort();
+    static int inferUdpPort();
 
     int my_tcpPort;
     int my_udpPort;

@@ -21,7 +21,6 @@
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
-// #include <config.h>
 
 #include <algorithm>
 #include <cerrno>
@@ -31,9 +30,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
-// #include <sys/select.h>
 
-// #include "NM_Classes.hh"
 #include "FedTimeD.hh"
 #include "PrettyDebug.hh"
 #include "Socket.hh"
@@ -41,13 +38,7 @@
 
 #ifdef _WIN32
 #include <signal.h>
-// #else
-// #include <unistd.h>
 #endif
-
-// using std::cout;
-// using std::endl;
-// using std::cerr;
 
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
 
@@ -107,15 +98,16 @@ void RTIG::execute() throw(NetworkError)
     }
     terminate = false;
 
-    int result;
     fd_set fd;
-    Socket* link;
+    Socket* link{nullptr};
+    int result{0};
+    
     while (!terminate) {
-// Initialize fd_set structure with all opened sockets.
 #if _WIN32
-
-        result = 0; // Wait for an incoming message.
+        result = 0;
+        
         while (!result) {
+            // Initialize fd_set structure with all opened sockets.
             FD_ZERO(&fd);
             FD_SET(my_tcpSocketServer.returnSocket(), &fd);
 
@@ -139,6 +131,7 @@ void RTIG::execute() throw(NetworkError)
                 break;
             }
         }
+        
         if (terminate) {
             break;
         }
@@ -153,7 +146,7 @@ void RTIG::execute() throw(NetworkError)
         int fd_max = my_socketServer.addToFDSet(&fd);
         fd_max = std::max(my_tcpSocketServer.returnSocket(), fd_max);
 
-        result = 0; // Wait for an incoming message.
+        // Wait for an incoming message.
         result = select(fd_max + 1, &fd, nullptr, nullptr, nullptr);
 
         if ((result == -1) && (errno == EINTR)) {
@@ -161,8 +154,9 @@ void RTIG::execute() throw(NetworkError)
         }
 #endif
 
-        // Is it a message from an already opened connection?
         link = my_socketServer.getActiveSocket(&fd);
+
+        // Is it a message from an already opened connection?
         if (link) {
             Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
 
@@ -443,7 +437,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     {
         exceptionReason = " - NetworkError";
         my_auditServer.endLine(static_cast<unsigned short>(response->getException()), exceptionReason);
-        throw e;
+        throw;
     }
 
     // Default Handler
@@ -522,7 +516,7 @@ void RTIG::closeConnection(Socket* link, bool emergency)
     Debug(G, pdGendoc) << "exit  RTIG::closeConnection" << std::endl;
 }
 
-int RTIG::inferTcpPort() const
+int RTIG::inferTcpPort()
 {
     auto tcp_port_s = getenv(tcpPortEnvironmentVariable);
     if (tcp_port_s) {
@@ -533,7 +527,7 @@ int RTIG::inferTcpPort() const
     }
 }
 
-int RTIG::inferUdpPort() const
+int RTIG::inferUdpPort()
 {
     auto udp_port_s = getenv(udpPortEnvironmentVariable);
     if (udp_port_s) {

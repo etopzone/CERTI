@@ -795,22 +795,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete/not complete" << std::endl;
+    Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
     my_auditServer.setLevel(8);
     {
         Debug(G, pdGendoc) << "enter RTIG::processFederateSaveStatus" << endl;
-        if (request.message()->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE) {
             Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE COMPLETE SERVICE **" << endl;
-        }
-        else {
-            Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **" << endl;
-        }
 
         my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
-        bool status = request.message()->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE;
         my_federations.searchFederation(request.message()->getFederation())
-            .federateSaveStatus(request.message()->getFederate(), status);
+            .federateSaveStatus(request.message()->getFederate(), true);
 
         Debug(G, pdGendoc) << "exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **" << endl;
         Debug(G, pdGendoc) << "exit  RTIG::processFederateSaveStatus" << endl;
@@ -821,22 +815,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete/not complete" << std::endl;
+    Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
     my_auditServer.setLevel(8);
     {
         Debug(G, pdGendoc) << "enter RTIG::processFederateSaveStatus" << endl;
-        if (request.message()->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE) {
-            Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE COMPLETE SERVICE **" << endl;
-        }
-        else {
             Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **" << endl;
-        }
 
         my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
-        bool status = request.message()->getMessageType() == NetworkMessage::FEDERATE_SAVE_COMPLETE;
         my_federations.searchFederation(request.message()->getFederation())
-            .federateSaveStatus(request.message()->getFederate(), status);
+            .federateSaveStatus(request.message()->getFederate(), false);
 
         Debug(G, pdGendoc) << "exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **" << endl;
         Debug(G, pdGendoc) << "exit  RTIG::processFederateSaveStatus" << endl;
