@@ -183,7 +183,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 	break ;
 	case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
 		PublishersList_t::iterator i ;
-		for (i = publishers.begin(); i != publishers.end(); i++) {
+		for (i = publishers.begin(); i != publishers.end(); ++i) {
 			ocblist->addFederate(*i, handle);
 		}
 	} break ;

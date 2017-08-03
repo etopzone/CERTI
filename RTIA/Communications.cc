@@ -307,7 +307,7 @@ void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** 
 bool Communications::searchMessage(NetworkMessage::Type type_msg, FederateHandle numeroFedere, NetworkMessage** msg)
 {
     list<NetworkMessage*>::iterator i;
-    for (i = waitingList.begin(); i != waitingList.end(); i++) {
+    for (i = waitingList.begin(); i != waitingList.end(); ++i) {
         D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
 
         if ((*i)->getMessageType() == type_msg) {

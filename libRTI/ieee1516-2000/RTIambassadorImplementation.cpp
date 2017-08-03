@@ -60,7 +60,7 @@ void RTI1516ambassador::assignPHVMAndExecuteService(const rti1516::ParameterHand
     req.setParametersSize(PHVM.size());
     req.setValuesSize(PHVM.size());
     uint32_t i = 0;
-    for (rti1516::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); it++, ++i) {
+    for (rti1516::ParameterHandleValueMap::const_iterator it = PHVM.begin(); it != PHVM.end(); ++it, ++i) {
         req.setParameters(rti1516::ParameterHandleFriend::toCertiHandle(it->first), i);
         certi::ParameterValue_t paramValue;
         paramValue.resize(it->second.size());
@@ -76,7 +76,7 @@ void RTI1516ambassador::assignAHVMAndExecuteService(const rti1516::AttributeHand
     req.setAttributesSize(AHVM.size());
     req.setValuesSize(AHVM.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); it++, ++i) {
+    for (rti1516::AttributeHandleValueMap::const_iterator it = AHVM.begin(); it != AHVM.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(it->first), i);
         certi::AttributeValue_t attrValue;
         attrValue.resize(it->second.size());
@@ -91,7 +91,7 @@ void RTI1516ambassador::assignAHSAndExecuteService(const rti1516::AttributeHandl
 {
     req.setAttributesSize(AHS.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); ++it, ++i) {
         certi::AttributeHandle certiHandle = rti1516::AttributeHandleFriend::toCertiHandle(*it);
         req.setAttributes(certiHandle, i);
     }
@@ -378,7 +378,7 @@ void RTI1516ambassador::registerFederationSynchronizationPoint(
     req.setFederateSetSize(syncSet.size());
 
     uint32_t i = 0;
-    for (rti1516::FederateHandleSet::const_iterator it = syncSet.begin(); it != syncSet.end(); it++, ++i) {
+    for (rti1516::FederateHandleSet::const_iterator it = syncSet.begin(); it != syncSet.end(); ++it, ++i) {
         req.setFederateSet(rti1516::FederateHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -581,7 +581,7 @@ void RTI1516ambassador::publishObjectClassAttributes(
 
     req.setAttributesSize(attributeList.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
     G.Out(pdGendoc, "      ====>executeService PUBLISH_OBJECT_CLASS");
@@ -672,7 +672,7 @@ void RTI1516ambassador::subscribeObjectClassAttributes(rti1516::ObjectClassHandl
 
     req.setAttributesSize(attributeList.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
     req.setActive(active);
@@ -1015,7 +1015,7 @@ void RTI1516ambassador::changeAttributeTransportationType(
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1106,7 +1106,7 @@ void RTI1516ambassador::unconditionalAttributeOwnershipDivestiture(
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1135,7 +1135,7 @@ void RTI1516ambassador::negotiatedAttributeOwnershipDivestiture(
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1185,7 +1185,7 @@ void RTI1516ambassador::attributeOwnershipAcquisition(
     req.setAttributesSize(desiredAttributes.size());
     uint32_t i = 0;
     for (rti1516::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end();
-         it++, ++i) {
+         ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1213,7 +1213,7 @@ void RTI1516ambassador::attributeOwnershipAcquisitionIfAvailable(
     req.setAttributesSize(desiredAttributes.size());
     uint32_t i = 0;
     for (rti1516::AttributeHandleSet::const_iterator it = desiredAttributes.begin(); it != desiredAttributes.end();
-         it++, ++i) {
+         ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1265,7 +1265,7 @@ void RTI1516ambassador::cancelNegotiatedAttributeOwnershipDivestiture(
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 
@@ -1290,7 +1290,7 @@ void RTI1516ambassador::cancelAttributeOwnershipAcquisition(
 
     req.setAttributesSize(theAttributes.size());
     uint32_t i = 0;
-    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); it++, ++i) {
+    for (rti1516::AttributeHandleSet::const_iterator it = theAttributes.begin(); it != theAttributes.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
 

@@ -82,7 +82,7 @@ LBTS::get(std::vector<FederateClock> &v) const
     // append clocks to v
     // note, the ClockSet::value_type and FederateClock differ in const-ness
     for(ClockSet::const_iterator pos = clocks.begin();
-        pos != clocks.end(); pos++)
+        pos != clocks.end(); ++pos)
         v.push_back(FederateClock(pos->first, pos->second));
 }
 

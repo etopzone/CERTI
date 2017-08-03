@@ -1282,7 +1282,7 @@ void Federation::publishObject(FederateHandle federate,
             tmp_publishers = i->second->getPublishers();
             for (ObjectClassAttribute::PublishersList_t::const_iterator j = tmp_publishers.begin();
                  j != tmp_publishers.end();
-                 j++) {
+                 ++j) {
                 // insert only non-duplicate entries ->
                 // pair<iterator, bool> set::insert(const TYPE& val);
                 publishers.insert(*j);
@@ -1293,7 +1293,7 @@ void Federation::publishObject(FederateHandle federate,
         // notify all publishers
         std::set<FederateHandle> federate_set;
         for (ObjectClassAttribute::PublishersList_t::const_iterator k = publishers.begin(); k != publishers.end();
-             k++) {
+             ++k) {
             if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
                 federate_set.insert(*k);
             }
@@ -1576,7 +1576,7 @@ void Federation::subscribeObject(FederateHandle federate,
             tmp_publishers = i->second->getPublishers();
             for (ObjectClassAttribute::PublishersList_t::const_iterator j = tmp_publishers.begin();
                  j != tmp_publishers.end();
-                 j++) {
+                 ++j) {
                 // insert only non-duplicate entries ->
                 // pair<iterator, bool> set::insert(const TYPE& val);
                 publishers.insert(*j);
@@ -1587,7 +1587,7 @@ void Federation::subscribeObject(FederateHandle federate,
         // notify all publishers
         std::set<FederateHandle> federate_set;
         for (ObjectClassAttribute::PublishersList_t::const_iterator k = publishers.begin(); k != publishers.end();
-             k++) {
+             ++k) {
             if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
                 federate_set.insert(*k);
             }

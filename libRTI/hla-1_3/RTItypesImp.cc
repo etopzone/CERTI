@@ -123,7 +123,7 @@ void AttributeHandleValuePairSetImp::add(RTI::Handle h, const char* str, RTI::UL
 
 void AttributeHandleValuePairSetImp::remove(RTI::Handle h) throw(RTI::ArrayIndexOutOfBounds)
 {
-    for (std::vector<AttributeHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); pos++) {
+    for (std::vector<AttributeHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); ++pos) {
         if (pos->first == h) {
             _set.erase(pos);
             return;
@@ -371,7 +371,7 @@ void ParameterHandleValuePairSetImp::add(RTI::Handle h, const char* str, RTI::UL
 
 void ParameterHandleValuePairSetImp::remove(RTI::Handle h) throw(RTI::ArrayIndexOutOfBounds)
 {
-    for (std::vector<ParameterHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); pos++) {
+    for (std::vector<ParameterHandleValuePair_t>::iterator pos = _set.begin(); pos != _set.end(); ++pos) {
         if (pos->first == h) {
             _set.erase(pos);
             return;

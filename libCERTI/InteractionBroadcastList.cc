@@ -102,7 +102,7 @@ void InteractionBroadcastList::clear()
 InteractionBroadcastLine* InteractionBroadcastList::getLineWithFederate(FederateHandle federate)
 {
     list<InteractionBroadcastLine*>::iterator i;
-    for (i = lines.begin(); i != lines.end(); i++) {
+    for (i = lines.begin(); i != lines.end(); ++i) {
         if ((*i)->federate == federate)
             return (*i);
     }
@@ -122,7 +122,7 @@ void InteractionBroadcastList::sendPendingMessage(SecurityServer* server)
     G.Out(pdGendoc, "enter InteractionBroadcastList::sendPendingMessage");
 
     list<InteractionBroadcastLine*>::iterator i;
-    for (i = lines.begin(); i != lines.end(); i++) {
+    for (i = lines.begin(); i != lines.end(); ++i) {
         // If federate is waiting for a message.
         if ((*i)->state == InteractionBroadcastLine::waiting) {
             // 1. Send message to federate.

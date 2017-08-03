@@ -64,7 +64,7 @@ void ObjectBroadcastLine::setState(const AttributeHandle attribute, const State 
 
 bool ObjectBroadcastLine::isWaitingAny(const AttributeHandle max_handle) const
 {
-    for (unsigned int attrIndex = 1; attrIndex <= max_handle; attrIndex++) {
+    for (unsigned int attrIndex = 1; attrIndex <= max_handle; ++attrIndex) {
         if (stateFor(attrIndex) == ObjectBroadcastLine::waiting) {
             return true;
         }

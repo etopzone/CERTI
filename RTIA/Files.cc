@@ -171,7 +171,7 @@ Queues::insertTsoMessage(NetworkMessage *msg)
     }
     else {
         list<NetworkMessage *>::iterator i ;
-        for (i = tsos.begin(); i != tsos.end(); i++) {
+        for (i = tsos.begin(); i != tsos.end(); ++i) {
             // stricly greater because we want to place new message behind
             // older ones with same logical time and thus keep receive order
             // in list.

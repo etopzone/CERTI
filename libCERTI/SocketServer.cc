@@ -39,7 +39,7 @@ int SocketServer::addToFDSet(fd_set* select_fdset)
     int fd_max = 0;
 
     list<SocketTuple*>::iterator i;
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         if ((*i)->ReliableLink != NULL) {
             int fd = (*i)->ReliableLink->returnSocket();
             FD_SET(fd, select_fdset);
@@ -95,7 +95,7 @@ void SocketServer::close(long socket,
     if (tuple->Federation == 0 && tuple->Federate != 0) {
         list<SocketTuple*>::iterator i;
         list<SocketTuple*>::iterator tmp;
-        for (i = begin(); i != end(); i++) {
+        for (i = begin(); i != end(); ++i) {
             if (((*i)->ReliableLink != NULL) && ((*i)->ReliableLink->returnSocket() == socket)) {
                 delete (*i);
                 i = erase(i); // i is dereferenced.
@@ -161,7 +161,7 @@ SocketTuple::~SocketTuple()
 Socket* SocketServer::getActiveSocket(fd_set* select_fdset) const
 {
     list<SocketTuple*>::const_iterator i;
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         if (((*i)->ReliableLink != NULL) && (FD_ISSET((*i)->ReliableLink->returnSocket(), select_fdset)))
             return (*i)->ReliableLink;
     }
@@ -197,7 +197,7 @@ SocketTuple* SocketServer::getWithReferences(Handle the_federation, FederateHand
     throw(FederateNotExecutionMember)
 {
     list<SocketTuple*>::const_iterator i;
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         if (((*i)->Federation == the_federation) && ((*i)->Federate == the_federate))
             return (*i);
     }
@@ -210,7 +210,7 @@ SocketTuple* SocketServer::getWithReferences(Handle the_federation, FederateHand
 SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const throw(RTIinternalError)
 {
     list<SocketTuple*>::const_iterator i;
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         if (((*i)->ReliableLink != NULL) && ((*i)->ReliableLink->returnSocket() == socket_descriptor))
             return (*i);
         if (((*i)->BestEffortLink != NULL) && ((*i)->BestEffortLink->returnSocket() == socket_descriptor))

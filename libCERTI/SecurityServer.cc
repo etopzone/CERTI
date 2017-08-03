@@ -154,7 +154,7 @@ SecurityServer::getLevelIDWithName(const std::string& theName)
     }
 
     list<SecurityLevel *>::const_iterator i = begin();
-    for (; i != end(); i++) {
+    for (; i != end(); ++i) {
         if ((*i)->Name == theName)
             return (*i)->LevelID ;
     }
@@ -162,7 +162,7 @@ SecurityServer::getLevelIDWithName(const std::string& theName)
     // Level not Found
     Debug(D, pdDebug) << "Level " << theName << " not found. Adding it to the list."
 	       << endl ;
-    LastLevelID ++ ;
+    ++LastLevelID;
     SecurityLevel *StoredLevel = new SecurityLevel(theName, LastLevelID);
     push_back(StoredLevel);
 

@@ -78,7 +78,7 @@ uint32_t AttributeHandleValuePairSet::size() const
 Handle AttributeHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k)
             return (*j)->_handle;
     }
@@ -90,7 +90,7 @@ Handle AttributeHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndex
 uint32_t AttributeHandleValuePairSet::getValueLength(uint32_t i) const throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k)
             return (*j)->_valueLength;
     }
@@ -103,7 +103,7 @@ void AttributeHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& val
     throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k) {
             value_length = (*j)->_valueLength;
             memcpy(buff, (*j)->_value, (*j)->_valueLength);
@@ -119,7 +119,7 @@ char* AttributeHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_l
     throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k) {
             value_length = (*j)->_valueLength;
             return (*j)->_value;
@@ -367,7 +367,7 @@ uint32_t ParameterHandleValuePairSet::size() const
 Handle ParameterHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k)
             return (*j)->_handle;
     }
@@ -379,7 +379,7 @@ Handle ParameterHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndex
 uint32_t ParameterHandleValuePairSet::getValueLength(uint32_t i) const throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k)
             return (*j)->_valueLength;
     }
@@ -392,7 +392,7 @@ void ParameterHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& val
     throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k) {
             value_length = (*j)->_valueLength;
             memcpy(buff, (*j)->_value, (*j)->_valueLength);
@@ -408,7 +408,7 @@ char* ParameterHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_l
     throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
-    for (uint32_t k = 0; j != _set.end(); j++, k++) {
+    for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
         if (i == k) {
             value_length = (*j)->_valueLength;
             return (*j)->_value;

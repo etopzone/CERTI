@@ -404,7 +404,6 @@ TEST(MessageBufferTest, Overload)
     cout << "    Now reset buffer and assume size is                   = " << u32 << endl;
     MsgBuf.reset();
     MsgBuf.assumeSize(u32);
-    vstdstr = "";
     vstdstr = MsgBuf.read_string();
     cout << "    (re)Read String is   " << vstdstr << endl;
 }
@@ -460,7 +459,7 @@ TEST(MessageBufferTest, BufferCopyToEmulateNetworkSend)
 TEST(MessageBufferTest, BigEndianHost)
 {
     EXPECT_TRUE(MessageBuffer::HostIsBigEndian());
-    EXPECT_FALSE(MessageBuffer::HostIsLittleEndian();
+    EXPECT_FALSE(MessageBuffer::HostIsLittleEndian());
 }
 #else
 TEST(MessageBufferTest, LittleEndianHost)

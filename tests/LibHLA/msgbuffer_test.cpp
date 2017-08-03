@@ -491,7 +491,7 @@ TEST(MsgBufferTest, BufferCopyToEmulateNetworkSend)
 TEST(MsgBufferTest, BigEndianHost)
 {
     EXPECT_TRUE(MB_HostIsBigEndian());
-    EXPECT_FALSE(MB_HostIsLittleEndian();
+    EXPECT_FALSE(MB_HostIsLittleEndian());
 }
 #else
 TEST(MsgBufferTest, LittleEndianHost)

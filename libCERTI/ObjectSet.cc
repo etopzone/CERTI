@@ -54,7 +54,7 @@ ObjectSet::~ObjectSet()
 {
     std::map<ObjectHandle, Object *>::iterator i ;
 
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         delete i->second ;
     }
     erase(begin(), end());
@@ -96,7 +96,7 @@ ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
+    for (i = begin(); i != end(); ++i) {
         if (i->second->getName() == the_name)
             return i->second->getHandle();
     }
@@ -142,7 +142,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
     }
 
     if (the_name.size() > 0) {
-        for (i = begin(); i != end(); i++) {
+        for (i = begin(); i != end(); ++i) {
             if (i->second->getName() == the_name)
                 throw ObjectAlreadyRegistered("Object name already defined.");
         }
@@ -199,7 +199,7 @@ ObjectSet::killFederate(FederateHandle the_federate)
 		else {
             // It is safe to run this multiple times
             (i->second)->killFederate(the_federate);
-			i++;
+			++i;
 		}
 	}
 } /* end of killFederate */
@@ -343,7 +343,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
     Object *object = getObject(the_object);
 
     ObjectAttribute * oa ;
-    for (int i = 0 ; i < the_size ; i++) {
+    for (int i = 0 ; i < the_size ; ++i) {
         oa = object->getAttribute(the_attributes[i]);
 
         // Does federate owns every attributes.
@@ -355,7 +355,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
     }
 
     if (server != NULL) {
-        for (int i = 0 ; i < the_size ; i++) {
+        for (int i = 0 ; i < the_size ; ++i) {
             oa = object->getAttribute(the_attributes[i]);
             oa->setDivesting(false);
         }
@@ -419,7 +419,7 @@ Object *
 ObjectSet::getObjectByName(const std::string &the_object_name) const
 {
 	std::map<ObjectHandle, Object *>::const_iterator i ;
-	for (i = begin(); i != end(); i++) {
+	for (i = begin(); i != end(); ++i) {
 		if (i->second != 0 && 
 			i->second->getName() == the_object_name) 
 		{
