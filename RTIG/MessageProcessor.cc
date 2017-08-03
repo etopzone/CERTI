@@ -898,12 +898,10 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/publishObjectClass" << std::endl;
+    Debug(D, pdTrace) << "publishObjectClass" << std::endl;
     my_auditServer.setLevel(7);
     /* we cast to Publish because Unpublish inherits from Publish */
     {
-        bool pub = (request.message()->getMessageType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
-
         my_auditServer << "Publish Object Class = " << request.message()->getObjectClass()
                        << ", # of att. = " << request.message()->getAttributesSize();
 
@@ -911,24 +909,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
             .publishObject(request.message()->getFederate(),
                            request.message()->getObjectClass(),
                            request.message()->getAttributes(),
-                           pub);
+                           true);
 
         Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                              << request.message()->getFederation() << " published object class "
                              << request.message()->getObjectClass() << endl;
 
-        if (pub) {
-            NM_Publish_Object_Class POC;
-            POC.setFederate(request.message()->getFederate());
-            POC.setObjectClass(request.message()->getObjectClass());
-            POC.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unpublish_Object_Class UOC;
-            UOC.setFederate(request.message()->getFederate());
-            UOC.setObjectClass(request.message()->getObjectClass());
-            UOC.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        NM_Publish_Object_Class POC;
+        POC.setFederate(request.message()->getFederate());
+        POC.setObjectClass(request.message()->getObjectClass());
+        POC.send(request.socket(), my_messageBuffer); // send answer to RTIA
     }
     return {};
 }
@@ -936,37 +926,27 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/publishObjectClass" << std::endl;
+    Debug(D, pdTrace) << "unpublishObjectClass" << std::endl;
     my_auditServer.setLevel(7);
     /* we cast to Publish because Unpublish inherits from Publish */
     {
-        bool pub = (request.message()->getMessageType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
-
-        my_auditServer << "Publish Object Class = " << request.message()->getObjectClass()
+        my_auditServer << "Unpublish Object Class = " << request.message()->getObjectClass()
                        << ", # of att. = " << request.message()->getAttributesSize();
 
         my_federations.searchFederation(request.message()->getFederation())
             .publishObject(request.message()->getFederate(),
                            request.message()->getObjectClass(),
                            request.message()->getAttributes(),
-                           pub);
+                           false);
 
         Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " published object class "
+                             << request.message()->getFederation() << " unpublished object class "
                              << request.message()->getObjectClass() << endl;
 
-        if (pub) {
-            NM_Publish_Object_Class POC;
-            POC.setFederate(request.message()->getFederate());
-            POC.setObjectClass(request.message()->getObjectClass());
-            POC.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unpublish_Object_Class UOC;
-            UOC.setFederate(request.message()->getFederate());
-            UOC.setObjectClass(request.message()->getObjectClass());
-            UOC.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        NM_Unpublish_Object_Class UOC;
+        UOC.setFederate(request.message()->getFederate());
+        UOC.setObjectClass(request.message()->getObjectClass());
+        UOC.send(request.socket(), my_messageBuffer); // send answer to RTIA
     }
     return {};
 }
@@ -974,38 +954,27 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/subscribeObjectClass" << std::endl;
+    Debug(D, pdTrace) << "subscribeObjectClass" << std::endl;
     my_auditServer.setLevel(7);
     {
         Debug(G, pdGendoc) << "enter RTIG::processSubscribeObjectClass" << endl;
         Debug(G, pdGendoc) << "BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
-
-        std::vector<AttributeHandle> emptyAttributeList;
-        bool sub = (request.message()->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
         my_auditServer << "Subscribe Object Class = " << request.message()->getObjectClass()
                        << ", # of att. = " << request.message()->getAttributesSize();
         my_federations.searchFederation(request.message()->getFederation())
             .subscribeObject(request.message()->getFederate(),
                              request.message()->getObjectClass(),
-                             sub ? request.message()->getAttributes() : emptyAttributeList);
+                             request.message()->getAttributes());
 
         Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                              << request.message()->getFederation() << " subscribed to object class "
                              << request.message()->getObjectClass() << endl;
 
-        if (sub) {
-            NM_Subscribe_Object_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setObjectClass(request.message()->getObjectClass());
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unsubscribe_Object_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setObjectClass(request.message()->getObjectClass());
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        NM_Subscribe_Object_Class rep;
+        rep.setFederate(request.message()->getFederate());
+        rep.setObjectClass(request.message()->getObjectClass());
+        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
 
         Debug(G, pdGendoc) << "END   **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
         Debug(G, pdGendoc) << "exit  RTIG::processSubscribeObjectClass" << endl;
@@ -1016,38 +985,27 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/subscribeObjectClass" << std::endl;
+    Debug(D, pdTrace) << "unsubscribeObjectClass" << std::endl;
     my_auditServer.setLevel(7);
     {
         Debug(G, pdGendoc) << "enter RTIG::processSubscribeObjectClass" << endl;
         Debug(G, pdGendoc) << "BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
 
-        std::vector<AttributeHandle> emptyAttributeList;
-        bool sub = (request.message()->getMessageType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
-
-        my_auditServer << "Subscribe Object Class = " << request.message()->getObjectClass()
+        my_auditServer << "Unubscribe Object Class = " << request.message()->getObjectClass()
                        << ", # of att. = " << request.message()->getAttributesSize();
         my_federations.searchFederation(request.message()->getFederation())
             .subscribeObject(request.message()->getFederate(),
                              request.message()->getObjectClass(),
-                             sub ? request.message()->getAttributes() : emptyAttributeList);
+                             {});
 
         Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                              << request.message()->getFederation() << " subscribed to object class "
                              << request.message()->getObjectClass() << endl;
 
-        if (sub) {
-            NM_Subscribe_Object_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setObjectClass(request.message()->getObjectClass());
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unsubscribe_Object_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setObjectClass(request.message()->getObjectClass());
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        NM_Unsubscribe_Object_Class rep;
+        rep.setFederate(request.message()->getFederate());
+        rep.setObjectClass(request.message()->getObjectClass());
+        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
 
         Debug(G, pdGendoc) << "END   **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
         Debug(G, pdGendoc) << "exit  RTIG::processSubscribeObjectClass" << endl;
@@ -1058,32 +1016,21 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/publishInteractionClass" << std::endl;
+    Debug(D, pdTrace) << "publishInteractionClass" << std::endl;
     my_auditServer.setLevel(7);
     {
-        bool pub = (request.message()->getMessageType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
-
         my_auditServer << "Publish Interaction Class = " << request.message()->getInteractionClass();
         my_federations.searchFederation(request.message()->getFederation())
-            .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), pub);
+            .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
         Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                             << request.message()->getFederation() << " publishes Interaction "
                             << request.message()->getInteractionClass() << endl;
 
-        if (pub) {
-            NM_Publish_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
+        NM_Publish_Interaction_Class rep;
+        rep.setFederate(request.message()->getFederate());
+        rep.setInteractionClass(request.message()->getInteractionClass());
 
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unpublish_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
-
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
     }
     return {};
 }
@@ -1091,32 +1038,21 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_In
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/publishInteractionClass" << std::endl;
+    Debug(D, pdTrace) << "unpublishInteractionClass" << std::endl;
     my_auditServer.setLevel(7);
     {
-        bool pub = (request.message()->getMessageType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
-
-        my_auditServer << "Publish Interaction Class = " << request.message()->getInteractionClass();
+        my_auditServer << "Unpublish Interaction Class = " << request.message()->getInteractionClass();
         my_federations.searchFederation(request.message()->getFederation())
-            .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), pub);
+            .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
         Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
-                            << request.message()->getFederation() << " publishes Interaction "
+                            << request.message()->getFederation() << " unpublishes Interaction "
                             << request.message()->getInteractionClass() << endl;
 
-        if (pub) {
-            NM_Publish_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
+        NM_Unpublish_Interaction_Class rep;
+        rep.setFederate(request.message()->getFederate());
+        rep.setInteractionClass(request.message()->getInteractionClass());
 
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unpublish_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
-
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
     }
     return {};
 }
@@ -1124,32 +1060,21 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/subscribeInteractionClass" << std::endl;
+    Debug(D, pdTrace) << "subscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(7);
     {
-        bool sub = (request.message()->getMessageType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
-
         my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
         my_federations.searchFederation(request.message()->getFederation())
-            .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), sub);
+            .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
         Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                             << request.message()->getFederation() << " subscribed to Interaction "
                             << request.message()->getInteractionClass() << endl;
 
-        if (sub) {
             NM_Subscribe_Interaction_Class rep;
             rep.setFederate(request.message()->getFederate());
             rep.setInteractionClass(request.message()->getInteractionClass());
 
             rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unsubscribe_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
-
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
     }
     return {};
 }
@@ -1157,32 +1082,21 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class> request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Debug(D, pdTrace) << "un/subscribeInteractionClass" << std::endl;
+    Debug(D, pdTrace) << "unsubscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(7);
     {
-        bool sub = (request.message()->getMessageType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
-
-        my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
+        my_auditServer << "Unsubscribe Interaction Class = " << request.message()->getInteractionClass();
         my_federations.searchFederation(request.message()->getFederation())
-            .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), sub);
+            .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
         Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
-                            << request.message()->getFederation() << " subscribed to Interaction "
+                            << request.message()->getFederation() << " unsubscribed to Interaction "
                             << request.message()->getInteractionClass() << endl;
 
-        if (sub) {
-            NM_Subscribe_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
+        NM_Unsubscribe_Interaction_Class rep;
+        rep.setFederate(request.message()->getFederate());
+        rep.setInteractionClass(request.message()->getInteractionClass());
 
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
-        else {
-            NM_Unsubscribe_Interaction_Class rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setInteractionClass(request.message()->getInteractionClass());
-
-            rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-        }
+        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
     }
     return {};
 }
