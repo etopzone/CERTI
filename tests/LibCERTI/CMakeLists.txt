@@ -20,6 +20,8 @@ add_executable(TestLibCERTI
                
                ../mocks/sockettcp_mock.h
                
+               auditline_test.cpp
+               
                networkmessage_test.cpp
                
                socketserver_test.cpp

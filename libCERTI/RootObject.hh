@@ -18,37 +18,32 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-//
-// $Id: RootObject.hh,v 3.39 2011/12/31 13:23:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
 #define LIBCERTI_ROOT_OBJECT
 
-// forward declaration
-namespace certi {
-   class Object;
-   class ObjectSet;
-   class ObjectAttribute;
-   class ObjectClass;
-   class ObjectClassSet;
-   class ObjectClassAttribute;
-   class Interaction;
-   class InteractionSet;
-   class RTIRegion;
-   class RoutingSpace;
-   class NM_Join_Federation_Execution;
-}  // namespace certi
-
-#include "certi.hh"
-#include "SecurityServer.hh"
-#include "HandleManager.hh"
-#include "RoutingSpace.hh"
-#include "NameReservation.hh"
-
 #include <vector>
 
+#include "HandleManager.hh"
+#include "NameReservation.hh"
+#include "RoutingSpace.hh"
+#include "SecurityServer.hh"
+#include "certi.hh"
+
 namespace certi {
+
+class Object;
+class ObjectSet;
+class ObjectAttribute;
+class ObjectClass;
+class ObjectClassSet;
+class ObjectClassAttribute;
+class Interaction;
+class InteractionSet;
+class RTIRegion;
+class RoutingSpace;
+class NM_Join_Federation_Execution;
 
 /**
  * The RootObject is literally the "root" object
@@ -61,17 +56,15 @@ namespace certi {
  * It contains the object instances which has been registered
  * by all federate (if on RTIG) or by local federate (if on RTIA).
  */
-class CERTI_EXPORT RootObject
-{
+class CERTI_EXPORT RootObject {
 public:
-
-	/**
+    /**
 	 * RootObject constructor.
 	 * @param[in] security_server the SocketServer proxy which is used to
 	 *            retrieve the socket link between RTIG and RTIA.
 	 *            This may be NULL on the RTIA.
 	 */
-    RootObject(SecurityServer *security_server);
+    RootObject(SecurityServer* security_server);
 
     /**
      * RootObject destructor.
@@ -79,9 +72,10 @@ public:
      */
     ~RootObject();
 
+    //! Print the Root Object tree to the standard output.
     void display() const;
 
-	/**
+    /**
 	 * Return the security LevelID corresponding to a security level name.
      * @param[in] levelName the security level name
      * @return the LevelID of the level whose name is levelName if
@@ -90,54 +84,62 @@ public:
 	 */
     SecurityLevelID getSecurityLevelID(const std::string& levelName);
 
-    void registerFederate(const std::string& the_federate,
-                          SecurityLevelID the_level_id);
+    void registerFederate(const std::string& the_federate, SecurityLevelID the_level_id);
 
     // Data Distribution Management
-    void addRoutingSpace(const RoutingSpace &);
-    RoutingSpace &getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
-    SpaceHandle getRoutingSpaceHandle(const std::string&) throw (NameNotFound);
-    const std::string& getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
-    void addRegion(RTIRegion *);
-    RegionHandle createRegion(SpaceHandle, unsigned long) throw (SpaceNotDefined);
-    void deleteRegion(RegionHandle) throw (RegionNotKnown, RegionInUse);
-    RTIRegion *getRegion(RegionHandle) throw (RegionNotKnown);
-    void modifyRegion(RegionHandle, const std::vector<Extent> &)
-	throw (RegionNotKnown, InvalidExtents);
+    /** Add a routing space.
+     *
+     * The actual routing space is a copy of the one provided as parameter, and the handle may be modified.
+     * \param rs Routing space to add
+     */
+    void addRoutingSpace(const RoutingSpace& rs);
+
+    RoutingSpace& getRoutingSpace(SpaceHandle) throw(SpaceNotDefined);
+
+    SpaceHandle getRoutingSpaceHandle(const std::string&) throw(NameNotFound);
+
+    const std::string& getRoutingSpaceName(SpaceHandle) throw(SpaceNotDefined);
+
+    void addRegion(RTIRegion*);
+
+    RegionHandle createRegion(SpaceHandle, unsigned long) throw(SpaceNotDefined);
+
+    void deleteRegion(RegionHandle) throw(RegionNotKnown, RegionInUse);
+
+    RTIRegion* getRegion(RegionHandle) throw(RegionNotKnown);
+
+    void modifyRegion(RegionHandle, const std::vector<Extent>&) throw(RegionNotKnown, InvalidExtents);
 
     // Object Management
-	bool reserveObjectInstanceName(FederateHandle the_federate,
-								   const std::string &the_object_name);
-    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
-                                const std::string&)
-        throw (InvalidObjectHandle,
-               ObjectClassNotDefined,
-               ObjectClassNotPublished,
-               ObjectAlreadyRegistered,
-               RTIinternalError);
+    bool reserveObjectInstanceName(FederateHandle the_federate, const std::string& the_object_name);
 
-    FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject)
-        throw (ObjectNotKnown);
+    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&) throw(
+        InvalidObjectHandle, ObjectClassNotDefined, ObjectClassNotPublished, ObjectAlreadyRegistered, RTIinternalError);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle,
-                              FederationTime theTime, const std::string& theTag)
-        throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+    FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject) throw(ObjectNotKnown);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag)
-        throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+    void deleteObjectInstance(FederateHandle, ObjectHandle, FederationTime theTime, const std::string& theTag) throw(
+        DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
-    void killFederate(FederateHandle) throw (RTIinternalError);
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag) throw(DeletePrivilegeNotHeld,
+                                                                                             ObjectNotKnown,
+                                                                                             RTIinternalError);
+
+    void killFederate(FederateHandle) throw(RTIinternalError);
 
     // Access to elements of the RootObject hierarchy
-    ObjectAttribute*      getObjectAttribute(ObjectHandle, AttributeHandle);
-    ObjectClass*          getObjectClass(ObjectClassHandle);
-    Interaction*          getInteractionClass(InteractionClassHandle);
-    Object*               getObject(ObjectHandle);
+    ObjectAttribute* getObjectAttribute(ObjectHandle, AttributeHandle);
+
+    ObjectClass* getObjectClass(ObjectClassHandle);
+
+    Interaction* getInteractionClass(InteractionClassHandle);
+
+    Object* getObject(ObjectHandle);
+
     ObjectClassAttribute* getObjectClassAttribute(ObjectHandle, AttributeHandle);
 
-    void
-    getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
+    void getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
 
     /**
      * Add an object class to the ObjectRoot
@@ -145,7 +147,7 @@ public:
      * @param[in,out] parentOC the parent object class of currentOC
      *                      this may be NULL.
      */
-    void addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC);
+    void addObjectClass(ObjectClass* currentOC, ObjectClass* parentOC);
 
     /**
      * Add an interaction class to the ObjectRoot
@@ -159,23 +161,23 @@ public:
      * The set of object classes.
      * This is created when parsing the FOM.
      */
-    ObjectClassSet *ObjectClasses;
+    ObjectClassSet* ObjectClasses;
 
     /**
      * The set of interactions classes found
      * This is created when parsing the FOM.
      */
-    InteractionSet *Interactions;
+    InteractionSet* Interactions;
 
     /**
      * The set of registered object instance.
      */
-    ObjectSet      *objects;
+    ObjectSet* objects;
 
-	/**
+    /**
 	 * The set of reserved names.
 	 */
-	NameReservationSet *reservedNames;
+    NameReservationSet* reservedNames;
 
     /**
      * Serialize the federate object model into a message buffer.
@@ -188,20 +190,17 @@ public:
     void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
 
 private:
-
     std::vector<RoutingSpace> spaces;
     /**
      * The associated socket server.
      */
-    SecurityServer           *server;
+    SecurityServer* server;
 
     // Regions
-    std::list<RTIRegion *> regions ;
-    HandleManager<RegionHandle> regionHandles ;
+    std::list<RTIRegion*> regions;
+    HandleManager<RegionHandle> regionHandles;
 };
 
 } // namespace certi
 
 #endif // LIBCERTI_ROOT_OBJECT
-
-// $Id: RootObject.hh,v 3.39 2011/12/31 13:23:44 erk Exp $

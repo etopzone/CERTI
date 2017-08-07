@@ -29,7 +29,8 @@
 
 #include "StrongType.hh"
 
-#include <fstream>
+#include <ctime>
+#include <ostream>
 #include <string>
 
 namespace certi {
@@ -58,7 +59,7 @@ public:
      * - status : status of processing,
      * - comment : detailed comment.
      */
-    void write(std::ofstream&);
+    void write(std::ostream&);
     
     /// Add str at the end of comment.
     void addComment(const std::string& str); 
@@ -84,8 +85,8 @@ private:
     Status my_status {Exception::Type::NO_EXCEPTION};
     bool my_is_modified {false};
 
-    time_t my_date {0}; //!< date, automatically set at construction time.
-    std::string my_comment {}; //!< comment internally managed.
+    time_t my_date {std::time(nullptr)}; /// date, automatically set at construction time.
+    std::string my_comment {}; /// comment internally managed.
 };
 }
 

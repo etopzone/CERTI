@@ -70,7 +70,7 @@ public:
      * event level is used to determine if information has to be inserted into
      * file. Level is only used by endLine module.
      */
-    void setLevel(const AuditLine::Level event_level);
+    void setLevel(const AuditLine::Level level);
 
     /** Adds last information about current line and writes it to file.
      * 

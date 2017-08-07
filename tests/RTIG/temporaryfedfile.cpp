@@ -23,6 +23,10 @@ TemporaryFedFile::~TemporaryFedFile()
     std::remove(my_path.c_str());
 }
 
+std::string TemporaryFedFile::path() const {
+    return my_path;
+}
+
 void TemporaryFedFile::createFed()
 {
     CERR << "Creating temporary fed file " << my_path << std::endl;

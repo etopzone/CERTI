@@ -8,6 +8,8 @@ public:
     TemporaryFedFile(const std::string& path);
 
     ~TemporaryFedFile();
+    
+    std::string path() const;
 
 private:
     void createFed();

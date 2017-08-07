@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -29,132 +28,6 @@
 #include <string>
 
 namespace certi {
-
-#if 0
-typedef enum {
-    e_NO_EXCEPTION = 0,
-    e_ArrayIndexOutOfBounds,
-    e_AsynchronousDeliveryAlreadyEnabled,
-    e_AsynchronousDeliveryAlreadyDisabled,
-    e_AttributeAlreadyOwned,
-    e_AttributeAlreadyBeingAcquired,
-    e_AttributeAlreadyBeingDivested,
-    e_AttributeAcquisitionWasNotRequested,
-    e_AttributeDivestitureWasNotRequested,
-    e_AttributeNotDefined,
-    e_AttributeNotKnown,
-    e_AttributeNotOwned,
-    e_AttributeNotPublished,
-    e_AttributeNotSubscribed,
-    e_ConcurrentAccessAttempted,
-    e_CouldNotDiscover,
-    e_CouldNotOpenRID,
-    e_CouldNotOpenFED,
-    e_CouldNotRestore,
-    e_DeletePrivilegeNotHeld,
-    e_ErrorReadingRID,
-    e_ErrorReadingFED,
-    e_EventNotKnown,
-    e_FederateAlreadyPaused,
-    e_FederateAlreadyExecutionMember,
-    e_FederateDoesNotExist,
-    e_FederateInternalError,
-    e_FederateNameAlreadyInUse,
-    e_FederateNotExecutionMember,
-    e_FederateNotPaused,
-    e_FederateNotPublishing,
-    e_FederateNotSubscribing,
-    e_FederateOwnsAttributes,
-    e_FederatesCurrentlyJoined,
-    e_FederateWasNotAskedToReleaseAttribute,
-    e_FederationAlreadyPaused,
-    e_FederationExecutionAlreadyExists,
-    e_FederationExecutionDoesNotExist,
-    e_FederationNotPaused,
-    e_FederationTimeAlreadyPassed,
-    e_RegionNotKnown,
-    e_IDsupplyExhausted,
-    e_InteractionClassNotDefined,
-    e_InteractionClassNotKnown,
-    e_InteractionClassNotPublished,
-    e_InteractionParameterNotDefined,
-    e_InteractionParameterNotKnown,
-    e_InvalidDivestitureCondition,
-    e_InvalidExtents,
-    e_InvalidFederationTime,
-    e_InvalidFederationTimeDelta,
-    e_InvalidObjectHandle,
-    e_InvalidResignAction,
-    e_InvalidRetractionHandle,
-    e_InvalidRoutingSpace,
-    e_MemoryExhausted,
-    e_NameNotFound,
-    e_NoPauseRequested,
-    e_NoResumeRequested,
-    e_ObjectClassNotDefined,
-    e_ObjectClassNotKnown,
-    e_ObjectClassNotPublished,
-    e_ObjectClassNotSubscribed,
-    e_ObjectNotKnown,
-    e_ObjectAlreadyRegistered,
-    e_RestoreInProgress,
-    e_RestoreNotRequested,
-    e_RTICannotRestore,
-    e_RTIinternalError,
-    e_SpaceNotDefined,
-    e_SaveInProgress,
-    e_SaveNotInitiated,
-    e_SecurityError,
-    e_SocketNotConnected,
-    e_MessageNotSent,
-    e_MessageNotReceived,
-    e_SocketNotClosed,
-    e_RingBufferNotCreated,
-    e_RingBufferNotClosed,
-    e_RingBufferNotDeleted,
-    e_RingBufferNotAttached,
-    e_MessageTooLong,
-    e_BufferFull,
-    e_BufferEmpty,
-    e_SocketSHMNotCreated,
-    e_SocketSHMNotOpen,
-    e_SocketSHMNotDeleted,
-    e_SpecifiedSaveLabelDoesNotExist,
-    e_TimeAdvanceAlreadyInProgress,
-    e_TimeAdvanceWasNotInProgress,
-    e_TooManyIDsRequested,
-    e_UnableToPerformSave,
-    e_UnimplementedService,
-    e_UnknownLabel,
-    e_ValueCountExceeded,
-    e_ValueLengthExceeded,
-    e_AttributeAcquisitionWasNotCanceled,
-    e_DimensionNotDefined,
-    e_EnableTimeConstrainedPending,
-    e_EnableTimeConstrainedWasNotPending,
-    e_EnableTimeRegulationPending,
-    e_EnableTimeRegulationWasNotPending,
-    e_FederateLoggingServiceCalls,
-    e_HandleValuePairMaximumExceeded,
-    e_InteractionClassNotSubscribed,
-    e_InvalidHandleValuePairSetContext,
-    e_InvalidLookahead,
-    e_InvalidOrderingHandle,
-    e_InvalidRegionContext,
-    e_InvalidTransportationHandle,
-    e_OwnershipAcquisitionPending,
-    e_RegionInUse,
-    e_SynchronizationPointLabelWasNotAnnounced,
-    e_TimeConstrainedAlreadyEnabled,
-    e_TimeConstrainedWasNotEnabled,
-    e_TimeRegulationAlreadyEnabled,
-    e_TimeRegulationWasNotEnabled,
-    e_NetworkError,
-    e_NetworkSignal,
-    e_IllegalName, //1516 only
-    e_CustomException
-} TypeException;
-#endif
 
 class CERTI_EXPORT Exception {
 public:
@@ -304,9 +177,7 @@ public:
     const std::string displayMe() const;
 
 protected:
-    /**
-     * For official exceptions
-     */
+    /// Only for subclasses
     Exception(const std::string& name, const std::string& reason) : _name{name}, _reason{reason}
     {
         displayMe();
@@ -457,5 +328,3 @@ CERTI_EXCEPTION(IllegalName)
 } // namespace certi
 
 #endif // _CERTI_EXCEPTION_HH
-
-// $Id: Exception.hh,v 3.13 2013/09/24 14:27:57 erk Exp $

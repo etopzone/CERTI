@@ -35,10 +35,11 @@ add_executable(TestRTIG
                temporaryfedfile.cpp temporaryfedfile.h
                
                ../mocks/sockettcp_mock.h
-               
+
                federate_test.cpp
                federation_test.cpp
                federationlist_test.cpp
+               messageprocessor_test.cpp
                
                ${rtig_SRCS}
                ../main.cpp

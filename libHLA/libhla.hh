@@ -16,7 +16,6 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: libhla.hh,v 1.6 2011/04/26 11:07:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBHLA_HH_INCLUDED
@@ -162,9 +161,8 @@ public:
     Exception(const std::string& reason) : _reason(reason)
     {
     }
-    virtual ~Exception()
-    {
-    }
+    
+    virtual ~Exception() = default;
 };
 
 #define LIBHLA_EXCEPTION(A)                                                                                            \

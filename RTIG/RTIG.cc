@@ -175,7 +175,7 @@ void RTIG::execute() throw(NetworkError)
                     Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
                 }
                 else {
-                    Debug(D, pdExcept) << "Catching Network Error, no reason string" << std::endl;
+                    Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
                 }
                 std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
                 closeConnection(link, true);
@@ -273,16 +273,12 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         return nullptr;
     }
 
-    /* virtual constructor call */
     auto msg = MessageEvent<NetworkMessage>(link, std::unique_ptr<NetworkMessage>(NM_Factory::receive(link)));
 
     auto federate = msg.message()->getFederate();
     auto messageType = msg.message()->getMessageType();
 
     my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(messageType));
-
-    // This macro is used to copy any non null exception reason
-    // string into our buffer(used for Audit purpose).
 
     try {
         // This may throw a security error.
@@ -295,14 +291,14 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
             my_auditServer.setLevel(AuditLine::Level(9));
             my_auditServer << "Socket " << int(link->returnSocket());
             closeConnection(link, false);
-            link = NULL;
+            link = nullptr;
         }
         else {
             auto responses = my_processor.processEvent(std::move(msg));
 
             for (auto& response : responses) {
                 // send message
-                //             std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
+                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
                 response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
             }
         }

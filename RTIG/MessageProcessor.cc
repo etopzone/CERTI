@@ -39,7 +39,7 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
-//     std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
+     std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
 
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
@@ -129,11 +129,6 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
         Debug(G, pdGendoc) << "enter RTIG::processCreateFederation" << endl;
         Debug(G, pdGendoc) << "BEGIN ** CREATE FEDERATION SERVICE **" << endl;
 
-        if (federation.length() == 0) {
-            Debug(G, pdGendoc) << "exit  RTIG::processCreateFederation on exception RTIinternalError" << endl;
-            throw RTIinternalError("Invalid Federation Name");
-        }
-
         my_auditServer << "Federation Name : " << federation;
         Handle h = my_federationHandleGenerator.provide();
 
@@ -153,7 +148,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
         com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
 
         // inserer la nouvelle federation dans la liste des federations
-        federations->createFederation(federation, h, com_mc);
+        my_federations->createFederation(federation, h, com_mc);
 
         // inserer descripteur fichier pour le prochain appel a un select
         ClientSockets.push_front(com_mc);
@@ -161,26 +156,12 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
 #else
         // We catch createFederation because it is useful to send
         // exception reason to RTIA
-        try {
-            my_federations.createFederation(federation, h, FEDid);
-        }
-        catch (CouldNotOpenFED& e) {
-            rep.setException(e.type(), e.reason());
-        }
-        catch (ErrorReadingFED& e) {
-            rep.setException(e.type(), e.reason());
-        }
-        catch (FederationExecutionAlreadyExists& e) {
-            rep.setException(e.type(), e.reason());
-        }
+        my_federations.createFederation(federation, h, FEDid);
 #endif
-        // Prepare answer for RTIA : store NetworkMessage rep
-        if (rep.getException() == Exception::Type::NO_EXCEPTION) {
-            rep.setFederation(h);
-            rep.setFEDid(FEDid);
-            rep.setFederationName(federation);
-            my_auditServer << " created";
-        }
+        rep.setFederation(h);
+        rep.setFEDid(FEDid);
+        rep.setFederationName(federation);
+        my_auditServer << " created";
 
         Debug(G, pdGendoc) << "processCreateFederation===>write answer to RTIA" << endl;
 
