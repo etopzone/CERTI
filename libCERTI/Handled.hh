@@ -24,6 +24,8 @@
 #ifndef LIBCERTI_HANDLED_HH
 #define LIBCERTI_HANDLED_HH
 
+#include "Handle.hh"
+
 namespace certi {
 
 /**

@@ -20,7 +20,8 @@
 #ifndef CERTI_GAV_HH
 #define CERTI_GAV_HH
 
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
 #include "Exception.hh"
 
 #include <list>

@@ -29,7 +29,8 @@ namespace certi {
 	class RTIRegion ;
 }
 
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
 #include "Named.hh"
 #include <list>
 

@@ -24,7 +24,8 @@
 #ifndef LIBCERTI_LBTS_HH
 #define LIBCERTI_LBTS_HH
 
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
 #include "FedTimeD.hh"
 
 #include <map>

@@ -24,7 +24,9 @@
 #ifndef CERTI_EXTENT_HH
 #define CERTI_EXTENT_HH
 
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
+
 #include "Exception.hh"
 
 #include <vector>

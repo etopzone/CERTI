@@ -66,6 +66,7 @@ set(CERTI_SUPPORT_SRCS
     PrettyDebug.cc PrettyDebug.hh
     TreeNamedAndHandledSet.hh
     StrongType.hh
+    Handle.hh
 )
 
 set(CERTI_SOCKET_SRCS

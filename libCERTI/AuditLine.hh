@@ -25,7 +25,8 @@
 #define _CERTI_AUDIT_LINE_HH
 
 #include "Exception.hh"
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
 
 #include "StrongType.hh"
 

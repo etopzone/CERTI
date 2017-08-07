@@ -150,20 +150,10 @@
 
 namespace certi {
 
-typedef uint32_t Handle;
-typedef Handle   ObjectClassHandle;
-typedef Handle   InteractionClassHandle;
 typedef uint32_t ExtentIndex;
-typedef Handle   AttributeHandle;
-typedef Handle   ParameterHandle;
-typedef Handle   ObjectHandle;
-typedef Handle   DimensionHandle;
-typedef Handle   FederateHandle;
-typedef Handle   FederationHandle;
-typedef Handle   OrderType;
-typedef Handle   SpaceHandle;
-typedef Handle   TransportType;
-typedef Handle   EventRetractionHandle;
+
+typedef uint32_t OrderType;
+typedef uint32_t TransportType;
 
 typedef double TickTime;
 
@@ -183,7 +173,6 @@ enum ObjectRemovalReason {
     OBJECT_DELETED,
     NO_LONGER_SUBSCRIBED
 };
-typedef Handle RegionHandle ;
 
 // Constants (former HLA constants)
 const TransportType RELIABLE = 1 ;

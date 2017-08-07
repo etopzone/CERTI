@@ -39,8 +39,6 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
-    std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
-
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
     case NetworkMessage::MessageType:                                                                                  \
@@ -156,8 +154,6 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
         ClientSockets.push_front(com_mc);
 
 #else
-        // We catch createFederation because it is useful to send
-        // exception reason to RTIA
         my_federations.createFederation(federation, h, FEDid);
 #endif
         rep.setFederation(h);
@@ -590,6 +586,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
 
         Debug(DNULL, pdDebug) << "Rcv NULL MSG (Federate=" << request.message()->getFederate()
                               << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
+                              
         // Catch all exceptions because RTIA does not expect an answer anyway.
         try {
             my_federations.searchFederation(request.message()->getFederation())
@@ -611,11 +608,10 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
     {
         Debug(DNULL, pdDebug) << "Rcv NULL PRIME MSG (Federate=" << request.message()->getFederate()
                               << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
-        /*
-     * Update the NullPrimeDate of the concerned federate.
-     * and check the result in order to decide whether
-     * if the RTIG should send an anonymous NULL message or not
-     */
+        /* Update the NullPrimeDate of the concerned federate.
+         * and check the result in order to decide whether
+         * if the RTIG should send an anonymous NULL message or not
+         */
         if (my_federations.searchFederation(request.message()->getFederation())
                 .updateLastNERxForFederate(request.message()->getFederate(), request.message()->getDate())) {
             std::unique_ptr<NM_Message_Null> nmsg = std::make_unique<NM_Message_Null>();

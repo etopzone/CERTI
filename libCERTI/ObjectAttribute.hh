@@ -24,7 +24,8 @@
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
 #define CERTI_OBJECT_ATTRIBUTE_HH
 
-#include "certi.hh"
+// #include "certi.hh"
+#include "Handle.hh"
 #include "Exception.hh"
 
 #include <set>
