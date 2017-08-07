@@ -39,7 +39,7 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
-     std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
+    std::cout << __PRETTY_FUNCTION__ << " type (" << request.message()->getMessageName() << ")" << std::endl;
 
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
@@ -121,7 +121,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         std::string federation = request.message()->getFederationName();
@@ -181,7 +181,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         std::string federation = request.message()->getFederationName();
@@ -199,8 +199,9 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
         Debug(G, pdGendoc) << "BEGIN ** JOIN FEDERATION SERVICE **" << endl;
         Debug(G, pdGendoc) << "enter RTIG::processJoinFederation" << endl;
 
-        if (federation.empty() || federate.empty())
+        if (federation.empty() || federate.empty()) {
             throw RTIinternalError("Invalid Federation/Federate Name");
+        }
 
         my_auditServer << "Federate \"" << federate << "\" joins Federation \"" << federation << "\"";
 
@@ -208,25 +209,9 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
 
         // Need to dump the FOM into that
         NM_Join_Federation_Execution rep;
-        try {
-            num_federe
-                = my_federations.addFederate(num_federation, federate, static_cast<SocketTCP*>(request.socket()), rep);
-        }
-        catch (FederateAlreadyExecutionMember& e) {
-            Debug(G, pdGendoc) << "exit RTIG::processJoinFederation on Error" << endl;
-            Debug(G, pdGendoc) << "END ** JOIN FEDERATION (BAD) SERVICE **" << endl;
-            // Prepare answer about JoinFederationExecution
-            NM_Join_Federation_Execution rep;
-            rep.setException(e.type(),
-                             certi::stringize() << "Federate with same name <" << federate
-                                                << "> has already joined the federation");
 
-            Debug(G, pdGendoc) << "processJoinFederation==>Answer to RTIA JFE ERROR " << rep.getExceptionReason()
-                               << endl;
-
-            rep.send(request.socket(), my_messageBuffer);
-            return {};
-        }
+        num_federe
+            = my_federations.addFederate(num_federation, federate, static_cast<SocketTCP*>(request.socket()), rep);
 
 #ifdef FEDERATION_USES_MULTICAST
         SocketMC* com_mc = NULL;
@@ -272,7 +257,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Fed
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     auto federation = request.message()->getFederation();
     auto federate = request.message()->getFederate();
     Debug(D, pdTrace) << "Federate (" << request.message()->getFederate() << ") leaves federation ("
@@ -305,7 +290,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Fe
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         NM_Destroy_Federation_Execution rep;
@@ -315,40 +300,22 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Fe
         Debug(G, pdGendoc) << "enter RTIG::processDestroyFederation" << endl;
         Debug(G, pdGendoc) << "BEGIN ** DESTROY FEDERATION SERVICE **" << endl;
 
-        if (federation.length() == 0)
-            throw RTIinternalError("Invalid Federation Name");
-
         Handle num_federation = my_federations.getFederationHandle(federation);
         // May throw RTIinternalError
         //           FederatesCurrentlyJoined
         //           FederationExecutionDoesNotExist
-        try {
-            my_federations.destroyFederation(num_federation);
-            // Here delete federation (num_federation) has been done
-            my_federationHandleGenerator.free(num_federation);
-            Debug(D, pdInit) << "Federation \"" << federation << "\" has been destroyed" << endl;
-        }
-        catch (RTIinternalError& e) {
-            std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << endl;
-            rep.setException(e.type(), e.reason());
-        }
-        catch (FederationExecutionDoesNotExist& e) {
-            std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << endl;
-            rep.setException(e.type(), e.reason());
-        }
-        catch (FederatesCurrentlyJoined& e) {
-            std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << endl;
-            rep.setException(e.type(), e.reason());
-        }
-        catch (Exception& e) {
-            std::cerr << "ERROR : " << e.name() << "  reason :" << e.reason() << endl;
-        }
+        my_federations.destroyFederation(num_federation);
+        // Here delete federation (num_federation) has been done
+        my_federationHandleGenerator.free(num_federation);
+        Debug(D, pdInit) << "Federation \"" << federation << "\" has been destroyed" << endl;
 
         rep.setFederate(request.message()->getFederate());
         rep.setFederationName(request.message()->getFederationName());
+
         if (rep.getException() == Exception::Type::NO_EXCEPTION) {
             my_auditServer << "Federation Name \"" << federation << "\"(" << num_federation << ") destroyed";
         }
+
         Debug(G, pdGendoc) << "processDestroyFederation===>write DFE to RTIA" << endl;
 
         rep.send(request.socket(), my_messageBuffer);
@@ -363,7 +330,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -403,7 +370,7 @@ MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Swi
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -444,7 +411,7 @@ MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switc
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -483,7 +450,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -521,7 +488,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_R
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "SetTimeRegulating for federate " << request.message()->getFederate()
                       << ", date:" << request.message()->getDate().getTime() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -567,7 +534,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "SetTimeConstrained for federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
 
@@ -615,7 +582,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdDebug) << "Message Null" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
     {
@@ -638,7 +605,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdDebug) << "Message Null Prime" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
     {
@@ -667,7 +634,7 @@ MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Po
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation() << ": registerFedSyncPoint from federate "
                       << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -704,7 +671,7 @@ MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Po
         catch (Exception& e) {
             /* the registration did fail */
             rep.setSuccessIndicator(false);
-            rep.setFailureReason(std::string(e.name()) + ":" + std::string(e.reason()));
+            rep.setFailureReason(e.name() + ":" + e.reason());
         }
         Debug(D, pdTerm) << "Federation " << request.message()->getFederation() << " is now synchronizing" << endl;
 
@@ -737,7 +704,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchroniz
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
                       << ": synchronizationPointAchieved from federate " << request.message()->getFederate()
                       << std::endl;
@@ -756,7 +723,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Request federation save from federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -787,7 +754,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " begun save" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -810,7 +777,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -832,7 +799,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -854,7 +821,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " request a restoration" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -875,7 +842,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -896,7 +863,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -917,7 +884,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "publishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     /* we cast to Publish because Unpublish inherits from Publish */
@@ -947,7 +914,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unpublishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     /* we cast to Publish because Unpublish inherits from Publish */
@@ -977,7 +944,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "subscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1010,7 +977,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unsubscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1041,7 +1008,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_In
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "publishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1065,7 +1032,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unpublishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1089,7 +1056,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "subscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1113,7 +1080,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unsubscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1137,7 +1104,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Ob
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "reserveObjectInstanceName" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1156,7 +1123,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_O
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "registerObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1243,7 +1210,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
 
     //             rep->send(request.socket(), my_messageBuffer); // send answer to RTIA
     responses.emplace_back(request.socket(), std::move(rep));
-    
+
     return responses;
 }
 
@@ -1251,7 +1218,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Inter
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "send interaction" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1304,7 +1271,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Obj
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "DeleteObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1344,7 +1311,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attr
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1374,7 +1341,7 @@ MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divesti
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1405,7 +1372,7 @@ MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Ava
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1435,7 +1402,7 @@ MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Dive
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1464,7 +1431,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1496,7 +1463,7 @@ MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1525,7 +1492,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribu
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1562,7 +1529,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1598,7 +1565,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Att
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1626,7 +1593,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "createRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1651,7 +1618,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "modifyRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1674,7 +1641,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "deleteRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1700,7 +1667,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associ
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "associateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1728,7 +1695,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unasso
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unassociateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1754,7 +1721,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1782,7 +1749,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1807,7 +1774,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "subscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1834,7 +1801,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1861,7 +1828,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Regist
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "registerObjectWithRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1895,7 +1862,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1907,24 +1874,12 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
 
         // We have to do verifications about this object and we need owner
         answer.setException(Exception::Type::NO_EXCEPTION);
-        try {
-            // While searching for the federate owner we will send
-            // a NM_Provide_Attribute_Value_Update
-            // (see Federation::requestObjectOwner)
-            (void) my_federations.searchFederation(request.message()->getFederation())
-                .requestObjectOwner(request.message()->getFederate(),
-                                    request.message()->getObject(),
-                                    request.message()->getAttributes());
-        }
-        catch (ObjectNotKnown& e) {
-            answer.setException(e.type(), e.reason());
-        }
-        catch (FederationExecutionDoesNotExist& e) {
-            answer.setException(e.type(), e.reason());
-        }
-        catch (RTIinternalError& e) {
-            answer.setException(e.type(), e.reason());
-        }
+        // While searching for the federate owner we will send
+        // a NM_Provide_Attribute_Value_Update
+        // (see Federation::requestObjectOwner)
+        (void) my_federations.searchFederation(request.message()->getFederation())
+            .requestObjectOwner(
+                request.message()->getFederate(), request.message()->getObject(), request.message()->getAttributes());
 
         answer.setFederate(request.message()->getFederate());
         answer.setObject(request.message()->getObject());
@@ -1940,7 +1895,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Cl
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
-    
+
     Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1950,21 +1905,10 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Cl
         Debug(G, pdGendoc) << "BEGIN ** REQUEST CLASS ATTRIBUTE VALUE UPDATE **" << endl;
 
         answer.setException(Exception::Type::NO_EXCEPTION);
-        try {
-            my_federations.searchFederation(request.message()->getFederation())
-                .requestClassAttributeValueUpdate(request.message()->getFederate(),
-                                                  request.message()->getObjectClass(),
-                                                  request.message()->getAttributes());
-        }
-        catch (ObjectClassNotDefined& e) {
-            answer.setException(e.type(), e.reason());
-        }
-        catch (FederationExecutionDoesNotExist& e) {
-            answer.setException(e.type(), e.reason());
-        }
-        catch (RTIinternalError& e) {
-            answer.setException(e.type(), e.reason());
-        }
+        my_federations.searchFederation(request.message()->getFederation())
+            .requestClassAttributeValueUpdate(request.message()->getFederate(),
+                                              request.message()->getObjectClass(),
+                                              request.message()->getAttributes());
 
         answer.setFederate(request.message()->getFederate());
         answer.setObjectClass(request.message()->getObjectClass());

@@ -425,7 +425,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
-        throw FederateAlreadyExecutionMember(federate_name);
+        throw FederateAlreadyExecutionMember("Federate with same name <" + federate_name + "> has already joined the federation");
     }
     catch (FederateNotExecutionMember& e) {
         // Nothing to do.

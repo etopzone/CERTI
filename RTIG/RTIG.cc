@@ -317,7 +317,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e) {
-        my_auditServer.endLine(AuditLine::Status(e.type()), " - NetworkError");
+        my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - NetworkError");
         throw;
     }
 
@@ -328,9 +328,9 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         // Server Answer(only if an exception is raised)
         auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(messageType));
         response->setFederate(federate);
-        response->setException(e.type());
+        response->setException(e.type(), e.reason());
 
-        my_auditServer.endLine(AuditLine::Status(response->getException()), e.reason() + " - Exception");
+        my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - Exception");
 
         if (link) {
             Debug(G, pdGendoc) << "            processIncomingMessage ===> send exception back to RTIA" << std::endl;
