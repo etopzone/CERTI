@@ -120,6 +120,8 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         std::string federation = request.message()->getFederationName();
@@ -178,6 +180,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         std::string federation = request.message()->getFederationName();
@@ -267,6 +271,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     auto federation = request.message()->getFederation();
     auto federate = request.message()->getFederate();
     Debug(D, pdTrace) << "Federate (" << request.message()->getFederate() << ") leaves federation ("
@@ -298,6 +304,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Fed
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     my_auditServer.setLevel(AuditLine::Level(9));
     {
         NM_Destroy_Federation_Execution rep;
@@ -354,6 +362,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Fe
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -392,6 +402,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -431,6 +443,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -468,6 +482,8 @@ MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switc
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -504,6 +520,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "SetTimeRegulating for federate " << request.message()->getFederate()
                       << ", date:" << request.message()->getDate().getTime() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -548,6 +566,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_R
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "SetTimeConstrained for federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
 
@@ -594,6 +614,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, bool anonymous)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdDebug) << "Message Null" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
     {
@@ -615,6 +637,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdDebug) << "Message Null Prime" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
     {
@@ -642,6 +666,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation() << ": registerFedSyncPoint from federate "
                       << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -710,6 +736,8 @@ MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Po
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
                       << ": synchronizationPointAchieved from federate " << request.message()->getFederate()
                       << std::endl;
@@ -727,6 +755,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchroniz
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Request federation save from federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -756,6 +786,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " begun save" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -777,6 +809,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -797,6 +831,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -817,6 +853,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " request a restoration" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -836,6 +874,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -855,6 +895,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
@@ -874,6 +916,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "publishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     /* we cast to Publish because Unpublish inherits from Publish */
@@ -902,6 +946,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unpublishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     /* we cast to Publish because Unpublish inherits from Publish */
@@ -930,6 +976,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "subscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -961,6 +1009,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unsubscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -990,6 +1040,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "publishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1012,6 +1064,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_In
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unpublishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1034,6 +1088,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "subscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1056,6 +1112,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unsubscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
@@ -1078,6 +1136,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "reserveObjectInstanceName" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1095,6 +1155,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Ob
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "registerObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1129,6 +1191,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_O
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+
     Debug(D, pdDebug) << "UpdateAttributeValue" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(1));
 
@@ -1178,17 +1242,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
     Debug(G, pdGendoc) << "exit  RTIG::processUpdateAttributeValues" << endl;
 
     //             rep->send(request.socket(), my_messageBuffer); // send answer to RTIA
-    //     return {};
-
-    MessageEvent<NM_Update_Attribute_Values> response(request.socket(), std::move(rep));
-    Responses responses;
-    responses.emplace_back(MessageEvent<NetworkMessage>{std::move(response)});
+    responses.emplace_back(request.socket(), std::move(rep));
+    
     return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "send interaction" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1240,6 +1303,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Inter
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "DeleteObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1278,6 +1343,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Obj
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1306,6 +1373,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1335,6 +1404,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1363,6 +1434,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1390,6 +1463,8 @@ MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Dive
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1420,6 +1495,8 @@ MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1447,6 +1524,8 @@ MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
@@ -1482,6 +1561,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribu
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1516,6 +1597,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1542,6 +1625,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Att
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "createRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1565,6 +1650,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "modifyRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1586,6 +1673,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "deleteRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1610,6 +1699,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "associateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1636,6 +1727,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associ
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unassociateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1660,6 +1753,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unasso
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1686,6 +1781,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1709,6 +1806,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "subscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1734,6 +1833,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1759,6 +1860,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "registerObjectWithRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1791,6 +1894,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Regist
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
@@ -1834,6 +1939,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    Responses responses;
+    
     Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {

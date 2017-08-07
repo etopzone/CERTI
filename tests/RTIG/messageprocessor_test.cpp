@@ -30,23 +30,11 @@ TEST_F(MessageProcessorTest, ProcessThrowsOnCloseConnection)
     ASSERT_THROW(mp.processEvent({nullptr, std::move(message)}), ::certi::RTIinternalError);
 }
 
-TEST_F(MessageProcessorTest, ProcessThrowsOnDefault)
+TEST_F(MessageProcessorTest, ProcessThrowsOnBasicMessage)
 {
     auto message = std::make_unique<NetworkMessage>();
 
     ASSERT_THROW(mp.processEvent({nullptr, std::move(message)}), ::certi::RTIinternalError);
-}
-
-TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution_ThrowsOnEmptyFederationName)
-{
-    MockSocketTcp socket;
-    EXPECT_CALL(socket, send(_, _)).Times(0);
-
-    auto message = std::make_unique<::certi::NM_Create_Federation_Execution>();
-
-    message->setFederationName("");
-
-    ASSERT_THROW(mp.processEvent({&socket, std::move(message)}), ::certi::RTIinternalError);
 }
 
 TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution)
@@ -67,6 +55,7 @@ TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution)
         auto responses = mp.processEvent({&socket, std::move(message)});
 
         // test responses
+        ASSERT_EQ(0u, responses.size());
 
         // takes an handle from the handle_generator
         ASSERT_EQ(first_generator_value + 2, handle_generator.provide());
