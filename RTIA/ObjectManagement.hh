@@ -29,175 +29,153 @@
 namespace certi {
 namespace rtia {
 
-class Communications ;
-class Queues ;
-class FederationManagement ;
-class TimeManagement ;
+class Communications;
+class Queues;
+class FederationManagement;
+class TimeManagement;
 
-class ObjectManagement
-{
-
+class ObjectManagement {
 public:
-    ObjectManagement(Communications *, FederationManagement *, RootObject *);
+    ObjectManagement(Communications* GC, FederationManagement* GF, RootObject* theRootObj);
     ~ObjectManagement();
 
     // Object Management services
-    void reserveObjectName(const std::string &, Exception::Type &);
+    void reserveObjectName(const std::string& newObjName, Exception::Type& e);
 
-    ObjectHandle registerObject(ObjectClassHandle theClassHandle,
+    ObjectHandle registerObject(ObjectClassHandle the_class,
                                 const std::string& theObjectName,
-                                FederationTime date,
-                                FederationTime heure,
-                                Exception::Type &e);
+                                FederationTime,
+                                FederationTime,
+                                Exception::Type& e);
 
-    EventRetractionHandle
-    updateAttributeValues(ObjectHandle theObjectHandle,
-                          const std::vector<AttributeHandle> &attribArray,
-                          const std::vector<AttributeValue_t> &valueArray,
-                          uint32_t attribArraySize,
-                          FederationTime theTime,
-                          const std::string& theTag,
-                          Exception::Type &e);
+    EventRetractionHandle updateAttributeValues(ObjectHandle theObjectHandle,
+                                                const std::vector<AttributeHandle>& attribArray,
+                                                const std::vector<AttributeValue_t>& valueArray,
+                                                uint32_t attribArraySize,
+                                                FederationTime theTime,
+                                                const std::string& theTag,
+                                                Exception::Type& e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
-                          const std::vector<AttributeHandle> &attribArray,
-                          const std::vector<AttributeValue_t> &valueArray,
-                          uint32_t attribArraySize,
-                          const std::string& theTag,
-                          Exception::Type &e);
+                               const std::vector<AttributeHandle>& attribArray,
+                               const std::vector<AttributeValue_t>& valueArray,
+                               uint32_t attribArraySize,
+                               const std::string& theTag,
+                               Exception::Type& e);
 
-    void discoverObject(ObjectHandle theObjectHandle,
-                        ObjectClassHandle theObjectClassHandle,
-                        const std::string& theObjectName,
-                        FederationTime theTime,
-                        EventRetractionHandle theHandle,
-                        Exception::Type &e);
+    void discoverObject(ObjectHandle the_object,
+                        ObjectClassHandle the_class,
+                        const std::string& the_name,
+                        FederationTime the_time,
+                        EventRetractionHandle the_event,
+                        Exception::Type& e);
 
-    void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                const std::vector <AttributeHandle> &attribArray,
-                                const std::vector <AttributeValue_t> &valueArray,
-                                uint16_t attribArraySize,
-                                FederationTime theTime,
-                                const std::string& theTag,
-                                EventRetractionHandle theHandle,
-                                Exception::Type &e);
+    void reflectAttributeValues(ObjectHandle the_object,
+                                const std::vector<AttributeHandle>& the_attributes,
+                                const std::vector<AttributeValue_t>& the_values,
+                                uint16_t the_size,
+                                FederationTime the_time,
+                                const std::string& the_tag,
+                                EventRetractionHandle the_event,
+                                Exception::Type& e);
 
-   void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                const std::vector <AttributeHandle> &attribArray,
-                                const std::vector <AttributeValue_t> &valueArray,
-                                uint16_t attribArraySize,
-                                const std::string& theTag,
-                               Exception::Type &e);
+    void reflectAttributeValues(ObjectHandle the_object,
+                                const std::vector<AttributeHandle>& the_attributes,
+                                const std::vector<AttributeValue_t>& the_values,
+                                uint16_t the_size,
+                                const std::string& the_tag,
+                                Exception::Type& e);
+
+    EventRetractionHandle sendInteraction(InteractionClassHandle theInteraction,
+                                          const std::vector<ParameterHandle>& paramArray,
+                                          const std::vector<ParameterValue_t>& valueArray,
+                                          uint32_t paramArraySize,
+                                          FederationTime theTime,
+                                          const std::string& theTag,
+                                          RegionHandle region,
+                                          Exception::Type& e);
+
+    void sendInteraction(InteractionClassHandle theInteraction,
+                         const std::vector<ParameterHandle>& paramArray,
+                         const std::vector<ParameterValue_t>& valueArray,
+                         uint32_t paramArraySize,
+                         const std::string& theTag,
+                         RegionHandle region,
+                         Exception::Type& e);
+
+    void receiveInteraction(InteractionClassHandle the_interaction,
+                            const std::vector<ParameterHandle>& the_parameters,
+                            const std::vector<ParameterValue_t>& the_values,
+                            uint16_t the_size,
+                            FederationTime the_time,
+                            const std::string& the_tag,
+                            EventRetractionHandle the_event,
+                            Exception::Type& e);
+
+    void receiveInteraction(InteractionClassHandle the_interaction,
+                            const std::vector<ParameterHandle>& the_parameters,
+                            const std::vector<ParameterValue_t>& the_values,
+                            uint16_t the_size,
+                            const std::string& the_tag,
+                            Exception::Type& e);
 
     EventRetractionHandle
-    sendInteraction(InteractionClassHandle theInteraction,
-                    const std::vector <ParameterHandle> &paramArray,
-                    const std::vector <ParameterValue_t> &valueArray,
-                    uint32_t paramArraySize,
-                    FederationTime theTime,
-                    const std::string& theTag,
-		    RegionHandle,
-            Exception::Type &e);
+    deleteObject(ObjectHandle theObjectHandle, FederationTime theTime, const std::string& theTag, Exception::Type& e);
 
-    void
-    sendInteraction(InteractionClassHandle theInteraction,
-                    const std::vector <ParameterHandle> &paramArray,
-                    const std::vector <ParameterValue_t> &valueArray,
-                    uint32_t paramArraySize,
-                    const std::string& theTag,
-		    RegionHandle,
-            Exception::Type &e);
-
-    void receiveInteraction(InteractionClassHandle theInteraction,
-                            const std::vector <ParameterHandle> &paramArray,
-                            const std::vector <ParameterValue_t> &valueArray,
-                            uint16_t paramArraySize,
-                            FederationTime theTime,
-                            const std::string& theTag,
-                            EventRetractionHandle theHandle,
-                            Exception::Type &e);
-
-    void receiveInteraction(InteractionClassHandle theInteraction,
-                            const std::vector <ParameterHandle> &paramArray,
-                            const std::vector <ParameterValue_t> &valueArray,
-                            uint16_t paramArraySize,
-                            const std::string& theTag,
-                            Exception::Type &e);
-
-    EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
-    				       FederationTime theTime,
-                                       const std::string& theTag,
-                                       Exception::Type &e);
-
-    void deleteObject(ObjectHandle theObjectHandle,
-    		      const std::string& theTag,
-		      Exception::Type &e);
+    void deleteObject(ObjectHandle theObjectHandle, const std::string& theTag, Exception::Type& e);
 
     /**
      * Delete all objects [instance] owned by this federate.
      */
-	void deleteAllObjects(Exception::Type &e);
+    void deleteAllObjects(Exception::Type& e);
 
-    void removeObject(ObjectHandle theObjectHandle,
-                      FederateHandle theFederateHandle,
-		      FederationTime theTime,
-                      const std::string& theTag,
-                      EventRetractionHandle theHandle,
-                      Exception::Type &e);
-
-    void removeObject(ObjectHandle theObjectHandle,
-                      FederateHandle theFederateHandle,
-                      const std::string& theTag,
-                      Exception::Type &e);
-
-    void removeObject(ObjectHandle theObject,
-                      ObjectRemovalReason theReason,
-                      Exception::Type &e);
-
-    EventRetractionHandle
-    changeAttributeTransportType(ObjectHandle theObjectHandle,
-                                 const std::vector <AttributeHandle> &attribArray,
-                                 uint32_t attribArraySize,
-                                 TransportType theType,
-                                 Exception::Type &e);
-
-    EventRetractionHandle
-    changeAttributeOrderType(ObjectHandle theObjectHandle,
-                             const std::vector <AttributeHandle> &attribArray,
-                             uint32_t attribArraySize,
-                             OrderType theType,
-                             Exception::Type &e);
-
-    EventRetractionHandle
-    changeInteractionTransportType(InteractionClassHandle theClassID,
-                                   TransportType theType,
-                                   Exception::Type &e);
-
-    EventRetractionHandle
-    changeInteractionOrderType(InteractionClassHandle theClassID,
-                               OrderType theType,
-                               Exception::Type &e);
+    void removeObject(ObjectHandle the_object,
+                      FederateHandle the_federate,
+                      FederationTime theTime,
+                      const std::string& the_tag,
+                      EventRetractionHandle the_event,
+                      Exception::Type& e);
 
     void
-    requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
-                                      const std::vector <AttributeHandle> &attribArray,
-                                      uint32_t attribArraySize,
-                                      Exception::Type &e);
+    removeObject(ObjectHandle the_object, FederateHandle the_federate, const std::string& the_tag, Exception::Type& e);
 
-	void requestClassAttributeValueUpdate(ObjectClassHandle theClass,
-										  const std::vector <AttributeHandle> &attribs,
-										  uint32_t attribArraySize,
-										  Exception::Type &e);
+    void removeObject(ObjectHandle theObject, ObjectRemovalReason theReason, Exception::Type& e);
 
-    void provideAttributeValueUpdate(ObjectHandle theObject,
-                                      const std::vector <AttributeHandle> &theAttributes,
-                                      uint32_t attribArraySize,
-                                     Exception::Type &e);
+    EventRetractionHandle changeAttributeTransportType(ObjectHandle theObjectHandle,
+                                                       const std::vector<AttributeHandle>& attribArray,
+                                                       uint32_t attribArraySize,
+                                                       TransportType theType,
+                                                       Exception::Type& e);
 
-    void retract(EventRetractionHandle theHandle, Exception::Type &e);
+    EventRetractionHandle changeAttributeOrderType(ObjectHandle theObjectHandle,
+                                                   const std::vector<AttributeHandle>& attribArray,
+                                                   uint32_t attribArraySize,
+                                                   OrderType theType,
+                                                   Exception::Type& e);
 
-    void reflectRetraction(EventRetractionHandle theHandle,
-                           Exception::Type &e);
+    EventRetractionHandle
+    changeInteractionTransportType(InteractionClassHandle id, TransportType theType, Exception::Type& e);
+
+    EventRetractionHandle changeInteractionOrderType(InteractionClassHandle id, OrderType theType, Exception::Type& e);
+
+    void requestObjectAttributeValueUpdate(ObjectHandle handle,
+                                           const std::vector<AttributeHandle>& attribs,
+                                           uint32_t attribArraySize,
+                                           Exception::Type& e);
+
+    void requestClassAttributeValueUpdate(ObjectClassHandle theClass,
+                                          const std::vector<AttributeHandle>& attribs,
+                                          uint32_t attribArraySize,
+                                          Exception::Type& e);
+
+    void provideAttributeValueUpdate(ObjectHandle the_object,
+                                     const std::vector<AttributeHandle>& the_attributes,
+                                     uint32_t attribArraySize,
+                                     Exception::Type&);
+
+    void retract(EventRetractionHandle theHandle, Exception::Type& e);
+
+    void reflectRetraction(EventRetractionHandle, Exception::Type& e);
 
     /**
      * Transmits the Networkmessage NM_Set_Attribute_Scope_Advisory_Switch to 
@@ -209,22 +187,19 @@ public:
      * false means disable
      * @param[in,out] e is a reference to a possible exception
      */
-    void setAttributeScopeAdvisorySwitch(bool state,
-                                         Exception::Type &e);
+    void setAttributeScopeAdvisorySwitch(bool state, Exception::Type& e);
 
     // 6.13
-    void
-    attributesInScope(ObjectHandle theObject,
-                      const std::vector <AttributeHandle> &attribArray,
-                      const uint16_t attribArraySize,
-                      Exception::Type &e);
+    void attributesInScope(ObjectHandle theObject,
+                           const std::vector<AttributeHandle>& attribArray,
+                           const uint16_t attribArraySize,
+                           Exception::Type& e);
 
     // 6.14
-    void
-    attributesOutOfScope(ObjectHandle theObject,
-                      const std::vector <AttributeHandle> &attribArray,
-                      const uint16_t attribArraySize,
-                      Exception::Type &e);
+    void attributesOutOfScope(ObjectHandle theObject,
+                              const std::vector<AttributeHandle>& attribArray,
+                              const uint16_t attribArraySize,
+                              Exception::Type& e);
 
     /**
      * Transmits the Networkmessage NM_Set_Attribute_Relevance_Advisory_Switch 
@@ -236,27 +211,23 @@ public:
      * false means disable
      * @param[in,out] e is a reference to a possible exception
      */
-    void setAttributeRelevanceAdvisorySwitch(bool state,
-                                             Exception::Type &e);
+    void setAttributeRelevanceAdvisorySwitch(bool state, Exception::Type& e);
 
     // 6.17
-    void
-    turnUpdatesOnForObjectInstance(ObjectHandle theObject,
-                      const std::vector <AttributeHandle> &attribArray,
-		      const uint16_t attribArraySize,
-                      Exception::Type &e);
+    void turnUpdatesOnForObjectInstance(ObjectHandle theObject,
+                                        const std::vector<AttributeHandle>& attribArray,
+                                        const uint16_t attribArraySize,
+                                        Exception::Type& e);
 
     // 6.18
-    void
-    turnUpdatesOffForObjectInstance(ObjectHandle theObject,
-                      const std::vector <AttributeHandle> &attribArray,
-                      const uint16_t attribArraySize,
-                      Exception::Type &e);
+    void turnUpdatesOffForObjectInstance(ObjectHandle theObject,
+                                         const std::vector<AttributeHandle>& attribArray,
+                                         const uint16_t attribArraySize,
+                                         Exception::Type& e);
 
-	// 1516 - 6.3
-	void nameReservationSucceeded(const std::string &reservedName);
-	void nameReservationFailed(const std::string &reservedName);
-
+    // 1516 - 6.3
+    void nameReservationSucceeded(const std::string& reservedName);
+    void nameReservationFailed(const std::string& reservedName);
 
     // RTI Support Services
     ObjectClassHandle getObjectClassHandle(const std::string& theName);
@@ -265,21 +236,17 @@ public:
     ObjectHandle getObjectInstanceHandle(const std::string&);
     const std::string& getObjectInstanceName(ObjectHandle);
 
-    AttributeHandle getAttributeHandle(const std::string& theName,
-                                       ObjectClassHandle theClassHandle);
+    AttributeHandle getAttributeHandle(const std::string& theName, ObjectClassHandle theClassHandle);
 
-    const std::string& getAttributeName(AttributeHandle theHandle,
-                                 ObjectClassHandle theClassHandle);
+    const std::string& getAttributeName(AttributeHandle theHandle, ObjectClassHandle theClassHandle);
 
     InteractionClassHandle getInteractionClassHandle(const std::string& theName);
 
     const std::string& getInteractionClassName(InteractionClassHandle theClassHandle);
 
-    ParameterHandle getParameterHandle(const std::string& theParameterName,
-                                       InteractionClassHandle theClassHandle);
+    ParameterHandle getParameterHandle(const std::string& theParameterName, InteractionClassHandle theClassHandle);
 
-    const std::string& getParameterName(ParameterHandle theParameterHandle,
-                                 InteractionClassHandle theClassHandle);
+    const std::string& getParameterName(ParameterHandle theParameterHandle, InteractionClassHandle theClassHandle);
 
     ObjectClassHandle getObjectClass(ObjectHandle);
 
@@ -289,13 +256,13 @@ public:
     OrderType getOrderingHandle(const std::string& theName);
     const std::string& getOrderingName(OrderType theType);
 
-    TimeManagement *tm ;
+    TimeManagement* tm;
 
 protected:
-    Communications *comm ;
-    Queues *queues ;
-    FederationManagement *fm ;
-    RootObject *rootObject ;
+    Communications* comm;
+    Queues* queues;
+    FederationManagement* fm;
+    RootObject* rootObject;
 
 private:
     struct TransportTypeList {
@@ -310,8 +277,8 @@ private:
     };
     static const OrderTypeList orderTypeList[];
 };
-
-}} // namespace certi/rtia
+}
+} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_OM
 

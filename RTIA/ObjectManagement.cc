@@ -20,64 +20,57 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <config.h>
 #include <cassert>
-#include <memory>
+#include <config.h>
 #include <iostream>
+#include <memory>
 
+#include "FederationManagement.hh"
 #include "InteractionSet.hh"
-#include "ObjectSet.hh"
+#include "M_Classes.hh"
+#include "NM_Classes.hh"
 #include "ObjectClassSet.hh"
 #include "ObjectManagement.hh"
-#include "FederationManagement.hh"
+#include "ObjectSet.hh"
 #include "PrettyDebug.hh"
 #include "TimeManagement.hh"
-#include "NM_Classes.hh"
-#include "M_Classes.hh"
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 
 namespace certi {
 namespace rtia {
 
 static PrettyDebug D("RTIA_OM", __FILE__);
-static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug G("GENDOC", __FILE__);
 
-const ObjectManagement::TransportTypeList
-ObjectManagement::transportTypeList[] = {
-		{ "HLAreliable", RELIABLE },
-		{ "HLAbestEffort", BEST_EFFORT }
-};
+const ObjectManagement::TransportTypeList ObjectManagement::transportTypeList[]
+    = {{"HLAreliable", RELIABLE}, {"HLAbestEffort", BEST_EFFORT}};
 
-const ObjectManagement::OrderTypeList
-ObjectManagement::orderTypeList[] = {
-		{ "Receive", RECEIVE },
-		{ "Timestamp", TIMESTAMP }
-};
+const ObjectManagement::OrderTypeList ObjectManagement::orderTypeList[]
+    = {{"Receive", RECEIVE}, {"Timestamp", TIMESTAMP}};
 
-ObjectManagement::ObjectManagement(Communications *GC,
-		FederationManagement *GF,
-		RootObject *theRootObj)
-: comm(GC),
-  fm(GF),
-  rootObject(theRootObj) { }
+ObjectManagement::ObjectManagement(Communications* GC, FederationManagement* GF, RootObject* theRootObj)
+    : comm(GC), fm(GF), rootObject(theRootObj)
+{
+}
 
-ObjectManagement::~ObjectManagement() { }
+ObjectManagement::~ObjectManagement()
+{
+}
 
 // ----------------------------------------------------------------------------
-void
-ObjectManagement::reserveObjectName(const std::string &newObjName, Exception::Type &e)
+void ObjectManagement::reserveObjectName(const std::string& newObjName, Exception::Type& e)
 {
     NM_Reserve_Object_Instance_Name req;
 
     //  Empty strings not allowed
-    if (newObjName.size() <= 0 ||
+    if (newObjName.empty() ||
         // According to spec, the HLA prefix is reserved for RTI-internal objects.
-        newObjName.compare(0, 3, "HLA") == 0 )
-    {
+        newObjName.compare(0, 3, "HLA") == 0) {
         e = Exception::Type::IllegalName;
-    } else {
+    }
+    else {
         req.setFederation(fm->_numero_federation);
         req.setFederate(fm->federate);
 
@@ -88,37 +81,32 @@ ObjectManagement::reserveObjectName(const std::string &newObjName, Exception::Ty
     // JvY TODO: Finish handling on other side (and return path)
 }
 
-
 // ----------------------------------------------------------------------------
 //! registerObject
-ObjectHandle
-ObjectManagement::registerObject(ObjectClassHandle the_class,
-		const std::string& theObjectName,
-		FederationTime,
-		FederationTime,
-		Exception::Type & e)
+ObjectHandle ObjectManagement::registerObject(
+    ObjectClassHandle the_class, const std::string& theObjectName, FederationTime, FederationTime, Exception::Type& e)
 {
-	NM_Register_Object req;
+    NM_Register_Object req;
 
-	req.setFederate(fm->federate) ;
-	req.setFederation(fm->_numero_federation);
-	req.setObjectClass(the_class);
-	req.setLabel(theObjectName);
+    req.setFederate(fm->federate);
+    req.setFederation(fm->_numero_federation);
+    req.setObjectClass(the_class);
+    req.setLabel(theObjectName);
 
-	comm->sendMessage(&req);
+    comm->sendMessage(&req);
 
-	std::unique_ptr<NM_Register_Object> rep(static_cast<NM_Register_Object*>(comm->waitMessage(NetworkMessage::REGISTER_OBJECT, req.getFederate())));
+    std::unique_ptr<NM_Register_Object> rep(
+        static_cast<NM_Register_Object*>(comm->waitMessage(NetworkMessage::REGISTER_OBJECT, req.getFederate())));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-		rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(),
-				rep->getLabel());
-		return rep->getObject() ;
-	}
-	else {
-		return 0;
-	}
+        rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(), rep->getLabel());
+        return rep->getObject();
+    }
+    else {
+        return 0;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -132,55 +120,54 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
     @param theTag user tag (pointer)
     @param e exception address (may be modified)
  */
-EventRetractionHandle
-ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
-		const std::vector<AttributeHandle> &attribArray,
-		const std::vector<AttributeValue_t> &valueArray,
-		uint32_t attribArraySize,
-		FederationTime theTime,
-		const std::string& theTag,
-		Exception::Type &e)
+EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
+                                                              const std::vector<AttributeHandle>& attribArray,
+                                                              const std::vector<AttributeValue_t>& valueArray,
+                                                              uint32_t attribArraySize,
+                                                              FederationTime theTime,
+                                                              const std::string& theTag,
+                                                              Exception::Type& e)
 {
-	NM_Update_Attribute_Values req;
-	EventRetractionHandle evtrHandle;
+    NM_Update_Attribute_Values req;
+    EventRetractionHandle evtrHandle;
 
-	G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues with time");
+    G.Out(pdGendoc, "enter ObjectManagement::updateAttributeValues with time");
     if (tm->testValidTime(theTime)) {
+        // Building request (req NetworkMessage)
+        req.setFederation(fm->_numero_federation);
+        req.setFederate(fm->federate);
+        req.setObject(theObjectHandle);
+        // set Date for UAV with time
+        req.setDate(theTime);
+        req.setAttributesSize(attribArraySize);
+        req.setValuesSize(attribArraySize);
+        for (uint32_t i = 0; i < attribArraySize; ++i) {
+            req.setAttributes(attribArray[i], i);
+            req.setValues(valueArray[i], i);
+        }
 
-		// Building request (req NetworkMessage)
-		req.setFederation(fm->_numero_federation);
-		req.setFederate(fm->federate);
-		req.setObject(theObjectHandle);
-		// set Date for UAV with time
-		req.setDate(theTime);
-		req.setAttributesSize(attribArraySize);
-		req.setValuesSize(attribArraySize);
-		for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
-			req.setAttributes(attribArray[i],i) ;
-			req.setValues(valueArray[i],i) ;
-		}
+        req.setLabel(theTag);
 
-		req.setLabel(theTag);
+        comm->sendMessage(&req);
+        std::unique_ptr<NM_Update_Attribute_Values> rep(
+            static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getMessageType(), req.getFederate())));
+        e = rep->getException();
+        evtrHandle = rep->getEvent();
+    }
+    else {
+        std::stringstream errorMsg;
+        errorMsg << "UAV InvalidFederationTime: " << std::endl;
+        errorMsg << " providedTime =" << theTime << std::endl;
+        errorMsg << " currentTime  =" << tm->requestFederateTime() << std::endl;
+        errorMsg << " lookahead    =" << tm->requestLookahead() << std::endl;
 
-		comm->sendMessage(&req);
-		std::unique_ptr<NM_Update_Attribute_Values> rep(static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getMessageType(), req.getFederate())));
-		e = rep->getException() ;
-		evtrHandle = rep->getEvent();
-	}
-	else {
-		std::stringstream errorMsg;
-		errorMsg << "UAV InvalidFederationTime: "<<std::endl;
-		errorMsg << " providedTime =" << theTime<<std::endl;
-		errorMsg << " currentTime  =" << tm->requestFederateTime()<<std::endl;
-		errorMsg << " lookahead    =" << tm->requestLookahead()<<std::endl;
-
-		D.Out(pdDebug,errorMsg.str().c_str());
+        D.Out(pdDebug, errorMsg.str().c_str());
         e = Exception::Type::InvalidFederationTime;
-	}
+    }
 
-	// FIXME returned evtrHandle carry uninitialized value
-	G.Out(pdGendoc,"exit ObjectManagement::updateAttributeValues with time");
-	return evtrHandle ;
+    // FIXME returned evtrHandle carry uninitialized value
+    G.Out(pdGendoc, "exit ObjectManagement::updateAttributeValues with time");
+    return evtrHandle;
 }
 
 // ----------------------------------------------------------------------------
@@ -193,62 +180,60 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     @param theTag user tag (pointer)
     @param e exception address (may be modified)
  */
-void
-ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
-		const std::vector<AttributeHandle> &attribArray,
-		const std::vector<AttributeValue_t> &valueArray,
-		uint32_t attribArraySize,
-		const std::string& theTag,
-		Exception::Type &e)
+void ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
+                                             const std::vector<AttributeHandle>& attribArray,
+                                             const std::vector<AttributeValue_t>& valueArray,
+                                             uint32_t attribArraySize,
+                                             const std::string& theTag,
+                                             Exception::Type& e)
 {
-	NM_Update_Attribute_Values req;
+    NM_Update_Attribute_Values req;
 
-	G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues without time");
-	// Building request (req NetworkMessage)
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setObject(theObjectHandle);
-	// Do no set Date if without time
-	req.setAttributesSize(attribArraySize) ;
-	req.setValuesSize(attribArraySize);
+    G.Out(pdGendoc, "enter ObjectManagement::updateAttributeValues without time");
+    // Building request (req NetworkMessage)
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setObject(theObjectHandle);
+    // Do no set Date if without time
+    req.setAttributesSize(attribArraySize);
+    req.setValuesSize(attribArraySize);
 
-	for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
-		req.setAttributes(attribArray[i],i) ;
-		req.setValues(valueArray[i],i);
-	}
+    for (uint32_t i = 0; i < attribArraySize; ++i) {
+        req.setAttributes(attribArray[i], i);
+        req.setValues(valueArray[i], i);
+    }
 
-	req.setLabel(theTag);
+    req.setLabel(theTag);
 
-	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(req.getMessageType(), req.getFederate()));
+    comm->sendMessage(&req);
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(req.getMessageType(), req.getFederate()));
 
-	e = rep->getException() ;
-	G.Out(pdGendoc,"exit  ObjectManagement::updateAttributeValues without time");
+    e = rep->getException();
+    G.Out(pdGendoc, "exit  ObjectManagement::updateAttributeValues without time");
 }
 
 // ----------------------------------------------------------------------------
 //! discoverObject.
-void
-ObjectManagement::discoverObject(ObjectHandle the_object,
-		ObjectClassHandle the_class,
-		const std::string& the_name,
-		FederationTime the_time,
-		EventRetractionHandle the_event,
-		Exception::Type &)
+void ObjectManagement::discoverObject(ObjectHandle the_object,
+                                      ObjectClassHandle the_class,
+                                      const std::string& the_name,
+                                      FederationTime the_time,
+                                      EventRetractionHandle the_event,
+                                      Exception::Type& /*e*/)
 {
-	M_Discover_Object_Instance req;
-	EventRetraction  event;
+    M_Discover_Object_Instance req;
+    EventRetraction event;
 
-	req.setObject(the_object);
-	req.setObjectClass(the_class);
-	req.setDate(the_time);
-	event.setSN(the_event);
-	req.setEventRetraction(event);
-	req.setObjectName(the_name);
+    req.setObject(the_object);
+    req.setObjectClass(the_class);
+    req.setDate(the_time);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
+    req.setObjectName(the_name);
 
-	comm->requestFederateService(&req);
+    comm->requestFederateService(&req);
 
-	/* The registration of the discovered object in RootObject
+    /* The registration of the discovered object in RootObject
 	 * MUST have been done just before putting DO message in FIFO.
 	 * see RTIA_network.cc
 	 */
@@ -256,490 +241,461 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 
 // ----------------------------------------------------------------------------
 //! reflectAttributeValues with time
-void
-ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
-		const std::vector <AttributeHandle> &the_attributes,
-		const std::vector <AttributeValue_t> &the_values,
-		uint16_t the_size,
-		FederationTime the_time,
-		const std::string& the_tag,
-		EventRetractionHandle the_event,
-		Exception::Type &)
+void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
+                                              const std::vector<AttributeHandle>& the_attributes,
+                                              const std::vector<AttributeValue_t>& the_values,
+                                              uint16_t the_size,
+                                              FederationTime the_time,
+                                              const std::string& the_tag,
+                                              EventRetractionHandle the_event,
+                                              Exception::Type& /*e*/)
 {
-	M_Reflect_Attribute_Values req;
-	EventRetraction event;
+    M_Reflect_Attribute_Values req;
+    EventRetraction event;
 
-	G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues with time");
-	req.setObject(the_object);
-	req.setDate(the_time);
-	event.setSN(the_event);
-	req.setEventRetraction(event);
-	req.setTag(the_tag);
+    G.Out(pdGendoc, "enter ObjectManagement::reflectAttributeValues with time");
+    req.setObject(the_object);
+    req.setDate(the_time);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
+    req.setTag(the_tag);
 
-	req.setValuesSize(the_size);
-	req.setAttributesSize(the_size);
-	for (int i=0; i<the_size;++i) {
-		req.setValues(the_values[i],i);
-		req.setAttributes(the_attributes[i],i);
-	}
+    req.setValuesSize(the_size);
+    req.setAttributesSize(the_size);
+    for (int i = 0; i < the_size; ++i) {
+        req.setValues(the_values[i], i);
+        req.setAttributes(the_attributes[i], i);
+    }
 
-	comm->requestFederateService(&req);
-	G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues with time");
+    comm->requestFederateService(&req);
+    G.Out(pdGendoc, "exit  ObjectManagement::reflectAttributeValues with time");
 }
 
 // ----------------------------------------------------------------------------
 //! reflectAttributeValues without time
-void
-ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
-		const std::vector <AttributeHandle> &the_attributes,
-		const std::vector <AttributeValue_t> &the_values,
-		uint16_t the_size,
-		const std::string& the_tag,
-		Exception::Type &)
+void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
+                                              const std::vector<AttributeHandle>& the_attributes,
+                                              const std::vector<AttributeValue_t>& the_values,
+                                              uint16_t the_size,
+                                              const std::string& the_tag,
+                                              Exception::Type& /*e*/)
 {
-	M_Reflect_Attribute_Values req;
+    M_Reflect_Attribute_Values req;
 
-	G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues without time");
-	req.setObject(the_object);
-	req.setTag(the_tag);
+    G.Out(pdGendoc, "enter ObjectManagement::reflectAttributeValues without time");
+    req.setObject(the_object);
+    req.setTag(the_tag);
 
-	req.setValuesSize(the_size);
-	req.setAttributesSize(the_size);
-	for (int i=0; i<the_size;++i) {
-		req.setValues(the_values[i],i);
-		req.setAttributes(the_attributes[i],i);
-	}
+    req.setValuesSize(the_size);
+    req.setAttributesSize(the_size);
+    for (int i = 0; i < the_size; ++i) {
+        req.setValues(the_values[i], i);
+        req.setAttributes(the_attributes[i], i);
+    }
 
-
-	comm->requestFederateService(&req);
-	G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues without time");
+    comm->requestFederateService(&req);
+    G.Out(pdGendoc, "exit  ObjectManagement::reflectAttributeValues without time");
 }
 
 // ----------------------------------------------------------------------------
 //! sendInteraction with time
-EventRetractionHandle
-ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
-		const std::vector <ParameterHandle> &paramArray,
-		const std::vector <ParameterValue_t> &valueArray,
-		uint32_t paramArraySize,
-		FederationTime theTime,
-		const std::string& theTag,
-		RegionHandle region,
-		Exception::Type &e)
+EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
+                                                        const std::vector<ParameterHandle>& paramArray,
+                                                        const std::vector<ParameterValue_t>& valueArray,
+                                                        uint32_t paramArraySize,
+                                                        FederationTime theTime,
+                                                        const std::string& theTag,
+                                                        RegionHandle region,
+                                                        Exception::Type& e)
 {
-	NM_Send_Interaction req;
-	bool validCall ;
-	EventRetractionHandle evtrHandle;
+    NM_Send_Interaction req;
+    bool validCall;
+    EventRetractionHandle evtrHandle;
 
-	validCall = tm->testValidTime(theTime) ;
-	if (validCall) {
+    validCall = tm->testValidTime(theTime);
+    if (validCall) {
+        G.Out(pdGendoc, "ObjectManagement::sendInteraction with time");
+        // Local test to know if interaction is correct.
+        rootObject->Interactions->isReady(fm->federate, theInteraction, paramArray, paramArraySize);
 
-		G.Out(pdGendoc,"ObjectManagement::sendInteraction with time") ;
-		// Local test to know if interaction is correct.
-		rootObject->Interactions->isReady(fm->federate,
-				theInteraction,
-				paramArray,
-				paramArraySize);
+        // Building network message (req) to RTIG.
+        req.setInteractionClass(theInteraction);
+        // true for UAV with time
+        req.setDate(theTime);
+        req.setRegion(region);
+        req.setFederation(fm->_numero_federation);
+        req.setFederate(fm->federate);
+        req.setParametersSize(paramArraySize);
+        req.setValuesSize(paramArraySize);
 
-		// Building network message (req) to RTIG.
-		req.setInteractionClass(theInteraction);
-		// true for UAV with time
-		req.setDate(theTime);
-		req.setRegion(region);
-		req.setFederation(fm->_numero_federation);
-		req.setFederate(fm->federate);
-		req.setParametersSize(paramArraySize);
-		req.setValuesSize(paramArraySize);
+        for (uint32_t i = 0; i < paramArraySize; i++) {
+            req.setParameters(paramArray[i], i);
+            req.setValues(valueArray[i], i);
+        }
 
-		for (uint32_t i=0 ; i<paramArraySize ; i++) {
-			req.setParameters(paramArray[i],i) ;
-			req.setValues(valueArray[i],i);
-		}
+        req.setLabel(theTag);
 
-		req.setLabel(theTag);
-
-		// Send network message and then wait for answer.
-		comm->sendMessage(&req);
+        // Send network message and then wait for answer.
+        comm->sendMessage(&req);
         std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.getFederate()));
-		e = rep->getException() ;
-		evtrHandle = rep->eventRetraction;
-	}
-	else {
-        e = Exception::Type::InvalidFederationTime ;
-	}
+        e = rep->getException();
+        evtrHandle = rep->eventRetraction;
+    }
+    else {
+        e = Exception::Type::InvalidFederationTime;
+    }
 
-	// FIXME returned evtrHandle carry uninitialized value
-	return evtrHandle ;
+    // FIXME returned evtrHandle carry uninitialized value
+    return evtrHandle;
 }
 
 // ----------------------------------------------------------------------------
 //! sendInteraction without time
-void
-ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
-		const std::vector <ParameterHandle> &paramArray,
-		const std::vector <ParameterValue_t> &valueArray,
-		uint32_t paramArraySize,
-		const std::string& theTag,
-		RegionHandle region,
-		Exception::Type &e)
+void ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
+                                       const std::vector<ParameterHandle>& paramArray,
+                                       const std::vector<ParameterValue_t>& valueArray,
+                                       uint32_t paramArraySize,
+                                       const std::string& theTag,
+                                       RegionHandle region,
+                                       Exception::Type& e)
 {
-	NM_Send_Interaction req;
-	G.Out(pdGendoc,"ObjectManagement::sendInteraction without time");
-	// Local test to know if interaction is correct.
-	rootObject->Interactions->isReady(fm->federate,
-			theInteraction,
-			paramArray,
-			paramArraySize);
+    NM_Send_Interaction req;
+    G.Out(pdGendoc, "ObjectManagement::sendInteraction without time");
+    // Local test to know if interaction is correct.
+    rootObject->Interactions->isReady(fm->federate, theInteraction, paramArray, paramArraySize);
 
-	// Building network message (req) to RTIG.
-	req.setInteractionClass(theInteraction);
-	req.setRegion(region);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setParametersSize(paramArraySize) ;
-	req.setValuesSize(paramArraySize) ;
+    // Building network message (req) to RTIG.
+    req.setInteractionClass(theInteraction);
+    req.setRegion(region);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setParametersSize(paramArraySize);
+    req.setValuesSize(paramArraySize);
 
-	for (uint32_t i=0 ; i<paramArraySize ; i++) {
-		req.setParameters(paramArray[i],i) ;
-		req.setValues(valueArray[i],i);
-	}
+    for (uint32_t i = 0; i < paramArraySize; i++) {
+        req.setParameters(paramArray[i], i);
+        req.setValues(valueArray[i], i);
+    }
 
-	req.setLabel(theTag);
+    req.setLabel(theTag);
 
-	// Send network message and then wait for answer.
-	comm->sendMessage(&req);
+    // Send network message and then wait for answer.
+    comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
 } /* end of sendInteraction */
 
 // ----------------------------------------------------------------------------
 //! receiveInteraction with time
-void
-ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
-		const std::vector <ParameterHandle> &the_parameters,
-		const std::vector <ParameterValue_t> &the_values,
-		uint16_t the_size,
-		FederationTime the_time,
-		const std::string& the_tag,
-		EventRetractionHandle the_event,
-		Exception::Type &)
+void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
+                                          const std::vector<ParameterHandle>& the_parameters,
+                                          const std::vector<ParameterValue_t>& the_values,
+                                          uint16_t the_size,
+                                          FederationTime the_time,
+                                          const std::string& the_tag,
+                                          EventRetractionHandle the_event,
+                                          Exception::Type& /*e*/)
 {
-	M_Receive_Interaction req;
-	EventRetraction  event;
+    M_Receive_Interaction req;
+    EventRetraction event;
 
-	req.setInteractionClass(the_interaction);
-	req.setDate(the_time);
-	event.setSN(the_event);
-	req.setEventRetraction(event);
-	req.setTag(the_tag);
-	req.setParametersSize(the_size);
-	req.setValuesSize(the_size);
-	for (uint32_t i=0;i<the_size;++i) {
-		req.setParameters(the_parameters[i],i);
-		req.setValues(the_values[i],i);
-	}
-	comm->requestFederateService(&req);
+    req.setInteractionClass(the_interaction);
+    req.setDate(the_time);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
+    req.setTag(the_tag);
+    req.setParametersSize(the_size);
+    req.setValuesSize(the_size);
+    for (uint32_t i = 0; i < the_size; ++i) {
+        req.setParameters(the_parameters[i], i);
+        req.setValues(the_values[i], i);
+    }
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
 //! receiveInteraction without time
-void
-ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
-		const std::vector <ParameterHandle> &the_parameters,
-		const std::vector <ParameterValue_t> &the_values,
-		uint16_t the_size,
-		const std::string& the_tag,
-		Exception::Type &)
+void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
+                                          const std::vector<ParameterHandle>& the_parameters,
+                                          const std::vector<ParameterValue_t>& the_values,
+                                          uint16_t the_size,
+                                          const std::string& the_tag,
+                                          Exception::Type& /*e*/)
 {
-	M_Receive_Interaction req;
+    M_Receive_Interaction req;
 
-	req.setInteractionClass(the_interaction);
-	req.setTag(the_tag);
-	req.setParametersSize(the_size);
-	req.setValuesSize(the_size);
-	for (uint32_t i=0;i<the_size;++i) {
-		req.setParameters(the_parameters[i],i);
-		req.setValues(the_values[i],i);
-	}
-	comm->requestFederateService(&req);
+    req.setInteractionClass(the_interaction);
+    req.setTag(the_tag);
+    req.setParametersSize(the_size);
+    req.setValuesSize(the_size);
+    for (uint32_t i = 0; i < the_size; ++i) {
+        req.setParameters(the_parameters[i], i);
+        req.setValues(the_values[i], i);
+    }
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
 //! deleteObject with time
-EventRetractionHandle
-ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-		FederationTime theTime,
-		const std::string& theTag,
-		Exception::Type &e)
+EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
+                                                     FederationTime theTime,
+                                                     const std::string& theTag,
+                                                     Exception::Type& e)
 {
-	NM_Delete_Object req;
+    NM_Delete_Object req;
 
-	req.setObject(theObjectHandle);
-	req.setDate(theTime);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
+    req.setObject(theObjectHandle);
+    req.setDate(theTime);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
 
-	req.setLabel(theTag);
-	comm->sendMessage(&req);
+    req.setLabel(theTag);
+    comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-		rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
-	}
+        rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+    }
 
-	return rep->eventRetraction ;
+    return rep->eventRetraction;
 } /* end deleteObject */
 
 // ----------------------------------------------------------------------------
 //! deleteObject without time
-void
-ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-		const std::string& theTag,
-		Exception::Type &e)
+void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::string& theTag, Exception::Type& e)
 {
-	NM_Delete_Object req;
+    NM_Delete_Object req;
 
-	req.setObject(theObjectHandle);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
+    req.setObject(theObjectHandle);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
 
-	req.setLabel(theTag);
-	comm->sendMessage(&req);
+    req.setLabel(theTag);
+    comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-		rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
-	}
+        rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+    }
 } /* end of deleteObject */
 
 // ----------------------------------------------------------------------------
 
-void 
-ObjectManagement::deleteAllObjects(Exception::Type &e)
+void ObjectManagement::deleteAllObjects(Exception::Type& e)
 {
-	std::vector<ObjectHandle> ownedObjectInstances;
+    std::vector<ObjectHandle> ownedObjectInstances;
 
-	rootObject->getAllObjectInstancesFromFederate(fm->federate, ownedObjectInstances);
-		
-	for(std::vector<ObjectHandle>::iterator it  = ownedObjectInstances.begin();
-	    it != ownedObjectInstances.end();
-	    ++it)
-	{
-		this->deleteObject((*it), "", e);
-	}
+    rootObject->getAllObjectInstancesFromFederate(fm->federate, ownedObjectInstances);
+
+    for (std::vector<ObjectHandle>::iterator it = ownedObjectInstances.begin(); it != ownedObjectInstances.end();
+         ++it) {
+        this->deleteObject((*it), "", e);
+    }
 } /* end of deleteAllObjects */
 
 // ----------------------------------------------------------------------------
 //! removeObject with time
-void
-ObjectManagement::removeObject(ObjectHandle the_object,
-		FederateHandle the_federate,
-		FederationTime theTime,
-		const std::string& the_tag,
-		EventRetractionHandle the_event,
-		Exception::Type &)
+void ObjectManagement::removeObject(ObjectHandle the_object,
+                                    FederateHandle the_federate,
+                                    FederationTime theTime,
+                                    const std::string& the_tag,
+                                    EventRetractionHandle the_event,
+                                    Exception::Type& /*e*/)
 
 {
-	M_Remove_Object_Instance req;
-	EventRetraction    event;
+    M_Remove_Object_Instance req;
+    EventRetraction event;
 
-	req.setObject(the_object);
-	event.setSN(the_event);
-	req.setEventRetraction(event);
-	req.setTag(the_tag);
-	req.setDate(theTime);
+    req.setObject(the_object);
+    event.setSN(the_event);
+    req.setEventRetraction(event);
+    req.setTag(the_tag);
+    req.setDate(theTime);
 
-	comm->requestFederateService(&req);
+    comm->requestFederateService(&req);
 
-	rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
+    rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
 }
 
 // ----------------------------------------------------------------------------
 //! removeObject without time
-void
-ObjectManagement::removeObject(ObjectHandle the_object,
-		FederateHandle the_federate,
-		const std::string& the_tag,
-		Exception::Type &)
+void ObjectManagement::removeObject(ObjectHandle the_object,
+                                    FederateHandle the_federate,
+                                    const std::string& the_tag,
+                                    Exception::Type& /*e*/)
 {
-	M_Remove_Object_Instance req;
+    M_Remove_Object_Instance req;
 
-	req.setObject(the_object);
-	req.setTag(the_tag);
+    req.setObject(the_object);
+    req.setTag(the_tag);
 
-	comm->requestFederateService(&req);
+    comm->requestFederateService(&req);
 
-	rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
+    rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
 }
 
 // ----------------------------------------------------------------------------
 //! changeAttributeTransportType
-EventRetractionHandle
-ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
-		const std::vector <AttributeHandle> &attribArray,
-		uint32_t attribArraySize,
-		TransportType theType,
-		Exception::Type &e)
+EventRetractionHandle ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
+                                                                     const std::vector<AttributeHandle>& attribArray,
+                                                                     uint32_t attribArraySize,
+                                                                     TransportType theType,
+                                                                     Exception::Type& e)
 {
-	NM_Change_Attribute_Transport_Type req;
-	uint32_t i ;
+    NM_Change_Attribute_Transport_Type req;
+    uint32_t i;
 
-	req.setObject(theObjectHandle);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setTransport(theType);
-	req.setAttributesSize(attribArraySize);
+    req.setObject(theObjectHandle);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setTransport(theType);
+    req.setAttributesSize(attribArraySize);
 
-	for (i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i) ;
+    for (i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	comm->sendMessage(&req);
+    comm->sendMessage(&req);
 
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
-			NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
-			req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
-	return rep->eventRetraction ;
+    return rep->eventRetraction;
 }
 
 // ----------------------------------------------------------------------------
 //! changeAttributeOrderType
-EventRetractionHandle
-ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
-		const std::vector <AttributeHandle> &attribArray,
-		uint32_t attribArraySize,
-		OrderType theType,
-		Exception::Type &e)
+EventRetractionHandle ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
+                                                                 const std::vector<AttributeHandle>& attribArray,
+                                                                 uint32_t attribArraySize,
+                                                                 OrderType theType,
+                                                                 Exception::Type& e)
 {
-	NM_Change_Attribute_Order_Type req ;
-	uint32_t i ;
+    NM_Change_Attribute_Order_Type req;
+    uint32_t i;
 
-	req.setObject(theObjectHandle);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setOrder(theType);
-	req.setAttributesSize(attribArraySize);
+    req.setObject(theObjectHandle);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setOrder(theType);
+    req.setAttributesSize(attribArraySize);
 
-	for (i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i) ;
+    for (i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	comm->sendMessage(&req);
+    comm->sendMessage(&req);
 
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
-	return rep->eventRetraction ;
+    return rep->eventRetraction;
 }
 
 // ----------------------------------------------------------------------------
 //! changeInteractionTransportType
 EventRetractionHandle
-ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
-		TransportType theType,
-		Exception::Type &e)
+ObjectManagement::changeInteractionTransportType(InteractionClassHandle id, TransportType theType, Exception::Type& e)
 {
-	NM_Change_Interaction_Transport_Type req;
+    NM_Change_Interaction_Transport_Type req;
 
-	req.setInteractionClass(id);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setTransport(theType);
+    req.setInteractionClass(id);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setTransport(theType);
 
-	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.getFederate()));
-	e = rep->getException() ;
+    comm->sendMessage(&req);
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.getFederate()));
+    e = rep->getException();
 
-	return rep->eventRetraction ;
+    return rep->eventRetraction;
 }
 
 // ----------------------------------------------------------------------------
 //! changeInteractionOrderType
 EventRetractionHandle
-ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
-		OrderType theType,
-		Exception::Type &e)
+ObjectManagement::changeInteractionOrderType(InteractionClassHandle id, OrderType theType, Exception::Type& e)
 {
-	NM_Change_Interaction_Order_Type req;
+    NM_Change_Interaction_Order_Type req;
 
-	req.setInteractionClass(id);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setOrder(theType);
+    req.setInteractionClass(id);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setOrder(theType);
 
-	comm->sendMessage(&req);
+    comm->sendMessage(&req);
 
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.getFederate()));
 
-	e = rep->getException() ;
+    e = rep->getException();
 
-	return rep->eventRetraction ;
+    return rep->eventRetraction;
 } /* end of changeInteractionOrderType */
 
 // ----------------------------------------------------------------------------
 //! requestObjectAttributeValueUpdate
-void
-ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
-		const std::vector <AttributeHandle> &attribs,
-		uint32_t attribArraySize,
-		Exception::Type &e)
+void ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
+                                                         const std::vector<AttributeHandle>& attribs,
+                                                         uint32_t attribArraySize,
+                                                         Exception::Type& e)
 {
-	NM_Request_Object_Attribute_Value_Update req;
+    NM_Request_Object_Attribute_Value_Update req;
 
-	G.Out(pdGendoc,"enter ObjectManagement::requestObjectAttributeValueUpdate");
+    G.Out(pdGendoc, "enter ObjectManagement::requestObjectAttributeValueUpdate");
 
-	req.setObject(handle);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setAttributesSize(attribArraySize);
+    req.setObject(handle);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setAttributesSize(attribArraySize);
 
-	for (uint32_t i = 0 ; i < attribArraySize ; i++) {
-		req.setAttributes(attribs[i],i) ;
-	}
+    for (uint32_t i = 0; i < attribArraySize; i++) {
+        req.setAttributes(attribs[i], i);
+    }
 
-	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
-			req.getFederate()));
-	e = rep->getException() ;
-	G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
+    comm->sendMessage(&req);
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
+    e = rep->getException();
+    G.Out(pdGendoc, "exit  ObjectManagement::requestObjectAttributeValueUpdate");
 
 } /* end of requestObjectAttributeValueUpdate */
 
 // ----------------------------------------------------------------------------
 //! requestClassAttributeValueUpdate
-void 
-ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
-		const std::vector <AttributeHandle> &attribs,
-		uint32_t attribArraySize,
-		Exception::Type &e)
+void ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
+                                                        const std::vector<AttributeHandle>& attribs,
+                                                        uint32_t attribArraySize,
+                                                        Exception::Type& e)
 {
-	NM_Request_Class_Attribute_Value_Update req;
-	
-	G.Out(pdGendoc,"enter ObjectManagement::requestClassAttributeValueUpdate");
-	
-	req.setObjectClass(theClass);
-	req.setFederation(fm->_numero_federation);
-	req.setFederate(fm->federate);
-	req.setAttributesSize(attribArraySize);
-	
-	for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
-		req.setAttributes(attribs[i],i) ;
-	}
+    NM_Request_Class_Attribute_Value_Update req;
 
-	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
-			req.getFederate()));
-	e = rep->getException() ;
+    G.Out(pdGendoc, "enter ObjectManagement::requestClassAttributeValueUpdate");
 
-	G.Out(pdGendoc,"exit  ObjectManagement::requestClassAttributeValueUpdate");
+    req.setObjectClass(theClass);
+    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->federate);
+    req.setAttributesSize(attribArraySize);
+
+    for (uint32_t i = 0; i < attribArraySize; ++i) {
+        req.setAttributes(attribs[i], i);
+    }
+
+    comm->sendMessage(&req);
+    std::unique_ptr<NetworkMessage> rep(
+        comm->waitMessage(NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
+    e = rep->getException();
+
+    G.Out(pdGendoc, "exit  ObjectManagement::requestClassAttributeValueUpdate");
 
 } /* end of requestClassAttributeValueUpdate */
 
@@ -747,107 +703,92 @@ ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 // -- 4.15 provideAttributeValueUpdate --
 // --------------------------------------
 
-void
-ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
-		const std::vector <AttributeHandle> &the_attributes,
-		uint32_t attribArraySize,
-		Exception::Type &)
+void ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
+                                                   const std::vector<AttributeHandle>& the_attributes,
+                                                   uint32_t attribArraySize,
+                                                   Exception::Type&)
 {
-	M_Provide_Attribute_Value_Update req;
+    M_Provide_Attribute_Value_Update req;
 
-	G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
-	req.setObject(the_object);
-	req.setAttributesSize(attribArraySize);
-	for (uint32_t i = 0 ; i < attribArraySize ; ++i) {
-		req.setAttributes(the_attributes[i],i);
-	}
+    G.Out(pdGendoc, "enter ObjectManagement::provideAttributeValueUpdate");
+    req.setObject(the_object);
+    req.setAttributesSize(attribArraySize);
+    for (uint32_t i = 0; i < attribArraySize; ++i) {
+        req.setAttributes(the_attributes[i], i);
+    }
 
-	comm->requestFederateService(&req);
-	G.Out(pdGendoc,"exit  ObjectManagement::provideAttributeValueUpdate");
+    comm->requestFederateService(&req);
+    G.Out(pdGendoc, "exit  ObjectManagement::provideAttributeValueUpdate");
 }
 
 // ------------------
 // -- 4.16 retract --
 // ------------------
 
-void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
-		Exception::Type & /*e*/)
+void ObjectManagement::retract(EventRetractionHandle /*theHandle*/, Exception::Type& /*e*/)
 {
-	throw RTIinternalError("ObjectManagement::retract not implemented.");
+    throw RTIinternalError("ObjectManagement::retract not implemented.");
 }
-
 
 // ----------------------------
 // -- 4.17 reflectRetraction --
 // ----------------------------
 
-void
-ObjectManagement::reflectRetraction(EventRetractionHandle,
-		Exception::Type &)
+void ObjectManagement::reflectRetraction(EventRetractionHandle, Exception::Type&)
 {
-	throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
+    throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
 }
 
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
-ObjectClassHandle
-ObjectManagement::getObjectClassHandle(const std::string& theName)
+ObjectClassHandle ObjectManagement::getObjectClassHandle(const std::string& theName)
 {
-    ObjectClassHandle handle ;
-    G.Out(pdGendoc,"enter ObjectManagement::getObjectClassHandle");
+    ObjectClassHandle handle;
+    G.Out(pdGendoc, "enter ObjectManagement::getObjectClassHandle");
     try {
         handle = rootObject->ObjectClasses->getObjectClassHandle(theName);
-        G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle");
-
+        G.Out(pdGendoc, "exit  ObjectManagement::getObjectClassHandle");
     }
     catch (NameNotFound&) {
-        G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
+        G.Out(pdGendoc, "exit  ObjectManagement::getObjectClassHandle on NameNotFound");
         throw NameNotFound(theName);
     }
     return handle;
 }
 
-
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
-const std::string&
-ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
+const std::string& ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 {
-	return rootObject->ObjectClasses->getObjectClassName(theHandle);
+    return rootObject->ObjectClasses->getObjectClassName(theHandle);
 }
 
 // ----------------------------------------------------------------------------
 //! Returns the object instance handle.
-ObjectHandle
-ObjectManagement::getObjectInstanceHandle(const std::string& the_name)
+ObjectHandle ObjectManagement::getObjectInstanceHandle(const std::string& the_name)
 {
-	return rootObject->objects->getObjectInstanceHandle(the_name);
+    return rootObject->objects->getObjectInstanceHandle(the_name);
 }
 
 // ----------------------------------------------------------------------------
 //! Returns the object instance name.
-const std::string&
-ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
+const std::string& ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
 {
-	return rootObject->objects->getObjectInstanceName(the_object);
+    return rootObject->objects->getObjectInstanceName(the_object);
 }
 
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
-AttributeHandle
-ObjectManagement::getAttributeHandle(const std::string& theName,
-        ObjectClassHandle theClassHandle)
+AttributeHandle ObjectManagement::getAttributeHandle(const std::string& theName, ObjectClassHandle theClassHandle)
 {
-    AttributeHandle handle ;
-    G.Out(pdGendoc,"enter ObjectManagement::getAttributeHandle");
+    AttributeHandle handle;
+    G.Out(pdGendoc, "enter ObjectManagement::getAttributeHandle");
     try {
-        handle = rootObject->ObjectClasses->getAttributeHandle(theName,
-                theClassHandle);
-        G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle");
-
+        handle = rootObject->ObjectClasses->getAttributeHandle(theName, theClassHandle);
+        G.Out(pdGendoc, "exit  ObjectManagement::getAttributeHandle");
     }
     catch (NameNotFound&) {
-        G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle on NameNotFound");
+        G.Out(pdGendoc, "exit  ObjectManagement::getAttributeHandle on NameNotFound");
         throw NameNotFound(theName);
     }
     return handle;
@@ -855,284 +796,254 @@ ObjectManagement::getAttributeHandle(const std::string& theName,
 
 // ----------------------------------------------------------------------------
 //! getAttributeName.
-const std::string&
-ObjectManagement::getAttributeName(AttributeHandle theHandle,
-		ObjectClassHandle theClassHandle)
+const std::string& ObjectManagement::getAttributeName(AttributeHandle theHandle, ObjectClassHandle theClassHandle)
 {
-	return rootObject->ObjectClasses->getAttributeName(theHandle,
-			theClassHandle);
+    return rootObject->ObjectClasses->getAttributeName(theHandle, theClassHandle);
 }
 
 // ----------------------------------------------------------------------------
 //! getInteractionClassHandle.
-InteractionClassHandle
-ObjectManagement::getInteractionClassHandle(const std::string& theName)
+InteractionClassHandle ObjectManagement::getInteractionClassHandle(const std::string& theName)
 {
-	return rootObject->Interactions->getInteractionClassHandle(theName);
+    return rootObject->Interactions->getInteractionClassHandle(theName);
 }
 
 // ----------------------------------------------------------------------------
 //! getInteractionClassName.
-const std::string&
-ObjectManagement::
-getInteractionClassName(InteractionClassHandle theClassHandle)
+const std::string& ObjectManagement::getInteractionClassName(InteractionClassHandle theClassHandle)
 {
-	return
-	rootObject->Interactions->getInteractionClassName(theClassHandle);
+    return rootObject->Interactions->getInteractionClassName(theClassHandle);
 }
 
 // ----------------------------------------------------------------------------
 //! getParameterHandle.
-ParameterHandle
-ObjectManagement::getParameterHandle(const std::string& theParameterName,
-		InteractionClassHandle theClassHandle)
+ParameterHandle ObjectManagement::getParameterHandle(const std::string& theParameterName,
+                                                     InteractionClassHandle theClassHandle)
 {
-	return rootObject->Interactions->getParameterHandle(theParameterName,
-			theClassHandle);
+    return rootObject->Interactions->getParameterHandle(theParameterName, theClassHandle);
 }
 
 // ----------------------------------------------------------------------------
 //! getParameterName.
-const std::string&
-ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
-		InteractionClassHandle theClassHandle)
+const std::string& ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
+                                                      InteractionClassHandle theClassHandle)
 {
-	return rootObject->Interactions->getParameterName(theParameterHandle,
-			theClassHandle);
+    return rootObject->Interactions->getParameterName(theParameterHandle, theClassHandle);
 }
 
 // ----------------------------------------------------------------------------
 //! getObjectClass
-ObjectClassHandle
-ObjectManagement::getObjectClass(ObjectHandle object)
+ObjectClassHandle ObjectManagement::getObjectClass(ObjectHandle object)
 {
-	return rootObject->objects->getObjectClass(object);
+    return rootObject->objects->getObjectClass(object);
 }
 
 // ----------------------------------------------------------------------------
 //! getTransportationHandle
-TransportType
-ObjectManagement::getTransportationHandle(const std::string& theName)
+TransportType ObjectManagement::getTransportationHandle(const std::string& theName)
 {
-	for(unsigned i = 0; i < sizeof(transportTypeList)/sizeof(transportTypeList[0]); ++i) {
-		if(theName == transportTypeList[i].name)
-			return transportTypeList[i].type;
-	}
+    for (unsigned i = 0; i < sizeof(transportTypeList) / sizeof(transportTypeList[0]); ++i) {
+        if (theName == transportTypeList[i].name)
+            return transportTypeList[i].type;
+    }
 
-	throw NameNotFound(theName);
+    throw NameNotFound(theName);
 }
 
 // ----------------------------------------------------------------------------
 //! getTransportationName
-const std::string&
-ObjectManagement::getTransportationName(TransportType theType)
+const std::string& ObjectManagement::getTransportationName(TransportType theType)
 {
-	for(unsigned i = 0; i < sizeof(transportTypeList)/sizeof(transportTypeList[0]); ++i) {
-		if(theType == transportTypeList[i].type)
-			return transportTypeList[i].name;
-	}
+    for (unsigned i = 0; i < sizeof(transportTypeList) / sizeof(transportTypeList[0]); ++i) {
+        if (theType == transportTypeList[i].type)
+            return transportTypeList[i].name;
+    }
 
-	throw InvalidTransportationHandle("");
+    throw InvalidTransportationHandle("");
 }
 
 // ----------------------------------------------------------------------------
 //! getOrderingHandle
-OrderType
-ObjectManagement::getOrderingHandle(const std::string& theName)
+OrderType ObjectManagement::getOrderingHandle(const std::string& theName)
 {
-	for(unsigned i = 0; i < sizeof(orderTypeList)/sizeof(orderTypeList[0]); ++i) {
-		if(theName == orderTypeList[i].name)
-			return orderTypeList[i].type;
-	}
+    for (unsigned i = 0; i < sizeof(orderTypeList) / sizeof(orderTypeList[0]); ++i) {
+        if (theName == orderTypeList[i].name)
+            return orderTypeList[i].type;
+    }
 
-	throw NameNotFound(theName);
+    throw NameNotFound(theName);
 }
 
 // ----------------------------------------------------------------------------
 //! getOrderingName
-const std::string&
-ObjectManagement::getOrderingName(OrderType theType)
+const std::string& ObjectManagement::getOrderingName(OrderType theType)
 {
-	for(unsigned i = 0; i < sizeof(orderTypeList)/sizeof(orderTypeList[0]); ++i) {
-		if(theType == orderTypeList[i].type)
-			return orderTypeList[i].name;
-	}
+    for (unsigned i = 0; i < sizeof(orderTypeList) / sizeof(orderTypeList[0]); ++i) {
+        if (theType == orderTypeList[i].type)
+            return orderTypeList[i].name;
+    }
 
-	throw InvalidOrderingHandle("");
+    throw InvalidOrderingHandle("");
 }
 
-void
-ObjectManagement::
-setAttributeScopeAdvisorySwitch(bool state, Exception::Type &e) {
-	G.Out(pdGendoc,"enter ObjectManagement::setAttributeScopeAdvisorySwitch");
+void ObjectManagement::setAttributeScopeAdvisorySwitch(bool state, Exception::Type& e)
+{
+    G.Out(pdGendoc, "enter ObjectManagement::setAttributeScopeAdvisorySwitch");
 
-	NM_Set_Attribute_Scope_Advisory_Switch msg ;
+    NM_Set_Attribute_Scope_Advisory_Switch msg;
 
-    e = Exception::Type::NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION;
 
-	msg.setFederation(fm->_numero_federation);
-	msg.setFederate(fm->federate);
+    msg.setFederation(fm->_numero_federation);
+    msg.setFederate(fm->federate);
 
-	if (state) {
-		msg.attributeScopeAdvisorySwitchOn();
-	}
-	else {
-		msg.attributeScopeAdvisorySwitchOff();
-	}
+    if (state) {
+        msg.attributeScopeAdvisorySwitchOn();
+    }
+    else {
+        msg.attributeScopeAdvisorySwitchOff();
+    }
 
-	comm->sendMessage(&msg);
+    comm->sendMessage(&msg);
 
-	G.Out(pdGendoc,"exit ObjectManagement::setAttributeScopeAdvisorySwitch");
+    G.Out(pdGendoc, "exit ObjectManagement::setAttributeScopeAdvisorySwitch");
 }
 
 // --------------------------------------
 // -- 6.13 attributesInScope
 // --------------------------------------
-void
-ObjectManagement::
-attributesInScope(ObjectHandle theObject,
-		const std::vector <AttributeHandle> &attribArray,
-		const uint16_t attribArraySize,
-		Exception::Type &/*e*/) {
+void ObjectManagement::attributesInScope(ObjectHandle theObject,
+                                         const std::vector<AttributeHandle>& attribArray,
+                                         const uint16_t attribArraySize,
+                                         Exception::Type& /*e*/)
+{
+    M_Attributes_In_Scope req;
 
-	M_Attributes_In_Scope req;
+    G.Out(pdGendoc, "enter ObjectManagement::attributesInScope");
 
-	G.Out(pdGendoc,"enter ObjectManagement::attributesInScope");
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize);
 
-	req.setObject(theObject);
-	req.setAttributesSize(attribArraySize);
+    for (int i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	for (int i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i);
+    comm->requestFederateService(&req);
 
-	comm->requestFederateService(&req);
-
-	G.Out(pdGendoc,"exit  ObjectManagement::attributesInScope");
+    G.Out(pdGendoc, "exit  ObjectManagement::attributesInScope");
 }
 
 // --------------------------------------
 // -- 6.14 attributesOutOfScope
 // --------------------------------------
 
-void
-ObjectManagement::
-attributesOutOfScope(ObjectHandle theObject,
-		const std::vector <AttributeHandle> &attribArray,
-		const uint16_t attribArraySize,
-		Exception::Type &/*e*/) {
+void ObjectManagement::attributesOutOfScope(ObjectHandle theObject,
+                                            const std::vector<AttributeHandle>& attribArray,
+                                            const uint16_t attribArraySize,
+                                            Exception::Type& /*e*/)
+{
+    M_Attributes_Out_Of_Scope req;
 
-	M_Attributes_Out_Of_Scope req;
+    G.Out(pdGendoc, "enter ObjectManagement::attributesOutScope");
 
-	G.Out(pdGendoc,"enter ObjectManagement::attributesOutScope");
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize);
 
-	req.setObject(theObject);
-	req.setAttributesSize(attribArraySize);
+    for (int i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	for (int i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i);
+    comm->requestFederateService(&req);
 
-	comm->requestFederateService(&req);
-
-	G.Out(pdGendoc,"exit  ObjectManagement::attributesOutScope");
+    G.Out(pdGendoc, "exit  ObjectManagement::attributesOutScope");
 }
 
-void
-ObjectManagement::
-setAttributeRelevanceAdvisorySwitch(bool state, Exception::Type &e) {
-	G.Out(pdGendoc,"enter ObjectManagement::setAttributeRelevanceAdvisorySwitch");
+void ObjectManagement::setAttributeRelevanceAdvisorySwitch(bool state, Exception::Type& e)
+{
+    G.Out(pdGendoc, "enter ObjectManagement::setAttributeRelevanceAdvisorySwitch");
 
-	NM_Set_Attribute_Relevance_Advisory_Switch msg ;
+    NM_Set_Attribute_Relevance_Advisory_Switch msg;
 
-    e = Exception::Type::NO_EXCEPTION ;
+    e = Exception::Type::NO_EXCEPTION;
 
-	msg.setFederation(fm->_numero_federation);
-	msg.setFederate(fm->federate);
+    msg.setFederation(fm->_numero_federation);
+    msg.setFederate(fm->federate);
 
-	if (state) {
-		msg.attributeRelevanceAdvisorySwitchOn();
-	}
-	else {
-		msg.attributeRelevanceAdvisorySwitchOff();
-	}
+    if (state) {
+        msg.attributeRelevanceAdvisorySwitchOn();
+    }
+    else {
+        msg.attributeRelevanceAdvisorySwitchOff();
+    }
 
-	comm->sendMessage(&msg);
+    comm->sendMessage(&msg);
 
-	G.Out(pdGendoc,"exit ObjectManagement::setAttributeRelevanceAdvisorySwitch");
+    G.Out(pdGendoc, "exit ObjectManagement::setAttributeRelevanceAdvisorySwitch");
 }
 
 // --------------------------------------
 // -- 6.17 turnUpdatesOnForObjectInstance
 // --------------------------------------
 
-void
-ObjectManagement::
-turnUpdatesOnForObjectInstance(ObjectHandle theObject,
-		const std::vector <AttributeHandle> &attribArray,
-		const uint16_t attribArraySize,
-		Exception::Type &/*e*/) {
+void ObjectManagement::turnUpdatesOnForObjectInstance(ObjectHandle theObject,
+                                                      const std::vector<AttributeHandle>& attribArray,
+                                                      const uint16_t attribArraySize,
+                                                      Exception::Type& /*e*/)
+{
+    M_Turn_Updates_On_For_Object_Instance req;
 
-	M_Turn_Updates_On_For_Object_Instance req;
+    G.Out(pdGendoc, "enter ObjectManagement::turnUpdatesOnForObjectInstance");
 
-	G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOnForObjectInstance");
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize);
 
-	req.setObject(theObject);
-	req.setAttributesSize(attribArraySize);
+    for (int i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	for (int i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i);
+    comm->requestFederateService(&req);
 
-	comm->requestFederateService(&req);
-
-	G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOnForObjectInstance");
+    G.Out(pdGendoc, "exit  ObjectManagement::turnUpdatesOnForObjectInstance");
 }
 
 // --------------------------------------
 // -- 6.18 turnUpdatesOffForObjectInstance
 // --------------------------------------
 
-void
-ObjectManagement::
-turnUpdatesOffForObjectInstance(ObjectHandle theObject,
-		const std::vector <AttributeHandle> &attribArray,
-		const uint16_t attribArraySize,
-		Exception::Type &/*e*/) {
+void ObjectManagement::turnUpdatesOffForObjectInstance(ObjectHandle theObject,
+                                                       const std::vector<AttributeHandle>& attribArray,
+                                                       const uint16_t attribArraySize,
+                                                       Exception::Type& /*e*/)
+{
+    M_Turn_Updates_Off_For_Object_Instance req;
 
-	M_Turn_Updates_Off_For_Object_Instance req;
+    G.Out(pdGendoc, "enter ObjectManagement::turnUpdatesOffForObjectInstance");
 
-	G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOffForObjectInstance");
+    req.setObject(theObject);
+    req.setAttributesSize(attribArraySize);
 
-	req.setObject(theObject);
-	req.setAttributesSize(attribArraySize);
+    for (int i = 0; i < attribArraySize; i++)
+        req.setAttributes(attribArray[i], i);
 
-	for (int i = 0 ; i < attribArraySize ; i++)
-		req.setAttributes(attribArray[i],i);
+    comm->requestFederateService(&req);
 
-	comm->requestFederateService(&req);
-
-	G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOffForObjectInstance");
+    G.Out(pdGendoc, "exit  ObjectManagement::turnUpdatesOffForObjectInstance");
 }
 
 // 1516 - 6.3
-void 
-ObjectManagement::nameReservationSucceeded(const std::string &reservedName)
+void ObjectManagement::nameReservationSucceeded(const std::string& reservedName)
 {
-	M_Reserve_Object_Instance_Name_Succeeded req;
+    M_Reserve_Object_Instance_Name_Succeeded req;
 
-	req.setObjectName(reservedName);
+    req.setObjectName(reservedName);
 
-	comm->requestFederateService(&req);
+    comm->requestFederateService(&req);
 }
 
-void 
-ObjectManagement::nameReservationFailed(const std::string &reservedName)
+void ObjectManagement::nameReservationFailed(const std::string& reservedName)
 {
-	M_Reserve_Object_Instance_Name_Failed req;
+    M_Reserve_Object_Instance_Name_Failed req;
 
-	req.setObjectName(reservedName);
+    req.setObjectName(reservedName);
 
-	comm->requestFederateService(&req);
+    comm->requestFederateService(&req);
 }
-
-
-}} // namespace certi/rtia
-
+}
+} // namespace certi/rtia
