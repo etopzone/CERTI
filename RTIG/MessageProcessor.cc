@@ -17,6 +17,8 @@
 #include "SocketTCP.hh"
 #include "certi.hh"
 
+#include "make_unique.hh"
+
 using std::endl;
 
 namespace certi {
@@ -30,10 +32,10 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
                                    SocketServer& socket_server,
                                    HandleManager<Handle>& handle_generator,
                                    FederationsList& federations)
-    : my_auditServer{audit_server}
-    , my_socketServer{socket_server}
-    , my_federationHandleGenerator{handle_generator}
-    , my_federations{federations}
+    : my_auditServer(audit_server)
+    , my_socketServer(socket_server)
+    , my_federationHandleGenerator(handle_generator)
+    , my_federations(federations)
 {
 }
 
@@ -614,7 +616,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
          */
         if (my_federations.searchFederation(request.message()->getFederation())
                 .updateLastNERxForFederate(request.message()->getFederate(), request.message()->getDate())) {
-            std::unique_ptr<NM_Message_Null> nmsg = std::make_unique<NM_Message_Null>();
+            std::unique_ptr<NM_Message_Null> nmsg = make_unique<NM_Message_Null>();
             nmsg->setDate(my_federations.searchFederation(request.message()->getFederation()).getMinNERx());
             nmsg->setFederation(request.message()->getFederation());
             nmsg->setFederate(0);
@@ -1187,7 +1189,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
     }
 
     // Building answer (Network Message)
-    auto rep = std::make_unique<NM_Update_Attribute_Values>();
+    auto rep = make_unique<NM_Update_Attribute_Values>();
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 

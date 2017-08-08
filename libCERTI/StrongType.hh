@@ -24,6 +24,9 @@
 #ifndef STRONGTYPE_H
 #define STRONGTYPE_H
 
+#include <type_traits>
+#include <utility>
+
 namespace certi {
 template <typename T, typename Parameter>
 class NamedType {

@@ -26,9 +26,16 @@
 
 #include <cstdint>
 
+#include "StrongType.hh"
+
 namespace certi {
     
     typedef uint32_t Handle;
+    
+        typedef Handle   FederateHandle;
+// // // // //     using FederateHandle = NamedType<Handle, struct FederateHandleParameter>;
+        typedef Handle   FederationHandle;
+// // // // //     using FederationHandle = NamedType<Handle, struct FederationHandleTypeParameter>;
     
     typedef Handle   ObjectClassHandle;
     typedef Handle   InteractionClassHandle;
@@ -36,11 +43,7 @@ namespace certi {
     typedef Handle   ParameterHandle;
     typedef Handle   ObjectHandle;
     typedef Handle   DimensionHandle;
-    typedef Handle   FederateHandle;
-    typedef Handle   FederationHandle;
-    typedef Handle   OrderType;
     typedef Handle   SpaceHandle;
-    typedef Handle   TransportType;
     typedef Handle   EventRetractionHandle;
     typedef Handle   RegionHandle;
     

@@ -26,6 +26,8 @@ set(rtig_SRCS
     ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.hh
     ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.cc
     
+    ${CERTI_SOURCE_DIR}/RTIG/make_unique.hh
+    
     ${CERTI_SOURCE_DIR}/RTIG/RTIG.hh
     ${CERTI_SOURCE_DIR}/RTIG/RTIG.cc
     )
