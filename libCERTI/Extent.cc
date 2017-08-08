@@ -21,88 +21,72 @@
 //
 // ----------------------------------------------------------------------------
 
-
-#include "Extent.hh"
 #include "Dimension.hh"
+#include "Extent.hh"
 #include "PrettyDebug.hh"
 #include <iostream>
 
-using std::vector ;
+using std::vector;
 
 namespace {
 
 PrettyDebug D("EXTENT", __FILE__);
-
 }
 
 namespace certi {
 
-Extent::Extent(size_t n)
+Extent::Extent(const size_t n)
 {
     Range range(Dimension::getLowerBound(), Dimension::getUpperBound());
     ranges.resize(n, range);
 }
 
-// ----------------------------------------------------------------------------
-
-uint32_t
-Extent::getRangeLowerBound(DimensionHandle handle) const
-    throw (ArrayIndexOutOfBounds)
+uint32_t Extent::getRangeLowerBound(DimensionHandle handle) const throw(ArrayIndexOutOfBounds)
 {
-    if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds("Invalid dimension handle");
+    if ((handle <= 0) || (handle > ranges.size()))
+        throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
-	return ranges[handle - 1].first ;	
+        return ranges[handle - 1].first;
 }
 
-uint32_t
-Extent::getRangeUpperBound(DimensionHandle handle) const
-    throw (ArrayIndexOutOfBounds)
+uint32_t Extent::getRangeUpperBound(DimensionHandle handle) const throw(ArrayIndexOutOfBounds)
 {
-    if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds("Invalid dimension handle");
+    if ((handle <= 0) || (handle > ranges.size()))
+        throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
-	return ranges[handle - 1].second ;
+        return ranges[handle - 1].second;
 }
 
-void
-Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val)
-    throw (ArrayIndexOutOfBounds)
+void Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val) throw(ArrayIndexOutOfBounds)
 {
-    if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds("Invalid dimension handle");
+    if ((handle <= 0) || (handle > ranges.size()))
+        throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
-	ranges[handle - 1].first = val ;
+        ranges[handle - 1].first = val;
 }
 
-void
-Extent::setRangeUpperBound(DimensionHandle handle, uint32_t val)
-    throw (ArrayIndexOutOfBounds)
+void Extent::setRangeUpperBound(DimensionHandle handle, uint32_t val) throw(ArrayIndexOutOfBounds)
 {
-    if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds("Invalid dimension handle");
+    if ((handle <= 0) || (handle > ranges.size()))
+        throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
-	ranges[handle - 1].second = val ;
+        ranges[handle - 1].second = val;
 }
 
-size_t
-Extent::size() const
+size_t Extent::size() const
 {
     return ranges.size();
 }
 
-bool
-Extent::overlaps(const Extent &e) const
+bool Extent::overlaps(const Extent& e) const
 {
-    for (unsigned int i = 1 ; i <= size(); ++i) {
-	Debug(D, pdTrace) << e.getRangeLowerBound(i) << " < " << getRangeUpperBound(i)
-		   << " or " << e.getRangeUpperBound(i) << " < "
-		   << getRangeLowerBound(i) << " ?" << std::endl ;
-	if (e.getRangeLowerBound(i) > getRangeUpperBound(i) ||
-	    e.getRangeUpperBound(i) < getRangeLowerBound(i))
-	    return false ;
+    for (unsigned int i = 1; i <= size(); ++i) {
+        Debug(D, pdTrace) << e.getRangeLowerBound(i) << " < " << getRangeUpperBound(i) << " or "
+                          << e.getRangeUpperBound(i) << " < " << getRangeLowerBound(i) << " ?" << std::endl;
+        if (e.getRangeLowerBound(i) > getRangeUpperBound(i) || e.getRangeUpperBound(i) < getRangeLowerBound(i))
+            return false;
     }
-    return true ;
+    return true;
 }
 
 } // namespace certi

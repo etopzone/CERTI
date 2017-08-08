@@ -617,7 +617,7 @@ public:
                                                                                    RestoreInProgress,
                                                                                    RTIinternalError);
 
-    void getFOM(NM_Join_Federation_Execution& objectModelData);
+    void getFOM(NM_Join_Federation_Execution& object_model_data);
 
     /**
      * Update the last NERx message date for the concerned federate.
@@ -632,7 +632,7 @@ public:
      * for all Federates using NERx messages.
      * @return the minimum if at least one federate is using NERx, 0 otherwise
      */
-    FederationTime computeMinNERx();
+    FederationTime computeMinNERx() throw(FederateNotExecutionMember);
 
     /**
      * Get the (precomputed) minimum of all NERx messsage date
@@ -645,7 +645,7 @@ public:
     Federate& getFederate(const std::string& name) throw(FederateNotExecutionMember);
 
     /// Return the Federate whose Handle is theHandle, if found.
-    Federate& getFederate(FederateHandle theHandle) throw(FederateNotExecutionMember);
+    Federate& getFederate(FederateHandle federate_handle) throw(FederateNotExecutionMember);
 
 private:
     bool saveXmlData();

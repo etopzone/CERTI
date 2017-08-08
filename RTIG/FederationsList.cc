@@ -49,7 +49,7 @@ static PrettyDebug D("FEDERATIONSLIST", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 
 FederationsList::FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel) noexcept
-    : my_socket_server(server), my_audit_file(audit), my_verbose_level(verboseLevel)
+    : my_socket_server{server}, my_audit_file{audit}, my_verbose_level{verboseLevel}
 {
 }
 

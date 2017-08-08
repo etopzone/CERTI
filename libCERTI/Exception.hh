@@ -191,7 +191,7 @@ private:
 #define CERTI_EXCEPTION(A)                                                                                             \
     class CERTI_EXPORT A : public Exception {                                                                          \
     public:                                                                                                            \
-        A(const std::string& reason) : Exception{#A, reason}                                                           \
+        explicit A(const std::string& reason) : Exception{#A, reason}                                                  \
         {                                                                                                              \
         }                                                                                                              \
                                                                                                                        \

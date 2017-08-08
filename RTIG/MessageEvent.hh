@@ -35,8 +35,10 @@ namespace rtig {
 template <class NM>
 class MessageEvent {
 public:
+    // cppcheck-suppress noExplicitConstructor
     MessageEvent(Socket* socket, std::unique_ptr<NM>&& message)
-        : my_socket{socket}, my_message{std::forward<decltype(my_message)>(message)}
+        : my_socket{socket},
+          my_message{std::forward<decltype(my_message)>(message)}
     {
     }
 
