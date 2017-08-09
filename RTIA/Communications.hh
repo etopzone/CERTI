@@ -72,14 +72,14 @@ public:
     Message* receiveUN();
 
 
-   /**
-    * Read some message from either network (RTIG/RTIA) or federate (RTIA/Federate).
-    * @param[out] n
-    * @param[out] nmsg
-    * @param[out] msg
-    * @param[out] timeout
-    */
-    void readMessage(int& n, NetworkMessage **nmsg, Message **msg, struct timeval *timeout);
+    /**
+     * Read some message from either network (RTIG/RTIA) or federate (RTIA/Federate).
+     * @param[out] n result of the operation
+     * @param[out] msg_reseau pointer to pointer to network message
+     * @param[out] msg pointer to pointer to message
+     * @param[out] timeout time to wait
+     */
+    void readMessage(int& n, NetworkMessage ** msg_reseau, Message **msg, struct timeval *timeout);
 
     void requestFederateService(Message *req);
     unsigned long getAddress();
@@ -87,8 +87,8 @@ public:
 
     /**
      * Wait for a message coming from RTIG and return when received.
-     * @param[in] type_msg, expected message type,
-     * @param[in] numeroFedere, federate which sent the message, 0 if indifferent.
+     * @param[in] type_msg expected message type,
+     * @param[in] numeroFedere federate which sent the message, 0 if indifferent.
      * @return the pointer to new awaited message
      */
     NetworkMessage* waitMessage(NetworkMessage::Type type_msg,

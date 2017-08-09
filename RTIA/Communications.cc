@@ -278,12 +278,12 @@ void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** 
 
         if (FD_ISSET(socketTCP->returnSocket(), &fdset)) {
             // Read a message coming from the TCP link with RTIG.
-            (*msg_reseau) = NM_Factory::receive(socketTCP);
+            *msg_reseau = NM_Factory::receive(socketTCP);
             n = 1;
         }
         else if (FD_ISSET(socketUDP->returnSocket(), &fdset)) {
             // Read a message coming from the UDP link with RTIG.
-            (*msg_reseau) = NM_Factory::receive(socketUDP);
+            *msg_reseau = NM_Factory::receive(socketUDP);
             n = 1;
         }
         else if (FD_ISSET(socketUN->returnSocket(), &fdset)) {

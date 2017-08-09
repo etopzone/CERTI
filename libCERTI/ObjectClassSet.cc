@@ -271,11 +271,16 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
                           currentClass);
 
                     // It may throw ObjectClassNotDefined
-                    ObjectClass* currentClassObject = getObjectFromHandle(currentClass);
-
-                    currentClassObject->broadcastClassMessage(ocbList);
-
-                    currentClass = currentClassObject->getSuperclass();
+                    try {
+                        ObjectClass* currentClassObject = getObjectFromHandle(currentClass);
+                        
+                        currentClassObject->broadcastClassMessage(ocbList);
+                        
+                        currentClass = currentClassObject->getSuperclass();
+                    }
+                    catch(ObjectClassNotDefined& e) {
+                        Debug(D, pdExcept) << "getObjectFromHandle threw when killing " << theFederate << std::endl;
+                    }
                 }
 
                 delete ocbList ;
