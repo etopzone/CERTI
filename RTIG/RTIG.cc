@@ -317,6 +317,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e) {
+        my_auditServer.setLevel(AuditLine::Level(10));
         my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - NetworkError");
         throw;
     }
@@ -330,6 +331,7 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         response->setFederate(federate);
         response->setException(e.type(), e.reason());
 
+        my_auditServer.setLevel(AuditLine::Level(10));
         my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - Exception");
 
         if (link) {

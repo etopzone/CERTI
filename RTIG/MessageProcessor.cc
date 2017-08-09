@@ -44,6 +44,7 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
     case NetworkMessage::MessageType:                                                                                  \
+        Debug(D, pdTrace) << "MessageClass" << std::endl;                                                              \
         return process(MessageEvent<MessageClass>{std::move(request)})
 
 #define FALLTHROUGH(MessageType) case NetworkMessage::MessageType: // fall through
@@ -119,223 +120,185 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-    {
-        std::string federation = request.message()->getFederationName();
-        std::string FEDid = request.message()->getFEDid();
-        NM_Create_Federation_Execution rep; // rep for answer to RTIA
 
-        Debug(G, pdGendoc) << "enter RTIG::processCreateFederation" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** CREATE FEDERATION SERVICE **" << endl;
+    const auto& federation = request.message()->getFederationName();
+    const auto& FEDid = request.message()->getFEDid();
 
-        my_auditServer << "Federation Name : " << federation;
-        Handle h = my_federationHandleGenerator.provide();
+    my_auditServer << "Federation Name : " << federation;
+    Handle h = my_federationHandleGenerator.provide();
 
 #ifdef FEDERATION_USES_MULTICAST
-        // multicast base address
-        unsigned long base_adr_mc = inet_addr(ADRESSE_MULTICAST);
-        SocketMC* com_mc = NULL;
+    // multicast base address
+    unsigned long base_adr_mc = inet_addr(ADRESSE_MULTICAST);
 
-        // creer la communication multicast
-        com_mc = new SocketMC();
-        if (com_mc == NULL) {
-            Debug(D, pdExcept) << "Unable to allocate Multicast socket" << endl;
-            Debug(G, pdGendoc) << "exit  RTIG::processCreateFederation on exception RTIinternalError" << endl;
-            throw RTIinternalError("Unable to allocate Multicast socket");
-        }
-
-        com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
-
-        // inserer la nouvelle federation dans la liste des federations
-        my_federations->createFederation(federation, h, com_mc);
-
-        // inserer descripteur fichier pour le prochain appel a un select
-        ClientSockets.push_front(com_mc);
-
-#else
-        my_federations.createFederation(federation, h, FEDid);
-#endif
-        rep.setFederation(h);
-        rep.setFEDid(FEDid);
-        rep.setFederationName(federation);
-        my_auditServer << " created";
-
-        Debug(G, pdGendoc) << "processCreateFederation===>write answer to RTIA" << endl;
-
-        rep.send(request.socket(), my_messageBuffer); // Send answer to RTIA
-
-        Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << rep.getFederation() << endl;
-
-        Debug(G, pdGendoc) << "END ** CREATE FEDERATION SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processCreateFederation" << endl;
+    // creer la communication multicast
+    SocketMC* com_mc = new SocketMC();
+    if (!com_mc) {
+        Debug(D, pdExcept) << "Unable to allocate Multicast socket" << endl;
+        Debug(G, pdGendoc) << "exit  RTIG::processCreateFederation on exception RTIinternalError" << endl;
+        throw RTIinternalError("Unable to allocate Multicast socket");
     }
-    return {};
+
+    com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
+
+    // inserer la nouvelle federation dans la liste des federations
+    my_federations->createFederation(federation, h, com_mc);
+
+    // inserer descripteur fichier pour le prochain appel a un select
+    ClientSockets.push_front(com_mc);
+#else
+    my_federations.createFederation(federation, h, FEDid);
+#endif
+    my_auditServer << " created";
+
+    auto rep = make_unique<NM_Create_Federation_Execution>();
+
+    rep->setFederation(h);
+    rep->setFEDid(FEDid);
+    rep->setFederationName(federation);
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << rep->getFederation() << endl;
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-    {
-        std::string federation = request.message()->getFederationName();
-        std::string federate = request.message()->getFederateName();
 
-        unsigned int peer = request.message()->getBestEffortPeer();
-        unsigned long address = request.message()->getBestEffortAddress();
+    const auto& federation = request.message()->getFederationName();
+    const auto& federate = request.message()->getFederateName();
 
-        FederateHandle num_federe;
+    unsigned int peer = request.message()->getBestEffortPeer();
+    unsigned long address = request.message()->getBestEffortAddress();
 
-        int nb_regulateurs;
-        int nb_federes;
-        bool pause;
+    if (federation.empty() || federate.empty()) {
+        throw RTIinternalError("Invalid Federation/Federate Name");
+    }
 
-        Debug(G, pdGendoc) << "BEGIN ** JOIN FEDERATION SERVICE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processJoinFederation" << endl;
+    my_auditServer << "Federate \"" << federate << "\" joins Federation \"" << federation << "\"";
 
-        if (federation.empty() || federate.empty()) {
-            throw RTIinternalError("Invalid Federation/Federate Name");
-        }
+    Handle federation_handle = my_federations.getFederationHandle(federation);
 
-        my_auditServer << "Federate \"" << federate << "\" joins Federation \"" << federation << "\"";
+    // Need to dump the FOM into that
+    auto rep = make_unique<NM_Join_Federation_Execution>();
 
-        Handle num_federation = my_federations.getFederationHandle(federation);
+    FederateHandle federate_handle
+        = my_federations.addFederate(federation_handle, federate, static_cast<SocketTCP*>(request.socket()), *rep);
 
-        // Need to dump the FOM into that
-        NM_Join_Federation_Execution rep;
-
-        num_federe
-            = my_federations.addFederate(num_federation, federate, static_cast<SocketTCP*>(request.socket()), rep);
+    int regulators_count;
+    int federates_count;
+    bool is_syncing;
 
 #ifdef FEDERATION_USES_MULTICAST
-        SocketMC* com_mc = NULL;
+    SocketMC* com_mc = nullptr;
 
-        federations.info(num_federation, nb_federes, nb_regulateurs, pause, com_mc);
-        assert(com_mc != NULL);
+    federations.info(federation_handle, federates_count, regulators_count, is_syncing, com_mc);
+    assert(com_mc != nullptr);
 #else
-        my_federations.info(num_federation, nb_federes, nb_regulateurs, pause);
+    my_federations.info(federation_handle, federates_count, regulators_count, is_syncing);
 #endif
 
-        // Store Federate <->Socket reference.
-        my_socketServer.setReferences(request.socket()->returnSocket(), num_federation, num_federe, address, peer);
+    // Store Federate <->Socket reference.
+    my_socketServer.setReferences(request.socket()->returnSocket(), federation_handle, federate_handle, address, peer);
 
-        my_auditServer << "(" << num_federation << ")with handle " << num_federe << ". Socket "
-                       << int(request.socket()->returnSocket());
+    my_auditServer << "(" << federation_handle << ") with handle " << federate_handle << ". Socket "
+                   << int(request.socket()->returnSocket());
 
-        // Prepare answer about JoinFederationExecution
-        rep.setFederationName(federation);
-        rep.setFederate(num_federe);
-        rep.setFederation(num_federation);
-        rep.setNumberOfRegulators(nb_regulateurs);
-        rep.setBestEffortPeer(peer);
-        rep.setBestEffortAddress(address);
+    // Prepare answer about JoinFederationExecution
+    rep->setFederationName(federation);
+    rep->setFederate(federate_handle);
+    rep->setFederation(federation_handle);
+    rep->setNumberOfRegulators(regulators_count);
+    rep->setBestEffortPeer(peer);
+    rep->setBestEffortAddress(address);
 
 // Now we have to answer about JoinFederationExecution
 #ifdef FEDERATION_USES_MULTICAST
-        rep.AdresseMulticast = com_mc->returnAdress();
+    rep->AdresseMulticast = com_mc->returnAdress();
 #endif
 
-        Debug(D, pdInit) << "Federate \"" << federate << "\" has joined Federation " << num_federation
-                         << " under handle " << num_federe << endl;
+    Debug(D, pdInit) << "Federate \"" << federate << "\" has joined Federation " << federation_handle
+                     << " under handle " << federate_handle << endl;
 
-        // Send answer
-        rep.send(request.socket(), my_messageBuffer);
+    responses.emplace_back(request.socket(), std::move(rep));
 
-        Debug(G, pdGendoc) << "exit RTIG::processJoinFederation" << endl;
-        Debug(G, pdGendoc) << "END ** JOIN FEDERATION SERVICE **" << endl;
-    }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    auto federation = request.message()->getFederation();
-    auto federate = request.message()->getFederate();
+    my_auditServer.setLevel(AuditLine::Level(9));
+
+    const auto& federation = request.message()->getFederation();
+    const auto& federate = request.message()->getFederate();
     Debug(D, pdTrace) << "Federate (" << request.message()->getFederate() << ") leaves federation ("
                       << request.message()->getFederation() << ")" << std::endl;
-    my_auditServer.setLevel(AuditLine::Level(9));
-    {
-        NM_Resign_Federation_Execution reponse;
 
-        Debug(G, pdGendoc) << "BEGIN ** RESIGN FEDERATION SERVICE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processResignFederation" << endl;
+    auto rep = make_unique<NM_Resign_Federation_Execution>();
 
-        my_federations.searchFederation(federation).remove(federate);
+    my_federations.searchFederation(federation).remove(federate);
 
-        Debug(D, pdInit) << "Federate " << federate << " is resigning from federation " << federation << endl;
+    Debug(D, pdInit) << "Federate " << federate << " is resigning from federation " << federation << endl;
 
-        my_auditServer << "Federate " << federate << " resign federation(" << federation << ")";
+    my_auditServer << "Federate " << federate << " resign federation(" << federation << ")";
 
-        // Send answer to RTIA
-        reponse.setFederate(federate);
-        reponse.setFederation(federation);
-        reponse.send(request.socket(), my_messageBuffer);
+    // Send answer to RTIA
+    rep->setFederate(federate);
+    rep->setFederation(federation);
 
-        Debug(G, pdGendoc) << "exit RTIG::processResignFederation" << endl;
-        Debug(G, pdGendoc) << "END ** RESIGN FEDERATION SERVICE **" << endl;
-    }
-    return {};
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-    {
-        NM_Destroy_Federation_Execution rep;
 
-        std::string federation = request.message()->getFederationName();
+    auto rep = make_unique<NM_Destroy_Federation_Execution>();
 
-        Debug(G, pdGendoc) << "enter RTIG::processDestroyFederation" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** DESTROY FEDERATION SERVICE **" << endl;
+    std::string federation = request.message()->getFederationName();
 
-        Handle num_federation = my_federations.getFederationHandle(federation);
-        // May throw RTIinternalError
-        //           FederatesCurrentlyJoined
-        //           FederationExecutionDoesNotExist
-        my_federations.destroyFederation(num_federation);
-        // Here delete federation (num_federation) has been done
-        my_federationHandleGenerator.free(num_federation);
-        Debug(D, pdInit) << "Federation \"" << federation << "\" has been destroyed" << endl;
+    Handle federation_handle = my_federations.getFederationHandle(federation);
 
-        rep.setFederate(request.message()->getFederate());
-        rep.setFederationName(request.message()->getFederationName());
+    my_federations.destroyFederation(federation_handle);
 
-        if (rep.getException() == Exception::Type::NO_EXCEPTION) {
-            my_auditServer << "Federation Name \"" << federation << "\"(" << num_federation << ") destroyed";
-        }
+    // Here delete federation (num_federation) has been done
+    my_federationHandleGenerator.free(federation_handle);
 
-        Debug(G, pdGendoc) << "processDestroyFederation===>write DFE to RTIA" << endl;
+    Debug(D, pdInit) << "Federation \"" << federation << "\" has been destroyed" << endl;
 
-        rep.send(request.socket(), my_messageBuffer);
+    rep->setFederate(request.message()->getFederate());
+    rep->setFederationName(federation);
 
-        Debug(G, pdGendoc) << "END ** DESTROY FEDERATION SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processDestroyFederation" << endl;
-    }
-    return {};
+    my_auditServer << "Federation Name \"" << federation << "\" (" << federation_handle << ") destroyed";
+
+    Debug(G, pdGendoc) << "processDestroyFederation===>write DFE to RTIA" << endl;
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "setClassRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Set_Class_Relevance_Advisory_Switch rep;
-
-        Debug(G, pdGendoc) << "enter RTIG::processSetClassRelevanceAdvisorySwitch" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET CLASS RELEVANCE ADVISORY SWITCH **" << endl;
 
         if (request.message()->isClassRelevanceAdvisorySwitchOn()) {
             my_auditServer << "ON";
@@ -356,26 +319,18 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_
         }
 
         rep.send(request.socket(), my_messageBuffer);
-
-        Debug(G, pdGendoc) << "END ** SET CLASS RELEVANCE ADVISORY SWITCH **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetClassRelevanceAdvisorySwitch" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "setInteractionRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Set_Interaction_Relevance_Advisory_Switch rep;
-
-        Debug(G, pdGendoc) << "enter RTIG::processSetInteractionRelevanceAdvisorySwitch" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET INTERACTION RELEVANCE ADVISORY SWITCH **" << endl;
 
         if (request.message()->isInteractionRelevanceAdvisorySwitchOn()) {
             my_auditServer << "ON";
@@ -397,26 +352,18 @@ MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Swi
         }
 
         rep.send(request.socket(), my_messageBuffer);
-
-        Debug(G, pdGendoc) << "END ** SET INTERACTION RELEVANCE ADVISORY SWITCH **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetInteractionRelevanceAdvisorySwitch" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "setAttributeRelevanceAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Set_Attribute_Relevance_Advisory_Switch rep;
-
-        Debug(G, pdGendoc) << "enter RTIG::processSetAttributeRelevanceAdvisorySwitch" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET ATTRIBUTE RELEVANCE ADVISORY SWITCH **" << endl;
 
         if (request.message()->isAttributeRelevanceAdvisorySwitchOn()) {
             my_auditServer << "ON";
@@ -437,25 +384,17 @@ MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switc
         }
 
         rep.send(request.socket(), my_messageBuffer);
-
-        Debug(G, pdGendoc) << "END ** SET ATTRIBUTE RELEVANCE ADVISORY SWITCH **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetAttributeRelevanceAdvisorySwitch" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "setAttributeScopeAdvisorySwitch" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Set_Attribute_Scope_Advisory_Switch rep;
-
-        Debug(G, pdGendoc) << "enter RTIG::processSetAttributeScopeAdvisorySwitch" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET ATTRIBUTE SCOPE ADVISORY SWITCH **" << endl;
 
         if (request.message()->isAttributeScopeAdvisorySwitchOn()) {
             my_auditServer << "ON";
@@ -475,137 +414,114 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
         }
 
         rep.send(request.socket(), my_messageBuffer);
-
-        Debug(G, pdGendoc) << "END ** SET ATTRIBUTE SCOPE ADVISORY SWITCH **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetAttributeScopeAdvisorySwitch" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
+
+    my_auditServer.setLevel(AuditLine::Level(8));
 
     Debug(D, pdTrace) << "SetTimeRegulating for federate " << request.message()->getFederate()
                       << ", date:" << request.message()->getDate().getTime() << std::endl;
-    my_auditServer.setLevel(AuditLine::Level(8));
-    {
-        Debug(G, pdGendoc) << "enter RTIG::processSetTimeRegulating" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET TIME REGULATING **" << endl;
 
-        if (request.message()->isRegulatorOn()) {
-            my_auditServer << "ON at time " << request.message()->getDate().getTime();
+    if (request.message()->isRegulatorOn()) {
+        my_auditServer << "ON at time " << request.message()->getDate().getTime();
 
-            my_federations.searchFederation(request.message()->getFederation())
-                .addRegulator(request.message()->getFederate(), request.message()->getDate());
+        my_federations.searchFederation(request.message()->getFederation())
+            .addRegulator(request.message()->getFederate(), request.message()->getDate());
 
-            // send timeRegulationEnabled() to federate.
-            NM_Time_Regulation_Enabled rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setFederation(request.message()->getFederation());
-            rep.setDate(request.message()->getDate());
+        // send timeRegulationEnabled() to federate.
+        auto rep = make_unique<NM_Time_Regulation_Enabled>();
+        rep->setFederate(request.message()->getFederate());
+        rep->setFederation(request.message()->getFederation());
+        rep->setDate(request.message()->getDate());
 
-            Debug(G, pdGendoc) << "      processSetTimeRegulating====> write TRE to RTIA" << endl;
+        Debug(G, pdGendoc) << "      processSetTimeRegulating====> write TRE to RTIA" << endl;
 
-            rep.send(request.socket(), my_messageBuffer);
+        responses.emplace_back(request.socket(), std::move(rep));
 
-            Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " sets TimeRegulation ON" << endl;
-        }
-        else {
-            my_auditServer << "OFF";
-
-            my_federations.searchFederation(request.message()->getFederation())
-                .removeRegulator(request.message()->getFederate());
-            Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " sets TimeRegulation OFF" << endl;
-        }
-
-        Debug(G, pdGendoc) << "END ** SET TIME REGULATING **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetTimeRegulating" << endl;
+        Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " sets TimeRegulation ON" << endl;
     }
-    return {};
+    else {
+        my_auditServer << "OFF";
+
+        my_federations.searchFederation(request.message()->getFederation())
+            .removeRegulator(request.message()->getFederate());
+
+        Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " sets TimeRegulation OFF" << endl;
+    }
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "SetTimeConstrained for federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
 
-    {
-        Debug(G, pdGendoc) << "enter RTIG::processSetTimeConstrained" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** SET TIME CONSTRAINED **" << endl;
+    if (request.message()->isConstrainedOn()) {
+        my_auditServer << "ON at time " << request.message()->getDate().getTime();
 
-        if (request.message()->isConstrainedOn()) {
-            my_auditServer << "ON at time " << request.message()->getDate().getTime();
+        my_federations.searchFederation(request.message()->getFederation())
+            .getFederate(request.message()->getFederate())
+            .setConstrained(true);
 
-            my_federations.searchFederation(request.message()->getFederation())
-                .getFederate(request.message()->getFederate())
-                .setConstrained(true);
+        auto rep = make_unique<NM_Time_Constrained_Enabled>();
+        rep->setFederate(request.message()->getFederate());
+        rep->setFederation(request.message()->getFederation());
+        rep->setDate(request.message()->getDate());
 
-            // send timeConstrainedEnabled() to federate.
-            NM_Time_Constrained_Enabled rep;
-            rep.setFederate(request.message()->getFederate());
-            rep.setFederation(request.message()->getFederation());
-            rep.setDate(request.message()->getDate());
+        responses.emplace_back(request.socket(), std::move(rep));
 
-            Debug(G, pdGendoc) << "      processSetTimeConstrained====> write TCE to RTIA" << endl;
-
-            rep.send(request.socket(), my_messageBuffer);
-
-            Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " is now constrained" << endl;
-        }
-        else {
-            my_auditServer << "OFF";
-
-            my_federations.searchFederation(request.message()->getFederation())
-                .getFederate(request.message()->getFederate())
-                .setConstrained(false);
-            Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " is no more constrained" << endl;
-        }
-
-        Debug(G, pdGendoc) << "END ** SET TIME CONSTRAINED **" << endl;
-        Debug(G, pdGendoc) << "exit RTIG::processSetTimeConstrained" << endl;
+        Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " is now constrained" << endl;
     }
-    return {};
+    else {
+        my_auditServer << "OFF";
+
+        my_federations.searchFederation(request.message()->getFederation())
+            .getFederate(request.message()->getFederate())
+            .setConstrained(false);
+
+        Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " is no more constrained" << endl;
+    }
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, bool anonymous)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdDebug) << "Message Null" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
-    {
-        my_auditServer << "Date " << request.message()->getDate().getTime();
 
-        Debug(DNULL, pdDebug) << "Rcv NULL MSG (Federate=" << request.message()->getFederate()
-                              << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
-                              
-        // Catch all exceptions because RTIA does not expect an answer anyway.
-        try {
-            my_federations.searchFederation(request.message()->getFederation())
-                .updateRegulator(request.message()->getFederate(), request.message()->getDate(), anonymous);
-        }
-        catch (Exception& e) {
-        }
+    my_auditServer << "Date " << request.message()->getDate().getTime();
+
+    Debug(DNULL, pdDebug) << "Rcv NULL MSG (Federate=" << request.message()->getFederate()
+                          << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
+
+    // Catch all exceptions because RTIA does not expect an answer anyway.
+    try {
+        my_federations.searchFederation(request.message()->getFederation())
+            .updateRegulator(request.message()->getFederate(), request.message()->getDate(), anonymous);
     }
-    return {};
+    catch (Exception& e) {
+    }
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdDebug) << "Message Null Prime" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(0));
     {
         Debug(DNULL, pdDebug) << "Rcv NULL PRIME MSG (Federate=" << request.message()->getFederate()
@@ -624,110 +540,95 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
             process({request.socket(), std::move(nmsg)}, true);
         }
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "Federation " << request.message()->getFederation() << ": registerFedSyncPoint from federate "
-                      << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
-    {
-        Debug(G, pdGendoc) << "BEGIN ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processRegisterSynchronization" << endl;
 
-        my_auditServer << "Label \"" << request.message()->getLabel() << "\" registered. Tag is \""
-                       << request.message()->getTag() << "\"";
+    const auto& federation = request.message()->getFederation();
+    const auto& federate = request.message()->getFederate();
+    const auto& label = request.message()->getLabel();
+    const auto& tag = request.message()->getTag();
 
-        /* prepare answer to be sent to RTIA */
-        NM_Confirm_Synchronization_Point_Registration rep;
-        rep.setFederate(request.message()->getFederate());
-        rep.setFederation(request.message()->getFederation());
-        rep.setLabel(request.message()->getLabel());
+    Debug(D, pdTrace) << "Federation " << federation << ": registerFedSyncPoint from federate " << federate
+                      << std::endl;
 
-        try {
-            // boolean true means a federates set exists
-            if (request.message()->getExists()) {
-                my_federations.searchFederation(request.message()->getFederation())
-                    .registerSynchronization(request.message()->getFederate(),
-                                             request.message()->getLabel(),
-                                             request.message()->getTag(),
-                                             request.message()->getFederates());
-            }
-            else {
-                my_federations.searchFederation(request.message()->getFederation())
-                    .registerSynchronization(
-                        request.message()->getFederate(), request.message()->getLabel(), request.message()->getTag());
-            }
-            // send synchronizationPointRegistrationSucceeded() to federate.
-            rep.setSuccessIndicator(true);
+    my_auditServer << "Label \"" << label << "\" registered. Tag is \"" << tag << "\"";
+
+    /* prepare answer to be sent to RTIA */
+    auto rep = make_unique<NM_Confirm_Synchronization_Point_Registration>();
+    rep->setFederate(federate);
+    rep->setFederation(federation);
+    rep->setLabel(label);
+
+    try {
+        // boolean true means a federates set exists
+        if (request.message()->getExists()) {
+            my_federations.searchFederation(federation)
+                .registerSynchronization(federate, label, tag, request.message()->getFederates());
         }
-        catch (Exception& e) {
-            /* the registration did fail */
-            rep.setSuccessIndicator(false);
-            rep.setFailureReason(e.name() + ":" + e.reason());
+        else {
+            my_federations.searchFederation(federation).registerSynchronization(federate, label, tag);
         }
-        Debug(D, pdTerm) << "Federation " << request.message()->getFederation() << " is now synchronizing" << endl;
 
-        Debug(G, pdGendoc) << "      processRegisterSynchronization====> write SPRS to RTIA" << endl;
-        rep.send(request.socket(), my_messageBuffer);
-
-        // proceed with the broadcast iff registration was successful
-        if (rep.getSuccessIndicator()) {
-            // boolean true means a federates set exists
-            if (request.message()->getExists()) {
-                my_federations.searchFederation(request.message()->getFederation())
-                    .broadcastSynchronization(request.message()->getFederate(),
-                                              request.message()->getLabel(),
-                                              request.message()->getTag(),
-                                              request.message()->getFederates());
-            }
-            else {
-                my_federations.searchFederation(request.message()->getFederation())
-                    .broadcastSynchronization(
-                        request.message()->getFederate(), request.message()->getLabel(), request.message()->getTag());
-            }
-        }
-        Debug(G, pdGendoc) << "exit  RTIG::processRegisterSynchronization" << endl;
-        Debug(G, pdGendoc) << "END   ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **" << endl;
+        rep->setSuccessIndicator(true);
     }
-    return {};
+    catch (Exception& e) {
+        /* the registration did fail */
+        rep->setSuccessIndicator(false);
+        rep->setFailureReason(e.name() + ":" + e.reason());
+    }
+    Debug(D, pdTerm) << "Federation " << federation << " is now synchronizing" << endl;
+
+    Debug(G, pdGendoc) << "      processRegisterSynchronization====> write SPRS to RTIA" << endl;
+
+    // proceed with the broadcast iff registration was successful
+    if (rep->getSuccessIndicator()) {
+        // boolean true means a federates set exists
+        if (request.message()->getExists()) {
+            my_federations.searchFederation(federation)
+                .broadcastSynchronization(federate, label, tag, request.message()->getFederates());
+        }
+        else {
+            my_federations.searchFederation(federation).broadcastSynchronization(federate, label, tag);
+        }
+    }
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    Responses responses;
+    my_auditServer.setLevel(AuditLine::Level(8));
 
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
                       << ": synchronizationPointAchieved from federate " << request.message()->getFederate()
                       << std::endl;
-    my_auditServer.setLevel(AuditLine::Level(8));
-    {
-        my_auditServer << "Label \"" << request.message()->getLabel() << "\" ended";
 
-        my_federations.searchFederation(request.message()->getFederation())
-            .unregisterSynchronization(request.message()->getFederate(), request.message()->getLabel());
-        Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " has synchronized" << endl;
-    }
+    my_auditServer << "Label \"" << request.message()->getLabel() << "\" ended";
+
+    my_federations.searchFederation(request.message()->getFederation())
+        .unregisterSynchronization(request.message()->getFederate(), request.message()->getLabel());
+
+    Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " has synchronized" << endl;
+
     return {};
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Request federation save from federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "BEGIN ** REQUEST FEDERATION SAVE SERVICE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processRequestFederationSave" << endl;
-
         my_auditServer << "Federation save request";
 
         if (request.message()->isDated()) {
@@ -741,179 +642,134 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
             my_federations.searchFederation(request.message()->getFederation())
                 .requestFederationSave(request.message()->getFederate(), request.message()->getLabel());
         }
-
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestFederationSave" << endl;
-        Debug(G, pdGendoc) << "END   ** REQUEST FEDERATION SAVE SERVICE **" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " begun save" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "enter RTIG::processFederateSaveBegun" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE BEGUN SERVICE **" << endl;
         Debug(G, pdGendoc) << "processFederateSaveBegun federation = " << request.message()->getFederation() << endl;
 
         my_auditServer << "Federate " << request.message()->getFederate() << " save begun";
 
         my_federations.searchFederation(request.message()->getFederation())
             .federateSaveBegun(request.message()->getFederate());
-
-        Debug(G, pdGendoc) << "END   ** FEDERATE SAVE BEGUN SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit  RTIG::processFederateSaveBegun" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "enter RTIG::processFederateSaveStatus" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE COMPLETE SERVICE **" << endl;
-
         my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
         my_federations.searchFederation(request.message()->getFederation())
             .federateSaveStatus(request.message()->getFederate(), true);
-
-        Debug(G, pdGendoc) << "exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit  RTIG::processFederateSaveStatus" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "enter RTIG::processFederateSaveStatus" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **" << endl;
-
         my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
         my_federations.searchFederation(request.message()->getFederation())
             .federateSaveStatus(request.message()->getFederate(), false);
-
-        Debug(G, pdGendoc) << "exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit  RTIG::processFederateSaveStatus" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " request a restoration" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "BEGIN ** REQUEST FEDERATION RESTORE SERVICE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processRequestFederationRestore" << endl;
         my_auditServer << "Federate " << request.message()->getFederate() << " request restore";
 
         my_federations.searchFederation(request.message()->getFederation())
             .requestFederationRestore(request.message()->getFederate(), request.message()->getLabel());
-
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestFederationRestore" << endl;
-        Debug(G, pdGendoc) << "END   ** REQUEST FEDERATION RESTORE SERVICE **" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "BEGIN ** FEDERATE RESTORE COMPLETE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processRequestFederateRestoreStatus" << endl;
         my_auditServer << "Federate " << request.message()->getFederate() << " restore ended";
 
         my_federations.searchFederation(request.message()->getFederation())
             .federateRestoreStatus(request.message()->getFederate(), true);
-
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestFederateRestoreStatus" << endl;
-        Debug(G, pdGendoc) << "END   ** FEDERATE RESTORE (NOT)COMPLETE **" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
     {
-        Debug(G, pdGendoc) << "BEGIN ** FEDERATE RESTORE NOT COMPLETE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processRequestFederateRestoreStatus" << endl;
         my_auditServer << "Federate " << request.message()->getFederate() << " restore ended";
 
         my_federations.searchFederation(request.message()->getFederation())
             .federateRestoreStatus(request.message()->getFederate(), false);
-
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestFederateRestoreStatus" << endl;
-        Debug(G, pdGendoc) << "END   ** FEDERATE RESTORE (NOT)COMPLETE **" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "publishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
-    /* we cast to Publish because Unpublish inherits from Publish */
-    {
-        my_auditServer << "Publish Object Class = " << request.message()->getObjectClass()
-                       << ", # of att. = " << request.message()->getAttributesSize();
 
-        my_federations.searchFederation(request.message()->getFederation())
-            .publishObject(request.message()->getFederate(),
-                           request.message()->getObjectClass(),
-                           request.message()->getAttributes(),
-                           true);
+    my_auditServer << "Publish Object Class = " << request.message()->getObjectClass()
+                   << ", # of att. = " << request.message()->getAttributesSize();
 
-        Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " published object class "
-                             << request.message()->getObjectClass() << endl;
+    my_federations.searchFederation(request.message()->getFederation())
+        .publishObject(request.message()->getFederate(),
+                       request.message()->getObjectClass(),
+                       request.message()->getAttributes(),
+                       true);
 
-        NM_Publish_Object_Class POC;
-        POC.setFederate(request.message()->getFederate());
-        POC.setObjectClass(request.message()->getObjectClass());
-        POC.send(request.socket(), my_messageBuffer); // send answer to RTIA
-    }
-    return {};
+    Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " published object class "
+                         << request.message()->getObjectClass() << endl;
+
+    auto rep = make_unique<NM_Publish_Object_Class>();
+    rep->setFederate(request.message()->getFederate());
+    rep->setObjectClass(request.message()->getObjectClass());
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unpublishObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     /* we cast to Publish because Unpublish inherits from Publish */
     {
@@ -933,55 +789,44 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
         NM_Unpublish_Object_Class UOC;
         UOC.setFederate(request.message()->getFederate());
         UOC.setObjectClass(request.message()->getObjectClass());
-        UOC.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        UOC.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "subscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
-    {
-        Debug(G, pdGendoc) << "enter RTIG::processSubscribeObjectClass" << endl;
-        Debug(G, pdGendoc) << "BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
 
-        my_auditServer << "Subscribe Object Class = " << request.message()->getObjectClass()
-                       << ", # of att. = " << request.message()->getAttributesSize();
-        my_federations.searchFederation(request.message()->getFederation())
-            .subscribeObject(request.message()->getFederate(),
-                             request.message()->getObjectClass(),
-                             request.message()->getAttributes());
+    my_auditServer << "Subscribe Object Class = " << request.message()->getObjectClass()
+                   << ", # of att. = " << request.message()->getAttributesSize();
 
-        Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
-                             << request.message()->getFederation() << " subscribed to object class "
-                             << request.message()->getObjectClass() << endl;
+    my_federations.searchFederation(request.message()->getFederation())
+        .subscribeObject(
+            request.message()->getFederate(), request.message()->getObjectClass(), request.message()->getAttributes());
 
-        NM_Subscribe_Object_Class rep;
-        rep.setFederate(request.message()->getFederate());
-        rep.setObjectClass(request.message()->getObjectClass());
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+    Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
+                         << request.message()->getFederation() << " subscribed to object class "
+                         << request.message()->getObjectClass() << endl;
 
-        Debug(G, pdGendoc) << "END   **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit  RTIG::processSubscribeObjectClass" << endl;
-    }
-    return {};
+    auto rep = make_unique<NM_Subscribe_Object_Class>();
+
+    rep->setFederate(request.message()->getFederate());
+    rep->setObjectClass(request.message()->getObjectClass());
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unsubscribeObjectClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
-        Debug(G, pdGendoc) << "enter RTIG::processSubscribeObjectClass" << endl;
-        Debug(G, pdGendoc) << "BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
-
         my_auditServer << "Unubscribe Object Class = " << request.message()->getObjectClass()
                        << ", # of att. = " << request.message()->getAttributesSize();
         my_federations.searchFederation(request.message()->getFederation())
@@ -994,44 +839,39 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
         NM_Unsubscribe_Object_Class rep;
         rep.setFederate(request.message()->getFederate());
         rep.setObjectClass(request.message()->getObjectClass());
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-
-        Debug(G, pdGendoc) << "END   **  SUBSCRIBE OBJECT CLASS SERVICE **" << endl;
-        Debug(G, pdGendoc) << "exit  RTIG::processSubscribeObjectClass" << endl;
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "publishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
-    {
-        my_auditServer << "Publish Interaction Class = " << request.message()->getInteractionClass();
-        my_federations.searchFederation(request.message()->getFederation())
-            .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
-        Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
-                            << request.message()->getFederation() << " publishes Interaction "
-                            << request.message()->getInteractionClass() << endl;
 
-        NM_Publish_Interaction_Class rep;
-        rep.setFederate(request.message()->getFederate());
-        rep.setInteractionClass(request.message()->getInteractionClass());
+    my_auditServer << "Publish Interaction Class = " << request.message()->getInteractionClass();
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-    }
-    return {};
+    my_federations.searchFederation(request.message()->getFederation())
+        .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
+
+    Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
+                        << request.message()->getFederation() << " publishes Interaction "
+                        << request.message()->getInteractionClass() << endl;
+
+    auto rep = make_unique<NM_Publish_Interaction_Class>();
+    rep->setFederate(request.message()->getFederate());
+    rep->setInteractionClass(request.message()->getInteractionClass());
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unpublishInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
         my_auditServer << "Unpublish Interaction Class = " << request.message()->getInteractionClass();
@@ -1045,41 +885,39 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
         rep.setFederate(request.message()->getFederate());
         rep.setInteractionClass(request.message()->getInteractionClass());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "subscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
-    {
-        my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
-        my_federations.searchFederation(request.message()->getFederation())
-            .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
-        Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
-                            << request.message()->getFederation() << " subscribed to Interaction "
-                            << request.message()->getInteractionClass() << endl;
 
-        NM_Subscribe_Interaction_Class rep;
-        rep.setFederate(request.message()->getFederate());
-        rep.setInteractionClass(request.message()->getInteractionClass());
+    my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-    }
-    return {};
+    my_federations.searchFederation(request.message()->getFederation())
+        .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
+
+    Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
+                        << request.message()->getFederation() << " subscribed to Interaction "
+                        << request.message()->getInteractionClass() << endl;
+
+    auto rep = make_unique<NM_Subscribe_Interaction_Class>();
+    rep->setFederate(request.message()->getFederate());
+    rep->setInteractionClass(request.message()->getInteractionClass());
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unsubscribeInteractionClass" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(7));
     {
         my_auditServer << "Unsubscribe Interaction Class = " << request.message()->getInteractionClass();
@@ -1093,75 +931,67 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
         rep.setFederate(request.message()->getFederate());
         rep.setInteractionClass(request.message()->getInteractionClass());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "reserveObjectInstanceName" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
-        Debug(G, pdGendoc) << "enter RTIG::processReserveObjectInstanceName" << endl;
         my_auditServer << "Reserve Object Name = " << request.message()->getObjectName();
 
         my_federations.searchFederation(request.message()->getFederation())
             .reserveObjectInstanceName(request.message()->getFederate(), request.message()->getObjectName());
-
-        Debug(G, pdGendoc) << "exit RTIG::processReserveObjectInstanceName" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "registerObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
-    {
-        NM_Register_Object rep;
 
-        my_auditServer << "Register Object Class = " << request.message()->getObjectClass();
-        rep.setObject(my_federations.searchFederation(request.message()->getFederation())
-                          .registerObject(request.message()->getFederate(),
-                                          request.message()->getObjectClass(),
-                                          request.message()->getLabel()));
+    my_auditServer << "Register Object Class = " << request.message()->getObjectClass();
 
-        Debug(D, pdRegister) << "Object \"" << request.message()->getLabel() << "\" of Federate "
-                             << request.message()->getFederate() << " has been registered under ID " << rep.getObject()
-                             << endl;
+    auto object_handle = my_federations.searchFederation(request.message()->getFederation())
+                             .registerObject(request.message()->getFederate(),
+                                             request.message()->getObjectClass(),
+                                             request.message()->getLabel());
 
-        rep.setFederate(request.message()->getFederate());
-        rep.setFederation(request.message()->getFederation());
-        rep.setObjectClass(request.message()->getObjectClass());
-        // rep.object is set by the call of registerObject
-        if (request.message()->hasObjectName()) {
-            rep.setObjectName(request.message()->getObjectName());
-        }
-        if (request.message()->isLabelled()) {
-            rep.setLabel(request.message()->getLabel());
-        }
+    Debug(D, pdRegister) << "Object \"" << request.message()->getLabel() << "\" of Federate "
+                         << request.message()->getFederate() << " has been registered under ID " << object_handle
+                         << endl;
 
-        rep.send(request.socket(), my_messageBuffer); // Send answer to RTIA
+    auto rep = make_unique<NM_Register_Object>();
+
+    rep->setFederate(request.message()->getFederate());
+    rep->setFederation(request.message()->getFederation());
+    rep->setObjectClass(request.message()->getObjectClass());
+    // rep.object is set by the call of registerObject
+    if (request.message()->hasObjectName()) {
+        rep->setObjectName(request.message()->getObjectName());
     }
-    return {};
+    if (request.message()->isLabelled()) {
+        rep->setLabel(request.message()->getLabel());
+    }
+
+    rep->setObject(object_handle);
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdDebug) << "UpdateAttributeValue" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(1));
-
-    Debug(G, pdGendoc) << "enter RTIG::processUpdateAttributeValues" << endl;
 
     my_auditServer << "ObjID = " << request.message()->getObject()
                    << ", Date = " << request.message()->getDate().getTime();
@@ -1204,9 +1034,6 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
         rep->setTag(request.message()->getTag());
     }
 
-    Debug(G, pdGendoc) << "exit  RTIG::processUpdateAttributeValues" << endl;
-
-    //             rep->send(request.socket(), my_messageBuffer); // send answer to RTIA
     responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
@@ -1214,15 +1041,10 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "send interaction" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
-        Debug(G, pdGendoc) << "BEGIN ** SEND INTERACTION SERVICE **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processSendInteraction" << endl;
-
         // Building Value Array
         my_auditServer << "IntID = " << request.message()->getInteractionClass()
                        << ", date = " << request.message()->getDate().getTime();
@@ -1257,60 +1079,48 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Inter
         rep.setLabel(request.message()->getLabel());
         rep.setTag(request.message()->getTag());
         Debug(G, pdGendoc) << "processSendInteraction===>write" << endl;
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-
-        Debug(G, pdGendoc) << "exit RTIG::processSendInteraction" << endl;
-        Debug(G, pdGendoc) << "END ** SEND INTERACTION SERVICE **" << endl;
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "DeleteObject" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
-    {
-        Debug(G, pdGendoc) << "BEGIN ** DELETE OBJECT INSTANCE service **" << endl;
-        Debug(G, pdGendoc) << "enter RTIG::processDeleteObject" << endl;
-        my_auditServer << "Delete ObjID = " << request.message()->getObject();
 
-        if (request.message()->isDated()) {
-            my_federations.searchFederation(request.message()->getFederation())
-                .deleteObject(request.message()->getFederate(),
-                              request.message()->getObject(),
-                              request.message()->getDate(),
-                              request.message()->getLabel());
-        }
-        else {
-            my_federations.searchFederation(request.message()->getFederation())
-                .deleteObject(
-                    request.message()->getFederate(), request.message()->getObject(), request.message()->getLabel());
-        }
+    my_auditServer << "Delete ObjID = " << request.message()->getObject();
 
-        Debug(D, pdRegister) << "Object # " << request.message()->getObject() << " of Federation "
-                             << request.message()->getFederation() << " has been deleted" << endl;
-
-        NM_Delete_Object rep;
-        rep.setFederate(request.message()->getFederate());
-        rep.setObject(request.message()->getObject());
-
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
-
-        Debug(G, pdGendoc) << "exit RTIG::processDeleteObject" << endl;
-        Debug(G, pdGendoc) << "END ** DELETE OBJECT INSTANCE **" << endl;
+    if (request.message()->isDated()) {
+        my_federations.searchFederation(request.message()->getFederation())
+            .deleteObject(request.message()->getFederate(),
+                          request.message()->getObject(),
+                          request.message()->getDate(),
+                          request.message()->getLabel());
     }
-    return {};
+    else {
+        my_federations.searchFederation(request.message()->getFederation())
+            .deleteObject(
+                request.message()->getFederate(), request.message()->getObject(), request.message()->getLabel());
+    }
+
+    Debug(D, pdRegister) << "Object # " << request.message()->getObject() << " of Federation "
+                         << request.message()->getFederation() << " has been deleted" << endl;
+
+    auto rep = make_unique<NM_Delete_Object>();
+    rep->setFederate(request.message()->getFederate());
+    rep->setObject(request.message()->getObject());
+
+    responses.emplace_back(request.socket(), std::move(rep));
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "queryAttributeOwnership" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
         Debug(D, pdDebug) << "Owner of Attribute " << request.message()->getAttribute() << " of Object "
@@ -1329,18 +1139,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attr
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "negotiatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1360,18 +1168,16 @@ MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divesti
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "attributeOwnershipAcquisitionIfAvailable" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1390,18 +1196,16 @@ MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Ava
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unconditionalAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1420,17 +1224,15 @@ MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Dive
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "attributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1451,18 +1253,16 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
         rep.setObject(request.message()->getObject());
         rep.setAttributesSize(0);
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses
 MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "cancelNegociatedAttributeOwnershipDivestiture" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1481,17 +1281,15 @@ MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "isAttributeOwnedByFederate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(2));
     {
         NM_Is_Attribute_Owned_By_Federate rep;
@@ -1518,17 +1316,15 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribu
         rep.setObject(request.message()->getObject());
         rep.setAttribute(request.message()->getAttribute());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "attributeOwnershipReleaseResponse" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1556,15 +1352,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
 
         rep.send(request.socket(), my_messageBuffer); // Send answer to RTIA
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "cancelAttributeOwnershipAcquisition" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         my_auditServer << "Object = " << request.message()->getObject()
@@ -1582,17 +1376,15 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Att
         rep.setFederate(request.message()->getFederate());
         rep.setObject(request.message()->getObject());
 
-        rep.send(request.socket(), my_messageBuffer); // send answer to RTIA
+        rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "createRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1609,15 +1401,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "modifyRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         Debug(D, pdDebug) << "Federate " << request.message()->getFederate() << " of Federation "
@@ -1632,15 +1422,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "deleteRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1658,15 +1446,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete
         rep.setRegion(request.message()->getRegion());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "associateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1686,15 +1472,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associ
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unassociateRegionForUpdates" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1712,15 +1496,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unasso
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1740,15 +1522,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
         rep.setObjectClass(request.message()->getObjectClass());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1765,15 +1545,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "subscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1792,15 +1570,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         // TODO: audit...
@@ -1819,15 +1595,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer);
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "registerObjectWithRegion" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_DDM_Register_Object rep;
@@ -1853,25 +1627,22 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Regist
         rep.setFederate(request.message()->getFederate());
         rep.send(request.socket(), my_messageBuffer); // Send answer to RTIA
     }
-    return {};
+
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "RequestAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Request_Object_Attribute_Value_Update answer;
-        Debug(G, pdGendoc) << "enter RTIG::processRequestObjectAttributeValueUpdate" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **" << endl;
-
         my_auditServer << "ObjID = " << request.message()->getObject();
 
         // We have to do verifications about this object and we need owner
         answer.setException(Exception::Type::NO_EXCEPTION);
+
         // While searching for the federate owner we will send
         // a NM_Provide_Attribute_Value_Update
         // (see Federation::requestObjectOwner)
@@ -1883,24 +1654,17 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
         answer.setObject(request.message()->getObject());
 
         answer.send(request.socket(), my_messageBuffer); // Send answer to RTIA
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestObjectAttributeValueUpdate" << endl;
-        Debug(G, pdGendoc) << "END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **" << endl;
     }
-    return {};
+    return responses;
 }
 
 MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request)
 {
-    //std::cout << __PRETTY_FUNCTION__ << std::endl;
     Responses responses;
 
-    Debug(D, pdTrace) << "RequestClassAttributeValueUpdate" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(6));
     {
         NM_Request_Class_Attribute_Value_Update answer;
-
-        Debug(G, pdGendoc) << "enter RTIG::processRequestClassAttributeValueUpdate" << endl;
-        Debug(G, pdGendoc) << "BEGIN ** REQUEST CLASS ATTRIBUTE VALUE UPDATE **" << endl;
 
         answer.setException(Exception::Type::NO_EXCEPTION);
         my_federations.searchFederation(request.message()->getFederation())
@@ -1912,11 +1676,8 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Cl
         answer.setObjectClass(request.message()->getObjectClass());
 
         answer.send(request.socket(), my_messageBuffer); // Send answer to RTIA
-
-        Debug(G, pdGendoc) << "exit  RTIG::processRequestClassAttributeValueUpdate" << endl;
-        Debug(G, pdGendoc) << "END   ** REQUEST CLASS  ATTRIBUTE VALUE UPDATE **" << endl;
     }
-    return {};
+    return responses;
 }
 }
 }
