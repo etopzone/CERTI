@@ -93,11 +93,19 @@ public:
 
     AuditFile& operator<<(const char*);
     AuditFile& operator<<(const std::string& s);
-    AuditFile& operator<<(const int);
-    AuditFile& operator<<(const unsigned int);
-    AuditFile& operator<<(const long);
-    AuditFile& operator<<(const unsigned long);
-    AuditFile& operator<<(const double);
+    AuditFile& operator<<(const int n);
+    AuditFile& operator<<(const unsigned int n);
+    AuditFile& operator<<(const long n);
+    AuditFile& operator<<(const unsigned long n);
+    AuditFile& operator<<(const double n);
+    
+    template <typename T>
+    AuditFile& operator<<(const Printable<T>& handle)
+    {
+        std::stringstream ss;
+        handle.print(ss);
+        return (*this << ss.str());
+    }
 
 protected:
     std::ofstream my_audit_file; /// Stream pointer to output file.

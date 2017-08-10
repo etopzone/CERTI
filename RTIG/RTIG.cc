@@ -34,14 +34,15 @@
 #include <string>
 
 #include "FedTimeD.hh"
-#include <PrettyDebug.hh>
 #include "Socket.hh"
 #include <NetworkMessage.hh>
+#include <PrettyDebug.hh>
 
 #ifdef _WIN32
 #include <signal.h>
 #endif
 
+#define LOG_MESSAGE_PROCESSING_TIMINGS
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
 
 #include <chrono>
@@ -75,7 +76,7 @@ RTIG::RTIG()
     , my_federationHandles(1)
     , my_socketServer(&my_tcpSocketServer, &my_udpSocketServer)
     , my_auditServer(RTIG_AUDIT_FILENAME)
-    , my_federations(my_socketServer, my_auditServer, my_verboseLevel)
+    , my_federations(my_verboseLevel)
     , my_processor{my_auditServer, my_socketServer, my_federationHandles, my_federations}
 {
     my_NM_msgBufSend.reset();
@@ -199,11 +200,14 @@ void RTIG::signalHandler(int sig)
     std::cerr << "//////////////////////" << std::endl;
 
     for (auto& kv : the_timings) {
-        std::cerr << kv.first << std::endl;
+        auto message = NM_Factory::create(static_cast<NetworkMessage::Type>(kv.first));
+        std::cerr << kv.first << " - " << message->getMessageName() << std::endl;
+        delete message;
 
         auto& values = kv.second;
         std::sort(begin(values), end(values));
 
+        std::cerr << "\tcount: " << values.size() << std::endl;
         std::cerr << "\tmin: " << values.front().count() << " ns" << std::endl;
         std::cerr << "\tmax: " << values.back().count() << " ns" << std::endl;
         std::cerr << "\taverage: "
@@ -211,11 +215,13 @@ void RTIG::signalHandler(int sig)
                   << " ns" << std::endl;
         std::cerr << "\tmedian: " << values.at(values.size() / 2).count() << " ns" << std::endl;
 
+#if 0
         std::cerr << "\t\t";
         for (auto& time : values) {
             std::cerr << time.count() << " ";
         }
         std::cerr << std::endl;
+#endif
     }
 
     std::cerr << "//////////////////////" << std::endl;
@@ -309,6 +315,8 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         auto end = std::chrono::high_resolution_clock::now();
 
         the_timings[messageType].push_back(end - start);
+
+        std::cout << (end - start).count() << std::endl;
 #endif
 
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
@@ -365,8 +373,8 @@ void RTIG::openConnection()
 
 void RTIG::closeConnection(Socket* link, bool emergency)
 {
-    Handle federation;
-    FederateHandle federate;
+    FederationHandle federation(0);
+    FederateHandle federate(0);
 
     Debug(G, pdGendoc) << "enter RTIG::closeConnection" << std::endl;
     try {

@@ -60,7 +60,7 @@ void SocketServer::checkMessage(long socket_number, NetworkMessage* message) con
 
     Socket* socket;
     try {
-        socket = getSocketLink(message->getFederation(), message->getFederate());
+        socket = getSocketLink(FederationHandle(message->getFederation()), message->getFederate());
     }
     catch (Exception& e) {
         // BUG: Should put a line in the Audit.
@@ -78,10 +78,10 @@ void SocketServer::checkMessage(long socket_number, NetworkMessage* message) con
 }
 
 void SocketServer::close(long socket,
-                         Handle& federation_referenced,
+                         FederationHandle& federation_referenced,
                          FederateHandle& federate_referenced) throw(RTIinternalError)
 {
-    federation_referenced = 0;
+    federation_referenced = FederationHandle(0);
     federate_referenced = 0;
 
     // It may throw RTIinternalError.
@@ -92,7 +92,7 @@ void SocketServer::close(long socket,
 
     // If the Tuple had no references, remove it, else just delete the socket.
     // Also, if no federate (no Join)
-    if (tuple->Federation == 0 && tuple->Federate != 0) {
+    if ((!tuple->Federation.isValid()) && tuple->Federate != 0) {
         list<SocketTuple*>::iterator i;
         list<SocketTuple*>::iterator tmp;
         for (i = begin(); i != end(); ++i) {
@@ -169,7 +169,7 @@ Socket* SocketServer::getActiveSocket(fd_set* select_fdset) const
     return NULL;
 }
 
-Socket* SocketServer::getSocketLink(Handle the_federation, FederateHandle the_federate, TransportType the_type) const
+Socket* SocketServer::getSocketLink(FederationHandle the_federation, FederateHandle the_federate, TransportType the_type) const
     throw(FederateNotExecutionMember, RTIinternalError)
 {
     // G.Out(pdGendoc,"enter SocketServer::getSocketLink");
@@ -193,7 +193,7 @@ Socket* SocketServer::getSocketLink(Handle the_federation, FederateHandle the_fe
     // G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
 }
 
-SocketTuple* SocketServer::getWithReferences(Handle the_federation, FederateHandle the_federate) const
+SocketTuple* SocketServer::getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const
     throw(FederateNotExecutionMember)
 {
     list<SocketTuple*>::const_iterator i;
@@ -242,7 +242,7 @@ void SocketServer::open() throw(RTIinternalError)
 }
 
 void SocketServer::setReferences(long socket,
-                                 Handle federation_reference,
+                                 FederationHandle federation_reference,
                                  FederateHandle federate_reference,
                                  unsigned long address,
                                  unsigned int port) throw(RTIinternalError)
@@ -250,7 +250,7 @@ void SocketServer::setReferences(long socket,
     // It may throw RTIinternalError if not found.
     SocketTuple* tuple = getWithSocket(socket);
 
-    if ((tuple->Federation != 0) || (tuple->Federate != 0))
+    if ((tuple->Federation.isValid()) || (tuple->Federate != 0))
         // References have already been set once.
         throw RTIinternalError("Socket References have already been set.");
 

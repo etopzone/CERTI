@@ -24,6 +24,7 @@
 #define CERTI_MESSAGEEVENT_H
 
 #include <memory>
+#include <vector>
 
 #include <NetworkMessage.hh>
 #include <Socket.hh>
@@ -37,8 +38,7 @@ class MessageEvent {
 public:
     // cppcheck-suppress noExplicitConstructor
     MessageEvent(Socket* socket, std::unique_ptr<NM>&& message)
-        : my_socket{socket},
-          my_message{std::forward<decltype(my_message)>(message)}
+        : my_socket{socket}, my_message{std::forward<decltype(my_message)>(message)}
     {
     }
 
@@ -61,9 +61,9 @@ public:
     friend class MessageEvent;
 
     template <typename Base>
-    explicit MessageEvent(MessageEvent<Base>&& other)
-        : my_socket{other.my_socket}, my_message{static_cast<NM*>(other.my_message.release())}
+    explicit MessageEvent(MessageEvent<Base>&& other) : my_message{static_cast<NM*>(other.my_message.release())}
     {
+        my_socket = other.my_socket;
     }
 
     ~MessageEvent() = default;
@@ -92,6 +92,8 @@ private:
     Socket* my_socket;
     std::unique_ptr<NM> my_message;
 };
+
+using Responses = std::vector<MessageEvent<NetworkMessage>>;
 }
 }
 

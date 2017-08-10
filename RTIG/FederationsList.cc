@@ -48,8 +48,7 @@ namespace rtig {
 static PrettyDebug D("FEDERATIONSLIST", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 
-FederationsList::FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel) noexcept
-    : my_socket_server(server), my_audit_file(audit), my_verbose_level(verboseLevel)
+FederationsList::FederationsList(const int verboseLevel) noexcept : my_verbose_level(verboseLevel)
 {
 }
 
@@ -73,13 +72,19 @@ void FederationsList::setVerboseLevel(const int verboseLevel) noexcept
 #ifdef FEDERATION_USES_MULTICAST
 void FederationsList::createFederation(const std::string& name,
                                        const FederationHandle handle,
+                                       SocketServer& server,
+                                       AuditFile& audit,
                                        SocketMC* multicastSocket)
 #else
-void FederationsList::createFederation(const std::string& name, const FederationHandle handle, const std::string& FEDid)
+void FederationsList::createFederation(const std::string& name,
+                                       const FederationHandle handle,
+                                       SocketServer& socket_server,
+                                       AuditFile& audit,
+                                       const std::string& FEDid)
 #endif
 {
     Debug(G, pdGendoc) << "enter FederationsList::createFederation" << std::endl;
-    my_audit_file << ", Handle : " << handle;
+    audit << ", Handle : " << handle;
     if (name.empty()) {
         throw RTIinternalError("Invalid Federation Name.");
     }
@@ -98,9 +103,9 @@ void FederationsList::createFederation(const std::string& name, const Federation
     try {
         auto federation
 #ifdef FEDERATION_USES_MULTICAST
-            = make_unique<Federation>(name, handle, my_socket_server, my_audit_file, multicastSocket, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, multicastSocket, my_verbose_level);
 #else
-            = make_unique<Federation>(name, handle, my_socket_server, my_audit_file, FEDid, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, FEDid, my_verbose_level);
 #endif
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
@@ -112,18 +117,20 @@ void FederationsList::createFederation(const std::string& name, const Federation
         Debug(G, pdGendoc) << "exit FederationsList::createFederation" << std::endl;
     }
     catch (Exception& e) {
-        Debug(D, pdInit) << "FederationsList could not create Federation : " << e.name() << " - " << e.reason() << std::endl;
+        Debug(D, pdInit) << "FederationsList could not create Federation : " << e.name() << " - " << e.reason()
+                         << std::endl;
         Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception" << std::endl;
         throw;
     }
 }
 
-Handle FederationsList::getFederationHandle(const std::string& name)
+FederationHandle FederationsList::getFederationHandle(const std::string& name)
 {
     Debug(G, pdGendoc) << "enter FederationsList::getFederationHandle" << std::endl;
 
-    auto it = std::find_if(
-        begin(my_federations), end(my_federations), [&name](decltype(my_federations)::value_type& kv) { return kv.second->getName() == name; });
+    auto it = std::find_if(begin(my_federations),
+                           end(my_federations),
+                           [&name](decltype(my_federations)::value_type& kv) { return kv.second->getName() == name; });
 
     if (it == end(my_federations)) {
         Debug(G, pdGendoc) << "exit  FederationsList::getFederationHandle on exception" << std::endl;

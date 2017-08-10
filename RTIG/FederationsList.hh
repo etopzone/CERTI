@@ -49,7 +49,7 @@ class Federation;
 class FederationsList {
 public:
     // constructor/destructor
-    FederationsList(SocketServer& server, AuditFile& audit, const int verboseLevel = 0) noexcept;
+    FederationsList(const int verboseLevel = 0) noexcept;
     ~FederationsList();
 
     int getVerboseLevel() const noexcept;
@@ -65,20 +65,28 @@ public:
      @param handle Federation handle
      @param mc_link
      */
-    void createFederation(const std::string& name, const FederationHandle handle, SocketMC* multicastSocket);
+    void createFederation(const std::string& name,
+                          const FederationHandle handle,
+                          SocketServer& socket_server,
+                          AuditFile& audit,
+                          SocketMC* multicastSocket);
 #else
     /** createFederation (with FEDERATION_USES_MULTICAST not defined)
      @ p*aram name Federation name
      @param handle Federation handle
      @param FEDid execution id. of the federation (i.e. file name)
      */
-    void createFederation(const std::string& name, const FederationHandle handle, const std::string& FEDid);
+    void createFederation(const std::string& name,
+                          const FederationHandle handle,
+                          SocketServer& socket_server,
+                          AuditFile& audit,
+                          const std::string& FEDid);
 #endif
 
     /** Return the Handle of the Federation named "name" if it is found in the
      * FederationList, else throw FederationExecutionDoesNotExist.
      */
-    Handle getFederationHandle(const std::string& name);
+    FederationHandle getFederationHandle(const std::string& name);
 
     void destroyFederation(const FederationHandle handle);
 
@@ -120,9 +128,6 @@ public:
     Federation& searchFederation(const FederationHandle handle);
 
 private:
-    SocketServer& my_socket_server;
-    AuditFile& my_audit_file;
-
     int my_verbose_level;
 
     std::unordered_map<FederationHandle, std::unique_ptr<Federation>> my_federations;

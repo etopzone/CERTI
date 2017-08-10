@@ -73,26 +73,50 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 
 void
 NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal){
-	G.Out(pdGendoc,"enter NetworkMessage::send");
-	/* 0- reset send buffer */
-	msgBuffer.reset();
-	/* 1- serialize the message
-	 * This is a polymorphic call
-	 * which may specialized in a daughter class
-	 */
-	serialize(msgBuffer);
-	/* 2- update message buffer 'reserved bytes' header */
-	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
-	//msgBuffer.show(msgBuf(0),5);
-	/* 3- effectively send the raw message to socket */
+    G.Out(pdGendoc,"enter NetworkMessage::send");
+    /* 0- reset send buffer */
+    msgBuffer.reset();
+    /* 1- serialize the message
+     * This is a polymorphic call
+     * which may specialized in a daughter class
+     */
+    serialize(msgBuffer);
+    /* 2- update message buffer 'reserved bytes' header */
+    msgBuffer.updateReservedBytes();
+    D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
+    //msgBuffer.show(msgBuf(0),5);
+    /* 3- effectively send the raw message to socket */
+    
+    if (NULL != socket) { // send only if socket is unequal to null
+        socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
+    } else { // socket pointer was null - not sending
+        D.Out( pdDebug, "Not sending -- socket is deleted." );
+    }
+    G.Out(pdGendoc,"exit  NetworkMessage::send");
+} /* end of send */
 
-	if (NULL != socket) { // send only if socket is unequal to null
-		socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
-	} else { // socket pointer was null - not sending
-		D.Out( pdDebug, "Not sending -- socket is deleted." );
-	}
-	G.Out(pdGendoc,"exit  NetworkMessage::send");
+void
+NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal){
+    G.Out(pdGendoc,"enter NetworkMessage::send");
+    /* 0- reset send buffer */
+    msgBuffer.reset();
+    /* 1- serialize the message
+     * This is a polymorphic call
+     * which may specialized in a daughter class
+     */
+    serialize(msgBuffer);
+    /* 2- update message buffer 'reserved bytes' header */
+    msgBuffer.updateReservedBytes();
+    D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
+    //msgBuffer.show(msgBuf(0),5);
+    /* 3- effectively send the raw message to socket */
+    
+    for(const auto& socket: sockets) {
+        if (socket) { // send only if socket is unequal to null
+            socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
+        }
+    }
+    G.Out(pdGendoc,"exit  NetworkMessage::send");
 } /* end of send */
 
 void

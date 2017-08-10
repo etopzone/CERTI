@@ -46,7 +46,7 @@ public:
                      SocketServer& socket_server,
                      HandleManager<Handle>& handle_generator,
                      FederationsList& federations);
-    
+
     /** Choose the right process subfunction and calls it.
      *  
      * This module chooses the right processing module to call.

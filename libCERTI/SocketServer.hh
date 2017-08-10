@@ -39,7 +39,7 @@ namespace certi {
 /// Element of the SocketServer internal list.
 class SocketTuple {
 public:
-    Handle Federation;
+    FederationHandle Federation;
     FederateHandle Federate;
 
     SocketTCP* ReliableLink;
@@ -84,7 +84,7 @@ public:
      * Throw RTIinternalError if the socket is not found.
      */
     void close(long socket, // Provided
-               Handle& federation_referenced, // Returned
+               FederationHandle& federation_referenced, // Returned
                FederateHandle& federate_referenced) // Returned
         throw(RTIinternalError);
 
@@ -95,7 +95,7 @@ public:
      * if the Socket is not found.
      */
     void setReferences(long the_socket,
-                       Handle federation_reference,
+                       FederationHandle federation_reference,
                        FederateHandle federate_reference,
                        unsigned long the_address,
                        unsigned int the_port) throw(RTIinternalError);
@@ -136,10 +136,11 @@ public:
      * 
      * JYR : sorry but we return NULL (avoid rtig crash) because development needed
      */
-    Socket* getSocketLink(Handle the_federation, FederateHandle the_federate, TransportType the_type = RELIABLE) const
-        throw(FederateNotExecutionMember, RTIinternalError);
+    Socket* getSocketLink(FederationHandle the_federation,
+                          FederateHandle the_federate,
+                          TransportType the_type = RELIABLE) const throw(FederateNotExecutionMember, RTIinternalError);
 
-    SocketTuple* getWithReferences(Handle the_federation, FederateHandle the_federate) const
+    SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const
         throw(FederateNotExecutionMember);
 
 private:

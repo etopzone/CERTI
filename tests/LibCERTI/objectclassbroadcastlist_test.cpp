@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "libCERTI/ObjectClassBroadcastList.hh"
+#include <libCERTI/ObjectClassBroadcastList.hh>
 
 #include "../mocks/securityserver_mock.h"
 #include "../mocks/sockettcp_mock.h"
@@ -235,7 +235,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageNoWaitingNothingSent)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(_, _)).Times(0);
 
     auto message = new ::certi::NM_Discover_Object;
@@ -250,7 +250,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageOneSentPerFederateWaiting
     // Federate 1 and 3 will wait
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
     EXPECT_CALL(ss, getSocketLink(federate2_handle, _)).Times(0);
     EXPECT_CALL(ss, getSocketLink(federate3_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
@@ -269,7 +269,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageUpdatesState)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(::testing::ReturnNull());
 
     auto message = new ::certi::NM_Discover_Object;
@@ -290,7 +290,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageCatchesRTIinternalErrors)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::RTIinternalError("")));
 
     auto message = new ::certi::NM_Discover_Object;
@@ -306,7 +306,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageCatchesNetworkErrors)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::NetworkError("")));
 
     auto message = new ::certi::NM_Discover_Object;
@@ -331,7 +331,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingDOMessageSendsBaseMessage)
 
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
 
     ObjectClassBroadcastList l(message, max_handle);
@@ -348,7 +348,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageNoWaitingNothingSent)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(_, _)).Times(0);
 
     auto message = new ::certi::NM_Reflect_Attribute_Values;
@@ -364,7 +364,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageOneSentPerFederateWaitin
     // Federate 1 and 3 will wait
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
     EXPECT_CALL(ss, getSocketLink(federate2_handle, _)).Times(0);
     EXPECT_CALL(ss, getSocketLink(federate3_handle, _)).Times(1).WillOnce(::testing::ReturnNull());
@@ -384,7 +384,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageUpdatesState)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(::testing::ReturnNull());
 
     auto message = new ::certi::NM_Reflect_Attribute_Values;
@@ -416,7 +416,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageAllWaitingSendsBaseMessa
 
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
 
     ObjectClassBroadcastList l(message, max_handle);
@@ -442,7 +442,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAVMessageNotAllWaitingSendsSmalle
 
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
 
     ObjectClassBroadcastList l(message, max_handle);
@@ -466,7 +466,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageNotAllWaitingSendsSmall
 
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Return(&socket));
 
     ObjectClassBroadcastList l(message, max_handle);
@@ -480,7 +480,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageCatchesRTIinternalError
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::RTIinternalError("")));
 
     auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;
@@ -497,7 +497,7 @@ TEST(ObjectClassBroadcastListTest, SendPendingRAOAMessageCatchesNetworkErrors)
 {
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    MockSecurityServer ss(s, a, 3);
+    MockSecurityServer ss(s, a, ::certi::FederationHandle(3));
     EXPECT_CALL(ss, getSocketLink(federate_handle, _)).WillOnce(Throw(::certi::NetworkError("")));
 
     auto message = new ::certi::NM_Request_Attribute_Ownership_Assumption;

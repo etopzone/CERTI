@@ -252,7 +252,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         	answer = AINO;
         }
 
-        answer->setFederation(server->federation());
+        answer->setFederation(server->federation().get());
         answer->setException(Exception::Type::NO_EXCEPTION);
         answer->setFederate(oa->getOwner());
 

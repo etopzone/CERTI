@@ -206,11 +206,16 @@ public:
 	 * @param[in] msgBuffer the deserialization buffer
 	 */
     virtual void deserialize(MessageBuffer& msgBuffer);
-
+    
     /**
-	 * Send a message buffer to the socket
-	 */
+     * Send a message buffer to the socket
+     */
     void send(Socket* socket, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
+    
+    /**
+     * Send a message buffer to each socket in the list
+     */
+    void send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
 
     /**
 	 * Receive a message buffer from the socket

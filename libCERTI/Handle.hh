@@ -34,8 +34,8 @@ namespace certi {
     
         typedef Handle   FederateHandle;
 // // // // //     using FederateHandle = NamedType<Handle, struct FederateHandleParameter>;
-        typedef Handle   FederationHandle;
-// // // // //     using FederationHandle = NamedType<Handle, struct FederationHandleTypeParameter>;
+//         typedef Handle   FederationHandle;
+    using FederationHandle = NamedType<Handle, struct FederationHandleTypeParameter, Comparable, Printable, Hashable, Invalidable>;
     
     typedef Handle   ObjectClassHandle;
     typedef Handle   InteractionClassHandle;

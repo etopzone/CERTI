@@ -409,7 +409,7 @@ throw (FederateNotPublishing,
     if (server != NULL) {
         NM_Receive_Interaction *answer = new NM_Receive_Interaction() ;
         answer->setException (Exception::Type::NO_EXCEPTION);
-        answer->setFederation(server->federation());
+        answer->setFederation(server->federation().get());
         answer->setFederate(federate_handle);
         answer->setInteractionClass(handle) ; // Interaction Class Handle
         answer->setDate(time);
@@ -468,7 +468,7 @@ throw (FederateNotPublishing,
     if (server != NULL) {
         NM_Receive_Interaction *answer = new NM_Receive_Interaction();
         answer->setException(Exception::Type::NO_EXCEPTION);
-        answer->setFederation(server->federation());
+        answer->setFederation(server->federation().get());
         answer->setFederate(federate_handle);
         answer->setInteractionClass(handle); // Interaction Class Handle
         answer->setLabel(the_tag);

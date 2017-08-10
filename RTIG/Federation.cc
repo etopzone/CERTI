@@ -135,27 +135,29 @@ static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
 
 #ifdef FEDERATION_USES_MULTICAST
 Federation::Federation(const string& federation_name,
-                       FederationHandle federation_handle,
+                       const FederationHandle federation_handle,
                        SocketServer& socket_server,
                        AuditFile& audit_server,
                        SocketMC* mc_link,
                        int theVerboseLevel)
 #else
 Federation::Federation(const string& federation_name,
-                       Handle federation_handle,
+                       const FederationHandle federation_handle,
                        SocketServer& socket_server,
                        AuditFile& audit_server,
                        const string& FEDid_name,
-                       int theVerboseLevel)
+                       int verboseLevel)
 #endif
     throw(CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError, RTIinternalError)
-    : my_federate_handle_generator(1)
+    : my_handle(federation_handle)
+    , my_name(federation_name)
+    , my_FED_id(FEDid_name)
+    , my_federate_handle_generator(1)
     , my_objects_handle_generator(1)
     , my_is_save_in_progress(false)
     , my_is_restore_in_progress(false)
     , my_save_status(true)
     , my_restore_status(true)
-    , my_verbose_level(theVerboseLevel)
 {
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -170,15 +172,9 @@ Federation::Federation(const string& federation_name,
 
     Debug(G, pdGendoc) << "enter Federation::Federation" << endl;
     // Allocates Name
-    if (federation_name.empty() || (federation_handle == 0)) {
+    if (federation_name.empty() || (!federation_handle.isValid())) {
         throw RTIinternalError("Null init parameter in Federation creation.");
     }
-
-    my_name = federation_name;
-
-    // Default Attribute values
-    my_handle = federation_handle;
-    my_FED_id = FEDid_name;
 
     Debug(D, pdInit) << "New Federation created with Handle " << my_handle << ", now reading FOM." << endl;
 
@@ -188,7 +184,7 @@ Federation::Federation(const string& federation_name,
     // Read FOM File to initialize Root Object.
     my_root_object = make_unique<RootObject>(my_server.get());
 
-    if (my_verbose_level > 0) {
+    if (verboseLevel > 0) {
         cout << "New federation: " << my_name << endl;
     }
 
@@ -197,7 +193,7 @@ Federation::Federation(const string& federation_name,
     // --> see doxygen doc at the top of this file.
     string filename = my_FED_id;
     bool filefound = false;
-    if (my_verbose_level > 0) {
+    if (verboseLevel > 0) {
         cout << "Looking for FOM file... " << endl;
         cout << "   Trying... " << filename;
     }
@@ -237,11 +233,11 @@ Federation::Federation(const string& federation_name,
 
         /* try to open FED using fom_paths prefixes */
         for (const string& path : fom_paths) {
-            if (my_verbose_level > 0) {
+            if (verboseLevel > 0) {
                 cout << " --> cannot access." << endl;
             }
             filename = path + FEDid_name;
-            if (my_verbose_level > 0) {
+            if (verboseLevel > 0) {
                 cout << "   Now trying... " << filename;
             }
             filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
@@ -252,7 +248,7 @@ Federation::Federation(const string& federation_name,
     }
 
     if (!filefound) {
-        if (my_verbose_level > 0) {
+        if (verboseLevel > 0) {
             cout << " --> cannot access." << endl;
         }
         cerr << "Next step will fail, abort now" << endl;
@@ -266,14 +262,14 @@ Federation::Federation(const string& federation_name,
     // Try to open to verify if file exists
     ifstream fedTry(my_FED_id);
     if (!fedTry.is_open()) {
-        if (my_verbose_level > 0) {
+        if (verboseLevel > 0) {
             cout << "... failed : ";
         }
         Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
     }
     else {
-        if (my_verbose_level > 0) {
+        if (verboseLevel > 0) {
             cout << "... opened." << endl;
         }
         fedTry.close();
@@ -311,7 +307,7 @@ Federation::Federation(const string& federation_name,
         fedFile.close();
         if (is_a_fed) {
             // parse FED file and show the parse on stdout if verboseLevel>=2
-            int err = fedparser::build(filename.c_str(), my_root_object.get(), (my_verbose_level >= 2));
+            int err = fedparser::build(filename.c_str(), my_root_object.get(), (verboseLevel >= 2));
             if (err != 0) {
                 Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << endl;
                 throw ErrorReadingFED("fed parser found error in FED file");
@@ -389,7 +385,7 @@ Federation::~Federation()
 #endif
 }
 
-Handle Federation::getHandle() const
+FederationHandle Federation::getHandle() const
 {
     return my_handle;
 }
@@ -452,7 +448,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
         my_regulators.get(clocks);
 
         for (const auto& clock : clocks) {
-            nullMessage.setFederation(my_handle);
+            nullMessage.setFederation(my_handle.get());
             nullMessage.setFederate(clock.first);
             nullMessage.setDate(clock.second);
             Debug(D, pdTerm) << "Sending NULL message(type " << nullMessage.getMessageType() << ") from "
@@ -464,7 +460,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
         // If federation is synchronizing, put federate in same state.
         if (isSynchronizing()) {
             ASPMessage.setFederate(federate_handle);
-            ASPMessage.setFederation(my_handle);
+            ASPMessage.setFederation(my_handle.get());
 
             for (const auto& kv : my_synchronization_labels) {
                 ASPMessage.setLabel(kv.first);
@@ -501,7 +497,7 @@ void Federation::addRegulator(FederateHandle federate_handle, FederationTime tim
 
     NM_Set_Time_Regulating msg;
     msg.setException(Exception::Type::NO_EXCEPTION);
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setFederate(federate_handle);
     msg.regulatorOn();
     msg.setDate(time);
@@ -590,7 +586,7 @@ FederationTime Federation::getMinNERx() const
 
 void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous)
 {
-    Socket* socket = NULL;
+    Socket* socket = nullptr;
 
     // Broadcast the message 'msg' to all Federates in the Federation
     // except to Federate whose Handle is 'Except_Federate'.
@@ -860,7 +856,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
     // broadcast announceSynchronizationPoint() to all federates in federation.
     NM_Announce_Synchronization_Point msg;
     msg.setFederate(federate_handle);
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setLabel(label);
     msg.setTag(tag);
 
@@ -888,7 +884,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
     // broadcast announceSynchronizationPoint() to all federates in federation.
     NM_Announce_Synchronization_Point msg;
     msg.setFederate(federate_handle);
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setLabel(label);
     msg.setTag(tag);
 
@@ -921,7 +917,7 @@ void Federation::requestFederationSave(FederateHandle federate_handle,
 
     NM_Initiate_Federate_Save msg;
     msg.setFederate(federate_handle);
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setLabel(label);
     // timed message
     msg.setDate(time);
@@ -955,7 +951,7 @@ void Federation::requestFederationSave(FederateHandle federate_handle,
 
     NM_Initiate_Federate_Save msg;
     msg.setFederate(federate_handle);
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setLabel(the_label);
 
     Debug(G, pdGendoc) << "                  requestFederationSave====>broadcast I_F_S to all" << endl;
@@ -1001,7 +997,7 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
         NM_Factory::create(my_save_status ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED));
 
     msg->setFederate(federate_handle);
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
 
     broadcastAnyMessage(msg.get(), 0, false);
 
@@ -1041,7 +1037,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
                                                      : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
 
     msg->setFederate(federate_handle);
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
     msg->setLabel(the_label);
 
     Socket* socket = my_server->getSocketLink(msg->getFederate());
@@ -1073,7 +1069,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     // Informs federates a new restore is being done.
     msg = NM_Factory::create(NetworkMessage::FEDERATION_RESTORE_BEGUN);
     msg->setFederate(federate_handle);
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
 
     Debug(G, pdGendoc) << "             =====> broadcast message F_R_B" << endl;
 
@@ -1082,7 +1078,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
 
     // For each federate, send an initiateFederateRestore with correct handle.
     msg = NM_Factory::create(NetworkMessage::INITIATE_FEDERATE_RESTORE);
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
     msg->setLabel(the_label);
 
     //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
@@ -1122,7 +1118,7 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
         my_restore_status ? NetworkMessage::FEDERATION_RESTORED : NetworkMessage::FEDERATION_NOT_RESTORED));
 
     msg->setFederate(federate_handle);
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
 
     broadcastAnyMessage(msg.get(), 0, false);
 
@@ -1305,7 +1301,7 @@ void Federation::publishObject(FederateHandle federate_handle,
 
         NM_Start_Registration_For_Object_Class msg;
         msg.setFederate(federate_handle);
-        msg.setFederation(my_handle);
+        msg.setFederation(my_handle.get());
         msg.setObjectClass(object_handle);
 
         this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short) federate_vector.size());
@@ -1354,7 +1350,7 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
         Debug(G, pdGendoc) << "             =====> send message R_O_I_N_F to federate " << msg->getFederate() << endl;
     }
 
-    msg->setFederation(my_handle);
+    msg->setFederation(my_handle.get());
     msg->setFederate(theFederateHandle);
     // send message.
     socket = my_server->getSocketLink(msg->getFederate());
@@ -1445,7 +1441,7 @@ void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateN
                      << endl;
 
     NM_Set_Time_Regulating msg;
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setFederate(federate_handle);
     msg.regulatorOff();
 
@@ -1485,7 +1481,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
     // send a federationSynchronized().
     NM_Federation_Synchronized msg;
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     msg.setFederate(federate_handle);
     msg.setLabel(label);
 
@@ -1597,7 +1593,7 @@ void Federation::subscribeObject(FederateHandle federate,
 
         NM_Start_Registration_For_Object_Class msg;
         msg.setFederate(federate);
-        msg.setFederation(my_handle);
+        msg.setFederation(my_handle.get());
         msg.setObjectClass(object);
 
         this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short) federate_vector.size());
@@ -1697,7 +1693,7 @@ void Federation::updateRegulator(FederateHandle federate_handle,
     }
 
     NM_Message_Null msg;
-    msg.setFederation(my_handle);
+    msg.setFederation(my_handle.get());
     if (anonymous) {
         msg.setFederate(0);
     }
@@ -2170,7 +2166,7 @@ bool Federation::saveXmlData()
     xmlSetProp(federation, (const xmlChar*) "name", (const xmlChar*) my_name.c_str());
 
     char t[10];
-    sprintf(t, "%u", my_handle);
+    sprintf(t, "%u", my_handle.get());
     xmlSetProp(federation, (const xmlChar*) "handle", (const xmlChar*) t);
 
     xmlNodePtr federateXmlNode;

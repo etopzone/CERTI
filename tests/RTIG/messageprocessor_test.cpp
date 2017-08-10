@@ -19,7 +19,7 @@ protected:
     ::certi::AuditFile audit_server{"tmp"};
     ::certi::SocketServer socket_server{new certi::SocketTCP{}, nullptr};
     ::certi::HandleManager<::certi::Handle> handle_generator{1};
-    ::certi::rtig::FederationsList federations{socket_server, audit_server};
+    ::certi::rtig::FederationsList federations{};
 
     MessageProcessor mp{audit_server, socket_server, handle_generator, federations};
 };
@@ -51,7 +51,7 @@ TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution)
     TemporaryFedFile federation_file{"Sample.fed"};
 
     MockSocketTcp socket;
-    EXPECT_CALL(socket, send(_, _)).Times(1);
+    EXPECT_CALL(socket, send(_, _)).Times(0);
 
     auto message = make_unique<::certi::NM_Create_Federation_Execution>();
     message->setFederationName(federation_name);
@@ -62,12 +62,12 @@ TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution)
     auto responses = mp.processEvent({&socket, std::move(message)});
 
     // test responses
-    ASSERT_EQ(0u, responses.size());
+    ASSERT_EQ(1u, responses.size());
 
     // takes an handle from the handle_generator
     ASSERT_EQ(first_generator_value + 2, handle_generator.provide());
     // created a federation
-    ASSERT_EQ(first_generator_value + 1, federations.getFederationHandle(federation_name));
+    ASSERT_EQ(::certi::FederationHandle(first_generator_value + 1), federations.getFederationHandle(federation_name));
 }
 
 TEST_F(MessageProcessorTest, Process_NM_Join_Federation_Execution_Empty)

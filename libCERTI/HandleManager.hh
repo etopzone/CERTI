@@ -44,7 +44,7 @@ public:
 	 * by numeric_limits traits.
 	 * @param[in] init Initial handle value (use for first requested handle)
 	 */
-	HandleManager(T);
+    HandleManager(T init);
 	/**
 	 * Constructor with init value and max.
 	 * @param[in] init Initial handle value (use for first requested handle)
@@ -73,7 +73,7 @@ public:
 
 private:
 	size_t maximum ;
-	T highest ;
+    T highest ;
 	std::list<T> available ;
 };
 
@@ -84,25 +84,27 @@ HandleManager<T>::HandleManager(T init)
 
 template<typename T>
 HandleManager<T>::HandleManager(T init, size_t hmax)
-: highest(init), maximum(hmax) { }
+: highest(init.get()), maximum(T(hmax)) { }
 
 template<typename T> T
 HandleManager<T>::provide() throw (RTIinternalError)
 {
-	T handle = 0 ;
-
-	if (available.size() > 0) {
-		handle = available.front();
-		available.pop_front();
-	}
-	else {
-		if (highest < maximum)
-			handle = highest++ ;
-		else
-			throw RTIinternalError("Maximum handle reached");
-	}
-
-	return handle ;
+    T handle = T(0);
+    
+    if (available.size() > 0) {
+        handle = available.front();
+        available.pop_front();
+    }
+    else {
+        if (highest != T(maximum)) {
+            handle = T(highest++);
+        }
+        else {
+            throw RTIinternalError("Maximum handle reached");
+        }
+    }
+    
+    return handle ;
 } /* end of provide */
 
 template<typename T> void

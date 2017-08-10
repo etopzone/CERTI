@@ -73,11 +73,11 @@ public:
 	 *  @param mc_link
 	 */
     Federation(const std::string& federation_name,
-               FederationHandle federation_handle,
+               const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
                SocketMC* mc_link,
-               int theVerboseLevel)
+               const int verboseLevel)
 #else
     /**
      * Allocates memory the Name's storage, and read its FED file to store the
@@ -90,7 +90,7 @@ public:
      * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
      */
     Federation(const std::string& federation_name,
-               Handle federation_handle,
+               const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
                const std::string& FEDid_name,
@@ -101,7 +101,7 @@ public:
     ~Federation();
 
     /// Returns the federation handle.
-    Handle getHandle() const;
+    FederationHandle getHandle() const;
 
     /// Returns the federation name given in 'Create Federation Execution'.
     std::string getName() const;
@@ -660,7 +660,7 @@ private:
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
 
-    Handle my_handle;
+    FederationHandle my_handle;
     std::string my_name;
     std::string my_FED_id;
 
@@ -685,13 +685,12 @@ private:
 #endif
 
     // Private attributes
-    std::unordered_map<FederationHandle, std::unique_ptr<Federate>> my_federates;
+    std::unordered_map<FederateHandle, std::unique_ptr<Federate>> my_federates;
 
     bool my_is_save_in_progress;
     bool my_is_restore_in_progress;
     bool my_save_status; /// True if saving was correctly done, false otherwise.
     bool my_restore_status; /// True if restoring was correctly done.
-    int my_verbose_level;
     std::string my_save_label; /// The label associated with the save request.
 
     /// The minimum NERx timestamp for this federation

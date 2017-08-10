@@ -48,13 +48,15 @@ namespace certi {
 class CERTI_EXPORT SecurityServer : private std::list<SecurityLevel *>
 {
 public:
-    SecurityServer(SocketServer &, AuditFile &, Handle);
+    SecurityServer(SocketServer &theRTIGServer,
+                   AuditFile &theAuditServer,
+                   FederationHandle theFederation);
     virtual ~SecurityServer();
 
     //! This part of the security server is linked to the RTIG Audit Server.
     AuditFile &audit ;
 
-    Handle federation() const { return myFederation ; };
+    FederationHandle federation() const { return myFederation ; };
 
     virtual Socket *getSocketLink(FederateHandle theFederate,
                           TransportType theType = RELIABLE) const ;
@@ -71,7 +73,7 @@ public:
                           SecurityLevelID the_level_id);
 
 private:
-    Handle myFederation ;
+    FederationHandle myFederation ;
     SocketServer &RTIG_SocketServer ;
 
     SecurityLevelID LastLevelID ; //!< Last Level ID attributed.

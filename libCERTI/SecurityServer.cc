@@ -47,9 +47,9 @@ SecurityServer::getSocketLink(FederateHandle theFederate,
 {
 // G.Out(pdGendoc,"into SecurityServer::getSocketLink");
 Socket * sock = RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
-if ( sock == NULL )
+if ( sock == nullptr )
    // Federate killed
-   return NULL ;
+   return nullptr ;
 else
    return sock ;
 }
@@ -110,14 +110,14 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
 //! SecurityServer constructor.
 SecurityServer::SecurityServer(SocketServer &theRTIGServer,
                                AuditFile &theAuditServer,
-                               Handle theFederation)
-    :  list<SecurityLevel *>(), audit(theAuditServer),
-       RTIG_SocketServer(theRTIGServer)
+                               FederationHandle theFederation)
+    :  list<SecurityLevel *>(), audit(theAuditServer)
+    , RTIG_SocketServer(theRTIGServer)
+    , myFederation(theFederation)
 {
-    myFederation = theFederation ;
-
-    if (myFederation == 0)
+    if (!myFederation.isValid()) {
         throw RTIinternalError("");
+    }
 }
 
 // ----------------------------------------------------------------------------

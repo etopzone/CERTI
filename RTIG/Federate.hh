@@ -41,25 +41,25 @@ public:
     Federate(const std::string& name, const FederateHandle handle);
 
     FederateHandle getHandle() const noexcept;
-    
+
     void setHandle(const FederateHandle h);
 
     std::string getName() const noexcept;
 
     bool isConstrained() const noexcept;
-    
+
     void setConstrained(const bool c);
 
     bool isRegulator() const noexcept;
-    
+
     void setRegulator(const bool r);
 
     bool isUsingNERx() const noexcept;
-    
+
     void setIsUsingNERx(const bool unx) noexcept;
 
     const FederationTime getLastNERxValue() const noexcept;
-    
+
     void setLastNERxValue(const FederationTime t) noexcept;
 
     /**
@@ -119,11 +119,11 @@ public:
     void setAttributeScopeAdvisorySwitch(const bool val);
 
     bool isSaving() const noexcept;
-    
+
     void setSaving(const bool s) noexcept;
 
     bool isRestoring() const noexcept;
-    
+
     void setRestoring(const bool r) noexcept;
 
     /**

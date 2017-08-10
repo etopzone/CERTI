@@ -79,11 +79,11 @@ using ::certi::rtig::Federation;
  */
 
 namespace {
-static constexpr ::certi::Handle invalid_handle{0};
+    static const ::certi::FederationHandle invalid_handle{0};
 
-static constexpr ::certi::FederationHandle federation_handle{1};
+static const ::certi::FederationHandle federation_handle{1};
 
-static constexpr ::certi::FederateHandle ukn_federate{42};
+static const ::certi::FederateHandle ukn_federate{42};
 
 static constexpr int quiet{0};
 static constexpr int verbose{1};
@@ -774,7 +774,7 @@ TEST_F(FederationTest, RequestSaveThrowsIfAlreadySaving)
 
 TEST_F(FederationTest, RequestTimedSaveThrowOnUknFederate)
 {
-    ASSERT_THROW(f.requestFederationSave(ukn_federate, "label", {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.requestFederationSave(ukn_federate, "label"), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
@@ -782,7 +782,7 @@ TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
     auto handle = f.add("fed", nullptr);
 
     try {
-        f.requestFederationSave(handle, "save", {});
+        f.requestFederationSave(handle, "save");
     }
     catch (certi::FederateNotExecutionMember& e) {
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
@@ -800,7 +800,7 @@ TEST_F(FederationTest, RequestTimedSaveThrowsIfAlreadySaving)
     auto handle = f.add("fed", nullptr);
 
     try {
-        f.requestFederationSave(handle, "save", {});
+        f.requestFederationSave(handle, "save");
     }
     catch (certi::FederateNotExecutionMember& e) {
         // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
@@ -810,7 +810,7 @@ TEST_F(FederationTest, RequestTimedSaveThrowsIfAlreadySaving)
                << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
     }
 
-    ASSERT_THROW(f.requestFederationSave(handle, "save_again", {}), ::certi::SaveInProgress);
+    ASSERT_THROW(f.requestFederationSave(handle, "save_again"), ::certi::SaveInProgress);
 }
 
 TEST_F(FederationTest, CreateRegionThrowsOnUknFederate)

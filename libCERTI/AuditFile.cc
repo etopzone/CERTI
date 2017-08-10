@@ -28,13 +28,13 @@
 #include <sstream>
 
 namespace {
-static constexpr auto AuditMinLevel = certi::AuditLine::Level{0};
-static constexpr auto AuditMaxLevel = certi::AuditLine::Level{10};
+static const auto AuditMinLevel = certi::AuditLine::Level{0};
+static const auto AuditMaxLevel = certi::AuditLine::Level{10};
 
-static constexpr auto StartAudit = certi::AuditLine::Type{128};
-static constexpr auto StopAudit = certi::AuditLine::Type{129};
+static const auto StartAudit = certi::AuditLine::Type{128};
+static const auto StopAudit = certi::AuditLine::Type{129};
 
-static constexpr auto NormalStatus = certi::AuditLine::Status(certi::Exception::Type::NO_EXCEPTION);
+static const auto NormalStatus = certi::AuditLine::Status(certi::Exception::Type::NO_EXCEPTION);
 }
 
 namespace certi {
@@ -128,31 +128,26 @@ AuditFile& AuditFile::operator<<(const std::string& s)
 
 AuditFile& AuditFile::operator<<(const int n)
 {
-    my_current_line.addComment(std::to_string(n));
-    return *this;
+    return (*this << std::to_string(n));
 }
 
 AuditFile& AuditFile::operator<<(const long n)
 {
-    my_current_line.addComment(std::to_string(n));
-    return *this;
+    return (*this << std::to_string(n));
 }
 
 AuditFile& AuditFile::operator<<(const unsigned int n)
 {
-    my_current_line.addComment(std::to_string(n));
-    return *this;
+    return (*this << std::to_string(n));
 }
 
 AuditFile& AuditFile::operator<<(const unsigned long n)
 {
-    my_current_line.addComment(std::to_string(n));
-    return *this;
+    return (*this << std::to_string(n));
 }
 
 AuditFile& AuditFile::operator<<(const double n)
 {
-    my_current_line.addComment(std::to_string(n));
-    return *this;
+    return (*this << std::to_string(n));
 }
 }
