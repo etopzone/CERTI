@@ -177,11 +177,11 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 {
 	switch(ocblist->getMsg()->getMessageType()) {
 
-	case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
+        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
 		addFederatesIfOverlap(*ocblist, region, handle);
 	}
 	break ;
-	case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
 		PublishersList_t::iterator i ;
 		for (i = publishers.begin(); i != publishers.end(); ++i) {
 			ocblist->addFederate(*i, handle);

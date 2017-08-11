@@ -860,12 +860,12 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
         self.indent()
         for e in self.AST.eMessageType.values:
             if None != self.replacePrefix:
-                stream.write(self.getIndent() + 'case %s::%s:\n'
+                stream.write(self.getIndent() + 'case %s::Type::%s:\n'
                              % (creator[0],
                              e.name.replace(self.replacePrefix[0], '',
                              1)))
             else:
-                stream.write(self.getIndent() + 'case %s::%s:\n'
+                stream.write(self.getIndent() + 'case %s::Type::%s:\n'
                              % (creator[0], e.name))
 
             self.indent()
@@ -1117,7 +1117,7 @@ class CXXCERTINetworkMessageGenerator(CXXGenerator):
               self).__init__(MessageAST)
         self.replacePrefix = list()
         self.replacePrefix.append('NM_')
-        self.replacePrefix.append('NetworkMessage::')
+        self.replacePrefix.append('NetworkMessage::Type::')
         self.exportPrefix = 'CERTI_EXPORT'
         self.serializeBufferType = 'libhla::MessageBuffer'
         self.messageTypeGetter = 'getMessageType()'

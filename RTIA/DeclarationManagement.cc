@@ -91,7 +91,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Receive RTIG answer
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::PUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
     G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass") ;
@@ -130,7 +130,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     // Receive RTIG answer
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishObjectClass */
@@ -162,7 +162,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     req.setInteractionClass(theInteractionHandle);
 
     comm->sendMessage(&req);    
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_INTERACTION_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::PUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of publishInteractionClass */
@@ -195,7 +195,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 
     comm->sendMessage(&req);
     
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException() ;
 } /* end of unpublishInteractionClass */
@@ -230,7 +230,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Wait for the RTIG answer
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
-                      NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
+        NetworkMessage::Type::SUBSCRIBE_OBJECT_CLASS,
                       req.getFederate()));
     G.Out(pdGendoc,"                              =====> received S_O_C from RTIG");
 
@@ -259,7 +259,7 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
-                      NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS,
+        NetworkMessage::Type::UNSUBSCRIBE_OBJECT_CLASS,
                       req.getFederate()));
 
     e = rep->getException() ;
@@ -295,7 +295,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     comm->sendMessage(&req);
 
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SUBSCRIBE_INTERACTION_CLASS,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::SUBSCRIBE_INTERACTION_CLASS,
 		      req.getFederate()));
 
     e = rep->getException() ;
@@ -332,7 +332,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(comm->waitMessage(
-                      NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS,
+        NetworkMessage::Type::UNSUBSCRIBE_INTERACTION_CLASS,
                       req.getFederate()));
 
     e = rep->getException() ;

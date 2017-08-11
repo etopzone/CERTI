@@ -50,7 +50,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
 
     switch(msgType) {
 
-      case NetworkMessage::MESSAGE_NULL:
+        case NetworkMessage::Type::MESSAGE_NULL:
       {
           D.Out(pdTrace,
                 "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
@@ -64,7 +64,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::SET_TIME_REGULATING:
+        case NetworkMessage::Type::SET_TIME_REGULATING:
       {
           // Another federate is becoming regulating.
           D.Out(pdTrace,
@@ -78,25 +78,25 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+        case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
         D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::CONFIRM_"
               "SYNCHRONIZATION_POINT_REGISTRATION.");
 
         queues->insertLastCommand(msg);
         break ;
-      case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
+        case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
         D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::ANNOUCE_"
               "SYNCHRONIZATION_POINT.");
 
         queues->insertLastCommand(msg);
         break ;
-      case NetworkMessage::FEDERATION_SYNCHRONIZED:
+        case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, type NetworkMessage::FEDERATION_SYNCHRONIZED.");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::DISCOVER_OBJECT:
+        case NetworkMessage::Type::DISCOVER_OBJECT:
       {
     	  NM_Discover_Object* DO = static_cast<NM_Discover_Object*>(msg);
           D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::DISCOVER_OBJECT.");
@@ -122,7 +122,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
       }
       break;
 
-      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
+        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
       {
     	  NM_Reflect_Attribute_Values *RAV = static_cast<NM_Reflect_Attribute_Values*>(msg);
           OrderType updateOrder  ;
@@ -183,7 +183,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
          break ;
       }
 
-      case NetworkMessage::RECEIVE_INTERACTION:
+      case NetworkMessage::Type::RECEIVE_INTERACTION:
       {
 
     	 NM_Receive_Interaction* RI = static_cast<NM_Receive_Interaction*>(msg);
@@ -220,7 +220,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
          break ;
       }
 
-      case NetworkMessage::REMOVE_OBJECT:
+      case NetworkMessage::Type::REMOVE_OBJECT:
       {
           D.Out(pdTrace, "Receving Message from RTIG, \
 	  		  type NetworkMessage::REMOVE_OBJECT.");
@@ -237,7 +237,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP:
+      case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP:
       {
           D.Out(pdTrace,
                 "Receving Message from RTIG, "
@@ -246,7 +246,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED:
+      case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED:
       {
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::ATTRIBUTE_IS_NOT_OWNED.");
@@ -255,7 +255,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
       }
 
 
-      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION.");
@@ -263,7 +263,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE.");
@@ -271,7 +271,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION.");
@@ -279,7 +279,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION.");
@@ -287,7 +287,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+      case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE.");
@@ -296,7 +296,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
       }
 
 
-      case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION.");
@@ -304,96 +304,96 @@ NetworkMessage::Type msgType = msg->getMessageType();
           break ;
       }
 
-      case NetworkMessage::INITIATE_FEDERATE_SAVE:
+      case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type InitiateFederateSave.");
         queues->insertBeginCommand(msg);
         break ;
 
-      case NetworkMessage::FEDERATION_SAVED:
-      case NetworkMessage::FEDERATION_NOT_SAVED:
+      case NetworkMessage::Type::FEDERATION_SAVED:
+      case NetworkMessage::Type::FEDERATION_NOT_SAVED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type Federation(Not)Saved.");
         queues->insertBeginCommand(msg);
         break ;
 
-      case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type RequestFederationRestoreSucceeded.");
         G.Out(pdGendoc,"processNetworkMessage for REQUEST_FEDERATION_RESTORE_SUCCEEDED");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED:
+      case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type RequestFederationRestoreFailed.");
         G.Out(pdGendoc,"processNetworkMessage for REQUEST_FEDERATION_RESTORE_FAILED");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::FEDERATION_RESTORE_BEGUN:
+      case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type FederationRestoreBegun.");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::INITIATE_FEDERATE_RESTORE:
+      case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type InitiateFederateRestore.");
         G.Out(pdGendoc,"processNetworkMessage for INITIATE_FEDERATE_RESTORE");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::FEDERATION_RESTORED:
-      case NetworkMessage::FEDERATION_NOT_RESTORED:
+      case NetworkMessage::Type::FEDERATION_RESTORED:
+      case NetworkMessage::Type::FEDERATION_NOT_RESTORED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type Federation(Not)Restored.");
         queues->insertLastCommand(msg);
         break ;
 
-      case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+      case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type ProvideAttributeValueUpdate.");
         queues->insertFifoMessage(msg);
         break ;
 
-      case NetworkMessage::TIME_REGULATION_ENABLED:
+      case NetworkMessage::Type::TIME_REGULATION_ENABLED:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type TimeRegulationEnabled.");
     	  queues->insertLastCommand(msg);
     	  break ;
-      case NetworkMessage::TIME_CONSTRAINED_ENABLED:
+      case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type TimeConstrainedEnabled.");
     	  queues->insertLastCommand(msg);
     	  break;
-      case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+      case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type setCRAS.");
 	  break;
-      case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+      case NetworkMessage::Type::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type setIRAS.");
 	  break;
-      case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+      case NetworkMessage::Type::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type setARAS.");
 	  break;
-      case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+      case NetworkMessage::Type::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type setASAS.");
 	  break;
-      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
+      case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type StartRegForObjClass.");
     	  queues->insertLastCommand(msg);
 	  break;
-      case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+      case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
           D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type reserveObjectInstanceNameSucceeded.");
     	  queues->insertLastCommand(msg);
 	  break;
-      case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+      case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
           D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type reserveObjectInstanceNameFaild.");
     	  queues->insertLastCommand(msg);
@@ -404,7 +404,7 @@ NetworkMessage::Type msgType = msg->getMessageType();
           D.Out(pdTrace,
                 "Receving Message from RTIG, unknown type %d.", msgType);
           delete msg ;
-          throw RTIinternalError(stringize() << "Unknown Message type <" << msgType << "> received from RTIG.");
+          throw RTIinternalError("Unknown Message type <" + std::to_string(static_cast<std::underlying_type<NetworkMessage::Type>::type>(msgType)) + "> received from RTIG.");
       }
     }
 

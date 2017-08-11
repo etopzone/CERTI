@@ -26,7 +26,7 @@ protected:
 
 TEST_F(MessageProcessorTest, ProcessThrowsOnCloseConnection)
 {
-    auto message = std::unique_ptr<NetworkMessage>(::certi::NM_Factory::create(NetworkMessage::CLOSE_CONNEXION));
+    auto message = std::unique_ptr<NetworkMessage>(::certi::NM_Factory::create(NetworkMessage::Type::CLOSE_CONNEXION));
 
     ASSERT_THROW(mp.processEvent({nullptr, std::move(message)}), ::certi::RTIinternalError);
 }

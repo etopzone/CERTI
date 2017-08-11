@@ -131,7 +131,7 @@ throw (SpaceNotDefined)
 	req.setNbExtents(nb_extents);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NM_DDM_Create_Region> rep(static_cast<NM_DDM_Create_Region*>(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.getFederate())));
+    std::unique_ptr<NM_DDM_Create_Region> rep(static_cast<NM_DDM_Create_Region*>(comm->waitMessage(NetworkMessage::Type::DDM_CREATE_REGION, req.getFederate())));
 	e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
@@ -171,7 +171,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 	req.setExtents(extents);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_MODIFY_REGION, req.getFederate()));
 	e = rep->getException() ;
 
     if (e == Exception::Type::NO_EXCEPTION) {
@@ -200,7 +200,7 @@ throw (RegionNotKnown, RegionInUse)
 	req.setRegion(handle);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_DELETE_REGION, req.getFederate()));
 	e = rep->getException() ;
 
     if (e == Exception::Type::NO_EXCEPTION) {
@@ -242,7 +242,7 @@ throw (RegionNotKnown)
 	}
 
 	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_ASSOCIATE_REGION,req.getFederate()));
 
 	e = rep->getException() ;
 
@@ -273,7 +273,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 	req.setRegions(regions);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NM_DDM_Register_Object> rep(static_cast<NM_DDM_Register_Object*>(comm->waitMessage(NetworkMessage::DDM_REGISTER_OBJECT,req.getFederate())));
+    std::unique_ptr<NM_DDM_Register_Object> rep(static_cast<NM_DDM_Register_Object*>(comm->waitMessage(NetworkMessage::Type::DDM_REGISTER_OBJECT,req.getFederate())));
 	e = rep->getException() ;
 
 
@@ -314,7 +314,7 @@ throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
 	req.setRegion(region) ;
 
 	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNASSOCIATE_REGION,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_UNASSOCIATE_REGION,
 			req.getFederate()));
 
 	e = rep->getException() ;
@@ -344,7 +344,7 @@ throw (RegionNotKnown)
 	}
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_SUBSCRIBE_ATTRIBUTES,
 			req.getFederate()));
 
 	e = rep->getException() ;
@@ -369,7 +369,7 @@ throw (RegionNotKnown)
 	req.setRegion(region);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_UNSUBSCRIBE_ATTRIBUTES,
 			req.getFederate()));
 
 	e = rep->getException() ;
@@ -393,7 +393,7 @@ throw (RegionNotKnown)
 	req.setFederate(fm->federate);
 
 	comm->sendMessage(&req);
-	std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_SUBSCRIBE_INTERACTION,
 			req.getFederate()));
 
 	e = rep->getException() ;
@@ -417,7 +417,7 @@ throw (RegionNotKnown)
 	req.setFederate(fm->federate);
 
 	comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DDM_UNSUBSCRIBE_INTERACTION,
 			req.getFederate()));
 
 	e = rep->getException() ;

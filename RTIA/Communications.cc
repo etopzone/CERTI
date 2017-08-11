@@ -52,7 +52,8 @@ static PrettyDebug G("GENDOC", __FILE__);
 
 NetworkMessage* Communications::waitMessage(NetworkMessage::Type type_msg, FederateHandle numeroFedere)
 {
-    assert(type_msg > 0 && type_msg < NetworkMessage::LAST);
+    assert(static_cast<std::underlying_type<NetworkMessage::Type>::type>(type_msg) > 0 && static_cast<std::underlying_type<NetworkMessage::Type>::type>(type_msg) < static_cast<std::underlying_type<NetworkMessage::Type>::type>(NetworkMessage::Type::LAST));
+    
     NetworkMessage* msg = NULL;
 
     D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);

@@ -43,7 +43,7 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
 {
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
                                                                                                                        \
-    case NetworkMessage::MessageType:                                                                                  \
+    case NetworkMessage::Type::MessageType:                                                                            \
         Debug(D, pdTrace) << "MessageClass" << std::endl;                                                              \
         return process(MessageEvent<MessageClass>{std::move(request)})
 
@@ -107,12 +107,12 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
         BASIC_CASE(DDM_SUBSCRIBE_INTERACTION, NM_DDM_Subscribe_Interaction);
         BASIC_CASE(DDM_UNSUBSCRIBE_INTERACTION, NM_DDM_Unsubscribe_Interaction);
 
-    case NetworkMessage::CLOSE_CONNEXION:
+        case NetworkMessage::Type::CLOSE_CONNEXION:
         throw RTIinternalError("Close connection: Should have been handled by RTIG");
 
     default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        Debug(D, pdError) << "MessageProcessor::processEvent(): unknown type " << request.message()->getMessageType()
+        Debug(D, pdError) << "MessageProcessor::processEvent(): unknown type " << static_cast<std::underlying_type<NetworkMessage::Type>::type>(request.message()->getMessageType())
                           << std::endl;
         throw RTIinternalError("Unknown Message Type");
     }

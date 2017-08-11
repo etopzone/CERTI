@@ -451,8 +451,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
             nullMessage.setFederation(my_handle.get());
             nullMessage.setFederate(clock.first);
             nullMessage.setDate(clock.second);
-            Debug(D, pdTerm) << "Sending NULL message(type " << nullMessage.getMessageType() << ") from "
-                             << nullMessage.getFederate() << " to new federate." << endl;
+            Debug(D, pdTerm) << "Sending NULL message from " << nullMessage.getFederate() << " to new federate." << endl;
 
             nullMessage.send(tcp_link, my_nm_buffer);
         }
@@ -465,8 +464,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
             for (const auto& kv : my_synchronization_labels) {
                 ASPMessage.setLabel(kv.first);
                 ASPMessage.setTag(kv.second);
-                Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " (type "
-                                 << ASPMessage.getMessageType() << ") to the new Federate" << endl;
+                Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " to the new Federate" << endl;
 
                 ASPMessage.send(tcp_link, my_nm_buffer);
                 federate.addSynchronizationLabel(kv.first);
@@ -994,7 +992,7 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
 
     // Send end save message.
     std::unique_ptr<NetworkMessage> msg(
-        NM_Factory::create(my_save_status ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED));
+        NM_Factory::create(my_save_status ? NetworkMessage::Type::FEDERATION_SAVED : NetworkMessage::Type::FEDERATION_NOT_SAVED));
 
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
@@ -1033,8 +1031,8 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     // JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
     success = true;
 
-    NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
-                                                     : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
+    NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED
+    : NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED);
 
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
@@ -1067,7 +1065,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     my_is_restore_in_progress = true;
 
     // Informs federates a new restore is being done.
-    msg = NM_Factory::create(NetworkMessage::FEDERATION_RESTORE_BEGUN);
+    msg = NM_Factory::create(NetworkMessage::Type::FEDERATION_RESTORE_BEGUN);
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
 
@@ -1077,7 +1075,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     delete msg;
 
     // For each federate, send an initiateFederateRestore with correct handle.
-    msg = NM_Factory::create(NetworkMessage::INITIATE_FEDERATE_RESTORE);
+    msg = NM_Factory::create(NetworkMessage::Type::INITIATE_FEDERATE_RESTORE);
     msg->setFederation(my_handle.get());
     msg->setLabel(the_label);
 
@@ -1115,7 +1113,7 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
 
     // Send end restore message.
     std::unique_ptr<NetworkMessage> msg(NM_Factory::create(
-        my_restore_status ? NetworkMessage::FEDERATION_RESTORED : NetworkMessage::FEDERATION_NOT_RESTORED));
+        my_restore_status ? NetworkMessage::Type::FEDERATION_RESTORED : NetworkMessage::Type::FEDERATION_NOT_RESTORED));
 
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
@@ -1335,7 +1333,7 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
     bool reservation_ok = my_root_object->reserveObjectInstanceName(theFederateHandle, newObjName);
 
     if (reservation_ok) {
-        msg = NM_Factory::create(NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED);
+        msg = NM_Factory::create(NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED);
         NM_Reserve_Object_Instance_Name_Succeeded* okMsg
             = dynamic_cast<NM_Reserve_Object_Instance_Name_Succeeded*>(msg);
 
@@ -1343,7 +1341,7 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
         Debug(G, pdGendoc) << "             =====> send message R_O_I_N_S to federate " << msg->getFederate() << endl;
     }
     else {
-        msg = NM_Factory::create(NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED);
+        msg = NM_Factory::create(NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED);
         NM_Reserve_Object_Instance_Name_Failed* nokMsg = dynamic_cast<NM_Reserve_Object_Instance_Name_Failed*>(msg);
 
         nokMsg->setObjectName(newObjName);

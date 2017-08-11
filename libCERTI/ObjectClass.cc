@@ -109,8 +109,8 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 
     G.Out(pdGendoc,"      ObjectClass::broadcastClassMessage handle=%d",handle);
     // 2. Update message attribute list by removing child's attributes.
-    if ((ocbList->getMsg()->getMessageType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
-        (ocbList->getMsg()->getMessageType() == NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+    if ((ocbList->getMsg()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES) ||
+        (ocbList->getMsg()->getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
         for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
             // If the attribute is not in that class, remove it from the message.
             if (hasAttribute(ocbList->getMsgRAV()->getAttributes(attr))) {
@@ -123,8 +123,8 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
     }
     // 3. Add class/attributes subscribers to the list.
     switch(ocbList->getMsg()->getMessageType()) {
-      case NetworkMessage::DISCOVER_OBJECT:
-      case NetworkMessage::REMOVE_OBJECT: {
+        case NetworkMessage::Type::DISCOVER_OBJECT:
+        case NetworkMessage::Type::REMOVE_OBJECT: {
           // For each federate, add it to list if at least one attribute has
           // been subscribed.
           FederateHandle federate = 0 ;
@@ -136,7 +136,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
       }
       break ;
 
-      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
+        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
           // For each class attribute, update the list by adding federates who
           // subscribed to the attribute.
           for (uint32_t i = 0 ; i < ocbList->getMsgRAV()->getAttributesSize() ; ++i) {
@@ -157,7 +157,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
           }
       } break ;
 
-      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
           for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {

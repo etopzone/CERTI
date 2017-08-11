@@ -1,4 +1,4 @@
-// Generated on 2017 August Tue, 01 at 17:47:29 by the CERTI message generator
+// Generated on 2017 August Fri, 11 at 14:01:42 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "M_Classes.hh"
@@ -7929,451 +7929,451 @@ Message* M_Factory::create(M_Type type) throw (NetworkError ,NetworkSignal) {
     Message* msg = NULL;
 
     switch (type) {
-        case Message::NOT_USED:
+        case Message::Type::NOT_USED:
             throw NetworkError("NOT_USED message type should not be used!!");
             break;
-        case Message::OPEN_CONNEXION:
+        case Message::Type::OPEN_CONNEXION:
             msg = new M_Open_Connexion();
             break;
-        case Message::CLOSE_CONNEXION:
+        case Message::Type::CLOSE_CONNEXION:
             msg = new M_Close_Connexion();
             break;
-        case Message::CREATE_FEDERATION_EXECUTION:
+        case Message::Type::CREATE_FEDERATION_EXECUTION:
             msg = new M_Create_Federation_Execution();
             break;
-        case Message::DESTROY_FEDERATION_EXECUTION:
+        case Message::Type::DESTROY_FEDERATION_EXECUTION:
             msg = new M_Destroy_Federation_Execution();
             break;
-        case Message::JOIN_FEDERATION_EXECUTION:
+        case Message::Type::JOIN_FEDERATION_EXECUTION:
             msg = new M_Join_Federation_Execution();
             break;
-        case Message::RESIGN_FEDERATION_EXECUTION:
+        case Message::Type::RESIGN_FEDERATION_EXECUTION:
             msg = new M_Resign_Federation_Execution();
             break;
-        case Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case Message::Type::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
             msg = new M_Register_Federation_Synchronization_Point();
             break;
-        case Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
+        case Message::Type::SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
             msg = new M_Synchronization_Point_Registration_Failed();
             break;
-        case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case Message::Type::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
             msg = new M_Synchronization_Point_Registration_Succeeded();
             break;
-        case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
+        case Message::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
             msg = new M_Announce_Synchronization_Point();
             break;
-        case Message::SYNCHRONIZATION_POINT_ACHIEVED:
+        case Message::Type::SYNCHRONIZATION_POINT_ACHIEVED:
             msg = new M_Synchronization_Point_Achieved();
             break;
-        case Message::FEDERATION_SYNCHRONIZED:
+        case Message::Type::FEDERATION_SYNCHRONIZED:
             msg = new M_Federation_Synchronized();
             break;
-        case Message::REQUEST_FEDERATION_SAVE:
+        case Message::Type::REQUEST_FEDERATION_SAVE:
             msg = new M_Request_Federation_Save();
             break;
-        case Message::INITIATE_FEDERATE_SAVE:
+        case Message::Type::INITIATE_FEDERATE_SAVE:
             msg = new M_Initiate_Federate_Save();
             break;
-        case Message::FEDERATE_SAVE_BEGUN:
+        case Message::Type::FEDERATE_SAVE_BEGUN:
             msg = new M_Federate_Save_Begun();
             break;
-        case Message::FEDERATE_SAVE_COMPLETE:
+        case Message::Type::FEDERATE_SAVE_COMPLETE:
             msg = new M_Federate_Save_Complete();
             break;
-        case Message::FEDERATE_SAVE_NOT_COMPLETE:
+        case Message::Type::FEDERATE_SAVE_NOT_COMPLETE:
             msg = new M_Federate_Save_Not_Complete();
             break;
-        case Message::FEDERATION_SAVED:
+        case Message::Type::FEDERATION_SAVED:
             msg = new M_Federation_Saved();
             break;
-        case Message::FEDERATION_NOT_SAVED:
+        case Message::Type::FEDERATION_NOT_SAVED:
             msg = new M_Federation_Not_Saved();
             break;
-        case Message::REQUEST_FEDERATION_RESTORE:
+        case Message::Type::REQUEST_FEDERATION_RESTORE:
             msg = new M_Request_Federation_Restore();
             break;
-        case Message::REQUEST_FEDERATION_RESTORE_FAILED:
+        case Message::Type::REQUEST_FEDERATION_RESTORE_FAILED:
             msg = new M_Request_Federation_Restore_Failed();
             break;
-        case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+        case Message::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
             msg = new M_Request_Federation_Restore_Succeeded();
             break;
-        case Message::INITIATE_FEDERATE_RESTORE:
+        case Message::Type::INITIATE_FEDERATE_RESTORE:
             msg = new M_Initiate_Federate_Restore();
             break;
-        case Message::FEDERATE_RESTORE_COMPLETE:
+        case Message::Type::FEDERATE_RESTORE_COMPLETE:
             msg = new M_Federate_Restore_Complete();
             break;
-        case Message::FEDERATE_RESTORE_NOT_COMPLETE:
+        case Message::Type::FEDERATE_RESTORE_NOT_COMPLETE:
             msg = new M_Federate_Restore_Not_Complete();
             break;
-        case Message::FEDERATION_RESTORED:
+        case Message::Type::FEDERATION_RESTORED:
             msg = new M_Federation_Restored();
             break;
-        case Message::FEDERATION_NOT_RESTORED:
+        case Message::Type::FEDERATION_NOT_RESTORED:
             msg = new M_Federation_Not_Restored();
             break;
-        case Message::FEDERATION_RESTORE_BEGUN:
+        case Message::Type::FEDERATION_RESTORE_BEGUN:
             msg = new M_Federation_Restore_Begun();
             break;
-        case Message::PUBLISH_OBJECT_CLASS:
+        case Message::Type::PUBLISH_OBJECT_CLASS:
             msg = new M_Publish_Object_Class();
             break;
-        case Message::UNPUBLISH_OBJECT_CLASS:
+        case Message::Type::UNPUBLISH_OBJECT_CLASS:
             msg = new M_Unpublish_Object_Class();
             break;
-        case Message::PUBLISH_INTERACTION_CLASS:
+        case Message::Type::PUBLISH_INTERACTION_CLASS:
             msg = new M_Publish_Interaction_Class();
             break;
-        case Message::UNPUBLISH_INTERACTION_CLASS:
+        case Message::Type::UNPUBLISH_INTERACTION_CLASS:
             msg = new M_Unpublish_Interaction_Class();
             break;
-        case Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
+        case Message::Type::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
             msg = new M_Subscribe_Object_Class_Attributes();
             break;
-        case Message::UNSUBSCRIBE_OBJECT_CLASS:
+        case Message::Type::UNSUBSCRIBE_OBJECT_CLASS:
             msg = new M_Unsubscribe_Object_Class();
             break;
-        case Message::SUBSCRIBE_INTERACTION_CLASS:
+        case Message::Type::SUBSCRIBE_INTERACTION_CLASS:
             msg = new M_Subscribe_Interaction_Class();
             break;
-        case Message::UNSUBSCRIBE_INTERACTION_CLASS:
+        case Message::Type::UNSUBSCRIBE_INTERACTION_CLASS:
             msg = new M_Unsubscribe_Interaction_Class();
             break;
-        case Message::START_REGISTRATION_FOR_OBJECT_CLASS:
+        case Message::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
             msg = new M_Start_Registration_For_Object_Class();
             break;
-        case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS:
+        case Message::Type::STOP_REGISTRATION_FOR_OBJECT_CLASS:
             msg = new M_Stop_Registration_For_Object_Class();
             break;
-        case Message::TURN_INTERACTIONS_ON:
+        case Message::Type::TURN_INTERACTIONS_ON:
             msg = new M_Turn_Interactions_On();
             break;
-        case Message::TURN_INTERACTIONS_OFF:
+        case Message::Type::TURN_INTERACTIONS_OFF:
             msg = new M_Turn_Interactions_Off();
             break;
-        case Message::REGISTER_OBJECT_INSTANCE:
+        case Message::Type::REGISTER_OBJECT_INSTANCE:
             msg = new M_Register_Object_Instance();
             break;
-        case Message::UPDATE_ATTRIBUTE_VALUES:
+        case Message::Type::UPDATE_ATTRIBUTE_VALUES:
             msg = new M_Update_Attribute_Values();
             break;
-        case Message::DISCOVER_OBJECT_INSTANCE:
+        case Message::Type::DISCOVER_OBJECT_INSTANCE:
             msg = new M_Discover_Object_Instance();
             break;
-        case Message::REFLECT_ATTRIBUTE_VALUES:
+        case Message::Type::REFLECT_ATTRIBUTE_VALUES:
             msg = new M_Reflect_Attribute_Values();
             break;
-        case Message::SEND_INTERACTION:
+        case Message::Type::SEND_INTERACTION:
             msg = new M_Send_Interaction();
             break;
-        case Message::RECEIVE_INTERACTION:
+        case Message::Type::RECEIVE_INTERACTION:
             msg = new M_Receive_Interaction();
             break;
-        case Message::DELETE_OBJECT_INSTANCE:
+        case Message::Type::DELETE_OBJECT_INSTANCE:
             msg = new M_Delete_Object_Instance();
             break;
-        case Message::LOCAL_DELETE_OBJECT_INSTANCE:
+        case Message::Type::LOCAL_DELETE_OBJECT_INSTANCE:
             msg = new M_Local_Delete_Object_Instance();
             break;
-        case Message::REMOVE_OBJECT_INSTANCE:
+        case Message::Type::REMOVE_OBJECT_INSTANCE:
             msg = new M_Remove_Object_Instance();
             break;
-        case Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
+        case Message::Type::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
             msg = new M_Change_Attribute_Transportation_Type();
             break;
-        case Message::CHANGE_INTERACTION_TRANSPORTATION_TYPE:
+        case Message::Type::CHANGE_INTERACTION_TRANSPORTATION_TYPE:
             msg = new M_Change_Interaction_Transportation_Type();
             break;
-        case Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+        case Message::Type::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
             msg = new M_Request_Object_Attribute_Value_Update();
             break;
-        case Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+        case Message::Type::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
             msg = new M_Request_Class_Attribute_Value_Update();
             break;
-        case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+        case Message::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
             msg = new M_Provide_Attribute_Value_Update();
             break;
-        case Message::ATTRIBUTES_IN_SCOPE:
+        case Message::Type::ATTRIBUTES_IN_SCOPE:
             msg = new M_Attributes_In_Scope();
             break;
-        case Message::ATTRIBUTES_OUT_OF_SCOPE:
+        case Message::Type::ATTRIBUTES_OUT_OF_SCOPE:
             msg = new M_Attributes_Out_Of_Scope();
             break;
-        case Message::TURN_UPDATES_ON_FOR_OBJECT_INSTANCE:
+        case Message::Type::TURN_UPDATES_ON_FOR_OBJECT_INSTANCE:
             msg = new M_Turn_Updates_On_For_Object_Instance();
             break;
-        case Message::TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE:
+        case Message::Type::TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE:
             msg = new M_Turn_Updates_Off_For_Object_Instance();
             break;
-        case Message::REQUEST_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case Message::Type::REQUEST_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new M_Request_Attribute_Ownership_Divestiture();
             break;
-        case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+        case Message::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
             msg = new M_Request_Attribute_Ownership_Assumption();
             break;
-        case Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case Message::Type::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new M_Negotiated_Attribute_Ownership_Divestiture();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
             msg = new M_Attribute_Ownership_Divestiture_Notification();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
             msg = new M_Attribute_Ownership_Acquisition_Notification();
             break;
-        case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+        case Message::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ACQUISITION:
             msg = new M_Request_Attribute_Ownership_Acquisition();
             break;
-        case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+        case Message::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
             msg = new M_Request_Attribute_Ownership_Release();
             break;
-        case Message::QUERY_ATTRIBUTE_OWNERSHIP:
+        case Message::Type::QUERY_ATTRIBUTE_OWNERSHIP:
             msg = new M_Query_Attribute_Ownership();
             break;
-        case Message::INFORM_ATTRIBUTE_OWNERSHIP:
+        case Message::Type::INFORM_ATTRIBUTE_OWNERSHIP:
             msg = new M_Inform_Attribute_Ownership();
             break;
-        case Message::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+        case Message::Type::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
             msg = new M_Is_Attribute_Owned_By_Federate();
             break;
-        case Message::ATTRIBUTE_IS_NOT_OWNED:
+        case Message::Type::ATTRIBUTE_IS_NOT_OWNED:
             msg = new M_Attribute_Is_Not_Owned();
             break;
-        case Message::ATTRIBUTE_OWNED_BY_RTI:
+        case Message::Type::ATTRIBUTE_OWNED_BY_RTI:
             msg = new M_Attribute_Owned_By_Rti();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
             msg = new M_Attribute_Ownership_Acquisition_If_Available();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
             msg = new M_Attribute_Ownership_Unavailable();
             break;
-        case Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case Message::Type::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new M_Unconditional_Attribute_Ownership_Divestiture();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION:
             msg = new M_Attribute_Ownership_Acquisition();
             break;
-        case Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case Message::Type::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new M_Cancel_Negotiated_Attribute_Ownership_Divestiture();
             break;
-        case Message::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+        case Message::Type::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
             msg = new M_Attribute_Ownership_Release_Response();
             break;
-        case Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+        case Message::Type::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
             msg = new M_Cancel_Attribute_Ownership_Acquisition();
             break;
-        case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        case Message::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             msg = new M_Confirm_Attribute_Ownership_Acquisition_Cancellation();
             break;
-        case Message::CHANGE_ATTRIBUTE_ORDER_TYPE:
+        case Message::Type::CHANGE_ATTRIBUTE_ORDER_TYPE:
             msg = new M_Change_Attribute_Order_Type();
             break;
-        case Message::CHANGE_INTERACTION_ORDER_TYPE:
+        case Message::Type::CHANGE_INTERACTION_ORDER_TYPE:
             msg = new M_Change_Interaction_Order_Type();
             break;
-        case Message::ENABLE_TIME_REGULATION:
+        case Message::Type::ENABLE_TIME_REGULATION:
             msg = new M_Enable_Time_Regulation();
             break;
-        case Message::DISABLE_TIME_REGULATION:
+        case Message::Type::DISABLE_TIME_REGULATION:
             msg = new M_Disable_Time_Regulation();
             break;
-        case Message::ENABLE_TIME_CONSTRAINED:
+        case Message::Type::ENABLE_TIME_CONSTRAINED:
             msg = new M_Enable_Time_Constrained();
             break;
-        case Message::DISABLE_TIME_CONSTRAINED:
+        case Message::Type::DISABLE_TIME_CONSTRAINED:
             msg = new M_Disable_Time_Constrained();
             break;
-        case Message::QUERY_LBTS:
+        case Message::Type::QUERY_LBTS:
             msg = new M_Query_Lbts();
             break;
-        case Message::QUERY_FEDERATE_TIME:
+        case Message::Type::QUERY_FEDERATE_TIME:
             msg = new M_Query_Federate_Time();
             break;
-        case Message::QUERY_MIN_NEXT_EVENT_TIME:
+        case Message::Type::QUERY_MIN_NEXT_EVENT_TIME:
             msg = new M_Query_Min_Next_Event_Time();
             break;
-        case Message::MODIFY_LOOKAHEAD:
+        case Message::Type::MODIFY_LOOKAHEAD:
             msg = new M_Modify_Lookahead();
             break;
-        case Message::QUERY_LOOKAHEAD:
+        case Message::Type::QUERY_LOOKAHEAD:
             msg = new M_Query_Lookahead();
             break;
-        case Message::RETRACT:
+        case Message::Type::RETRACT:
             msg = new M_Retract();
             break;
-        case Message::REQUEST_RETRACTION:
+        case Message::Type::REQUEST_RETRACTION:
             msg = new M_Request_Retraction();
             break;
-        case Message::TIME_ADVANCE_REQUEST:
+        case Message::Type::TIME_ADVANCE_REQUEST:
             msg = new M_Time_Advance_Request();
             break;
-        case Message::TIME_ADVANCE_REQUEST_AVAILABLE:
+        case Message::Type::TIME_ADVANCE_REQUEST_AVAILABLE:
             msg = new M_Time_Advance_Request_Available();
             break;
-        case Message::NEXT_EVENT_REQUEST:
+        case Message::Type::NEXT_EVENT_REQUEST:
             msg = new M_Next_Event_Request();
             break;
-        case Message::NEXT_EVENT_REQUEST_AVAILABLE:
+        case Message::Type::NEXT_EVENT_REQUEST_AVAILABLE:
             msg = new M_Next_Event_Request_Available();
             break;
-        case Message::FLUSH_QUEUE_REQUEST:
+        case Message::Type::FLUSH_QUEUE_REQUEST:
             msg = new M_Flush_Queue_Request();
             break;
-        case Message::TIME_ADVANCE_GRANT:
+        case Message::Type::TIME_ADVANCE_GRANT:
             msg = new M_Time_Advance_Grant();
             break;
-        case Message::ENABLE_ASYNCHRONOUS_DELIVERY:
+        case Message::Type::ENABLE_ASYNCHRONOUS_DELIVERY:
             msg = new M_Enable_Asynchronous_Delivery();
             break;
-        case Message::DISABLE_ASYNCHRONOUS_DELIVERY:
+        case Message::Type::DISABLE_ASYNCHRONOUS_DELIVERY:
             msg = new M_Disable_Asynchronous_Delivery();
             break;
-        case Message::TIME_REGULATION_ENABLED:
+        case Message::Type::TIME_REGULATION_ENABLED:
             msg = new M_Time_Regulation_Enabled();
             break;
-        case Message::TIME_CONSTRAINED_ENABLED:
+        case Message::Type::TIME_CONSTRAINED_ENABLED:
             msg = new M_Time_Constrained_Enabled();
             break;
-        case Message::DDM_CREATE_REGION:
+        case Message::Type::DDM_CREATE_REGION:
             msg = new M_Ddm_Create_Region();
             break;
-        case Message::DDM_MODIFY_REGION:
+        case Message::Type::DDM_MODIFY_REGION:
             msg = new M_Ddm_Modify_Region();
             break;
-        case Message::DDM_DELETE_REGION:
+        case Message::Type::DDM_DELETE_REGION:
             msg = new M_Ddm_Delete_Region();
             break;
-        case Message::DDM_REGISTER_OBJECT:
+        case Message::Type::DDM_REGISTER_OBJECT:
             msg = new M_Ddm_Register_Object();
             break;
-        case Message::DDM_ASSOCIATE_REGION:
+        case Message::Type::DDM_ASSOCIATE_REGION:
             msg = new M_Ddm_Associate_Region();
             break;
-        case Message::DDM_UNASSOCIATE_REGION:
+        case Message::Type::DDM_UNASSOCIATE_REGION:
             msg = new M_Ddm_Unassociate_Region();
             break;
-        case Message::DDM_SUBSCRIBE_ATTRIBUTES:
+        case Message::Type::DDM_SUBSCRIBE_ATTRIBUTES:
             msg = new M_Ddm_Subscribe_Attributes();
             break;
-        case Message::DDM_UNSUBSCRIBE_ATTRIBUTES:
+        case Message::Type::DDM_UNSUBSCRIBE_ATTRIBUTES:
             msg = new M_Ddm_Unsubscribe_Attributes();
             break;
-        case Message::DDM_SUBSCRIBE_INTERACTION:
+        case Message::Type::DDM_SUBSCRIBE_INTERACTION:
             msg = new M_Ddm_Subscribe_Interaction();
             break;
-        case Message::DDM_UNSUBSCRIBE_INTERACTION:
+        case Message::Type::DDM_UNSUBSCRIBE_INTERACTION:
             msg = new M_Ddm_Unsubscribe_Interaction();
             break;
-        case Message::DDM_REQUEST_UPDATE:
+        case Message::Type::DDM_REQUEST_UPDATE:
             msg = new M_Ddm_Request_Update();
             break;
-        case Message::GET_OBJECT_CLASS_HANDLE:
+        case Message::Type::GET_OBJECT_CLASS_HANDLE:
             msg = new M_Get_Object_Class_Handle();
             break;
-        case Message::GET_OBJECT_CLASS_NAME:
+        case Message::Type::GET_OBJECT_CLASS_NAME:
             msg = new M_Get_Object_Class_Name();
             break;
-        case Message::GET_ATTRIBUTE_HANDLE:
+        case Message::Type::GET_ATTRIBUTE_HANDLE:
             msg = new M_Get_Attribute_Handle();
             break;
-        case Message::GET_ATTRIBUTE_NAME:
+        case Message::Type::GET_ATTRIBUTE_NAME:
             msg = new M_Get_Attribute_Name();
             break;
-        case Message::GET_INTERACTION_CLASS_HANDLE:
+        case Message::Type::GET_INTERACTION_CLASS_HANDLE:
             msg = new M_Get_Interaction_Class_Handle();
             break;
-        case Message::GET_INTERACTION_CLASS_NAME:
+        case Message::Type::GET_INTERACTION_CLASS_NAME:
             msg = new M_Get_Interaction_Class_Name();
             break;
-        case Message::GET_PARAMETER_HANDLE:
+        case Message::Type::GET_PARAMETER_HANDLE:
             msg = new M_Get_Parameter_Handle();
             break;
-        case Message::GET_PARAMETER_NAME:
+        case Message::Type::GET_PARAMETER_NAME:
             msg = new M_Get_Parameter_Name();
             break;
-        case Message::GET_OBJECT_INSTANCE_HANDLE:
+        case Message::Type::GET_OBJECT_INSTANCE_HANDLE:
             msg = new M_Get_Object_Instance_Handle();
             break;
-        case Message::GET_OBJECT_INSTANCE_NAME:
+        case Message::Type::GET_OBJECT_INSTANCE_NAME:
             msg = new M_Get_Object_Instance_Name();
             break;
-        case Message::GET_SPACE_HANDLE:
+        case Message::Type::GET_SPACE_HANDLE:
             msg = new M_Get_Space_Handle();
             break;
-        case Message::GET_SPACE_NAME:
+        case Message::Type::GET_SPACE_NAME:
             msg = new M_Get_Space_Name();
             break;
-        case Message::GET_DIMENSION_HANDLE:
+        case Message::Type::GET_DIMENSION_HANDLE:
             msg = new M_Get_Dimension_Handle();
             break;
-        case Message::GET_DIMENSION_NAME:
+        case Message::Type::GET_DIMENSION_NAME:
             msg = new M_Get_Dimension_Name();
             break;
-        case Message::GET_ATTRIBUTE_SPACE_HANDLE:
+        case Message::Type::GET_ATTRIBUTE_SPACE_HANDLE:
             msg = new M_Get_Attribute_Space_Handle();
             break;
-        case Message::GET_OBJECT_CLASS:
+        case Message::Type::GET_OBJECT_CLASS:
             msg = new M_Get_Object_Class();
             break;
-        case Message::GET_INTERACTION_SPACE_HANDLE:
+        case Message::Type::GET_INTERACTION_SPACE_HANDLE:
             msg = new M_Get_Interaction_Space_Handle();
             break;
-        case Message::GET_TRANSPORTATION_HANDLE:
+        case Message::Type::GET_TRANSPORTATION_HANDLE:
             msg = new M_Get_Transportation_Handle();
             break;
-        case Message::GET_TRANSPORTATION_NAME:
+        case Message::Type::GET_TRANSPORTATION_NAME:
             msg = new M_Get_Transportation_Name();
             break;
-        case Message::GET_ORDERING_HANDLE:
+        case Message::Type::GET_ORDERING_HANDLE:
             msg = new M_Get_Ordering_Handle();
             break;
-        case Message::GET_ORDERING_NAME:
+        case Message::Type::GET_ORDERING_NAME:
             msg = new M_Get_Ordering_Name();
             break;
-        case Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Enable_Class_Relevance_Advisory_Switch();
             break;
-        case Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Disable_Class_Relevance_Advisory_Switch();
             break;
-        case Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Enable_Attribute_Relevance_Advisory_Switch();
             break;
-        case Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Disable_Attribute_Relevance_Advisory_Switch();
             break;
-        case Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+        case Message::Type::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
             msg = new M_Enable_Attribute_Scope_Advisory_Switch();
             break;
-        case Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+        case Message::Type::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
             msg = new M_Disable_Attribute_Scope_Advisory_Switch();
             break;
-        case Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Enable_Interaction_Relevance_Advisory_Switch();
             break;
-        case Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+        case Message::Type::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
             msg = new M_Disable_Interaction_Relevance_Advisory_Switch();
             break;
-        case Message::TICK_REQUEST:
+        case Message::Type::TICK_REQUEST:
             msg = new M_Tick_Request();
             break;
-        case Message::TICK_REQUEST_NEXT:
+        case Message::Type::TICK_REQUEST_NEXT:
             msg = new M_Tick_Request_Next();
             break;
-        case Message::TICK_REQUEST_STOP:
+        case Message::Type::TICK_REQUEST_STOP:
             msg = new M_Tick_Request_Stop();
             break;
-        case Message::RESERVE_OBJECT_INSTANCE_NAME:
+        case Message::Type::RESERVE_OBJECT_INSTANCE_NAME:
             msg = new M_Reserve_Object_Instance_Name();
             break;
-        case Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+        case Message::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
             msg = new M_Reserve_Object_Instance_Name_Succeeded();
             break;
-        case Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+        case Message::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
             msg = new M_Reserve_Object_Instance_Name_Failed();
             break;
-        case Message::LAST:
+        case Message::Type::LAST:
             throw NetworkError("LAST message type should not be used!!");
             break;
     } // end if switch (type)

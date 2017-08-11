@@ -35,7 +35,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-: type(NOT_USED), exception(Exception::Type::NO_EXCEPTION)
+: type(Type::NOT_USED), exception(Exception::Type::NO_EXCEPTION)
 {
     messageName        = "NetworkMessage (generic)";
     exceptionReason    = "Not Assigned";
@@ -58,6 +58,12 @@ std::ostream& NetworkMessage::show(std::ostream& out) {
 	out << "[NetworkMessage -End]" << std::endl;
 	return out;
 } /* end of show */
+
+/*std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type)
+{
+    os << static_cast<std::underlying_type<NetworkMessage::Type>::type>(msg_type);
+    return os;
+}*/
 
 std::ostream& operator << (std::ostream& os, const NetworkMessage& msg)
 {

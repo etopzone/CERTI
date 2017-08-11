@@ -154,7 +154,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
 
     switch (msg.getMessageType()) {
 
-      case NetworkMessage::FEDERATION_SYNCHRONIZED:
+      case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
         try {
             fm->federationSynchronized(msg.getLabel());
         }
@@ -164,7 +164,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         }
         break ;
 
-      case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+      case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
         try {
           NM_Confirm_Synchronization_Point_Registration& CSPR=static_cast<NM_Confirm_Synchronization_Point_Registration&>(msg);
           if (CSPR.getSuccessIndicator()) {
@@ -180,7 +180,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         }
         break ;
 
-      case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
+      case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
         try {
             fm->announceSynchronizationPoint(msg.getLabel(), msg.getTag());
         }
@@ -190,7 +190,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         }
         break ;
 
-      case NetworkMessage::DISCOVER_OBJECT:
+      case NetworkMessage::Type::DISCOVER_OBJECT:
         try {
         	NM_Discover_Object& DO=static_cast<NM_Discover_Object&>(msg);
             om->discoverObject(DO.getObject(),
@@ -207,7 +207,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         }
         break ;
 
-      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
+      case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
       {
     	  NM_Reflect_Attribute_Values& RAV = static_cast<NM_Reflect_Attribute_Values&>(msg);
           if (msg.isDated())
@@ -229,7 +229,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
           break ;
       }
 
-      case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+      case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
       {
       NM_Provide_Attribute_Value_Update& PAVU = static_cast<NM_Provide_Attribute_Value_Update&>	(msg);
       om->provideAttributeValueUpdate(PAVU.getObject(),
@@ -240,7 +240,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
       }
 
 
-      case NetworkMessage::RECEIVE_INTERACTION:
+      case NetworkMessage::Type::RECEIVE_INTERACTION:
       {
     	  NM_Receive_Interaction& RI = static_cast<NM_Receive_Interaction&>(msg);
           if (msg.isDated())
@@ -263,7 +263,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
           break ;
       }
 
-      case NetworkMessage::REMOVE_OBJECT: {
+      case NetworkMessage::Type::REMOVE_OBJECT: {
     	  NM_Remove_Object& RO=static_cast<NM_Remove_Object&>(msg);
           if (msg.isDated()) {
         	om->removeObject(RO.getObject(),
@@ -282,7 +282,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
       }
         break ;
 
-      case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP: {
+      case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP: {
     	 NM_Inform_Attribute_Ownership& IAO = static_cast<NM_Inform_Attribute_Ownership&>(msg);
         D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.getFederate());
 
@@ -293,7 +293,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
       }
         break ;
 
-      case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED: {
+      case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED: {
     	  NM_Attribute_Is_Not_Owned& AINO = static_cast<NM_Attribute_Is_Not_Owned&>(msg);
         owm->attributeIsNotOwned(AINO.getObject(),
                                  AINO.getAttribute(),
@@ -302,7 +302,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
       }
         break ;
 
-      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
           {
         NM_Request_Attribute_Ownership_Assumption& RAOA=static_cast<NM_Request_Attribute_Ownership_Assumption&>(msg);
         owm->requestAttributeOwnershipAssumption(RAOA.getObject(),
@@ -314,7 +314,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
            }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
         {
         NM_Attribute_Ownership_Unavailable& AOU = static_cast<NM_Attribute_Ownership_Unavailable&>(msg);
         owm->attributeOwnershipUnavailable(AOU.getObject(),
@@ -325,7 +325,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
         }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
         {
         NM_Attribute_Ownership_Acquisition_Notification& AOAN = static_cast<NM_Attribute_Ownership_Acquisition_Notification&>(msg);
         owm->attributeOwnershipAcquisitionNotification(AOAN.getObject(),
@@ -336,7 +336,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
         }
 
-      case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+      case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         {
         	NM_Attribute_Ownership_Divestiture_Notification& AODN = static_cast<NM_Attribute_Ownership_Divestiture_Notification&>(msg);
         owm->attributeOwnershipDivestitureNotification(AODN.getObject(),
@@ -346,7 +346,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
         }
 
-      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+      case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
         {
         	NM_Request_Attribute_Ownership_Release& RAOR = static_cast<NM_Request_Attribute_Ownership_Release&>(msg);
         owm->requestAttributeOwnershipRelease(RAOR.getObject(),
@@ -357,7 +357,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
         }
 
-      case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
         {
         NM_Confirm_Attribute_Ownership_Acquisition_Cancellation& CAOAC= static_cast<NM_Confirm_Attribute_Ownership_Acquisition_Cancellation& >(msg);
         owm->confirmAttributeOwnershipAcquisitionCancellation(CAOAC.getObject(),
@@ -367,58 +367,58 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         break ;
         }
 
-      case NetworkMessage::INITIATE_FEDERATE_SAVE:
+      case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
         fm->initiateFederateSave(msg.getLabel());
         break ;
 
-      case NetworkMessage::FEDERATION_SAVED:
-      case NetworkMessage::FEDERATION_NOT_SAVED: {
-          bool status = (msg.getMessageType() == NetworkMessage::FEDERATION_SAVED) ? true : false ;
+      case NetworkMessage::Type::FEDERATION_SAVED:
+      case NetworkMessage::Type::FEDERATION_NOT_SAVED: {
+          bool status = (msg.getMessageType() == NetworkMessage::Type::FEDERATION_SAVED) ? true : false ;
           fm->federationSavedStatus(status);
       }
         break ;
 
-      case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-      case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED: {
-          bool status = (msg.getMessageType() == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
+      case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED: {
+          bool status = (msg.getMessageType() == NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
               ? true : false ;
           fm->requestFederationRestoreStatus(status, msg.getLabel(), msg.getTag());
       }
         break ;
 
-      case NetworkMessage::FEDERATION_RESTORE_BEGUN:
+      case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
         fm->federationRestoreBegun();
         break ;
 
-      case NetworkMessage::INITIATE_FEDERATE_RESTORE:
+      case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
         fm->initiateFederateRestore(msg.getLabel(), msg.getFederate());
         break ;
 
-      case NetworkMessage::FEDERATION_RESTORED:
-      case NetworkMessage::FEDERATION_NOT_RESTORED: {
-          bool status = (msg.getMessageType() == NetworkMessage::FEDERATION_RESTORED) ? true : false ;
+      case NetworkMessage::Type::FEDERATION_RESTORED:
+      case NetworkMessage::Type::FEDERATION_NOT_RESTORED: {
+          bool status = (msg.getMessageType() == NetworkMessage::Type::FEDERATION_RESTORED) ? true : false ;
           fm->federationRestoredStatus(status);
       }
         break ;
-      case NetworkMessage::TIME_REGULATION_ENABLED:
+      case NetworkMessage::Type::TIME_REGULATION_ENABLED:
         this->timeRegulationEnabled(msg.getDate(), msg.getRefException());
         break;
-      case NetworkMessage::TIME_CONSTRAINED_ENABLED:
+      case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
         this->timeConstrainedEnabled(msg.getDate(), msg.getRefException());
         break;
-      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS: {
+      case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS: {
     	  NM_Start_Registration_For_Object_Class& SRFOC = static_cast<NM_Start_Registration_For_Object_Class&>(msg);
 	dm->startRegistrationForObjectClass(SRFOC.getObjectClass(), msg.getRefException());
       }
         break;
 
-	  case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED: 
+	  case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED: 
 		  {
 			  NM_Reserve_Object_Instance_Name_Succeeded ROINS = static_cast<NM_Reserve_Object_Instance_Name_Succeeded&>(msg);
 			  om->nameReservationSucceeded(ROINS.getObjectName());
 		  }
 		  break;
-	  case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED: 
+	  case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED: 
 		  {
 			  NM_Reserve_Object_Instance_Name_Failed ROINF = static_cast<NM_Reserve_Object_Instance_Name_Failed&>(msg);
 			  om->nameReservationFailed(ROINF.getObjectName());

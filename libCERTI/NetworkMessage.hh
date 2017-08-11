@@ -50,7 +50,7 @@ namespace certi {
  */
 class CERTI_EXPORT NetworkMessage : public BasicMessage {
 public:
-    typedef enum Type {
+    enum class Type : int32_t {
         NOT_USED = 0, // Not used.
         CLOSE_CONNEXION,
         MESSAGE_NULL,
@@ -148,7 +148,7 @@ public:
         RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516, only RTIG->RTIA
         MESSAGE_NULL_PRIME, // CERTI specific for handling NER or NERA and zero-lk
         LAST
-    } Message_T;
+    };
 
     NetworkMessage();
     virtual ~NetworkMessage();
@@ -165,7 +165,7 @@ public:
 	 * Get the message type.
 	 * @return the type of the message
 	 */
-    NetworkMessage::Message_T getMessageType() const
+    NetworkMessage::Type getMessageType() const
     {
         return type;
     };
@@ -179,15 +179,18 @@ public:
     {
         return exception;
     };
+    
     void setException(const Exception::Type e)
     {
         exception = e;
     };
+    
     void setException(const Exception::Type e, const std::string& reason)
     {
         exception = e;
         exceptionReason = reason;
     };
+    
     const std::string& getExceptionReason()
     {
         return exceptionReason;
@@ -228,6 +231,7 @@ public:
     {
         return federation;
     };
+    
     void setFederation(Handle federation)
     {
         this->federation = federation;
@@ -237,6 +241,7 @@ public:
     {
         return federate;
     };
+    
     void setFederate(FederateHandle federate)
     {
         this->federate = federate;
@@ -259,7 +264,7 @@ protected:
 	 *   - only NM constructor may set it.
 	 *   - getter should be used to get it. 
 	 */
-    Message_T type;
+    Type type;
 
     /**
 	 * The exception type
@@ -277,6 +282,7 @@ protected:
 	 * the message is part of this federation activity
 	 */
     Handle federation;
+    
     /**
 	 * The federate handle
 	 * the message is for this particular federate
@@ -285,6 +291,8 @@ protected:
 
 private:
 };
+
+// std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type);
 
 std::ostream& operator << (std::ostream& os, const NetworkMessage& msg);
 

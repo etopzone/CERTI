@@ -35,12 +35,12 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	/* We serialize the common Network messages part
 	 * ALL Network Message will contain the following
 	 */
-	if ((type==NOT_USED) || (type==LAST)) {
+    if ((type==Type::NOT_USED) || (type==Type::LAST)) {
 		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
 	D.Out(pdDebug, "Serialize <%s>", getMessageName());
 	/* type of message */
-	msgBuffer.write_int32(type);
+	msgBuffer.write_int32(static_cast<std::underlying_type<Type>::type>(type));
 	msgBuffer.write_uint32(federate);
 	msgBuffer.write_uint32(federation);
 	msgBuffer.write_int32(static_cast<int32_t>(exception));

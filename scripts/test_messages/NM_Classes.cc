@@ -1,4 +1,4 @@
-// Generated on 2017 August Fri, 11 at 14:01:42 by the CERTI message generator
+// Generated on 2017 August Fri, 11 at 10:38:59 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -5026,292 +5026,292 @@ NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSig
     NetworkMessage* msg = NULL;
 
     switch (type) {
-        case NetworkMessage::Type::NOT_USED:
+        case NetworkMessage::NOT_USED:
             throw NetworkError("NOT_USED message type should not be used!!");
             break;
-        case NetworkMessage::Type::CLOSE_CONNEXION:
+        case NetworkMessage::CLOSE_CONNEXION:
             msg = new NM_Close_Connexion();
             break;
-        case NetworkMessage::Type::MESSAGE_NULL:
+        case NetworkMessage::MESSAGE_NULL:
             msg = new NM_Message_Null();
             break;
-        case NetworkMessage::Type::CREATE_FEDERATION_EXECUTION:
+        case NetworkMessage::CREATE_FEDERATION_EXECUTION:
             msg = new NM_Create_Federation_Execution();
             break;
-        case NetworkMessage::Type::DESTROY_FEDERATION_EXECUTION:
+        case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
             msg = new NM_Destroy_Federation_Execution();
             break;
-        case NetworkMessage::Type::JOIN_FEDERATION_EXECUTION:
+        case NetworkMessage::JOIN_FEDERATION_EXECUTION:
             msg = new NM_Join_Federation_Execution();
             break;
-        case NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION:
+        case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
             msg = new NM_Resign_Federation_Execution();
             break;
-        case NetworkMessage::Type::SET_TIME_REGULATING:
+        case NetworkMessage::SET_TIME_REGULATING:
             msg = new NM_Set_Time_Regulating();
             break;
-        case NetworkMessage::Type::SET_TIME_CONSTRAINED:
+        case NetworkMessage::SET_TIME_CONSTRAINED:
             msg = new NM_Set_Time_Constrained();
             break;
-        case NetworkMessage::Type::TIME_REGULATION_ENABLED:
+        case NetworkMessage::TIME_REGULATION_ENABLED:
             msg = new NM_Time_Regulation_Enabled();
             break;
-        case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
+        case NetworkMessage::TIME_CONSTRAINED_ENABLED:
             msg = new NM_Time_Constrained_Enabled();
             break;
-        case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+        case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
             msg = new NM_Set_Class_Relevance_Advisory_Switch();
             break;
-        case NetworkMessage::Type::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+        case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
             msg = new NM_Set_Interaction_Relevance_Advisory_Switch();
             break;
-        case NetworkMessage::Type::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+        case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
             msg = new NM_Set_Attribute_Relevance_Advisory_Switch();
             break;
-        case NetworkMessage::Type::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+        case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
             msg = new NM_Set_Attribute_Scope_Advisory_Switch();
             break;
-        case NetworkMessage::Type::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
             msg = new NM_Register_Federation_Synchronization_Point();
             break;
-        case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+        case NetworkMessage::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
             msg = new NM_Confirm_Synchronization_Point_Registration();
             break;
-        case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
+        case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
             msg = new NM_Announce_Synchronization_Point();
             break;
-        case NetworkMessage::Type::SYNCHRONIZATION_POINT_ACHIEVED:
+        case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
             msg = new NM_Synchronization_Point_Achieved();
             break;
-        case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
+        case NetworkMessage::FEDERATION_SYNCHRONIZED:
             msg = new NM_Federation_Synchronized();
             break;
-        case NetworkMessage::Type::REQUEST_FEDERATION_SAVE:
+        case NetworkMessage::REQUEST_FEDERATION_SAVE:
             msg = new NM_Request_Federation_Save();
             break;
-        case NetworkMessage::Type::FEDERATE_SAVE_BEGUN:
+        case NetworkMessage::FEDERATE_SAVE_BEGUN:
             msg = new NM_Federate_Save_Begun();
             break;
-        case NetworkMessage::Type::FEDERATE_SAVE_COMPLETE:
+        case NetworkMessage::FEDERATE_SAVE_COMPLETE:
             msg = new NM_Federate_Save_Complete();
             break;
-        case NetworkMessage::Type::FEDERATE_SAVE_NOT_COMPLETE:
+        case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
             msg = new NM_Federate_Save_Not_Complete();
             break;
-        case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
+        case NetworkMessage::INITIATE_FEDERATE_SAVE:
             msg = new NM_Initiate_Federate_Save();
             break;
-        case NetworkMessage::Type::FEDERATION_SAVED:
+        case NetworkMessage::FEDERATION_SAVED:
             msg = new NM_Federation_Saved();
             break;
-        case NetworkMessage::Type::FEDERATION_NOT_SAVED:
+        case NetworkMessage::FEDERATION_NOT_SAVED:
             msg = new NM_Federation_Not_Saved();
             break;
-        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE:
+        case NetworkMessage::REQUEST_FEDERATION_RESTORE:
             msg = new NM_Request_Federation_Restore();
             break;
-        case NetworkMessage::Type::FEDERATE_RESTORE_COMPLETE:
+        case NetworkMessage::FEDERATE_RESTORE_COMPLETE:
             msg = new NM_Federate_Restore_Complete();
             break;
-        case NetworkMessage::Type::FEDERATE_RESTORE_NOT_COMPLETE:
+        case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
             msg = new NM_Federate_Restore_Not_Complete();
             break;
-        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+        case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
             msg = new NM_Request_Federation_Restore_Succeeded();
             break;
-        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
+        case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED:
             msg = new NM_Request_Federation_Restore_Failed();
             break;
-        case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
+        case NetworkMessage::FEDERATION_RESTORE_BEGUN:
             msg = new NM_Federation_Restore_Begun();
             break;
-        case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
+        case NetworkMessage::INITIATE_FEDERATE_RESTORE:
             msg = new NM_Initiate_Federate_Restore();
             break;
-        case NetworkMessage::Type::FEDERATION_RESTORED:
+        case NetworkMessage::FEDERATION_RESTORED:
             msg = new NM_Federation_Restored();
             break;
-        case NetworkMessage::Type::FEDERATION_NOT_RESTORED:
+        case NetworkMessage::FEDERATION_NOT_RESTORED:
             msg = new NM_Federation_Not_Restored();
             break;
-        case NetworkMessage::Type::PUBLISH_OBJECT_CLASS:
+        case NetworkMessage::PUBLISH_OBJECT_CLASS:
             msg = new NM_Publish_Object_Class();
             break;
-        case NetworkMessage::Type::UNPUBLISH_OBJECT_CLASS:
+        case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
             msg = new NM_Unpublish_Object_Class();
             break;
-        case NetworkMessage::Type::PUBLISH_INTERACTION_CLASS:
+        case NetworkMessage::PUBLISH_INTERACTION_CLASS:
             msg = new NM_Publish_Interaction_Class();
             break;
-        case NetworkMessage::Type::UNPUBLISH_INTERACTION_CLASS:
+        case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
             msg = new NM_Unpublish_Interaction_Class();
             break;
-        case NetworkMessage::Type::SUBSCRIBE_OBJECT_CLASS:
+        case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
             msg = new NM_Subscribe_Object_Class();
             break;
-        case NetworkMessage::Type::UNSUBSCRIBE_OBJECT_CLASS:
+        case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
             msg = new NM_Unsubscribe_Object_Class();
             break;
-        case NetworkMessage::Type::SUBSCRIBE_INTERACTION_CLASS:
+        case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
             msg = new NM_Subscribe_Interaction_Class();
             break;
-        case NetworkMessage::Type::UNSUBSCRIBE_INTERACTION_CLASS:
+        case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
             msg = new NM_Unsubscribe_Interaction_Class();
             break;
-        case NetworkMessage::Type::TURN_INTERACTIONS_ON:
+        case NetworkMessage::TURN_INTERACTIONS_ON:
             msg = new NM_Turn_Interactions_On();
             break;
-        case NetworkMessage::Type::TURN_INTERACTIONS_OFF:
+        case NetworkMessage::TURN_INTERACTIONS_OFF:
             msg = new NM_Turn_Interactions_Off();
             break;
-        case NetworkMessage::Type::REGISTER_OBJECT:
+        case NetworkMessage::REGISTER_OBJECT:
             msg = new NM_Register_Object();
             break;
-        case NetworkMessage::Type::DISCOVER_OBJECT:
+        case NetworkMessage::DISCOVER_OBJECT:
             msg = new NM_Discover_Object();
             break;
-        case NetworkMessage::Type::UPDATE_ATTRIBUTE_VALUES:
+        case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
             msg = new NM_Update_Attribute_Values();
             break;
-        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
+        case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
             msg = new NM_Reflect_Attribute_Values();
             break;
-        case NetworkMessage::Type::SEND_INTERACTION:
+        case NetworkMessage::SEND_INTERACTION:
             msg = new NM_Send_Interaction();
             break;
-        case NetworkMessage::Type::RECEIVE_INTERACTION:
+        case NetworkMessage::RECEIVE_INTERACTION:
             msg = new NM_Receive_Interaction();
             break;
-        case NetworkMessage::Type::DELETE_OBJECT:
+        case NetworkMessage::DELETE_OBJECT:
             msg = new NM_Delete_Object();
             break;
-        case NetworkMessage::Type::REMOVE_OBJECT:
+        case NetworkMessage::REMOVE_OBJECT:
             msg = new NM_Remove_Object();
             break;
-        case NetworkMessage::Type::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+        case NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
             msg = new NM_Change_Attribute_Transport_Type();
             break;
-        case NetworkMessage::Type::CHANGE_ATTRIBUTE_ORDER_TYPE:
+        case NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE:
             msg = new NM_Change_Attribute_Order_Type();
             break;
-        case NetworkMessage::Type::CHANGE_INTERACTION_TRANSPORT_TYPE:
+        case NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE:
             msg = new NM_Change_Interaction_Transport_Type();
             break;
-        case NetworkMessage::Type::CHANGE_INTERACTION_ORDER_TYPE:
+        case NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE:
             msg = new NM_Change_Interaction_Order_Type();
             break;
-        case NetworkMessage::Type::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+        case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
             msg = new NM_Request_Class_Attribute_Value_Update();
             break;
-        case NetworkMessage::Type::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+        case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
             msg = new NM_Request_Object_Attribute_Value_Update();
             break;
-        case NetworkMessage::Type::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+        case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
             msg = new NM_Is_Attribute_Owned_By_Federate();
             break;
-        case NetworkMessage::Type::QUERY_ATTRIBUTE_OWNERSHIP:
+        case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
             msg = new NM_Query_Attribute_Ownership();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED:
+        case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED:
             msg = new NM_Attribute_Is_Not_Owned();
             break;
-        case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP:
+        case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP:
             msg = new NM_Inform_Attribute_Ownership();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_BASE:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_BASE:
             msg = new NM_Attribute_Ownership_Base();
             break;
-        case NetworkMessage::Type::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new NM_Negotiated_Attribute_Ownership_Divestiture();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
             msg = new NM_Attribute_Ownership_Acquisition_Notification();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
             msg = new NM_Attribute_Ownership_Divestiture_Notification();
             break;
-        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+        case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
             msg = new NM_Request_Attribute_Ownership_Assumption();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
             msg = new NM_Attribute_Ownership_Unavailable();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
             msg = new NM_Attribute_Ownership_Acquisition_If_Available();
             break;
-        case NetworkMessage::Type::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new NM_Unconditional_Attribute_Ownership_Divestiture();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
             msg = new NM_Attribute_Ownership_Acquisition();
             break;
-        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+        case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
             msg = new NM_Request_Attribute_Ownership_Release();
             break;
-        case NetworkMessage::Type::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+        case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
             msg = new NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
             break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+        case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
             msg = new NM_Attribute_Ownership_Release_Response();
             break;
-        case NetworkMessage::Type::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+        case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
             msg = new NM_Cancel_Attribute_Ownership_Acquisition();
             break;
-        case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
             break;
-        case NetworkMessage::Type::DDM_CREATE_REGION:
+        case NetworkMessage::DDM_CREATE_REGION:
             msg = new NM_DDM_Create_Region();
             break;
-        case NetworkMessage::Type::DDM_MODIFY_REGION:
+        case NetworkMessage::DDM_MODIFY_REGION:
             msg = new NM_DDM_Modify_Region();
             break;
-        case NetworkMessage::Type::DDM_DELETE_REGION:
+        case NetworkMessage::DDM_DELETE_REGION:
             msg = new NM_DDM_Delete_Region();
             break;
-        case NetworkMessage::Type::DDM_ASSOCIATE_REGION:
+        case NetworkMessage::DDM_ASSOCIATE_REGION:
             msg = new NM_DDM_Associate_Region();
             break;
-        case NetworkMessage::Type::DDM_UNASSOCIATE_REGION:
+        case NetworkMessage::DDM_UNASSOCIATE_REGION:
             msg = new NM_DDM_Unassociate_Region();
             break;
-        case NetworkMessage::Type::DDM_REGISTER_OBJECT:
+        case NetworkMessage::DDM_REGISTER_OBJECT:
             msg = new NM_DDM_Register_Object();
             break;
-        case NetworkMessage::Type::DDM_SUBSCRIBE_ATTRIBUTES:
+        case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
             msg = new NM_DDM_Subscribe_Attributes();
             break;
-        case NetworkMessage::Type::DDM_UNSUBSCRIBE_ATTRIBUTES:
+        case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
             msg = new NM_DDM_Unsubscribe_Attributes();
             break;
-        case NetworkMessage::Type::DDM_SUBSCRIBE_INTERACTION:
+        case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
             msg = new NM_DDM_Subscribe_Interaction();
             break;
-        case NetworkMessage::Type::DDM_UNSUBSCRIBE_INTERACTION:
+        case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
             msg = new NM_DDM_Unsubscribe_Interaction();
             break;
-        case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+        case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
             msg = new NM_Provide_Attribute_Value_Update();
             break;
-        case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
+        case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
             msg = new NM_Start_Registration_For_Object_Class();
             break;
-        case NetworkMessage::Type::STOP_REGISTRATION_FOR_OBJECT_CLASS:
+        case NetworkMessage::STOP_REGISTRATION_FOR_OBJECT_CLASS:
             msg = new NM_Stop_Registration_For_Object_Class();
             break;
-        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME:
+        case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME:
             msg = new NM_Reserve_Object_Instance_Name();
             break;
-        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+        case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
             msg = new NM_Reserve_Object_Instance_Name_Succeeded();
             break;
-        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+        case NetworkMessage::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
             msg = new NM_Reserve_Object_Instance_Name_Failed();
             break;
-        case NetworkMessage::Type::MESSAGE_NULL_PRIME:
+        case NetworkMessage::MESSAGE_NULL_PRIME:
             msg = new NM_Message_Null_Prime();
             break;
-        case NetworkMessage::Type::LAST:
+        case NetworkMessage::LAST:
             throw NetworkError("LAST message type should not be used!!");
             break;
     } // end if switch (type)

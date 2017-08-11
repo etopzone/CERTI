@@ -118,7 +118,7 @@ createFederationExecution(const std::string& theName,
 
         comm->sendMessage(&requete);
 
-        std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::CREATE_FEDERATION_EXECUTION,
+        std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::Type::CREATE_FEDERATION_EXECUTION,
                           federate));
 
         G.Out(pdGendoc,"createFederationExecution<== receive Message from RTIG");
@@ -197,7 +197,7 @@ destroyFederationExecution(const std::string& theName,
         comm->sendMessage(&requete);
 
         std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(
-                          NetworkMessage::DESTROY_FEDERATION_EXECUTION,
+            NetworkMessage::Type::DESTROY_FEDERATION_EXECUTION,
                           federate));
 
         if (reponse->getException() == Exception::Type::NO_EXCEPTION) {
@@ -250,7 +250,7 @@ joinFederationExecution(const std::string& Federate,
         comm->sendMessage(&requete);
 
         // Waiting RTIG answer
-        std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::JOIN_FEDERATION_EXECUTION, 0));
+    std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::Type::JOIN_FEDERATION_EXECUTION, 0));
 
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
@@ -271,7 +271,7 @@ joinFederationExecution(const std::string& Federate,
 
             nb = joinResponse->getNumberOfRegulators() ;
             for (i=0 ; i<nb ; i++) {
-                reponse.reset(comm->waitMessage(NetworkMessage::MESSAGE_NULL, 0));
+                reponse.reset(comm->waitMessage(NetworkMessage::Type::MESSAGE_NULL, 0));
                 assert(tm != NULL);
                 tm->insert(reponse->getFederate(), reponse->getDate());
             }
@@ -321,7 +321,7 @@ FederationManagement::resignFederationExecution(ResignAction,
         comm->sendMessage(&msg);
 
         // WAIT FOR RTIG answer
-        std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::RESIGN_FEDERATION_EXECUTION, federate));
+        std::unique_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION, federate));
 
         _est_membre_federation = false ;
         _numero_federation = 0 ;
@@ -608,7 +608,7 @@ FederationManagement::federateSaveStatus(bool status, Exception::Type &)
     if (!savingState)
         throw SaveNotInitiated("Federation did not initiate saving.");
 
-    std::unique_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE));
+    std::unique_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::Type::FEDERATE_SAVE_COMPLETE : NetworkMessage::Type::FEDERATE_SAVE_NOT_COMPLETE));
    
     req->setFederate(federate);
     req->setFederation(_numero_federation);
@@ -695,7 +695,7 @@ FederationManagement::federateRestoreStatus(bool status, Exception::Type &)
     if (!restoringState)
         throw RestoreNotRequested("Federation did not initiate restoring.");
 
-    std::unique_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::FEDERATE_RESTORE_COMPLETE : NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE));
+    std::unique_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::Type::FEDERATE_RESTORE_COMPLETE : NetworkMessage::Type::FEDERATE_RESTORE_NOT_COMPLETE));
     req->setFederate(federate);
     req->setFederation(_numero_federation);
     comm->sendMessage(req.get());

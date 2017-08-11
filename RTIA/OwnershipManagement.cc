@@ -69,7 +69,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject, AttributeH
 
     // waitMessage is only used to verify transmission was OK.
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::IS_ATTRIBUTE_OWNED_BY_FEDERATE, req.getFederate()));
 
     e = rep->getException();
 
@@ -102,7 +102,7 @@ void OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
 
     //AttendreMsg ne sert que pour verifier que la transmission a ete OK
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::QUERY_ATTRIBUTE_OWNERSHIP, req.getFederate()));
 
     e = rep->getException();
 }
@@ -133,7 +133,7 @@ void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle t
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
 
     e = rep->getException();
 }
@@ -160,7 +160,7 @@ void OwnershipManagement::cancelnegotiatedAttributeOwnershipDivestiture(ObjectHa
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
 
     e = rep->getException();
 }
@@ -187,7 +187,7 @@ void OwnershipManagement::attributeOwnershipAcquisitionIfAvailable(ObjectHandle 
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE, req.getFederate()));
 
     e = rep->getException();
 }
@@ -214,7 +214,7 @@ void OwnershipManagement::unconditionalAttributeOwnershipDivestiture(ObjectHandl
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE, req.getFederate()));
 
     e = rep->getException();
 }
@@ -244,7 +244,7 @@ void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION, req.getFederate()));
 
     e = rep->getException();
 }
@@ -273,7 +273,7 @@ OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
     comm->sendMessage(&req);
 
     std::unique_ptr<NM_Attribute_Ownership_Release_Response> rep(static_cast<NM_Attribute_Ownership_Release_Response*>(
-        comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE, req.getFederate())));
+        comm->waitMessage(NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE, req.getFederate())));
 
     e = rep->getException();
 
@@ -313,7 +313,7 @@ void OwnershipManagement::cancelattributeOwnershipAcquisition(ObjectHandle theOb
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION, req.getFederate()));
 
     e = rep->getException();
 }

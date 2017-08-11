@@ -96,7 +96,7 @@ ObjectHandle ObjectManagement::registerObject(
     comm->sendMessage(&req);
 
     std::unique_ptr<NM_Register_Object> rep(
-        static_cast<NM_Register_Object*>(comm->waitMessage(NetworkMessage::REGISTER_OBJECT, req.getFederate())));
+        static_cast<NM_Register_Object*>(comm->waitMessage(NetworkMessage::Type::REGISTER_OBJECT, req.getFederate())));
 
     e = rep->getException();
 
@@ -337,7 +337,7 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
 
         // Send network message and then wait for answer.
         comm->sendMessage(&req);
-        std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.getFederate()));
+        std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
         e = rep->getException();
         evtrHandle = rep->eventRetraction;
     }
@@ -381,7 +381,7 @@ void ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     // Send network message and then wait for answer.
     comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
 
     e = rep->getException();
 
@@ -453,7 +453,7 @@ EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandl
 
     req.setLabel(theTag);
     comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DELETE_OBJECT, req.getFederate()));
 
     e = rep->getException();
 
@@ -476,7 +476,7 @@ void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::str
 
     req.setLabel(theTag);
     comm->sendMessage(&req);
-    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.getFederate()));
+    std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::DELETE_OBJECT, req.getFederate()));
 
     e = rep->getException();
 
@@ -563,7 +563,7 @@ EventRetractionHandle ObjectManagement::changeAttributeTransportType(ObjectHandl
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CHANGE_ATTRIBUTE_TRANSPORT_TYPE, req.getFederate()));
 
     e = rep->getException();
 
@@ -593,7 +593,7 @@ EventRetractionHandle ObjectManagement::changeAttributeOrderType(ObjectHandle th
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CHANGE_ATTRIBUTE_ORDER_TYPE, req.getFederate()));
 
     e = rep->getException();
 
@@ -614,7 +614,7 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id, Tran
 
     comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CHANGE_INTERACTION_TRANSPORT_TYPE, req.getFederate()));
     e = rep->getException();
 
     return rep->eventRetraction;
@@ -635,7 +635,7 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id, OrderTyp
     comm->sendMessage(&req);
 
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::CHANGE_INTERACTION_ORDER_TYPE, req.getFederate()));
 
     e = rep->getException();
 
@@ -664,7 +664,7 @@ void ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 
     comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
     e = rep->getException();
     G.Out(pdGendoc, "exit  ObjectManagement::requestObjectAttributeValueUpdate");
 
@@ -692,7 +692,7 @@ void ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theCla
 
     comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(
-        comm->waitMessage(NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
+        comm->waitMessage(NetworkMessage::Type::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, req.getFederate()));
     e = rep->getException();
 
     G.Out(pdGendoc, "exit  ObjectManagement::requestClassAttributeValueUpdate");

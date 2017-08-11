@@ -48,7 +48,7 @@
 #include <chrono>
 #include <numeric>
 
-std::map<int, std::vector<std::chrono::nanoseconds>> the_timings;
+std::map<certi::NetworkMessage::Type, std::vector<std::chrono::nanoseconds>> the_timings;
 
 #endif
 
@@ -201,7 +201,7 @@ void RTIG::signalHandler(int sig)
 
     for (auto& kv : the_timings) {
         auto message = NM_Factory::create(static_cast<NetworkMessage::Type>(kv.first));
-        std::cerr << kv.first << " - " << message->getMessageName() << std::endl;
+        std::cerr << static_cast<std::underlying_type<NetworkMessage::Type>::type>(kv.first) << " - " << message->getMessageName() << std::endl;
         delete message;
 
         auto& values = kv.second;
@@ -284,15 +284,15 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
     auto federate = msg.message()->getFederate();
     auto messageType = msg.message()->getMessageType();
 
-    my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(messageType));
+    my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
 
     try {
         // This may throw a security error.
-        if (messageType != NetworkMessage::DESTROY_FEDERATION_EXECUTION) {
+        if (messageType != NetworkMessage::Type::DESTROY_FEDERATION_EXECUTION) {
             my_socketServer.checkMessage(link->returnSocket(), msg.message());
         }
 
-        if (messageType == NetworkMessage::CLOSE_CONNEXION) {
+        if (messageType == NetworkMessage::Type::CLOSE_CONNEXION) {
             Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
             my_auditServer.setLevel(AuditLine::Level(9));
             my_auditServer << "Socket " << int(link->returnSocket());
