@@ -41,80 +41,106 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
+    Debug(G, pdGendoc) << "enter processEvent" << std::endl;
+    
+    auto federate = request.message()->getFederate();
+    auto messageType = request.message()->getMessageType();
+    
+    my_auditServer.startLine(request.message()->getFederation(), federate, AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
+    
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
-                                                                                                                       \
     case NetworkMessage::Type::MessageType:                                                                            \
         Debug(D, pdTrace) << "MessageClass" << std::endl;                                                              \
         return process(MessageEvent<MessageClass>{std::move(request)})
 
-#define FALLTHROUGH(MessageType) case NetworkMessage::MessageType: // fall through
-
-    switch (request.message()->getMessageType()) {
-        BASIC_CASE(MESSAGE_NULL, NM_Message_Null);
-        BASIC_CASE(RESIGN_FEDERATION_EXECUTION, NM_Resign_Federation_Execution);
-        BASIC_CASE(MESSAGE_NULL_PRIME, NM_Message_Null_Prime);
-        BASIC_CASE(UPDATE_ATTRIBUTE_VALUES, NM_Update_Attribute_Values);
-        BASIC_CASE(SEND_INTERACTION, NM_Send_Interaction);
-        BASIC_CASE(CREATE_FEDERATION_EXECUTION, NM_Create_Federation_Execution);
-        BASIC_CASE(DESTROY_FEDERATION_EXECUTION, NM_Destroy_Federation_Execution);
-        BASIC_CASE(JOIN_FEDERATION_EXECUTION, NM_Join_Federation_Execution);
-        BASIC_CASE(REGISTER_FEDERATION_SYNCHRONIZATION_POINT, NM_Register_Federation_Synchronization_Point);
-        BASIC_CASE(SYNCHRONIZATION_POINT_ACHIEVED, NM_Synchronization_Point_Achieved);
-        BASIC_CASE(REQUEST_FEDERATION_SAVE, NM_Request_Federation_Save);
-        BASIC_CASE(FEDERATE_SAVE_BEGUN, NM_Federate_Save_Begun);
-        BASIC_CASE(FEDERATE_SAVE_COMPLETE, NM_Federate_Save_Complete);
-        BASIC_CASE(FEDERATE_SAVE_NOT_COMPLETE, NM_Federate_Save_Not_Complete);
-        BASIC_CASE(REQUEST_FEDERATION_RESTORE, NM_Request_Federation_Restore);
-        BASIC_CASE(FEDERATE_RESTORE_COMPLETE, NM_Federate_Restore_Complete);
-        BASIC_CASE(FEDERATE_RESTORE_NOT_COMPLETE, NM_Federate_Restore_Not_Complete);
-        BASIC_CASE(REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, NM_Request_Object_Attribute_Value_Update);
-        BASIC_CASE(REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, NM_Request_Class_Attribute_Value_Update);
-        BASIC_CASE(SET_TIME_REGULATING, NM_Set_Time_Regulating);
-        BASIC_CASE(SET_TIME_CONSTRAINED, NM_Set_Time_Constrained);
-        BASIC_CASE(PUBLISH_OBJECT_CLASS, NM_Publish_Object_Class);
-        BASIC_CASE(UNPUBLISH_OBJECT_CLASS, NM_Unpublish_Object_Class);
-        BASIC_CASE(PUBLISH_INTERACTION_CLASS, NM_Publish_Interaction_Class);
-        BASIC_CASE(UNPUBLISH_INTERACTION_CLASS, NM_Unpublish_Interaction_Class);
-        BASIC_CASE(SUBSCRIBE_OBJECT_CLASS, NM_Subscribe_Object_Class);
-        BASIC_CASE(UNSUBSCRIBE_OBJECT_CLASS, NM_Unsubscribe_Object_Class);
-        BASIC_CASE(SUBSCRIBE_INTERACTION_CLASS, NM_Subscribe_Interaction_Class);
-        BASIC_CASE(UNSUBSCRIBE_INTERACTION_CLASS, NM_Unsubscribe_Interaction_Class);
-        BASIC_CASE(SET_CLASS_RELEVANCE_ADVISORY_SWITCH, NM_Set_Class_Relevance_Advisory_Switch);
-        BASIC_CASE(SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH, NM_Set_Interaction_Relevance_Advisory_Switch);
-        BASIC_CASE(SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH, NM_Set_Attribute_Relevance_Advisory_Switch);
-        BASIC_CASE(SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH, NM_Set_Attribute_Scope_Advisory_Switch);
-        BASIC_CASE(RESERVE_OBJECT_INSTANCE_NAME, NM_Reserve_Object_Instance_Name);
-        BASIC_CASE(REGISTER_OBJECT, NM_Register_Object);
-        BASIC_CASE(DELETE_OBJECT, NM_Delete_Object);
-        BASIC_CASE(IS_ATTRIBUTE_OWNED_BY_FEDERATE, NM_Is_Attribute_Owned_By_Federate);
-        BASIC_CASE(QUERY_ATTRIBUTE_OWNERSHIP, NM_Query_Attribute_Ownership);
-        BASIC_CASE(NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, NM_Negotiated_Attribute_Ownership_Divestiture);
-        BASIC_CASE(ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE, NM_Attribute_Ownership_Acquisition_If_Available);
-        BASIC_CASE(UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE, NM_Unconditional_Attribute_Ownership_Divestiture);
-        BASIC_CASE(ATTRIBUTE_OWNERSHIP_ACQUISITION, NM_Attribute_Ownership_Acquisition);
-        BASIC_CASE(CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-                   NM_Cancel_Negotiated_Attribute_Ownership_Divestiture);
-        BASIC_CASE(ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE, NM_Attribute_Ownership_Release_Response);
-        BASIC_CASE(CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION, NM_Cancel_Attribute_Ownership_Acquisition);
-        BASIC_CASE(DDM_CREATE_REGION, NM_DDM_Create_Region);
-        BASIC_CASE(DDM_MODIFY_REGION, NM_DDM_Modify_Region);
-        BASIC_CASE(DDM_DELETE_REGION, NM_DDM_Delete_Region);
-        BASIC_CASE(DDM_REGISTER_OBJECT, NM_DDM_Register_Object);
-        BASIC_CASE(DDM_ASSOCIATE_REGION, NM_DDM_Associate_Region);
-        BASIC_CASE(DDM_UNASSOCIATE_REGION, NM_DDM_Unassociate_Region);
-        BASIC_CASE(DDM_SUBSCRIBE_ATTRIBUTES, NM_DDM_Subscribe_Attributes);
-        BASIC_CASE(DDM_UNSUBSCRIBE_ATTRIBUTES, NM_DDM_Unsubscribe_Attributes);
-        BASIC_CASE(DDM_SUBSCRIBE_INTERACTION, NM_DDM_Subscribe_Interaction);
-        BASIC_CASE(DDM_UNSUBSCRIBE_INTERACTION, NM_DDM_Unsubscribe_Interaction);
+    try {
+        switch (request.message()->getMessageType()) {
+            BASIC_CASE(MESSAGE_NULL, NM_Message_Null);
+            BASIC_CASE(RESIGN_FEDERATION_EXECUTION, NM_Resign_Federation_Execution);
+            BASIC_CASE(MESSAGE_NULL_PRIME, NM_Message_Null_Prime);
+            BASIC_CASE(UPDATE_ATTRIBUTE_VALUES, NM_Update_Attribute_Values);
+            BASIC_CASE(SEND_INTERACTION, NM_Send_Interaction);
+            BASIC_CASE(CREATE_FEDERATION_EXECUTION, NM_Create_Federation_Execution);
+            BASIC_CASE(DESTROY_FEDERATION_EXECUTION, NM_Destroy_Federation_Execution);
+            BASIC_CASE(JOIN_FEDERATION_EXECUTION, NM_Join_Federation_Execution);
+            BASIC_CASE(REGISTER_FEDERATION_SYNCHRONIZATION_POINT, NM_Register_Federation_Synchronization_Point);
+            BASIC_CASE(SYNCHRONIZATION_POINT_ACHIEVED, NM_Synchronization_Point_Achieved);
+            BASIC_CASE(REQUEST_FEDERATION_SAVE, NM_Request_Federation_Save);
+            BASIC_CASE(FEDERATE_SAVE_BEGUN, NM_Federate_Save_Begun);
+            BASIC_CASE(FEDERATE_SAVE_COMPLETE, NM_Federate_Save_Complete);
+            BASIC_CASE(FEDERATE_SAVE_NOT_COMPLETE, NM_Federate_Save_Not_Complete);
+            BASIC_CASE(REQUEST_FEDERATION_RESTORE, NM_Request_Federation_Restore);
+            BASIC_CASE(FEDERATE_RESTORE_COMPLETE, NM_Federate_Restore_Complete);
+            BASIC_CASE(FEDERATE_RESTORE_NOT_COMPLETE, NM_Federate_Restore_Not_Complete);
+            BASIC_CASE(REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE, NM_Request_Object_Attribute_Value_Update);
+            BASIC_CASE(REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE, NM_Request_Class_Attribute_Value_Update);
+            BASIC_CASE(SET_TIME_REGULATING, NM_Set_Time_Regulating);
+            BASIC_CASE(SET_TIME_CONSTRAINED, NM_Set_Time_Constrained);
+            BASIC_CASE(PUBLISH_OBJECT_CLASS, NM_Publish_Object_Class);
+            BASIC_CASE(UNPUBLISH_OBJECT_CLASS, NM_Unpublish_Object_Class);
+            BASIC_CASE(PUBLISH_INTERACTION_CLASS, NM_Publish_Interaction_Class);
+            BASIC_CASE(UNPUBLISH_INTERACTION_CLASS, NM_Unpublish_Interaction_Class);
+            BASIC_CASE(SUBSCRIBE_OBJECT_CLASS, NM_Subscribe_Object_Class);
+            BASIC_CASE(UNSUBSCRIBE_OBJECT_CLASS, NM_Unsubscribe_Object_Class);
+            BASIC_CASE(SUBSCRIBE_INTERACTION_CLASS, NM_Subscribe_Interaction_Class);
+            BASIC_CASE(UNSUBSCRIBE_INTERACTION_CLASS, NM_Unsubscribe_Interaction_Class);
+            BASIC_CASE(SET_CLASS_RELEVANCE_ADVISORY_SWITCH, NM_Set_Class_Relevance_Advisory_Switch);
+            BASIC_CASE(SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH, NM_Set_Interaction_Relevance_Advisory_Switch);
+            BASIC_CASE(SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH, NM_Set_Attribute_Relevance_Advisory_Switch);
+            BASIC_CASE(SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH, NM_Set_Attribute_Scope_Advisory_Switch);
+            BASIC_CASE(RESERVE_OBJECT_INSTANCE_NAME, NM_Reserve_Object_Instance_Name);
+            BASIC_CASE(REGISTER_OBJECT, NM_Register_Object);
+            BASIC_CASE(DELETE_OBJECT, NM_Delete_Object);
+            BASIC_CASE(IS_ATTRIBUTE_OWNED_BY_FEDERATE, NM_Is_Attribute_Owned_By_Federate);
+            BASIC_CASE(QUERY_ATTRIBUTE_OWNERSHIP, NM_Query_Attribute_Ownership);
+            BASIC_CASE(NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE, NM_Negotiated_Attribute_Ownership_Divestiture);
+            BASIC_CASE(ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE, NM_Attribute_Ownership_Acquisition_If_Available);
+            BASIC_CASE(UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE, NM_Unconditional_Attribute_Ownership_Divestiture);
+            BASIC_CASE(ATTRIBUTE_OWNERSHIP_ACQUISITION, NM_Attribute_Ownership_Acquisition);
+            BASIC_CASE(CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+                       NM_Cancel_Negotiated_Attribute_Ownership_Divestiture);
+            BASIC_CASE(ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE, NM_Attribute_Ownership_Release_Response);
+            BASIC_CASE(CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION, NM_Cancel_Attribute_Ownership_Acquisition);
+            BASIC_CASE(DDM_CREATE_REGION, NM_DDM_Create_Region);
+            BASIC_CASE(DDM_MODIFY_REGION, NM_DDM_Modify_Region);
+            BASIC_CASE(DDM_DELETE_REGION, NM_DDM_Delete_Region);
+            BASIC_CASE(DDM_REGISTER_OBJECT, NM_DDM_Register_Object);
+            BASIC_CASE(DDM_ASSOCIATE_REGION, NM_DDM_Associate_Region);
+            BASIC_CASE(DDM_UNASSOCIATE_REGION, NM_DDM_Unassociate_Region);
+            BASIC_CASE(DDM_SUBSCRIBE_ATTRIBUTES, NM_DDM_Subscribe_Attributes);
+            BASIC_CASE(DDM_UNSUBSCRIBE_ATTRIBUTES, NM_DDM_Unsubscribe_Attributes);
+            BASIC_CASE(DDM_SUBSCRIBE_INTERACTION, NM_DDM_Subscribe_Interaction);
+            BASIC_CASE(DDM_UNSUBSCRIBE_INTERACTION, NM_DDM_Unsubscribe_Interaction);
 
         case NetworkMessage::Type::CLOSE_CONNEXION:
-        throw RTIinternalError("Close connection: Should have been handled by RTIG");
+            throw RTIinternalError("Close connection: Should have been handled by RTIG");
 
-    default:
-        // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        Debug(D, pdError) << "MessageProcessor::processEvent(): unknown type " << static_cast<std::underlying_type<NetworkMessage::Type>::type>(request.message()->getMessageType())
-                          << std::endl;
-        throw RTIinternalError("Unknown Message Type");
+        default:
+            // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
+            Debug(D, pdError) << "MessageProcessor::processEvent(): unknown type "
+                              << static_cast<std::underlying_type<NetworkMessage::Type>::type>(
+                                     request.message()->getMessageType())
+                              << std::endl;
+            throw RTIinternalError("Unknown Message Type");
+        }
+    }
+
+    catch (Exception& e) {
+        Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
+        
+        Responses responses;
+
+        auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(messageType));
+        response->setFederate(federate);
+        response->setException(e.type(), e.reason());
+
+        my_auditServer.setLevel(AuditLine::Level(10));
+        my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - Exception");
+        
+        responses.emplace_back(request.socket(), std::move(response));
+        
+        Debug(G, pdGendoc) << "exit processEvent on error" << std::endl;
+        return responses;
     }
 }
 

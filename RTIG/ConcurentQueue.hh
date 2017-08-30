@@ -49,7 +49,7 @@ public:
         while (my_queue.empty()) {
             my_condition.wait(lock);
         }
-        auto ret = my_queue.front();
+        auto ret = std::move(my_queue.front());
         my_queue.pop();
         return ret;
     }
@@ -62,7 +62,7 @@ public:
                 throw pop_timeout_exception{};
             }
         }
-        auto ret = my_queue.front();
+        auto ret = std::move(my_queue.front());
         my_queue.pop();
         return ret;
     }
@@ -89,7 +89,6 @@ private:
     std::condition_variable my_condition{};
 };
 
-#endif // CONCURENT_QUEUE_H
 }
 }
 

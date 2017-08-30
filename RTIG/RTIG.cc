@@ -42,16 +42,6 @@
 #include <signal.h>
 #endif
 
-#define LOG_MESSAGE_PROCESSING_TIMINGS
-#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-
-#include <chrono>
-#include <numeric>
-
-std::map<certi::NetworkMessage::Type, std::vector<std::chrono::nanoseconds>> the_timings;
-
-#endif
-
 namespace {
 static constexpr auto defaultTcpPort = PORT_TCP_RTIG;
 static constexpr auto tcpPortEnvironmentVariable = "CERTI_TCP_PORT";
@@ -100,6 +90,13 @@ void RTIG::execute() throw(NetworkError)
         std::cout << "CERTI RTIG up and running ..." << std::endl;
     }
     terminate = false;
+    
+    // Create sub processes
+    my_response_processor = std::thread([=] { spawn_response_processor(); } );
+ 
+//     for(auto i{0}; i<4; ++i) {
+        my_request_processors.push_back(std::thread([=] { spawn_request_processor(); } ));
+//     }
 
     fd_set fd;
     Socket* link{nullptr};
@@ -163,25 +160,13 @@ void RTIG::execute() throw(NetworkError)
         if (link) {
             Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
 
-            try {
-                do {
-                    link = processIncomingMessage(link);
-                    if (!link) {
-                        break;
-                    }
-                } while (link->isDataReady());
-            }
-            catch (NetworkError& e) {
-                if (!e.reason().empty()) {
-                    Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
+            do {
+                auto linkStillActive = processIncomingMessage(link);
+
+                if (!linkStillActive || !link) {
+                    break;
                 }
-                else {
-                    Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
-                }
-                std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
-                closeConnection(link, true);
-                link = nullptr;
-            }
+            } while (link->isDataReady());
         }
 
         // Or on the server socket ?
@@ -194,40 +179,6 @@ void RTIG::execute() throw(NetworkError)
 
 void RTIG::signalHandler(int sig)
 {
-#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-    std::cerr << "//////////////////////" << std::endl;
-    std::cerr << "/////  TIMINGS  //////" << std::endl;
-    std::cerr << "//////////////////////" << std::endl;
-
-    for (auto& kv : the_timings) {
-        auto message = NM_Factory::create(static_cast<NetworkMessage::Type>(kv.first));
-        std::cerr << static_cast<std::underlying_type<NetworkMessage::Type>::type>(kv.first) << " - " << message->getMessageName() << std::endl;
-        delete message;
-
-        auto& values = kv.second;
-        std::sort(begin(values), end(values));
-
-        std::cerr << "\tcount: " << values.size() << std::endl;
-        std::cerr << "\tmin: " << values.front().count() << " ns" << std::endl;
-        std::cerr << "\tmax: " << values.back().count() << " ns" << std::endl;
-        std::cerr << "\taverage: "
-                  << std::accumulate(begin(values), end(values), std::chrono::nanoseconds{}).count() / values.size()
-                  << " ns" << std::endl;
-        std::cerr << "\tmedian: " << values.at(values.size() / 2).count() << " ns" << std::endl;
-
-#if 0
-        std::cerr << "\t\t";
-        for (auto& time : values) {
-            std::cerr << time.count() << " ";
-        }
-        std::cerr << std::endl;
-#endif
-    }
-
-    std::cerr << "//////////////////////" << std::endl;
-    std::cerr << "/////  TIMINGS  //////" << std::endl;
-    std::cerr << "//////////////////////" << std::endl;
-#endif
 
     Debug(D, pdError) << "Received Signal: " << sig << std::endl;
 
@@ -252,6 +203,28 @@ void RTIG::setListeningIPAddress(const std::string& hostName) throw(NetworkError
     Socket::host2addr(hostName, my_listeningIPAddress);
 }
 
+int RTIG::inferTcpPort()
+{
+    auto tcp_port_s = getenv(tcpPortEnvironmentVariable);
+    if (tcp_port_s) {
+        return std::stoi(tcp_port_s);
+    }
+    else {
+        return std::stoi(defaultTcpPort);
+    }
+}
+
+int RTIG::inferUdpPort()
+{
+    auto udp_port_s = getenv(udpPortEnvironmentVariable);
+    if (udp_port_s) {
+        return std::stoi(udp_port_s);
+    }
+    else {
+        return std::stoi(defaultUdpPort);
+    }
+}
+
 void RTIG::createSocketServers()
 {
     if (my_listeningIPAddress == 0) {
@@ -266,25 +239,19 @@ void RTIG::createSocketServers()
     }
 }
 
-Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
+bool RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 {
     Debug(G, pdGendoc) << "enter RTIG::processIncomingMessage" << std::endl;
 
-#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-    auto start = std::chrono::high_resolution_clock::now();
-#endif
-
     if (!link) {
         Debug(D, pdError) << "No socket in processIncomingMessage" << std::endl;
-        return nullptr;
+        return false;
     }
 
     auto msg = MessageEvent<NetworkMessage>(link, std::unique_ptr<NetworkMessage>(NM_Factory::receive(link)));
 
     auto federate = msg.message()->getFederate();
     auto messageType = msg.message()->getMessageType();
-
-    my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
 
     try {
         // This may throw a security error.
@@ -294,40 +261,45 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
         if (messageType == NetworkMessage::Type::CLOSE_CONNEXION) {
             Debug(D, pdTrace) << "Close connection: " << link->returnSocket() << std::endl;
+            my_auditServer.startLine(msg.message()->getFederation(),
+                                     msg.message()->getFederate(), 
+                                     AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
             my_auditServer.setLevel(AuditLine::Level(9));
-            my_auditServer << "Socket " << int(link->returnSocket());
+            my_auditServer << "Close socket " << static_cast<int>(link->returnSocket());
+            
             closeConnection(link, false);
-            link = nullptr;
+            
+            my_auditServer.endLine(AuditLine::Status(Exception::Type::NO_EXCEPTION), " - OK");
+            
+            Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage with closed socket" << std::endl;
+            return false;
         }
         else {
-            auto responses = my_processor.processEvent(std::move(msg));
-
-            for (auto& response : responses) {
-                // send message
-                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
-                response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
-            }
+            my_requests.push(std::move(msg));
+//             my_responses.push(my_processor.processEvent(std::move(msg)));
         }
 
         my_auditServer.endLine(AuditLine::Status(Exception::Type::NO_EXCEPTION), " - OK");
 
-#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-        auto end = std::chrono::high_resolution_clock::now();
-
-        the_timings[messageType].push_back(end - start);
-
-        std::cout << (end - start).count() << std::endl;
-#endif
-
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
-        return link;
+        return true;
     }
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e) {
         my_auditServer.setLevel(AuditLine::Level(10));
         my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - NetworkError");
-        throw;
+        
+        if (!e.reason().empty()) {
+            Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
+        }
+        else {
+            Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
+        }
+        
+        std::cout << "RTIG dropping client connection " << link->returnSocket() << std::endl;
+        closeConnection(link, true);
+        link = nullptr;
     }
 
     // Default Handler
@@ -349,14 +321,8 @@ Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
                                << " and sent it back to federate " << federate << std::endl;
         }
 
-#ifdef LOG_MESSAGE_PROCESSING_TIMINGS
-        auto end = std::chrono::high_resolution_clock::now();
-
-        the_timings[messageType].push_back(end - start);
-#endif
-
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
-        return link;
+        return true;
     }
 }
 
@@ -393,26 +359,52 @@ void RTIG::closeConnection(Socket* link, bool emergency)
     Debug(G, pdGendoc) << "exit  RTIG::closeConnection" << std::endl;
 }
 
-int RTIG::inferTcpPort()
+void RTIG::spawn_response_processor()
 {
-    auto tcp_port_s = getenv(tcpPortEnvironmentVariable);
-    if (tcp_port_s) {
-        return std::stoi(tcp_port_s);
+    Debug(G, pdGendoc) << "Enter " << __PRETTY_FUNCTION__ << std::endl;
+    
+    while (!terminate) {
+        try {
+            Debug(D, pdDebug) << "Fetch next responses" << std::endl;
+            for (auto& response : my_responses.popTimeout()) {
+                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
+                response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
+            }
+        }
+        catch (Exception& e) {
+            Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
+        }
+        catch (decltype(my_responses)::pop_timeout_exception& e) {
+            Debug(D, pdDebug) << "timeout on pop, going on" << std::endl;
+        }
     }
-    else {
-        return std::stoi(defaultTcpPort);
-    }
+    
+    Debug(G, pdGendoc) << "Exit " << __PRETTY_FUNCTION__ << std::endl;
 }
 
-int RTIG::inferUdpPort()
+void RTIG::spawn_request_processor()
 {
-    auto udp_port_s = getenv(udpPortEnvironmentVariable);
-    if (udp_port_s) {
-        return std::stoi(udp_port_s);
+    Debug(G, pdGendoc) << "Enter " << __PRETTY_FUNCTION__ << std::endl;
+    
+    MessageProcessor mp{my_auditServer, my_socketServer, my_federationHandles, my_federations};
+    
+    while (!terminate) {
+        try {
+            Debug(D, pdDebug) << "Fetch next request" << std::endl;
+            
+            auto request = my_requests.popTimeout();
+            
+            my_responses.push(mp.processEvent(std::move(request)));
+        }
+        catch (Exception& e) {
+            Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
+        }
+        catch (decltype(my_requests)::pop_timeout_exception& e) {
+            Debug(D, pdDebug) << "timeout on pop, going on" << std::endl;
+        }
     }
-    else {
-        return std::stoi(defaultUdpPort);
-    }
+    
+    Debug(G, pdGendoc) << "Exit " << __PRETTY_FUNCTION__ << std::endl;
 }
 }
 } // namespace certi/rtig

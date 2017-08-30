@@ -2,6 +2,8 @@ include_directories(${CERTI_SOURCE_DIR}/libHLA)
 include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
 include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 
+find_package(Threads)
+
 find_program(GENGETOPT_PROGRAM NAMES gengetopt)
 if (GENGETOPT_PROGRAM)
    set(GGOFILE ${CMAKE_CURRENT_SOURCE_DIR}/RTIG.ggo)
@@ -41,7 +43,7 @@ set(rtig_SRCS
   )
 
 add_executable(rtig ${rtig_SRCS})
-target_link_libraries(rtig CERTI)
+target_link_libraries(rtig CERTI ${CMAKE_THREAD_LIBS_INIT})
 
 install(TARGETS rtig
     EXPORT CERTIDepends

@@ -25,6 +25,7 @@
 
 // #include <netinet/in.h>
 #include <string>
+#include <thread>
 
 #include "AuditFile.hh"
 #include "BasicMessage.hh"
@@ -40,6 +41,7 @@
 #include "SocketUDP.hh"
 #include "certi.hh"
 
+#include "ConcurentQueue.hh"
 #include "MessageProcessor.hh"
 
 namespace certi {
@@ -73,6 +75,9 @@ public:
     void setListeningIPAddress(const std::string& hostName) throw(NetworkError);
 
 private:
+    static int inferTcpPort();
+    static int inferUdpPort();
+    
     static bool terminate;
 
     void createSocketServers();
@@ -86,9 +91,9 @@ private:
          * caught by this module. Then a message, similar to the received one is sent
          * on the link. This message only holds the exception.
          * 
-         * @return the socket, because it may have been closed & deleted in the meantime
+         * @return a boolean indicating if the socket is still active after the processing
          */
-    Socket* processIncomingMessage(Socket*) throw(NetworkError);
+    bool processIncomingMessage(Socket*) throw(NetworkError);
 
     void openConnection();
 
@@ -98,10 +103,6 @@ private:
          * federations attribute to remove all references to this federate.
          */
     void closeConnection(Socket*, bool emergency);
-
-private:
-    static int inferTcpPort();
-    static int inferUdpPort();
 
     int my_tcpPort;
     int my_udpPort;
@@ -119,6 +120,16 @@ private:
     MessageBuffer my_NM_msgBufReceive;
     
     MessageProcessor my_processor;
+    
+    ConcurentQueue<MessageProcessor::Responses> my_responses;
+    ConcurentQueue<MessageEvent<NetworkMessage>> my_requests;
+    
+    std::thread my_response_processor;
+    std::vector<std::thread> my_request_processors;
+    
+    void spawn_response_processor();
+    void spawn_request_processor();
+    
 };
 }
 } // namespaces
