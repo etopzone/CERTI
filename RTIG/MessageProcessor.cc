@@ -188,7 +188,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
 
     responses.emplace_back(request.socket(), std::move(rep));
 
-    Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << rep->getFederation() << endl;
+    Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << handle.get() << endl;
 
     return responses;
 }

@@ -57,7 +57,7 @@ public:
     virtual ~Socket(){};
 
     virtual void createConnection(const char* server_name, unsigned int port) throw(NetworkError) = 0;
-    virtual void send(const unsigned char*, size_t) = 0;
+    [[deprecated]] virtual void send(const unsigned char*, size_t) = 0;
     virtual void receive(void* Buffer, unsigned long Size) = 0;
     virtual void close() = 0;
 

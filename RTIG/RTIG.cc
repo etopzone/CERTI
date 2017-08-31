@@ -92,11 +92,12 @@ void RTIG::execute() throw(NetworkError)
     terminate = false;
     
     // Create sub processes
-    my_response_processor = std::thread([=] { spawn_response_processor(); } );
- 
-//     for(auto i{0}; i<4; ++i) {
+    for(auto i{0}; i<1; ++i) {
         my_request_processors.push_back(std::thread([=] { spawn_request_processor(); } ));
-//     }
+        auto name = "rtig_proc_" + std::to_string(i);
+        pthread_setname_np(my_request_processors.back().native_handle(), name.c_str());
+        std::cout << name << " == " << my_request_processors.back().get_id() << std::endl;
+    }
 
     fd_set fd;
     Socket* link{nullptr};
@@ -274,12 +275,8 @@ bool RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
             Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage with closed socket" << std::endl;
             return false;
         }
-        else {
-            my_requests.push(std::move(msg));
-//             my_responses.push(my_processor.processEvent(std::move(msg)));
-        }
 
-        my_auditServer.endLine(AuditLine::Status(Exception::Type::NO_EXCEPTION), " - OK");
+        my_requests.push(std::move(msg));
 
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
         return true;
@@ -287,6 +284,9 @@ bool RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError& e) {
+        my_auditServer.startLine(msg.message()->getFederation(),
+                                 msg.message()->getFederate(), 
+                                 AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
         my_auditServer.setLevel(AuditLine::Level(10));
         my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - NetworkError");
         
@@ -299,7 +299,7 @@ bool RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         
         std::cout << "RTIG dropping client connection " << link->returnSocket() << std::endl;
         closeConnection(link, true);
-        link = nullptr;
+        return false;
     }
 
     // Default Handler
@@ -310,7 +310,10 @@ bool RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
         auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(messageType));
         response->setFederate(federate);
         response->setException(e.type(), e.reason());
-
+        
+        my_auditServer.startLine(msg.message()->getFederation(),
+                                 msg.message()->getFederate(), 
+                                 AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
         my_auditServer.setLevel(AuditLine::Level(10));
         my_auditServer.endLine(AuditLine::Status(e.type()), e.reason() + " - Exception");
 
@@ -359,29 +362,6 @@ void RTIG::closeConnection(Socket* link, bool emergency)
     Debug(G, pdGendoc) << "exit  RTIG::closeConnection" << std::endl;
 }
 
-void RTIG::spawn_response_processor()
-{
-    Debug(G, pdGendoc) << "Enter " << __PRETTY_FUNCTION__ << std::endl;
-    
-    while (!terminate) {
-        try {
-            Debug(D, pdDebug) << "Fetch next responses" << std::endl;
-            for (auto& response : my_responses.popTimeout()) {
-                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
-                response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
-            }
-        }
-        catch (Exception& e) {
-            Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
-        }
-        catch (decltype(my_responses)::pop_timeout_exception& e) {
-            Debug(D, pdDebug) << "timeout on pop, going on" << std::endl;
-        }
-    }
-    
-    Debug(G, pdGendoc) << "Exit " << __PRETTY_FUNCTION__ << std::endl;
-}
-
 void RTIG::spawn_request_processor()
 {
     Debug(G, pdGendoc) << "Enter " << __PRETTY_FUNCTION__ << std::endl;
@@ -390,17 +370,22 @@ void RTIG::spawn_request_processor()
     
     while (!terminate) {
         try {
-            Debug(D, pdDebug) << "Fetch next request" << std::endl;
+//             Debug(D, pdDebug) << "Fetch next request" << std::endl;
             
             auto request = my_requests.popTimeout();
             
-            my_responses.push(mp.processEvent(std::move(request)));
+            for (auto& response : mp.processEvent(std::move(request))) {
+                MessageBuffer responseMessageBuffer;
+                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
+                response.message()->send(response.socket(), responseMessageBuffer); // send answer to RTIA
+            }
         }
         catch (Exception& e) {
             Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
         }
         catch (decltype(my_requests)::pop_timeout_exception& e) {
-            Debug(D, pdDebug) << "timeout on pop, going on" << std::endl;
+            // Do nothing, this timeout is just here to avoid infinitely blocking at program's termination
+//             Debug(D, pdDebug) << "timeout on pop, going on" << std::endl;
         }
     }
     

@@ -121,15 +121,11 @@ private:
     
     MessageProcessor my_processor;
     
-    ConcurentQueue<MessageProcessor::Responses> my_responses;
     ConcurentQueue<MessageEvent<NetworkMessage>> my_requests;
     
-    std::thread my_response_processor;
     std::vector<std::thread> my_request_processors;
     
-    void spawn_response_processor();
     void spawn_request_processor();
-    
 };
 }
 } // namespaces

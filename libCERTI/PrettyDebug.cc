@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <thread>
+
 #ifdef _WIN32
 # include <time.h>
 # include <sys/timeb.h>
@@ -187,6 +189,8 @@ PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
         return 0;
 
     *stream << "HLALOG - ";
+    
+    *stream << std::this_thread::get_id() << " - ";
 
     // System dependent timestamp
 #ifdef _WIN32

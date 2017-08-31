@@ -91,7 +91,7 @@ private:
     #endif
     bool _est_init_tcp;
     struct sockaddr_in _sockIn;
-
+    
 #ifdef SOCKTCP_BUFFER_LENGTH
     // This class can use a buffer to reduce the number of systems calls
     // when reading a lot of small amouts of data. Each time a Receive
