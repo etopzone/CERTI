@@ -42,12 +42,9 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
-                                                                                                                       \
     case NetworkMessage::Type::MessageType:                                                                            \
         Debug(D, pdTrace) << "MessageClass" << std::endl;                                                              \
         return process(MessageEvent<MessageClass>{std::move(request)})
-
-#define FALLTHROUGH(MessageType) case NetworkMessage::MessageType: // fall through
 
     switch (request.message()->getMessageType()) {
         BASIC_CASE(MESSAGE_NULL, NM_Message_Null);
@@ -162,7 +159,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
 
     responses.emplace_back(request.socket(), std::move(rep));
 
-    Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << rep->getFederation() << endl;
+    Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << handle.get() << endl;
 
     return responses;
 }
@@ -995,7 +992,6 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
                                    request.message()->getObject(),
                                    request.message()->getAttributes(),
                                    request.message()->getValues(),
-                                   request.message()->getAttributesSize(),
                                    request.message()->getLabel());
     }
 
