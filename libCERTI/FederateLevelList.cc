@@ -21,7 +21,6 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "FederateLevelList.hh"
 
 namespace certi {
@@ -31,30 +30,29 @@ namespace certi {
 /*! Register a new federate principal name, and associate the given level
   with it.
 */
-void
-FederateLevelList::addFederate(const std::string &the_name,
-                               SecurityLevelID the_level_id)
+void FederateLevelList::addFederate(const std::string& the_name, SecurityLevelID the_level_id)
 {
-    tuple[the_name] = the_level_id ;
+    tuple[the_name] = the_level_id;
 }
 
 //! FederateLevelList constructor.
-FederateLevelList::FederateLevelList() { }
-
-/** Destructor */
-FederateLevelList::~FederateLevelList() { }
-
-// getLevel returns the level id associated the federate name given.
-SecurityLevelID
-FederateLevelList::getLevel(const std::string &theName) const
+FederateLevelList::FederateLevelList()
 {
-    std::map<std::string, SecurityLevelID>::const_iterator i = tuple.find(
-	theName);
-
-    if (i != tuple.end())
-        return i->second ;
-
-    return PublicLevelID ;
 }
 
+/** Destructor */
+FederateLevelList::~FederateLevelList()
+{
+}
+
+// getLevel returns the level id associated the federate name given.
+SecurityLevelID FederateLevelList::getLevel(const std::string& theName) const
+{
+    std::map<std::string, SecurityLevelID>::const_iterator i = tuple.find(theName);
+
+    if (i != tuple.end())
+        return i->second;
+
+    return PublicLevelID;
+}
 }

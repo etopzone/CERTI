@@ -18,45 +18,43 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
 #include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-using std::vector ;
+using std::vector;
 
 namespace certi {
-static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug G("GENDOC", __FILE__);
 
 // ----------------------------------------------------------------------------
-NetworkMessage::NetworkMessage()
-: type(Type::NOT_USED), exception(Exception::Type::NO_EXCEPTION)
+NetworkMessage::NetworkMessage() : type(Type::NOT_USED), exception(Exception::Type::NO_EXCEPTION)
 {
-    messageName        = "NetworkMessage (generic)";
-    exceptionReason    = "Not Assigned";
-    federation         = 0 ;
-    federate           = 0 ;
+    messageName = "NetworkMessage (generic)";
+    exceptionReason = "Not Assigned";
+    federation = 0;
+    federate = 0;
 
 } /* end of NetworkMessage() */
 
-NetworkMessage::~NetworkMessage() {
-	
+NetworkMessage::~NetworkMessage()
+{
 }
 
-std::ostream& NetworkMessage::show(std::ostream& out) {
-	out << "[NetworkMessage -Begin]" << std::endl;
-	if (isDated()) {
-		out << " date       = " << getDate() << std::endl;
-	}
-	out << " federation = " << federation << std::endl;
-	out << " federate   = " << federate << std::endl;
-	out << "[NetworkMessage -End]" << std::endl;
-	return out;
+std::ostream& NetworkMessage::show(std::ostream& out)
+{
+    out << "[NetworkMessage -Begin]" << std::endl;
+    if (isDated()) {
+        out << " date       = " << getDate() << std::endl;
+    }
+    out << " federation = " << federation << std::endl;
+    out << " federate   = " << federate << std::endl;
+    out << "[NetworkMessage -End]" << std::endl;
+    return out;
 } /* end of show */
 
 /*std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type)
@@ -65,7 +63,7 @@ std::ostream& NetworkMessage::show(std::ostream& out) {
     return os;
 }*/
 
-std::ostream& operator << (std::ostream& os, const NetworkMessage& msg)
+std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg)
 {
     return const_cast<NetworkMessage&>(msg).show(os);
 }

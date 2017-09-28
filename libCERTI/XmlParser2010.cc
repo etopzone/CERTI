@@ -19,102 +19,86 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include "XmlParser.hh"
-#include "XmlParser2010.hh"
-#include "ObjectClassSet.hh"
 #include "InteractionSet.hh"
 #include "ObjectClassAttribute.hh"
-#include "RoutingSpace.hh"
+#include "ObjectClassSet.hh"
 #include "PrettyDebug.hh"
+#include "RoutingSpace.hh"
+#include "XmlParser.hh"
+#include "XmlParser2010.hh"
 
-using std::string ;
-using std::cerr ;
-using std::endl ;
-
-
+using std::string;
+using std::cerr;
+using std::endl;
 
 namespace certi {
 
 static PrettyDebug D("XMLPARSER", "(XmlParser) ");
 
-XmlParser2010::XmlParser2010(RootObject* r): XmlParser (r)
+XmlParser2010::XmlParser2010(RootObject* r) : XmlParser(r)
 {
 }
 
 XmlParser2010::~XmlParser2010()
-{}
+{
+}
 
 #ifdef HAVE_XML
-xmlChar* getText (xmlNodePtr node)
+xmlChar* getText(xmlNodePtr node)
 {
-	if (node->children && node->children->content)
-	{
-		return node->children->content;
-	}
-	else
-	{
-		throw CouldNotOpenFED("Invalid FOM file structure - Attribute Class not found");
-	}
-}
-
-std::string  XmlParser2010::getName()
-{
-	xmlNodePtr tempNode = cur->children ;
-	while (tempNode != NULL)
-	{
-		if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_NAME)))
-			{
-				return std::string((const char*)getText (tempNode));
-			}
-		tempNode = tempNode->next ;
-	}
-	return std::string();
-}
-
-
-
-void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
-{	
-	//try to load a 1516e FOM file instead
-	xmlNodePtr tempNode = cur->children ;
-	while (tempNode != NULL)
-	{
-		if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_NAME)))
-		{
-			ntos_p->name = getText (tempNode) ;
-		}
-		else // ATTRIBUTE_TRANSPORTATION
-
-			if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_TRANSPORTATION)))
-			{
-				ntos_p->transportation = getText (tempNode) ;
-			}
-			else
-				if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_ORDER)))
-				{
-					ntos_p->order = getText (tempNode) ;
-				}
-				else
-					if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_SPACE)))
-					{
-						ntos_p->space = getText (tempNode) ;
-					}
-		tempNode = tempNode->next ;
-	}
-}
-
-#else // !HAVE_XML
-
-void XmlParser2010::parseNTOS(HLAntos_t  *ntos_p)
-{
-	
+    if (node->children && node->children->content) {
+        return node->children->content;
+    }
+    else {
+        throw CouldNotOpenFED("Invalid FOM file structure - Attribute Class not found");
+    }
 }
 
 std::string XmlParser2010::getName()
 {
-	return  std::string("");
+    xmlNodePtr tempNode = cur->children;
+    while (tempNode != NULL) {
+        if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_NAME))) {
+            return std::string((const char*) getText(tempNode));
+        }
+        tempNode = tempNode->next;
+    }
+    return std::string();
+}
+
+void XmlParser2010::parseNTOS(HLAntos_t* ntos_p)
+{
+    //try to load a 1516e FOM file instead
+    xmlNodePtr tempNode = cur->children;
+    while (tempNode != NULL) {
+        if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_NAME))) {
+            ntos_p->name = getText(tempNode);
+        }
+        else // ATTRIBUTE_TRANSPORTATION
+
+            if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_TRANSPORTATION))) {
+            ntos_p->transportation = getText(tempNode);
+        }
+        else if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_ORDER))) {
+            ntos_p->order = getText(tempNode);
+        }
+        else if ((!xmlStrcmp(tempNode->name, ATTRIBUTE_SPACE))) {
+            ntos_p->space = getText(tempNode);
+        }
+        tempNode = tempNode->next;
+    }
+}
+
+#else // !HAVE_XML
+
+void XmlParser2010::parseNTOS(HLAntos_t* ntos_p)
+{
+}
+
+std::string XmlParser2010::getName()
+{
+    return std::string("");
 }
 #endif // HAVE_XML
 
 } // namespace certi
-

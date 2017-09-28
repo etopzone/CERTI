@@ -18,29 +18,29 @@
 // ----------------------------------------------------------------------------
 
 #include "Message.hh"
-#include "certi.hh"
 #include "PrettyDebug.hh"
+#include "certi.hh"
 
-#include <stdlib.h>
+#include <assert.h>
 #include <cstdio>
 #include <cstring>
-#include <assert.h>
+#include <stdlib.h>
 
-using std::vector ;
+using std::vector;
 
 namespace certi {
 
-static PrettyDebug G("GENDOC",__FILE__) ;
+static PrettyDebug G("GENDOC", __FILE__);
 
 Message::Message()
 {
-    exception = Exception::Type::NO_EXCEPTION ;
-    exceptionReason = "" ;
+    exception = Exception::Type::NO_EXCEPTION;
+    exceptionReason = "";
     messageName = "Message (generic)";
-    type = NOT_USED ;
-    resignAction = certi::NO_ACTION ;
-    space = 0 ;
-    dimension = 0 ;
+    type = NOT_USED;
+    resignAction = certi::NO_ACTION;
+    space = 0;
+    dimension = 0;
 } /* end of Message default constructor */
 
 // ----------------------------------------------------------------------------
@@ -48,11 +48,9 @@ Message::Message()
     @param the_exception : exception type (enum)
     @param the_reason : exception reason
 */
-void
-Message::setException(const Exception::Type the_exception,
-                      const std::string& the_reason)
+void Message::setException(const Exception::Type the_exception, const std::string& the_reason)
 {
-    exception = the_exception ;
+    exception = the_exception;
     exceptionReason = the_reason;
 }
 

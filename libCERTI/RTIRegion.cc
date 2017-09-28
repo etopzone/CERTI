@@ -22,7 +22,6 @@
 // $Id: RTIRegion.cc,v 3.4 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-
 #include "RTIRegion.hh"
 #include "RoutingSpace.hh"
 
@@ -34,9 +33,7 @@ namespace certi {
     @param routing_space RoutingSpace of this Region
     @param nb_extents Number of extents
  */
-RTIRegion::RTIRegion(RegionHandle region_handle,
-		     const RoutingSpace &routing_space,
-		     size_t nb_extents)
+RTIRegion::RTIRegion(RegionHandle region_handle, const RoutingSpace& routing_space, size_t nb_extents)
     : BaseRegion(region_handle), space(routing_space)
 {
     setExtents(std::vector<Extent>(nb_extents, space.createExtent()));
@@ -50,9 +47,7 @@ RTIRegion::~RTIRegion()
 // ----------------------------------------------------------------------------
 /** Get the handle of the routing space having this region.
  */
-SpaceHandle
-RTIRegion::getSpaceHandle() const
-    noexcept
+SpaceHandle RTIRegion::getSpaceHandle() const noexcept
 {
     return space.getHandle();
 }

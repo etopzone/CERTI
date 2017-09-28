@@ -69,8 +69,7 @@ namespace certi {
   1 if x1 > x2
 */
 
-inline int
-fcmp(double x1,double x2, double epsilon)
+inline int fcmp(double x1, double x2, double epsilon)
 {
     int exponent;
     double delta;
@@ -107,20 +106,19 @@ fcmp(double x1,double x2, double epsilon)
     if (difference > delta)
         return 1; /* x1 > x2 */
     else if (difference < -delta)
-        return -1;  /* x1 < x2 */
+        return -1; /* x1 < x2 */
     else /* -delta <= difference <= delta */
-        return 0;  /* x1 == x2 */
+        return 0; /* x1 == x2 */
 }
 
-class CERTI_EXPORT FedTime
-{
+class CERTI_EXPORT FedTime {
 public:
     static const double epsilon;
     static int fcmp(const double x1, const double x2);
 
     FedTime();
-    FedTime(const double &);
-    FedTime(const FedTime &);
+    FedTime(const double&);
+    FedTime(const FedTime&);
     ~FedTime();
 
 public:
@@ -130,51 +128,51 @@ public:
     void setPositiveInfinity();
     bool isPositiveInfinity() const;
     int encodedLength() const;
-    void encode(char *) const;
+    void encode(char*) const;
     int getPrintableLength() const;
-    void getPrintableString(char *);
+    void getPrintableString(char*);
     double getTime() const;
 
-    FedTime& operator+=(const FedTime &);
-    FedTime& operator-=(const FedTime &);
-    bool operator<=(const FedTime &) const;
-    bool operator<(const FedTime &) const;
-    bool operator>=(const FedTime &) const;
-    bool operator>(const FedTime &) const;
-    bool operator==(const FedTime &) const;
-    bool operator==(const double &) const;
-    bool operator!=(const FedTime &) const;
-    bool operator!=(const double &) const;
-    FedTime &operator=(const FedTime &);
-    FedTime &operator=(const double &);
-    FedTime &operator*=(const FedTime &);
-    FedTime &operator/=(const FedTime &);
-    FedTime &operator+=(const double &);
-    FedTime &operator-=(const double &);
-    FedTime &operator*=(const double &);
-    FedTime &operator/=(const double &);
-    FedTime operator+(const FedTime &);
-    FedTime operator+(const double &);
-    FedTime operator-(const FedTime &);
-    FedTime operator-(const double &);
-    FedTime operator*(const FedTime &);
-    FedTime operator*(const double &);
-    FedTime operator/(const FedTime &);
-    FedTime operator/(const double &);
+    FedTime& operator+=(const FedTime&);
+    FedTime& operator-=(const FedTime&);
+    bool operator<=(const FedTime&) const;
+    bool operator<(const FedTime&) const;
+    bool operator>=(const FedTime&) const;
+    bool operator>(const FedTime&) const;
+    bool operator==(const FedTime&) const;
+    bool operator==(const double&) const;
+    bool operator!=(const FedTime&) const;
+    bool operator!=(const double&) const;
+    FedTime& operator=(const FedTime&);
+    FedTime& operator=(const double&);
+    FedTime& operator*=(const FedTime&);
+    FedTime& operator/=(const FedTime&);
+    FedTime& operator+=(const double&);
+    FedTime& operator-=(const double&);
+    FedTime& operator*=(const double&);
+    FedTime& operator/=(const double&);
+    FedTime operator+(const FedTime&);
+    FedTime operator+(const double&);
+    FedTime operator-(const FedTime&);
+    FedTime operator-(const double&);
+    FedTime operator*(const FedTime&);
+    FedTime operator*(const double&);
+    FedTime operator/(const FedTime&);
+    FedTime operator/(const double&);
 
-    friend std::ostream CERTI_EXPORT &operator<<(std::ostream&, const FedTime &time);
+    friend std::ostream CERTI_EXPORT& operator<<(std::ostream&, const FedTime& time);
 
 private:
-    double _fedTime ;
-    double _zero ;
-    double _epsilon ;
-    double _positiveInfinity ;
+    double _fedTime;
+    double _zero;
+    double _epsilon;
+    double _positiveInfinity;
 };
 
-FedTime operator+(const double &, const FedTime &);
-FedTime operator-(const double &, const FedTime &);
-FedTime operator*(const double &, const FedTime &);
-FedTime operator/(const double &, const FedTime &);
+FedTime operator+(const double&, const FedTime&);
+FedTime operator-(const double&, const FedTime&);
+FedTime operator*(const double&, const FedTime&);
+FedTime operator/(const double&, const FedTime&);
 
 typedef FedTime FederationTime;
 typedef FedTime FederationTimeDelta;

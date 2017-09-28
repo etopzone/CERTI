@@ -26,9 +26,9 @@
 
 // Project
 class Object;
-#include "SecurityServer.hh"
-#include "MessageBuffer.hh"
 #include "GAV.hh"
+#include "MessageBuffer.hh"
+#include "SecurityServer.hh"
 #include "certi.hh"
 
 // Standard
@@ -37,39 +37,33 @@ class Object;
 
 namespace certi {
 
-class CERTI_EXPORT ObjectSet : private std::map<ObjectHandle, Object *>
-{
+class CERTI_EXPORT ObjectSet : private std::map<ObjectHandle, Object*> {
 public:
     // Public Methods.
-    ObjectSet(SecurityServer *the_server);
+    ObjectSet(SecurityServer* the_server);
     ~ObjectSet();
 
-    ObjectHandle
-    getObjectInstanceHandle(const std::string&) const;
+    ObjectHandle getObjectInstanceHandle(const std::string&) const;
 
-    const std::string&
-    getObjectInstanceName(ObjectHandle the_object) const;
+    const std::string& getObjectInstanceName(ObjectHandle the_object) const;
 
-    ObjectClassHandle
-    getObjectClass(ObjectHandle the_object) const;
+    ObjectClassHandle getObjectClass(ObjectHandle the_object) const;
 
     void changeAttributeTransportationType(ObjectHandle the_object,
-                                           AttributeHandle *the_attributes,
+                                           AttributeHandle* the_attributes,
                                            uint16_t the_size,
                                            TransportType the_type);
 
     void changeAttributeOrderType(ObjectHandle the_object,
-                                  AttributeHandle *the_attributes,
+                                  AttributeHandle* the_attributes,
                                   uint16_t the_size,
                                   TransportType the_type);
 
-    Object *registerObjectInstance(FederateHandle, ObjectClassHandle,
-				   ObjectHandle, const std::string&);
+    Object* registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&);
 
     void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& tag);
 
-     FederateHandle requestObjectOwner(FederateHandle the_federate,
-                                  ObjectHandle the_object);
+    FederateHandle requestObjectOwner(FederateHandle the_federate, ObjectHandle the_object);
 
     void killFederate(FederateHandle);
 
@@ -80,80 +74,69 @@ public:
                                     AttributeHandle the_attribute) const;
 
     void
-    queryAttributeOwnership(FederateHandle the_federate,
-                            ObjectHandle the_object,
-                            AttributeHandle the_attribute) const;
+    queryAttributeOwnership(FederateHandle the_federate, ObjectHandle the_object, AttributeHandle the_attribute) const;
 
-    void
-    negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
-                                            ObjectHandle the_object,
-                                            AttributeHandle *the_attributes,
-                                            uint16_t the_size,
-                                            const std::string& the_tag);
+    void negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                                 ObjectHandle the_object,
+                                                 AttributeHandle* the_attributes,
+                                                 uint16_t the_size,
+                                                 const std::string& the_tag);
 
-    void
-    attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
-                                             ObjectHandle the_object,
-                                             AttributeHandle *the_attributes,
-                                             uint16_t the_size);
-
-    void
-    unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
-                                               ObjectHandle the_object,
-                                               AttributeHandle *the_attributes,
-                                               uint16_t the_size);
-
-    void
-    attributeOwnershipAcquisition(FederateHandle the_federate,
-                                  ObjectHandle the_object,
-                                  AttributeHandle *the_attributes,
-                                  uint16_t the_size,
-                                  const std::string& the_tag);
-
-    void
-    cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
+    void attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                                                   ObjectHandle the_object,
-                                                  const std::vector <AttributeHandle> &,
+                                                  AttributeHandle* the_attributes,
                                                   uint16_t the_size);
 
-    AttributeHandleSet *
-    attributeOwnershipReleaseResponse(FederateHandle the_federate,
-                                      ObjectHandle the_object,
-                                      std::vector <AttributeHandle> &the_attributes,
-                                      uint16_t the_size);
+    void unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                                    ObjectHandle the_object,
+                                                    AttributeHandle* the_attributes,
+                                                    uint16_t the_size);
 
-    void
-    cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
-                                        ObjectHandle the_object,
-                                        std::vector <AttributeHandle> &the_attributes,
-                                        uint16_t the_size);
+    void attributeOwnershipAcquisition(FederateHandle the_federate,
+                                       ObjectHandle the_object,
+                                       AttributeHandle* the_attributes,
+                                       uint16_t the_size,
+                                       const std::string& the_tag);
 
-    Object *getObject(ObjectHandle the_object) const;
+    void cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                                       ObjectHandle the_object,
+                                                       const std::vector<AttributeHandle>&,
+                                                       uint16_t the_size);
 
-	Object *getObjectByName(const std::string &the_object_name) const;
-	
-	void
-	getAllObjectInstancesFromFederate(FederateHandle the_federate,std::vector<ObjectHandle>& handles);
+    AttributeHandleSet* attributeOwnershipReleaseResponse(FederateHandle the_federate,
+                                                          ObjectHandle the_object,
+                                                          std::vector<AttributeHandle>& the_attributes,
+                                                          uint16_t the_size);
 
-protected:    
-    void sendToFederate(NetworkMessage *msg,
-                        FederateHandle the_federate) const;
+    void cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
+                                             ObjectHandle the_object,
+                                             std::vector<AttributeHandle>& the_attributes,
+                                             uint16_t the_size);
 
-    SecurityServer *server ;
-    
-	typedef std::map<ObjectHandle,Object*,std::less<ObjectHandle> > Handle2ObjectMap_t;
-	typedef std::map<std::string,Object*,std::less<std::string> > Name2ObjectMap_t; 
-	typedef Handle2ObjectMap_t::const_iterator handledO_const_iterator; 
-	typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
-	/*
+    Object* getObject(ObjectHandle the_object) const;
+
+    Object* getObjectByName(const std::string& the_object_name) const;
+
+    void getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
+
+protected:
+    void sendToFederate(NetworkMessage* msg, FederateHandle the_federate) const;
+
+    SecurityServer* server;
+
+    typedef std::map<ObjectHandle, Object*, std::less<ObjectHandle>> Handle2ObjectMap_t;
+    typedef std::map<std::string, Object*, std::less<std::string>> Name2ObjectMap_t;
+    typedef Handle2ObjectMap_t::const_iterator handledO_const_iterator;
+    typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
+    /*
 	 * FIXME Erk --> those map are unused which is just a shame
 	 * this looks like unfinished work. ObjectSet should not inherit
 	 * from map<...> but include (and use) the two following maps
 	 */
-	Handle2ObjectMap_t OFromHandle;	
-	Name2ObjectMap_t   OFromName;
-	/* The message buffer used to send Network messages */
-	MessageBuffer NM_msgBufSend;
+    Handle2ObjectMap_t OFromHandle;
+    Name2ObjectMap_t OFromName;
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
 };
 
 } // namespace certi

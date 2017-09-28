@@ -25,11 +25,10 @@
 #ifndef _CERTI_SECURITY_SERVER_HH
 #define _CERTI_SECURITY_SERVER_HH
 
-
-#include "SocketServer.hh"
 #include "AuditFile.hh"
 #include "FederateLevelList.hh"
 #include "SecureTCPSocket.hh"
+#include "SocketServer.hh"
 
 #include <list>
 
@@ -45,44 +44,40 @@ namespace certi {
   aux differents niveaux de securite, des niveaux a chacun des federes, et
   en reglementant les acces aux donnees par les federes.
 */
-class CERTI_EXPORT SecurityServer : private std::list<SecurityLevel *>
-{
+class CERTI_EXPORT SecurityServer : private std::list<SecurityLevel*> {
 public:
-    SecurityServer(SocketServer &theRTIGServer,
-                   AuditFile &theAuditServer,
-                   FederationHandle theFederation);
+    SecurityServer(SocketServer& theRTIGServer, AuditFile& theAuditServer, FederationHandle theFederation);
     virtual ~SecurityServer();
 
     //! This part of the security server is linked to the RTIG Audit Server.
-    AuditFile &audit ;
+    AuditFile& audit;
 
-    FederationHandle federation() const { return myFederation ; };
+    FederationHandle federation() const
+    {
+        return myFederation;
+    };
 
-    virtual Socket *getSocketLink(FederateHandle theFederate,
-                          TransportType theType = RELIABLE) const ;
+    virtual Socket* getSocketLink(FederateHandle theFederate, TransportType theType = RELIABLE) const;
 
     // Security related methods
-    bool dominates(SecurityLevelID A, SecurityLevelID B) const ;
+    bool dominates(SecurityLevelID A, SecurityLevelID B) const;
 
-    bool canFederateAccessData(FederateHandle theFederate,
-                                  SecurityLevelID theDataLevelID);
+    bool canFederateAccessData(FederateHandle theFederate, SecurityLevelID theDataLevelID);
 
     SecurityLevelID getLevelIDWithName(const std::string& theName);
 
-    void registerFederate(const std::string& the_federate,
-                          SecurityLevelID the_level_id);
+    void registerFederate(const std::string& the_federate, SecurityLevelID the_level_id);
 
 private:
-    FederationHandle myFederation ;
-    SocketServer &RTIG_SocketServer ;
+    FederationHandle myFederation;
+    SocketServer& RTIG_SocketServer;
 
-    SecurityLevelID LastLevelID ; //!< Last Level ID attributed.
-    FederateLevelList FedLevelList ;
-    SecurityLevelID getLevel(const std::string& theFederate) const ;
+    SecurityLevelID LastLevelID; //!< Last Level ID attributed.
+    FederateLevelList FedLevelList;
+    SecurityLevelID getLevel(const std::string& theFederate) const;
 
     void insertPublicLevel();
 };
-
 }
 
 #endif // _CERTI_SECURITY_SERVER_HH

@@ -24,20 +24,18 @@
 
 namespace certi {
 
-class CERTI_EXPORT SocketHTTPProxy : public SocketTCP
-{
-public :
+class CERTI_EXPORT SocketHTTPProxy : public SocketTCP {
+public:
     SocketHTTPProxy();
     virtual ~SocketHTTPProxy();
 
-    virtual void createConnection(const char *server_name, unsigned int port);
+    virtual void createConnection(const char* server_name, unsigned int port);
 
 protected:
     int sendHTTPConnect(const char* addr, in_port_t port);
-    size_t receiveLine(char *Buffer, size_t maxSize);
+    size_t receiveLine(char* Buffer, size_t maxSize);
 };
 
 } // namespace certi
 
 #endif // CERTI_SOCKET_HTTP_PROXY_HH
-

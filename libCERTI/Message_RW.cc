@@ -25,104 +25,112 @@
 
 namespace certi {
 
-static PrettyDebug D("RTIA_MSG","Message::");
-static PrettyDebug G("GENDOC",__FILE__);
+static PrettyDebug D("RTIA_MSG", "Message::");
+static PrettyDebug G("GENDOC", __FILE__);
 
-std::ostream& Message::show(std::ostream& out) {
-	out << "[Message -Begin]" << std::endl;
-	out << "     type = " << type << std::endl;
+std::ostream& Message::show(std::ostream& out)
+{
+    out << "[Message -Begin]" << std::endl;
+    out << "     type = " << type << std::endl;
     out << "     exception = " << static_cast<unsigned short>(exception) << std::endl;
     if (exception != Exception::Type::NO_EXCEPTION) {
-		out << "     exceptionReason = " << exceptionReason << std::endl;
-	} else {
-		BasicMessage::show(out);
-	}
-	out << "[Message -End]" << std::endl;
-	return out;
+        out << "     exceptionReason = " << exceptionReason << std::endl;
+    }
+    else {
+        BasicMessage::show(out);
+    }
+    out << "[Message -End]" << std::endl;
+    return out;
 } /* end of show */
 
-std::ostream& operator << (std::ostream& os, const Message& msg)
+std::ostream& operator<<(std::ostream& os, const Message& msg)
 {
     return const_cast<Message&>(msg).show(os);
 }
 
-void Message::serialize(MessageBuffer& msgBuffer) {
-	G.Out(pdGendoc,"enter Message::serialize");
-	if ((type==NOT_USED) || (type==LAST)) {
-		throw RTIinternalError("Invalid network type (not a valid type);");
-	}
-	D.Out(pdDebug, "Serialize <%s>", getMessageName());
-	//show(std::cerr);
-	/* type of message */
-	msgBuffer.write_int32(type);
-	msgBuffer.write_int32(static_cast<int32_t>(exception));
+void Message::serialize(MessageBuffer& msgBuffer)
+{
+    G.Out(pdGendoc, "enter Message::serialize");
+    if ((type == NOT_USED) || (type == LAST)) {
+        throw RTIinternalError("Invalid network type (not a valid type);");
+    }
+    D.Out(pdDebug, "Serialize <%s>", getMessageName());
+    //show(std::cerr);
+    /* type of message */
+    msgBuffer.write_int32(type);
+    msgBuffer.write_int32(static_cast<int32_t>(exception));
     if (exception != Exception::Type::NO_EXCEPTION) {
-		msgBuffer.write_string(exceptionReason);
-	} else {
-		BasicMessage::serialize(msgBuffer);
-	}
-	G.Out(pdGendoc,"exit Message::serialize");
+        msgBuffer.write_string(exceptionReason);
+    }
+    else {
+        BasicMessage::serialize(msgBuffer);
+    }
+    G.Out(pdGendoc, "exit Message::serialize");
 } /* end of serialize */
 
-void Message::deserialize(MessageBuffer& msgBuffer) {
-	G.Out(pdGendoc,"enter Message::deserialize");
-	/* We serialize the common Message part
+void Message::deserialize(MessageBuffer& msgBuffer)
+{
+    G.Out(pdGendoc, "enter Message::deserialize");
+    /* We serialize the common Message part
 	 * ALL Messages will contain the following
 	 */
-	Debug(D, pdDebug) << "Deserialize <" << getMessageName()<<">"<<std::endl;
-	/* deserialize common part */
-	type        = static_cast<Message::Type>(msgBuffer.read_int32());
-    exception   = static_cast<Exception::Type>(msgBuffer.read_int32());
+    Debug(D, pdDebug) << "Deserialize <" << getMessageName() << ">" << std::endl;
+    /* deserialize common part */
+    type = static_cast<Message::Type>(msgBuffer.read_int32());
+    exception = static_cast<Exception::Type>(msgBuffer.read_int32());
     if (exception != Exception::Type::NO_EXCEPTION) {
-		msgBuffer.read_string(exceptionReason);
-	} else {
-		BasicMessage::deserialize(msgBuffer);
-	}
-	G.Out(pdGendoc,"exit Message::deserialize");
+        msgBuffer.read_string(exceptionReason);
+    }
+    else {
+        BasicMessage::deserialize(msgBuffer);
+    }
+    G.Out(pdGendoc, "exit Message::deserialize");
 } /* end of deserialize */
 
-void
-Message::send(SocketUN *socket, MessageBuffer &msgBuffer) {
-	G.Out(pdGendoc,"enter Message::send");
-	/* 0- reset send buffer */
-	msgBuffer.reset();
-	/* 1- serialize the message
+void Message::send(SocketUN* socket, MessageBuffer& msgBuffer)
+{
+    G.Out(pdGendoc, "enter Message::send");
+    /* 0- reset send buffer */
+    msgBuffer.reset();
+    /* 1- serialize the message
 	 * This is a polymorphic call
 	 * which may specialized in a daughter class
 	 */
-	serialize(msgBuffer);
-	/* 2- update message buffer 'reserved bytes' header */
-	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getMessageName(),msgBuffer.size());
-	//msgBuf.show(msgBuffer(0),5);
-	/* 3- effectively send the raw message to socket */
-	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
-	G.Out(pdGendoc,"exit  Message::send");
+    serialize(msgBuffer);
+    /* 2- update message buffer 'reserved bytes' header */
+    msgBuffer.updateReservedBytes();
+    D.Out(pdDebug, "Sending <%s> whose buffer has <%u> bytes", getMessageName(), msgBuffer.size());
+    //msgBuf.show(msgBuffer(0),5);
+    /* 3- effectively send the raw message to socket */
+    socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
+    G.Out(pdGendoc, "exit  Message::send");
 } /* end of send */
 
-void
-Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) {
-	G.Out(pdGendoc,"enter Message::receive");
-	/* 0- Reset receive buffer */
-	/* FIXME this reset may not be necessary since we do
+void Message::receive(SocketUN* socket, MessageBuffer& msgBuffer)
+{
+    G.Out(pdGendoc, "enter Message::receive");
+    /* 0- Reset receive buffer */
+    /* FIXME this reset may not be necessary since we do
 	 * raw-receive + assume-size
 	 */
-	msgBuffer.reset();
-	/* 1- Read 'reserved bytes' header from socket */
-	D.Out(pdDebug,"(recv) Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
-	socket->receive(static_cast<const unsigned char *>(msgBuffer(0)), msgBuffer.reservedBytes);
-	//msgBuffer.show(msgBuffer(0),5);fflush(stdout);
-	/* 2- update (assume) complete message size from reserved bytes */
-	msgBuffer.assumeSizeFromReservedBytes();
-	D.Out(pdDebug,"Got a MsgBuffer of size %d bytes (including %d reserved)",msgBuffer.size(),msgBuffer.reservedBytes);
-	/* 3- receive the rest of the message */
-	socket->receive(static_cast<const unsigned char *>(msgBuffer(msgBuffer.reservedBytes)),msgBuffer.size()-msgBuffer.reservedBytes);
-	/* 4- deserialize the message
+    msgBuffer.reset();
+    /* 1- Read 'reserved bytes' header from socket */
+    D.Out(pdDebug, "(recv) Reading %d 'reserved' bytes", msgBuffer.reservedBytes);
+    socket->receive(static_cast<const unsigned char*>(msgBuffer(0)), msgBuffer.reservedBytes);
+    //msgBuffer.show(msgBuffer(0),5);fflush(stdout);
+    /* 2- update (assume) complete message size from reserved bytes */
+    msgBuffer.assumeSizeFromReservedBytes();
+    D.Out(
+        pdDebug, "Got a MsgBuffer of size %d bytes (including %d reserved)", msgBuffer.size(), msgBuffer.reservedBytes);
+    /* 3- receive the rest of the message */
+    socket->receive(static_cast<const unsigned char*>(msgBuffer(msgBuffer.reservedBytes)),
+                    msgBuffer.size() - msgBuffer.reservedBytes);
+    /* 4- deserialize the message
 	 * This is a polymorphic call
 	 * which may specialized in a daughter class
 	 */
-	deserialize(msgBuffer);
-	G.Out(pdGendoc,"exit  Message::receive");
+    deserialize(msgBuffer);
+    G.Out(pdGendoc, "exit  Message::receive");
 } /* end of receive */
 
 /*

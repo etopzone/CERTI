@@ -28,7 +28,7 @@ set(CERTI_OBJECT_SRCS
     ObjectClassSet.cc ObjectClassSet.hh
     ObjectSet.cc ObjectSet.hh
     Named.cc Named.hh
-    NameReservation.cc NameReservation.hh
+    NameReservation.hh
     Parameter.cc Parameter.hh
     RootObject.cc RootObject.hh
     Subscribable.cc Subscribable.hh

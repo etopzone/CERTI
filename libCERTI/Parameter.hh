@@ -25,23 +25,22 @@
 #ifndef CERTI_PARAMETER_HH
 #define CERTI_PARAMETER_HH
 
-#include "certi.hh"
-#include "SecurityLevel.hh"
 #include "Handled.hh"
 #include "Named.hh"
+#include "SecurityLevel.hh"
+#include "certi.hh"
 
 #include <string>
 
 namespace certi {
 
-class Parameter : public Named, public Handled<ParameterHandle>
-{
+class Parameter : public Named, public Handled<ParameterHandle> {
 public:
     Parameter(const std::string& name, ParameterHandle parameterHandle);
 
     void display();
-    
-    SecurityLevelID LevelID ;
+
+    SecurityLevelID LevelID;
 };
 
 } // namespace certi

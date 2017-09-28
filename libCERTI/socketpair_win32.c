@@ -20,9 +20,9 @@
 
 #include <string.h>
 
-#include <winsock2.h>
-#include <windows.h>
 #include <io.h>
+#include <windows.h>
+#include <winsock2.h>
 
 /* socketpair:
  *   If make_overlapped is nonzero, both sockets created will be usable for
@@ -41,12 +41,12 @@ int socketpair_win32(SOCKET socks[2], int make_overlapped)
     DWORD flags = (make_overlapped ? WSA_FLAG_OVERLAPPED : 0);
 
     if (socks == 0) {
-      WSASetLastError(WSAEINVAL);
-      return SOCKET_ERROR;
+        WSASetLastError(WSAEINVAL);
+        return SOCKET_ERROR;
     }
 
     socks[0] = socks[1] = INVALID_SOCKET;
-    if ((listener = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) 
+    if ((listener = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
         return SOCKET_ERROR;
 
     memset(&addr, 0, sizeof(addr));
@@ -57,26 +57,27 @@ int socketpair_win32(SOCKET socks[2], int make_overlapped)
     e = bind(listener, (const struct sockaddr*) &addr, sizeof(addr));
     if (e == SOCKET_ERROR) {
         e = WSAGetLastError();
-    	closesocket(listener);
+        closesocket(listener);
         WSASetLastError(e);
         return SOCKET_ERROR;
     }
     e = getsockname(listener, (struct sockaddr*) &addr, &addrlen);
     if (e == SOCKET_ERROR) {
         e = WSAGetLastError();
-    	closesocket(listener);
+        closesocket(listener);
         WSASetLastError(e);
         return SOCKET_ERROR;
     }
 
     do {
-        if (listen(listener, 1) == SOCKET_ERROR)                      break;
-        if ((socks[0] = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, flags))
-                == INVALID_SOCKET)                                    break;
-        if (connect(socks[0], (const struct sockaddr*) &addr,
-                    sizeof(addr)) == SOCKET_ERROR)                    break;
-        if ((socks[1] = accept(listener, NULL, NULL))
-                == INVALID_SOCKET)                                    break;
+        if (listen(listener, 1) == SOCKET_ERROR)
+            break;
+        if ((socks[0] = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, flags)) == INVALID_SOCKET)
+            break;
+        if (connect(socks[0], (const struct sockaddr*) &addr, sizeof(addr)) == SOCKET_ERROR)
+            break;
+        if ((socks[1] = accept(listener, NULL, NULL)) == INVALID_SOCKET)
+            break;
         closesocket(listener);
         return 0;
     } while (0);

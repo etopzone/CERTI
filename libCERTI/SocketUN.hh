@@ -20,9 +20,9 @@
 #ifndef CERTI_SOCKET_UN_HH
 #define CERTI_SOCKET_UN_HH
 
-#include "SocketTCP.hh"
-#include "Socket.hh"
 #include "PrettyDebug.hh"
+#include "Socket.hh"
+#include "SocketTCP.hh"
 
 namespace certi {
 // Signal Handler Types for a UNIX socket : - stSignalInterrupt :
@@ -31,7 +31,7 @@ namespace certi {
 // signal interruption and continue to perform the RW operation till
 // its done. LibRTI will use the stSignalIgnore, RTIA will use
 // stSignalInterrupt.
-typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
+typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType;
 
 // This is the read buffer of UNIX sockets. It must be at least as
 // long as the longest data ever received by a socket. If the next
@@ -52,49 +52,50 @@ typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
  * Therefore, before returning to a select loop, be sure to call the
  * IsDataReady method to check whether any data is waiting for processing.
  */
-class CERTI_EXPORT SocketUN
-{
+class CERTI_EXPORT SocketUN {
 public:
-	SocketUN(SignalHandlerType theType = stSignalInterrupt);
-	~SocketUN();
+    SocketUN(SignalHandlerType theType = stSignalInterrupt);
+    ~SocketUN();
 
-	int listenUN();
-	int connectUN(int port);
-	int acceptUN(unsigned msec);
+    int listenUN();
+    int connectUN(int port);
+    int acceptUN(unsigned msec);
 
-	SOCKET socketpair();
-	void setSocketFD(SOCKET fd) { _socket_un = fd; }
+    SOCKET socketpair();
+    void setSocketFD(SOCKET fd)
+    {
+        _socket_un = fd;
+    }
 
-	bool isDataReady();
+    bool isDataReady();
 
-	SOCKET returnSocket();
+    SOCKET returnSocket();
 
-	void send(const unsigned char *, size_t);
-	void receive(const unsigned char *, size_t);
+    void send(const unsigned char*, size_t);
+    void receive(const unsigned char*, size_t);
 
 protected:
-	void error(const char *);
+    void error(const char*);
 
-	SOCKET _socket_un;
+    SOCKET _socket_un;
 
-	SignalHandlerType HandlerType ;
+    SignalHandlerType HandlerType;
 
-	std::string name ;
+    std::string name;
 
 private:
+    Socket::ByteCount_t SentBytesCount;
+    Socket::ByteCount_t RcvdBytesCount;
 
-	Socket::ByteCount_t SentBytesCount ;
-	Socket::ByteCount_t RcvdBytesCount ;
-
-	PrettyDebug *pD ;
+    PrettyDebug* pD;
 
 #ifdef SOCKUN_BUFFER_LENGTH
-// This class can use a buffer to reduce the number of systems
-	// calls when reading a lot of small amouts of data. Each time a
-	// Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
+    // This class can use a buffer to reduce the number of systems
+    // calls when reading a lot of small amouts of data. Each time a
+    // Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
 
-	char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
-	unsigned long RBLength ;
+    char ReadBuffer[SOCKUN_BUFFER_LENGTH];
+    unsigned long RBLength;
 #endif
 };
 

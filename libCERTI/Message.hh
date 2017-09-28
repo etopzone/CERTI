@@ -20,14 +20,14 @@
 #ifndef CERTI_MESSAGE_HH
 #define CERTI_MESSAGE_HH
 
-#include "Exception.hh"
-#include "SocketUN.hh"
 #include "BasicMessage.hh"
-#include "GAV.hh"
+#include "Exception.hh"
 #include "FedTimeD.hh"
+#include "GAV.hh"
+#include "SocketUN.hh"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace certi {
 
@@ -39,10 +39,8 @@ namespace certi {
  * In turn RTIA exchange messages with RTIG process.
  * @ingroup libCERTI
  */
-class CERTI_EXPORT Message : public BasicMessage
-{
+class CERTI_EXPORT Message : public BasicMessage {
 public:
-
     enum Type {
         NOT_USED = 0,
         OPEN_CONNEXION,
@@ -91,7 +89,7 @@ public:
         TURN_INTERACTIONS_OFF,
 
         // Object
-		REGISTER_OBJECT_INSTANCE,
+        REGISTER_OBJECT_INSTANCE,
         UPDATE_ATTRIBUTE_VALUES,
         DISCOVER_OBJECT_INSTANCE,
         REFLECT_ATTRIBUTE_VALUES,
@@ -204,10 +202,10 @@ public:
         TICK_REQUEST_NEXT,
         TICK_REQUEST_STOP,
         RESERVE_OBJECT_INSTANCE_NAME, // HLA1516
-		RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516
-		RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516
-        
-	LAST // should be the "last" (not used)
+        RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516
+        RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516
+
+        LAST // should be the "last" (not used)
     };
 
 public:
@@ -218,63 +216,78 @@ public:
      * Get the name of [the type of] the message.
      * @return the message type name.
      */
-    const char* getMessageName() const {return messageName;}
+    const char* getMessageName() const
+    {
+        return messageName;
+    }
 
     /**
      * Get the message type.
      * @return the type of the message
      */
-    Type getMessageType() const { return type ; };
+    Type getMessageType() const
+    {
+        return type;
+    };
 
-	/**
+    /**
 	 * Serialize the message into a buffer
 	 * @param[in] msgBuffer the serialization buffer
 	 */
-	virtual void serialize(MessageBuffer& msgBuffer);
+    virtual void serialize(MessageBuffer& msgBuffer);
 
-	virtual std::ostream& show(std::ostream& out);
+    virtual std::ostream& show(std::ostream& out);
 
-	/**
+    /**
 	 * DeSerialize the message from a buffer
 	 * @param[in] msgBuffer the deserialization buffer
 	 */
-	virtual void deserialize(MessageBuffer& msgBuffer);
+    virtual void deserialize(MessageBuffer& msgBuffer);
 
-	/**
+    /**
 	 * Send a serialized message on a socket.
 	 * @param[in] socket the socket that should be used to send the message
 	 * @param[in] msgBuffer the buffer containing the serialized message
 	 */
-	void send(SocketUN* socket, MessageBuffer& msgBuffer);
+    void send(SocketUN* socket, MessageBuffer& msgBuffer);
 
-	/**
+    /**
 	 * Receive a serialized message from a socket.
 	 * @param[in] socket the socket used to received the message from
 	 * @param[out] msgBuffer the buffer were the read message will be written
 	 */
-	void receive(SocketUN* socket, MessageBuffer& msgBuffer);
+    void receive(SocketUN* socket, MessageBuffer& msgBuffer);
 
     void setException(const Exception::Type, const std::string& the_reason = "");
-    Exception::Type getExceptionType() const { return exception ; };
-    const char *getExceptionReason() const { return exceptionReason.c_str() ; };
-    std::wstring getExceptionReasonW() const { return std::wstring(exceptionReason.begin(), exceptionReason.end()); };
-    
+    Exception::Type getExceptionType() const
+    {
+        return exception;
+    };
+    const char* getExceptionReason() const
+    {
+        return exceptionReason.c_str();
+    };
+    std::wstring getExceptionReasonW() const
+    {
+        return std::wstring(exceptionReason.begin(), exceptionReason.end());
+    };
+
 protected:
-    Type type ;
-    Exception::Type exception ;
+    Type type;
+    Exception::Type exception;
     std::string exceptionReason;
 
-    ResignAction resignAction ;
-    EventRetractionHandle eventRetraction ;
-    SpaceHandle space ;
-    DimensionHandle dimension ;
-    const char* messageName ;
+    ResignAction resignAction;
+    EventRetractionHandle eventRetraction;
+    SpaceHandle space;
+    DimensionHandle dimension;
+    const char* messageName;
 
 private:
-    Message &operator=(const Message &);
+    Message& operator=(const Message&);
 };
 
-std::ostream& operator << (std::ostream& os, const Message& msg);
+std::ostream& operator<<(std::ostream& os, const Message& msg);
 
 } // namespace certi
 

@@ -26,15 +26,15 @@
 #define _CERTI_XML_PARSER_2000_HH
 
 // Project
-#include "RootObject.hh"
-#include "ObjectClass.hh"
 #include "Interaction.hh"
+#include "ObjectClass.hh"
+#include "RootObject.hh"
 #include "XmlParser.hh"
 
 // Libraries
 #ifdef HAVE_XML
-#include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #endif
 
 // Standard libraries
@@ -47,24 +47,22 @@ namespace certi {
  */
 class CERTI_EXPORT XmlParser2000 : public XmlParser {
 public:
-	
-	/**
+    /**
 	 * Build a parser.
 	 * @param root the root object of the FOM.
 	 */
-	XmlParser2000(RootObject* root);
-	
-	virtual ~XmlParser2000() ;
+    XmlParser2000(RootObject* root);
 
-	/** 
+    virtual ~XmlParser2000();
+
+    /** 
 	 * Main method to parse .xml FOM file
 	 * @param[in] pathToXmlFile the path to the XML file.
 	 * @return the RootObject resulting from the parse. 
-	 */	   
+	 */
     //RootObject* parse(std::string pathToXmlFile);
 
-
-    virtual void parseNTOS(HLAntos_t  *ntos_p);
+    virtual void parseNTOS(HLAntos_t* ntos_p);
 
     virtual std::string getName();
 };

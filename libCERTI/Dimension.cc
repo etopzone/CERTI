@@ -26,27 +26,25 @@
 
 namespace certi {
 
-uint32_t Dimension::axisLowerBound = 0 ;
-uint32_t Dimension::axisUpperBound = UINT_MAX ;
+uint32_t Dimension::axisLowerBound = 0;
+uint32_t Dimension::axisUpperBound = UINT_MAX;
 
 Dimension::Dimension(DimensionHandle dimensionHandle)
 {
-	/* initialize handle from superclass */
-    this->handle = dimensionHandle ;
+    /* initialize handle from superclass */
+    this->handle = dimensionHandle;
 }
 
 // ----------------------------------------------------------------------------
-void
-Dimension::setLowerBound(uint32_t lowerBound)
+void Dimension::setLowerBound(uint32_t lowerBound)
 {
-    Dimension::axisLowerBound = lowerBound ;
+    Dimension::axisLowerBound = lowerBound;
 }
 
 // ----------------------------------------------------------------------------
-void
-Dimension::setUpperBound(uint32_t upperBound)
+void Dimension::setUpperBound(uint32_t upperBound)
 {
-    Dimension::axisUpperBound = upperBound ;
+    Dimension::axisUpperBound = upperBound;
 }
 
 } // namespace certi

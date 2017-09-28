@@ -24,17 +24,16 @@
 #ifndef CERTI_FED_REGION_HH
 #define CERTI_FED_REGION_HH
 
-#include "certi.hh"
 #include "BaseRegion.hh"
+#include "certi.hh"
 
 namespace certi {
 
-class RoutingSpace ;
+class RoutingSpace;
 
-class CERTI_EXPORT FedRegion : public BaseRegion
-{
+class CERTI_EXPORT FedRegion : public BaseRegion {
 public:
-    FedRegion(RegionHandle, SpaceHandle, const std::vector<Extent> &);
+    FedRegion(RegionHandle, SpaceHandle, const std::vector<Extent>&);
     virtual ~FedRegion();
 
     virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const;
@@ -49,19 +48,16 @@ public:
 
     virtual uint32_t getNumberOfExtents() const noexcept;
 
-    virtual uint32_t getRangeLowerBoundNotificationLimit(ExtentIndex,
-                                                      DimensionHandle) const;
+    virtual uint32_t getRangeLowerBoundNotificationLimit(ExtentIndex, DimensionHandle) const;
 
-    virtual uint32_t getRangeUpperBoundNotificationLimit(ExtentIndex,
-                                                      DimensionHandle) const;
+    virtual uint32_t getRangeUpperBoundNotificationLimit(ExtentIndex, DimensionHandle) const;
 
     void commit();
 
 private:
-    SpaceHandle space ;
-    std::vector<Extent> coExtents ;
+    SpaceHandle space;
+    std::vector<Extent> coExtents;
 };
-
 }
 
 #endif // CERTI_FED_REGION_HH

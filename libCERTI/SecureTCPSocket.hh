@@ -23,8 +23,8 @@
 #ifndef CERTI_SECURE_TCP_SOCKET_HH
 #define CERTI_SECURE_TCP_SOCKET_HH
 
-#include "SocketTCP.hh"
 #include "GSSAPIHandler.hh"
+#include "SocketTCP.hh"
 #include "certi.hh"
 
 namespace certi {
@@ -32,22 +32,24 @@ namespace certi {
 // ============================================================================
 /** Security layer using GSSAPI over a TCP socket
  */
-class CERTI_EXPORT SecureTCPSocket : public SocketTCP
-{
+class CERTI_EXPORT SecureTCPSocket : public SocketTCP {
 public:
     SecureTCPSocket();
     virtual ~SecureTCPSocket();
 
-    virtual void send(const unsigned char *, size_t);
-    virtual void receive(void *Buffer, unsigned long Size);
+    virtual void send(const unsigned char*, size_t);
+    virtual void receive(void* Buffer, unsigned long Size);
 
     // FIXME: Peut-etre devrait-on regarder si un message est pret en interne,
     // et balancer une exception dans ce cas la.
-    virtual bool isDataReady() const { return SocketTCP::isDataReady(); }
+    virtual bool isDataReady() const
+    {
+        return SocketTCP::isDataReady();
+    }
 
     // Return Peer's principal name. Must not be freed ! Principal name is
     // without any network address part(starting with a '@').
-    const char *getPeerName();
+    const char* getPeerName();
 
 private:
 #ifdef WITH_GSSAPI
@@ -60,27 +62,27 @@ private:
     // messages. GetMessage read an incoming message from the TCP
     // socket, decrypt and verify it, and then store it in
     // InternalBuffer. Call GetMessagePart to retrieve it.
-    void sendMessage(void *Buffer, unsigned long Size);
+    void sendMessage(void* Buffer, unsigned long Size);
     void getMessage();
 
     // Copy a part of an already received and decrypted message to buffer.
     // The copied part is(Size) bytes long. If(Size) bytes are not available,
     // an exception is raised.
-    void getMessagePart(void *Buffer, unsigned long Size);
+    void getMessagePart(void* Buffer, unsigned long Size);
 
-    bool SessionInitialized ;
-    bool DecryptedMessageReady ;
+    bool SessionInitialized;
+    bool DecryptedMessageReady;
 
-    GSSAPIHandler *GSSHandler ;
+    GSSAPIHandler* GSSHandler;
 
     // GSSAPI buffer for incming messages. Memory is allocated by GSSHandler
     // but deleted locally after use. Base offset is zero.
-    gss_buffer_desc IncomingBuffer ;
-    unsigned long CurrentOffset ; // Current offset in buffer.
+    gss_buffer_desc IncomingBuffer;
+    unsigned long CurrentOffset; // Current offset in buffer.
 
 #endif // WITH_GSSAPI
 
-    char *PeerName ;
+    char* PeerName;
 };
 
 } // namespace certi
@@ -88,4 +90,3 @@ private:
 #endif // CERTI_SECURE_TCP_SOCKET_HH
 
 // $Id: SecureTCPSocket.hh,v 3.10 2009/11/24 21:44:47 erk Exp $
-

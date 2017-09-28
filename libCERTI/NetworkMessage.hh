@@ -174,23 +174,23 @@ public:
     {
         return exception;
     };
-    
+
     Exception::Type& getRefException()
     {
         return exception;
     };
-    
+
     void setException(const Exception::Type e)
     {
         exception = e;
     };
-    
+
     void setException(const Exception::Type e, const std::string& reason)
     {
         exception = e;
         exceptionReason = reason;
     };
-    
+
     const std::string& getExceptionReason()
     {
         return exceptionReason;
@@ -209,12 +209,12 @@ public:
 	 * @param[in] msgBuffer the deserialization buffer
 	 */
     virtual void deserialize(MessageBuffer& msgBuffer);
-    
+
     /**
      * Send a message buffer to the socket
      */
     void send(Socket* socket, MessageBuffer& msgBuffer);
-    
+
     /**
      * Send a message buffer to each socket in the list
      */
@@ -231,7 +231,7 @@ public:
     {
         return federation;
     };
-    
+
     void setFederation(Handle federation)
     {
         this->federation = federation;
@@ -241,7 +241,7 @@ public:
     {
         return federate;
     };
-    
+
     void setFederate(FederateHandle federate)
     {
         this->federate = federate;
@@ -282,7 +282,7 @@ protected:
 	 * the message is part of this federation activity
 	 */
     Handle federation;
-    
+
     /**
 	 * The federate handle
 	 * the message is for this particular federate
@@ -294,7 +294,7 @@ private:
 
 // std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type);
 
-std::ostream& operator << (std::ostream& os, const NetworkMessage& msg);
+std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg);
 
 // BUG: FIXME this is used by SocketMC and should
 //      be thrown away as soon as possible.

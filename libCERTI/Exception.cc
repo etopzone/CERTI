@@ -29,8 +29,8 @@ static PrettyDebug PD_Exception("CERTI_EXCEPTION", __FILE__);
 
 const std::string certi::Exception::displayMe() const
 {
-    std::string msg = "CERTI::Exception [" + ((name().empty()) ? "<noname>" : name()) + " - reason="
-        + ((_reason.empty()) ? "<noreason>" : _reason) + "\n";
+    std::string msg = "CERTI::Exception [" + ((name().empty()) ? "<noname>" : name())
+        + " - reason=" + ((_reason.empty()) ? "<noreason>" : _reason) + "\n";
 
     Debug(PD_Exception, pdExcept) << msg;
     return msg;

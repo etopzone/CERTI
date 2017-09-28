@@ -39,10 +39,9 @@ namespace certi {
  * "IEEE Standard for Modeling and Simulation (M&S) High Level
  *  Architecture (HLA)—Object Model Template (OMT) Specification"
  */
-class CERTI_EXPORT Named
-{
+class CERTI_EXPORT Named {
 public:
-	/**
+    /**
 	 * Default constructor.
 	 * Name initialized with the empty string.
 	 */
@@ -70,24 +69,24 @@ public:
      * Get name.
      * @return name value
      */
-    virtual const std::string& getName() const ;
+    virtual const std::string& getName() const;
 
     /**
      * Check if the name matches the provided parameter.
      * @param name String to compare
      * @return true if strings match
      */
-    bool isNamed(const std::string& newName) const ;
+    bool isNamed(const std::string& newName) const;
 
-	/**
+    /**
 	 * This method check if the provided name
 	 * respects the HLA named object specifications, IEEE-1516.2-2000 (§3.3.1 Names).
 	 * @param[in] name the name to be checked
 	 * @return true if the name is a valid HLA name, false otherwise.
 	 */
-	static bool validateHLAName(const std::string& name);
+    static bool validateHLAName(const std::string& name);
 
-	/**
+    /**
 	 * Check if the provided name is a qualified class name.
 	 * Qualified HLA class name are those beginning at
 	 * root class name. In a qualified class name each
@@ -96,35 +95,36 @@ public:
 	 * @param[in] name the name to be checked
 	 * @return true if the name is qualified one
 	 */
-	static bool isQualifiedClassName(const std::string& name);
+    static bool isQualifiedClassName(const std::string& name);
 
-	/**
+    /**
 	 * Get next class name component.
 	 * @param[in,out] qualifiedClassName
 	 * @return the next (leading) class name
 	 */
-	static std::string getNextClassName(std::string& qualifiedClassName);
+    static std::string getNextClassName(std::string& qualifiedClassName);
 
-	/**
+    /**
 	 * Get leaf class name component.
 	 * @param[in] qualifiedClassName
 	 * @return the leaf class name
 	 */
-	static std::string getLeafClassName(const std::string& qualifiedClassName);
+    static std::string getLeafClassName(const std::string& qualifiedClassName);
 
-	class IsNamed {
-		public:
-			IsNamed(const std::string& named) : named(named) {};
-			bool operator()(const Named& namedObject) {
-				return (namedObject.getName() == named);
-			}
-		private:
-			std::string named;
-	};
+    class IsNamed {
+    public:
+        IsNamed(const std::string& named) : named(named){};
+        bool operator()(const Named& namedObject)
+        {
+            return (namedObject.getName() == named);
+        }
+
+    private:
+        std::string named;
+    };
 
 protected:
-
-    std::string name ;
+    std::string name;
 };
 
 } // certi

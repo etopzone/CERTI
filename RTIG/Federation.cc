@@ -136,10 +136,10 @@ static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
 #ifdef FEDERATION_USES_MULTICAST
 Federation::Federation(const string& federation_name,
                        const FederationHandle federation_handle,
-                       SocketServer& socket_server,
-                       AuditFile& audit_server,
-                       SocketMC* mc_link,
-                       int theVerboseLevel)
+
+                       Debug(D, pdInit) << "New Federation " << federation_handle << " will use Multicast." << endl;
+                       MCLink = mc_link;
+                       SocketServer & socket_server, AuditFile& audit_server, SocketMC* mc_link, int theVerboseLevel)
 #else
 Federation::Federation(const string& federation_name,
                        const FederationHandle federation_handle,
@@ -448,7 +448,8 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
             nullMessage.setFederation(my_handle.get());
             nullMessage.setFederate(clock.first);
             nullMessage.setDate(clock.second);
-            Debug(D, pdTerm) << "Sending NULL message from " << nullMessage.getFederate() << " to new federate." << endl;
+            Debug(D, pdTerm) << "Sending NULL message from " << nullMessage.getFederate() << " to new federate."
+                             << endl;
 
             nullMessage.send(tcp_link, my_nm_buffer);
         }
@@ -502,8 +503,7 @@ void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)
     my_root_object->convertToSerializedFOM(object_model_data);
 }
 
-bool Federation::updateLastNERxForFederate(FederateHandle federate_handle,
-                                           FederationTime date)
+bool Federation::updateLastNERxForFederate(FederateHandle federate_handle, FederationTime date)
 {
     bool retval = false;
     FederationTime newMin;
@@ -731,9 +731,7 @@ void Federation::deleteObject(FederateHandle federate_handle,
     my_objects_handle_generator.free(object_handle);
 }
 
-void Federation::deleteObject(FederateHandle federate_handle,
-                              ObjectHandle object_handle,
-                              const string& tag)
+void Federation::deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const string& tag)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -805,9 +803,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::registerSynchronization for federate set" << endl;
 }
 
-void Federation::broadcastSynchronization(FederateHandle federate_handle,
-                                          const string& label,
-                                          const string& tag)
+void Federation::broadcastSynchronization(FederateHandle federate_handle, const string& label, const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
 
@@ -858,9 +854,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << endl;
 }
 
-void Federation::requestFederationSave(FederateHandle federate_handle,
-                                       const string& label,
-                                       FederationTime time)
+void Federation::requestFederationSave(FederateHandle federate_handle, const string& label, FederationTime time)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave with time" << endl;
 
@@ -892,8 +886,7 @@ void Federation::requestFederationSave(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave with time" << endl;
 }
 
-void Federation::requestFederationSave(FederateHandle federate_handle,
-                                       const string& the_label)
+void Federation::requestFederationSave(FederateHandle federate_handle, const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave without time" << endl;
 
@@ -956,8 +949,8 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
     }
 
     // Send end save message.
-    std::unique_ptr<NetworkMessage> msg(
-        NM_Factory::create(my_save_status ? NetworkMessage::Type::FEDERATION_SAVED : NetworkMessage::Type::FEDERATION_NOT_SAVED));
+    std::unique_ptr<NetworkMessage> msg(NM_Factory::create(
+        my_save_status ? NetworkMessage::Type::FEDERATION_SAVED : NetworkMessage::Type::FEDERATION_NOT_SAVED));
 
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
@@ -973,8 +966,7 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
     Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus" << endl;
 }
 
-void Federation::requestFederationRestore(FederateHandle federate_handle,
-                                          const string& the_label)
+void Federation::requestFederationRestore(FederateHandle federate_handle, const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationRestore" << endl;
 
@@ -997,7 +989,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     success = true;
 
     NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED
-    : NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED);
+                                                     : NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED);
 
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
@@ -1308,9 +1300,8 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
     delete msg;
 }
 
-ObjectHandle Federation::registerObject(FederateHandle federate,
-                                        ObjectClassHandle class_handle,
-                                        const string& object_name)
+ObjectHandle
+Federation::registerObject(FederateHandle federate, ObjectClassHandle class_handle, const string& object_name)
 {
     ObjectHandle id = my_objects_handle_generator.provide();
 
@@ -1586,9 +1577,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
     Debug(G, pdGendoc) << "exit  Federation::updateAttributeValues without time" << endl;
 }
 
-void Federation::updateRegulator(FederateHandle federate_handle,
-                                 FederationTime time,
-                                 bool anonymous)
+void Federation::updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous)
 {
     /* if it is an anonymous update (from NULL PRIME message)
 	 * no need to check federate.
@@ -1620,9 +1609,7 @@ void Federation::updateRegulator(FederateHandle federate_handle,
     broadcastAnyMessage(&msg, federate_handle, anonymous);
 }
 
-bool Federation::isOwner(FederateHandle federate_handle,
-                         ObjectHandle object_handle,
-                         AttributeHandle attribute_handle)
+bool Federation::isOwner(FederateHandle federate_handle, ObjectHandle object_handle, AttributeHandle attribute_handle)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1720,10 +1707,9 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
     Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << endl;
 }
 
-AttributeHandleSet*
-Federation::respondRelease(FederateHandle federate_handle,
-                           ObjectHandle object_handle,
-                           const vector<AttributeHandle>& attributes)
+AttributeHandleSet* Federation::respondRelease(FederateHandle federate_handle,
+                                               ObjectHandle object_handle,
+                                               const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1847,12 +1833,11 @@ void Federation::unsubscribeInteractionWR(FederateHandle federate_handle,
     my_root_object->getInteractionClass(interaction_class_handle)->unsubscribe(federate_handle, region);
 }
 
-ObjectHandle
-Federation::registerObjectWithRegion(FederateHandle federate_handle,
-                                     ObjectClassHandle class_handle,
-                                     const string& object_name,
-                                     RegionHandle region_handle,
-                                     const vector<AttributeHandle>& attributes)
+ObjectHandle Federation::registerObjectWithRegion(FederateHandle federate_handle,
+                                                  ObjectClassHandle class_handle,
+                                                  const string& object_name,
+                                                  RegionHandle region_handle,
+                                                  const vector<AttributeHandle>& attributes)
 {
     Debug(G, pdGendoc) << "enter Federation::registerObjectWithRegion" << endl;
     check(federate_handle);
@@ -2073,10 +2058,9 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     return (theOwnerHandle);
 }
 
-void Federation::requestClassAttributeValueUpdate(
-    FederateHandle theFederateHandle,
-    ObjectClassHandle theClassHandle,
-    const vector<AttributeHandle>& theAttributeList)
+void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
+                                                  ObjectClassHandle theClassHandle,
+                                                  const vector<AttributeHandle>& theAttributeList)
 {
     Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
 

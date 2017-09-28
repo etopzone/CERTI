@@ -21,15 +21,14 @@
 #define CERTI_GAV_HH
 
 // #include "certi.hh"
-#include "Handle.hh"
 #include "Exception.hh"
+#include "Handle.hh"
 
 #include <list>
 
 namespace certi {
 
-class CERTI_EXPORT AttributeHandleSet
-{
+class CERTI_EXPORT AttributeHandleSet {
 public:
     AttributeHandleSet(uint32_t size);
     virtual ~AttributeHandleSet();
@@ -51,13 +50,12 @@ protected:
     std::list<AttributeHandle> _set;
 };
 
-class FederateHandleSet
-{
+class FederateHandleSet {
 public:
     FederateHandleSet(uint32_t size);
     virtual ~FederateHandleSet();
 
-    virtual uint32_t size() const ;
+    virtual uint32_t size() const;
 
     virtual FederateHandle getHandle(uint32_t i) const;
 
@@ -73,108 +71,102 @@ protected:
     std::list<FederateHandle> _set;
 };
 
-class AttributeHandleValuePair
-{
+class AttributeHandleValuePair {
     // ATTRIBUTES
 public:
-    Handle _handle ;
-    uint32_t _valueLength ;
-    char *_value ;
+    Handle _handle;
+    uint32_t _valueLength;
+    char* _value;
 
     // METHODS
-public :
-    AttributeHandleValuePair(Handle handle,
-                             const char *value,
-                             uint32_t value_length);
+public:
+    AttributeHandleValuePair(Handle handle, const char* value, uint32_t value_length);
     ~AttributeHandleValuePair();
 };
 
-class AttributeHandleValuePairSet
-{
+class AttributeHandleValuePairSet {
     // ATTRIBUTES
 public:
-    OrderType _order ;
-    TransportType _transport ;
+    OrderType _order;
+    TransportType _transport;
 
     // METHODS
 public:
     AttributeHandleValuePairSet(uint32_t size);
     virtual ~AttributeHandleValuePairSet();
 
-    virtual uint32_t size() const ;
+    virtual uint32_t size() const;
     virtual Handle getHandle(uint32_t i) const;
     virtual uint32_t getValueLength(uint32_t i) const;
 
-    virtual void getValue(uint32_t i, char *buff, uint32_t& valueLength) const;
+    virtual void getValue(uint32_t i, char* buff, uint32_t& valueLength) const;
 
-    virtual char *getValuePointer(uint32_t i, uint32_t& valueLength) const;
+    virtual char* getValuePointer(uint32_t i, uint32_t& valueLength) const;
 
     virtual TransportType getTransportType(uint32_t i) const;
 
     virtual OrderType getOrderType(uint32_t i) const;
 
-    virtual void add(Handle h, const char *buff, uint32_t valueLength);
+    virtual void add(Handle h, const char* buff, uint32_t valueLength);
     virtual void remove(Handle h);
 
     virtual void moveFrom(const AttributeHandleValuePairSet& ahvps, uint32_t& i);
 
     virtual void empty();
-    virtual uint32_t start() const ;
-    virtual uint32_t valid(uint32_t i) const ;
-    virtual uint32_t next(uint32_t i) const ;
+    virtual uint32_t start() const;
+    virtual uint32_t valid(uint32_t i) const;
+    virtual uint32_t next(uint32_t i) const;
 
 protected:
-    std::list<AttributeHandleValuePair *> _set;
+    std::list<AttributeHandleValuePair*> _set;
 };
 
-class ParameterHandleValuePair
-{
+class ParameterHandleValuePair {
 public:
-    Handle _handle ;
-    uint32_t _valueLength ;
-    char *_value ;
+    Handle _handle;
+    uint32_t _valueLength;
+    char* _value;
 
-    ParameterHandleValuePair(Handle handle, const char *value, uint32_t length);
+    ParameterHandleValuePair(Handle handle, const char* value, uint32_t length);
     ~ParameterHandleValuePair();
 };
 
-class ParameterHandleValuePairSet
-{
+class ParameterHandleValuePairSet {
 public:
-    OrderType _order ;
-    TransportType _transport ;
+    OrderType _order;
+    TransportType _transport;
 
 public:
     ParameterHandleValuePairSet(uint32_t size);
     virtual ~ParameterHandleValuePairSet();
 
-    virtual uint32_t size() const ;
+    virtual uint32_t size() const;
 
     virtual Handle getHandle(uint32_t i) const;
 
     virtual uint32_t getValueLength(uint32_t i) const;
 
-    virtual void getValue(uint32_t i, char *buff, uint32_t& valueLength) const;
+    virtual void getValue(uint32_t i, char* buff, uint32_t& valueLength) const;
 
-    virtual char *getValuePointer(uint32_t i, uint32_t& valueLength) const;
+    virtual char* getValuePointer(uint32_t i, uint32_t& valueLength) const;
 
     virtual TransportType getTransportType() const;
 
     virtual OrderType getOrderType() const;
 
-    virtual void add(Handle h, const char *buff, uint32_t valueLength);
+    virtual void add(Handle h, const char* buff, uint32_t valueLength);
 
     virtual void remove(Handle h);
 
     virtual void moveFrom(const ParameterHandleValuePairSet& phvps, uint32_t& i);
 
     virtual void empty();
-    virtual uint32_t start() const ;
-    virtual uint32_t valid(uint32_t i) const ;
-    virtual uint32_t next(uint32_t i) const ;
+    virtual uint32_t start() const;
+    virtual uint32_t valid(uint32_t i) const;
+    virtual uint32_t next(uint32_t i) const;
 
 protected:
-    std::list<ParameterHandleValuePair *> _set;
+    std::list<ParameterHandleValuePair*> _set;
 };
 
 } // namespace certi

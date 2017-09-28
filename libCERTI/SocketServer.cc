@@ -77,9 +77,7 @@ void SocketServer::checkMessage(long socket_number, NetworkMessage* message) con
     // G.Out(pdGendoc,"exit  SocketServer::checkMessage");
 }
 
-void SocketServer::close(long socket,
-                         FederationHandle& federation_referenced,
-                         FederateHandle& federate_referenced)
+void SocketServer::close(long socket, FederationHandle& federation_referenced, FederateHandle& federate_referenced)
 {
     federation_referenced = FederationHandle(0);
     federate_referenced = 0;
@@ -169,7 +167,8 @@ Socket* SocketServer::getActiveSocket(fd_set* select_fdset) const
     return NULL;
 }
 
-Socket* SocketServer::getSocketLink(FederationHandle the_federation, FederateHandle the_federate, TransportType the_type) const
+Socket*
+SocketServer::getSocketLink(FederationHandle the_federation, FederateHandle the_federate, TransportType the_type) const
 {
     // G.Out(pdGendoc,"enter SocketServer::getSocketLink");
     // It may throw FederateNotExecutionMember

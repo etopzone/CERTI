@@ -25,9 +25,9 @@
 #define _CERTI_DIMENSION_HH
 
 // CERTI headers
-#include "certi.hh"
-#include "Named.hh"
 #include "Handled.hh"
+#include "Named.hh"
+#include "certi.hh"
 
 namespace certi {
 
@@ -35,10 +35,9 @@ namespace certi {
  * Describes a dimension in a routing space.
  * @sa RoutingSpace
  */
-class Dimension : public Named, public Handled<DimensionHandle>
-{
+class Dimension : public Named, public Handled<DimensionHandle> {
 public:
-	/**
+    /**
 	 * Create a dimension object from handle.
 	 * Dimension are specified as subelement of the routing
 	 * space section of a FED file. A dimension
@@ -48,34 +47,40 @@ public:
 	 * @param[in] dimensionHandle the dimension object handle
 	 */
     Dimension(DimensionHandle dimensionHandle);
-    
+
     /**
      * Set dimension lower bound.
      * @param[in] lowerBound the lower bound 
      */
     static void setLowerBound(uint32_t lowerBound);
-    
+
     /**
      * Set dimension upper bound.
      * @param[in] upperBound the upper bound 
      */
     static void setUpperBound(uint32_t upperBound);
-    
+
     /**
      * Get dimension lower bound.
      * @return the lower bound 
      */
-    static uint32_t getLowerBound() { return axisLowerBound ; }
-    
+    static uint32_t getLowerBound()
+    {
+        return axisLowerBound;
+    }
+
     /**
      * Get dimension upper bound.
      * @return the upper bound 
      */
-    static uint32_t getUpperBound() { return axisUpperBound ; }
+    static uint32_t getUpperBound()
+    {
+        return axisUpperBound;
+    }
 
 private:
-    static uint32_t axisLowerBound ;
-    static uint32_t axisUpperBound ;
+    static uint32_t axisLowerBound;
+    static uint32_t axisUpperBound;
 };
 
 } // namespace certi

@@ -24,9 +24,9 @@
 #define CERTI_SUBSCRIBABLE_HH
 
 namespace certi {
-	class ObjectClassBroadcastList;
-	class InteractionBroadcastList;
-	class RTIRegion ;
+class ObjectClassBroadcastList;
+class InteractionBroadcastList;
+class RTIRegion;
 }
 
 // #include "certi.hh"
@@ -34,53 +34,50 @@ namespace certi {
 #include "Named.hh"
 #include <list>
 
-
 namespace certi {
 
-class Subscriber
-{
+class Subscriber {
 public:
     Subscriber(FederateHandle);
-    Subscriber(FederateHandle, const RTIRegion *);
+    Subscriber(FederateHandle, const RTIRegion*);
 
-    FederateHandle getHandle() const ;
-    const RTIRegion *getRegion() const ;
-    bool equals(FederateHandle, const RTIRegion *) const ;
-    bool match(const RTIRegion *) const ;
+    FederateHandle getHandle() const;
+    const RTIRegion* getRegion() const;
+    bool equals(FederateHandle, const RTIRegion*) const;
+    bool match(const RTIRegion*) const;
 
-    bool operator==(const Subscriber &) const ;
+    bool operator==(const Subscriber&) const;
 
 protected:
-    FederateHandle handle ;   //!< The ID of the Subscriber.
-    const RTIRegion *region ; //!< the subscription region
+    FederateHandle handle; //!< The ID of the Subscriber.
+    const RTIRegion* region; //!< the subscription region
 };
 
 /**
  * This class is a base class for "subscribable" classes.
  * That is ObjectClassAttribute and Interaction.
  */
-class CERTI_EXPORT Subscribable : public Named
-{
+class CERTI_EXPORT Subscribable : public Named {
 public:
     Subscribable(const std::string& name);
     virtual ~Subscribable();
 
-    virtual void checkFederateAccess(FederateHandle, const std::string&) const = 0 ;
-    virtual Handle getHandle() const = 0 ;
+    virtual void checkFederateAccess(FederateHandle, const std::string&) const = 0;
+    virtual Handle getHandle() const = 0;
 
-    bool isSubscribed(FederateHandle, const RTIRegion *) const ;
-    bool isSubscribed(FederateHandle) const ;
+    bool isSubscribed(FederateHandle, const RTIRegion*) const;
+    bool isSubscribed(FederateHandle) const;
 
-    void subscribe(FederateHandle, const RTIRegion *);
+    void subscribe(FederateHandle, const RTIRegion*);
 
     void unsubscribe(FederateHandle);
-    void unsubscribe(FederateHandle, const RTIRegion *);
+    void unsubscribe(FederateHandle, const RTIRegion*);
 
-    void addFederatesIfOverlap(ObjectClassBroadcastList &, const RTIRegion *, Handle) const ;
-    void addFederatesIfOverlap(InteractionBroadcastList &, const RTIRegion *) const ;
+    void addFederatesIfOverlap(ObjectClassBroadcastList&, const RTIRegion*, Handle) const;
+    void addFederatesIfOverlap(InteractionBroadcastList&, const RTIRegion*) const;
 
 private:
-    std::list<Subscriber> subscribers ;
+    std::list<Subscriber> subscribers;
 };
 
 } // namespace certi

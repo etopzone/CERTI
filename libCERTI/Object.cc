@@ -21,24 +21,21 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
 #include "Object.hh"
 #include "ObjectAttribute.hh"
 #include "RTIRegion.hh"
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-Object::Object(FederateHandle the_owner)
-    : Owner(the_owner)
+Object::Object(FederateHandle the_owner) : Owner(the_owner)
 {
 }
 
@@ -49,26 +46,24 @@ Object::~Object()
     // We should delete the pointee because it belongs to the object.
     AttributeMap::const_iterator i;
     for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {
-    	delete i->second;
+        delete i->second;
     }
 }
 
 // ----------------------------------------------------------------------------
 //! Display informations about this object (see RootObj::display).
-void
-Object::display() const
+void Object::display() const
 {
-    cout << " Instance: handle =" << handle ;
+    cout << " Instance: handle =" << handle;
 
     if (!name.empty())
-        cout << ", name=\"" << name << "\"" << endl ;
+        cout << ", name=\"" << name << "\"" << endl;
     else
-        cout << ", (No name)." << endl ;
+        cout << ", (No name)." << endl;
 }
 
 // ----------------------------------------------------------------------------
-void
-Object::addAttribute(ObjectAttribute * new_attribute)
+void Object::addAttribute(ObjectAttribute* new_attribute)
 {
     AttributeHandle attributeHandle = new_attribute->getHandle();
     if (_attributeMap.find(attributeHandle) != _attributeMap.end())
@@ -78,55 +73,49 @@ Object::addAttribute(ObjectAttribute * new_attribute)
 
 // ----------------------------------------------------------------------------
 //! getAttribute.
-ObjectAttribute *
-Object::getAttribute(AttributeHandle attributeHandle) const
+ObjectAttribute* Object::getAttribute(AttributeHandle attributeHandle) const
 {
     AttributeMap::const_iterator i = _attributeMap.find(attributeHandle);
     if (i == _attributeMap.end()) {
-        throw AttributeNotDefined(stringize() <<
-            "Object::getAttribute(AttributeHandle) Unknown attribute handle <" << attributeHandle<<">");
+        throw AttributeNotDefined(stringize() << "Object::getAttribute(AttributeHandle) Unknown attribute handle <"
+                                              << attributeHandle
+                                              << ">");
     }
     return i->second;
 }
 
 // ----------------------------------------------------------------------------
-void
-Object::setClass(ObjectClassHandle h)
+void Object::setClass(ObjectClassHandle h)
 {
-    classHandle = h ;
+    classHandle = h;
 }
 
 // ----------------------------------------------------------------------------
-void
-Object::setOwner(FederateHandle the_federate)
+void Object::setOwner(FederateHandle the_federate)
 {
-    Owner = the_federate ;
+    Owner = the_federate;
 }
 
 // ----------------------------------------------------------------------------
 //! Verify that the attribute owner is federate.
-bool
-Object::isAttributeOwnedByFederate(FederateHandle the_federate,
-                                   AttributeHandle the_attribute) const
+bool Object::isAttributeOwnedByFederate(FederateHandle the_federate, AttributeHandle the_attribute) const
 {
     return getAttribute(the_attribute)->getOwner() == the_federate;
 }
 
 // ----------------------------------------------------------------------------
 //! Unassociate attributes from this region
-void
-Object::unassociate(RTIRegion *region)
+void Object::unassociate(RTIRegion* region)
 {
     AttributeMap::const_iterator i;
     for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {
-	i->second->unassociate(region);
+        i->second->unassociate(region);
     }
 }
 
 // ----------------------------------------------------------------------------
 //! Remove references for killed federate from all attributes in object
-void
-Object::killFederate(FederateHandle the_federate)
+void Object::killFederate(FederateHandle the_federate)
 {
     AttributeMap::const_iterator i;
     for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {

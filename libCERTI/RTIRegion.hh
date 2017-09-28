@@ -31,16 +31,15 @@ namespace certi {
 
 class RoutingSpace;
 
-class CERTI_EXPORT RTIRegion : public BaseRegion
-{
+class CERTI_EXPORT RTIRegion : public BaseRegion {
 public:
-    RTIRegion(RegionHandle, const RoutingSpace &, size_t);
+    RTIRegion(RegionHandle, const RoutingSpace&, size_t);
     virtual ~RTIRegion();
 
     virtual SpaceHandle getSpaceHandle() const noexcept;
 
 protected:
-    const RoutingSpace &space ;
+    const RoutingSpace& space;
 };
 
 } // namespace certi

@@ -22,7 +22,6 @@
 // $Id: Parameter.cc,v 3.12 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
-
 #include "Parameter.hh"
 
 #include <iostream>
@@ -34,12 +33,10 @@ Parameter::Parameter(const std::string& name, ParameterHandle parameterHandle)
 {
 }
 
-void
-Parameter::display(void)
+void Parameter::display(void)
 {
-    std::cout << " Parameter " << getHandle() << ": "
-	      << (name.length() == 0 ? "(no name)" : name.c_str())
-	      << " [Level " << LevelID << "]" << std::endl ;
+    std::cout << " Parameter " << getHandle() << ": " << (name.length() == 0 ? "(no name)" : name.c_str()) << " [Level "
+              << LevelID << "]" << std::endl;
 }
 
 } // namespace certi

@@ -55,7 +55,7 @@ public:
     ObjectBroadcastLine(const FederateHandle federate, const State initial_state = notSub);
 
     FederateHandle getFederate() const;
-    
+
     State stateFor(const AttributeHandle attribute) const;
 
     void setState(const AttributeHandle attribute, const State value);

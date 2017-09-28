@@ -25,8 +25,8 @@
 #define LIBCERTI_LBTS_HH
 
 // #include "certi.hh"
-#include "Handle.hh"
 #include "FedTimeD.hh"
+#include "Handle.hh"
 
 #include <map>
 #include <vector>
@@ -36,10 +36,9 @@ namespace certi {
 /**
  * The Lower Bound on TimeStamp class.
  */
-class CERTI_EXPORT LBTS
-{
+class CERTI_EXPORT LBTS {
 public:
-    typedef std::pair<FederateHandle, FederationTime> FederateClock ;
+    typedef std::pair<FederateHandle, FederationTime> FederateClock;
 
     /**
      * LBTS constructor.
@@ -60,18 +59,27 @@ public:
     void compute();
 
     /** Return the current LBTS value */
-    FederationTime getLBTSValue() const {return _LBTS;};
+    FederationTime getLBTSValue() const
+    {
+        return _LBTS;
+    };
 
     /**
      * Check if a federate exists.
      * @return true is the corresponding federate exists.
      */
-    bool exists(FederateHandle) const ;
-    void get(std::vector<FederateClock> &) const ;
+    bool exists(FederateHandle) const;
+    void get(std::vector<FederateClock>&) const;
     void insert(FederateHandle num_fed, FederationTime the_time);
     void remove(FederateHandle num_fed);
-    void setFederate(FederateHandle handle) { MyFederateNumber = handle ; };
-    size_t size() const { return clocks.size(); };
+    void setFederate(FederateHandle handle)
+    {
+        MyFederateNumber = handle;
+    };
+    size_t size() const
+    {
+        return clocks.size();
+    };
 
     /**
      * Update the logical time of one federate.
@@ -86,24 +94,29 @@ public:
      * federate handle. I.e. was the consequence of the NULL PRIME message
      * algorithm.
      */
-    bool hasReceivedAnonymousUpdate() const {return anonymousUpdateReceived;};
+    bool hasReceivedAnonymousUpdate() const
+    {
+        return anonymousUpdateReceived;
+    };
 
     /**
      * The reception of anonymous update have been taken into account.
      */
-    void resetAnonymousUpdate() {anonymousUpdateReceived=false;};
+    void resetAnonymousUpdate()
+    {
+        anonymousUpdateReceived = false;
+    };
 
 protected:
-    FederationTime _LBTS ;
-    FederateHandle MyFederateNumber ;
-    bool           anonymousUpdateReceived;
+    FederationTime _LBTS;
+    FederateHandle MyFederateNumber;
+    bool anonymousUpdateReceived;
 
 private:
-    typedef std::map<FederateHandle, FederationTime> ClockSet ;
+    typedef std::map<FederateHandle, FederationTime> ClockSet;
 
-    ClockSet clocks ;
+    ClockSet clocks;
 };
-
 }
 
 #endif // LIBCERTI_LBTS_HH

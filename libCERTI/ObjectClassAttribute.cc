@@ -23,13 +23,13 @@
 
 #include "ObjectClassAttribute.hh"
 #include "ObjectClassBroadcastList.hh"
-#include "SecurityServer.hh"
 #include "PrettyDebug.hh"
+#include "SecurityServer.hh"
 
 #include <iostream>
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 
 namespace certi {
 
@@ -38,20 +38,20 @@ static PrettyDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 // ----------------------------------------------------------------------------
 //! Constructor : Set const attribute handle and name
 ObjectClassAttribute::ObjectClassAttribute(const std::string& name, AttributeHandle attributeHandle)
-: Subscribable(name), level(PublicLevelID), order(0), transport(0), server(0), handle(attributeHandle), space(0)
+    : Subscribable(name), level(PublicLevelID), order(0), transport(0), server(0), handle(attributeHandle), space(0)
 {
 }
 
 // ----------------------------------------------------------------------------
 //! Constructor : Copy Handle, Name, Space, Order and Transport
 ObjectClassAttribute::ObjectClassAttribute(const ObjectClassAttribute& objectClassAttribute)
-: Subscribable(objectClassAttribute.getName()),
-  level(objectClassAttribute.level),
-  order(objectClassAttribute.order),
-  transport(objectClassAttribute.transport),
-  server(objectClassAttribute.server),
-  handle(objectClassAttribute.handle),
-  space(objectClassAttribute.space)
+    : Subscribable(objectClassAttribute.getName())
+    , level(objectClassAttribute.level)
+    , order(objectClassAttribute.order)
+    , transport(objectClassAttribute.transport)
+    , server(objectClassAttribute.server)
+    , handle(objectClassAttribute.handle)
+    , space(objectClassAttribute.space)
 {
 }
 
@@ -65,21 +65,17 @@ ObjectClassAttribute::~ObjectClassAttribute()
 /*! Throw SecurityError if the Federate is not allowed to access the Object
   Class, and print an Audit message containing Reason.
  */
-void
-ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
-		const std::string& reason) const
+void ObjectClassAttribute::checkFederateAccess(FederateHandle fed, const std::string& reason) const
 {
-	if (server && !server->canFederateAccessData(fed, level)) {
-		cout << "Attribute " << handle << " : SecurityError for federate "
-				<< fed << '(' << reason << ")." << endl ;
-		throw SecurityError("Federate should not access ObjectClassAttribute.");
-	}
+    if (server && !server->canFederateAccessData(fed, level)) {
+        cout << "Attribute " << handle << " : SecurityError for federate " << fed << '(' << reason << ")." << endl;
+        throw SecurityError("Federate should not access ObjectClassAttribute.");
+    }
 }
 
 // ----------------------------------------------------------------------------
 //! Removes a publishing federate
-void
-ObjectClassAttribute::deletePublisher(FederateHandle fed)
+void ObjectClassAttribute::deletePublisher(FederateHandle fed)
 {
     PublishersList_t::iterator it = publishers.find(fed);
     if (it != publishers.end()) {
@@ -89,105 +85,87 @@ ObjectClassAttribute::deletePublisher(FederateHandle fed)
 
 // ----------------------------------------------------------------------------
 //! Displays the attribute information (handle, name and level id)
-void
-ObjectClassAttribute::display() const
+void ObjectClassAttribute::display() const
 {
-	cout << " Attribute " << handle << ':' ;
+    cout << " Attribute " << handle << ':';
 
-	if (name.length() > 0)
-		cout << '\"' << name << '\"' ;
-	else
-		cout << "(no name)" ;
+    if (name.length() > 0)
+        cout << '\"' << name << '\"';
+    else
+        cout << "(no name)";
 
-	cout << "[Level " << level << ']' << endl ;
+    cout << "[Level " << level << ']' << endl;
 }
 
 // ----------------------------------------------------------------------------
 //! returns true if federate is publishing this attribute
-bool
-ObjectClassAttribute::isPublishing(FederateHandle fed) const
+bool ObjectClassAttribute::isPublishing(FederateHandle fed) const
 {
     return (publishers.find(fed)) != publishers.end();
 }
 
 // ----------------------------------------------------------------------------
 //! publish
-void
-ObjectClassAttribute::publish(FederateHandle fed)
+void ObjectClassAttribute::publish(FederateHandle fed)
 {
     if (!isPublishing(fed)) {
         checkFederateAccess(fed, "Publish");
-        Debug(D, pdInit) << "Attribute " << handle << ": Added Federate " << fed
-                << " to publishers list." << endl ;
+        Debug(D, pdInit) << "Attribute " << handle << ": Added Federate " << fed << " to publishers list." << endl;
         publishers.insert(fed);
     }
     else {
-        Debug(D, pdError) << "Attribute " << handle
-                << ": Inconsistent publish request from Federate "
-                << fed << endl ;
+        Debug(D, pdError) << "Attribute " << handle << ": Inconsistent publish request from Federate " << fed << endl;
     }
 } /* end of publish */
 
 // ----------------------------------------------------------------------------
 //! unpublish
-void
-ObjectClassAttribute::unpublish(FederateHandle fed)
+void ObjectClassAttribute::unpublish(FederateHandle fed)
 {
     if (isPublishing(fed)) {
-        Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed
-                << " from publishers list." << endl ;
+        Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed << " from publishers list." << endl;
         deletePublisher(fed);
     }
     else {
-        Debug(D, pdError) << "Attribute " << handle
-        << ": Inconsistent publish request from Federate "
-        << fed << endl ;
+        Debug(D, pdError) << "Attribute " << handle << ": Inconsistent publish request from Federate " << fed << endl;
     }
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandle
-ObjectClassAttribute::getHandle() const
+AttributeHandle ObjectClassAttribute::getHandle() const
 {
-	return handle ;
+    return handle;
 }
 
 // ----------------------------------------------------------------------------
-void
-ObjectClassAttribute::setSpace(SpaceHandle h)
+void ObjectClassAttribute::setSpace(SpaceHandle h)
 {
-	space = h ;
+    space = h;
 }
 
 // ----------------------------------------------------------------------------
-SpaceHandle
-ObjectClassAttribute::getSpace() const
+SpaceHandle ObjectClassAttribute::getSpace() const
 {
-	return space ;
+    return space;
 }
-
 
 // ----------------------------------------------------------------------------
 //! Add all attribute's subscribers to the broadcast list
-void
-ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
-		const RTIRegion *region)
+void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList* ocblist, const RTIRegion* region)
 {
-	switch(ocblist->getMsg()->getMessageType()) {
+    switch (ocblist->getMsg()->getMessageType()) {
+    case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
+        addFederatesIfOverlap(*ocblist, region, handle);
+    } break;
+    case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+        PublishersList_t::iterator i;
+        for (i = publishers.begin(); i != publishers.end(); ++i) {
+            ocblist->addFederate(*i, handle);
+        }
+    } break;
 
-        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
-		addFederatesIfOverlap(*ocblist, region, handle);
-	}
-	break ;
-        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-		PublishersList_t::iterator i ;
-		for (i = publishers.begin(); i != publishers.end(); ++i) {
-			ocblist->addFederate(*i, handle);
-		}
-	} break ;
-
-	default: ; // nothing done
-	}
+    default:; // nothing done
+    }
 }
 
 } // namespace

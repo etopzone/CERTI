@@ -21,16 +21,14 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "BaseRegion.hh"
 
-using std::vector ;
+using std::vector;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
-BaseRegion::BaseRegion(RegionHandle h)
-    : Handled<RegionHandle>(h)
+BaseRegion::BaseRegion(RegionHandle h) : Handled<RegionHandle>(h)
 {
 }
 
@@ -40,17 +38,13 @@ BaseRegion::~BaseRegion()
 }
 
 // ----------------------------------------------------------------------------
-uint32_t
-BaseRegion::getNumberOfExtents() const
-    throw ()
+uint32_t BaseRegion::getNumberOfExtents() const throw()
 {
     return extents.size();
 }
 
 // ----------------------------------------------------------------------------
-uint32_t
-BaseRegion::getRangeLowerBound(ExtentIndex index,
-			       DimensionHandle dimension) const
+uint32_t BaseRegion::getRangeLowerBound(ExtentIndex index, DimensionHandle dimension) const
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -61,9 +55,7 @@ BaseRegion::getRangeLowerBound(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-uint32_t
-BaseRegion::getRangeUpperBound(ExtentIndex index,
-			       DimensionHandle dimension) const
+uint32_t BaseRegion::getRangeUpperBound(ExtentIndex index, DimensionHandle dimension) const
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -74,10 +66,7 @@ BaseRegion::getRangeUpperBound(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-void
-BaseRegion::setRangeLowerBound(ExtentIndex index,
-			       DimensionHandle dimension,
-			       uint32_t val)
+void BaseRegion::setRangeLowerBound(ExtentIndex index, DimensionHandle dimension, uint32_t val)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -88,10 +77,7 @@ BaseRegion::setRangeLowerBound(ExtentIndex index,
 }
 
 // ----------------------------------------------------------------------------
-void
-BaseRegion::setRangeUpperBound(ExtentIndex index,
-			       DimensionHandle dimension,
-			       uint32_t val)
+void BaseRegion::setRangeUpperBound(ExtentIndex index, DimensionHandle dimension, uint32_t val)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -105,47 +91,43 @@ BaseRegion::setRangeUpperBound(ExtentIndex index,
 /** Get the region's extents
     \return The extents, as a vector
  */
-const vector<Extent> &
-BaseRegion::getExtents() const
+const vector<Extent>& BaseRegion::getExtents() const
 {
-    return extents ;
+    return extents;
 }
 
 // ----------------------------------------------------------------------------
-void
-BaseRegion::setExtents(const std::vector<Extent> &e)
+void BaseRegion::setExtents(const std::vector<Extent>& e)
 {
-    extents = e ;
+    extents = e;
 }
 
 // ----------------------------------------------------------------------------
 // Replace extents
-void
-BaseRegion::replaceExtents(const std::vector<Extent> &e)
+void BaseRegion::replaceExtents(const std::vector<Extent>& e)
 {
     if (e.size() != extents.size())
-	throw InvalidExtents("Different number of extents");
+        throw InvalidExtents("Different number of extents");
 
-    extents = e ;
+    extents = e;
 }
 
 // ----------------------------------------------------------------------------
 /** Check if regions overlap
  */
-bool
-BaseRegion::overlaps(const BaseRegion &region) const
+bool BaseRegion::overlaps(const BaseRegion& region) const
 {
     if (getSpaceHandle() != region.getSpaceHandle()) {
-	return false ;
+        return false;
     }
 
-    for (unsigned int i = 0 ; i < getNumberOfExtents() ; ++i) {
-	for (unsigned int j = 0 ; j < region.getNumberOfExtents(); ++j) {
-	    if (extents[i].overlaps(region.extents[j]))
-		return true ;
-	}
+    for (unsigned int i = 0; i < getNumberOfExtents(); ++i) {
+        for (unsigned int j = 0; j < region.getNumberOfExtents(); ++j) {
+            if (extents[i].overlaps(region.extents[j]))
+                return true;
+        }
     }
-    return false ;
+    return false;
 }
 
 } // namespace certi

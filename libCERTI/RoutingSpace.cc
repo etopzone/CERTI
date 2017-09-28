@@ -22,94 +22,87 @@
 // $Id: RoutingSpace.cc,v 3.16 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
-
 #include "RoutingSpace.hh"
 #include "helper.hh"
 
-#include <iostream>
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
 
-using std::vector ;
-using std::cout ;
-using std::endl ;
+using std::vector;
+using std::cout;
+using std::endl;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 
-RoutingSpace::RoutingSpace() { }
+RoutingSpace::RoutingSpace()
+{
+}
 
 // ----------------------------------------------------------------------------
 
-RoutingSpace::~RoutingSpace() { }
+RoutingSpace::~RoutingSpace()
+{
+}
 
 // ----------------------------------------------------------------------------
-void
-RoutingSpace::addDimension(const Dimension &d)
+void RoutingSpace::addDimension(const Dimension& d)
 {
     dimensions.push_back(d);
     assert(dimensions.back().getHandle() == dimensions.size());
 }
 
 // ----------------------------------------------------------------------------
-void
-RoutingSpace::display() const
+void RoutingSpace::display() const
 {
-    cout << "RoutingSpace \"" << getName() << "\"" << endl ;
+    cout << "RoutingSpace \"" << getName() << "\"" << endl;
 }
 
 // ----------------------------------------------------------------------------
-DimensionHandle
-RoutingSpace::getDimensionHandle(const std::string& dimension_name) const
+DimensionHandle RoutingSpace::getDimensionHandle(const std::string& dimension_name) const
 {
-    vector<Dimension>::const_iterator it = std::find_if(
-	dimensions.begin(),
-	dimensions.end(),
-	NameComparator<Dimension>(dimension_name));
+    vector<Dimension>::const_iterator it
+        = std::find_if(dimensions.begin(), dimensions.end(), NameComparator<Dimension>(dimension_name));
 
     if (it == dimensions.end())
-	throw NameNotFound("");
+        throw NameNotFound("");
     else
-	return it->getHandle();
+        return it->getHandle();
 }
 
 // ----------------------------------------------------------------------------
-const std::string&
-RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
+const std::string& RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
 {
-    vector<Dimension>::const_iterator it = std::find_if(
-	dimensions.begin(),
-	dimensions.end(),
-	HandleComparator<Dimension>(dimension_handle));
+    vector<Dimension>::const_iterator it
+        = std::find_if(dimensions.begin(), dimensions.end(), HandleComparator<Dimension>(dimension_handle));
 
     if (it == dimensions.end())
-	throw DimensionNotDefined("");
+        throw DimensionNotDefined("");
     else
-	return it->getName();
+        return it->getName();
 }
 
 // ----------------------------------------------------------------------------
-size_t
-RoutingSpace::size() const
+size_t RoutingSpace::size() const
 {
     return dimensions.size();
 }
 
 // ----------------------------------------------------------------------------
-Extent
-RoutingSpace::createExtent() const
+Extent RoutingSpace::createExtent() const
 {
     Extent extent(size());
 
-    vector<Dimension>::const_iterator it ;
+    vector<Dimension>::const_iterator it;
     for (it = dimensions.begin(); it != dimensions.end(); ++it) {
-	Handle h = it->getHandle();
-	extent.setRangeLowerBound(h, it->getLowerBound());
-	extent.setRangeUpperBound(h, it->getUpperBound());
+        Handle h = it->getHandle();
+        extent.setRangeLowerBound(h, it->getLowerBound());
+        extent.setRangeUpperBound(h, it->getUpperBound());
     }
 
-    return extent ;
+    return extent;
 }
 
 } // namespace certi

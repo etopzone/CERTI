@@ -31,29 +31,41 @@ namespace certi {
 /** HandleComparator is a comparison functor for objects having a getHandle()
     method. 
  */
-template<class T>
-class HandleComparator
-{
+template <class T>
+class HandleComparator {
 public:
-    HandleComparator(Handle h) : handle(h) { };
-    bool operator()(const T *op) const { return op->getHandle() == handle ; };
-    bool operator()(const T &op) const { return op.getHandle() == handle ; };
+    HandleComparator(Handle h) : handle(h){};
+    bool operator()(const T* op) const
+    {
+        return op->getHandle() == handle;
+    };
+    bool operator()(const T& op) const
+    {
+        return op.getHandle() == handle;
+    };
+
 private:
-    Handle handle ;
+    Handle handle;
 };
 
 /** NameComparator is a comparison functor for objects having a getName()
     method. 
  */
-template<class T>
-class NameComparator
-{
+template <class T>
+class NameComparator {
 public:
-    NameComparator(const std::string& h) : name(h) { };
-    bool operator()(const T *op) const { return name == op->getName(); };
-    bool operator()(const T &op) const { return name == op.getName(); };
+    NameComparator(const std::string& h) : name(h){};
+    bool operator()(const T* op) const
+    {
+        return name == op->getName();
+    };
+    bool operator()(const T& op) const
+    {
+        return name == op.getName();
+    };
+
 private:
-    std::string name ;
+    std::string name;
 };
 
 } // certi

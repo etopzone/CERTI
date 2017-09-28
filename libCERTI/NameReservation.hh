@@ -24,30 +24,27 @@
 #ifndef LIBCERTI_NAME_RESERVATION_HH
 #define LIBCERTI_NAME_RESERVATION_HH
 
-#include <map>
-#include "certi.hh"
-#include "Named.hh"
 #include "Handled.hh"
+#include "Named.hh"
+#include "certi.hh"
+#include <map>
 
 namespace certi {
 
 class NameReservation;
 
-typedef std::map<std::string, NameReservation *> NameReservationSet;
+typedef std::map<std::string, NameReservation*> NameReservationSet;
 
-class CERTI_EXPORT NameReservation : public Named, public Handled<FederateHandle>
-{
+class CERTI_EXPORT NameReservation : public Named, public Handled<FederateHandle> {
 public:
-	NameReservation(FederateHandle the_owner, std::string the_name)
-		: Named(the_name)
-		, Handled<FederateHandle>(the_owner)
-	{
-	}
+    NameReservation(FederateHandle the_owner, std::string the_name)
+        : Named(the_name), Handled<FederateHandle>(the_owner)
+    {
+    }
 
     virtual ~NameReservation()
-	{
-	}
-
+    {
+    }
 };
 
 } // namespace certi

@@ -23,56 +23,56 @@
 #include <iostream>
 
 // Specifics includes
-#include "certi.hh"
 #include "Exception.hh"
-#include "libhla.hh"
 #include "SHM.hh"
 #include "Semaphore.hh"
+#include "certi.hh"
+#include "libhla.hh"
 
 class CERTI_EXPORT RingBuffer {
-public :
+public:
     // Typedef Side
-    typedef enum{BUFFER_SC,BUFFER_CS} BUFFER_SIDE_t ;
+    typedef enum { BUFFER_SC, BUFFER_CS } BUFFER_SIDE_t;
 
     // Constructor
     RingBuffer(const std::string& RingBuffer_Name,
                const BUFFER_SIDE_t& RingBuffer_Side,
                const int RingBuffer_Size,
-               const std::string& SHM_Sem_Type ) // SHM_Sem_Type = Posix,SysV ou Win32
-               ;
+               const std::string& SHM_Sem_Type) // SHM_Sem_Type = Posix,SysV ou Win32
+        ;
     // Destructor
-    ~RingBuffer () ;
+    ~RingBuffer();
 
-    void Attach() ;
+    void Attach();
 
-    void Send(void *Buffer, size_t Size)      // To send Data on a memory segment
-              ;
+    void Send(void* Buffer, size_t Size) // To send Data on a memory segment
+        ;
 
-    void Receive(void *Buffer, size_t Size)   // To receive Data on a memory segment
-              ;
+    void Receive(void* Buffer, size_t Size) // To receive Data on a memory segment
+        ;
 
-    void Close() ; // To Close the two SHMs
+    void Close(); // To Close the two SHMs
 
-protected :
-    std::string _Name ;
-    BUFFER_SIDE_t _Side ;
-    size_t _Size ;
+protected:
+    std::string _Name;
+    BUFFER_SIDE_t _Side;
+    size_t _Size;
 
     /***** Server -->>> Customer ******/
-    libhla::ipc::SHM *_Shm_SC ;
-    libhla::ipc::SHM *_Pw_Pr_SC ;
+    libhla::ipc::SHM* _Shm_SC;
+    libhla::ipc::SHM* _Pw_Pr_SC;
     // _Count_SC, _Write_SC, _Read_SC
     // int _Tab_SC[3] ;
-    int* _Tab_SC ;
-    libhla::ipc::Semaphore *_Sem_SC ;
+    int* _Tab_SC;
+    libhla::ipc::Semaphore* _Sem_SC;
 
     /***** Customer -->>> Server ******/
-    libhla::ipc::SHM *_Shm_CS ;
-    libhla::ipc::SHM *_Pw_Pr_CS ;
+    libhla::ipc::SHM* _Shm_CS;
+    libhla::ipc::SHM* _Pw_Pr_CS;
     // _Count_CS, _Write_CS, _Read_CS
     // int _Tab_CS[3] ;
-    int* _Tab_CS ;
-    libhla::ipc::Semaphore *_Sem_CS ;
+    int* _Tab_CS;
+    libhla::ipc::Semaphore* _Sem_CS;
 
 }; // End of --> class SocketSHM
 

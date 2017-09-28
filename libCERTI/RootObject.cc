@@ -71,24 +71,24 @@ void RootObject::display() const
 {
     std::cout << std::endl << "Root Object Tree BEGINS:" << std::endl;
     std::cout << "------------------------" << std::endl;
-    
+
     if (NULL != ObjectClasses) {
         std::cout << *ObjectClasses;
     }
     else {
         std::cout << "ObjectClasses is NULL!!" << std::endl;
     }
-    
+
     if (NULL != Interactions) {
         std::cout << *Interactions;
     }
     else {
         std::cout << "Is is NULL!!" << std::endl;
     }
-    
+
     if (!spaces.empty()) {
         std::cout << "+ Routing Spaces :" << std::endl;
-        for(const auto& space: spaces) {
+        for (const auto& space : spaces) {
             space.display();
         }
     }
@@ -221,7 +221,8 @@ void RootObject::registerObjectInstance(FederateHandle the_federate,
                                         ObjectHandle the_object,
                                         const std::string& the_object_name)
 {
-    Debug(D, pdRegister) << "Federate " << the_federate << " attempts to register instance " << the_object << " in class " << the_class << std::endl;
+    Debug(D, pdRegister) << "Federate " << the_federate << " attempts to register instance " << the_object
+                         << " in class " << the_class << std::endl;
 
     auto it = reservedNames->find(the_object_name);
     if (it != reservedNames->end()) {
@@ -303,8 +304,7 @@ Interaction* RootObject::getInteractionClass(InteractionClassHandle the_class)
     return Interactions->getObjectFromHandle(the_class);
 }
 
-FederateHandle RootObject::requestObjectOwner(FederateHandle theFederateHandle,
-                                              ObjectHandle theObject)
+FederateHandle RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject)
 {
     Debug(G, pdGendoc) << "into RootObject::requestObjectOwner" << std::endl;
 

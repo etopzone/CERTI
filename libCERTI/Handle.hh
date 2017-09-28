@@ -29,24 +29,24 @@
 #include "StrongType.hh"
 
 namespace certi {
-    
-    typedef uint32_t Handle;
-    
-        typedef Handle   FederateHandle;
+
+typedef uint32_t Handle;
+
+typedef Handle FederateHandle;
 // // // // //     using FederateHandle = NamedType<Handle, struct FederateHandleParameter>;
 //         typedef Handle   FederationHandle;
-    using FederationHandle = NamedType<Handle, struct FederationHandleTypeParameter, Comparable, Printable, Hashable, Invalidable>;
-    
-    typedef Handle   ObjectClassHandle;
-    typedef Handle   InteractionClassHandle;
-    typedef Handle   AttributeHandle;
-    typedef Handle   ParameterHandle;
-    typedef Handle   ObjectHandle;
-    typedef Handle   DimensionHandle;
-    typedef Handle   SpaceHandle;
-    typedef Handle   EventRetractionHandle;
-    typedef Handle   RegionHandle;
-    
+using FederationHandle
+    = NamedType<Handle, struct FederationHandleTypeParameter, Comparable, Printable, Hashable, Invalidable>;
+
+typedef Handle ObjectClassHandle;
+typedef Handle InteractionClassHandle;
+typedef Handle AttributeHandle;
+typedef Handle ParameterHandle;
+typedef Handle ObjectHandle;
+typedef Handle DimensionHandle;
+typedef Handle SpaceHandle;
+typedef Handle EventRetractionHandle;
+typedef Handle RegionHandle;
 }
 
 #endif // _CERTI_HANDLE_HH

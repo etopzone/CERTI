@@ -29,11 +29,9 @@
 
 namespace certi {
 
-class GSSAPIHandler
-{
+class GSSAPIHandler {
 public:
-
-    typedef enum GSSRole {GSS_Client, GSS_Server};
+    typedef enum GSSRole { GSS_Client, GSS_Server };
 
     // --------------------------------
     // -- Constructor and Destructor --
@@ -44,59 +42,58 @@ public:
     // -----------
     // -- Names --
     // -----------
-    void setLocalName(char *PrincipalName);
-    void setRemoteName(char *PrincipalName);
-    char *getRemoteName();
+    void setLocalName(char* PrincipalName);
+    void setRemoteName(char* PrincipalName);
+    char* getRemoteName();
 
     // ------------------
     // -- Init Session --
     // ------------------
-    void initSecContext(SocketTCP *Socket);
-    void acceptSecContext(SocketTCP *Socket);
+    void initSecContext(SocketTCP* Socket);
+    void acceptSecContext(SocketTCP* Socket);
 
     // ------------------------------
     // -- Message Exchange Methods --
     // ------------------------------
-    void getMessage(SocketTCP *Socket, gss_buffer_t IncomingBuffer);
+    void getMessage(SocketTCP* Socket, gss_buffer_t IncomingBuffer);
     void releaseBuffer(gss_buffer_t IncomingBuffer);
-    void sendMessage(SocketTCP *Socket, gss_buffer_t OutcomingBuffer);
+    void sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer);
 
 private:
-
     // ---------------------
     // -- Private Methods --
     // ---------------------
     void acquireCred(int initOrAccept);
-    void detectError(char *contextString = NULL);
+    void detectError(char* contextString = NULL);
 
-    void getToken(SocketTCP *socket, gss_buffer_desc &buffer);
-    void sendToken(SocketTCP *socket, gss_buffer_desc buffer);
+    void getToken(SocketTCP* socket, gss_buffer_desc& buffer);
+    void sendToken(SocketTCP* socket, gss_buffer_desc buffer);
 
     // ------------------------
     // -- Private Attributes --
     // ------------------------
 
-    Boolean InitSecContext_Started ;
+    Boolean InitSecContext_Started;
 
     // Principal Names
-    gss_name_t LocalName ; // Internal form
-    gss_name_t RemoteName ; // Internal form
+    gss_name_t LocalName; // Internal form
+    gss_name_t RemoteName; // Internal form
 
     // Return Codes
-    OM_uint32 Code ;
-    OM_uint32 Minor ;
+    OM_uint32 Code;
+    OM_uint32 Minor;
 
     // Local credential
-    gss_cred_id_t Credential ;
+    gss_cred_id_t Credential;
 
     // Local context(Only initiator(client) may delete the context)
-    gss_ctx_id_t Context ;
+    gss_ctx_id_t Context;
 
     // Actual Mechanism
-    gss_OID MechType ;
+    gss_OID MechType;
 
     // Role
-    Boolean IsClient ;
+    Boolean IsClient;
 };
 }
 

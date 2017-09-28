@@ -21,16 +21,14 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
 #include "ObjectAttribute.hh"
-#include "RTIRegion.hh"
 #include "PrettyDebug.hh"
+#include "RTIRegion.hh"
 
 #include <iostream>
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 
 namespace certi {
 
@@ -40,9 +38,8 @@ static PrettyDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 //! Constructor that sets handle and attribute owner.
 ObjectAttribute::ObjectAttribute(AttributeHandle new_handle,
                                  FederateHandle new_owner,
-                                 ObjectClassAttribute *associated_attribute)
-    : handle(new_handle), owner(new_owner), divesting(false), space(0),
-      source(associated_attribute), region(0)
+                                 ObjectClassAttribute* associated_attribute)
+    : handle(new_handle), owner(new_owner), divesting(false), space(0), source(associated_attribute), region(0)
 {
 }
 
@@ -54,73 +51,64 @@ ObjectAttribute::~ObjectAttribute()
 
 // ----------------------------------------------------------------------------
 //! Displays the object attribute information.
-void
-ObjectAttribute::display() const
+void ObjectAttribute::display() const
 {
     if (handle != 0)
-        cout << "Attribute " << handle << " ; Owner " << owner << endl ;
+        cout << "Attribute " << handle << " ; Owner " << owner << endl;
 }
 
 // ----------------------------------------------------------------------------
 //! Returns the owner
-FederateHandle
-ObjectAttribute::getOwner() const
+FederateHandle ObjectAttribute::getOwner() const
 {
-    return owner ;
+    return owner;
 }
 
 // ----------------------------------------------------------------------------
 //! Change the federate owner.
-void
-ObjectAttribute::setOwner(FederateHandle newOwner)
+void ObjectAttribute::setOwner(FederateHandle newOwner)
 {
-    owner = newOwner ;
+    owner = newOwner;
 }
 
 // ----------------------------------------------------------------------------
 //! Returns attribute divesting state.
-bool
-ObjectAttribute::beingDivested() const
+bool ObjectAttribute::beingDivested() const
 {
-    return divesting ;
+    return divesting;
 }
 
 // ----------------------------------------------------------------------------
 //! Put object attribute in divesting state.
-void
-ObjectAttribute::setDivesting(bool divestingState)
+void ObjectAttribute::setDivesting(bool divestingState)
 {
-    divesting = divestingState ;
+    divesting = divestingState;
 }
 
 // ----------------------------------------------------------------------------
 //! Return the candidate position in list, null otherwise.
-bool
-ObjectAttribute::isCandidate(FederateHandle candidate) const
+bool ObjectAttribute::isCandidate(FederateHandle candidate) const
 {
     return ownerCandidates.find(candidate) != ownerCandidates.end();
 }
 
 // ----------------------------------------------------------------------------
 //! Add a new candidate to list.
-void
-ObjectAttribute::addCandidate(FederateHandle candidate)
+void ObjectAttribute::addCandidate(FederateHandle candidate)
 {
     ownerCandidates.insert(candidate);
 }
 
 // ----------------------------------------------------------------------------
 // Removes a candidate from list.
-void
-ObjectAttribute::removeCandidate(FederateHandle candidate)
+void ObjectAttribute::removeCandidate(FederateHandle candidate)
 {
     ownerCandidates.erase(candidate);
 }
 
 // ----------------------------------------------------------------------------
 // Returns the federate candidate at position in list.
-FederateHandle
-ObjectAttribute::getFirstCandidate() const
+FederateHandle ObjectAttribute::getFirstCandidate() const
 {
     if (ownerCandidates.empty())
         throw RTIinternalError("");
@@ -129,58 +117,51 @@ ObjectAttribute::getFirstCandidate() const
 }
 
 // ----------------------------------------------------------------------------
-bool
-ObjectAttribute::hasCandidates() const
+bool ObjectAttribute::hasCandidates() const
 {
     return !ownerCandidates.empty();
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandle
-ObjectAttribute::getHandle() const
+AttributeHandle ObjectAttribute::getHandle() const
 {
-    return handle ;
+    return handle;
 }
 
 // ----------------------------------------------------------------------------
-void
-ObjectAttribute::setHandle(AttributeHandle h)
+void ObjectAttribute::setHandle(AttributeHandle h)
 {
-    handle = h ;
+    handle = h;
 }
 
 // ----------------------------------------------------------------------------
-SpaceHandle
-ObjectAttribute::getSpace() const
+SpaceHandle ObjectAttribute::getSpace() const
 {
-    return space ;
+    return space;
 }
 
 // ----------------------------------------------------------------------------
-void
-ObjectAttribute::setSpace(SpaceHandle h)
+void ObjectAttribute::setSpace(SpaceHandle h)
 {
-    space = h ;
+    space = h;
 }
 
 // ----------------------------------------------------------------------------
 /* Associate this attribute with a DDM region
  */
-void
-ObjectAttribute::associate(RTIRegion *r)
+void ObjectAttribute::associate(RTIRegion* r)
 {
-    region = r ;
+    region = r;
 }
 
 // ----------------------------------------------------------------------------
 /* Unassociate attribute from the provided region. If the attribute is
    associated with a different region, nothing is changed.
  */
-void
-ObjectAttribute::unassociate(RTIRegion *r)
+void ObjectAttribute::unassociate(RTIRegion* r)
 {
     if (region == r)
-	region = 0 ;
+        region = 0;
 }
 
 } //namespace certi

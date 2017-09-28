@@ -36,21 +36,20 @@ namespace certi {
  * @sa Attribute
  * @sa ObjectClass
  */
-template<typename T>
-class Handled
-{
+template <typename T>
+class Handled {
 public:
-	/**
+    /**
 	 * The handle type from generic class template argument.
 	 */
-    typedef T handle_type ;
+    typedef T handle_type;
 
     /** 
      * Default constructor. 
      * Handle value is initialized with zero
      */
     Handled();
-    
+
     /**
      * Create an handled.
      * @param[in] hValue initial handle value
@@ -67,32 +66,32 @@ public:
      * Get handle
      * @return Handle value
      */
-    handle_type getHandle() const ;
+    handle_type getHandle() const;
 
 protected:
-    handle_type handle ;
+    handle_type handle;
 };
 
-template<typename T>
-Handled<T>::Handled()
-    : handle(0) { }
-
-template<typename T>
-Handled<T>::Handled(T hValue)
-    : handle(hValue) { }
-
-template<typename T>
-void
-Handled<T>::setHandle(T hValue)
+template <typename T>
+Handled<T>::Handled() : handle(0)
 {
-    handle = hValue ;
 }
 
-template<class T>
-T
-Handled<T>::getHandle() const
+template <typename T>
+Handled<T>::Handled(T hValue) : handle(hValue)
 {
-    return handle ;
+}
+
+template <typename T>
+void Handled<T>::setHandle(T hValue)
+{
+    handle = hValue;
+}
+
+template <class T>
+T Handled<T>::getHandle() const
+{
+    return handle;
 }
 
 } // certi

@@ -5,18 +5,14 @@
 #include "SocketSHM.hh"
 
 class CERTI_EXPORT SocketSHMPosix : public SocketSHM {
-private:   
-
-public :
+private:
+public:
     // Constructor
-    SocketSHMPosix (const std::string& Socket_Name, 
-                    const SHM_SIDE_t& Socket_Side,
-                    const int Socket_Size ); 
+    SocketSHMPosix(const std::string& Socket_Name, const SHM_SIDE_t& Socket_Side, const int Socket_Size);
     // Destructor
-    virtual ~SocketSHMPosix ();
-     
+    virtual ~SocketSHMPosix();
+
     void Open();
-    
 
 }; // End of --> class SocketSHM
 

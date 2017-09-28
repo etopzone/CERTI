@@ -20,50 +20,49 @@
 #ifndef CERTI_SOCKET_MC_HH
 #define CERTI_SOCKET_MC_HH
 
-#include "Socket.hh"
-#include "NetworkMessage.hh"
 #include "MessageBuffer.hh"
+#include "NetworkMessage.hh"
+#include "Socket.hh"
 
 namespace certi {
 
-class SocketMC : public Socket
-{
+class SocketMC : public Socket {
 public:
-	int _socket_mc ;
-	bool _est_init_mc ;
+    int _socket_mc;
+    bool _est_init_mc;
 
-	SocketMC();
-	virtual ~SocketMC();
+    SocketMC();
+    virtual ~SocketMC();
 
-	void CreerSocketMC(char *addr, unsigned long port);
-	void CreerSocketMC(unsigned long addr, unsigned long port);
+    void CreerSocketMC(char* addr, unsigned long port);
+    void CreerSocketMC(unsigned long addr, unsigned long port);
 
-	virtual void send(const unsigned char *, size_t);
-	virtual void receive(void *Buffer, unsigned long Size);
+    virtual void send(const unsigned char*, size_t);
+    virtual void receive(void* Buffer, unsigned long Size);
 
-                SOCKET returnSocket();
+    SOCKET returnSocket();
 
-	virtual unsigned long returnAdress() const ;
-	virtual void close();
+    virtual unsigned long returnAdress() const;
+    virtual void close();
 
-	void sendMC(NetworkMessage *msg);
-	char *receiveMC(NetworkMessage *msg);
-	
+    void sendMC(NetworkMessage* msg);
+    char* receiveMC(NetworkMessage* msg);
+
 private:
-	struct sockaddr_in _sin ;
-	struct sockaddr_in _sin_e ;
+    struct sockaddr_in _sin;
+    struct sockaddr_in _sin_e;
 #ifdef _WIN32
-		int _sinlen;
+    int _sinlen;
 #else
-		socklen_t _sinlen;
+    socklen_t _sinlen;
 #endif
-		SOCKET _socket_emetteur;
-	int _sinlen_e ;
+    SOCKET _socket_emetteur;
+    int _sinlen_e;
 
-	int timeoutMC(int, int);
+    int timeoutMC(int, int);
 
-	int _num_msg ;
-	MessageBuffer   MCMessageBuffer;
+    int _num_msg;
+    MessageBuffer MCMessageBuffer;
 };
 
 } // namespace certi

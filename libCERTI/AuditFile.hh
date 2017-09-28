@@ -48,7 +48,6 @@ namespace certi {
  */
 class CERTI_EXPORT AuditFile {
 public:
-    
     /** AuditFile constructor to write to file
      * 
      * Audit file is used to store information about actions taken by the RTIG
@@ -98,7 +97,7 @@ public:
     AuditFile& operator<<(const long n);
     AuditFile& operator<<(const unsigned long n);
     AuditFile& operator<<(const double n);
-    
+
     template <typename T>
     AuditFile& operator<<(const Printable<T>& handle)
     {

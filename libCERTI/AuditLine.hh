@@ -41,12 +41,9 @@ public:
     using Type = NamedType<unsigned short, struct AuditLineTypeParameter>;
     using Level = NamedType<unsigned short, struct AuditLineLevelParameter>;
     using Status = NamedType<Exception::Type, struct AuditLineStatusParameter>;
-    
+
     AuditLine() = default;
-    AuditLine(const Type type,
-              const Level level,
-              const Status status,
-              const std::string& reason);
+    AuditLine(const Type type, const Level level, const Status status, const std::string& reason);
 
     /** Write a line to the audit file
      * 
@@ -61,33 +58,32 @@ public:
      * - comment : detailed comment.
      */
     void write(std::ostream&);
-    
+
     /// Add str at the end of comment.
-    void addComment(const std::string& str); 
-    
-    void end(const Status status,
-             const std::string& reason = "");
-    
+    void addComment(const std::string& str);
+
+    void end(const Status status, const std::string& reason = "");
+
     Level getLevel() const;
     void setLevel(const Level l);
-    
+
     Status getStatus() const;
-    
+
     bool started() const;
-    
+
     void setFederation(Handle h);
     void setFederate(FederateHandle h);
 
 private:
-    Handle my_federation {0};
-    FederateHandle my_federate {0};
-    Type my_type {0};
-    Level my_level {0};
-    Status my_status {Exception::Type::NO_EXCEPTION};
-    bool my_is_modified {false};
+    Handle my_federation{0};
+    FederateHandle my_federate{0};
+    Type my_type{0};
+    Level my_level{0};
+    Status my_status{Exception::Type::NO_EXCEPTION};
+    bool my_is_modified{false};
 
-    time_t my_date {std::time(nullptr)}; /// date, automatically set at construction time.
-    std::string my_comment {}; /// comment internally managed.
+    time_t my_date{std::time(nullptr)}; /// date, automatically set at construction time.
+    std::string my_comment{}; /// comment internally managed.
 };
 }
 

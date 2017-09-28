@@ -28,12 +28,12 @@
 namespace certi {
 class Object;
 class SecurityServer;
-}  // namespace certi
+} // namespace certi
 
 // CERTI headers
-#include "certi.hh"
 #include "ObjectClass.hh"
 #include "TreeNamedAndHandledSet.hh"
+#include "certi.hh"
 
 // System headers
 #include <string>
@@ -43,32 +43,28 @@ namespace certi {
 /**
  * This class represents a set of object classes.
  */
-class CERTI_EXPORT ObjectClassSet : public TreeNamedAndHandledSet<ObjectClass>
-{
-
+class CERTI_EXPORT ObjectClassSet : public TreeNamedAndHandledSet<ObjectClass> {
 public:
-	ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet=false);
-	~ObjectClassSet();
+    ObjectClassSet(SecurityServer* theSecurityServer, bool isRootClassSet = false);
+    ~ObjectClassSet();
 
-	/**
+    /**
 	 * Add an object class to the set.
 	 * @param[in] theClass the object class to be added
 	 * @param[in] parentClass the parent class (may be NULL)
 	 */
-	void addClass(ObjectClass *theClass,ObjectClass *parentClass);
+    void addClass(ObjectClass* theClass, ObjectClass* parentClass);
 
-	// RTI Support Services
-	AttributeHandle getAttributeHandle(const std::string& the_name,
-			ObjectClassHandle the_class) const;
+    // RTI Support Services
+    AttributeHandle getAttributeHandle(const std::string& the_name, ObjectClassHandle the_class) const;
 
-	const std::string& getAttributeName(AttributeHandle the_handle,
-			ObjectClassHandle the_class) const;
+    const std::string& getAttributeName(AttributeHandle the_handle, ObjectClassHandle the_class) const;
 
-	ObjectClassHandle getObjectClassHandle(const std::string&) const;
+    ObjectClassHandle getObjectClassHandle(const std::string&) const;
 
-	const std::string& getObjectClassName(ObjectClassHandle the_handle) const;
+    const std::string& getObjectClassName(ObjectClassHandle the_handle) const;
 
-	void killFederate(FederateHandle theFederate) noexcept;
+    void killFederate(FederateHandle theFederate) noexcept;
 
     /**
      * Register specified federate as a publisher of the specified attribute list
@@ -78,10 +74,10 @@ public:
      * @param[in] theAttributeList the list of attribute of theClassHandle
      * @param[in] PubOrUnpub true when publishing, false when unpublishing
      */
-     void publish(FederateHandle theFederateHandle,
-                  ObjectClassHandle theClassHandle,
-                  const std::vector <AttributeHandle> &theAttributeList,
-                  bool PubOrUnpub);
+    void publish(FederateHandle theFederateHandle,
+                 ObjectClassHandle theClassHandle,
+                 const std::vector<AttributeHandle>& theAttributeList,
+                 bool PubOrUnpub);
 
     /**
      * Subscribes a federate to a set of attributes with a region.
@@ -91,73 +87,63 @@ public:
      * @param attributes List of attributes to be subscribed
      * @param region Subscription region (NULL for default)
      */
-    void subscribe(FederateHandle, ObjectClassHandle,
-                   const std::vector <AttributeHandle>& attributes,
-                   const RTIRegion * = NULL);
+    void subscribe(FederateHandle,
+                   ObjectClassHandle,
+                   const std::vector<AttributeHandle>& attributes,
+                   const RTIRegion* = NULL);
 
-	// Object Instance Management
-	void deleteObject(FederateHandle theFederateHandle,
-			Object* object,
-			FederationTime theTime,
-			const std::string& theTag);
+    // Object Instance Management
+    void
+    deleteObject(FederateHandle theFederateHandle, Object* object, FederationTime theTime, const std::string& theTag);
 
-	void deleteObject(FederateHandle theFederateHandle,
-			Object* object,
-			const std::string& theTag);
+    void deleteObject(FederateHandle theFederateHandle, Object* object, const std::string& theTag);
 
-	void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle);
+    void registerObjectInstance(FederateHandle, Object*, ObjectClassHandle);
 
-	void updateAttributeValues(FederateHandle theFederateHandle,
-                        Object* object,
-			const std::vector <AttributeHandle> &theAttribArray,
-			const std::vector <AttributeValue_t> &theValueArray,
-			const FederationTime& theTime,
-			const std::string& theUserTag);
+    void updateAttributeValues(FederateHandle theFederateHandle,
+                               Object* object,
+                               const std::vector<AttributeHandle>& theAttribArray,
+                               const std::vector<AttributeValue_t>& theValueArray,
+                               const FederationTime& theTime,
+                               const std::string& theUserTag);
 
-	void updateAttributeValues(FederateHandle theFederateHandle,
-                        Object* object,
-			const std::vector <AttributeHandle> &theAttribArray,
-			const std::vector <AttributeValue_t> &theValueArray,
-			const std::string& theUserTag);
+    void updateAttributeValues(FederateHandle theFederateHandle,
+                               Object* object,
+                               const std::vector<AttributeHandle>& theAttribArray,
+                               const std::vector<AttributeValue_t>& theValueArray,
+                               const std::string& theUserTag);
 
+    // Ownership Management
+    void negotiatedAttributeOwnershipDivestiture(FederateHandle,
+                                                 Object* object,
+                                                 const std::vector<AttributeHandle>&,
+                                                 const std::string& theTag);
 
-	// Ownership Management
-	void negotiatedAttributeOwnershipDivestiture(FederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle> &,
-			const std::string& theTag);
+    void attributeOwnershipAcquisitionIfAvailable(FederateHandle, Object* object, const std::vector<AttributeHandle>&);
 
+    void
+    unconditionalAttributeOwnershipDivestiture(FederateHandle, Object* object, const std::vector<AttributeHandle>&);
 
-	void attributeOwnershipAcquisitionIfAvailable(FederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle>&);
+    void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
+                                       Object* object,
+                                       const std::vector<AttributeHandle>& theAttributeList,
+                                       const std::string& theTag);
 
-	void unconditionalAttributeOwnershipDivestiture(FederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle>&);
+    AttributeHandleSet*
+    attributeOwnershipReleaseResponse(FederateHandle, Object* object, const std::vector<AttributeHandle>&);
 
-	void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList,
-			const std::string& theTag);
-
-	AttributeHandleSet *attributeOwnershipReleaseResponse(FederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle> &);
-
-	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
-			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList);
+    void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
+                                             Object* object,
+                                             const std::vector<AttributeHandle>& theAttributeList);
 
 private:
-
-	/**
+    /**
 	 * This object will help to find the TCPLink associated with a Federate.
 	 * This reference is passed to all new ObjectClass.
 	 */
-	SecurityServer *server ;
+    SecurityServer* server;
 
-	ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const;
+    ObjectClass* getInstanceClass(ObjectHandle theObjectHandle) const;
 };
 
 } // namespace certi

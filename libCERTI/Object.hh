@@ -27,55 +27,59 @@
 
 // forward declaration
 namespace certi {
-	class ObjectAttribute;
-	class RTIRegion;
+class ObjectAttribute;
+class RTIRegion;
 }
 
-#include "certi.hh"
-#include "Named.hh"
-#include "Handled.hh"
 #include "Exception.hh"
+#include "Handled.hh"
+#include "Named.hh"
+#include "certi.hh"
 
 #include <map>
 
 namespace certi {
 
-class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle>
-{
+class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle> {
 public:
     Object(FederateHandle the_owner);
     virtual ~Object();
 
-    void display() const ;
+    void display() const;
 
-    void addAttribute(ObjectAttribute * new_attribute);
-    ObjectAttribute *getAttribute(AttributeHandle the_attribute) const;
+    void addAttribute(ObjectAttribute* new_attribute);
+    ObjectAttribute* getAttribute(AttributeHandle the_attribute) const;
 
     bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const;
 
-    ObjectClassHandle getClass() const { return classHandle; }
+    ObjectClassHandle getClass() const
+    {
+        return classHandle;
+    }
     void setClass(ObjectClassHandle h);
 
-    FederateHandle getOwner() const { return Owner; }
+    FederateHandle getOwner() const
+    {
+        return Owner;
+    }
     void setOwner(FederateHandle);
 
-    void unassociate(RTIRegion *);
-    
+    void unassociate(RTIRegion*);
+
     void killFederate(FederateHandle);
 
 private:
     /*! Owner Handle
       BUG: Should be handled at the attribute level, not instance level.
     */
-    FederateHandle Owner ;
+    FederateHandle Owner;
 
-    typedef std::map<AttributeHandle,ObjectAttribute*> AttributeMap;
+    typedef std::map<AttributeHandle, ObjectAttribute*> AttributeMap;
     //! Attribute list from object class instance.
     AttributeMap _attributeMap;
 
-    ObjectClassHandle classHandle ; //! Object Class
+    ObjectClassHandle classHandle; //! Object Class
 };
-
 }
 
 #endif // _CERTI_OBJECT_HH

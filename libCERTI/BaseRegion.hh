@@ -31,10 +31,9 @@
 
 namespace certi {
 
-typedef Handle RegionHandle ;
+typedef Handle RegionHandle;
 
-class CERTI_EXPORT BaseRegion : public Handled<RegionHandle>
-{
+class CERTI_EXPORT BaseRegion : public Handled<RegionHandle> {
 public:
     BaseRegion(RegionHandle);
     virtual ~BaseRegion();

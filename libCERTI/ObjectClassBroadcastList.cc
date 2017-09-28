@@ -84,8 +84,7 @@ bool ObjectBroadcastLine::isWaitingAll(const std::vector<AttributeHandle>& attri
     return true;
 }
 
-ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message,
-                                                   AttributeHandle maxAttHandle)
+ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttHandle)
     : msg{message}
     , msgRO{nullptr}
     , msgDO{nullptr}
@@ -104,19 +103,19 @@ ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message,
                                                             * FIXMEthis is ugly and will be reworked
                                                             */
     switch (msg->getMessageType()) {
-        case NetworkMessage::Type::REMOVE_OBJECT:
+    case NetworkMessage::Type::REMOVE_OBJECT:
         msgRO = static_cast<NM_Remove_Object*>(msg);
         break;
-        case NetworkMessage::Type::DISCOVER_OBJECT:
+    case NetworkMessage::Type::DISCOVER_OBJECT:
         msgDO = static_cast<NM_Discover_Object*>(msg);
         break;
-        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
+    case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
         msgRAV = static_cast<NM_Reflect_Attribute_Values*>(msg);
         break;
-        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+    case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         msgRAOA = static_cast<NM_Request_Attribute_Ownership_Assumption*>(msg);
         break;
-        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         msgAODN = static_cast<NM_Attribute_Ownership_Divestiture_Notification*>(msg);
         break;
     default:
@@ -211,13 +210,13 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer* server)
 {
     Debug(G, pdGendoc) << "enter ObjectClassBroadcastList::sendPendingMessage" << std::endl;
     switch (msg->getMessageType()) {
-        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
-        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+    case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
+    case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         sendPendingRAVMessage(server);
         break;
 
-        case NetworkMessage::Type::DISCOVER_OBJECT:
-        case NetworkMessage::Type::REMOVE_OBJECT:
+    case NetworkMessage::Type::DISCOVER_OBJECT:
+    case NetworkMessage::Type::REMOVE_OBJECT:
         sendPendingDOMessage(server);
         break;
 
@@ -233,13 +232,13 @@ void ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass)
                                                             * FIXMEthis is ugly and will be reworked
                                                             * */
     switch (msg->getMessageType()) {
-        case NetworkMessage::Type::REMOVE_OBJECT:
+    case NetworkMessage::Type::REMOVE_OBJECT:
         msgRO->setObjectClass(objectClass);
         break;
-        case NetworkMessage::Type::DISCOVER_OBJECT:
+    case NetworkMessage::Type::DISCOVER_OBJECT:
         msgDO->setObjectClass(objectClass);
         break;
-        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
+    case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
         // FIXME nothing TODO RAV does not embed object class?
         //msgRAV->setObjectClass(objectClass);
         break;

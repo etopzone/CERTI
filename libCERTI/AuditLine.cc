@@ -51,8 +51,9 @@ void AuditLine::end(const Status status, const std::string& reason)
 
 void AuditLine::write(std::ostream& audit_file)
 {
-    audit_file << my_date << '\t' << my_federation << '\t' << my_federate << '\t' << my_type.get() << '\t' << my_level.get()
-               << '\t' << static_cast<unsigned int>(my_status.get()) << '\t' << my_comment << std::endl;
+    audit_file << my_date << '\t' << my_federation << '\t' << my_federate << '\t' << my_type.get() << '\t'
+               << my_level.get() << '\t' << static_cast<unsigned int>(my_status.get()) << '\t' << my_comment
+               << std::endl;
 
     audit_file.flush();
 }

@@ -29,30 +29,32 @@
 #endif
 
 #include "certi.hh"
+#include <fstream>
 #include <iosfwd>
 #include <string>
-#include <fstream>
 
 /** Do not use the pdUnused and pdLast Levels!!! Do not also specify
  *  any value for the elements, because order is used and missing
  *  value would cause crash.  pdLast must always be the last in the
  *  enum.  Key(see pdDebugKeys) */
-enum pdDebugLevel  {pdUnused, /**< Do not use! : */
-                    pdAnswer, /**< Server answer A */
-                    pdCom, /**< Communication C */
-                    pdDebug, /**< Debug D */
-                    pdError, /**< Error E */
-                    pdGendoc, /**< Gendoc G */
-                    pdInit, /**< Initialization I */
-                    pdMessage, /**< Message Type M */
-                    pdProtocol, /**< Protocol P */
-                    pdRegister, /**< Object Registration R */
-                    pdRequest, /**< Client Request S */
-                    pdTerm, /**< Terminate T */
-                    pdWarning, /**< Warning W */
-                    pdExcept, /**< Exceptions X */
-                    pdTrace, /**< Trace Z */
-                    pdLast}; /**< Do not use \0 */
+enum pdDebugLevel {
+    pdUnused, /**< Do not use! : */
+    pdAnswer, /**< Server answer A */
+    pdCom, /**< Communication C */
+    pdDebug, /**< Debug D */
+    pdError, /**< Error E */
+    pdGendoc, /**< Gendoc G */
+    pdInit, /**< Initialization I */
+    pdMessage, /**< Message Type M */
+    pdProtocol, /**< Protocol P */
+    pdRegister, /**< Object Registration R */
+    pdRequest, /**< Client Request S */
+    pdTerm, /**< Terminate T */
+    pdWarning, /**< Warning W */
+    pdExcept, /**< Exceptions X */
+    pdTrace, /**< Trace Z */
+    pdLast
+}; /**< Do not use \0 */
 
 // The following keys are used in the environment variable to enable
 // debug level.  For example, if ENVVAR=D:C, the pdDebug and the pdCom
@@ -77,8 +79,9 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 // The next thing is that it can be used with *everything* that could be output to
 // an std::ostream without the need to maintain an extra debug stream type.
 // In the current case this make certi compile on win64 :)
-#define Debug(pd, level) \
-if (std::ostream* os = pd.getStream(level)) *os
+#define Debug(pd, level)                                                                                               \
+    if (std::ostream* os = pd.getStream(level))                                                                        \
+    *os
 
 //---------------------------------------------------------------------------
 class CERTI_EXPORT PrettyDebug {
@@ -103,15 +106,22 @@ public:
     }
 
     static void setFederateName(const std::string& inName)
-    { _federateName = inName; }
+    {
+        _federateName = inName;
+    }
     static void setFederateName(const char* inName)
-    { if (inName) _federateName = inName; }
+    {
+        if (inName)
+            _federateName = inName;
+    }
 
 #ifdef NDEBUG
-    void Out(pdDebugLevel /*level*/, const char */*format*/, ...) {}
+    void Out(pdDebugLevel /*level*/, const char* /*format*/, ...)
+    {
+    }
 #else
-    void Out(pdDebugLevel level, const char *format, ...);
-    void Mes(pdDebugLevel level, const char type, const short testMess, const char *context);
+    void Out(pdDebugLevel level, const char* format, ...);
+    void Mes(pdDebugLevel level, const char type, const short testMess, const char* context);
 #endif
 
 private:
@@ -131,4 +141,3 @@ private:
 #endif // PRETTYDEBUG_HH
 
 // $Id: PrettyDebug.hh,v 4.11 2013/09/24 14:27:57 erk Exp $
-

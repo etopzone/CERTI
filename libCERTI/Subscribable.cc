@@ -20,64 +20,56 @@
 // $Id: Subscribable.cc,v 3.11 2011/09/02 21:42:23 erk Exp $
 // ----------------------------------------------------------------------------
 
-
-#include "ObjectClassBroadcastList.hh"
 #include "InteractionBroadcastList.hh"
+#include "ObjectClassBroadcastList.hh"
+#include "PrettyDebug.hh"
 #include "RTIRegion.hh"
 #include "Subscribable.hh"
 #include "helper.hh"
-#include "PrettyDebug.hh"
 
 #include <algorithm>
 
 namespace {
 
 PrettyDebug D("SUBSCRIBABLE", __FILE__);
-
 }
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 // Constructor
-Subscriber::Subscriber(FederateHandle h)
-    : handle(h), region(0)
+Subscriber::Subscriber(FederateHandle h) : handle(h), region(0)
 {
 }
 
 // ----------------------------------------------------------------------------
 // Constructor
-Subscriber::Subscriber(FederateHandle h, const RTIRegion *r)
-    : handle(h), region(r)
+Subscriber::Subscriber(FederateHandle h, const RTIRegion* r) : handle(h), region(r)
 {
 }
 
 // ----------------------------------------------------------------------------
-FederateHandle
-Subscriber::getHandle() const
+FederateHandle Subscriber::getHandle() const
 {
-    return handle ;
+    return handle;
 }
 
 // ----------------------------------------------------------------------------
-const RTIRegion *
-Subscriber::getRegion() const
+const RTIRegion* Subscriber::getRegion() const
 {
-    return region ;
+    return region;
 }
 
 // ----------------------------------------------------------------------------
-bool
-Subscriber::operator==(const Subscriber &sub) const
+bool Subscriber::operator==(const Subscriber& sub) const
 {
     return (handle == sub.getHandle()) && (region == sub.getRegion());
 }
 
 // ----------------------------------------------------------------------------
-bool
-Subscriber::equals(FederateHandle fed, const RTIRegion *r) const
+bool Subscriber::equals(FederateHandle fed, const RTIRegion* r) const
 {
-    return handle == fed && region == r ;
+    return handle == fed && region == r;
 }
 
 // ----------------------------------------------------------------------------
@@ -85,18 +77,16 @@ Subscriber::equals(FederateHandle fed, const RTIRegion *r) const
     parameter. If one of them is the default region (null) the result
     is 'true'
  */
-bool
-Subscriber::match(const RTIRegion *r) const
+bool Subscriber::match(const RTIRegion* r) const
 {
-    Debug(D, pdTrace) << "Match test: " << (region ? region->getHandle() : 0) << " vs "
-	       << (r ? r->getHandle() : 0) << std::endl ;
+    Debug(D, pdTrace) << "Match test: " << (region ? region->getHandle() : 0) << " vs " << (r ? r->getHandle() : 0)
+                      << std::endl;
     return (region == 0) || (r == 0) || region->overlaps(*r);
 }
 
 // ----------------------------------------------------------------------------
 // Constructor
-Subscribable::Subscribable(const std::string& name)
-    : Named(name)
+Subscribable::Subscribable(const std::string& name) : Named(name)
 {
 }
 
@@ -104,19 +94,16 @@ Subscribable::Subscribable(const std::string& name)
 Subscribable::~Subscribable()
 {
     if (!subscribers.empty())
-	Debug(D, pdError) << "Subscribers list not empty at termination." << std::endl ;
+        Debug(D, pdError) << "Subscribers list not empty at termination." << std::endl;
 }
 
 // ----------------------------------------------------------------------------
 /** Removes a subscribed federate. All subscription regions are concerned.
     @param fed Federate to unsubscribe
  */
-void
-Subscribable::unsubscribe(FederateHandle fed)
+void Subscribable::unsubscribe(FederateHandle fed)
 {
-    std::remove_if(subscribers.begin(),
-                   subscribers.end(),
-                   HandleComparator<Subscriber>(fed));
+    std::remove_if(subscribers.begin(), subscribers.end(), HandleComparator<Subscriber>(fed));
 }
 
 // ----------------------------------------------------------------------------
@@ -124,8 +111,7 @@ Subscribable::unsubscribe(FederateHandle fed)
     @param fed Federate to unsubscribe
     @param region Region for unsubscription (other subscriptions may remain)
  */
-void
-Subscribable::unsubscribe(FederateHandle fed, const RTIRegion *region)
+void Subscribable::unsubscribe(FederateHandle fed, const RTIRegion* region)
 {
     subscribers.remove(Subscriber(fed, region));
 }
@@ -136,13 +122,9 @@ Subscribable::unsubscribe(FederateHandle fed, const RTIRegion *region)
     @param region region
     @return true if the federate/region pair is subscriber
  */
-bool
-Subscribable::isSubscribed(FederateHandle fed,
-			   const RTIRegion *region) const
+bool Subscribable::isSubscribed(FederateHandle fed, const RTIRegion* region) const
 {
-    return std::find(subscribers.begin(),
-		     subscribers.end(),
-		     Subscriber(fed, region)) != subscribers.end();
+    return std::find(subscribers.begin(), subscribers.end(), Subscriber(fed, region)) != subscribers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -150,12 +132,9 @@ Subscribable::isSubscribed(FederateHandle fed,
     @param fed federate 
     @return true if the federate is subscribed
  */
-bool
-Subscribable::isSubscribed(FederateHandle fed) const
+bool Subscribable::isSubscribed(FederateHandle fed) const
 {
-    return std::find_if(subscribers.begin(),
-			subscribers.end(),
-			HandleComparator<Subscriber>(fed)) != subscribers.end();
+    return std::find_if(subscribers.begin(), subscribers.end(), HandleComparator<Subscriber>(fed)) != subscribers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -163,16 +142,14 @@ Subscribable::isSubscribed(FederateHandle fed) const
     @param fed Federate to subscribe
     @param region Region to use for subscription (0 for default region)
  */
-void
-Subscribable::subscribe(FederateHandle fed, const RTIRegion *region)
+void Subscribable::subscribe(FederateHandle fed, const RTIRegion* region)
 {
     if (!isSubscribed(fed, region)) {
         checkFederateAccess(fed, "Subscribe");
         subscribers.push_back(Subscriber(fed, region));
     }
     else {
-        Debug(D, pdError) << "Inconsistency in subscribe request from federate "
-                          << fed << std::endl ;
+        Debug(D, pdError) << "Inconsistency in subscribe request from federate " << fed << std::endl;
     }
 }
 
@@ -182,13 +159,12 @@ Subscribable::subscribe(FederateHandle fed, const RTIRegion *region)
     @param region Region to check for overlap
     @param handle Handle of this object (Subscribable subclass)
  */
-void
-Subscribable::addFederatesIfOverlap(ObjectClassBroadcastList &lst, const RTIRegion *region, Handle handle) const
+void Subscribable::addFederatesIfOverlap(ObjectClassBroadcastList& lst, const RTIRegion* region, Handle handle) const
 {
     std::list<Subscriber>::const_iterator it = subscribers.begin();
     for (; it != subscribers.end(); ++it) {
-	if (it->match(region))
-	    lst.addFederate(it->getHandle(), handle);
+        if (it->match(region))
+            lst.addFederate(it->getHandle(), handle);
     }
 }
 
@@ -197,13 +173,12 @@ Subscribable::addFederatesIfOverlap(ObjectClassBroadcastList &lst, const RTIRegi
     @param lst Broadcast list where federates/handles should be added
     @param region Region to check for overlap
  */
-void
-Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegion *region) const
+void Subscribable::addFederatesIfOverlap(InteractionBroadcastList& lst, const RTIRegion* region) const
 {
     std::list<Subscriber>::const_iterator it = subscribers.begin();
     for (; it != subscribers.end(); ++it) {
-	if (it->match(region))
-	    lst.addFederate(it->getHandle());
+        if (it->match(region))
+            lst.addFederate(it->getHandle());
     }
 }
 

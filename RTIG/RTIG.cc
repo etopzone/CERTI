@@ -1,5 +1,3 @@
-#include <PrettyDebug.hh>
-#include <PrettyDebug.hh>
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
@@ -201,7 +199,8 @@ void RTIG::signalHandler(int sig)
 
     for (auto& kv : the_timings) {
         auto message = NM_Factory::create(static_cast<NetworkMessage::Type>(kv.first));
-        std::cerr << static_cast<std::underlying_type<NetworkMessage::Type>::type>(kv.first) << " - " << message->getMessageName() << std::endl;
+        std::cerr << static_cast<std::underlying_type<NetworkMessage::Type>::type>(kv.first) << " - "
+                  << message->getMessageName() << std::endl;
         delete message;
 
         auto& values = kv.second;
@@ -284,7 +283,10 @@ Socket* RTIG::processIncomingMessage(Socket* link)
     auto federate = msg.message()->getFederate();
     auto messageType = msg.message()->getMessageType();
 
-    my_auditServer.startLine(msg.message()->getFederation(), federate, AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
+    my_auditServer.startLine(
+        msg.message()->getFederation(),
+        federate,
+        AuditLine::Type(static_cast<std::underlying_type<NetworkMessage::Type>::type>(messageType)));
 
     try {
         // This may throw a security error.
