@@ -62,7 +62,6 @@ RoutingSpace::display() const
 // ----------------------------------------------------------------------------
 DimensionHandle
 RoutingSpace::getDimensionHandle(const std::string& dimension_name) const
-    throw (NameNotFound)
 {
     vector<Dimension>::const_iterator it = std::find_if(
 	dimensions.begin(),
@@ -78,7 +77,6 @@ RoutingSpace::getDimensionHandle(const std::string& dimension_name) const
 // ----------------------------------------------------------------------------
 const std::string&
 RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
-    throw (DimensionNotDefined)
 {
     vector<Dimension>::const_iterator it = std::find_if(
 	dimensions.begin(),

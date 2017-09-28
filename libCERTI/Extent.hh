@@ -55,16 +55,16 @@ public:
     explicit Extent(const size_t n);
 
     /** Get range lower bound */
-    uint32_t getRangeLowerBound(DimensionHandle) const throw(ArrayIndexOutOfBounds);
+    uint32_t getRangeLowerBound(DimensionHandle) const;
 
     /** Get range upper bound */
-    uint32_t getRangeUpperBound(DimensionHandle) const throw(ArrayIndexOutOfBounds);
+    uint32_t getRangeUpperBound(DimensionHandle) const;
 
     /** Set range upper bound */
-    void setRangeUpperBound(DimensionHandle, uint32_t) throw(ArrayIndexOutOfBounds);
+    void setRangeUpperBound(DimensionHandle, uint32_t);
 
     /** Set range lower bound */
-    void setRangeLowerBound(DimensionHandle, uint32_t) throw(ArrayIndexOutOfBounds);
+    void setRangeLowerBound(DimensionHandle, uint32_t);
 
     /** Check whether both extents overlap */
     bool overlaps(const Extent&) const;

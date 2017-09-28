@@ -9,7 +9,7 @@ SocketSHM ::~SocketSHM (){}
 // ************************************************
 // Method : SocketSHM::Connect()
 // ************************************************
-void SocketSHM::Connect() throw (certi::SocketNotConnected) {
+void SocketSHM::Connect() {
 
 #ifdef DEBUG
 std::cout << "Try to Connect..." << std::endl ;
@@ -57,7 +57,7 @@ else{
 // ************************************************
 // Method : SocketSHM::Send(...)
 // ************************************************
-void SocketSHM::Send(void *Buffer) throw (certi::MessageNotSent) {
+void SocketSHM::Send(void *Buffer) {
 
 #ifdef DEBUG
 std::cout << "Try to Send..." << std::endl ;
@@ -115,7 +115,7 @@ std::cout << "Send Complete !!" << std::endl ;
 // ************************************************
 // Method : SocketSHMS::Receive(...)
 // ************************************************
-void SocketSHM::Receive(void *Buffer) throw (certi::MessageNotReceived) {
+void SocketSHM::Receive(void *Buffer) {
 
 #ifdef DEBUG
 std::cout << "Try to Receive..." << std::endl ;
@@ -173,7 +173,7 @@ std::cout << "Receive complete!!!" << std::endl ;
 // ************************************************
 // Method : SocketSHM::Close()
 // ************************************************
-void SocketSHM::Close() throw(certi::SocketNotClosed) {
+void SocketSHM::Close() {
 
 #ifdef DEBUG
 std::cout << "Try to Close..." << std::endl ;

@@ -63,7 +63,7 @@ public:
     bool isCandidate(FederateHandle candidate) const ;
     void addCandidate(FederateHandle candidate);
     void removeCandidate(FederateHandle candidate);
-    FederateHandle getFirstCandidate() const throw (RTIinternalError);
+    FederateHandle getFirstCandidate() const;
     bool hasCandidates() const ;
 
     AttributeHandle getHandle() const ;

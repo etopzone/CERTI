@@ -14,8 +14,7 @@ public :
     // Constructor
     SocketSHMWin32 (const std::string& Socket_Name,
                    const SocketSHM::SHM_SIDE_t& Socket_Side,
-                   const int Socket_size)
-                   throw (certi::SocketSHMNotCreated);
+                   const int Socket_size);
     // Destructor
     virtual ~SocketSHMWin32 ();
 

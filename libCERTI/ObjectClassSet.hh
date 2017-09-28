@@ -55,25 +55,20 @@ public:
 	 * @param[in] theClass the object class to be added
 	 * @param[in] parentClass the parent class (may be NULL)
 	 */
-	void addClass(ObjectClass *theClass,ObjectClass *parentClass) throw (RTIinternalError);
+	void addClass(ObjectClass *theClass,ObjectClass *parentClass);
 
 	// RTI Support Services
 	AttributeHandle getAttributeHandle(const std::string& the_name,
-			ObjectClassHandle the_class) const
-			throw (NameNotFound, ObjectClassNotDefined, RTIinternalError);
+			ObjectClassHandle the_class) const;
 
 	const std::string& getAttributeName(AttributeHandle the_handle,
-			ObjectClassHandle the_class) const
-			throw (AttributeNotDefined, ObjectClassNotDefined, RTIinternalError);
+			ObjectClassHandle the_class) const;
 
-	ObjectClassHandle getObjectClassHandle(const std::string&) const
-	throw (NameNotFound);
+	ObjectClassHandle getObjectClassHandle(const std::string&) const;
 
-	const std::string& getObjectClassName(ObjectClassHandle the_handle) const
-	throw (ObjectClassNotDefined);
+	const std::string& getObjectClassName(ObjectClassHandle the_handle) const;
 
-	void killFederate(FederateHandle theFederate)
-	throw ();
+	void killFederate(FederateHandle theFederate) noexcept;
 
     /**
      * Register specified federate as a publisher of the specified attribute list
@@ -86,9 +81,7 @@ public:
      void publish(FederateHandle theFederateHandle,
                   ObjectClassHandle theClassHandle,
                   const std::vector <AttributeHandle> &theAttributeList,
-                  bool PubOrUnpub)
-     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
-             SecurityError);
+                  bool PubOrUnpub);
 
     /**
      * Subscribes a federate to a set of attributes with a region.
@@ -100,84 +93,61 @@ public:
      */
     void subscribe(FederateHandle, ObjectClassHandle,
                    const std::vector <AttributeHandle>& attributes,
-                   const RTIRegion * = NULL)
-    throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError, SecurityError);
+                   const RTIRegion * = NULL);
 
 	// Object Instance Management
 	void deleteObject(FederateHandle theFederateHandle,
 			Object* object,
 			FederationTime theTime,
-			const std::string& theTag)
-	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+			const std::string& theTag);
 
 	void deleteObject(FederateHandle theFederateHandle,
 			Object* object,
-			const std::string& theTag)
-	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+			const std::string& theTag);
 
-	void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
-	throw (InvalidObjectHandle, ObjectClassNotDefined,
-			ObjectClassNotPublished, ObjectAlreadyRegistered,
-			RTIinternalError);
+	void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle);
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
                         Object* object,
 			const std::vector <AttributeHandle> &theAttribArray,
 			const std::vector <AttributeValue_t> &theValueArray,
 			const FederationTime& theTime,
-			const std::string& theUserTag)
-	throw (AttributeNotDefined, AttributeNotOwned,
-			RTIinternalError, InvalidObjectHandle);
+			const std::string& theUserTag);
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
                         Object* object,
 			const std::vector <AttributeHandle> &theAttribArray,
 			const std::vector <AttributeValue_t> &theValueArray,
-			const std::string& theUserTag)
-	throw (AttributeNotDefined, AttributeNotOwned,
-			RTIinternalError, InvalidObjectHandle);
+			const std::string& theUserTag);
 
 
 	// Ownership Management
 	void negotiatedAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
 			const std::vector <AttributeHandle> &,
-			const std::string& theTag)
-	throw (AttributeNotDefined, AttributeNotOwned,
-			AttributeAlreadyBeingDivested, RTIinternalError);
+			const std::string& theTag);
 
 
 	void attributeOwnershipAcquisitionIfAvailable(FederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle>&)
-	throw (ObjectClassNotPublished, AttributeNotDefined,
-			AttributeNotPublished, FederateOwnsAttributes,
-			AttributeAlreadyBeingAcquired, RTIinternalError);
+			const std::vector <AttributeHandle>&);
 
 	void unconditionalAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle>&)
-	throw (AttributeNotDefined, AttributeNotOwned,
-			RTIinternalError);
+			const std::vector <AttributeHandle>&);
 
 	void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
 			const std::vector <AttributeHandle> &theAttributeList,
-			const std::string& theTag)
-	throw (ObjectClassNotPublished, AttributeNotDefined,
-			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
+			const std::string& theTag);
 
 	AttributeHandleSet *attributeOwnershipReleaseResponse(FederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &)
-	throw (AttributeNotDefined, AttributeNotOwned,
-			FederateWasNotAskedToReleaseAttribute, RTIinternalError);
+			const std::vector <AttributeHandle> &);
 
 	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList)
-	throw (AttributeNotDefined, AttributeAlreadyOwned,
-			AttributeAcquisitionWasNotRequested, RTIinternalError);
+			const std::vector <AttributeHandle> &theAttributeList);
 
 private:
 
@@ -187,8 +157,7 @@ private:
 	 */
 	SecurityServer *server ;
 
-	ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const
-	throw (ObjectNotKnown);
+	ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const;
 };
 
 } // namespace certi

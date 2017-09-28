@@ -30,12 +30,11 @@ public :
     SocketHTTPProxy();
     virtual ~SocketHTTPProxy();
 
-    virtual void createConnection(const char *server_name, unsigned int port)
-        throw (NetworkError);
+    virtual void createConnection(const char *server_name, unsigned int port);
 
 protected:
     int sendHTTPConnect(const char* addr, in_port_t port);
-    size_t receiveLine(char *Buffer, size_t maxSize) throw (NetworkError, NetworkSignal);
+    size_t receiveLine(char *Buffer, size_t maxSize);
 };
 
 } // namespace certi

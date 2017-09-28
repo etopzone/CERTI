@@ -2137,8 +2137,8 @@ std::ostream& operator<<(std::ostream& os, const New_NetworkMessage& msg);
 
 class CERTI_EXPORT NM_Factory {
     public:
-        static NetworkMessage* create(NM_Type type) throw (NetworkError ,NetworkSignal); 
-        static NetworkMessage* receive(NMStreamType stream) throw (NetworkError ,NetworkSignal); 
+        static NetworkMessage* create(NM_Type type); 
+        static NetworkMessage* receive(NMStreamType stream); 
     protected:
     private:
 };

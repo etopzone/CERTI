@@ -245,14 +245,14 @@ public:
 	 * @param[in] socket the socket that should be used to send the message
 	 * @param[in] msgBuffer the buffer containing the serialized message
 	 */
-	void send(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	void send(SocketUN* socket, MessageBuffer& msgBuffer);
 
 	/**
 	 * Receive a serialized message from a socket.
 	 * @param[in] socket the socket used to received the message from
 	 * @param[out] msgBuffer the buffer were the read message will be written
 	 */
-	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	void receive(SocketUN* socket, MessageBuffer& msgBuffer);
 
     void setException(const Exception::Type, const std::string& the_reason = "");
     Exception::Type getExceptionType() const { return exception ; };

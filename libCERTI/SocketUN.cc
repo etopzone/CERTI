@@ -218,7 +218,6 @@ delete pD ;
 */
 void
 SocketUN::send(const unsigned char *buffer, size_t size)
-    throw (NetworkError, NetworkSignal)
 {
 long sent = 0 ;
 unsigned long total_sent = 0 ;
@@ -275,7 +274,7 @@ SentBytesCount += total_sent ;
 
 // ----------------------------------------------------------------------------
 //! error.
-void SocketUN::error(const char *msg) throw (NetworkError)
+void SocketUN::error(const char *msg)
 {
     throw NetworkError(stringize() <<
         "SocketUN::error <" << strerror(errno) << "> msg = <" << msg <<">");
@@ -305,7 +304,6 @@ SocketUN::returnSocket()
 // ----------------------------------------------------------------------------
 void
 SocketUN::receive(const unsigned char *buffer, size_t Size)
-    throw (NetworkError, NetworkSignal)
 {
 // G.Out(pdGendoc,"enter SocketUN::receive");
 

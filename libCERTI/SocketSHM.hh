@@ -22,15 +22,12 @@ public :
     // Destructor
     virtual ~SocketSHM () ;
 
-    virtual void Connect() throw (certi::SocketNotConnected) ;
+    virtual void Connect() ;
 
-    virtual void Send(void *Buffer)
-                      throw (certi::MessageNotSent) ; // To send Data on a memory segment
-    virtual void Receive(void *Buffer)
-                      throw (certi::MessageNotReceived) ; // To receive Data on a memory segment
+    virtual void Send(void *Buffer); // To send Data on a memory segment
+    virtual void Receive(void *Buffer); // To receive Data on a memory segment
 
-    virtual void Close()
-                throw(certi::SocketNotClosed) ; // To Close the two SHMs
+    virtual void Close(); // To Close the two SHMs
 
 protected :
     std::string _Name ;

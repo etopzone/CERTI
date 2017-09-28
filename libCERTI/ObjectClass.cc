@@ -241,7 +241,6 @@ ObjectClass::sendToOwners(CDiffusion& diffusionList,
 void
 ObjectClass::checkFederateAccess(FederateHandle the_federate,
                                  const std::string& reason)
-    throw (SecurityError)
 {
     D.Out(pdInit, "Beginning of CheckFederateAccess for the federate %d",
           the_federate);
@@ -301,9 +300,6 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
                             Object* object,
                             const FederationTime& theTime,
                             const std::string& the_tag)
-    throw (DeletePrivilegeNotHeld,
-           ObjectNotKnown,
-           RTIinternalError)
 {
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
@@ -362,9 +358,6 @@ ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
                             Object* object,
                             const std::string& the_tag)
-    throw (DeletePrivilegeNotHeld,
-           ObjectNotKnown,
-           RTIinternalError)
 {
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
@@ -443,7 +436,6 @@ void ObjectClass::display() const
 //! getAttributeHandle.
 AttributeHandle
 ObjectClass::getAttributeHandle(const std::string& the_name) const
-    throw (NameNotFound, RTIinternalError)
 {
     G.Out(pdGendoc,"enter ObjectClass::getAttributeHandle");
 
@@ -464,8 +456,6 @@ ObjectClass::getAttributeHandle(const std::string& the_name) const
 //! getAttributeName.
 const std::string&
 ObjectClass::getAttributeName(AttributeHandle the_handle) const
-    throw (AttributeNotDefined,
-           RTIinternalError)
 {
     return getAttribute(the_handle)->getName();
 }
@@ -477,7 +467,6 @@ ObjectClass::getAttributeName(AttributeHandle the_handle) const
  */
 ObjectClassAttribute *
 ObjectClass::getAttribute(AttributeHandle the_handle) const
-    throw (AttributeNotDefined)
 {
     HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.find(the_handle);
     if (i != _handleClassAttributeMap.end()) {
@@ -543,8 +532,7 @@ ObjectClass::isInstanceInClass(ObjectHandle objectHandle)
 // ----------------------------------------------------------------------------
 //! killFederate.
 ObjectClassBroadcastList *
-ObjectClass::killFederate(FederateHandle the_federate)
-    throw ()
+ObjectClass::killFederate(FederateHandle the_federate) noexcept
 {
     D.Out(pdRegister, "Object Class %d: Killing Federate %d.",
           handle, the_federate);
@@ -589,9 +577,6 @@ void
 ObjectClass::publish(FederateHandle theFederateHandle,
                      const std::vector <AttributeHandle> &theAttributeList,
                      bool PubOrUnpub)
-    throw (AttributeNotDefined,
-           RTIinternalError,
-           SecurityError)
 {
     D.Out(pdInit, "Beginning of Publish for the federate %d",
           theFederateHandle);
@@ -642,9 +627,6 @@ ObjectClassBroadcastList *
 ObjectClass::registerObjectInstance(FederateHandle the_federate,
                                     Object *the_object,
                                     ObjectClassHandle /*classHandle*/)
-    throw (ObjectClassNotPublished,
-           ObjectAlreadyRegistered,
-           RTIinternalError)
 {
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
@@ -765,7 +747,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 
 // A class' LevelID can only be increased.
 void
-ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID) throw (SecurityError)
+ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID)
 {
     if (!server->dominates(new_levelID, securityLevelId))
         throw SecurityError("Attempt to lower object class level.");
@@ -778,7 +760,7 @@ bool
 ObjectClass::subscribe(FederateHandle fed,
                        const std::vector <AttributeHandle> &attributes,
                        const RTIRegion *region)
-throw (AttributeNotDefined, RTIinternalError, SecurityError) {
+{
 
     uint32_t nb_attributes = attributes.size();
     checkFederateAccess(fed, "Subscribe");
@@ -825,10 +807,6 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    int the_size,
                                    FederationTime the_time,
                                    const std::string& the_tag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute * oa ;
@@ -885,10 +863,6 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    const std::vector <AttributeValue_t> &the_values,
                                    int the_size,
                                    const std::string& the_tag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute * oa ;
@@ -945,10 +919,6 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         Object* object,
                                         const std::vector <AttributeHandle> &theAttributeList,
                                         const std::string& theTag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeAlreadyBeingDivested,
-           RTIinternalError)
 {
     // Pre-conditions checking
 
@@ -1080,12 +1050,6 @@ void ObjectClass::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                                          Object* object,
                                          const std::vector <AttributeHandle> &the_attributes)
-    throw (ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           AttributeAlreadyBeingAcquired,
-           RTIinternalError)
 {
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (unsigned index = 0 ; index < the_attributes.size() ; index++) {
@@ -1210,9 +1174,6 @@ ObjectClassBroadcastList * ObjectClass::
 unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                            Object* object,
                                            const std::vector <AttributeHandle> &theAttributeList)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError)
 {
     // Pre-conditions checking
     // Do all attribute handles exist?
@@ -1324,11 +1285,6 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                            Object* object,
                                            const std::vector <AttributeHandle> &theAttributeList,
                                            const std::string& theTag)
-    throw (ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           RTIinternalError)
 {
     // Verification of the conditions should be done before any changes!
     // Pre-conditions checking
@@ -1434,10 +1390,6 @@ ObjectClass::
 attributeOwnershipReleaseResponse(FederateHandle the_federate,
                                   Object* object,
                                   const std::vector <AttributeHandle> &the_attributes)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           FederateWasNotAskedToReleaseAttribute,
-           RTIinternalError)
 {
     // Pre-conditions checking
 
@@ -1513,10 +1465,6 @@ ObjectClass::
 cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
                                     Object* object,
                                     const std::vector <AttributeHandle> &attribute_list)
-    throw (AttributeNotDefined,
-           AttributeAlreadyOwned,
-           AttributeAcquisitionWasNotRequested,
-           RTIinternalError)
 {
     // Pre-conditions checking
 
@@ -1642,7 +1590,6 @@ ObjectClass::addSubClass(ObjectClass *child) {
 void
 ObjectClass::recursiveDiscovering(FederateHandle federate,
 				  ObjectClassHandle subscription)
-	throw (ObjectClassNotDefined)
 {
     Debug(D, pdInit) << "Recursive Discovering on class " << handle
 	      << " for Federate " << federate << "." << std::endl ;

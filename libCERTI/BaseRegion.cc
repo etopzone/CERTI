@@ -51,7 +51,6 @@ BaseRegion::getNumberOfExtents() const
 uint32_t
 BaseRegion::getRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -65,7 +64,6 @@ BaseRegion::getRangeLowerBound(ExtentIndex index,
 uint32_t
 BaseRegion::getRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -80,7 +78,6 @@ void
 BaseRegion::setRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension,
 			       uint32_t val)
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -95,7 +92,6 @@ void
 BaseRegion::setRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension,
 			       uint32_t val)
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds("Extent index above limit");
@@ -126,7 +122,6 @@ BaseRegion::setExtents(const std::vector<Extent> &e)
 // Replace extents
 void
 BaseRegion::replaceExtents(const std::vector<Extent> &e)
-    throw (InvalidExtents)
 {
     if (e.size() != extents.size())
 	throw InvalidExtents("Different number of extents");

@@ -75,7 +75,7 @@ uint32_t AttributeHandleValuePairSet::size() const
 }
 
 // ----------------------------------------------------------------------------
-Handle AttributeHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
+Handle AttributeHandleValuePairSet::getHandle(uint32_t i) const
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -87,7 +87,7 @@ Handle AttributeHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndex
 }
 
 // ----------------------------------------------------------------------------
-uint32_t AttributeHandleValuePairSet::getValueLength(uint32_t i) const throw(ArrayIndexOutOfBounds)
+uint32_t AttributeHandleValuePairSet::getValueLength(uint32_t i) const
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -100,7 +100,6 @@ uint32_t AttributeHandleValuePairSet::getValueLength(uint32_t i) const throw(Arr
 
 // ----------------------------------------------------------------------------
 void AttributeHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& value_length) const
-    throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -116,7 +115,6 @@ void AttributeHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& val
 
 // ----------------------------------------------------------------------------
 char* AttributeHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_length) const
-    throw(ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -130,21 +128,19 @@ char* AttributeHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_l
 }
 
 // ----------------------------------------------------------------------------
-TransportType AttributeHandleValuePairSet::getTransportType(uint32_t) const throw(InvalidHandleValuePairSetContext)
+TransportType AttributeHandleValuePairSet::getTransportType(uint32_t) const
 {
     return _transport;
 }
 
 // ----------------------------------------------------------------------------
 OrderType AttributeHandleValuePairSet::getOrderType(uint32_t) const
-    throw(ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
     return _order;
 }
 
 // ----------------------------------------------------------------------------
-void AttributeHandleValuePairSet::add(Handle h, const char* buff, uint32_t value_length) throw(ValueLengthExceeded,
-                                                                                               ValueCountExceeded)
+void AttributeHandleValuePairSet::add(Handle h, const char* buff, uint32_t value_length)
 {
     AttributeHandleValuePair* ahvp;
     ahvp = new AttributeHandleValuePair(h, buff, value_length);
@@ -153,7 +149,7 @@ void AttributeHandleValuePairSet::add(Handle h, const char* buff, uint32_t value
 }
 
 // ----------------------------------------------------------------------------
-void AttributeHandleValuePairSet::remove(Handle h) throw(ArrayIndexOutOfBounds)
+void AttributeHandleValuePairSet::remove(Handle h)
 {
     list<AttributeHandleValuePair*>::iterator j;
     for (j = _set.begin(); j != _set.end(); j++) {
@@ -168,8 +164,7 @@ void AttributeHandleValuePairSet::remove(Handle h) throw(ArrayIndexOutOfBounds)
 }
 
 // ----------------------------------------------------------------------------
-void AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&, uint32_t&) throw(ValueCountExceeded,
-                                                                                                ArrayIndexOutOfBounds)
+void AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&, uint32_t&)
 {
     throw RTIinternalError("Unimplemented service");
 }
@@ -223,7 +218,7 @@ inline uint32_t AttributeHandleSet::size() const
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandle AttributeHandleSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
+AttributeHandle AttributeHandleSet::getHandle(uint32_t i) const
 {
     list<AttributeHandle>::const_iterator h;
     uint32_t j;
@@ -236,13 +231,13 @@ AttributeHandle AttributeHandleSet::getHandle(uint32_t i) const throw(ArrayIndex
 }
 
 // ----------------------------------------------------------------------------
-void AttributeHandleSet::add(AttributeHandle h) throw(ArrayIndexOutOfBounds, AttributeNotDefined)
+void AttributeHandleSet::add(AttributeHandle h)
 {
     _set.push_front(h);
 }
 
 // ----------------------------------------------------------------------------
-void AttributeHandleSet::remove(AttributeHandle h) throw(AttributeNotDefined) // not guaranteed safe while iterating
+void AttributeHandleSet::remove(AttributeHandle h) // not guaranteed safe while iterating
 {
     if (isMember(h) == true)
         _set.remove(h);
@@ -284,7 +279,7 @@ inline uint32_t FederateHandleSet::size() const
 }
 
 // ----------------------------------------------------------------------------
-FederateHandle FederateHandleSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
+FederateHandle FederateHandleSet::getHandle(uint32_t i) const
 {
     list<FederateHandle>::const_iterator h;
     uint32_t j;
@@ -297,13 +292,13 @@ FederateHandle FederateHandleSet::getHandle(uint32_t i) const throw(ArrayIndexOu
 }
 
 // ----------------------------------------------------------------------------
-void FederateHandleSet::add(FederateHandle h) throw(ValueCountExceeded)
+void FederateHandleSet::add(FederateHandle h)
 {
     _set.push_front(h);
 }
 
 // ----------------------------------------------------------------------------
-void FederateHandleSet::remove(FederateHandle h) throw(ArrayIndexOutOfBounds)
+void FederateHandleSet::remove(FederateHandle h)
 {
     if (isMember(h) == true)
         _set.remove(h);
@@ -364,7 +359,7 @@ uint32_t ParameterHandleValuePairSet::size() const
 }
 
 // ----------------------------------------------------------------------------
-Handle ParameterHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndexOutOfBounds)
+Handle ParameterHandleValuePairSet::getHandle(uint32_t i) const
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -376,7 +371,7 @@ Handle ParameterHandleValuePairSet::getHandle(uint32_t i) const throw(ArrayIndex
 }
 
 // ----------------------------------------------------------------------------
-uint32_t ParameterHandleValuePairSet::getValueLength(uint32_t i) const throw(ArrayIndexOutOfBounds)
+uint32_t ParameterHandleValuePairSet::getValueLength(uint32_t i) const
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -389,7 +384,6 @@ uint32_t ParameterHandleValuePairSet::getValueLength(uint32_t i) const throw(Arr
 
 // ----------------------------------------------------------------------------
 void ParameterHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& value_length) const
-    throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -405,7 +399,6 @@ void ParameterHandleValuePairSet::getValue(uint32_t i, char* buff, uint32_t& val
 
 // ----------------------------------------------------------------------------
 char* ParameterHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_length) const
-    throw(ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair*>::const_iterator j = _set.begin();
     for (uint32_t k = 0; j != _set.end(); ++j, ++k) {
@@ -419,20 +412,19 @@ char* ParameterHandleValuePairSet::getValuePointer(uint32_t i, uint32_t& value_l
 }
 
 // ----------------------------------------------------------------------------
-inline TransportType ParameterHandleValuePairSet::getTransportType() const throw(InvalidHandleValuePairSetContext)
+inline TransportType ParameterHandleValuePairSet::getTransportType() const
 {
     return _transport;
 }
 
 // ----------------------------------------------------------------------------
-inline OrderType ParameterHandleValuePairSet::getOrderType() const throw(InvalidHandleValuePairSetContext)
+inline OrderType ParameterHandleValuePairSet::getOrderType() const
 {
     return _order;
 }
 
 // ----------------------------------------------------------------------------
-void ParameterHandleValuePairSet::add(Handle h, const char* buff, uint32_t value_length) throw(ValueLengthExceeded,
-                                                                                               ValueCountExceeded)
+void ParameterHandleValuePairSet::add(Handle h, const char* buff, uint32_t value_length)
 {
     ParameterHandleValuePair* phvp;
     phvp = new ParameterHandleValuePair(h, buff, value_length);
@@ -441,7 +433,7 @@ void ParameterHandleValuePairSet::add(Handle h, const char* buff, uint32_t value
 }
 
 // ----------------------------------------------------------------------------
-void ParameterHandleValuePairSet::remove(Handle h) throw(ArrayIndexOutOfBounds)
+void ParameterHandleValuePairSet::remove(Handle h)
 {
     list<ParameterHandleValuePair*>::iterator j;
     for (j = _set.begin(); j != _set.end(); j++) {
@@ -456,8 +448,7 @@ void ParameterHandleValuePairSet::remove(Handle h) throw(ArrayIndexOutOfBounds)
 }
 
 // ----------------------------------------------------------------------------
-void ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&, uint32_t&) throw(ValueCountExceeded,
-                                                                                                ArrayIndexOutOfBounds)
+void ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&, uint32_t&)
 {
     throw RTIinternalError("Unimplemented service");
 }

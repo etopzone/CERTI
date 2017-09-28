@@ -44,8 +44,6 @@ static PrettyDebug D("SOCKUDP", "(SocketUDP) - ");
 // ----------------------------------------------------------------------------
 void
 SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
-    throw (NetworkError,
-           NetworkSignal)
 {
     assert(!_est_init_udp);
 
@@ -80,7 +78,6 @@ SocketUDP::bind()
 //! Create an UDP client.
 void
 SocketUDP::createConnection(const char */*server_name*/, unsigned int /*port*/)
-    throw (NetworkError)
 {
 struct sockaddr_in sock_temp ;
 char localhost[4096] ;
@@ -137,7 +134,6 @@ _est_init_udp = true ;
 //! create an UDP server.
 void
 SocketUDP::createServer(unsigned int port, in_addr_t addr)
-    throw (NetworkError, NetworkSignal)
 {
   assert(!_est_init_udp);
 
@@ -214,7 +210,6 @@ if (_est_init_udp)
 // ----------------------------------------------------------------------------
 void
 SocketUDP::send(const unsigned char * Message, size_t Size)
-    throw (NetworkError, NetworkSignal)
 {
 
 D.Out(pdDebug, "Beginning to send UDP message... Size = %ld", Size);
@@ -291,7 +286,6 @@ int SocketUDP::open()
 // ----------------------------------------------------------------------------
 void
 SocketUDP::receive(void * Message, unsigned long Size)
-    throw (NetworkError, NetworkSignal)
 {
 #ifdef _WIN32								//netDot
 	int taille = sizeof(struct sockaddr_in);

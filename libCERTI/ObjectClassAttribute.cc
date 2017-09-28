@@ -114,7 +114,6 @@ ObjectClassAttribute::isPublishing(FederateHandle fed) const
 //! publish
 void
 ObjectClassAttribute::publish(FederateHandle fed)
-throw (RTIinternalError, SecurityError)
 {
     if (!isPublishing(fed)) {
         checkFederateAccess(fed, "Publish");
@@ -133,7 +132,6 @@ throw (RTIinternalError, SecurityError)
 //! unpublish
 void
 ObjectClassAttribute::unpublish(FederateHandle fed)
-throw (RTIinternalError, SecurityError)
 {
     if (isPublishing(fed)) {
         Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed

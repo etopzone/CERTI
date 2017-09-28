@@ -41,7 +41,7 @@ Extent::Extent(const size_t n)
     ranges.resize(n, range);
 }
 
-uint32_t Extent::getRangeLowerBound(DimensionHandle handle) const throw(ArrayIndexOutOfBounds)
+uint32_t Extent::getRangeLowerBound(DimensionHandle handle) const
 {
     if ((handle <= 0) || (handle > ranges.size()))
         throw ArrayIndexOutOfBounds("Invalid dimension handle");
@@ -49,7 +49,7 @@ uint32_t Extent::getRangeLowerBound(DimensionHandle handle) const throw(ArrayInd
         return ranges[handle - 1].first;
 }
 
-uint32_t Extent::getRangeUpperBound(DimensionHandle handle) const throw(ArrayIndexOutOfBounds)
+uint32_t Extent::getRangeUpperBound(DimensionHandle handle) const
 {
     if ((handle <= 0) || (handle > ranges.size()))
         throw ArrayIndexOutOfBounds("Invalid dimension handle");
@@ -57,7 +57,7 @@ uint32_t Extent::getRangeUpperBound(DimensionHandle handle) const throw(ArrayInd
         return ranges[handle - 1].second;
 }
 
-void Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val) throw(ArrayIndexOutOfBounds)
+void Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val)
 {
     if ((handle <= 0) || (handle > ranges.size()))
         throw ArrayIndexOutOfBounds("Invalid dimension handle");
@@ -65,7 +65,7 @@ void Extent::setRangeLowerBound(DimensionHandle handle, uint32_t val) throw(Arra
         ranges[handle - 1].first = val;
 }
 
-void Extent::setRangeUpperBound(DimensionHandle handle, uint32_t val) throw(ArrayIndexOutOfBounds)
+void Extent::setRangeUpperBound(DimensionHandle handle, uint32_t val)
 {
     if ((handle <= 0) || (handle > ranges.size()))
         throw ArrayIndexOutOfBounds("Invalid dimension handle");

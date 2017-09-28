@@ -54,7 +54,7 @@ ObjectClassSet::~ObjectClassSet()
 } /* end of ~ObjectClassSet */
 
 void
-ObjectClassSet::addClass(ObjectClass *newClass,ObjectClass *parentClass) throw (RTIinternalError)
+ObjectClassSet::addClass(ObjectClass *newClass,ObjectClass *parentClass)
 {
 	D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 	/* link to server */
@@ -70,7 +70,6 @@ ObjectClassSet::deleteObject(FederateHandle federate,
                              Object* object,
 			     FederationTime theTime,
                              const std::string& tag)
-    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass *oclass = getInstanceClass(object->getHandle());
@@ -112,7 +111,6 @@ void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              Object* object,
                              const std::string& tag)
-    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass *oclass = getInstanceClass(object->getHandle());
@@ -155,7 +153,6 @@ ObjectClassSet::deleteObject(FederateHandle federate,
 AttributeHandle
 ObjectClassSet::getAttributeHandle(const std::string& the_name,
                                    ObjectClassHandle the_class) const
-    throw (NameNotFound, ObjectClassNotDefined, RTIinternalError)
 {
     G.Out(pdGendoc,"enter ObjectClassSet::getAttributeHandle");
 
@@ -190,9 +187,6 @@ ObjectClassSet::getAttributeHandle(const std::string& the_name,
 const std::string&
 ObjectClassSet::getAttributeName(AttributeHandle the_handle,
                                  ObjectClassHandle the_class) const
-    throw (AttributeNotDefined,
-           ObjectClassNotDefined,
-           RTIinternalError)
 {
     ObjectClass *objectClass = NULL ;
 
@@ -209,7 +203,6 @@ ObjectClassSet::getAttributeName(AttributeHandle the_handle,
 //! getInstanceClass.
 ObjectClass *
 ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
-    throw (ObjectNotKnown)
 {
     handled_const_iterator i ;
     for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
@@ -227,7 +220,7 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 //! getObjectClassHandle.
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(const std::string& class_name) const
-throw (NameNotFound){
+{
 	return getHandleFromName(class_name);
 } /* end of getObjectClassHandle */
 
@@ -235,7 +228,6 @@ throw (NameNotFound){
 //! getObjectClassName.
 const std::string&
 ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
-    throw (ObjectClassNotDefined)
 {
     D.Out(pdRequest, "Looking for class %u...", the_handle);
     return getNameFromHandle(the_handle);
@@ -243,8 +235,7 @@ ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
 
 // ----------------------------------------------------------------------------
 //! killFederate.
-void ObjectClassSet::killFederate(FederateHandle theFederate)
-    throw ()
+void ObjectClassSet::killFederate(FederateHandle theFederate) noexcept
 {
     ObjectClassBroadcastList *ocbList      = NULL ;
     ObjectClassHandle         currentClass = 0 ;
@@ -296,10 +287,6 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
                         ObjectClassHandle theClassHandle,
                         const std::vector <AttributeHandle> &theAttributeList,
                         bool PubOrUnpub)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           RTIinternalError,
-           SecurityError)
 {
     // It may throw ObjectClassNotDefined
     ObjectClass *theClass = getObjectFromHandle(theClassHandle);
@@ -323,11 +310,6 @@ void
 ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
                                        Object *the_object,
                                        ObjectClassHandle the_class)
-    throw (InvalidObjectHandle,
-           ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           ObjectAlreadyRegistered,
-           RTIinternalError)
 {
     ObjectClassHandle currentClass = the_class ;
 
@@ -370,8 +352,6 @@ ObjectClassSet::subscribe(FederateHandle federate,
                           ObjectClassHandle class_handle,
                           const std::vector <AttributeHandle> &attributes,
                           const RTIRegion *region)
-    throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
-           SecurityError)
 {
     ObjectClass *object_class = getObjectFromHandle(class_handle);
 
@@ -391,10 +371,6 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       const std::vector <AttributeValue_t> &values,
                                       const FederationTime& time,
                                       const std::string& tag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     ObjectClass *object_class = getObjectFromHandle(object->getClass());
     ObjectClassHandle current_class = object_class->getHandle();
@@ -433,10 +409,6 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       const std::vector <AttributeHandle> &attributes,
                                       const std::vector <AttributeValue_t> &values,
                                       const std::string& tag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     ObjectClass *object_class = getObjectFromHandle(object->getClass());
     ObjectClassHandle current_class = object_class->getHandle();
@@ -475,10 +447,6 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         Object* object,
                                         const std::vector <AttributeHandle> &theAttributeList,
                                         const std::string& theTag)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeAlreadyBeingDivested,
-           RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass *objectClass = getInstanceClass(object->getHandle());
@@ -517,12 +485,6 @@ ObjectClassSet::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                          Object* object,
                                          const std::vector <AttributeHandle> &theAttributeList)
-    throw (ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           AttributeAlreadyBeingAcquired,
-           RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass * objectClass = getInstanceClass(object->getHandle());
@@ -540,9 +502,6 @@ ObjectClassSet::
 unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                            Object* object,
                                            const std::vector <AttributeHandle> &theAttributeList)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError)
 {
     ObjectClass *objectClass = getInstanceClass(object->getHandle());
     ObjectClassHandle currentClass = objectClass->getHandle();
@@ -578,11 +537,6 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                               Object* object,
                               const std::vector <AttributeHandle> &theAttributeList,
                               const std::string& theTag)
-    throw (ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass * objectClass = getInstanceClass(object->getHandle());
@@ -597,10 +551,6 @@ AttributeHandleSet * ObjectClassSet::
 attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                   Object* object,
                                   const std::vector <AttributeHandle> &theAttributeList)
-    throw (AttributeNotDefined,
-           AttributeNotOwned,
-           FederateWasNotAskedToReleaseAttribute,
-           RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass *objectClass = getInstanceClass(object->getHandle());
@@ -615,10 +565,6 @@ void ObjectClassSet::
 cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                     Object* object,
                                     const std::vector <AttributeHandle> &theAttributeList)
-    throw (AttributeNotDefined,
-           AttributeAlreadyOwned,
-           AttributeAcquisitionWasNotRequested,
-           RTIinternalError)
 {
     // It may throw ObjectNotKnown
     ObjectClass *objectClass = getInstanceClass(object->getHandle());

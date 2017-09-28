@@ -99,7 +99,7 @@ public:
          * attribute handle of the class. For Discover_Object message, it can be 0 to
          * mean "any attribute".
          */
-    ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttributeHandles = 0) throw(RTIinternalError);
+    ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttributeHandles = 0);
 
     /// Free all structures, including Message.
     ~ObjectClassBroadcastList();

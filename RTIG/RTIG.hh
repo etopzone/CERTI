@@ -65,12 +65,12 @@ public:
     RTIG();
     ~RTIG();
 
-    void execute() throw(NetworkError);
+    void execute();
 
     static void signalHandler(int sig);
 
     void setVerboseLevel(const int level);
-    void setListeningIPAddress(const std::string& hostName) throw(NetworkError);
+    void setListeningIPAddress(const std::string& hostName);
 
 private:
     static bool terminate;
@@ -88,7 +88,7 @@ private:
          * 
          * @return the socket, because it may have been closed & deleted in the meantime
          */
-    Socket* processIncomingMessage(Socket*) throw(NetworkError);
+    Socket* processIncomingMessage(Socket*);
 
     void openConnection();
 

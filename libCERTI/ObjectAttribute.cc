@@ -121,7 +121,6 @@ ObjectAttribute::removeCandidate(FederateHandle candidate)
 // Returns the federate candidate at position in list.
 FederateHandle
 ObjectAttribute::getFirstCandidate() const
-    throw (RTIinternalError)
 {
     if (ownerCandidates.empty())
         throw RTIinternalError("");

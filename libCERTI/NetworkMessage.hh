@@ -213,17 +213,17 @@ public:
     /**
      * Send a message buffer to the socket
      */
-    void send(Socket* socket, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
+    void send(Socket* socket, MessageBuffer& msgBuffer);
     
     /**
      * Send a message buffer to each socket in the list
      */
-    void send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
+    void send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer);
 
     /**
 	 * Receive a message buffer from the socket
 	 */
-    void receive(Socket* socket, MessageBuffer& msgBuffer) throw(NetworkError, NetworkSignal);
+    void receive(Socket* socket, MessageBuffer& msgBuffer);
 
     EventRetractionHandle eventRetraction; /* FIXME to be suppressed */
 

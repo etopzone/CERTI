@@ -39,23 +39,19 @@ public :
                const BUFFER_SIDE_t& RingBuffer_Side,
                const int RingBuffer_Size,
                const std::string& SHM_Sem_Type ) // SHM_Sem_Type = Posix,SysV ou Win32
-               throw(certi::RingBufferNotCreated) ;
+               ;
     // Destructor
-    ~RingBuffer () throw(certi::RingBufferNotDeleted) ;
+    ~RingBuffer () ;
 
-    void Attach() throw(certi::RingBufferNotAttached) ;
+    void Attach() ;
 
     void Send(void *Buffer, size_t Size)      // To send Data on a memory segment
-              throw (certi::MessageNotSent,
-                     certi::MessageTooLong,
-                     certi::BufferFull) ;
+              ;
 
     void Receive(void *Buffer, size_t Size)   // To receive Data on a memory segment
-              throw (certi::MessageNotReceived,
-                     certi::MessageTooLong,
-                     certi::BufferEmpty) ;
+              ;
 
-    void Close() throw (certi::RingBufferNotClosed) ; // To Close the two SHMs
+    void Close() ; // To Close the two SHMs
 
 protected :
     std::string _Name ;

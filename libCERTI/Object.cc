@@ -80,7 +80,6 @@ Object::addAttribute(ObjectAttribute * new_attribute)
 //! getAttribute.
 ObjectAttribute *
 Object::getAttribute(AttributeHandle attributeHandle) const
-    throw (AttributeNotDefined)
 {
     AttributeMap::const_iterator i = _attributeMap.find(attributeHandle);
     if (i == _attributeMap.end()) {
@@ -109,7 +108,6 @@ Object::setOwner(FederateHandle the_federate)
 bool
 Object::isAttributeOwnedByFederate(FederateHandle the_federate,
                                    AttributeHandle the_attribute) const
-    throw (AttributeNotDefined, RTIinternalError)
 {
     return getAttribute(the_attribute)->getOwner() == the_federate;
 }

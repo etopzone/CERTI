@@ -162,9 +162,7 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
 void
 Interaction::changeTransportationType(TransportType new_type,
                                       FederateHandle the_handle)
-throw (FederateNotPublishing,
-        InvalidTransportationHandle,
-        RTIinternalError) {
+{
     if (!isPublishing(the_handle))
         throw FederateNotPublishing("Change Interaction Transport Type.");
 
@@ -181,9 +179,7 @@ throw (FederateNotPublishing,
 //! changeOrderType.
 void
 Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
-throw (FederateNotPublishing,
-        InvalidOrderingHandle,
-        RTIinternalError) {
+{
     if (!isPublishing(the_handle))
         throw FederateNotPublishing("Change Interaction Order Type.");
 
@@ -200,7 +196,6 @@ throw (FederateNotPublishing,
 void
 Interaction::checkFederateAccess(FederateHandle the_federate,
 		const std::string& reason) const
-		throw (SecurityError)
 		{
 	// BUG: Should at least but a line in Audit
 	if (server == NULL)
@@ -254,7 +249,7 @@ Interaction::display() const {
 //! Returns the parameter by its handle
 Parameter*
 Interaction::getParameterByHandle(ParameterHandle the_handle) const
-throw (InteractionParameterNotDefined, RTIinternalError) {
+{
     HandleParameterMap::const_iterator i = _handleParameterMap.find(the_handle);
     if (i != _handleParameterMap.end()) {
         return i->second;
@@ -268,7 +263,6 @@ throw (InteractionParameterNotDefined, RTIinternalError) {
 //! Returns the parameter handle obtained by its name.
 ParameterHandle
 Interaction::getParameterHandle(const std::string& the_name) const
-throw (NameNotFound, RTIinternalError)
 {
     for (HandleParameterMap::const_iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
         if (i->second->getName() == the_name) {
@@ -283,8 +277,7 @@ throw (NameNotFound, RTIinternalError)
 
 const std::string&
 Interaction::getParameterName(ParameterHandle the_handle) const
-throw (InteractionParameterNotDefined,
-        RTIinternalError)
+
         {
     return getParameterByHandle(the_handle)->getName();
         }
@@ -315,9 +308,6 @@ void
 Interaction::isReady(FederateHandle federate_handle,
         const std::vector <ParameterHandle> &parameter_list,
         uint16_t list_size)
-throw (FederateNotPublishing,
-        InteractionParameterNotDefined,
-        RTIinternalError)
         {
     // Is Federate Publishing Interaction?
     if (!isPublishing(federate_handle))
@@ -331,8 +321,7 @@ throw (FederateNotPublishing,
 // ----------------------------------------------------------------------------
 //! killFederate.
 void
-Interaction::killFederate(FederateHandle the_federate)
-throw ()
+Interaction::killFederate(FederateHandle the_federate) noexcept
 {
     try {
         // Is federate publishing something ? (not important)
@@ -350,7 +339,6 @@ throw ()
 //! publish
 void
 Interaction::publish(FederateHandle the_handle)
-throw (FederateNotPublishing, RTIinternalError, SecurityError)
 {
     checkFederateAccess(the_handle, (char *) "Publish");
 
@@ -366,7 +354,6 @@ throw (FederateNotPublishing, RTIinternalError, SecurityError)
 //! publish
 void
 Interaction::unpublish(FederateHandle the_handle)
-throw (FederateNotPublishing, RTIinternalError, SecurityError)
 {
     if (isPublishing(the_handle)) {
         D.Out(pdTerm,
@@ -392,10 +379,6 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         FederationTime time,
         const RTIRegion *region,
         const std::string& the_tag)
-throw (FederateNotPublishing,
-        InteractionClassNotDefined,
-        InteractionParameterNotDefined,
-        RTIinternalError)
         {
 
     G.Out(pdGendoc,"enter Interaction::sendInteraction with time");
@@ -451,10 +434,6 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         uint16_t list_size,
         const RTIRegion *region,
         const std::string& the_tag)
-throw (FederateNotPublishing,
-        InteractionClassNotDefined,
-        InteractionParameterNotDefined,
-        RTIinternalError)
         {
 
     G.Out(pdGendoc,"enter Interaction::sendInteraction without time");

@@ -72,7 +72,7 @@ public:
      * The SocketTuple references are empty.
      * Throw RTIinternalError in case of a memory allocation problem.
      */
-    void open() throw(RTIinternalError);
+    void open();
 
     /** Close and delete the Socket object whose socket is "Socket",
      * and return the former references associated with this socket in
@@ -85,8 +85,7 @@ public:
      */
     void close(long socket, // Provided
                FederationHandle& federation_referenced, // Returned
-               FederateHandle& federate_referenced) // Returned
-        throw(RTIinternalError);
+               FederateHandle& federate_referenced); // Returned
 
     /** Change the FederationHandle and the FederateHandle associated with
      * "socket". Once the references have been set for a Socket, they can't
@@ -98,7 +97,7 @@ public:
                        FederationHandle federation_reference,
                        FederateHandle federate_reference,
                        unsigned long the_address,
-                       unsigned int the_port) throw(RTIinternalError);
+                       unsigned int the_port);
 
     // -----------------------------
     // -- Message related methods --
@@ -109,7 +108,7 @@ public:
      * the same as the Federate Number specified in the message.
      * If not, throw SecurityError.
      */
-    void checkMessage(long socket, NetworkMessage* message) const throw(SecurityError);
+    void checkMessage(long socket, NetworkMessage* message) const;
 
     // --------------------------
     // -- RTIG related methods --
@@ -138,10 +137,9 @@ public:
      */
     Socket* getSocketLink(FederationHandle the_federation,
                           FederateHandle the_federate,
-                          TransportType the_type = RELIABLE) const throw(FederateNotExecutionMember, RTIinternalError);
+                          TransportType the_type = RELIABLE) const;
 
-    SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const
-        throw(FederateNotExecutionMember);
+    SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const;
 
 private:
     // The Server socket object(used for Accepts)
@@ -151,7 +149,7 @@ private:
     // ---------------------
     // -- Private Methods --
     // ---------------------
-    SocketTuple* getWithSocket(long socket_descriptor) const throw(RTIinternalError);
+    SocketTuple* getWithSocket(long socket_descriptor) const;
 };
 
 } // namespace certi

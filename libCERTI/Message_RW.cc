@@ -82,7 +82,7 @@ void Message::deserialize(MessageBuffer& msgBuffer) {
 } /* end of deserialize */
 
 void
-Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
+Message::send(SocketUN *socket, MessageBuffer &msgBuffer) {
 	G.Out(pdGendoc,"enter Message::send");
 	/* 0- reset send buffer */
 	msgBuffer.reset();
@@ -101,7 +101,7 @@ Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, N
 } /* end of send */
 
 void
-Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
+Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) {
 	G.Out(pdGendoc,"enter Message::receive");
 	/* 0- Reset receive buffer */
 	/* FIXME this reset may not be necessary since we do

@@ -49,11 +49,9 @@ public:
     void display() const ;
 
     void addAttribute(ObjectAttribute * new_attribute);
-    ObjectAttribute *getAttribute(AttributeHandle the_attribute) const
-        throw (AttributeNotDefined);
+    ObjectAttribute *getAttribute(AttributeHandle the_attribute) const;
 
-    bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const
-        throw (AttributeNotDefined, RTIinternalError);
+    bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const;
 
     ObjectClassHandle getClass() const { return classHandle; }
     void setClass(ObjectClassHandle h);

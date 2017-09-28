@@ -95,38 +95,34 @@ public:
      */
     void addRoutingSpace(const RoutingSpace& rs);
 
-    RoutingSpace& getRoutingSpace(SpaceHandle) throw(SpaceNotDefined);
+    RoutingSpace& getRoutingSpace(SpaceHandle);
 
-    SpaceHandle getRoutingSpaceHandle(const std::string&) throw(NameNotFound);
+    SpaceHandle getRoutingSpaceHandle(const std::string&);
 
-    const std::string& getRoutingSpaceName(SpaceHandle) throw(SpaceNotDefined);
+    const std::string& getRoutingSpaceName(SpaceHandle);
 
     void addRegion(RTIRegion*);
 
-    RegionHandle createRegion(SpaceHandle, unsigned long) throw(SpaceNotDefined);
+    RegionHandle createRegion(SpaceHandle, unsigned long);
 
-    void deleteRegion(RegionHandle) throw(RegionNotKnown, RegionInUse);
+    void deleteRegion(RegionHandle);
 
-    RTIRegion* getRegion(RegionHandle) throw(RegionNotKnown);
+    RTIRegion* getRegion(RegionHandle);
 
-    void modifyRegion(RegionHandle, const std::vector<Extent>&) throw(RegionNotKnown, InvalidExtents);
+    void modifyRegion(RegionHandle, const std::vector<Extent>&);
 
     // Object Management
     bool reserveObjectInstanceName(FederateHandle the_federate, const std::string& the_object_name);
 
-    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&) throw(
-        InvalidObjectHandle, ObjectClassNotDefined, ObjectClassNotPublished, ObjectAlreadyRegistered, RTIinternalError);
+    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&);
 
-    FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject) throw(ObjectNotKnown);
+    FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, FederationTime theTime, const std::string& theTag) throw(
-        DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+    void deleteObjectInstance(FederateHandle, ObjectHandle, FederationTime theTime, const std::string& theTag);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag) throw(DeletePrivilegeNotHeld,
-                                                                                             ObjectNotKnown,
-                                                                                             RTIinternalError);
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag);
 
-    void killFederate(FederateHandle) throw(RTIinternalError);
+    void killFederate(FederateHandle);
 
     // Access to elements of the RootObject hierarchy
     ObjectAttribute* getObjectAttribute(ObjectHandle, AttributeHandle);

@@ -148,7 +148,6 @@ Federation::Federation(const string& federation_name,
                        const string& FEDid_name,
                        int verboseLevel)
 #endif
-    throw(CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError, RTIinternalError)
     : my_handle(federation_handle)
     , my_name(federation_name)
     , my_FED_id(FEDid_name)
@@ -415,9 +414,7 @@ bool Federation::isSynchronizing() const
     return !my_synchronization_labels.empty();
 }
 
-FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link) throw(FederateAlreadyExecutionMember,
-                                                                                       MemoryExhausted,
-                                                                                       RTIinternalError)
+FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -478,10 +475,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     return federate_handle;
 }
 
-void Federation::addRegulator(FederateHandle federate_handle, FederationTime time) throw(FederateNotExecutionMember,
-                                                                                         SaveInProgress,
-                                                                                         RestoreInProgress,
-                                                                                         RTIinternalError)
+void Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
 {
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
@@ -509,7 +503,7 @@ void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)
 }
 
 bool Federation::updateLastNERxForFederate(FederateHandle federate_handle,
-                                           FederationTime date) throw(FederateNotExecutionMember)
+                                           FederationTime date)
 {
     bool retval = false;
     FederationTime newMin;
@@ -539,7 +533,7 @@ bool Federation::updateLastNERxForFederate(FederateHandle federate_handle,
     return retval;
 }
 
-FederationTime Federation::computeMinNERx() throw(FederateNotExecutionMember)
+FederationTime Federation::computeMinNERx()
 {
     FederationTime retval;
     uint32_t nbFed;
@@ -662,13 +656,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                       const vector<ParameterValue_t>& parameter_values,
                                       FederationTime time,
                                       RegionHandle region_handle,
-                                      const string& tag) throw(FederateNotExecutionMember,
-                                                               FederateNotPublishing,
-                                                               InteractionClassNotDefined,
-                                                               InteractionParameterNotDefined,
-                                                               SaveInProgress,
-                                                               RestoreInProgress,
-                                                               RTIinternalError)
+                                      const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction with time" << endl;
 
@@ -699,13 +687,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                       const vector<ParameterHandle>& parameter_handles,
                                       const vector<ParameterValue_t>& parameter_values,
                                       RegionHandle region_handle,
-                                      const string& tag) throw(FederateNotExecutionMember,
-                                                               FederateNotPublishing,
-                                                               InteractionClassNotDefined,
-                                                               InteractionParameterNotDefined,
-                                                               SaveInProgress,
-                                                               RestoreInProgress,
-                                                               RTIinternalError)
+                                      const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction without time" << endl;
 
@@ -737,13 +719,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
 void Federation::deleteObject(FederateHandle federate_handle,
                               ObjectHandle object_handle,
                               FederationTime time,
-                              const string& tag) throw(FederateNotExecutionMember,
-                                                       DeletePrivilegeNotHeld,
-                                                       ObjectNotKnown,
-                                                       SaveInProgress,
-                                                       RestoreInProgress,
-                                                       InvalidFederationTime,
-                                                       RTIinternalError)
+                              const string& tag)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -757,12 +733,7 @@ void Federation::deleteObject(FederateHandle federate_handle,
 
 void Federation::deleteObject(FederateHandle federate_handle,
                               ObjectHandle object_handle,
-                              const string& tag) throw(FederateNotExecutionMember,
-                                                       DeletePrivilegeNotHeld,
-                                                       ObjectNotKnown,
-                                                       SaveInProgress,
-                                                       RestoreInProgress,
-                                                       RTIinternalError)
+                              const string& tag)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -774,8 +745,7 @@ void Federation::deleteObject(FederateHandle federate_handle,
     my_objects_handle_generator.free(object_handle);
 }
 
-void Federation::registerSynchronization(FederateHandle federate_handle, const string& label, const string& tag) throw(
-    FederateNotExecutionMember, FederationAlreadyPaused, SaveInProgress, RestoreInProgress, RTIinternalError)
+void Federation::registerSynchronization(FederateHandle federate_handle, const string& label, const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::registerSynchronization for all federates" << endl;
 
@@ -805,11 +775,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle, const s
 void Federation::registerSynchronization(FederateHandle federate_handle,
                                          const string& label,
                                          const string& tag,
-                                         const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
-                                                                                           FederationAlreadyPaused,
-                                                                                           SaveInProgress,
-                                                                                           RestoreInProgress,
-                                                                                           RTIinternalError)
+                                         const vector<FederateHandle>& federate_set)
 {
     Debug(G, pdGendoc) << "enter Federation::registerSynchronization for federate set" << endl;
 
@@ -841,7 +807,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
 
 void Federation::broadcastSynchronization(FederateHandle federate_handle,
                                           const string& label,
-                                          const string& tag) throw(FederateNotExecutionMember, RTIinternalError)
+                                          const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
 
@@ -868,8 +834,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
 void Federation::broadcastSynchronization(FederateHandle federate_handle,
                                           const string& label,
                                           const string& tag,
-                                          const vector<FederateHandle>& federate_set) throw(FederateNotExecutionMember,
-                                                                                            RTIinternalError)
+                                          const vector<FederateHandle>& federate_set)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
 
@@ -895,7 +860,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
 
 void Federation::requestFederationSave(FederateHandle federate_handle,
                                        const string& label,
-                                       FederationTime time) throw(FederateNotExecutionMember, SaveInProgress)
+                                       FederationTime time)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave with time" << endl;
 
@@ -928,7 +893,7 @@ void Federation::requestFederationSave(FederateHandle federate_handle,
 }
 
 void Federation::requestFederationSave(FederateHandle federate_handle,
-                                       const string& the_label) throw(FederateNotExecutionMember, SaveInProgress)
+                                       const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave without time" << endl;
 
@@ -959,14 +924,14 @@ void Federation::requestFederationSave(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave without time" << endl;
 }
 
-void Federation::federateSaveBegun(FederateHandle federate_handle) throw(FederateNotExecutionMember)
+void Federation::federateSaveBegun(FederateHandle federate_handle)
 {
     Debug(G, pdGendoc) << "enter Federation::federateSaveBegun" << endl;
     check(federate_handle);
     Debug(G, pdGendoc) << "exit  Federation::federateSaveBegun" << endl;
 }
 
-void Federation::federateSaveStatus(FederateHandle federate_handle, bool status) throw(FederateNotExecutionMember)
+void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
 {
     Debug(G, pdGendoc) << "enter Federation::federateSaveStatus" << endl;
 
@@ -1009,7 +974,7 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
 }
 
 void Federation::requestFederationRestore(FederateHandle federate_handle,
-                                          const string& the_label) throw(FederateNotExecutionMember)
+                                          const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationRestore" << endl;
 
@@ -1092,7 +1057,7 @@ void Federation::requestFederationRestore(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::requestFederationRestore" << endl;
 }
 
-void Federation::federateRestoreStatus(FederateHandle federate_handle, bool status) throw(FederateNotExecutionMember)
+void Federation::federateRestoreStatus(FederateHandle federate_handle, bool status)
 {
     Debug(G, pdGendoc) << "enter Federation::federateRestoreStatus" << endl;
     Federate& federate = getFederate(federate_handle);
@@ -1126,7 +1091,7 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
     Debug(G, pdGendoc) << "exit  Federation::federateRestoreStatus" << endl;
 }
 
-Federate& Federation::getFederate(FederateHandle federate_handle) throw(FederateNotExecutionMember)
+Federate& Federation::getFederate(FederateHandle federate_handle)
 {
     try {
         return *my_federates.at(federate_handle);
@@ -1137,7 +1102,7 @@ Federate& Federation::getFederate(FederateHandle federate_handle) throw(Federate
     }
 }
 
-Federate& Federation::getFederate(const string& federate_name) throw(FederateNotExecutionMember)
+Federate& Federation::getFederate(const string& federate_name)
 {
     auto it = std::find_if(
         begin(my_federates), end(my_federates), [&federate_name](decltype(my_federates)::value_type& kv) {
@@ -1221,12 +1186,7 @@ void Federation::kill(FederateHandle federate_handle) noexcept
 
 void Federation::publishInteraction(FederateHandle federate_handle,
                                     InteractionClassHandle interaction_class_handle,
-                                    bool publish_or_unpublish) throw(InteractionClassNotDefined,
-                                                                     FederateNotExecutionMember,
-                                                                     SaveInProgress,
-                                                                     SecurityError,
-                                                                     RestoreInProgress,
-                                                                     RTIinternalError)
+                                    bool publish_or_unpublish)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1240,13 +1200,7 @@ void Federation::publishInteraction(FederateHandle federate_handle,
 void Federation::publishObject(FederateHandle federate_handle,
                                ObjectClassHandle object_handle,
                                const vector<AttributeHandle>& attributes,
-                               bool publish_or_unpublish) throw(ObjectClassNotDefined,
-                                                                AttributeNotDefined,
-                                                                FederateNotExecutionMember,
-                                                                SaveInProgress,
-                                                                SecurityError,
-                                                                RestoreInProgress,
-                                                                RTIinternalError)
+                               bool publish_or_unpublish)
 {
     Debug(G, pdGendoc) << "enter Federation::publishObject" << endl;
     // It may throw FederateNotExecutionMember.
@@ -1322,10 +1276,7 @@ void Federation::publishObject(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::publishObject" << endl;
 }
 
-void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, string newObjName) throw(IllegalName,
-                                                                                                      SaveInProgress,
-                                                                                                      RestoreInProgress,
-                                                                                                      RTIinternalError)
+void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, string newObjName)
 {
     Socket* socket;
     NetworkMessage* msg;
@@ -1359,14 +1310,7 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
 
 ObjectHandle Federation::registerObject(FederateHandle federate,
                                         ObjectClassHandle class_handle,
-                                        const string& object_name) throw(FederateNotExecutionMember,
-                                                                         FederateNotPublishing,
-                                                                         ObjectAlreadyRegistered,
-                                                                         ObjectClassNotDefined,
-                                                                         ObjectClassNotPublished,
-                                                                         SaveInProgress,
-                                                                         RestoreInProgress,
-                                                                         RTIinternalError)
+                                        const string& object_name)
 {
     ObjectHandle id = my_objects_handle_generator.provide();
 
@@ -1397,7 +1341,7 @@ ObjectHandle Federation::registerObject(FederateHandle federate,
     return id;
 }
 
-void Federation::remove(FederateHandle federate_handle) throw(FederateOwnsAttributes, FederateNotExecutionMember)
+void Federation::remove(FederateHandle federate_handle)
 {
     //     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
     //     if (i != _handleFederateMap.end()) {
@@ -1422,10 +1366,7 @@ void Federation::remove(FederateHandle federate_handle) throw(FederateOwnsAttrib
     Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
 }
 
-void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateNotExecutionMember,
-                                                                       SaveInProgress,
-                                                                       RestoreInProgress,
-                                                                       RTIinternalError)
+void Federation::removeRegulator(FederateHandle federate_handle)
 {
     // It may throw FederateNotExecutionMember
     Federate& federate = getFederate(federate_handle);
@@ -1446,8 +1387,7 @@ void Federation::removeRegulator(FederateHandle federate_handle) throw(FederateN
     broadcastAnyMessage(&msg, 0, false);
 }
 
-void Federation::unregisterSynchronization(FederateHandle federate_handle, const string& label) throw(
-    FederateNotExecutionMember, FederationNotPaused, SaveInProgress, RestoreInProgress, RTIinternalError)
+void Federation::unregisterSynchronization(FederateHandle federate_handle, const string& label)
 {
     Debug(G, pdGendoc) << "enter Federation::unregisterSynchronization" << endl;
 
@@ -1492,12 +1432,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 
 void Federation::subscribeInteraction(FederateHandle federate_handle,
                                       InteractionClassHandle interaction_class_handle,
-                                      bool subscribe_or_unsubscribe) throw(InteractionClassNotDefined,
-                                                                           FederateNotExecutionMember,
-                                                                           SaveInProgress,
-                                                                           SecurityError,
-                                                                           RestoreInProgress,
-                                                                           RTIinternalError)
+                                      bool subscribe_or_unsubscribe)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1510,13 +1445,7 @@ void Federation::subscribeInteraction(FederateHandle federate_handle,
 
 void Federation::subscribeObject(FederateHandle federate,
                                  ObjectClassHandle object,
-                                 const vector<AttributeHandle>& attributes) throw(ObjectClassNotDefined,
-                                                                                  AttributeNotDefined,
-                                                                                  FederateNotExecutionMember,
-                                                                                  SaveInProgress,
-                                                                                  SecurityError,
-                                                                                  RestoreInProgress,
-                                                                                  RTIinternalError)
+                                 const vector<AttributeHandle>& attributes)
 {
     Debug(G, pdGendoc) << "enter Federation::subscribeObject" << endl;
     // It may throw FederateNotExecutionMember.
@@ -1619,13 +1548,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                        const vector<AttributeHandle>& attributes,
                                        const vector<AttributeValue_t>& values,
                                        FederationTime time,
-                                       const string& tag) throw(FederateNotExecutionMember,
-                                                                ObjectNotKnown,
-                                                                AttributeNotDefined,
-                                                                AttributeNotOwned,
-                                                                SaveInProgress,
-                                                                RestoreInProgress,
-                                                                RTIinternalError)
+                                       const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues with time" << endl;
     // It may throw FederateNotExecutionMember.
@@ -1646,13 +1569,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
                                        ObjectHandle object_handle,
                                        const vector<AttributeHandle>& attributes,
                                        const vector<AttributeValue_t>& values,
-                                       const string& tag) throw(FederateNotExecutionMember,
-                                                                ObjectNotKnown,
-                                                                AttributeNotDefined,
-                                                                AttributeNotOwned,
-                                                                SaveInProgress,
-                                                                RestoreInProgress,
-                                                                RTIinternalError)
+                                       const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues without time" << endl;
     // It may throw FederateNotExecutionMember.
@@ -1671,7 +1588,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
 void Federation::updateRegulator(FederateHandle federate_handle,
                                  FederationTime time,
-                                 bool anonymous) throw(FederateNotExecutionMember, RTIinternalError)
+                                 bool anonymous)
 {
     /* if it is an anonymous update (from NULL PRIME message)
 	 * no need to check federate.
@@ -1705,12 +1622,7 @@ void Federation::updateRegulator(FederateHandle federate_handle,
 
 bool Federation::isOwner(FederateHandle federate_handle,
                          ObjectHandle object_handle,
-                         AttributeHandle attribute_handle) throw(FederateNotExecutionMember,
-                                                                 ObjectNotKnown,
-                                                                 AttributeNotDefined,
-                                                                 SaveInProgress,
-                                                                 RestoreInProgress,
-                                                                 RTIinternalError)
+                         AttributeHandle attribute_handle)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1723,12 +1635,7 @@ bool Federation::isOwner(FederateHandle federate_handle,
 
 void Federation::queryAttributeOwnership(FederateHandle federate_handle,
                                          ObjectHandle object_handle,
-                                         AttributeHandle attribute_handle) throw(FederateNotExecutionMember,
-                                                                                 ObjectNotKnown,
-                                                                                 AttributeNotDefined,
-                                                                                 SaveInProgress,
-                                                                                 RestoreInProgress,
-                                                                                 RTIinternalError)
+                                         AttributeHandle attribute_handle)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1742,14 +1649,7 @@ void Federation::queryAttributeOwnership(FederateHandle federate_handle,
 void Federation::negotiateDivestiture(FederateHandle federate_handle,
                                       ObjectHandle object_handle,
                                       const vector<AttributeHandle>& attribs,
-                                      const string& tag) throw(FederateNotExecutionMember,
-                                                               ObjectNotKnown,
-                                                               AttributeNotDefined,
-                                                               AttributeNotOwned,
-                                                               AttributeAlreadyBeingDivested,
-                                                               SaveInProgress,
-                                                               RestoreInProgress,
-                                                               RTIinternalError)
+                                      const string& tag)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1763,16 +1663,7 @@ void Federation::negotiateDivestiture(FederateHandle federate_handle,
 
 void Federation::acquireIfAvailable(FederateHandle federate_handle,
                                     ObjectHandle object_handle,
-                                    const vector<AttributeHandle>& attribs) throw(ObjectNotKnown,
-                                                                                  ObjectClassNotPublished,
-                                                                                  AttributeNotDefined,
-                                                                                  AttributeNotPublished,
-                                                                                  FederateOwnsAttributes,
-                                                                                  AttributeAlreadyBeingAcquired,
-                                                                                  FederateNotExecutionMember,
-                                                                                  SaveInProgress,
-                                                                                  RestoreInProgress,
-                                                                                  RTIinternalError)
+                                    const vector<AttributeHandle>& attribs)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1786,13 +1677,7 @@ void Federation::acquireIfAvailable(FederateHandle federate_handle,
 
 void Federation::divest(FederateHandle federate_handle,
                         ObjectHandle object_handle,
-                        const vector<AttributeHandle>& attrs) throw(ObjectNotKnown,
-                                                                    AttributeNotDefined,
-                                                                    AttributeNotOwned,
-                                                                    FederateNotExecutionMember,
-                                                                    SaveInProgress,
-                                                                    RestoreInProgress,
-                                                                    RTIinternalError)
+                        const vector<AttributeHandle>& attrs)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1807,15 +1692,7 @@ void Federation::divest(FederateHandle federate_handle,
 void Federation::acquire(FederateHandle federate_handle,
                          ObjectHandle object_handle,
                          const vector<AttributeHandle>& attributes,
-                         const string& tag) throw(ObjectNotKnown,
-                                                  ObjectClassNotPublished,
-                                                  AttributeNotDefined,
-                                                  AttributeNotPublished,
-                                                  FederateOwnsAttributes,
-                                                  FederateNotExecutionMember,
-                                                  SaveInProgress,
-                                                  RestoreInProgress,
-                                                  RTIinternalError)
+                         const string& tag)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1831,14 +1708,7 @@ void Federation::acquire(FederateHandle federate_handle,
 
 void Federation::cancelDivestiture(FederateHandle federate_handle,
                                    ObjectHandle id,
-                                   const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                                    AttributeNotDefined,
-                                                                                    AttributeNotOwned,
-                                                                                    AttributeDivestitureWasNotRequested,
-                                                                                    FederateNotExecutionMember,
-                                                                                    SaveInProgress,
-                                                                                    RestoreInProgress,
-                                                                                    RTIinternalError)
+                                   const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1853,14 +1723,7 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
 AttributeHandleSet*
 Federation::respondRelease(FederateHandle federate_handle,
                            ObjectHandle object_handle,
-                           const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                            AttributeNotDefined,
-                                                                            AttributeNotOwned,
-                                                                            FederateWasNotAskedToReleaseAttribute,
-                                                                            FederateNotExecutionMember,
-                                                                            SaveInProgress,
-                                                                            RestoreInProgress,
-                                                                            RTIinternalError)
+                           const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1876,14 +1739,7 @@ Federation::respondRelease(FederateHandle federate_handle,
 
 void Federation::cancelAcquisition(FederateHandle federate_handle,
                                    ObjectHandle object_handle,
-                                   const vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                                    AttributeNotDefined,
-                                                                                    AttributeAlreadyOwned,
-                                                                                    AttributeAcquisitionWasNotRequested,
-                                                                                    FederateNotExecutionMember,
-                                                                                    SaveInProgress,
-                                                                                    RestoreInProgress,
-                                                                                    RTIinternalError)
+                                   const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
@@ -1897,23 +1753,20 @@ void Federation::cancelAcquisition(FederateHandle federate_handle,
     my_root_object->ObjectClasses->cancelAttributeOwnershipAcquisition(federate_handle, object, attributes);
 }
 
-long Federation::createRegion(FederateHandle federate_handle, SpaceHandle space_handle, long extents_count) throw(
-    FederateNotExecutionMember, SpaceNotDefined, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
+long Federation::createRegion(FederateHandle federate_handle, SpaceHandle space_handle, long extents_count)
 {
     this->check(federate_handle);
 
     return my_root_object->createRegion(space_handle, extents_count);
 }
 
-void Federation::modifyRegion(FederateHandle federate_handle, RegionHandle region, const vector<Extent>& extents) throw(
-    FederateNotExecutionMember, RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
+void Federation::modifyRegion(FederateHandle federate_handle, RegionHandle region, const vector<Extent>& extents)
 {
     check(federate_handle);
     my_root_object->modifyRegion(region, extents);
 }
 
-void Federation::deleteRegion(FederateHandle federate_handle, long region) throw(
-    FederateNotExecutionMember, RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError)
+void Federation::deleteRegion(FederateHandle federate_handle, long region)
 {
     this->check(federate_handle);
 
@@ -1931,11 +1784,7 @@ void Federation::deleteRegion(FederateHandle federate_handle, long region) throw
 void Federation::associateRegion(FederateHandle federate_handle,
                                  ObjectHandle object,
                                  RegionHandle the_handle,
-                                 const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                                  RegionNotKnown,
-                                                                                  SaveInProgress,
-                                                                                  RestoreInProgress,
-                                                                                  RTIinternalError)
+                                 const vector<AttributeHandle>& attributes)
 {
     check(federate_handle);
 
@@ -1948,8 +1797,7 @@ void Federation::associateRegion(FederateHandle federate_handle,
     }
 }
 
-void Federation::unassociateRegion(FederateHandle federate_handle, ObjectHandle object, RegionHandle the_handle) throw(
-    FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError)
+void Federation::unassociateRegion(FederateHandle federate_handle, ObjectHandle object, RegionHandle the_handle)
 {
     check(federate_handle);
 
@@ -1960,11 +1808,7 @@ void Federation::unassociateRegion(FederateHandle federate_handle, ObjectHandle 
 void Federation::subscribeAttributesWR(FederateHandle federate_handle,
                                        ObjectClassHandle c,
                                        RegionHandle region_handle,
-                                       const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                                        RegionNotKnown,
-                                                                                        SaveInProgress,
-                                                                                        RestoreInProgress,
-                                                                                        RTIinternalError)
+                                       const vector<AttributeHandle>& attributes)
 {
     check(federate_handle);
     my_root_object->ObjectClasses->subscribe(federate_handle, c, attributes, my_root_object->getRegion(region_handle));
@@ -1972,11 +1816,7 @@ void Federation::subscribeAttributesWR(FederateHandle federate_handle,
 
 void Federation::unsubscribeAttributesWR(FederateHandle federate_handle,
                                          ObjectClassHandle object_class_handle,
-                                         RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                           RegionNotKnown,
-                                                                           SaveInProgress,
-                                                                           RestoreInProgress,
-                                                                           RTIinternalError)
+                                         RegionHandle region_handle)
 {
     check(federate_handle);
 
@@ -1987,11 +1827,7 @@ void Federation::unsubscribeAttributesWR(FederateHandle federate_handle,
 
 void Federation::subscribeInteractionWR(FederateHandle federate_handle,
                                         InteractionClassHandle interaction_class_handle,
-                                        RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                          RegionNotKnown,
-                                                                          SaveInProgress,
-                                                                          RestoreInProgress,
-                                                                          RTIinternalError)
+                                        RegionHandle region_handle)
 {
     check(federate_handle);
 
@@ -2002,11 +1838,7 @@ void Federation::subscribeInteractionWR(FederateHandle federate_handle,
 
 void Federation::unsubscribeInteractionWR(FederateHandle federate_handle,
                                           InteractionClassHandle interaction_class_handle,
-                                          RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                            RegionNotKnown,
-                                                                            SaveInProgress,
-                                                                            RestoreInProgress,
-                                                                            RTIinternalError)
+                                          RegionHandle region_handle)
 {
     check(federate_handle);
 
@@ -2020,17 +1852,7 @@ Federation::registerObjectWithRegion(FederateHandle federate_handle,
                                      ObjectClassHandle class_handle,
                                      const string& object_name,
                                      RegionHandle region_handle,
-                                     const vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                                      ObjectClassNotDefined,
-                                                                                      ObjectClassNotPublished,
-                                                                                      AttributeNotDefined,
-                                                                                      AttributeNotPublished,
-                                                                                      RegionNotKnown,
-                                                                                      InvalidRegionContext,
-                                                                                      ObjectAlreadyRegistered,
-                                                                                      SaveInProgress,
-                                                                                      RestoreInProgress,
-                                                                                      RTIinternalError)
+                                     const vector<AttributeHandle>& attributes)
 {
     Debug(G, pdGendoc) << "enter Federation::registerObjectWithRegion" << endl;
     check(federate_handle);
@@ -2199,7 +2021,7 @@ bool Federation::saveXmlData()
 
 FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
                                               ObjectHandle theObject,
-                                              const vector<AttributeHandle>& theAttributeList) throw(ObjectNotKnown)
+                                              const vector<AttributeHandle>& theAttributeList)
 {
     Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << endl;
 
@@ -2254,7 +2076,7 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
 void Federation::requestClassAttributeValueUpdate(
     FederateHandle theFederateHandle,
     ObjectClassHandle theClassHandle,
-    const vector<AttributeHandle>& theAttributeList) throw(ObjectClassNotDefined, RTIinternalError)
+    const vector<AttributeHandle>& theAttributeList)
 {
     Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
 

@@ -91,7 +91,7 @@ RTIG::~RTIG()
     std::cout << std::endl << "Stopping RTIG" << std::endl;
 }
 
-void RTIG::execute() throw(NetworkError)
+void RTIG::execute()
 {
     // create TCP and UDP connections for the RTIG server
     createSocketServers();
@@ -247,7 +247,7 @@ void RTIG::setVerboseLevel(const int level)
     my_federations.setVerboseLevel(level);
 }
 
-void RTIG::setListeningIPAddress(const std::string& hostName) throw(NetworkError)
+void RTIG::setListeningIPAddress(const std::string& hostName)
 {
     Socket::host2addr(hostName, my_listeningIPAddress);
 }
@@ -266,7 +266,7 @@ void RTIG::createSocketServers()
     }
 }
 
-Socket* RTIG::processIncomingMessage(Socket* link) throw(NetworkError)
+Socket* RTIG::processIncomingMessage(Socket* link)
 {
     Debug(G, pdGendoc) << "enter RTIG::processIncomingMessage" << std::endl;
 

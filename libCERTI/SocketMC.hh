@@ -38,10 +38,8 @@ public:
 	void CreerSocketMC(char *addr, unsigned long port);
 	void CreerSocketMC(unsigned long addr, unsigned long port);
 
-	virtual void send(const unsigned char *, size_t)
-	  throw (NetworkError, NetworkSignal);
-	virtual void receive(void *Buffer, unsigned long Size)
-	  throw (NetworkError, NetworkSignal);
+	virtual void send(const unsigned char *, size_t);
+	virtual void receive(void *Buffer, unsigned long Size);
 
                 SOCKET returnSocket();
 

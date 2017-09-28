@@ -69,11 +69,11 @@ public:
 
 	SOCKET returnSocket();
 
-	void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
-	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
+	void send(const unsigned char *, size_t);
+	void receive(const unsigned char *, size_t);
 
 protected:
-	void error(const char *) throw (NetworkError);
+	void error(const char *);
 
 	SOCKET _socket_un;
 

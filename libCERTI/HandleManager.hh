@@ -61,7 +61,7 @@ public:
 	 * @return the new handle
 	 * @throw RTIinternalError if all handles between first and maximal are used
 	 */
-	T provide() throw (RTIinternalError);
+	T provide();
 
 	/**
 	 * Free a handle.
@@ -87,7 +87,7 @@ HandleManager<T>::HandleManager(T init, size_t hmax)
 : highest(init.get()), maximum(T(hmax)) { }
 
 template<typename T> T
-HandleManager<T>::provide() throw (RTIinternalError)
+HandleManager<T>::provide()
 {
     T handle = T(0);
     

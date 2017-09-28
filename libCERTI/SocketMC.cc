@@ -139,7 +139,6 @@ _est_init_mc = true ;
 // ----------------------------------------------------------------------------
 void
 SocketMC::send(const unsigned char *Buffer, size_t)
-    throw (NetworkError, NetworkSignal)
 {
     // BUG:Revoir ca en faisant le contraire(EmettreMC appelle Emettre)
     sendMC((NetworkMessage*) Buffer);
@@ -148,7 +147,6 @@ SocketMC::send(const unsigned char *Buffer, size_t)
 // ----------------------------------------------------------------------------
 void
 SocketMC::receive(void *Buffer, unsigned long)
-    throw (NetworkError, NetworkSignal)
 {
     // BUG: Revoir ca en faisant le contraire(RecevoirMC appelle Recevoir)
     receiveMC((NetworkMessage*) Buffer);

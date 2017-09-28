@@ -105,7 +105,6 @@ SocketHTTPProxy::~SocketHTTPProxy()
 // ----------------------------------------------------------------------------
 void
 SocketHTTPProxy::createConnection(const char *server_name, unsigned int port)
-    throw (NetworkError)
 {
     const char *http_proxy;
     // check if proxy is requested
@@ -204,7 +203,6 @@ int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
 // ----------------------------------------------------------------------------
 size_t
 SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
-    throw (NetworkError, NetworkSignal)
 {
     size_t nReceived = 0;
     while (nReceived < max_size-1)

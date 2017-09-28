@@ -72,7 +72,7 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 } /* end of deserialize */
 
 void
-NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal){
+NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) {
     G.Out(pdGendoc,"enter NetworkMessage::send");
     /* 0- reset send buffer */
     msgBuffer.reset();
@@ -96,7 +96,7 @@ NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkErr
 } /* end of send */
 
 void
-NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal){
+NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) {
     G.Out(pdGendoc,"enter NetworkMessage::send");
     /* 0- reset send buffer */
     msgBuffer.reset();
@@ -120,7 +120,7 @@ NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer) thr
 } /* end of send */
 
 void
-NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal) {
+NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) {
 	G.Out(pdGendoc,"enter NetworkMessage::receive");
 	/* 0- Reset receive buffer */
 	/* FIXME this reset may not be necessary since we do

@@ -37,8 +37,7 @@ public:
     RTIRegion(RegionHandle, const RoutingSpace &, size_t);
     virtual ~RTIRegion();
 
-    virtual SpaceHandle getSpaceHandle() const
-        throw ();
+    virtual SpaceHandle getSpaceHandle() const noexcept;
 
 protected:
     const RoutingSpace &space ;

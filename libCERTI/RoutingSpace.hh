@@ -56,15 +56,14 @@ public:
      * @param dimension_name Dimension name
      * @return Dimension handle
      */
-    DimensionHandle getDimensionHandle(const std::string& dimension_name) const throw (NameNotFound);
+    DimensionHandle getDimensionHandle(const std::string& dimension_name) const;
     
     /** 
      * Get the name of the specified dimension
      * @param dimension_handle Dimension handle
      * @return the Dimension name
      */
-    const std::string& getDimensionName(DimensionHandle dimension_handle) const
-	throw (DimensionNotDefined);
+    const std::string& getDimensionName(DimensionHandle dimension_handle) const;
     
     /** 
      * Get the number of dimensions of this space

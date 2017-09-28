@@ -66,11 +66,6 @@ ObjectSet::changeAttributeTransportationType(ObjectHandle,
                                              AttributeHandle *,
                                              uint16_t,
                                              TransportType)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     // Object *object = getObject(the_object);
 }
@@ -81,11 +76,6 @@ ObjectSet::changeAttributeOrderType(ObjectHandle,
                                     AttributeHandle *,
                                     uint16_t,
                                     TransportType)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError,
-           InvalidObjectHandle)
 {
     // Object *object = getObject(the_object);
 }
@@ -93,7 +83,6 @@ ObjectSet::changeAttributeOrderType(ObjectHandle,
 // ----------------------------------------------------------------------------
 ObjectHandle
 ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
-    throw (ObjectNotKnown, RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
     for (i = begin(); i != end(); ++i) {
@@ -108,7 +97,6 @@ ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
 // ----------------------------------------------------------------------------
 const std::string&
 ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
-    throw (ObjectNotKnown, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -118,8 +106,6 @@ ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
 // ----------------------------------------------------------------------------
 ObjectClassHandle
 ObjectSet::getObjectClass(ObjectHandle the_object) const
-    throw (ObjectNotKnown, FederateNotExecutionMember,
-           ConcurrentAccessAttempted, RTIinternalError)
 {
     return getObject(the_object)->getClass();
 }
@@ -130,8 +116,6 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 				  ObjectClassHandle the_class,
                                   ObjectHandle the_object,
                                   const std::string& the_name)
-    throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
-           SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     const_iterator i ;
 
@@ -170,13 +154,6 @@ void
 ObjectSet::deleteObjectInstance(FederateHandle,
                                 ObjectHandle the_object,
                                 const std::string& /*the_tag*/)
-    throw (ObjectNotKnown,
-           DeletePrivilegeNotHeld,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -188,7 +165,6 @@ ObjectSet::deleteObjectInstance(FederateHandle,
 // ----------------------------------------------------------------------------
 void
 ObjectSet::killFederate(FederateHandle the_federate)
-    throw (RTIinternalError)
 {
 	std::map<ObjectHandle, Object *>::iterator i = begin();
 	while( i != end() ) {
@@ -209,7 +185,6 @@ bool
 ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
                                       ObjectHandle the_object,
                                       AttributeHandle the_attribute) const
-    throw (ObjectNotKnown, AttributeNotDefined, RTIinternalError)
 {
     D.Out(pdDebug, "isAttributeOwnedByFederate called for attribute %u, "
           "objet %u", the_attribute, the_object);
@@ -228,7 +203,6 @@ void
 ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
                                    ObjectHandle the_object,
                                    AttributeHandle the_attribute) const
-    throw (ObjectNotKnown, AttributeNotDefined, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -270,11 +244,6 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle,
                                         AttributeHandle *,
                                         uint16_t,
                                         const std::string&)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeAlreadyBeingDivested,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 }
@@ -285,13 +254,6 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle,
                                          ObjectHandle,
                                          AttributeHandle *,
                                          uint16_t)
-    throw (ObjectNotKnown,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           AttributeAlreadyBeingAcquired,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 }
@@ -302,10 +264,6 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle,
                                            ObjectHandle,
                                            AttributeHandle *,
                                            uint16_t)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 }
@@ -317,13 +275,6 @@ ObjectSet::attributeOwnershipAcquisition(FederateHandle,
                                          AttributeHandle *,
                                          uint16_t,
                                          const std::string&)
-
-    throw (ObjectNotKnown,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 }
@@ -334,11 +285,6 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                               ObjectHandle the_object,
                                               const std::vector <AttributeHandle> &the_attributes,
                                               uint16_t the_size)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeDivestitureWasNotRequested,
-           RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -374,11 +320,6 @@ ObjectSet::attributeOwnershipReleaseResponse(FederateHandle,
                                              ObjectHandle,
                                              std::vector <AttributeHandle> &,
                                              uint16_t)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateWasNotAskedToReleaseAttribute,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 
@@ -391,11 +332,6 @@ ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
                                                ObjectHandle,
                                                std::vector <AttributeHandle> &,
                                                uint16_t)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeAlreadyOwned,
-           AttributeAcquisitionWasNotRequested,
-           RTIinternalError)
 {
     // Object *object = getObject(the_object);
 }
@@ -403,7 +339,6 @@ ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
 // ----------------------------------------------------------------------------
 Object *
 ObjectSet::getObject(ObjectHandle the_object) const
-    throw (ObjectNotKnown)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
     i = find(the_object);
@@ -475,7 +410,6 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 FederateHandle
 ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/,
                                   ObjectHandle the_object)
-    throw (ObjectNotKnown)
 {
     G.Out(pdGendoc,"enter ObjectSet::requestObjectOwner");
     const_iterator i ;

@@ -38,10 +38,8 @@ public:
     SecureTCPSocket();
     virtual ~SecureTCPSocket();
 
-    virtual void send(const unsigned char *, size_t)
-        throw (NetworkError, NetworkSignal);
-    virtual void receive(void *Buffer, unsigned long Size)
-        throw (NetworkError, NetworkSignal);
+    virtual void send(const unsigned char *, size_t);
+    virtual void receive(void *Buffer, unsigned long Size);
 
     // FIXME: Peut-etre devrait-on regarder si un message est pret en interne,
     // et balancer une exception dans ce cas la.

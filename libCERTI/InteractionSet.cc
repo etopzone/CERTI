@@ -67,11 +67,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         uint16_t list_size,
         FederationTime the_time,
         const RTIRegion *region,
-        const std::string& the_tag)
-throw (FederateNotPublishing,
-        InteractionClassNotDefined,
-        InteractionParameterNotDefined,
-        RTIinternalError) {
+        const std::string& the_tag) {
 
     G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction with time") ;
 
@@ -112,11 +108,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         const std::vector <ParameterValue_t> &value_list,
         uint16_t list_size,
         const RTIRegion *region,
-        const std::string& the_tag)
-throw (FederateNotPublishing,
-        InteractionClassNotDefined,
-        InteractionParameterNotDefined,
-        RTIinternalError) {
+        const std::string& the_tag){
 
     G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction without time") ;
 
@@ -150,7 +142,7 @@ throw (FederateNotPublishing,
 //! Return the interaction handle associated to name.
 InteractionClassHandle
 InteractionSet::getInteractionClassHandle(const std::string& class_name) const
-throw (NameNotFound)  {
+ {
 	return getHandleFromName(class_name);
 } /* end of getInteractionClassHandle */
 
@@ -158,7 +150,7 @@ throw (NameNotFound)  {
 //! Return the interaction name associated to handle.
 const std::string&
 InteractionSet::getInteractionClassName(InteractionClassHandle the_handle) const
-throw (InteractionClassNotDefined)
+
 {
 	return getNameFromHandle(the_handle);
 } /* end of getInteractionClassName */
@@ -168,9 +160,7 @@ throw (InteractionClassNotDefined)
 ParameterHandle
 InteractionSet::getParameterHandle(const std::string& the_name,
 		InteractionClassHandle the_class)
-throw (NameNotFound,
-		InteractionClassNotDefined,
-		RTIinternalError)
+
 		{
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(the_class);
@@ -182,9 +172,7 @@ throw (NameNotFound,
 const std::string&
 InteractionSet::getParameterName(ParameterHandle the_handle,
 		InteractionClassHandle the_class)
-throw (InteractionParameterNotDefined,
-		InteractionClassNotDefined,
-		RTIinternalError)
+
 		{
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(the_class);
@@ -200,10 +188,7 @@ InteractionSet::isReady(FederateHandle federate_handle,
 		InteractionClassHandle the_interaction,
 		const std::vector <ParameterHandle> &param_array,
 		uint16_t param_array_size)
-throw (FederateNotPublishing,
-		InteractionClassNotDefined,
-		InteractionParameterNotDefined,
-		RTIinternalError)
+
 		{
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(the_interaction);
@@ -213,8 +198,7 @@ throw (FederateNotPublishing,
 // ----------------------------------------------------------------------------
 //! killFederate.
 void
-InteractionSet::killFederate(FederateHandle the_federate)
-throw () {
+InteractionSet::killFederate(FederateHandle the_federate) noexcept {
     handled_const_iterator i;
 
     for (i = handled_begin(); i != handled_end(); ++i) {
@@ -230,10 +214,7 @@ void
 InteractionSet::publish(FederateHandle federate_handle,
 		InteractionClassHandle interaction_handle,
 		bool publish)
-throw (FederateNotPublishing,
-		InteractionClassNotDefined,
-		RTIinternalError,
-		SecurityError)
+
 		{
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(interaction_handle);
@@ -250,10 +231,7 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 		InteractionClassHandle interaction_handle,
 		const RTIRegion *region,
 		bool subscribe)
-throw (FederateNotSubscribing,
-		InteractionClassNotDefined,
-		RTIinternalError,
-		SecurityError)
+
 		{
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(interaction_handle);

@@ -47,14 +47,13 @@ public :
 	virtual ~SocketTCP();
 	virtual void close();
 
-    virtual void createConnection(const char *server_name, unsigned int port)
-        throw (NetworkError);
-	void createTCPClient(in_port_t port, in_addr_t addr) throw (NetworkError);
-	void createServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
+    virtual void createConnection(const char *server_name, unsigned int port);
+	void createTCPClient(in_port_t port, in_addr_t addr);
+	void createServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY);
 
-	int accept(SocketTCP *serveur) throw (NetworkError);
-	virtual void send(const unsigned char *, size_t); //		throw (NetworkError, NetworkSignal);
-	virtual void receive(void *Buffer, unsigned long Size); //	throw (NetworkError, NetworkSignal);
+	int accept(SocketTCP *server);
+	virtual void send(const unsigned char *, size_t);
+	virtual void receive(void *Buffer, unsigned long Size);
 
 	virtual bool isDataReady() const ;
 
@@ -67,7 +66,8 @@ public :
 	#ifdef _WIN32
 		static bool winsockStartup();
 		static void winsockShutdown();
-		static bool winsockInitialized()	{ return (winsockInits > 0);}
+		static bool winsockInitialized()
+        { return (winsockInits > 0); }
 	#endif
 
 protected:

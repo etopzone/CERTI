@@ -61,8 +61,7 @@ public:
 	 * @return the interaction class handle
 	 */
 	InteractionClassHandle
-	getInteractionClassHandle(const std::string& class_name) const
-	throw (NameNotFound);
+	getInteractionClassHandle(const std::string& class_name) const;
 
 	/**
 	 * Return the interaction class name correspondig to the provided handle.
@@ -70,45 +69,29 @@ public:
 	 * @return the interaction class name
 	 */
 	const std::string&
-	getInteractionClassName(InteractionClassHandle the_handle) const
-	throw (InteractionClassNotDefined);
+	getInteractionClassName(InteractionClassHandle the_handle) const;
 
 	ParameterHandle
           getParameterHandle(const std::string& the_name,
-			InteractionClassHandle the_class)
-	throw (NameNotFound,
-			InteractionClassNotDefined,
-			RTIinternalError);
+			InteractionClassHandle the_class);
 
 	const std::string&
 	getParameterName(ParameterHandle the_handle,
-			InteractionClassHandle the_class)
-	throw (InteractionParameterNotDefined,
-			InteractionClassNotDefined,
-			RTIinternalError);
+			InteractionClassHandle the_class);
 
-	void killFederate(FederateHandle the_federate)
-	throw ();
+	void killFederate(FederateHandle the_federate) noexcept;
 
 	// ----------------------------------
 	// -- Interaction Class Management --
 	// ----------------------------------
 	void publish(FederateHandle the_federate_handle,
 			InteractionClassHandle the_interaction_handle,
-			bool publish)
-	throw (FederateNotPublishing,
-			InteractionClassNotDefined,
-			RTIinternalError,
-			SecurityError);
+			bool publish);
 
 	void subscribe(FederateHandle the_federate_handle,
 			InteractionClassHandle the_interaction_handle,
 			const RTIRegion *,
-			bool subscribe)
-	throw (FederateNotSubscribing,
-			InteractionClassNotDefined,
-			RTIinternalError,
-			SecurityError);
+			bool subscribe);
 
 	// -------------------------------------
 	// -- Interaction Instance Management --
@@ -116,11 +99,7 @@ public:
 	void isReady(FederateHandle theFederateHandle,
 			InteractionClassHandle theInteraction,
 			const std::vector <ParameterHandle> &paramArray,
-			uint16_t paramArraySize)
-	throw (FederateNotPublishing,
-			InteractionClassNotDefined,
-			InteractionParameterNotDefined,
-			RTIinternalError);
+			uint16_t paramArraySize);
 
 	void broadcastInteraction(FederateHandle theFederateHandle,
 			InteractionClassHandle theInteractionHandle,
@@ -129,11 +108,7 @@ public:
 			uint16_t theListSize,
 			FederationTime theTime,
 			const RTIRegion *,
-                        const std::string& theTag)
-	throw (FederateNotPublishing,
-			InteractionClassNotDefined,
-			InteractionParameterNotDefined,
-			RTIinternalError);
+                        const std::string& theTag);
 
 	void broadcastInteraction(FederateHandle theFederateHandle,
 			InteractionClassHandle theInteractionHandle,
@@ -141,11 +116,7 @@ public:
 			const std::vector <ParameterValue_t> &theValueList,
 			uint16_t theListSize,
 			const RTIRegion *,
-			const std::string& theTag)
-	throw (FederateNotPublishing,
-			InteractionClassNotDefined,
-			InteractionParameterNotDefined,
-			RTIinternalError);
+			const std::string& theTag);
 
 private:
 

@@ -39,32 +39,26 @@ public:
     BaseRegion(RegionHandle);
     virtual ~BaseRegion();
 
-    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const;
 
-    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const;
 
-    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t)
-        throw (ArrayIndexOutOfBounds);
+    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t);
 
-    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t)
-        throw (ArrayIndexOutOfBounds);
+    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t);
 
-    virtual uint32_t getNumberOfExtents() const
-        throw ();
+    virtual uint32_t getNumberOfExtents() const noexcept;
 
-    virtual SpaceHandle getSpaceHandle() const
-        throw () = 0 ;
+    virtual SpaceHandle getSpaceHandle() const noexcept = 0;
 
-    const std::vector<Extent> &getExtents() const ;
-    void replaceExtents(const std::vector<Extent> &) throw (InvalidExtents);
-    bool overlaps(const BaseRegion &region) const ;
+    const std::vector<Extent>& getExtents() const;
+    void replaceExtents(const std::vector<Extent>&);
+    bool overlaps(const BaseRegion& region) const;
 
 protected:
-    void setExtents(const std::vector<Extent> &);
+    void setExtents(const std::vector<Extent>&);
 
-    std::vector<Extent> extents ;
+    std::vector<Extent> extents;
 };
 
 } // namespace certi

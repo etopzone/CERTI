@@ -33,8 +33,7 @@ using libhla::ipc::SemaphoreWin32;
 // ************************************************
 SocketSHMWin32::SocketSHMWin32(const std::string& Socket_Name,
                              const SHM_SIDE_t& Socket_Side,
-                             const int Socket_Size )
-                             throw (certi::SocketSHMNotCreated): SocketSHM(Socket_Name,Socket_Side,Socket_Size)
+                             const int Socket_Size ): SocketSHM(Socket_Name,Socket_Side,Socket_Size)
                              {
 
 if(_Side == SHM_SC){

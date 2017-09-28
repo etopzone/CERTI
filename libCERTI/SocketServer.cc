@@ -49,7 +49,7 @@ int SocketServer::addToFDSet(fd_set* select_fdset)
     return fd_max;
 }
 
-void SocketServer::checkMessage(long socket_number, NetworkMessage* message) const throw(SecurityError)
+void SocketServer::checkMessage(long socket_number, NetworkMessage* message) const
 {
     // G.Out(pdGendoc,"enter SocketServer::checkMessage");
 
@@ -79,7 +79,7 @@ void SocketServer::checkMessage(long socket_number, NetworkMessage* message) con
 
 void SocketServer::close(long socket,
                          FederationHandle& federation_referenced,
-                         FederateHandle& federate_referenced) throw(RTIinternalError)
+                         FederateHandle& federate_referenced)
 {
     federation_referenced = FederationHandle(0);
     federate_referenced = 0;
@@ -170,7 +170,6 @@ Socket* SocketServer::getActiveSocket(fd_set* select_fdset) const
 }
 
 Socket* SocketServer::getSocketLink(FederationHandle the_federation, FederateHandle the_federate, TransportType the_type) const
-    throw(FederateNotExecutionMember, RTIinternalError)
 {
     // G.Out(pdGendoc,"enter SocketServer::getSocketLink");
     // It may throw FederateNotExecutionMember
@@ -194,7 +193,6 @@ Socket* SocketServer::getSocketLink(FederationHandle the_federation, FederateHan
 }
 
 SocketTuple* SocketServer::getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const
-    throw(FederateNotExecutionMember)
 {
     list<SocketTuple*>::const_iterator i;
     for (i = begin(); i != end(); ++i) {
@@ -207,7 +205,7 @@ SocketTuple* SocketServer::getWithReferences(FederationHandle the_federation, Fe
                                                         << the_federation);
 }
 
-SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const throw(RTIinternalError)
+SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const
 {
     list<SocketTuple*>::const_iterator i;
     for (i = begin(); i != end(); ++i) {
@@ -220,7 +218,7 @@ SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const throw(RTI
     throw RTIinternalError("Socket not found.");
 }
 
-void SocketServer::open() throw(RTIinternalError)
+void SocketServer::open()
 {
 #ifdef WITH_GSSAPI
     SecureTCPSocket* newLink = new SecureTCPSocket();
@@ -245,7 +243,7 @@ void SocketServer::setReferences(long socket,
                                  FederationHandle federation_reference,
                                  FederateHandle federate_reference,
                                  unsigned long address,
-                                 unsigned int port) throw(RTIinternalError)
+                                 unsigned int port)
 {
     // It may throw RTIinternalError if not found.
     SocketTuple* tuple = getWithSocket(socket);

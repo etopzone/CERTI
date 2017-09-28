@@ -49,8 +49,7 @@ using libhla::ipc::Semaphore;
 RingBuffer::RingBuffer(const std::string& RingBuffer_Name,
            	           const BUFFER_SIDE_t& RingBuffer_Side,
                        const int RingBuffer_Size,
-                       const std::string& Shm_Sem_Type )
-                       throw (certi::RingBufferNotCreated) {
+                       const std::string& Shm_Sem_Type ) {
 
 #ifdef DEBUG
 std::cout << "-----------------------------------------------------------" << std::endl ;
@@ -243,7 +242,7 @@ else{
 // ************************************************
 // Method : RingBuffer::Attach()
 // ************************************************
-void RingBuffer::Attach() throw(certi::RingBufferNotAttached) {
+void RingBuffer::Attach() {
 
 if(_Side == BUFFER_CS){
     try {
@@ -361,7 +360,7 @@ else{
 // ************************************************
 // Destructor
 // ************************************************
-RingBuffer ::~RingBuffer () throw(certi::RingBufferNotDeleted) {
+RingBuffer ::~RingBuffer () {
 if(_Side == BUFFER_SC){
     try {
        _Sem_SC->Delete() ;
@@ -395,9 +394,7 @@ delete _Pw_Pr_CS ;
 // Method : RingBuffer::Send(...)
 // ************************************************
 void RingBuffer::Send(void *Buffer, size_t Size)
-                      throw (certi::MessageNotSent,
-                             certi::MessageTooLong,
-                             certi::BufferFull) {
+                     {
 
 #ifdef DEBUG
 std::cout << "RingBuffer --> Try to Send..." << std::endl ;
@@ -563,9 +560,7 @@ std::cout << "RingBuffer --> Send Complete !!" << std::endl ;
 // Method : RingBuffer::Receive(...)
 // ************************************************
 void RingBuffer::Receive(void *Buffer, size_t Size)
-                         throw (certi::MessageNotReceived,
-                                certi::MessageTooLong,
-                                certi::BufferEmpty) {
+                          {
 
 #ifdef DEBUG
 std::cout << "RingBuffer -->  Try to Receive..." << std::endl ;
@@ -749,8 +744,7 @@ std::cout << "RingBuffer --> Receive complete!!!" << std::endl ;
 // ************************************************
 // Method : RingBuffer::Close()
 // ************************************************
-void RingBuffer::Close()
-                throw (certi::RingBufferNotClosed) {
+void RingBuffer::Close() {
 try {
    _Shm_SC->Close() ;
 }

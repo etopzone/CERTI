@@ -125,30 +125,25 @@ public:
 
     // -- Security Methods --
     void checkFederateAccess(FederateHandle the_federate,
-            const std::string& reason) const
-    throw (SecurityError);
+            const std::string& reason) const;
 
     SecurityLevelID getSecurityLevelId() const { return id ; };
     void setSecurityLevelId(SecurityLevelID NewLevelID);
 
     // -- Publication and Subscription --
-    void publish(FederateHandle)
-    throw (FederateNotPublishing, RTIinternalError, SecurityError);
+    void publish(FederateHandle);
 
-    void unpublish(FederateHandle)
-    throw (FederateNotPublishing, RTIinternalError, SecurityError);
+    void unpublish(FederateHandle);
 
     // -- RTI Support Services --
-    ParameterHandle getParameterHandle(const std::string&) const
-    throw (NameNotFound, RTIinternalError);
+    ParameterHandle getParameterHandle(const std::string&) const;
 
     /**
      * Get interaction parameter name from its handle
      * @param[in] the_handle the parameter handle
      * @return the name of the parameter
      */
-    const std::string& getParameterName(ParameterHandle the_handle) const
-    throw (InteractionParameterNotDefined, RTIinternalError);
+    const std::string& getParameterName(ParameterHandle the_handle) const;
 
     /**
      * Returns true if the Interaction has the parameter with the given handle.
@@ -157,24 +152,18 @@ public:
      */
     bool hasParameter(ParameterHandle parameterHandle) const;
 
-    void killFederate(FederateHandle theFederate)
-    throw ();
+    void killFederate(FederateHandle theFederate) noexcept;
 
     // -- Transport and Ordering --
     void changeTransportationType(TransportType new_type,
-            FederateHandle the_handle)
-    throw (FederateNotPublishing, InvalidTransportationHandle, RTIinternalError);
+            FederateHandle the_handle);
 
-    void changeOrderType(OrderType new_order, FederateHandle the_handle)
-    throw (FederateNotPublishing, InvalidOrderingHandle, RTIinternalError);
+    void changeOrderType(OrderType new_order, FederateHandle the_handle);
 
     // -- Instance Broadcasting --
     void isReady(FederateHandle federate_handle,
             const std::vector <ParameterHandle> &parameter_list,
-            uint16_t list_size)
-    throw (FederateNotPublishing,
-            InteractionParameterNotDefined,
-            RTIinternalError);
+            uint16_t list_size);
 
     InteractionBroadcastList *
     sendInteraction(FederateHandle federate_handle,
@@ -183,11 +172,7 @@ public:
             uint16_t list_size,
             FederationTime the_time,
             const RTIRegion *,
-            const std::string& the_tag)
-    throw (FederateNotPublishing,
-            InteractionClassNotDefined,
-            InteractionParameterNotDefined,
-            RTIinternalError);
+            const std::string& the_tag);
 
     InteractionBroadcastList *
     sendInteraction(FederateHandle federate_handle,
@@ -195,11 +180,7 @@ public:
             const std::vector <ParameterValue_t> &value_list,
             uint16_t list_size,
             const RTIRegion *,
-            const std::string& the_tag)
-    throw (FederateNotPublishing,
-            InteractionClassNotDefined,
-            InteractionParameterNotDefined,
-            RTIinternalError);
+            const std::string& the_tag);
 
     void broadcastInteractionMessage(InteractionBroadcastList *, const RTIRegion *);
 
@@ -241,8 +222,7 @@ private:
      */
     InteractionSet* subClasses;
 
-    Parameter *getParameterByHandle(ParameterHandle the_handle) const
-    throw (InteractionParameterNotDefined, RTIinternalError);
+    Parameter *getParameterByHandle(ParameterHandle the_handle) const;
 
     void deletePublisher(FederateHandle);
     bool isPublishing(FederateHandle);

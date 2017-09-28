@@ -56,7 +56,7 @@ public:
     typedef unsigned long ByteCount_t;
     virtual ~Socket(){};
 
-    virtual void createConnection(const char* server_name, unsigned int port) throw(NetworkError) = 0;
+    virtual void createConnection(const char* server_name, unsigned int port) = 0;
     virtual void send(const unsigned char*, size_t) = 0;
     virtual void receive(void* Buffer, unsigned long Size) = 0;
     virtual void close() = 0;
@@ -94,7 +94,7 @@ public:
     /**
      * This function builds an IP address out of an hostname.
      */
-    static void host2addr(const std::string& hostName, in_addr_t& addr) throw(NetworkError)
+    static void host2addr(const std::string& hostName, in_addr_t& addr)
     {
         addr = 0;
         // get host information from server name
@@ -114,7 +114,7 @@ public:
     /**
      * Get the IP address corresponding to the first interface of the host.
      */
-    static void getMyFirstIPaddr(in_addr_t& addr) throw(NetworkError)
+    static void getMyFirstIPaddr(in_addr_t& addr)
     {
         char name[MAXHOSTNAMELEN + 1];
         /* FIXME gethostname is deprecated

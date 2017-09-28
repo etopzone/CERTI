@@ -126,12 +126,11 @@ public:
 	 *  @throw SecurityError if the Federate is not allowed to access the
 	 *         Object Class, and print an Audit message containing reason.
 	 */
-	void checkFederateAccess(FederateHandle, const std::string& reason)
-	throw (SecurityError);
+	void checkFederateAccess(FederateHandle, const std::string& reason);
 
 	SecurityLevelID getSecurityLevelId() const { return securityLevelId ; }
 
-	void setSecurityLevelId(SecurityLevelID newLevelID) throw (SecurityError);
+	void setSecurityLevelId(SecurityLevelID newLevelID);
 
 	AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
 			bool is_inherited = false);
@@ -139,8 +138,7 @@ public:
 	// Publication and Subscription
 	void publish(FederateHandle theFederateHandle,
 			const std::vector <AttributeHandle> &theAttributeList,
-			bool PubOrUnpub)
-	throw (AttributeNotDefined, RTIinternalError, SecurityError);
+			bool PubOrUnpub);
 
     /**
      * Subscribes a federate to some of this class attributes,
@@ -151,8 +149,7 @@ public:
      * @return true if the federate needs to discover objects of this
      * class because of this subscription
      */
-    bool subscribe(FederateHandle federate, const std::vector <AttributeHandle>& attributes, const RTIRegion * region)
-        throw (AttributeNotDefined, RTIinternalError, SecurityError);
+    bool subscribe(FederateHandle federate, const std::vector <AttributeHandle>& attributes, const RTIRegion * region);
 
 	void unsubscribe(FederateHandle, const RTIRegion *);
 	void unsubscribe(FederateHandle);
@@ -162,59 +159,42 @@ public:
 	negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                         Object* object,
 			const std::vector <AttributeHandle> &theAttributeList,
-			const std::string& theTag)
-			throw (AttributeNotDefined, AttributeNotOwned,
-					AttributeAlreadyBeingDivested, RTIinternalError);
+			const std::string& theTag);
 
 
 	void
 	attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList)
-	throw (ObjectClassNotPublished, AttributeNotDefined,
-			AttributeNotPublished, FederateOwnsAttributes,
-			AttributeAlreadyBeingAcquired, RTIinternalError);
+			const std::vector <AttributeHandle> &theAttributeList);
 
 	ObjectClassBroadcastList *
 	unconditionalAttributeOwnershipDivestiture(FederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &)
-			throw (AttributeNotDefined, AttributeNotOwned,
-					RTIinternalError);
+			const std::vector <AttributeHandle> &);
 
 	void
 	attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
 			const std::vector <AttributeHandle> &theAttributeList,
-			const std::string& theTag)
-	throw (ObjectClassNotPublished, AttributeNotDefined,
-			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
+			const std::string& theTag);
 
 	AttributeHandleSet *
 	attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList)
-			throw (AttributeNotDefined, AttributeNotOwned,
-					FederateWasNotAskedToReleaseAttribute, RTIinternalError);
+			const std::vector <AttributeHandle> &theAttributeList);
 
 	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 			Object* object,
-			const std::vector <AttributeHandle> &theAttributeList)
-	throw (AttributeNotDefined, AttributeAlreadyOwned,
-			AttributeAcquisitionWasNotRequested, RTIinternalError);
+			const std::vector <AttributeHandle> &theAttributeList);
 
 	// RTI Support Services
-	AttributeHandle getAttributeHandle(const std::string& theName) const
-	throw (NameNotFound, RTIinternalError);
+	AttributeHandle getAttributeHandle(const std::string& theName) const;
 
-	const std::string& getAttributeName(AttributeHandle theHandle) const
-	throw (AttributeNotDefined, RTIinternalError);
+	const std::string& getAttributeName(AttributeHandle theHandle) const;
 
-	ObjectClassBroadcastList *killFederate(FederateHandle theFederate)
-	throw ();
+	ObjectClassBroadcastList *killFederate(FederateHandle theFederate) noexcept;
 
-	ObjectClassAttribute *getAttribute(AttributeHandle the_handle) const
-	throw (AttributeNotDefined);
+	ObjectClassAttribute *getAttribute(AttributeHandle the_handle) const;
 
 	bool hasAttribute(AttributeHandle theHandle) const;
 
@@ -222,42 +202,29 @@ public:
 	ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 			Object* object,
 			const FederationTime& theTime,
-			const std::string& theUserTag)
-	throw (DeletePrivilegeNotHeld,
-			ObjectNotKnown,
-			RTIinternalError);
+			const std::string& theUserTag);
 
 	ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 			Object* object,
-			const std::string& theUserTag)
-	throw (DeletePrivilegeNotHeld,
-			ObjectNotKnown,
-			RTIinternalError);
+			const std::string& theUserTag);
 
 	bool isInstanceInClass(ObjectHandle theID);
 
 	ObjectClassBroadcastList *
-	registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
-	throw (ObjectClassNotPublished, ObjectAlreadyRegistered,
-			RTIinternalError);
+	registerObjectInstance(FederateHandle, Object *, ObjectClassHandle);
 
 	void broadcastClassMessage(ObjectClassBroadcastList *ocb_list,
 			const Object * = NULL);
 
 	ObjectClassBroadcastList *
 	updateAttributeValues(FederateHandle, Object *, const std::vector <AttributeHandle> &,
-			const std::vector <AttributeValue_t> &, int, FederationTime, const std::string&)
-			throw (AttributeNotDefined, AttributeNotOwned,
-					RTIinternalError, InvalidObjectHandle);
+			const std::vector <AttributeValue_t> &, int, FederationTime, const std::string&);
 
 	ObjectClassBroadcastList *
 	updateAttributeValues(FederateHandle, Object *, const std::vector <AttributeHandle> &,
-			const std::vector <AttributeValue_t> &, int, const std::string&)
-			throw (AttributeNotDefined, AttributeNotOwned,
-					RTIinternalError, InvalidObjectHandle);
+			const std::vector <AttributeValue_t> &, int, const std::string&);
 
-	void recursiveDiscovering(FederateHandle, ObjectClassHandle)
-	throw (ObjectClassNotDefined);
+	void recursiveDiscovering(FederateHandle, ObjectClassHandle);
 
         /**
          * Getter for the attribute list of the object class.

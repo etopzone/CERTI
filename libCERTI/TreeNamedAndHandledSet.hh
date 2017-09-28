@@ -90,7 +90,7 @@ public:
 	 * @throw RTIinternalError the object cannot be stored in the set
 	 *                         may be because of a name collision
 	 */
-	void add(ObjectType *child, ObjectType* parent=NULL) throw (RTIinternalError);
+	void add(ObjectType *child, ObjectType* parent=NULL);
 
 	/**
 	 * Get the handle corresponding to the name.
@@ -98,8 +98,7 @@ public:
 	 * @return the handle corresponding to the given name
 	 * @throw NameNotFound the name was not found in the set
 	 */
-	HandleType getHandleFromName(const std::string& name) const
-	throw (NameNotFound);
+	HandleType getHandleFromName(const std::string& name) const;
 
 	/**
 	 * Get the name corresponding to the handle.
@@ -107,8 +106,7 @@ public:
 	 * @return the name corresponding to the given handle
 	 * @throw NameNotFound the handle was not found in the set
 	 */
-	const std::string& getNameFromHandle(HandleType handle) const
-	throw (ObjectNotDefinedException);
+	const std::string& getNameFromHandle(HandleType handle) const;
 
 	/**
 	 * Get the object corresponding to the handle.
@@ -116,8 +114,7 @@ public:
 	 * @return the pointer to object corresponding to the given handle
 	 * @throw NameNotFound the handle was not found in the set
 	 */
-	ObjectType* getObjectFromHandle(HandleType handle) const
-	throw (ObjectNotDefinedException);
+	ObjectType* getObjectFromHandle(HandleType handle) const;
 
 	/**
 	 * Map from ObjectType::handle_t to ObjectType.
@@ -205,7 +202,7 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet() {
 template <typename ObjectType>
 void
 TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
-	throw (RTIinternalError) {
+{
 	typename Name2ObjectMap_t::iterator findit;
 
 	/* build hierarchical name if a parent is given */
@@ -254,7 +251,7 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
 template <typename ObjectType>
 typename TreeNamedAndHandledSet<ObjectType>::HandleType
 TreeNamedAndHandledSet<ObjectType>::getHandleFromName(const std::string& name) const
-    throw (NameNotFound) {
+{
 
 	std::string            sname;
 	std::string            prefix;
@@ -308,7 +305,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(const std::string& name) c
 template <typename ObjectType>
 const std::string&
 TreeNamedAndHandledSet<ObjectType>::getNameFromHandle(HandleType handle) const
-throw (ObjectNotDefinedException) {
+{
 
     return getObjectFromHandle(handle)->getName();
 } /* end of getNameFromHandle */
@@ -316,7 +313,7 @@ throw (ObjectNotDefinedException) {
 template <typename ObjectType>
 ObjectType*
 TreeNamedAndHandledSet<ObjectType>::getObjectFromHandle(HandleType handle) const
-	throw (ObjectNotDefinedException) {
+{
 
 	handled_const_iterator iter;
 

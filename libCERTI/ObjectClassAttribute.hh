@@ -78,13 +78,13 @@ public:
      * Add the federate to the set of publishers of this attribute.
      * @param[in] federate the handle of the federate
      */
-    void publish(FederateHandle federate) throw (RTIinternalError, SecurityError);
+    void publish(FederateHandle federate);
 
     /**
      * Remove the federate from the set of publishers of this attribute.
      * @param[in] federate the handle of the federate
      */
-    void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
+    void unpublish(FederateHandle);
 
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,

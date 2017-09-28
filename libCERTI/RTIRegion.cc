@@ -52,7 +52,7 @@ RTIRegion::~RTIRegion()
  */
 SpaceHandle
 RTIRegion::getSpaceHandle() const
-    throw ()
+    noexcept
 {
     return space.getHandle();
 }

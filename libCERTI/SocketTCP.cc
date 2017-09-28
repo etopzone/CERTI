@@ -173,7 +173,7 @@ else
 }
 
 // ----------------------------------------------------------------------------
-int SocketTCP::accept(SocketTCP *serveur) throw (NetworkError)
+int SocketTCP::accept(SocketTCP *server)
 {
 struct protoent *TCPent ;
 int optval = 1 ;
@@ -185,11 +185,11 @@ int optval = 1 ;
 #endif
 
 assert(!_est_init_tcp);
-assert(serveur != NULL);
+assert(server != NULL);
 
 l = sizeof(_sockIn);
 
-_socket_tcp = ::accept(serveur->_socket_tcp, (sockaddr*)&_sockIn, &l);
+_socket_tcp = ::accept(server->_socket_tcp, (sockaddr*)&_sockIn, &l);
 if (_socket_tcp < 0)
     {
         throw NetworkError(stringize() <<
@@ -255,7 +255,6 @@ Length = sizeof(_sockIn);
 // ----------------------------------------------------------------------------
 void
 SocketTCP::createConnection(const char *server_name, unsigned int port)
-    throw (NetworkError)
 {
 	// get host information from server name
 	// this may perform DNS query
@@ -277,7 +276,6 @@ SocketTCP::createConnection(const char *server_name, unsigned int port)
 // ----------------------------------------------------------------------------
 void
 SocketTCP::createTCPClient(in_port_t port, in_addr_t addr)
-throw (NetworkError)
 {
 assert(!_est_init_tcp);
 if (!open())
@@ -302,7 +300,6 @@ _est_init_tcp = true ;
 // ----------------------------------------------------------------------------
 void
 SocketTCP::createServer(in_port_t port, in_addr_t addr)
-throw (NetworkError)
 {
 	assert(!_est_init_tcp);
 
@@ -338,7 +335,6 @@ _est_init_tcp = true ;
 // ----------------------------------------------------------------------------
 void
 SocketTCP::send(const unsigned char *buffer, size_t size)
-// 					 throw (NetworkError, NetworkSignal)
 {
 long total_sent = 0 ;
 long expected_size = size ;
@@ -461,7 +457,6 @@ return(*this);
 // ----------------------------------------------------------------------------
 void
 SocketTCP::receive(void *buffer, unsigned long size)
-// 						throw (NetworkError, NetworkSignal)
 {
 // G.Out(pdGendoc,"enter SocketTCP::receive");
 assert(_est_init_tcp);
@@ -531,7 +526,10 @@ return getAddr();
 }
 
 // ----------------------------------------------------------------------------
-SOCKET SocketTCP::returnSocket()	{ return _socket_tcp ;}
+SOCKET SocketTCP::returnSocket()
+{
+    return _socket_tcp ;
+}
 
 // ----------------------------------------------------------------------------
 //! Change the port value.

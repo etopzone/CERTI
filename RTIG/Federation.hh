@@ -77,7 +77,7 @@ public:
                SocketServer& socket_server,
                AuditFile& audit_server,
                SocketMC* mc_link,
-               const int verboseLevel)
+               const int verboseLevel);
 #else
     /**
      * Allocates memory the Name's storage, and read its FED file to store the
@@ -94,9 +94,8 @@ public:
                SocketServer& socket_server,
                AuditFile& audit_server,
                const std::string& FEDid_name,
-               int theVerboseLevel)
+               int theVerboseLevel);
 #endif
-        throw(CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError, RTIinternalError);
 
     ~Federation();
 
@@ -128,7 +127,7 @@ public:
      * finally a RequestPause message if the Federation is already paused.
      */
     FederateHandle add(const std::string& federate_name,
-                       SocketTCP* tcp_link) throw(FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError);
+                       SocketTCP* tcp_link);
 
     /** Return true if there are no Federates left in the Federation
      * 
@@ -163,7 +162,7 @@ public:
      * @bug Currently does not check if Federate owns attributes. The
      * Federate Object is deleted.
      */
-    void remove(FederateHandle federate_handle) throw(FederateOwnsAttributes, FederateNotExecutionMember);
+    void remove(FederateHandle federate_handle);
 
     // ---------------------
     // -- Time Management --
@@ -174,53 +173,39 @@ public:
      * Check if it's already present, but not if the Time 'time' is allowed or not.
      */
     void addRegulator(FederateHandle federate_handle,
-                      FederationTime time) throw(FederateNotExecutionMember,
-                                                 SaveInProgress,
-                                                 RestoreInProgress,
-                                                 RTIinternalError); // includes Time Regulation already enabled.
+                      FederationTime time); // includes Time Regulation already enabled.
 
     /// Update the current time of a regulator federate.
     void updateRegulator(FederateHandle federate_handle,
                          FederationTime time,
-                         bool anonymous) throw(FederateNotExecutionMember, RTIinternalError);
+                         bool anonymous);
 
-    void removeRegulator(FederateHandle federate_handle) throw(
-        FederateNotExecutionMember,
-        SaveInProgress,
-        RestoreInProgress,
-        RTIinternalError); // includes Time Regulation already disabled.
+    void removeRegulator(FederateHandle federate_handle); // includes Time Regulation already disabled.
 
     // Synchronization Management.
 
     /// Add a new synchronization point to federation.
     void
-    registerSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag) throw(
-        FederateNotExecutionMember, FederationAlreadyPaused, SaveInProgress, RestoreInProgress, RTIinternalError);
+    registerSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
 
     /// Add a new synchronization point (with federates set) to federation.
     void registerSynchronization(FederateHandle federate_handle,
                                  const std::string& label,
                                  const std::string& tag,
-                                 const std::vector<FederateHandle>& federates) throw(FederateNotExecutionMember,
-                                                                                     FederationAlreadyPaused,
-                                                                                     SaveInProgress,
-                                                                                     RestoreInProgress,
-                                                                                     RTIinternalError);
+                                 const std::vector<FederateHandle>& federates);
 
-    void unregisterSynchronization(FederateHandle federate_handle, const std::string& label) throw(
-        FederateNotExecutionMember, FederationNotPaused, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
     void broadcastSynchronization(FederateHandle federate_handle,
                                   const std::string& label,
-                                  const std::string& tag) throw(FederateNotExecutionMember, RTIinternalError);
+                                  const std::string& tag);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
     void broadcastSynchronization(FederateHandle federate_handle,
                                   const std::string& label,
                                   const std::string& tag,
-                                  const std::vector<FederateHandle>& federates) throw(FederateNotExecutionMember,
-                                                                                      RTIinternalError);
+                                  const std::vector<FederateHandle>& federates);
 
     // Save Management.
 
@@ -231,7 +216,7 @@ public:
      */
     void requestFederationSave(FederateHandle federate_handle,
                                const std::string& label,
-                               FederationTime time) throw(FederateNotExecutionMember, SaveInProgress);
+                               FederationTime time);
 
     /** Request a federation save without time.
      * 
@@ -239,26 +224,26 @@ public:
      * time is not managed yet.
      */
     void requestFederationSave(FederateHandle federate_handle,
-                               const std::string& label) throw(FederateNotExecutionMember, SaveInProgress);
+                               const std::string& label);
 
     /** Received from a federate to inform a save has been received and is being processed.
      * 
      * Maybe, a timeout should be set to determine if federate still alive.
      */
-    void federateSaveBegun(FederateHandle federate_handle) throw(FederateNotExecutionMember);
+    void federateSaveBegun(FederateHandle federate_handle);
 
     /// Informs that a federate returns a save end message (with success or not!).
-    void federateSaveStatus(FederateHandle federate_handle, bool status) throw(FederateNotExecutionMember);
+    void federateSaveStatus(FederateHandle federate_handle, bool status);
 
     /// Informs that a federate is requesting a save.
     void requestFederationRestore(FederateHandle federate_handle,
-                                  const std::string& label) throw(FederateNotExecutionMember);
+                                  const std::string& label);
 
     /** Informs that a federate has ended a restore.
      * 
      * If each federate in federation has ended restoring, this service send a federation restore status.
      */
-    void federateRestoreStatus(FederateHandle federate_handle, bool status) throw(FederateNotExecutionMember);
+    void federateRestoreStatus(FederateHandle federate_handle, bool status);
 
     // -----------------------
     // -- Object Management --
@@ -274,13 +259,7 @@ public:
     void deleteObject(FederateHandle federate_handle,
                       ObjectHandle object_handle,
                       FederationTime time,
-                      const std::string& user_tag) throw(FederateNotExecutionMember,
-                                                         DeletePrivilegeNotHeld,
-                                                         ObjectNotKnown,
-                                                         SaveInProgress,
-                                                         RestoreInProgress,
-                                                         InvalidFederationTime,
-                                                         RTIinternalError);
+                      const std::string& user_tag);
 
     /** Removes an object instance from federation.
      * 
@@ -290,48 +269,26 @@ public:
      */
     void deleteObject(FederateHandle federate_handle,
                       ObjectHandle object_handle,
-                      const std::string& user_tag) throw(FederateNotExecutionMember,
-                                                         DeletePrivilegeNotHeld,
-                                                         ObjectNotKnown,
-                                                         SaveInProgress,
-                                                         RestoreInProgress,
-                                                         RTIinternalError);
+                      const std::string& user_tag);
 
     void publishObject(FederateHandle federate_handle,
                        ObjectClassHandle object_handle,
                        const std::vector<AttributeHandle>& attributes,
-                       bool publish_or_unpublish) throw(ObjectClassNotDefined,
-                                                        AttributeNotDefined,
-                                                        FederateNotExecutionMember,
-                                                        SaveInProgress,
-                                                        SecurityError,
-                                                        RestoreInProgress,
-                                                        RTIinternalError);
+                       bool publish_or_unpublish);
 
-    void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name) throw(IllegalName,
-                                                                                                      SaveInProgress,
-                                                                                                      RestoreInProgress,
-                                                                                                      RTIinternalError);
+    void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name);
 
     ObjectHandle registerObject(FederateHandle federate_handle,
                                 ObjectClassHandle class_handle,
-                                const std::string& name) throw(FederateNotExecutionMember,
-                                                               FederateNotPublishing,
-                                                               ObjectAlreadyRegistered,
-                                                               ObjectClassNotDefined,
-                                                               ObjectClassNotPublished,
-                                                               SaveInProgress,
-                                                               RestoreInProgress,
-                                                               RTIinternalError);
+                                const std::string& name);
 
     FederateHandle requestObjectOwner(FederateHandle federate_handle,
                                       ObjectHandle object_handle,
-                                      const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown);
+                                      const std::vector<AttributeHandle>& attributes);
 
     void requestClassAttributeValueUpdate(FederateHandle federate_handle,
                                           ObjectClassHandle class_handle,
-                                          const std::vector<AttributeHandle>& attributes) throw(ObjectClassNotDefined,
-                                                                                                RTIinternalError);
+                                          const std::vector<AttributeHandle>& attributes);
 
     /**
      * Subscribes attributes to an object class. After subscription, attribute 
@@ -343,38 +300,20 @@ public:
      */
     void subscribeObject(FederateHandle federate_handle,
                          ObjectClassHandle object_handle,
-                         const std::vector<AttributeHandle>& attributes) throw(ObjectClassNotDefined,
-                                                                               AttributeNotDefined,
-                                                                               FederateNotExecutionMember,
-                                                                               SaveInProgress,
-                                                                               SecurityError,
-                                                                               RestoreInProgress,
-                                                                               RTIinternalError);
+                         const std::vector<AttributeHandle>& attributes);
 
     void updateAttributeValues(FederateHandle federate_handle,
                                ObjectHandle object_handle,
                                const std::vector<AttributeHandle>& attributes,
                                const std::vector<AttributeValue_t>& attribute_values,
                                FederationTime time,
-                               const std::string& tag) throw(FederateNotExecutionMember,
-                                                             ObjectNotKnown,
-                                                             AttributeNotDefined,
-                                                             AttributeNotOwned,
-                                                             SaveInProgress,
-                                                             RestoreInProgress,
-                                                             RTIinternalError);
+                               const std::string& tag);
 
     void updateAttributeValues(FederateHandle federate_handle,
                                ObjectHandle object_handle,
                                const std::vector<AttributeHandle>& attributes,
                                const std::vector<AttributeValue_t>& attribute_values,
-                               const std::string& tag) throw(FederateNotExecutionMember,
-                                                             ObjectNotKnown,
-                                                             AttributeNotDefined,
-                                                             AttributeNotOwned,
-                                                             SaveInProgress,
-                                                             RestoreInProgress,
-                                                             RTIinternalError);
+                               const std::string& tag);
 
     // ----------------------------
     // -- Interaction Management --
@@ -387,13 +326,7 @@ public:
                               const std::vector<ParameterValue_t>& attribute_values,
                               FederationTime time,
                               RegionHandle region,
-                              const std::string& tag) throw(FederateNotExecutionMember,
-                                                            FederateNotPublishing,
-                                                            InteractionClassNotDefined,
-                                                            InteractionParameterNotDefined,
-                                                            SaveInProgress,
-                                                            RestoreInProgress,
-                                                            RTIinternalError);
+                              const std::string& tag);
 
     /// broadcastInteraction without time
     void broadcastInteraction(FederateHandle federate_handle,
@@ -401,31 +334,15 @@ public:
                               const std::vector<ParameterHandle>& parameters,
                               const std::vector<ParameterValue_t>& parameters_values,
                               RegionHandle region,
-                              const std::string& tag) throw(FederateNotExecutionMember,
-                                                            FederateNotPublishing,
-                                                            InteractionClassNotDefined,
-                                                            InteractionParameterNotDefined,
-                                                            SaveInProgress,
-                                                            RestoreInProgress,
-                                                            RTIinternalError);
+                              const std::string& tag);
 
     void publishInteraction(FederateHandle federate_handle,
                             InteractionClassHandle interaction_class_handle,
-                            bool publish_or_unpublish) throw(InteractionClassNotDefined,
-                                                             FederateNotExecutionMember,
-                                                             SaveInProgress,
-                                                             SecurityError,
-                                                             RestoreInProgress,
-                                                             RTIinternalError);
+                            bool publish_or_unpublish);
 
     void subscribeInteraction(FederateHandle federate_handle,
                               InteractionClassHandle interaction_class_handle,
-                              bool subscribe_or_unsubscribe) throw(InteractionClassNotDefined,
-                                                                   FederateNotExecutionMember,
-                                                                   SaveInProgress,
-                                                                   SecurityError,
-                                                                   RestoreInProgress,
-                                                                   RTIinternalError);
+                              bool subscribe_or_unsubscribe);
 
     // --------------------------
     // -- Ownership Management --
@@ -433,189 +350,86 @@ public:
 
     bool isOwner(FederateHandle federate_handle,
                  ObjectHandle object_handle,
-                 AttributeHandle attribute_handle) throw(FederateNotExecutionMember,
-                                                         ObjectNotKnown,
-                                                         AttributeNotDefined,
-                                                         SaveInProgress,
-                                                         RestoreInProgress,
-                                                         RTIinternalError);
+                 AttributeHandle attribute_handle);
 
     void queryAttributeOwnership(FederateHandle federate_handle,
                                  ObjectHandle object_handle,
-                                 AttributeHandle attribute_handle) throw(FederateNotExecutionMember,
-                                                                         ObjectNotKnown,
-                                                                         AttributeNotDefined,
-                                                                         SaveInProgress,
-                                                                         RestoreInProgress,
-                                                                         RTIinternalError);
+                                 AttributeHandle attribute_handle);
 
     void negotiateDivestiture(FederateHandle federate_handle,
                               ObjectHandle object_handle,
                               const std::vector<AttributeHandle>& attributes,
-                              const std::string& tag) throw(FederateNotExecutionMember,
-                                                            ObjectNotKnown,
-                                                            AttributeNotDefined,
-                                                            AttributeNotOwned,
-                                                            AttributeAlreadyBeingDivested,
-                                                            SaveInProgress,
-                                                            RestoreInProgress,
-                                                            RTIinternalError);
+                              const std::string& tag);
 
     void acquireIfAvailable(FederateHandle federate_handle,
                             ObjectHandle object_handle,
-                            const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                                  ObjectClassNotPublished,
-                                                                                  AttributeNotDefined,
-                                                                                  AttributeNotPublished,
-                                                                                  FederateOwnsAttributes,
-                                                                                  AttributeAlreadyBeingAcquired,
-                                                                                  FederateNotExecutionMember,
-                                                                                  SaveInProgress,
-                                                                                  RestoreInProgress,
-                                                                                  RTIinternalError);
+                            const std::vector<AttributeHandle>& attributes);
 
     void divest(FederateHandle federate_handle,
                 ObjectHandle object_handle,
-                const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                      AttributeNotDefined,
-                                                                      AttributeNotOwned,
-                                                                      FederateNotExecutionMember,
-                                                                      SaveInProgress,
-                                                                      RestoreInProgress,
-                                                                      RTIinternalError);
+                const std::vector<AttributeHandle>& attributes);
 
     void acquire(FederateHandle federate_handle,
                  ObjectHandle object_handle,
                  const std::vector<AttributeHandle>& attributes,
-                 const std::string& tag) throw(ObjectNotKnown,
-                                               ObjectClassNotPublished,
-                                               AttributeNotDefined,
-                                               AttributeNotPublished,
-                                               FederateOwnsAttributes,
-                                               FederateNotExecutionMember,
-                                               SaveInProgress,
-                                               RestoreInProgress,
-                                               RTIinternalError);
+                 const std::string& tag);
 
     void cancelDivestiture(FederateHandle federate_handle,
                            ObjectHandle object_handle,
-                           const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                                 AttributeNotDefined,
-                                                                                 AttributeNotOwned,
-                                                                                 AttributeDivestitureWasNotRequested,
-                                                                                 FederateNotExecutionMember,
-                                                                                 SaveInProgress,
-                                                                                 RestoreInProgress,
-                                                                                 RTIinternalError);
+                           const std::vector<AttributeHandle>& attributes);
 
     AttributeHandleSet*
     respondRelease(FederateHandle federate_handle,
                    ObjectHandle object_handle,
-                   const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                         AttributeNotDefined,
-                                                                         AttributeNotOwned,
-                                                                         FederateWasNotAskedToReleaseAttribute,
-                                                                         FederateNotExecutionMember,
-                                                                         SaveInProgress,
-                                                                         RestoreInProgress,
-                                                                         RTIinternalError);
+                   const std::vector<AttributeHandle>& attributes);
 
     void cancelAcquisition(FederateHandle federate_handle,
                            ObjectHandle object_handle,
-                           const std::vector<AttributeHandle>& attributes) throw(ObjectNotKnown,
-                                                                                 AttributeNotDefined,
-                                                                                 AttributeAlreadyOwned,
-                                                                                 AttributeAcquisitionWasNotRequested,
-                                                                                 FederateNotExecutionMember,
-                                                                                 SaveInProgress,
-                                                                                 RestoreInProgress,
-                                                                                 RTIinternalError);
+                           const std::vector<AttributeHandle>& attributes);
 
     // Data Distribution Management
 
     long createRegion(FederateHandle federate_handle,
                       SpaceHandle space_handle,
-                      long extents_count) throw(FederateNotExecutionMember,
-                                                SpaceNotDefined,
-                                                InvalidExtents,
-                                                SaveInProgress,
-                                                RestoreInProgress,
-                                                RTIinternalError);
+                      long extents_count);
 
     void modifyRegion(FederateHandle federate_handle,
                       RegionHandle region_handle,
-                      const std::vector<Extent>& extents) throw(FederateNotExecutionMember,
-                                                                RegionNotKnown,
-                                                                InvalidExtents,
-                                                                SaveInProgress,
-                                                                RestoreInProgress,
-                                                                RTIinternalError);
+                      const std::vector<Extent>& extents);
 
     // FIXME second arguments should be region_handle ?
-    void deleteRegion(FederateHandle federate_handle, long region) throw(
-        FederateNotExecutionMember, RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void deleteRegion(FederateHandle federate_handle, long region);
 
     void associateRegion(FederateHandle federate_handle,
                          ObjectHandle object_handle,
                          RegionHandle region_handle,
-                         const std::vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                               RegionNotKnown,
-                                                                               SaveInProgress,
-                                                                               RestoreInProgress,
-                                                                               RTIinternalError);
+                         const std::vector<AttributeHandle>& attributes);
 
-    void unassociateRegion(FederateHandle federate_handle, ObjectHandle, RegionHandle) throw(
-        FederateNotExecutionMember, RegionNotKnown, SaveInProgress, RestoreInProgress, RTIinternalError);
+    void unassociateRegion(FederateHandle federate_handle, ObjectHandle, RegionHandle);
 
     void subscribeAttributesWR(FederateHandle federate_handle,
                                ObjectClassHandle object_class_handle,
                                RegionHandle region_handle,
-                               const std::vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                                     RegionNotKnown,
-                                                                                     SaveInProgress,
-                                                                                     RestoreInProgress,
-                                                                                     RTIinternalError);
+                               const std::vector<AttributeHandle>& attributes);
 
     void unsubscribeAttributesWR(FederateHandle federate_handle,
                                  ObjectClassHandle object_class_handle,
-                                 RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                   RegionNotKnown,
-                                                                   SaveInProgress,
-                                                                   RestoreInProgress,
-                                                                   RTIinternalError);
+                                 RegionHandle region_handle);
 
     void subscribeInteractionWR(FederateHandle federate_handle,
                                 InteractionClassHandle interaction_class_handle,
-                                RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                  RegionNotKnown,
-                                                                  SaveInProgress,
-                                                                  RestoreInProgress,
-                                                                  RTIinternalError);
+                                RegionHandle region_handle);
 
     void unsubscribeInteractionWR(FederateHandle federate_handle,
                                   InteractionClassHandle interaction_class_handle,
-                                  RegionHandle region_handle) throw(FederateNotExecutionMember,
-                                                                    RegionNotKnown,
-                                                                    SaveInProgress,
-                                                                    RestoreInProgress,
-                                                                    RTIinternalError);
+                                  RegionHandle region_handle);
 
     ObjectHandle
     registerObjectWithRegion(FederateHandle federate_handle,
                              ObjectClassHandle object_class_handle,
                              const std::string& name,
                              RegionHandle region_handle,
-                             const std::vector<AttributeHandle>& attributes) throw(FederateNotExecutionMember,
-                                                                                   ObjectClassNotDefined,
-                                                                                   ObjectClassNotPublished,
-                                                                                   AttributeNotDefined,
-                                                                                   AttributeNotPublished,
-                                                                                   RegionNotKnown,
-                                                                                   InvalidRegionContext,
-                                                                                   ObjectAlreadyRegistered,
-                                                                                   SaveInProgress,
-                                                                                   RestoreInProgress,
-                                                                                   RTIinternalError);
+                             const std::vector<AttributeHandle>& attributes);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
 
@@ -625,14 +439,14 @@ public:
      * @param[in] date the new NERx date for the specified federate.
      */
     bool updateLastNERxForFederate(FederateHandle federate_handle,
-                                   FederationTime date) throw(FederateNotExecutionMember);
+                                   FederationTime date);
 
     /**
      * Compute the minimum of all NERx messsage date
      * for all Federates using NERx messages.
      * @return the minimum if at least one federate is using NERx, 0 otherwise
      */
-    FederationTime computeMinNERx() throw(FederateNotExecutionMember);
+    FederationTime computeMinNERx();
 
     /**
      * Get the (precomputed) minimum of all NERx messsage date
@@ -642,10 +456,10 @@ public:
     FederationTime getMinNERx() const;
 
     /// Return the Federate whose Name is name, if found.
-    Federate& getFederate(const std::string& name) throw(FederateNotExecutionMember);
+    Federate& getFederate(const std::string& name);
 
     /// Return the Federate whose Handle is theHandle, if found.
-    Federate& getFederate(FederateHandle federate_handle) throw(FederateNotExecutionMember);
+    Federate& getFederate(FederateHandle federate_handle);
 
 private:
     bool saveXmlData();

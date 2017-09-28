@@ -71,7 +71,6 @@ SecureTCPSocket::~SecureTCPSocket()
 // ----------------------------------------------------------------------------
 void
 SecureTCPSocket::send(const unsigned char *buffer, size_t size)
-    throw (NetworkError, NetworkSignal)
 {
     D.Out(pdTrace, "SSocket: Sending.");
 
@@ -161,7 +160,6 @@ SecureTCPSocket::getPeerName()
 // ----------------------------------------------------------------------------
 void
 SecureTCPSocket::receive(void *Buffer, unsigned long Size)
-    throw (NetworkError, NetworkSignal)
 {
     D.Out(pdTrace, "SSocket: Receiving.");
 

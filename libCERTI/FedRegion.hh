@@ -37,31 +37,23 @@ public:
     FedRegion(RegionHandle, SpaceHandle, const std::vector<Extent> &);
     virtual ~FedRegion();
 
-    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getRangeLowerBound(ExtentIndex, DimensionHandle) const;
 
-    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+    virtual uint32_t getRangeUpperBound(ExtentIndex, DimensionHandle) const;
 
-    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t)
-        throw (ArrayIndexOutOfBounds);
+    virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, uint32_t);
 
-    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t)
-        throw (ArrayIndexOutOfBounds);
+    virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, uint32_t);
 
-    virtual SpaceHandle getSpaceHandle() const
-        throw ();
+    virtual SpaceHandle getSpaceHandle() const noexcept;
 
-    virtual uint32_t getNumberOfExtents() const
-        throw ();
+    virtual uint32_t getNumberOfExtents() const noexcept;
 
     virtual uint32_t getRangeLowerBoundNotificationLimit(ExtentIndex,
-                                                      DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+                                                      DimensionHandle) const;
 
     virtual uint32_t getRangeUpperBoundNotificationLimit(ExtentIndex,
-                                                      DimensionHandle) const
-        throw (ArrayIndexOutOfBounds);
+                                                      DimensionHandle) const;
 
     void commit();
 

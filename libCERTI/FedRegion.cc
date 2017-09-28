@@ -44,8 +44,7 @@ FedRegion::~FedRegion()
 /** Get the handle of the routing space having this region.
  */
 SpaceHandle
-FedRegion::getSpaceHandle() const
-    throw ()
+FedRegion::getSpaceHandle() const noexcept
 {
     return space ;
 }
@@ -54,7 +53,6 @@ FedRegion::getSpaceHandle() const
 uint32_t
 FedRegion::getRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     return BaseRegion::getRangeLowerBound(index, dimension);
 }
@@ -63,7 +61,6 @@ FedRegion::getRangeLowerBound(ExtentIndex index,
 uint32_t
 FedRegion::getRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     return BaseRegion::getRangeUpperBound(index, dimension);
 }
@@ -73,7 +70,6 @@ void
 FedRegion::setRangeLowerBound(ExtentIndex index,
 			       DimensionHandle dimension,
 			       uint32_t val)
-    throw (ArrayIndexOutOfBounds)
 {
     BaseRegion::setRangeLowerBound(index, dimension, val);
 }
@@ -83,7 +79,6 @@ void
 FedRegion::setRangeUpperBound(ExtentIndex index,
 			       DimensionHandle dimension,
 			       uint32_t val)
-    throw (ArrayIndexOutOfBounds)
 {
     BaseRegion::setRangeUpperBound(index, dimension, val);
 }
@@ -94,7 +89,6 @@ FedRegion::setRangeUpperBound(ExtentIndex index,
 uint32_t
 FedRegion::getRangeLowerBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= coExtents.size()) {
         throw ArrayIndexOutOfBounds("");
@@ -110,7 +104,6 @@ FedRegion::getRangeLowerBoundNotificationLimit(ExtentIndex index,
 uint32_t
 FedRegion::getRangeUpperBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
-    throw (ArrayIndexOutOfBounds)
 {
     if (index >= coExtents.size()) {
         throw ArrayIndexOutOfBounds("");
@@ -122,8 +115,7 @@ FedRegion::getRangeUpperBoundNotificationLimit(ExtentIndex index,
 
 // ----------------------------------------------------------------------------
 uint32_t
-FedRegion::getNumberOfExtents() const
-    throw ()
+FedRegion::getNumberOfExtents() const noexcept
 {
     return BaseRegion::getNumberOfExtents();
 }

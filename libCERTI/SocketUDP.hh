@@ -33,32 +33,27 @@ public :
 	virtual ~SocketUDP();
 
 	// Socket
-	virtual void send(const unsigned char *, size_t)
-	throw (NetworkError, NetworkSignal);
+	virtual void send(const unsigned char *, size_t);
 
-	virtual void receive(void * Message, unsigned long Size)
-		throw (NetworkError,	NetworkSignal);
+	virtual void receive(void * Message, unsigned long Size);
 
-	virtual bool isDataReady() const ;
+	virtual bool isDataReady() const;
 
 		SOCKET returnSocket();
-	virtual unsigned long returnAdress() const ;
+	virtual unsigned long returnAdress() const;
 
 	virtual void close();
 
 	// SocketUDP
-    virtual void createConnection(const char *server_name, unsigned int port)
-        throw (NetworkError);
+    virtual void createConnection(const char *server_name, unsigned int port);
 
-	void createServer(unsigned int port, in_addr_t addr = INADDR_ANY)
-	throw (NetworkError, NetworkSignal);
+	void createServer(unsigned int port, in_addr_t addr = INADDR_ANY);
 
-	void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
-	throw (NetworkError, NetworkSignal);
+	void attach(int socket_ouvert, unsigned long Adresse, unsigned int port);
 
-	unsigned int getPort() const ;
-	unsigned long getAddr() const ;
-
+	unsigned int getPort() const;
+	unsigned long getAddr() const;
+    
 private:
 	void setPort(unsigned int port);
 
@@ -68,22 +63,22 @@ private:
 	bool PhysicalLink ; ///< tag indicating physical or logical link
 
 	SOCKET _socket_udp;
-	struct sockaddr_in sock_local ;
+	struct sockaddr_in sock_local;
 
-	struct sockaddr_in sock_source ;
+	struct sockaddr_in sock_source;
 	char *Addr_Source ;
 	unsigned int Port_Source ;
-	struct sockaddr_in sock_distant ;
-	struct hostent * hp_distant ;
+	struct sockaddr_in sock_distant;
+	struct hostent * hp_distant;
 
-	int _sock_local_length ;
-	bool _est_init_udp ;
+	int _sock_local_length;
+	bool _est_init_udp;
 
-	ByteCount_t SentBytesCount ;
-	ByteCount_t RcvdBytesCount ;
+	ByteCount_t SentBytesCount;
+	ByteCount_t RcvdBytesCount;
 
-	unsigned long BufferSize ;
-	char Buffer[4096] ;
+	unsigned long BufferSize;
+	char Buffer[4096];
 };
 
 } // namespace certi

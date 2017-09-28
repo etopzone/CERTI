@@ -114,7 +114,7 @@ void RootObject::addRoutingSpace(const RoutingSpace& rs)
     spaces.back().setHandle(spaces.size());
 }
 
-SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs) throw(NameNotFound)
+SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs)
 {
     auto it = std::find_if(begin(spaces), end(spaces), NameComparator<RoutingSpace>(rs));
 
@@ -124,7 +124,7 @@ SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs) throw(NameN
     return it->getHandle();
 }
 
-const std::string& RootObject::getRoutingSpaceName(SpaceHandle handle) throw(SpaceNotDefined)
+const std::string& RootObject::getRoutingSpaceName(SpaceHandle handle)
 {
     if (handle <= 0 || (size_t) handle > spaces.size()) {
         throw SpaceNotDefined("");
@@ -132,7 +132,7 @@ const std::string& RootObject::getRoutingSpaceName(SpaceHandle handle) throw(Spa
     return spaces[handle - 1].getName();
 }
 
-RoutingSpace& RootObject::getRoutingSpace(SpaceHandle handle) throw(SpaceNotDefined)
+RoutingSpace& RootObject::getRoutingSpace(SpaceHandle handle)
 {
     if (handle <= 0 || (size_t) handle > spaces.size()) {
         throw SpaceNotDefined("");
@@ -145,7 +145,7 @@ void RootObject::addRegion(RTIRegion* region)
     regions.push_back(region);
 }
 
-RegionHandle RootObject::createRegion(SpaceHandle handle, unsigned long nb_extents) throw(SpaceNotDefined)
+RegionHandle RootObject::createRegion(SpaceHandle handle, unsigned long nb_extents)
 {
     RTIRegion* region = new RTIRegion(regionHandles.provide(), getRoutingSpace(handle), nb_extents);
     addRegion(region);
@@ -154,14 +154,13 @@ RegionHandle RootObject::createRegion(SpaceHandle handle, unsigned long nb_exten
     return region->getHandle();
 }
 
-void RootObject::modifyRegion(RegionHandle handle, const std::vector<Extent>& extents) throw(RegionNotKnown,
-                                                                                             InvalidExtents)
+void RootObject::modifyRegion(RegionHandle handle, const std::vector<Extent>& extents)
 {
     RTIRegion* region = getRegion(handle);
     region->replaceExtents(extents);
 }
 
-void RootObject::deleteRegion(RegionHandle region_handle) throw(RegionNotKnown, RegionInUse)
+void RootObject::deleteRegion(RegionHandle region_handle)
 {
     auto it = std::find_if(begin(regions), end(regions), HandleComparator<RTIRegion>(region_handle));
 
@@ -175,7 +174,7 @@ void RootObject::deleteRegion(RegionHandle region_handle) throw(RegionNotKnown, 
     delete *it;
 }
 
-RTIRegion* RootObject::getRegion(RegionHandle handle) throw(RegionNotKnown)
+RTIRegion* RootObject::getRegion(RegionHandle handle)
 {
     auto it = std::find_if(regions.begin(), regions.end(), HandleComparator<RTIRegion>(handle));
 
@@ -220,11 +219,7 @@ bool RootObject::reserveObjectInstanceName(FederateHandle the_federate, const st
 void RootObject::registerObjectInstance(FederateHandle the_federate,
                                         ObjectClassHandle the_class,
                                         ObjectHandle the_object,
-                                        const std::string& the_object_name) throw(InvalidObjectHandle,
-                                                                                  ObjectClassNotDefined,
-                                                                                  ObjectClassNotPublished,
-                                                                                  ObjectAlreadyRegistered,
-                                                                                  RTIinternalError)
+                                        const std::string& the_object_name)
 {
     Debug(D, pdRegister) << "Federate " << the_federate << " attempts to register instance " << the_object << " in class " << the_class << std::endl;
 
@@ -260,9 +255,7 @@ void RootObject::registerObjectInstance(FederateHandle the_federate,
 void RootObject::deleteObjectInstance(FederateHandle the_federate,
                                       ObjectHandle objectHandle,
                                       FederationTime theTime,
-                                      const std::string& the_tag) throw(DeletePrivilegeNotHeld,
-                                                                        ObjectNotKnown,
-                                                                        RTIinternalError)
+                                      const std::string& the_tag)
 {
     Object* object = objects->getObject(objectHandle);
     ObjectClasses->deleteObject(the_federate, object, theTime, the_tag);
@@ -271,16 +264,14 @@ void RootObject::deleteObjectInstance(FederateHandle the_federate,
 
 void RootObject::deleteObjectInstance(FederateHandle the_federate,
                                       ObjectHandle objectHandle,
-                                      const std::string& the_tag) throw(DeletePrivilegeNotHeld,
-                                                                        ObjectNotKnown,
-                                                                        RTIinternalError)
+                                      const std::string& the_tag)
 {
     Object* object = objects->getObject(objectHandle);
     ObjectClasses->deleteObject(the_federate, object, the_tag);
     objects->deleteObjectInstance(the_federate, objectHandle, the_tag);
 }
 
-void RootObject::killFederate(FederateHandle the_federate) throw(RTIinternalError)
+void RootObject::killFederate(FederateHandle the_federate)
 {
     ObjectClasses->killFederate(the_federate);
     Interactions->killFederate(the_federate);
@@ -313,7 +304,7 @@ Interaction* RootObject::getInteractionClass(InteractionClassHandle the_class)
 }
 
 FederateHandle RootObject::requestObjectOwner(FederateHandle theFederateHandle,
-                                              ObjectHandle theObject) throw(ObjectNotKnown)
+                                              ObjectHandle theObject)
 {
     Debug(G, pdGendoc) << "into RootObject::requestObjectOwner" << std::endl;
 
