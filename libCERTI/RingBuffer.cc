@@ -23,11 +23,11 @@
 #include <string.h>
 // Specifics includes
 #ifdef _WIN32
-#include "SHMWin32.hh"
-#include "SemaphoreWin32.hh"
-#include "SocketSHMWin32.hh"
-#include <process.h>
 #include <windows.h>
+#include <process.h>
+#include "SocketSHMWin32.hh"
+#include "SemaphoreWin32.hh"
+#include "SHMWin32.hh"
 using libhla::ipc::SHMWin32;
 using libhla::ipc::SemaphoreWin32;
 #else

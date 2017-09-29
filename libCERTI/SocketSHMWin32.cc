@@ -18,8 +18,9 @@
 // USA
 // ----------------------------------------------------------------------------
 
-#include "SHMWin32.hh"
 #include "SocketSHMWin32.hh"
+
+#include "SHMWin32.hh"
 using libhla::ipc::SHM;
 using libhla::ipc::SHMWin32;
 
