@@ -40,7 +40,7 @@
 #include <signal.h>
 #endif
 
-#define LOG_MESSAGE_PROCESSING_TIMINGS
+//#define LOG_MESSAGE_PROCESSING_TIMINGS
 #ifdef LOG_MESSAGE_PROCESSING_TIMINGS
 
 #include <chrono>
@@ -317,8 +317,6 @@ Socket* RTIG::processIncomingMessage(Socket* link)
         auto end = std::chrono::high_resolution_clock::now();
 
         the_timings[messageType].push_back(end - start);
-
-        std::cout << (end - start).count() << std::endl;
 #endif
 
         Debug(G, pdGendoc) << "exit  RTIG::processIncomingMessage" << std::endl;
