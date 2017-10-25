@@ -82,7 +82,7 @@ add_library(RTI1516 ${RTI1516_LIB_SRCS} ${RTI1516_LIB_INCLUDE})
 #target_link_libraries(RTI1516 CERTI)
 # Correct line
 target_link_libraries(RTI1516 CERTI FedTime1516)
-install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2010/RTI)
+install(FILES RTI1516fedTime.h DESTINATION include/ieee1516-2000/RTI)
 message(STATUS "libRTI variant: HLA 1516")
 set_target_properties(RTI1516 PROPERTIES OUTPUT_NAME "RTI1516")
 set_target_properties(RTI1516 PROPERTIES COMPILE_FLAGS "-DHLA13NG_LIBRTI -DRTI_DISABLE_WARNINGS -DBUILDING_RTI")
