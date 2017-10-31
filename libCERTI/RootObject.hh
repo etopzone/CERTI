@@ -45,8 +45,7 @@ class RTIRegion;
 class RoutingSpace;
 class NM_Join_Federation_Execution;
 
-/**
- * The RootObject is literally the "root" object
+/** The RootObject is literally the "root" object
  * of the HLA object class hierarchy.
  * One RootObject is created for each federation both
  * on the RTIG and on each RTIA instance of corresponding

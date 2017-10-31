@@ -43,6 +43,8 @@ add_executable(TestRTIG
                federationlist_test.cpp
                messageprocessor_test.cpp
                
+               mom_test.cpp
+               
                ${rtig_SRCS}
                ../main.cpp
                )

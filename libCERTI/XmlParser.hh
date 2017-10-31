@@ -50,10 +50,6 @@
 
 #define ATTRIBUTE_DTDVERSION (const xmlChar*) "DTDversion"
 #define ATTRIBUTE_XMLNSVERSION (const xmlChar*) "xmlns"
-#define ATTRIBUTE_NAME (const xmlChar*) "name"
-#define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
-#define ATTRIBUTE_ORDER (const xmlChar*) "order"
-#define ATTRIBUTE_SPACE (const xmlChar*) "space"
 
 #define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
 #define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
@@ -62,6 +58,11 @@
 
 #define VERSION1516 (const xmlChar*) "1516.2"
 #define VERSION1516_2010 (const xmlChar*) "1516-2010"
+
+#define ATTRIBUTE_NAME (const xmlChar*) "name"
+#define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
+#define ATTRIBUTE_ORDER (const xmlChar*) "order"
+#define ATTRIBUTE_SPACE (const xmlChar*) "space"
 #endif
 
 // Standard libraries
@@ -69,37 +70,29 @@
 
 namespace certi {
 
-/**
- * The CERTI XML federation Object Model parser.
- */
+/** The CERTI XML federation Object Model parser. */
 class CERTI_EXPORT XmlParser {
 public:
-    /**
-	 * Different type of XML files.
-	 * The parse will guess which type of file it has been given.
-	 */
+    /** Different type of XML files.
+     * The parse will guess which type of file it has been given.
+     */
     typedef enum HLAXmlStdVersion { XML_LEGACY, XML_IEEE1516_2000, XML_IEEE1516_2010 } HLAXmlStdVersion_t;
 
-    /**
-	 * Build a parser.
-	 * @param root the root object of the FOM.
-	 */
+    /** Build a parser.
+     * @param root the root object of the FOM.
+     */
     XmlParser(RootObject* root);
 
-    /**
-	 * Destructor.
-	 */
+    /** Destructor. */
     virtual ~XmlParser();
 
-    /** 
-	 * Main method to parse .xml FOM file
-	 * @param[in] pathToXmlFile the path to the XML file.
-	 * @return the RootObject resulting from the parse. 
-	 */
+    /**  Main method to parse .xml FOM file
+     * @param[in] pathToXmlFile the path to the XML file.
+     * @return the RootObject resulting from the parse.
+     */
     RootObject* parse(std::string pathToXmlFile);
 
-    /**
-     * Return true if the XML parser is available.
+    /** Return true if the XML parser is available.
      * XML Parser may not be available if CERTI was
      * compiled without XML support. In this case you
      * should use the .fed file parser.
@@ -107,8 +100,7 @@ public:
      */
     static bool exists(void);
 
-    /**
-     * give the version of the xml FOM file to be parsed
+    /** give the version of the xml FOM file to be parsed
      * it could be 1516 ou 1516-2010
      * @param[in] pathToXmlFile the path to the XML file.
      * @return a string containing the version of the FOM file
@@ -116,25 +108,22 @@ public:
     static HLAXmlStdVersion_t version(std::string pathToXmlFile);
 
 #if HAVE_XML
-    /**
-     * XmlParser Inner class used to "cleany"
+    /** XmlParser Inner class used to "cleany"
      * get a property without memory leak.
      */
     class CleanXmlGetProp {
     public:
-        /**
-		 * Build a property object which
-		 * may be casted out in a const char*
-		 * @param[in] node the xml node
-		 * @param[in] propName the property name 
-		 */
+        /** Build a property object which
+         * may be casted out in a const char*
+         * @param[in] node the xml node
+         * @param[in] propName the property name 
+         */
         CleanXmlGetProp(_xmlNode* node, const xmlChar* propName)
         {
             prop = xmlGetProp(node, propName);
         }
-        /**
-		 * Cast operator from CleanXmlGetProp to const char*
-		 */
+
+        /** Cast operator from CleanXmlGetProp to const char* */
         operator const char*()
         {
             return reinterpret_cast<const char*>(prop);
@@ -152,25 +141,21 @@ public:
 
 protected:
 #ifdef HAVE_XML
-    /**
-	 * Parse the current class node.
-	 * @param[in,out] parent the parent object class
-	 */
+    /** Parse the current class node.
+     * @param[in,out] parent the parent object class
+     */
     virtual void parseClass(ObjectClass* parent);
 
-    /**
-     * Parse the current interaction node
+    /** Parse the current interaction node
      * @param[in,out] parent the parent interaction node
      */
     virtual void parseInteraction(Interaction* parent);
 
-    /** 
-     * Parse a routing space from current node.
+    /** Parse a routing space from current node.
      */
     virtual void parseRoutingSpace(void);
 
-    /**
-     *  Infos we need to retrieve in the xml file according to the xml version used
+    /** Infos we need to retrieve in the xml file according to the xml version used
      *  ntos stand for name, transportation, order, space
      */
     typedef struct ntos {
@@ -180,8 +165,7 @@ protected:
         xmlChar* space;
     } HLAntos_t;
 #else
-    /**
-     *  Infos we need to retrieve in the xml file according to the xml version used
+    /** Infos we need to retrieve in the xml file according to the xml version used
      *  ntos stand for name, transportation, order, space
      */
     typedef struct ntos {
@@ -192,17 +176,15 @@ protected:
     } HLAntos_t;
 #endif
 
-    /**
-     * ParseNTOS get name transportation order and space
+    /** ParseNTOS get name transportation order and space
      * @param[out] name transportation order and space
      * @return nothing
      */
     virtual void parseNTOS(HLAntos_t* ntos_p) = 0;
 
-    /**
-	 * Get the name of the current node.
-	 * @return the name
-	 */
+    /** Get the name of the current node.
+     * @return the name
+     */
     virtual std::string getName() = 0;
 
     int freeObjectClassHandle;

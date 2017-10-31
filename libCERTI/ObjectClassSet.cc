@@ -46,11 +46,9 @@ ObjectClassSet::ObjectClassSet(SecurityServer* theSecurityServer, bool isRootCla
     server = theSecurityServer;
 }
 
-// ----------------------------------------------------------------------------
-//! Destructor.
 ObjectClassSet::~ObjectClassSet()
 {
-} /* end of ~ObjectClassSet */
+}
 
 void ObjectClassSet::addClass(ObjectClass* newClass, ObjectClass* parentClass)
 {
@@ -58,11 +56,8 @@ void ObjectClassSet::addClass(ObjectClass* newClass, ObjectClass* parentClass)
     /* link to server */
     newClass->server = server;
     add(newClass, parentClass);
+}
 
-} /* end of addClass */
-
-// ----------------------------------------------------------------------------
-//! deleteObject with time.
 void ObjectClassSet::deleteObject(FederateHandle federate,
                                   Object* object,
                                   FederationTime theTime,
@@ -94,8 +89,7 @@ void ObjectClassSet::deleteObject(FederateHandle federate,
         delete ocbList;
     }
 }
-// ----------------------------------------------------------------------------
-//! deleteObject without time.
+
 void ObjectClassSet::deleteObject(FederateHandle federate, Object* object, const std::string& tag)
 {
     // It may throw ObjectNotKnown
@@ -127,8 +121,6 @@ void ObjectClassSet::deleteObject(FederateHandle federate, Object* object, const
     D.Out(pdRegister, "Instance %d has been deleted.", object);
 }
 
-// ----------------------------------------------------------------------------
-//! getAttributeHandle.
 AttributeHandle ObjectClassSet::getAttributeHandle(const std::string& the_name, ObjectClassHandle the_class) const
 {
     G.Out(pdGendoc, "enter ObjectClassSet::getAttributeHandle");
@@ -156,8 +148,6 @@ AttributeHandle ObjectClassSet::getAttributeHandle(const std::string& the_name, 
     return handle;
 }
 
-// ----------------------------------------------------------------------------
-//! getAttributeName.
 const std::string& ObjectClassSet::getAttributeName(AttributeHandle the_handle, ObjectClassHandle the_class) const
 {
     ObjectClass* objectClass = NULL;
@@ -170,8 +160,6 @@ const std::string& ObjectClassSet::getAttributeName(AttributeHandle the_handle, 
     return objectClass->getAttributeName(the_handle);
 }
 
-// ----------------------------------------------------------------------------
-//! getInstanceClass.
 ObjectClass* ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 {
     handled_const_iterator i;
@@ -186,23 +174,17 @@ ObjectClass* ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) cons
     throw ObjectNotKnown(msg.str());
 }
 
-// ----------------------------------------------------------------------------
-//! getObjectClassHandle.
 ObjectClassHandle ObjectClassSet::getObjectClassHandle(const std::string& class_name) const
 {
     return getHandleFromName(class_name);
-} /* end of getObjectClassHandle */
+}
 
-// ----------------------------------------------------------------------------
-//! getObjectClassName.
 const std::string& ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
 {
     D.Out(pdRequest, "Looking for class %u...", the_handle);
     return getNameFromHandle(the_handle);
 }
 
-// ----------------------------------------------------------------------------
-//! killFederate.
 void ObjectClassSet::killFederate(FederateHandle theFederate) noexcept
 {
     ObjectClassBroadcastList* ocbList = NULL;
@@ -245,9 +227,8 @@ void ObjectClassSet::killFederate(FederateHandle theFederate) noexcept
         } while (ocbList != NULL);
     }
     D.Out(pdExcept, "End of the KillFederate Procedure.");
-} /* end of killFederate */
+}
 
-// ----------------------------------------------------------------------------
 void ObjectClassSet::publish(FederateHandle theFederateHandle,
                              ObjectClassHandle theClassHandle,
                              const std::vector<AttributeHandle>& theAttributeList,
@@ -265,8 +246,6 @@ void ObjectClassSet::publish(FederateHandle theFederateHandle,
     theClass->publish(theFederateHandle, theAttributeList, PubOrUnpub);
 }
 
-// ----------------------------------------------------------------------------
-//! registerInstance.
 void ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
                                             Object* the_object,
                                             ObjectClassHandle the_class)
@@ -304,7 +283,6 @@ void ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
     Debug(D, pdRegister) << "Instance " << the_object << " has been registered." << std::endl;
 }
 
-// ----------------------------------------------------------------------------
 void ObjectClassSet::subscribe(FederateHandle federate,
                                ObjectClassHandle class_handle,
                                const std::vector<AttributeHandle>& attributes,
@@ -317,10 +295,8 @@ void ObjectClassSet::subscribe(FederateHandle federate,
     if (need_discover) {
         object_class->recursiveDiscovering(federate, class_handle);
     }
-} /* end of subscribe */
+}
 
-// ----------------------------------------------------------------------------
-//! updateAttributeValues with time
 void ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                            Object* object,
                                            const std::vector<AttributeHandle>& attributes,
@@ -354,8 +330,6 @@ void ObjectClassSet::updateAttributeValues(FederateHandle federate,
     delete ocbList;
 }
 
-// ----------------------------------------------------------------------------
-//! updateAttributeValues without time
 void ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                            Object* object,
                                            const std::vector<AttributeHandle>& attributes,
@@ -388,8 +362,6 @@ void ObjectClassSet::updateAttributeValues(FederateHandle federate,
     delete ocbList;
 }
 
-// ----------------------------------------------------------------------------
-//! negotiatedAttributeOwnershipDivestiture.
 void ObjectClassSet::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                              Object* object,
                                                              const std::vector<AttributeHandle>& theAttributeList,
@@ -420,8 +392,6 @@ void ObjectClassSet::negotiatedAttributeOwnershipDivestiture(FederateHandle theF
     delete ocbList;
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipAcquisitionIfAvailable.
 void ObjectClassSet::attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                                               Object* object,
                                                               const std::vector<AttributeHandle>& theAttributeList)
@@ -433,8 +403,6 @@ void ObjectClassSet::attributeOwnershipAcquisitionIfAvailable(FederateHandle the
     objectClass->attributeOwnershipAcquisitionIfAvailable(theFederateHandle, object, theAttributeList);
 }
 
-// ----------------------------------------------------------------------------
-//! unconditionalAttributeOwnershipDivestiture
 void ObjectClassSet::unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                                 Object* object,
                                                                 const std::vector<AttributeHandle>& theAttributeList)
@@ -463,10 +431,8 @@ void ObjectClassSet::unconditionalAttributeOwnershipDivestiture(FederateHandle t
         }
         delete ocbList;
     }
-} /* end of unconditionalAttributeOwnershipDivestiture */
+}
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipAcquisition.
 void ObjectClassSet::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                                    Object* object,
                                                    const std::vector<AttributeHandle>& theAttributeList,
@@ -479,8 +445,6 @@ void ObjectClassSet::attributeOwnershipAcquisition(FederateHandle theFederateHan
     objectClass->attributeOwnershipAcquisition(theFederateHandle, object, theAttributeList, theTag);
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipReleaseResponse.
 AttributeHandleSet* ObjectClassSet::attributeOwnershipReleaseResponse(
     FederateHandle theFederateHandle, Object* object, const std::vector<AttributeHandle>& theAttributeList)
 {
@@ -491,8 +455,6 @@ AttributeHandleSet* ObjectClassSet::attributeOwnershipReleaseResponse(
     return objectClass->attributeOwnershipReleaseResponse(theFederateHandle, object, theAttributeList);
 }
 
-// ----------------------------------------------------------------------------
-//! cancelAttributeOwnershipAcquisition.
 void ObjectClassSet::cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                                          Object* object,
                                                          const std::vector<AttributeHandle>& theAttributeList)

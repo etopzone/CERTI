@@ -79,7 +79,7 @@ using ::certi::rtig::Federation;
  */
 
 namespace {
-    static const ::certi::FederationHandle invalid_handle{0};
+static const ::certi::FederationHandle invalid_handle{0};
 
 static const ::certi::FederationHandle federation_handle{1};
 
@@ -1035,3 +1035,4 @@ TEST_F(FederationTest, updateLastNERxForFederateThrowsOnUknFederate)
 {
     ASSERT_THROW(f.updateLastNERxForFederate(ukn_federate, {}), ::certi::FederateNotExecutionMember);
 }
+

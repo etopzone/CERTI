@@ -40,16 +40,13 @@ class SecurityServer;
 
 namespace certi {
 
-/**
- * This class represents a set of object classes.
- */
+/** This class represents a set of object classes. */
 class CERTI_EXPORT ObjectClassSet : public TreeNamedAndHandledSet<ObjectClass> {
 public:
     ObjectClassSet(SecurityServer* theSecurityServer, bool isRootClassSet = false);
     ~ObjectClassSet();
 
-    /**
-	 * Add an object class to the set.
+    /** Add an object class to the set.
 	 * @param[in] theClass the object class to be added
 	 * @param[in] parentClass the parent class (may be NULL)
 	 */
@@ -66,9 +63,7 @@ public:
 
     void killFederate(FederateHandle theFederate) noexcept;
 
-    /**
-     * Register specified federate as a publisher of the specified attribute list
-     * for the specified Object Class.
+    /** Register specified federate as a publisher of the specified attribute list for the specified Object Class.
      * @param[in] theFederateHandle the handle of the publisher federate
      * @param[in] theClassHandle the handle of the class to be published
      * @param[in] theAttributeList the list of attribute of theClassHandle
@@ -79,8 +74,7 @@ public:
                  const std::vector<AttributeHandle>& theAttributeList,
                  bool PubOrUnpub);
 
-    /**
-     * Subscribes a federate to a set of attributes with a region.
+    /** Subscribes a federate to a set of attributes with a region.
      * Sends the discovery messages if necessary.
      * @param federate Federate to subscribe
      * @param class_handle Class to be subscribed
@@ -93,10 +87,12 @@ public:
                    const RTIRegion* = NULL);
 
     // Object Instance Management
-    void
-    deleteObject(FederateHandle theFederateHandle, Object* object, FederationTime theTime, const std::string& theTag);
 
-    void deleteObject(FederateHandle theFederateHandle, Object* object, const std::string& theTag);
+    //! deleteObject with time.
+    void deleteObject(FederateHandle federate, Object* object, FederationTime theTime, const std::string& theTag);
+
+    //! deleteObject without time.
+    void deleteObject(FederateHandle federate, Object* object, const std::string& theTag);
 
     void registerObjectInstance(FederateHandle, Object*, ObjectClassHandle);
 
@@ -137,8 +133,7 @@ public:
                                              const std::vector<AttributeHandle>& theAttributeList);
 
 private:
-    /**
-	 * This object will help to find the TCPLink associated with a Federate.
+    /** This object will help to find the TCPLink associated with a Federate.
 	 * This reference is passed to all new ObjectClass.
 	 */
     SecurityServer* server;
