@@ -86,6 +86,192 @@ using std::vector;
 #define strcasecmp stricmp
 #endif
 
+namespace {
+
+enum class MomAction { Publish, Subsribe, Nothing };
+
+static const std::map<std::string, std::pair<MomAction, std::set<std::string>>> the_required_object_classes{
+    {"HLAobjectRoot", {MomAction::Nothing, {}}},
+    {"HLAmanager", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate",
+     {MomAction::Publish,
+      {"HLAfederateHandle",
+       "HLAfederateName",
+       "HLAfederateType",
+       "HLAfederateHost",
+       "HLARTIversion",
+       "HLAFOMmoduleDesignatorList",
+       "HLAtimeConstrained",
+       "HLAtimeRegulating",
+       "HLAasynchronousDelivery",
+       "HLAfederateState",
+       "HLAtimeManagerState",
+       "HLAlogicalTime",
+       "HLAlookahead",
+       "HLAGALT",
+       "HLALITS",
+       "HLAROlength",
+       "HLATSOlength",
+       "HLAreflectionsReceived",
+       "HLAupdatesSent",
+       "HLAinteractionsReceived",
+       "HLAinteractionsSent",
+       "HLAobjectInstancesThatCanBeDeleted",
+       "HLAobjectInstancesUpdated",
+       "HLAobjectInstancesReflected",
+       "HLAobjectInstancesDeleted",
+       "HLAobjectInstancesRemoved",
+       "HLAobjectInstancesRegistered",
+       "HLAobjectInstancesDiscovered",
+       "HLAtimeGrantedTime",
+       "HLAtimeAdvancingTime",
+       "HLAconveyRegionDesignatorSets",
+       "HLAconveyProducingFederate"}}},
+    {"HLAmanager.HLAfederation",
+     {MomAction::Publish,
+      {"HLAfederationName",
+       "HLAfederatesInFederation",
+       "HLARTIversion",
+       "HLAMIMDesignator",
+       "HLAFOMmoduleDesignatorList",
+       "HLAcurrentFDD",
+       "HLAtimeImplementationName",
+       "HLAlastSaveName",
+       "HLAlastSaveTime",
+       "HLAnextSaveName",
+       "HLAnextSaveTime",
+       "HLAautoProvide"
+    }}}};
+
+static const std::map<std::string, std::pair<MomAction, std::set<std::string>>> the_required_interactions{
+    {"HLAinteractionRoot", {MomAction::Nothing, {}}},
+    {"HLAmanager", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate", {MomAction::Nothing, {"HLAfederate"}}},
+    {"HLAmanager.HLAfederate.HLAadjust", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate.HLAadjust.HLAsetTiming", {MomAction::Subsribe, {"HLAreportPeriod"}}},
+    {"HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState",
+     {MomAction::Subsribe, {"HLAobjectInstance", "HLAattribute", "HLAattributeState"}}},
+    {"HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+     {MomAction::Subsribe,
+      {"HLAconveyRegionDesignatorSets", "HLAconveyProducingFederate", "HLAserviceReporting", "HLAexceptionReporting"}}},
+    {"HLAmanager.HLAfederate.HLArequest", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestPublications", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation",
+     {MomAction::Subsribe, {"HLAobjectInstance"}}},
+    {"HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData", {MomAction::Subsribe, {"HLAFOMmoduleIndicator"}}},
+    {"HLAmanager.HLAfederate.HLAreport", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+     {MomAction::Publish, {"HLAnumberOfClasses", "HLAobjectClass", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+     {MomAction::Publish,
+      {"HLAnumberOfClasses", "HLAobjectClass", "HLAactive", "HLAmaxUpdateRate", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+     {MomAction::Publish, {"HLAinteractionClassList"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+     {MomAction::Publish, {"HLAinteractionClassList"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+     {MomAction::Publish, {"HLAobjectInstanceCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+     {MomAction::Publish, {"HLAobjectInstanceCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+     {MomAction::Publish, {"HLAobjectInstanceCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+     {MomAction::Publish, {"HLAtransportation", "HLAupdateCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+     {MomAction::Publish, {"HLAtransportation", "HLAreflectCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+     {MomAction::Publish, {"HLAtransportation", "HLAinteractionCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+     {MomAction::Publish, {"HLAtransportation", "HLAinteractionCounts"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+     {MomAction::Publish,
+      {"HLAobjectInstance", "HLAownedInstanceAttributeList", "HLAregisteredClass", "HLAknownClass"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportException", {MomAction::Publish, {"HLAservice", "HLAexception"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",
+     {MomAction::Publish,
+      {"HLAservice",
+       "HLAsuccessIndicator",
+       "HLAsuppliedArguments",
+       "HLAreturnedArguments",
+       "HLAexception",
+       "HLAserialNumber"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception",
+     {MomAction::Publish, {"HLAservice", "HLAexception", "HLAparameterError"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost",
+     {MomAction::Publish, {"HLAfederateName", "HLAtimestamp", "HLAfaultDescription"}}},
+    {"HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData",
+     {MomAction::Publish, {"HLAFOMmoduleIndicator", "HLAFOMmoduleData"}}},
+    {"HLAmanager.HLAfederate.HLAservice", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution", {MomAction::Subsribe, {"HLAresignAction"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved", {MomAction::Subsribe, {"HLAlabel"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete", {MomAction::Subsribe, {"HLAsuccessIndicator"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete", {MomAction::Subsribe, {"HLAsuccessIndicator"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes",
+     {MomAction::Subsribe, {"HLAobjectClass", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes",
+     {MomAction::Subsribe, {"HLAobjectClass", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass", {MomAction::Subsribe, {"HLAinteractionClass"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass", {MomAction::Subsribe, {"HLAinteractionClass"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes",
+     {MomAction::Subsribe, {"HLAobjectClass", "HLAattributeList", "HLAactive"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes",
+     {MomAction::Subsribe, {"HLAobjectClass", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass",
+     {MomAction::Subsribe, {"HLAinteractionClass", "HLAactive"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass",
+     {MomAction::Subsribe, {"HLAinteractionClass"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance",
+     {MomAction::Subsribe, {"HLAobjectInstance", "HLAtag", "HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance", {MomAction::Subsribe, {"HLAobjectInstance"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange",
+     {MomAction::Subsribe, {"HLAobjectInstance", "HLAattributeList", "HLAtransportation"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange",
+     {MomAction::Subsribe, {"HLAinteractionClass", "HLAtransportation"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture",
+     {MomAction::Subsribe, {"HLAobjectInstance", "HLAattributeList"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation", {MomAction::Subsribe, {"HLAlookahead"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest", {MomAction::Subsribe, {"HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable", {MomAction::Subsribe, {"HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest", {MomAction::Subsribe, {"HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable", {MomAction::Subsribe, {"HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest", {MomAction::Subsribe, {"HLAtimeStamp"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead", {MomAction::Subsribe, {"HLAlookahead"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType",
+     {MomAction::Subsribe, {"HLAobjectInstance", "HLAattributeList", "HLAsendOrder"}}},
+    {"HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType",
+     {MomAction::Subsribe, {"HLAinteractionClass", "HLAsendOrder"}}},
+    {"HLAmanager.HLAfederation", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederation.HLAadjust", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches", {MomAction::Subsribe, {"HLAautoProvide"}}},
+    {"HLAmanager.HLAfederation.HLArequest", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus",
+     {MomAction::Subsribe, {"HLAsyncPointName"}}},
+    {"HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData", {MomAction::Subsribe, {"HLAFOMmoduleIndicator"}}},
+    {"HLAmanager.HLAfederation.HLArequest.HLArequestMIMData", {MomAction::Subsribe, {}}},
+    {"HLAmanager.HLAfederation.HLAreport", {MomAction::Nothing, {}}},
+    {"HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints", {MomAction::Publish, {"HLAsyncPoints"}}},
+    {"HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
+     {MomAction::Publish, {"HLAsyncPointName", "HLAsyncPointFederates"}}},
+    {"HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData",
+     {MomAction::Publish, {"HLAFOMmoduleIndicator", "HLAFOMmoduleData"}}},
+    {"HLAmanager.HLAfederation.HLAreport.HLAreportMIMData", {MomAction::Publish, {"HLAMIMData"}}}};
+}
+
 namespace certi {
 
 class RTIRegion;
@@ -1081,10 +1267,17 @@ void Federation::publishObject(FederateHandle federate_handle,
 
 void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, string newObjName)
 {
+    Debug(G, pdGendoc) << "enter Federation::reserveObjectInstanceName" << endl;
     Socket* socket;
     NetworkMessage* msg;
 
     bool reservation_ok = my_root_object->reserveObjectInstanceName(theFederateHandle, newObjName);
+    
+    if(theFederateHandle == my_mom_federate_handle) {
+        Debug(G, pdGendoc) << "             =====> Object instance name reservation for MOM: " << (reservation_ok ? "Success" : "Failure") << endl;
+        Debug(G, pdGendoc) << "exit  Federation::reserveObjectInstanceName" << endl;
+        return;
+    }
 
     if (reservation_ok) {
         msg = NM_Factory::create(NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED);
@@ -1109,6 +1302,7 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
     msg->send(socket, my_nm_buffer);
 
     delete msg;
+    Debug(G, pdGendoc) << "exit  Federation::reserveObjectInstanceName" << endl;
 }
 
 ObjectHandle
@@ -1746,7 +1940,7 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
     // get object class
     ObjectClass* oClass = my_root_object->getObjectClass(theClassHandle);
     if (!oClass) {
-        throw ObjectClassNotDefined(certi::stringize() << "ObjectClassHandle <" << theClassHandle << "> is unknown.");
+        throw ObjectClassNotDefined("ObjectClassHandle <" + std::to_string(theClassHandle) + "> is unknown.");
     }
 
     // send PAVU for all objects of this class
@@ -2098,17 +2292,15 @@ void Federation::enableMomIfAvailable()
     Debug(G, pdGendoc) << "enter Federation::enableMomIfAvailable" << endl;
 
     if (isMomInRootObject()) {
+        my_root_object->display();
+
         try {
             my_mom_enabled = true;
             my_mom_federate_handle = my_federate_handle_generator.provide();
             my_server->registerMomFederateHandle(my_mom_federate_handle);
 
-            // Publish
-            momPublishFederation();
-            momPublishFederate();
-
-            momPublishInteractions();
-            momSubscribeInteractions();
+            momPublishObjects();
+            momPublishAndSubscribeInteractions();
 
             momRegisterFederation();
 
@@ -2117,6 +2309,7 @@ void Federation::enableMomIfAvailable()
         catch (Exception& e) {
             std::cout << "Error while setting up MOM: " << e.name() << " (" << e.reason() << ")" << std::endl;
         }
+        my_root_object->display();
     }
     else {
         std::cout << "MOM disabled" << endl;
@@ -2127,157 +2320,21 @@ void Federation::enableMomIfAvailable()
 
 bool Federation::isMomInRootObject()
 {
-    my_root_object->display();
-    //     static const std::set<std::string> required_object_classes {
-    //         "HLAobjectRoot", "HLAmanager", "HLAmanager.HLAfederate", "HLAmanager.HLAfederation"};
-
-    static const std::map<std::string, std::set<std::string>> required_object_classes{
-        {"HLAobjectRoot", {}},
-        {"HLAmanager", {}},
-        {"HLAmanager.HLAfederate",
-         {"HLAfederateHandle",
-          "HLAfederateName",
-          "HLAfederateType",
-          "HLAfederateHost",
-          "HLARTIversion",
-          "HLAFOMmoduleDesignatorList",
-          "HLAtimeConstrained",
-          "HLAtimeRegulating",
-          "HLAasynchronousDelivery",
-          "HLAfederateState",
-          "HLAtimeManagerState",
-          "HLAlogicalTime",
-          "HLAlookahead",
-          "HLAGALT",
-          "HLALITS",
-          "HLAROlength",
-          "HLATSOlength",
-          "HLAreflectionsReceived",
-          "HLAupdatesSent",
-          "HLAinteractionsReceived",
-          "HLAinteractionsSent",
-          "HLAobjectInstancesThatCanBeDeleted",
-          "HLAobjectInstancesUpdated",
-          "HLAobjectInstancesReflected",
-          "HLAobjectInstancesDeleted",
-          "HLAobjectInstancesRemoved",
-          "HLAobjectInstancesRegistered",
-          "HLAobjectInstancesDiscovered",
-          "HLAtimeGrantedTime",
-          "HLAtimeAdvancingTime",
-          "HLAconveyRegionDesignatorSets",
-          "HLAconveyProducingFederate"}},
-        {"HLAmanager.HLAfederation",
-         {"HLAfederationName",
-          "HLAfederatesInFederation",
-          "HLARTIversion",
-          "HLAMIMDesignator",
-          "HLAFOMmoduleDesignatorList",
-          "HLAcurrentFDD",
-          "HLAtimeImplementationName",
-          "HLAlastSaveName",
-          "HLAlastSaveTime",
-          "HLAnextSaveName"}}};
-
-    static const std::set<std::string> required_interactions{
-        "HLAinteractionRoot",
-        "HLAmanager",
-        "HLAmanager.HLAfederate",
-        "HLAmanager.HLAfederate.HLAadjust",
-        "HLAmanager.HLAfederate.HLAadjust.HLAsetTiming",
-        "HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState",
-        "HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
-        "HLAmanager.HLAfederate.HLArequest",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestPublications",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation",
-        "HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData",
-        "HLAmanager.HLAfederate.HLAreport",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportException",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost",
-        "HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData",
-        "HLAmanager.HLAfederate.HLAservice",
-        "HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution",
-        "HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved",
-        "HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun",
-        "HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete",
-        "HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete",
-        "HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes",
-        "HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes",
-        "HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass",
-        "HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass",
-        "HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes",
-        "HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes",
-        "HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass",
-        "HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass",
-        "HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance",
-        "HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance",
-        "HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange",
-        "HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange",
-        "HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture",
-        "HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation",
-        "HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation",
-        "HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained",
-        "HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained",
-        "HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest",
-        "HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable",
-        "HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest",
-        "HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable",
-        "HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest",
-        "HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery",
-        "HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery",
-        "HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead",
-        "HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType",
-        "HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType",
-        "HLAmanager.HLAfederation",
-        "HLAmanager.HLAfederation.HLAadjust",
-        "HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches",
-        "HLAmanager.HLAfederation.HLArequest",
-        "HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints",
-        "HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus",
-        "HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData",
-        "HLAmanager.HLAfederation.HLArequest.HLArequestMIMData",
-        "HLAmanager.HLAfederation.HLAreport",
-        "HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
-        "HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
-        "HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData",
-        "HLAmanager.HLAfederation.HLAreport.HLAreportMIMData"};
-
     // Pre check with sizes
-    if (my_root_object->ObjectClasses->size() < required_object_classes.size()
-        or my_root_object->Interactions->size() < required_interactions.size()) {
+    if (my_root_object->ObjectClasses->size() < the_required_object_classes.size()
+        or my_root_object->Interactions->size() < the_required_interactions.size()) {
         Debug(D, pdDebug)
             << "the root object does not contain enough object classes or interactions to have a mom definition."
             << endl;
         return false;
     }
 
-    for (auto& pair : required_object_classes) {
+    // Chech for every classes and each attributes
+    for (auto& pair : the_required_object_classes) {
         try {
             auto objectHandle = my_root_object->ObjectClasses->getHandleFromName(pair.first);
 
-            for (const auto& attributeName : pair.second) {
+            for (const auto& attributeName : pair.second.second) {
                 try {
                     my_root_object->ObjectClasses->getAttributeHandle(attributeName, objectHandle);
                 }
@@ -2289,117 +2346,134 @@ bool Federation::isMomInRootObject()
             }
         }
         catch (NameNotFound& e) {
-            Debug(D, pdDebug) << "the root object does not contain the object classe " << pair.first << endl;
+            Debug(D, pdDebug) << "the root object does not contain the object class " << pair.first << endl;
             return false;
         }
     }
 
-    /*if (not std::includes(begin(my_root_object->ObjectClasses->names()),
-                          end(my_root_object->ObjectClasses->names()),
-                          begin(required_object_classes),
-                          end(required_object_classes))) {
-        Debug(D, pdDebug) << "the root object does not contain the object classes of a mom definition." << endl;
-        return false;
-    }*/
+    // Chech for every interactions and each parameters
+    for (auto& pair : the_required_interactions) {
+        try {
+            auto objectHandle = my_root_object->Interactions->getInteractionClassHandle(pair.first);
 
-    if (not std::includes(begin(my_root_object->Interactions->names()),
-                          end(my_root_object->Interactions->names()),
-                          begin(required_interactions),
-                          end(required_interactions))) {
-        Debug(D, pdDebug) << "the root object does not contain the interactions of a mom definition." << endl;
-        return false;
+            for (const auto& parameterName : pair.second.second) {
+                try {
+                    my_root_object->Interactions->getParameterHandle(parameterName, objectHandle);
+                }
+                catch (NameNotFound& e) {
+                    Debug(D, pdDebug) << "the interaction class \"" << pair.first
+                                      << "\" does not contain the parameter " << parameterName << endl;
+                    return false;
+                }
+            }
+        }
+        catch (NameNotFound& e) {
+            Debug(D, pdDebug) << "the root object does not contain the interaction class " << pair.first << endl;
+            return false;
+        }
     }
 
     return true;
 }
 
-void Federation::momPublishFederation()
-{
-    Debug(G, pdGendoc) << "enter Federation::momPublishFederation" << endl;
-    momPublishObject("HLAmanager.HLAfederation",
-                     {"HLAfederationName",
-                      "HLAfederatesInFederation",
-                      "HLARTIversion",
-                      "HLAMIMDesignator",
-                      "HLAFOMmoduleDesignatorList",
-                      "HLAcurrentFDD",
-                      "HLAtimeImplementationName",
-                      "HLAlastSaveName",
-                      "HLAlastSaveTime",
-                      "HLAnextSaveName"});
-    Debug(G, pdGendoc) << "exit Federation::momPublishFederation" << endl;
-}
-
-void Federation::momPublishFederate()
-{
-    Debug(G, pdGendoc) << "enter Federation::momPublishFederate" << endl;
-    momPublishObject("HLAmanager.HLAfederate",
-                     {"HLAfederateHandle",
-                      "HLAfederateName",
-                      "HLAfederateType",
-                      "HLAfederateHost",
-                      "HLARTIversion",
-                      "HLAFOMmoduleDesignatorList",
-                      "HLAtimeConstrained",
-                      "HLAtimeRegulating",
-                      "HLAasynchronousDelivery",
-                      "HLAfederateState",
-                      "HLAtimeManagerState",
-                      "HLAlogicalTime",
-                      "HLAlookahead",
-                      "HLAGALT",
-                      "HLALITS",
-                      "HLAROlength",
-                      "HLATSOlength",
-                      "HLAreflectionsReceived",
-                      "HLAupdatesSent",
-                      "HLAinteractionsReceived",
-                      "HLAinteractionsSent",
-                      "HLAobjectInstancesThatCanBeDeleted",
-                      "HLAobjectInstancesUpdated",
-                      "HLAobjectInstancesReflected",
-                      "HLAobjectInstancesDeleted",
-                      "HLAobjectInstancesRemoved",
-                      "HLAobjectInstancesRegistered",
-                      "HLAobjectInstancesDiscovered",
-                      "HLAtimeGrantedTime",
-                      "HLAtimeAdvancingTime",
-                      "HLAconveyRegionDesignatorSets",
-                      "HLAconveyProducingFederate"});
-    Debug(G, pdGendoc) << "exit Federation::momPublishFederate" << endl;
-}
-
-void Federation::momPublishObject(const std::string& objectName, const std::set<std::string> attributesNames)
+void Federation::momPublishObjects()
 {
     Debug(G, pdGendoc) << "enter Federation::momPublishObject" << endl;
-    auto federation_object_handle = my_root_object->ObjectClasses->getHandleFromName(objectName);
 
-    // we gather only the attributes specified in the standard
-    std::vector<AttributeHandle> attributes;
-    for (const string& attributeName : attributesNames) {
-        attributes.push_back(
-            my_root_object->ObjectClasses->getAttributeHandle(attributeName, federation_object_handle));
+    for (const auto& pair : the_required_object_classes) {
+        if (pair.second.first != MomAction::Publish) {
+            std::cout << "skip " << pair.first << std::endl;
+            continue;
+        }
+
+        std::cout << "publish " << pair.first << std::endl;
+
+        auto object_handle = my_root_object->ObjectClasses->getHandleFromName(pair.first);
+
+        // we gather only the attributes specified in the standard
+        std::vector<AttributeHandle> attributes;
+        for (const string& attributeName : pair.second.second) {
+            attributes.push_back(my_root_object->ObjectClasses->getAttributeHandle(attributeName, object_handle));
+        }
+
+        publishObject(my_mom_federate_handle, object_handle, attributes, true);
     }
 
-    publishObject(my_mom_federate_handle, federation_object_handle, attributes, true);
     Debug(G, pdGendoc) << "exit Federation::momPublishObject" << endl;
 }
 
-void Federation::momPublishInteractions()
-{
-    Debug(G, pdGendoc) << "enter Federation::momPublishInteractions" << endl;
-    Debug(G, pdGendoc) << "exit Federation::momPublishInteractions" << endl;
-}
-
-void Federation::momSubscribeInteractions()
+void Federation::momPublishAndSubscribeInteractions()
 {
     Debug(G, pdGendoc) << "enter Federation::momSubscribeInteractions" << endl;
+
+    for (const auto& pair : the_required_interactions) {
+        if (pair.second.first == MomAction::Nothing) {
+            std::cout << "skip " << pair.first << std::endl;
+            continue;
+        }
+
+        auto interaction_handle = my_root_object->Interactions->getInteractionClassHandle(pair.first);
+
+        if (pair.second.first == MomAction::Publish) {
+            std::cout << "pub " << pair.first << std::endl;
+            publishInteraction(my_mom_federate_handle, interaction_handle, true);
+        }
+        else { // we already discarded MomAction::Nothing so there is only MomAction::subscribe left
+            std::cout << "sub " << pair.first << std::endl;
+            subscribeInteraction(my_mom_federate_handle, interaction_handle, true);
+        }
+    }
+
     Debug(G, pdGendoc) << "exit Federation::momSubscribeInteractions" << endl;
 }
 
 void Federation::momRegisterFederation()
 {
     Debug(G, pdGendoc) << "enter Federation::momRegisterFederation" << endl;
+
+    auto objectName = "Federation_" + my_name;
+
+    reserveObjectInstanceName(my_mom_federate_handle, objectName);
+
+    auto object_handle = my_root_object->ObjectClasses->getObjectClassHandle("HLAmanager.HLAfederation");
+
+    auto object_id = registerObject(my_mom_federate_handle, object_handle, objectName);
+    
+    updateAttributeValues(my_mom_federate_handle,
+        object_id,
+        {
+            my_root_object->ObjectClasses->getAttributeHandle("HLAfederationName", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAfederatesInFederation", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLARTIversion", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAMIMDesignator", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAFOMmoduleDesignatorList", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAcurrentFDD", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAtimeImplementationName", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAlastSaveName", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAlastSaveTime", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAnextSaveName", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAnextSaveTime", object_handle),
+            my_root_object->ObjectClasses->getAttributeHandle("HLAautoProvide", object_handle)
+        },
+        {
+            {begin(my_name), end(my_name)},
+            {},
+            {'1','5','1','6','-','2','0','1','0'},
+            {'H','L','A','s','t','a','n','d','a','r','d','M','I','M'},
+            {begin(my_FED_id), end(my_FED_id)},   // default
+            {begin(my_FED_id), end(my_FED_id)},   // default
+            {'H','L','A','f','l','o','a','t','6','4','T','i','m','e'},
+            {},
+            {},
+            {},
+            {},
+            {}    // default
+        },
+        ""
+    );
+    
+    
+    
     Debug(G, pdGendoc) << "exit Federation::momRegisterFederation" << endl;
 }
 }

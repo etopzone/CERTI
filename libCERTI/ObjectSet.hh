@@ -43,6 +43,9 @@ public:
     ObjectSet(SecurityServer* the_server);
     ~ObjectSet();
 
+    //! Print the Root Object tree to the standard output.
+    void display() const;
+
     ObjectHandle getObjectInstanceHandle(const std::string&) const;
 
     const std::string& getObjectInstanceName(ObjectHandle the_object) const;

@@ -457,11 +457,8 @@ private:
     
     void enableMomIfAvailable();
     bool isMomInRootObject();
-    void momPublishFederation();
-    void momPublishFederate();
-    void momPublishObject(const std::string& objectName, const std::set<std::string> attributesNames);
-    void momPublishInteractions();
-    void momSubscribeInteractions();
+    void momPublishObjects();
+    void momPublishAndSubscribeInteractions();
     void momRegisterFederation();
 
     FederationHandle my_handle;

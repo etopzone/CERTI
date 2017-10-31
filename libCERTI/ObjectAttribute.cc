@@ -53,8 +53,9 @@ ObjectAttribute::~ObjectAttribute()
 //! Displays the object attribute information.
 void ObjectAttribute::display() const
 {
-    if (handle != 0)
+    if (handle != 0) {
         cout << "Attribute " << handle << " ; Owner " << owner << endl;
+    }
 }
 
 // ----------------------------------------------------------------------------

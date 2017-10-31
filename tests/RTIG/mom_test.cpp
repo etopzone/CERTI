@@ -12,12 +12,12 @@ TEST(MomTest, 11_1_2_The_RTI_shall_register_object_instances_and_update_values_o
 
 TEST(MomTest, 11_1_3_The_RTI_shall_subscribe_to_and_receive_some_interaction_classes)
 {
-    
+    // Test after setup that the mom subscribed
 }
 
 TEST(MomTest, 11_1_4_The_RTI_shall_publish_and_send_other_interaction_classes)
 {
-    
+    // Test after setup that the mom published
 }
 
 TEST(MomTest, 11_1_5_All_MOM_items_shall_be_predefined_in_the_FDD)

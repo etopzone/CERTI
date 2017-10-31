@@ -57,6 +57,18 @@ ObjectSet::~ObjectSet()
     erase(begin(), end());
 }
 
+void ObjectSet::display() const
+{
+    std::cout << "Object set: " << size() << std::endl;
+    for(const auto& pair: *this)
+    {
+        std::cout << "****" << std::endl;
+        std::cout << "Object #" << pair.first << std::endl;
+        pair.second->display();
+        std::cout << "****" << std::endl;
+    }
+}
+
 // ----------------------------------------------------------------------------
 void ObjectSet::changeAttributeTransportationType(ObjectHandle, AttributeHandle*, uint16_t, TransportType)
 {

@@ -831,8 +831,9 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
     for (int i = 0; i < the_size; i++) {
         oa = object->getAttribute(the_attributes[i]);
 
-        if (oa->getOwner() != the_federate)
-            throw AttributeNotOwned("");
+        if (oa->getOwner() != the_federate) {
+            throw AttributeNotOwned("Attribute #" + std::to_string(the_attributes[i]) + " is not owned by federate #" + std::to_string(the_federate));
+        }
     }
 
     // Prepare and Broadcast message for this class

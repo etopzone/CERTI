@@ -72,14 +72,14 @@ void RootObject::display() const
     std::cout << std::endl << "Root Object Tree BEGINS:" << std::endl;
     std::cout << "------------------------" << std::endl;
 
-    if (NULL != ObjectClasses) {
+    if (ObjectClasses) {
         std::cout << *ObjectClasses;
     }
     else {
         std::cout << "ObjectClasses is NULL!!" << std::endl;
     }
 
-    if (NULL != Interactions) {
+    if (Interactions) {
         std::cout << *Interactions;
     }
     else {
@@ -92,6 +92,9 @@ void RootObject::display() const
             space.display();
         }
     }
+    
+    objects->display();
+    
     std::cout << std::endl << "Root Object Tree ENDS." << std::endl;
     std::cout << "------------------------" << std::endl;
 }

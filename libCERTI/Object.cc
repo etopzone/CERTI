@@ -56,10 +56,18 @@ void Object::display() const
 {
     cout << " Instance: handle =" << handle;
 
-    if (!name.empty())
+    if (!name.empty()) {
         cout << ", name=\"" << name << "\"" << endl;
-    else
+    }
+    else {
         cout << ", (No name)." << endl;
+    }
+    
+    cout << " Attributes: " << _attributeMap.size() << endl;
+    for(const auto& pair: _attributeMap) {
+        cout << "Attribute #" << pair.first << endl;
+        pair.second->display();
+    }
 }
 
 // ----------------------------------------------------------------------------
