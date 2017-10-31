@@ -25,6 +25,7 @@
 
 #include <cstdint>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -94,7 +95,7 @@ public:
                SocketServer& socket_server,
                AuditFile& audit_server,
                const std::string& FEDid_name,
-               int theVerboseLevel);
+               const int verboseLevel);
 #endif
 
     ~Federation();
@@ -117,6 +118,8 @@ public:
     /// Return true if federation is being synchronized.
     bool isSynchronizing() const;
 
+    bool isMomEnabled() const;
+
     // -------------------------
     // -- Federate Management --
     // -------------------------
@@ -137,8 +140,8 @@ public:
     /** Check whether if the federate is part of the federation.
      * 
      * @param federate_handle federate to check
-     * @return true if the federate is part of the Federation,
-     *              else throw an exception.
+     * @return Throw an exception if the federate is not part of the federation.
+     *          Else return true if the federate is a "real" federate or false if it is the rti mom federate handle
      */
     bool check(FederateHandle federate_handle) const;
 
@@ -438,6 +441,8 @@ public:
     Federate& getFederate(FederateHandle federate_handle);
 
 private:
+    void openFomFile(const int verboseLevel);
+    
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
 
@@ -449,16 +454,23 @@ private:
                               FederateHandle except_federate,
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
+    
+    void enableMomIfAvailable();
+    bool isMomInRootObject();
+    void momPublishFederation();
+    void momPublishFederate();
+    void momPublishObject(const std::string& objectName, const std::set<std::string> attributesNames);
+    void momPublishInteractions();
+    void momSubscribeInteractions();
+    void momRegisterFederation();
 
     FederationHandle my_handle;
     std::string my_name;
     std::string my_FED_id;
 
-    /// Labels and Tags not on synchronization.
-    std::map<std::string, std::string> my_synchronization_labels;
-
-    HandleManager<FederateHandle> my_federate_handle_generator;
-    HandleManager<ObjectHandle> my_objects_handle_generator;
+#ifdef FEDERATION_USES_MULTICAST
+    SocketMC* MCLink;
+#endif
 
     /** This object is initialized when the Federation is created
      * 
@@ -468,28 +480,37 @@ private:
     std::unique_ptr<SecurityServer> my_server;
     std::unique_ptr<RootObject> my_root_object;
 
-    LBTS my_regulators;
-
-#ifdef FEDERATION_USES_MULTICAST
-    SocketMC* MCLink;
-#endif
-
-    // Private attributes
-    std::unordered_map<FederateHandle, std::unique_ptr<Federate>> my_federates;
-
-    bool my_is_save_in_progress;
-    bool my_is_restore_in_progress;
-    bool my_save_status; /// True if saving was correctly done, false otherwise.
-    bool my_restore_status; /// True if restoring was correctly done.
-    std::string my_save_label; /// The label associated with the save request.
-
     /// The minimum NERx timestamp for this federation
-    FederationTime my_min_NERx;
+    FederationTime my_min_NERx{};
+
+    bool my_mom_enabled {false};
+
+    /** This handle is used to detect MOM interactions.
+     * It does not really belong to the federation.
+     */
+    FederateHandle my_mom_federate_handle;
+
+    std::unordered_map<FederateHandle, std::unique_ptr<Federate>> my_federates{};
+
+    LBTS my_regulators{};
+
+    /// Labels and Tags not on synchronization.
+    std::map<std::string, std::string> my_synchronization_labels{};
 
     /// The message buffer used to send Network messages
-    MessageBuffer my_nm_buffer;
+    MessageBuffer my_nm_buffer{};
+
+    HandleManager<FederateHandle> my_federate_handle_generator {1};
+    HandleManager<ObjectHandle> my_objects_handle_generator {1};
+
+    bool my_is_save_in_progress {false};
+    bool my_is_restore_in_progress {false};
+    bool my_save_status {true}; /// True if saving was correctly done, false otherwise.
+    bool my_restore_status {true}; /// True if restoring was correctly done.
+    std::string my_save_label {""}; /// The label associated with the save request.
 };
 }
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
+

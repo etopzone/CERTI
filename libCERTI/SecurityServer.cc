@@ -66,6 +66,10 @@ bool SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
 */
 bool SecurityServer::canFederateAccessData(FederateHandle theFederate, SecurityLevelID theDataLevelID)
 {
+    if(theFederate == my_mom_federate_handle) {
+        return true;
+    }
+    
     Socket* FederateSocket = NULL;
     SecureTCPSocket* SecureSocket = NULL;
 
@@ -174,6 +178,13 @@ void SecurityServer::insertPublicLevel()
 void SecurityServer::registerFederate(const std::string& the_federate, SecurityLevelID the_level_id)
 {
     FedLevelList.addFederate(the_federate, the_level_id);
+}
+
+// ----------------------------------------------------------------------------
+//! Register a new federate with security level id.
+void SecurityServer::registerMomFederateHandle(const FederateHandle handle)
+{
+    my_mom_federate_handle = handle;
 }
 }
 

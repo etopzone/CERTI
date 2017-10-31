@@ -82,23 +82,6 @@ using std::vector;
 #define NODE_FEDERATE (const xmlChar*) "federate"
 #endif // HAVE_XML
 
-// Path splitting functions
-vector<string>& split(const string& s, char delim, vector<string>& elems)
-{
-    std::stringstream ss(s);
-    string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-vector<string> split(const string& s, char delim)
-{
-    vector<string> elems;
-    return split(s, delim, elems);
-}
-
 #if defined(_WIN32) && !defined(__MINGW32__)
 #define strcasecmp stricmp
 #endif
@@ -121,7 +104,7 @@ static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
  * using various environment variables:
  *
  * -# Bare filename considered as a path provided through <code> FEDid_name </code>
- * -# Use CERTI federation object model serach PATH
+ * -# Use CERTI federation object model search PATH
  *    <code>getenv(CERTI_FOM_PATH) + FEDid_name</code>.
  *    <br><code>CERTI_FOM_PATH</code> environment variable may contains a list of path
  *    separated with ':'.
@@ -136,27 +119,19 @@ static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
 #ifdef FEDERATION_USES_MULTICAST
 Federation::Federation(const string& federation_name,
                        const FederationHandle federation_handle,
-
-                       Debug(D, pdInit) << "New Federation " << federation_handle << " will use Multicast." << endl;
-                       MCLink = mc_link;
-                       SocketServer & socket_server, AuditFile& audit_server, SocketMC* mc_link, int theVerboseLevel)
+                       SocketServer& socket_server,
+                       AuditFile& audit_server,
+                       SocketMC* mc_link,
+                       const int theVerboseLevel)
 #else
 Federation::Federation(const string& federation_name,
                        const FederationHandle federation_handle,
                        SocketServer& socket_server,
                        AuditFile& audit_server,
                        const string& FEDid_name,
-                       int verboseLevel)
+                       const int verboseLevel)
 #endif
-    : my_handle(federation_handle)
-    , my_name(federation_name)
-    , my_FED_id(FEDid_name)
-    , my_federate_handle_generator(1)
-    , my_objects_handle_generator(1)
-    , my_is_save_in_progress(false)
-    , my_is_restore_in_progress(false)
-    , my_save_status(true)
-    , my_restore_status(true)
+    : my_handle(federation_handle), my_name(federation_name), my_FED_id(FEDid_name)
 {
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -187,184 +162,12 @@ Federation::Federation(const string& federation_name,
         cout << "New federation: " << my_name << endl;
     }
 
-    // We should try to open FOM file from different
-    // predefined places:
-    // --> see doxygen doc at the top of this file.
-    string filename = my_FED_id;
-    bool filefound = false;
-    if (verboseLevel > 0) {
-        cout << "Looking for FOM file... " << endl;
-        cout << "   Trying... " << filename;
-    }
-    STAT_STRUCT file_stat;
-    filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
-
-    /* This is the main path handling loop */
-    if (!filefound) {
-        vector<string> fom_paths;
-#ifdef WIN32
-        char temp[260];
-        GetCurrentDirectory(260, temp);
-        fom_paths.insert(fom_paths.end(), string(temp) + "\\share\\federations\\");
-#endif
-
-        /* add paths from CERTI_FOM_PATH */
-        if (NULL != getenv("CERTI_FOM_PATH")) {
-            string path = getenv("CERTI_FOM_PATH");
-            vector<string> certi_fom_paths = split(path, ':');
-            fom_paths.insert(fom_paths.end(), certi_fom_paths.begin(), certi_fom_paths.end());
-        }
-
-        if (NULL != getenv("CERTI_HOME")) {
-#ifdef WIN32
-            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "\\share\\federations\\");
-#else
-            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "/share/federations/");
-#endif
-        }
-
-#ifdef WIN32
-        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "\\share\\federations\\");
-#else
-        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "/share/federations/");
-        fom_paths.insert(fom_paths.end(), "/usr/local/share/federations/");
-#endif
-
-        /* try to open FED using fom_paths prefixes */
-        for (const string& path : fom_paths) {
-            if (verboseLevel > 0) {
-                cout << " --> cannot access." << endl;
-            }
-            filename = path + FEDid_name;
-            if (verboseLevel > 0) {
-                cout << "   Now trying... " << filename;
-            }
-            filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
-            if (filefound) {
-                break;
-            }
-        }
-    }
-
-    if (!filefound) {
-        if (verboseLevel > 0) {
-            cout << " --> cannot access." << endl;
-        }
-        cerr << "Next step will fail, abort now" << endl;
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
-        throw CouldNotOpenFED("RTIG cannot find FED file.");
-    }
-
-    // now really assign FEDid
-    my_FED_id = filename;
-
-    // Try to open to verify if file exists
-    ifstream fedTry(my_FED_id);
-    if (!fedTry.is_open()) {
-        if (verboseLevel > 0) {
-            cout << "... failed : ";
-        }
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
-        throw CouldNotOpenFED("RTIG have found but cannot open FED file");
-    }
-    else {
-        if (verboseLevel > 0) {
-            cout << "... opened." << endl;
-        }
-        fedTry.close();
-    }
-
-    bool is_a_fed = false;
-    bool is_an_xml = false;
-
-    // hope there is a . before fed or xml
-    if (filename.at(filename.size() - 4) != '.') {
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
-        throw CouldNotOpenFED(
-            "Incorrect FED file name, cannot find extension (character '.' is missing [or not in reverse 4th place])");
-    }
-
-    string extension = filename.substr(filename.size() - 3);
-
-    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << endl;
-    if (extension == "fed") {
-        is_a_fed = true;
-        Debug(D, pdTrace) << "Trying to use .fed file" << endl;
-    }
-    else if (extension == "xml") {
-        is_an_xml = true;
-        Debug(D, pdTrace) << "Trying to use .xml file" << endl;
-    }
-    else {
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
-        throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
-    }
-
-    ifstream fedFile(filename);
-
-    if (fedFile.is_open()) {
-        fedFile.close();
-        if (is_a_fed) {
-            // parse FED file and show the parse on stdout if verboseLevel>=2
-            int err = fedparser::build(filename.c_str(), my_root_object.get(), (verboseLevel >= 2));
-            if (err != 0) {
-                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << endl;
-                throw ErrorReadingFED("fed parser found error in FED file");
-            }
-
-            // Retrieve the FED file last modification time(for Audit)
-            STAT_STRUCT StatBuffer;
-#if defined(_WIN32) && _MSC_VER >= 1400
-            char MTimeBuffer[26];
-#else
-            char* MTimeBuffer;
-#endif
-
-            if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
-#if defined(_WIN32) && _MSC_VER >= 1400
-                ctime_s(&MTimeBuffer[0], 26, &StatBuffer.st_mtime);
-#else
-                MTimeBuffer = ctime(&StatBuffer.st_mtime);
-#endif
-                MTimeBuffer[strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
-                my_server->audit << "(Last modified " << MTimeBuffer << ")";
-            }
-            else
-                my_server->audit << "(could not retrieve last modif time, errno " << errno << ").";
-        }
-        else if (is_an_xml) {
-#ifdef HAVE_XML
-            std::unique_ptr<XmlParser> parser;
-            if (XmlParser::exists()) {
-                switch (XmlParser::version(filename)) {
-                case XmlParser::XML_IEEE1516_2000:
-                case XmlParser::XML_LEGACY:
-                    parser = make_unique<XmlParser2000>(my_root_object.get());
-                    break;
-                case XmlParser::XML_IEEE1516_2010:
-                    parser = make_unique<XmlParser2010>(my_root_object.get());
-                    break;
-                }
-                my_server->audit << ", XML File : " << filename;
-
-                try {
-                    parser->parse(filename);
-                }
-                catch (Exception* e) {
-                    throw;
-                }
-            }
-            else
-#endif
-            {
-                cerr << "CERTI was Compiled without XML support" << endl;
-                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
-                throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
-            }
-        }
-    }
+    openFomFile(verboseLevel);
 
     my_min_NERx.setZero();
+
+    enableMomIfAvailable();
+
     Debug(G, pdGendoc) << "exit Federation::Federation" << endl;
 }
 
@@ -426,8 +229,6 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     }
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
-    //     _handleFederateMap.insert(HandleFederateMap::value_type(federate_handle, Federate(federate_name, federate_handle)));
-    //     Federate& federate = getFederate(federate_handle);
     auto result
         = my_federates.insert(std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_handle)));
 
@@ -661,7 +462,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction with time" << endl;
 
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     const RTIRegion* region = 0;
     if (region_handle != 0) {
@@ -692,7 +493,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction without time" << endl;
 
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     const RTIRegion* region{nullptr};
     if (region_handle != 0) {
@@ -722,7 +523,7 @@ void Federation::deleteObject(FederateHandle federate_handle,
                               const string& tag)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
                          << object_handle << endl;
@@ -734,7 +535,7 @@ void Federation::deleteObject(FederateHandle federate_handle,
 void Federation::deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const string& tag)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
                          << object_handle << endl;
@@ -747,7 +548,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle, const s
 {
     Debug(G, pdGendoc) << "enter Federation::registerSynchronization for all federates" << endl;
 
-    this->check(federate_handle); // It may throw FederateNotExecutionMember.
+    check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null).");
@@ -807,7 +608,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle, const 
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
 
-    this->check(federate_handle); // It may throw FederateNotExecutionMember.
+    check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null).");
@@ -834,7 +635,7 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
 
-    this->check(federate_handle); // It may throw FederateNotExecutionMember.
+    check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty()) {
         throw RTIinternalError("Bad pause label(null or too long).");
@@ -1089,8 +890,7 @@ Federate& Federation::getFederate(FederateHandle federate_handle)
         return *my_federates.at(federate_handle);
     }
     catch (std::out_of_range& e) {
-        throw FederateNotExecutionMember(certi::stringize() << "Federate Handle <" << federate_handle
-                                                            << "> not found.");
+        throw FederateNotExecutionMember("Federate Handle <" + std::to_string(federate_handle) + "> not found.");
     }
 }
 
@@ -1125,11 +925,16 @@ bool Federation::empty() const
 
 bool Federation::check(FederateHandle federate_handle) const
 {
+    if (federate_handle == my_mom_federate_handle) {
+        return false;
+    }
+
     if (my_federates.count(federate_handle) == 0) {
         throw FederateNotExecutionMember(
             certi::stringize() << "Federate Handle <" << federate_handle << "> not found in federation <" << my_handle
                                << ">");
     }
+
     return true;
 }
 
@@ -1181,7 +986,7 @@ void Federation::publishInteraction(FederateHandle federate_handle,
                                     bool publish_or_unpublish)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // It may throw InteractionClassNotDefined
     my_root_object->Interactions->publish(federate_handle, interaction_class_handle, publish_or_unpublish);
@@ -1195,8 +1000,11 @@ void Federation::publishObject(FederateHandle federate_handle,
                                bool publish_or_unpublish)
 {
     Debug(G, pdGendoc) << "enter Federation::publishObject" << endl;
+
+    // BUG Error while setting up MOM: FederateNotExecutionMember (Federate Handle <1> not found.) avant le premier broadcast, à faire
+
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // It may throw *NotDefined*
     my_root_object->ObjectClasses->publish(federate_handle, object_handle, attributes, publish_or_unpublish);
@@ -1234,6 +1042,9 @@ void Federation::publishObject(FederateHandle federate_handle,
         std::set<FederateHandle> federate_set;
         for (ObjectClassAttribute::PublishersList_t::const_iterator k = publishers.begin(); k != publishers.end();
              ++k) {
+            if (*k == my_mom_federate_handle) {
+                continue;
+            }
             if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
                 federate_set.insert(*k);
             }
@@ -1382,7 +1193,7 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
 {
     Debug(G, pdGendoc) << "enter Federation::unregisterSynchronization" << endl;
 
-    this->check(federate_handle); // It may throw FederateNotExecutionMember.
+    check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if (label.empty())
         throw RTIinternalError("Bad pause label(null).");
@@ -1426,7 +1237,7 @@ void Federation::subscribeInteraction(FederateHandle federate_handle,
                                       bool subscribe_or_unsubscribe)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // It may throw *NotDefined
     my_root_object->Interactions->subscribe(federate_handle, interaction_class_handle, 0, subscribe_or_unsubscribe);
@@ -1440,7 +1251,7 @@ void Federation::subscribeObject(FederateHandle federate,
 {
     Debug(G, pdGendoc) << "enter Federation::subscribeObject" << endl;
     // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    check(federate);
 
     /*
      * The subscription process in CERTI:
@@ -1543,7 +1354,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues with time" << endl;
     // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    check(federate);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1564,7 +1375,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues without time" << endl;
     // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    check(federate);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1612,7 +1423,7 @@ void Federation::updateRegulator(FederateHandle federate_handle, FederationTime 
 bool Federation::isOwner(FederateHandle federate_handle, ObjectHandle object_handle, AttributeHandle attribute_handle)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdDebug) << "Owner of Object " << object_handle << " Atrribute " << attribute_handle << endl;
 
@@ -1625,7 +1436,7 @@ void Federation::queryAttributeOwnership(FederateHandle federate_handle,
                                          AttributeHandle attribute_handle)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdDebug) << "Owner of Object " << object_handle << " Atrribute " << attribute_handle << endl;
 
@@ -1639,7 +1450,7 @@ void Federation::negotiateDivestiture(FederateHandle federate_handle,
                                       const string& tag)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1653,7 +1464,7 @@ void Federation::acquireIfAvailable(FederateHandle federate_handle,
                                     const vector<AttributeHandle>& attribs)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1667,7 +1478,7 @@ void Federation::divest(FederateHandle federate_handle,
                         const vector<AttributeHandle>& attrs)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1682,7 +1493,7 @@ void Federation::acquire(FederateHandle federate_handle,
                          const string& tag)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
@@ -1698,7 +1509,7 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
                                    const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     // It may throw *NotDefined
     my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(
@@ -1712,7 +1523,7 @@ AttributeHandleSet* Federation::respondRelease(FederateHandle federate_handle,
                                                const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdDebug) << "RespondRelease on Object " << object_handle << endl;
 
@@ -1728,7 +1539,7 @@ void Federation::cancelAcquisition(FederateHandle federate_handle,
                                    const vector<AttributeHandle>& attributes)
 {
     // It may throw FederateNotExecutionMember.
-    this->check(federate_handle);
+    check(federate_handle);
 
     Debug(D, pdDebug) << "CancelAcquisition sur Objet " << object_handle << endl;
 
@@ -1741,7 +1552,7 @@ void Federation::cancelAcquisition(FederateHandle federate_handle,
 
 long Federation::createRegion(FederateHandle federate_handle, SpaceHandle space_handle, long extents_count)
 {
-    this->check(federate_handle);
+    check(federate_handle);
 
     return my_root_object->createRegion(space_handle, extents_count);
 }
@@ -1754,7 +1565,7 @@ void Federation::modifyRegion(FederateHandle federate_handle, RegionHandle regio
 
 void Federation::deleteRegion(FederateHandle federate_handle, long region)
 {
-    this->check(federate_handle);
+    check(federate_handle);
 
     if (my_is_save_in_progress) {
         throw SaveInProgress("");
@@ -1872,6 +1683,331 @@ ObjectHandle Federation::registerObjectWithRegion(FederateHandle federate_handle
     return object;
 }
 
+FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
+                                              ObjectHandle theObject,
+                                              const vector<AttributeHandle>& theAttributeList)
+{
+    Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << endl;
+
+    Object* actualObject = my_root_object->getObject(theObject);
+
+    typedef std::map<FederateHandle, vector<AttributeHandle>> ATTRIBUTES_FOR_FEDERATES_T;
+    ATTRIBUTES_FOR_FEDERATES_T attributesForFederates;
+
+    for (uint32_t i = 0; i < theAttributeList.size(); ++i) {
+        FederateHandle federateHandle = actualObject->getAttribute(theAttributeList[i])->getOwner();
+
+        // Only attributes that are owned by someone should be asked
+        if (federateHandle != 0) {
+            ATTRIBUTES_FOR_FEDERATES_T::iterator P = attributesForFederates.find(federateHandle);
+            if (P == attributesForFederates.end())
+                P = attributesForFederates
+                        .insert(
+                            pair<FederateHandle, vector<AttributeHandle>>(federateHandle, vector<AttributeHandle>()))
+                        .first;
+
+            P->second.push_back(theAttributeList[i]);
+        }
+    }
+
+    for (ATTRIBUTES_FOR_FEDERATES_T::const_iterator P = attributesForFederates.begin();
+         P != attributesForFederates.end();
+         ++P) {
+        FederateHandle theOwnerHandle = P->first;
+        NM_Provide_Attribute_Value_Update mess;
+
+        // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
+        mess.setFederate(theFederateHandle);
+        mess.setObject(theObject);
+        mess.setAttributesSize(P->second.size());
+        for (uint32_t i = 0; i < P->second.size(); ++i)
+            mess.setAttributes(P->second[i], i);
+
+        mess.send(my_server->getSocketLink(theOwnerHandle), my_nm_buffer);
+    }
+
+    FederateHandle theOwnerHandle;
+
+    // Request Object.
+    theOwnerHandle = my_root_object->requestObjectOwner(theFederateHandle, theObject);
+
+    Debug(G, pdGendoc) << "            requestObjectOwner ===> write PAVU to RTIA " << theOwnerHandle << endl;
+    Debug(G, pdGendoc) << "exit  Federation::requestObjectOwner" << endl;
+
+    return (theOwnerHandle);
+}
+
+void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
+                                                  ObjectClassHandle theClassHandle,
+                                                  const vector<AttributeHandle>& theAttributeList)
+{
+    Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
+
+    // get object class
+    ObjectClass* oClass = my_root_object->getObjectClass(theClassHandle);
+    if (!oClass) {
+        throw ObjectClassNotDefined(certi::stringize() << "ObjectClassHandle <" << theClassHandle << "> is unknown.");
+    }
+
+    // send PAVU for all objects of this class
+    ObjectClass::HandleObjectMap instances = oClass->getClassInstances();
+    for (ObjectClass::HandleObjectMap::const_iterator it = instances.begin(); it != instances.end(); ++it) {
+        requestObjectOwner(theFederateHandle, it->first, theAttributeList);
+    }
+    Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << endl;
+}
+
+bool Federation::isMomEnabled() const
+{
+    return my_mom_enabled;
+}
+
+// Path splitting functions
+vector<string>& split(const string& s, char delim, vector<string>& elems)
+{
+    std::stringstream ss(s);
+    string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+vector<string> split(const string& s, char delim)
+{
+    vector<string> elems;
+    return split(s, delim, elems);
+}
+
+void Federation::openFomFile(const int verboseLevel)
+{
+    // We should try to open FOM file from different
+    // predefined places:
+    // --> see doxygen doc at the top of this file.
+    string filename = my_FED_id;
+    bool filefound = false;
+
+    if (verboseLevel > 0) {
+        cout << "Looking for FOM file... " << endl;
+        cout << "   Trying... " << filename;
+    }
+
+    STAT_STRUCT file_stat;
+    filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+
+    /* This is the main path handling loop */
+    if (!filefound) {
+        vector<string> fom_paths;
+#ifdef WIN32
+        char temp[260];
+        GetCurrentDirectory(260, temp);
+        fom_paths.insert(fom_paths.end(), string(temp) + "\\share\\federations\\");
+#endif
+
+        /* add paths from CERTI_FOM_PATH */
+        if (NULL != getenv("CERTI_FOM_PATH")) {
+            string path = getenv("CERTI_FOM_PATH");
+            vector<string> certi_fom_paths = split(path, ':');
+            fom_paths.insert(fom_paths.end(), certi_fom_paths.begin(), certi_fom_paths.end());
+        }
+
+        if (NULL != getenv("CERTI_HOME")) {
+#ifdef WIN32
+            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "\\share\\federations\\");
+#else
+            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "/share/federations/");
+#endif
+        }
+
+#ifdef WIN32
+        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "\\share\\federations\\");
+#else
+        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "/share/federations/");
+        fom_paths.insert(fom_paths.end(), "/usr/local/share/federations/");
+#endif
+
+        /* try to open FED using fom_paths prefixes */
+        for (const string& path : fom_paths) {
+            if (verboseLevel > 0) {
+                cout << " --> cannot access." << endl;
+            }
+            filename = path + my_FED_id;
+            if (verboseLevel > 0) {
+                cout << "   Now trying... " << filename;
+            }
+            filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+            if (filefound) {
+                break;
+            }
+        }
+    }
+
+    if (!filefound) {
+        if (verboseLevel > 0) {
+            cout << " --> cannot access." << endl;
+        }
+        cerr << "Next step will fail, abort now" << endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("RTIG cannot find FED file.");
+    }
+
+    // now really assign FEDid
+    my_FED_id = filename;
+
+    // Try to open to verify if file exists
+    ifstream fedTry(my_FED_id);
+    if (!fedTry.is_open()) {
+        if (verboseLevel > 0) {
+            cout << "... failed : ";
+        }
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("RTIG have found but cannot open FED file");
+    }
+    else {
+        if (verboseLevel > 0) {
+            cout << "... opened." << endl;
+        }
+        fedTry.close();
+    }
+
+    bool is_a_fed = false;
+    bool is_an_xml = false;
+
+    // hope there is a . before fed or xml
+    if (filename.at(filename.size() - 4) != '.') {
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED(
+            "Incorrect FED file name, cannot find extension (character '.' is missing [or not in reverse 4th place])");
+    }
+
+    string extension = filename.substr(filename.size() - 3);
+
+    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << endl;
+    if (extension == "fed") {
+        is_a_fed = true;
+        Debug(D, pdTrace) << "Trying to use .fed file" << endl;
+    }
+    else if (extension == "xml") {
+        is_an_xml = true;
+        Debug(D, pdTrace) << "Trying to use .xml file" << endl;
+    }
+    else {
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
+    }
+
+    ifstream fedFile(filename);
+
+    if (fedFile.is_open()) {
+        fedFile.close();
+        if (is_a_fed) {
+            // parse FED file and show the parse on stdout if verboseLevel>=2
+            int err = fedparser::build(filename.c_str(), my_root_object.get(), (verboseLevel >= 2));
+            if (err != 0) {
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << endl;
+                throw ErrorReadingFED("fed parser found error in FED file");
+            }
+
+            // Retrieve the FED file last modification time(for Audit)
+            STAT_STRUCT StatBuffer;
+#if defined(_WIN32) && _MSC_VER >= 1400
+            char MTimeBuffer[26];
+#else
+            char* MTimeBuffer;
+#endif
+
+            if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
+#if defined(_WIN32) && _MSC_VER >= 1400
+                ctime_s(&MTimeBuffer[0], 26, &StatBuffer.st_mtime);
+#else
+                MTimeBuffer = ctime(&StatBuffer.st_mtime);
+#endif
+                MTimeBuffer[strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
+                my_server->audit << "(Last modified " << MTimeBuffer << ")";
+            }
+            else
+                my_server->audit << "(could not retrieve last modif time, errno " << errno << ").";
+        }
+        else if (is_an_xml) {
+#ifdef HAVE_XML
+            std::unique_ptr<XmlParser> parser;
+            if (XmlParser::exists()) {
+                switch (XmlParser::version(filename)) {
+                case XmlParser::XML_IEEE1516_2000:
+                case XmlParser::XML_LEGACY:
+                    parser = make_unique<XmlParser2000>(my_root_object.get());
+                    break;
+                case XmlParser::XML_IEEE1516_2010:
+                    parser = make_unique<XmlParser2010>(my_root_object.get());
+                    break;
+                }
+                my_server->audit << ", XML File : " << filename;
+
+                try {
+                    parser->parse(filename);
+                }
+                catch (Exception* e) {
+                    throw;
+                }
+            }
+            else
+#endif
+            {
+                cerr << "CERTI was Compiled without XML support" << endl;
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+                throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
+            }
+        }
+    }
+}
+
+bool Federation::saveXmlData()
+{
+#ifndef HAVE_XML
+    return false;
+#else
+    xmlDocPtr doc = xmlNewDoc((const xmlChar*) "1.0");
+    doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
+
+    xmlNodePtr federation;
+    federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
+
+    xmlSetProp(federation, (const xmlChar*) "name", (const xmlChar*) my_name.c_str());
+
+    char t[10];
+    sprintf(t, "%u", my_handle.get());
+    xmlSetProp(federation, (const xmlChar*) "handle", (const xmlChar*) t);
+
+    xmlNodePtr federateXmlNode;
+
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (const auto& kv : my_federates) {
+        federateXmlNode = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
+
+        xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) kv.second->getName().c_str());
+
+        sprintf(t, "%u", kv.second->getHandle());
+        xmlSetProp(federateXmlNode, (const xmlChar*) "handle", (const xmlChar*) t);
+
+        xmlSetProp(federateXmlNode,
+                   (const xmlChar*) "constrained",
+                   (const xmlChar*) ((kv.second->isConstrained()) ? "true" : "false"));
+        xmlSetProp(federateXmlNode,
+                   (const xmlChar*) "regulator",
+                   (const xmlChar*) ((kv.second->isRegulator()) ? "true" : "false"));
+    }
+
+    xmlSetDocCompressMode(doc, 9);
+
+    string filename = my_name + "_" + my_save_label + ".xcs";
+    xmlSaveFile(filename.c_str(), doc);
+
+    // TODO: tests
+
+    return true;
+#endif // HAVE_XML
+}
+
 bool Federation::restoreXmlData(string docFilename)
 {
 #ifndef HAVE_XML
@@ -1957,125 +2093,314 @@ bool Federation::restoreXmlData(string docFilename)
 #endif // HAVE_XML
 }
 
-bool Federation::saveXmlData()
+void Federation::enableMomIfAvailable()
 {
-#ifndef HAVE_XML
-    return false;
-#else
-    xmlDocPtr doc = xmlNewDoc((const xmlChar*) "1.0");
-    doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
+    Debug(G, pdGendoc) << "enter Federation::enableMomIfAvailable" << endl;
 
-    xmlNodePtr federation;
-    federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
+    if (isMomInRootObject()) {
+        try {
+            my_mom_enabled = true;
+            my_mom_federate_handle = my_federate_handle_generator.provide();
+            my_server->registerMomFederateHandle(my_mom_federate_handle);
 
-    xmlSetProp(federation, (const xmlChar*) "name", (const xmlChar*) my_name.c_str());
+            // Publish
+            momPublishFederation();
+            momPublishFederate();
 
-    char t[10];
-    sprintf(t, "%u", my_handle.get());
-    xmlSetProp(federation, (const xmlChar*) "handle", (const xmlChar*) t);
+            momPublishInteractions();
+            momSubscribeInteractions();
 
-    xmlNodePtr federateXmlNode;
+            momRegisterFederation();
 
-    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (const auto& kv : my_federates) {
-        federateXmlNode = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
-
-        xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) kv.second->getName().c_str());
-
-        sprintf(t, "%u", kv.second->getHandle());
-        xmlSetProp(federateXmlNode, (const xmlChar*) "handle", (const xmlChar*) t);
-
-        xmlSetProp(federateXmlNode,
-                   (const xmlChar*) "constrained",
-                   (const xmlChar*) ((kv.second->isConstrained()) ? "true" : "false"));
-        xmlSetProp(federateXmlNode,
-                   (const xmlChar*) "regulator",
-                   (const xmlChar*) ((kv.second->isRegulator()) ? "true" : "false"));
+            std::cout << "MOM enabled with federate handle " << my_mom_federate_handle << endl;
+        }
+        catch (Exception& e) {
+            std::cout << "Error while setting up MOM: " << e.name() << " (" << e.reason() << ")" << std::endl;
+        }
+    }
+    else {
+        std::cout << "MOM disabled" << endl;
     }
 
-    xmlSetDocCompressMode(doc, 9);
-
-    string filename = my_name + "_" + my_save_label + ".xcs";
-    xmlSaveFile(filename.c_str(), doc);
-
-    // TODO: tests
-
-    return true;
-#endif // HAVE_XML
+    Debug(G, pdGendoc) << "exit  Federation::enableMomIfAvailable" << endl;
 }
 
-FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
-                                              ObjectHandle theObject,
-                                              const vector<AttributeHandle>& theAttributeList)
+bool Federation::isMomInRootObject()
 {
-    Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << endl;
+    my_root_object->display();
+    //     static const std::set<std::string> required_object_classes {
+    //         "HLAobjectRoot", "HLAmanager", "HLAmanager.HLAfederate", "HLAmanager.HLAfederation"};
 
-    Object* actualObject = my_root_object->getObject(theObject);
+    static const std::map<std::string, std::set<std::string>> required_object_classes{
+        {"HLAobjectRoot", {}},
+        {"HLAmanager", {}},
+        {"HLAmanager.HLAfederate",
+         {"HLAfederateHandle",
+          "HLAfederateName",
+          "HLAfederateType",
+          "HLAfederateHost",
+          "HLARTIversion",
+          "HLAFOMmoduleDesignatorList",
+          "HLAtimeConstrained",
+          "HLAtimeRegulating",
+          "HLAasynchronousDelivery",
+          "HLAfederateState",
+          "HLAtimeManagerState",
+          "HLAlogicalTime",
+          "HLAlookahead",
+          "HLAGALT",
+          "HLALITS",
+          "HLAROlength",
+          "HLATSOlength",
+          "HLAreflectionsReceived",
+          "HLAupdatesSent",
+          "HLAinteractionsReceived",
+          "HLAinteractionsSent",
+          "HLAobjectInstancesThatCanBeDeleted",
+          "HLAobjectInstancesUpdated",
+          "HLAobjectInstancesReflected",
+          "HLAobjectInstancesDeleted",
+          "HLAobjectInstancesRemoved",
+          "HLAobjectInstancesRegistered",
+          "HLAobjectInstancesDiscovered",
+          "HLAtimeGrantedTime",
+          "HLAtimeAdvancingTime",
+          "HLAconveyRegionDesignatorSets",
+          "HLAconveyProducingFederate"}},
+        {"HLAmanager.HLAfederation",
+         {"HLAfederationName",
+          "HLAfederatesInFederation",
+          "HLARTIversion",
+          "HLAMIMDesignator",
+          "HLAFOMmoduleDesignatorList",
+          "HLAcurrentFDD",
+          "HLAtimeImplementationName",
+          "HLAlastSaveName",
+          "HLAlastSaveTime",
+          "HLAnextSaveName"}}};
 
-    typedef std::map<FederateHandle, vector<AttributeHandle>> ATTRIBUTES_FOR_FEDERATES_T;
-    ATTRIBUTES_FOR_FEDERATES_T attributesForFederates;
+    static const std::set<std::string> required_interactions{
+        "HLAinteractionRoot",
+        "HLAmanager",
+        "HLAmanager.HLAfederate",
+        "HLAmanager.HLAfederate.HLAadjust",
+        "HLAmanager.HLAfederate.HLAadjust.HLAsetTiming",
+        "HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState",
+        "HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+        "HLAmanager.HLAfederate.HLArequest",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestPublications",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation",
+        "HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData",
+        "HLAmanager.HLAfederate.HLAreport",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportException",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost",
+        "HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData",
+        "HLAmanager.HLAfederate.HLAservice",
+        "HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution",
+        "HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved",
+        "HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun",
+        "HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete",
+        "HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete",
+        "HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes",
+        "HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes",
+        "HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass",
+        "HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass",
+        "HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes",
+        "HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes",
+        "HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass",
+        "HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass",
+        "HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance",
+        "HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance",
+        "HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange",
+        "HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange",
+        "HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture",
+        "HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation",
+        "HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation",
+        "HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained",
+        "HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained",
+        "HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest",
+        "HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable",
+        "HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest",
+        "HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable",
+        "HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest",
+        "HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery",
+        "HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery",
+        "HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead",
+        "HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType",
+        "HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType",
+        "HLAmanager.HLAfederation",
+        "HLAmanager.HLAfederation.HLAadjust",
+        "HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches",
+        "HLAmanager.HLAfederation.HLArequest",
+        "HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints",
+        "HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus",
+        "HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData",
+        "HLAmanager.HLAfederation.HLArequest.HLArequestMIMData",
+        "HLAmanager.HLAfederation.HLAreport",
+        "HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
+        "HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
+        "HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData",
+        "HLAmanager.HLAfederation.HLAreport.HLAreportMIMData"};
 
-    for (uint32_t i = 0; i < theAttributeList.size(); ++i) {
-        FederateHandle federateHandle = actualObject->getAttribute(theAttributeList[i])->getOwner();
+    // Pre check with sizes
+    if (my_root_object->ObjectClasses->size() < required_object_classes.size()
+        or my_root_object->Interactions->size() < required_interactions.size()) {
+        Debug(D, pdDebug)
+            << "the root object does not contain enough object classes or interactions to have a mom definition."
+            << endl;
+        return false;
+    }
 
-        // Only attributes that are owned by someone should be asked
-        if (federateHandle != 0) {
-            ATTRIBUTES_FOR_FEDERATES_T::iterator P = attributesForFederates.find(federateHandle);
-            if (P == attributesForFederates.end())
-                P = attributesForFederates
-                        .insert(
-                            pair<FederateHandle, vector<AttributeHandle>>(federateHandle, vector<AttributeHandle>()))
-                        .first;
+    for (auto& pair : required_object_classes) {
+        try {
+            auto objectHandle = my_root_object->ObjectClasses->getHandleFromName(pair.first);
 
-            P->second.push_back(theAttributeList[i]);
+            for (const auto& attributeName : pair.second) {
+                try {
+                    my_root_object->ObjectClasses->getAttributeHandle(attributeName, objectHandle);
+                }
+                catch (NameNotFound& e) {
+                    Debug(D, pdDebug) << "the object class \"" << pair.first << "\" does not contain the attribute "
+                                      << attributeName << endl;
+                    return false;
+                }
+            }
+        }
+        catch (NameNotFound& e) {
+            Debug(D, pdDebug) << "the root object does not contain the object classe " << pair.first << endl;
+            return false;
         }
     }
 
-    for (ATTRIBUTES_FOR_FEDERATES_T::const_iterator P = attributesForFederates.begin();
-         P != attributesForFederates.end();
-         ++P) {
-        FederateHandle theOwnerHandle = P->first;
-        NM_Provide_Attribute_Value_Update mess;
+    /*if (not std::includes(begin(my_root_object->ObjectClasses->names()),
+                          end(my_root_object->ObjectClasses->names()),
+                          begin(required_object_classes),
+                          end(required_object_classes))) {
+        Debug(D, pdDebug) << "the root object does not contain the object classes of a mom definition." << endl;
+        return false;
+    }*/
 
-        // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
-        mess.setFederate(theFederateHandle);
-        mess.setObject(theObject);
-        mess.setAttributesSize(P->second.size());
-        for (uint32_t i = 0; i < P->second.size(); ++i)
-            mess.setAttributes(P->second[i], i);
-
-        mess.send(my_server->getSocketLink(theOwnerHandle), my_nm_buffer);
+    if (not std::includes(begin(my_root_object->Interactions->names()),
+                          end(my_root_object->Interactions->names()),
+                          begin(required_interactions),
+                          end(required_interactions))) {
+        Debug(D, pdDebug) << "the root object does not contain the interactions of a mom definition." << endl;
+        return false;
     }
 
-    FederateHandle theOwnerHandle;
-
-    // Request Object.
-    theOwnerHandle = my_root_object->requestObjectOwner(theFederateHandle, theObject);
-
-    Debug(G, pdGendoc) << "            requestObjectOwner ===> write PAVU to RTIA " << theOwnerHandle << endl;
-    Debug(G, pdGendoc) << "exit  Federation::requestObjectOwner" << endl;
-
-    return (theOwnerHandle);
+    return true;
 }
 
-void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
-                                                  ObjectClassHandle theClassHandle,
-                                                  const vector<AttributeHandle>& theAttributeList)
+void Federation::momPublishFederation()
 {
-    Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
+    Debug(G, pdGendoc) << "enter Federation::momPublishFederation" << endl;
+    momPublishObject("HLAmanager.HLAfederation",
+                     {"HLAfederationName",
+                      "HLAfederatesInFederation",
+                      "HLARTIversion",
+                      "HLAMIMDesignator",
+                      "HLAFOMmoduleDesignatorList",
+                      "HLAcurrentFDD",
+                      "HLAtimeImplementationName",
+                      "HLAlastSaveName",
+                      "HLAlastSaveTime",
+                      "HLAnextSaveName"});
+    Debug(G, pdGendoc) << "exit Federation::momPublishFederation" << endl;
+}
 
-    // get object class
-    ObjectClass* oClass = my_root_object->getObjectClass(theClassHandle);
-    if (!oClass) {
-        throw ObjectClassNotDefined(certi::stringize() << "ObjectClassHandle <" << theClassHandle << "> is unknown.");
+void Federation::momPublishFederate()
+{
+    Debug(G, pdGendoc) << "enter Federation::momPublishFederate" << endl;
+    momPublishObject("HLAmanager.HLAfederate",
+                     {"HLAfederateHandle",
+                      "HLAfederateName",
+                      "HLAfederateType",
+                      "HLAfederateHost",
+                      "HLARTIversion",
+                      "HLAFOMmoduleDesignatorList",
+                      "HLAtimeConstrained",
+                      "HLAtimeRegulating",
+                      "HLAasynchronousDelivery",
+                      "HLAfederateState",
+                      "HLAtimeManagerState",
+                      "HLAlogicalTime",
+                      "HLAlookahead",
+                      "HLAGALT",
+                      "HLALITS",
+                      "HLAROlength",
+                      "HLATSOlength",
+                      "HLAreflectionsReceived",
+                      "HLAupdatesSent",
+                      "HLAinteractionsReceived",
+                      "HLAinteractionsSent",
+                      "HLAobjectInstancesThatCanBeDeleted",
+                      "HLAobjectInstancesUpdated",
+                      "HLAobjectInstancesReflected",
+                      "HLAobjectInstancesDeleted",
+                      "HLAobjectInstancesRemoved",
+                      "HLAobjectInstancesRegistered",
+                      "HLAobjectInstancesDiscovered",
+                      "HLAtimeGrantedTime",
+                      "HLAtimeAdvancingTime",
+                      "HLAconveyRegionDesignatorSets",
+                      "HLAconveyProducingFederate"});
+    Debug(G, pdGendoc) << "exit Federation::momPublishFederate" << endl;
+}
+
+void Federation::momPublishObject(const std::string& objectName, const std::set<std::string> attributesNames)
+{
+    Debug(G, pdGendoc) << "enter Federation::momPublishObject" << endl;
+    auto federation_object_handle = my_root_object->ObjectClasses->getHandleFromName(objectName);
+
+    // we gather only the attributes specified in the standard
+    std::vector<AttributeHandle> attributes;
+    for (const string& attributeName : attributesNames) {
+        attributes.push_back(
+            my_root_object->ObjectClasses->getAttributeHandle(attributeName, federation_object_handle));
     }
 
-    // send PAVU for all objects of this class
-    ObjectClass::HandleObjectMap instances = oClass->getClassInstances();
-    for (ObjectClass::HandleObjectMap::const_iterator it = instances.begin(); it != instances.end(); ++it) {
-        requestObjectOwner(theFederateHandle, it->first, theAttributeList);
-    }
-    Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << endl;
+    publishObject(my_mom_federate_handle, federation_object_handle, attributes, true);
+    Debug(G, pdGendoc) << "exit Federation::momPublishObject" << endl;
+}
+
+void Federation::momPublishInteractions()
+{
+    Debug(G, pdGendoc) << "enter Federation::momPublishInteractions" << endl;
+    Debug(G, pdGendoc) << "exit Federation::momPublishInteractions" << endl;
+}
+
+void Federation::momSubscribeInteractions()
+{
+    Debug(G, pdGendoc) << "enter Federation::momSubscribeInteractions" << endl;
+    Debug(G, pdGendoc) << "exit Federation::momSubscribeInteractions" << endl;
+}
+
+void Federation::momRegisterFederation()
+{
+    Debug(G, pdGendoc) << "enter Federation::momRegisterFederation" << endl;
+    Debug(G, pdGendoc) << "exit Federation::momRegisterFederation" << endl;
 }
 }
 } // namespace certi/rtig

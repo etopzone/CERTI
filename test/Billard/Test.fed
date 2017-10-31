@@ -1,37 +1,339 @@
 ;; Billard
 
 (Fed
-  (Federation Test)
-  (FedVersion v1.3)
-  (Federate "fed" "Public")
-  (Spaces
-	(Space "Geo"
-		(Dimension X)
-		(Dimension Y)
-	)
-  )
-  (Objects
-    (Class ObjectRoot
-      (Attribute privilegeToDelete reliable timestamp)
-      (Class RTIprivate)
-	(Class Bille
-		(Attribute PositionX RELIABLE TIMESTAMP)
-		(Attribute PositionY RELIABLE TIMESTAMP)
-		(Class Boule
-			(Attribute Color RELIABLE TIMESTAMP)
-		)
-	)
+    (Federation Test)
+    (FedVersion v1.3)
+    (Federate "fed" "Public")
+    (Spaces
+        (Space "Geo"
+            (Dimension X)
+            (Dimension Y)
+        )
     )
-  )
-  (Interactions
-    (Class InteractionRoot BEST_EFFORT RECEIVE
-      (Class RTIprivate BEST_EFFORT RECEIVE)
-      (Class Bing RELIABLE TIMESTAMP
-	(Sec_Level "Public")
-	(Parameter BoulNum)
-	(Parameter DX)
-	(Parameter DY)
-      )
+    (Objects
+        (Class ObjectRoot
+            (Class HLAmanager 
+                (Class HLAfederate
+                    (Attribute HLAfederateHandle RELIABLE RECEIVE)
+                    (Attribute HLAfederateName RELIABLE RECEIVE)
+                    (Attribute HLAfederateType RELIABLE RECEIVE)
+                    (Attribute HLAfederateHost RELIABLE RECEIVE)
+                    (Attribute HLARTIversion RELIABLE RECEIVE)
+                    (Attribute HLAFOMmoduleDesignatorList RELIABLE RECEIVE)
+                    (Attribute HLAtimeConstrained RELIABLE RECEIVE)
+                    (Attribute HLAtimeRegulating RELIABLE RECEIVE)
+                    (Attribute HLAasynchronousDelivery RELIABLE RECEIVE)
+                    (Attribute HLAfederateState RELIABLE RECEIVE)
+                    (Attribute HLAtimeManagerState RELIABLE RECEIVE)
+                    (Attribute HLAlogicalTime RELIABLE RECEIVE)
+                    (Attribute HLAlookahead RELIABLE RECEIVE)
+                    (Attribute HLAGALT RELIABLE RECEIVE)
+                    (Attribute HLALITS RELIABLE RECEIVE)
+                    (Attribute HLAROlength RELIABLE RECEIVE)
+                    (Attribute HLATSOlength RELIABLE RECEIVE)
+                    (Attribute HLAreflectionsReceived RELIABLE RECEIVE)
+                    (Attribute HLAupdatesSent RELIABLE RECEIVE)
+                    (Attribute HLAinteractionsReceived RELIABLE RECEIVE)
+                    (Attribute HLAinteractionsSent RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesThatCanBeDeleted RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesUpdated RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesReflected RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesDeleted RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesRemoved RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesRegistered RELIABLE RECEIVE)
+                    (Attribute HLAobjectInstancesDiscovered RELIABLE RECEIVE)
+                    (Attribute HLAtimeGrantedTime RELIABLE RECEIVE)
+                    (Attribute HLAtimeAdvancingTime RELIABLE RECEIVE)
+                    (Attribute HLAconveyRegionDesignatiorSets RELIABLE RECEIVE)
+                    (Attribute HLAconveyProducingFederate RELIABLE RECEIVE)
+                )
+                (Class HLAfederation
+                    (Attribute HLAfederationName RELIABLE RECEIVE)
+                    (Attribute HLAfederatesInFederation RELIABLE RECEIVE)
+                    (Attribute HLARTIversion RELIABLE RECEIVE)
+                    (Attribute HLAMIMDesignator RELIABLE RECEIVE)
+                    (Attribute HLAFOMmoduleDesigna- RELIABLE RECEIVE)
+                    (Attribute HLAmoduleDesignatorList RELIABLE RECEIVE)
+                    (Attribute HLAcurrentFDD RELIABLE RECEIVE)
+                    (Attribute HLAtimeImplementationName RELIABLE RECEIVE)
+                    (Attribute HLAlastSaveName RELIABLE RECEIVE)
+                    (Attribute HLAlastSaveTime RELIABLE RECEIVE)
+                    (Attribute HLAnextSaveName RELIABLE RECEIVE)
+                    (Attribute HLAnextSaveTime RELIABLE RECEIVE)
+                    (Attribute HLAautoProvide RELIABLE RECEIVE)
+
+ 
+                )
+            )
+            (Attribute privilegeToDelete reliable timestamp)
+            (Class RTIprivate)
+            (Class Bille
+                (Attribute PositionX RELIABLE TIMESTAMP)
+                (Attribute PositionY RELIABLE TIMESTAMP)
+                (Class Boule
+                    (Attribute Color RELIABLE TIMESTAMP)
+                )
+            )
+        )
     )
-  )
+    (Interactions
+        (Class InteractionRoot BEST_EFFORT RECEIVE
+            (Class HLAmanager RELIABLE RECEIVE
+                (Class HLAfederate RELIABLE RECEIVE
+                    (Parameter HLAfederate)
+                    (Class HLAadjust RELIABLE RECEIVE
+                        (Class HLAsetTiming RELIABLE RECEIVE
+                            (Parameter HLAreportPeriod)
+                        )
+                        (Class HLAmodifyAttributeState RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAattribute)
+                            (Parameter ĤLAattirbuteState)
+                        )
+                        (Class HLAsetSwitches RELIABLE RECEIVE
+                            (Parameter HLAconveyREgionDesignatorSets)
+                            (Parameter HLAconveyProductingFederate)
+                            (Parameter HLAserviceREporting)
+                            (Parameter HLAexceptionReporting)
+                        )
+                    )
+                    (Class HLArequest RELIABLE RECEIVE
+                        (Class HLArequestPublications RELIABLE RECEIVE)
+                        (Class HLArequestSubscriptions RELIABLE RECEIVE)
+                        (Class HLArequestObjectInstancesThatCanBeDeleted RELIABLE RECEIVE)
+                        (Class HLArequestObjectInstancesUpdated RELIABLE RECEIVE)
+                        (Class HLArequestObjectInstancesReflected RELIABLE RECEIVE)
+                        (Class HLArequestUpdatesSent RELIABLE RECEIVE)
+                        (Class HLArequestInteractionsSent RELIABLE RECEIVE)
+                        (Class HLArequestReflectionsReceived RELIABLE RECEIVE)
+                        (Class HLArequestInteractionsReceived RELIABLE RECEIVE)
+                        (Class HLArequestObjectInstanceInformation RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                        )
+                        (Class HLArequestFOMmoduleData RELIABLE RECEIVE
+                            (Parameter HLAFOMmoduleIndicator)
+                        )
+                    )
+                    (Class HLAreport RELIABLE RECEIVE
+                        (Class HLAreportObjectClassPublication RELIABLE RECEIVE
+                            (Parameter HLAnumberOfClasses)
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLAreportObjectClassSubscription RELIABLE RECEIVE
+                            (Parameter HLAnumberOfClasses)
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAactive)
+                            (Parameter HLAmaxUpdateRate)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLAreportInteractionPublication RELIABLE RECEIVE
+                            (Parameter HLAobjectInstanceCounts)
+                        )
+                        (Class HLAreportInteractionSubscription RELIABLE RECEIVE
+                            (Parameter HLAobjectInstanceCounts)
+                        )
+                        (Class HLAreportObjectInstancesThatCanBeDeleted RELIABLE RECEIVE
+                            (Parameter HLAobjectInstanceCounts)
+                        )
+                        (Class HLAreportObjectInstancesUpdated RELIABLE RECEIVE
+                            (Parameter HLAobjectInstanceCounts)
+                        )
+                        (Class HLAreportObjectInstancesReflected RELIABLE RECEIVE
+                            (Parameter HLAobjectInstanceCounts)
+                        )
+                        (Class HLAreportUpdatesSent RELIABLE RECEIVE
+                            (Parameter HLAtransportation)
+                            (Parameter HLAupdateCounts)
+                        )
+                        (Class HLAreportReflectionsReceived RELIABLE RECEIVE
+                            (Parameter HLAtransportation)
+                            (Parameter HLAreflectCounts)
+                        )
+                        (Class HLAreportInteractionsSent RELIABLE RECEIVE
+                            (Parameter HLAtransportation)
+                            (Parameter HLAinteractionCount)
+                        )
+                        (Class HLAreportInteractionsReceived RELIABLE RECEIVE
+                            (Parameter HLAtransportation)
+                            (Parameter HLAinteractionCount)
+                        )
+                        (Class HLAreportObjectInstanceInformation RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAownedInstanceAttributeList)
+                            (Parameter HLAregisteredClass)
+                            (Parameter HLAknownClass)
+                        )
+                        (Class HLAreportException RELIABLE RECEIVE
+                            (Parameter HLAservice)
+                            (Parameter HLAexception)
+                        )
+                        (Class HLAreportServiceInvocation RELIABLE RECEIVE
+                            (Parameter HLAservice)
+                            (Parameter HLAsuccessIndicator)
+                            (Parameter HLAsuppliedArguments)
+                            (Parameter HLAreturnedArguments)
+                            (Parameter HLAexception)
+                            (Parameter HLAserialNumber)
+                        )
+                        (Class HLAreportMOMexception RELIABLE RECEIVE
+                            (Parameter HLAservice)
+                            (Parameter HLAexception)
+                            (Parameter HLAparameterError)
+                        )
+                        (Class HLAreportFederateLost RELIABLE RECEIVE
+                            (Parameter HLAfederateName)
+                            (Parameter HLAtimestamp)
+                            (Parameter HLAfaultDescription)
+                        )
+                        (Class HLAreportFOMmoduleData RELIABLE RECEIVE
+                            (Parameter HLAFOMmoduleIndicator)
+                            (Parameter HLAFOMmoduleData)
+                        )
+                    )
+                    (Class HLAservice RELIABLE RECEIVE
+                        (Class HLAresignFederationExecution RELIABLE RECEIVE
+                            (Parameter HLAresignAction)
+                        )
+                        (Class HLAsynchronizationPointAchieved RELIABLE RECEIVE
+                            (Parameter HLAlabel)
+                        )
+                        (Class HLAfederateSaveBegun RELIABLE RECEIVE)
+                        (Class HLAfederateSaveComplete RELIABLE RECEIVE
+                            (Parameter HLAsuccessIndicator)
+                        )
+                        (Class HLAfederateRestoreComplete RELIABLE RECEIVE
+                            (Parameter HLAsuccessIndicator)
+                        )
+                        (Class HLApublishObjectClassAttributes RELIABLE RECEIVE
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLAunpublishObjectClassAttributes RELIABLE RECEIVE
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLApublishInteractionClass RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                        )
+                        (Class HLAunpublishInteractionClass RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                        )
+                        (Class HLAsubscribeObjectClassAttributes RELIABLE RECEIVE
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAattributeList)
+                            (Parameter HLAactive)
+                        )
+                        (Class HLAunsubscribeObjectClassAttributes RELIABLE RECEIVE
+                            (Parameter HLAobjectClass)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLAsubscribeInteractionClass RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                            (Parameter HLAactive)
+                        )
+                        (Class HLAunsubscribeInteractionClass RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                        )
+                        (Class HLAdeleteObjectInstance RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAtag)
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAlocalDeleteObjectInstance RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                        )
+                        (Class HLArequestAttributeTransportationypeChange RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAattributeList)
+                            (Parameter HLAtransportation)
+                        )
+                        (Class HLArequestInteractionTransportationypeChange RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                            (Parameter HLAtransportation)
+                        )
+                        (Class HLAunconditionalAttributeOwnershipDivestiture RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAattributeList)
+                        )
+                        (Class HLAenableTimeRegulation RELIABLE RECEIVE
+                            (Parameter HLAlookahead)
+                        )
+                        (Class HLAdisableTimeRegulation RELIABLE RECEIVE)
+                        (Class HLAenableTimeConstrained RELIABLE RECEIVE)
+                        (Class HLAdisableTimeConstrained RELIABLE RECEIVE)
+                        (Class HLAtimeAdvanceRequest RELIABLE RECEIVE
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAtimeAdvanceRequestAvailable RELIABLE RECEIVE
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAnextMessageRequest RELIABLE RECEIVE
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAnextMessageRequestAvailable RELIABLE RECEIVE
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAflushQueueRequest RELIABLE RECEIVE
+                            (Parameter HLAtimeStamp)
+                        )
+                        (Class HLAenableAsynchronousDelivery RELIABLE RECEIVE)
+                        (Class HLAdisableAsynchronousDelivery RELIABLE RECEIVE)
+                        (Class HLAmodifyLookahead RELIABLE RECEIVE
+                            (Parameter HLAlookahead)
+                        )
+                        (Class HLAchangeAttributeOrderType RELIABLE RECEIVE
+                            (Parameter HLAobjectInstance)
+                            (Parameter HLAattributeList)
+                            (Parameter HLAsendOrder)
+                        )
+                        (Class HLAchangeInteractionOrderType RELIABLE RECEIVE
+                            (Parameter HLAinteractionClass)
+                            (Parameter HLAsendOrder)
+                        )
+                    )
+                )
+                (Class HLAfederation RELIABLE RECEIVE
+                    (Class HLAadjust RELIABLE RECEIVE
+                        (Class HLAsetSwitches RELIABLE RECEIVE
+                            (Parameter HLAautoProvide)
+                        )
+                    )
+                    (Class HLArequest RELIABLE RECEIVE
+                        (Class HLArequestSynchronizationPoints RELIABLE RECEIVE)
+                        (Class HLArequestSynchronizationPointStatus RELIABLE RECEIVE
+                            (Parameter HLAsyncPointName)
+                        )
+                        (Class HLArequestFOMmoduleData RELIABLE RECEIVE
+                            (Parameter HLAFOMmoduleIndicator)
+                        )
+                        (Class HLArequestMIMData RELIABLE RECEIVE)
+                    )
+                    (Class HLAreport RELIABLE RECEIVE
+                        (Class HLAreportSynchronizationPoints RELIABLE RECEIVE
+                            (Parameter HLAsyncPoints)
+                        )
+                        (Class HLAreportSynchronizationPointStatus RELIABLE RECEIVE
+                            (Parameter HLAsyncPointName)
+                            (Parameter DAHLAsyncPointFederates)
+                        )
+                        (Class HLAreportFOMmoduleData RELIABLE RECEIVE
+                            (Parameter HLAFOMmoduleIndicator)
+                            (Parameter HLAFOMmoduleData)
+                        )
+                        (Class HLAreportMIMData RELIABLE RECEIVE
+                            (Parameter HLAMIMData)
+                        )
+                    )
+                )
+            )
+            (Class RTIprivate BEST_EFFORT RECEIVE)
+            (Class Bing RELIABLE TIMESTAMP
+                (Sec_Level "Public")
+                (Parameter BoulNum)
+                (Parameter DX)
+                (Parameter DY)
+            )
+        )
+    )
 )

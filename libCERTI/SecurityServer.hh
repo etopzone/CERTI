@@ -68,6 +68,8 @@ public:
 
     void registerFederate(const std::string& the_federate, SecurityLevelID the_level_id);
 
+    void registerMomFederateHandle(const FederateHandle handle);
+
 private:
     FederationHandle myFederation;
     SocketServer& RTIG_SocketServer;
@@ -77,6 +79,8 @@ private:
     SecurityLevelID getLevel(const std::string& theFederate) const;
 
     void insertPublicLevel();
+    
+    FederateHandle my_mom_federate_handle;
 };
 }
 
