@@ -27,6 +27,7 @@ namespace rtig {
 static PrettyDebug D("RTIG", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
+static PrettyDebug MP("MESSAGEPROCESSOR", __FILE__);
 
 MessageProcessor::MessageProcessor(AuditFile& audit_server,
                                    SocketServer& socket_server,
@@ -41,9 +42,12 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 
 MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
+#define xstr(a) str(a)
+#define str(a) #a
+
 #define BASIC_CASE(MessageType, MessageClass)                                                                          \
     case NetworkMessage::Type::MessageType:                                                                            \
-        Debug(D, pdTrace) << "MessageClass" << std::endl;                                                              \
+        Debug(MP, pdTrace) << xstr(MessageClass) << std::endl;                                                         \
         return process(MessageEvent<MessageClass>{std::move(request)})
 
     switch (request.message()->getMessageType()) {

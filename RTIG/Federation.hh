@@ -460,6 +460,8 @@ private:
     void momPublishObjects();
     void momPublishAndSubscribeInteractions();
     void momRegisterFederation();
+    void momUpdateFederatesInFederation();
+    void momProvideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
     FederationHandle my_handle;
     std::string my_name;
@@ -486,6 +488,7 @@ private:
      * It does not really belong to the federation.
      */
     FederateHandle my_mom_federate_handle;
+    ObjectHandle my_mom_federation_object;
 
     std::unordered_map<FederateHandle, std::unique_ptr<Federate>> my_federates{};
 

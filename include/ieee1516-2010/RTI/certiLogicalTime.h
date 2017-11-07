@@ -135,7 +135,7 @@ namespace rti1516e
 
   // Output operator for LogicalTime
   std::wostream RTI_EXPORT &
-    operator << (std::wostream &, LogicalTime const &);
+    operator << (std::wostream & os, LogicalTime const & value);
 }
 
 #endif // RTI_LogicalTime_h

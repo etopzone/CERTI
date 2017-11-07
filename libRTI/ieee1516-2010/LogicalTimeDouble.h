@@ -56,7 +56,7 @@ typedef short int         int_least16_t;
 #define swprintf _snwprintf
 #endif
 
-class RTI_EXPORT_FEDTIME LogicalTimeDouble : public rti1516::LogicalTime
+class RTI_EXPORT_FEDTIME LogicalTimeDouble : public rti1516e::LogicalTime
 {
 public:
    LogicalTimeDouble(double value);
@@ -75,58 +75,58 @@ public:
    virtual long getSeconds() const;
    virtual int getMicros() const;
    
-   virtual void setTo(rti1516::LogicalTime const & value)
-      throw (rti1516::InvalidLogicalTime);
+   virtual void setTo(rti1516e::LogicalTime const & value)
+      throw (rti1516e::InvalidLogicalTime);
 
-   virtual void increaseBy(rti1516::LogicalTimeInterval const & addend)
-      throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
+   virtual void increaseBy(rti1516e::LogicalTimeInterval const & addend)
+      throw (rti1516e::IllegalTimeArithmetic, rti1516e::InvalidLogicalTimeInterval);
 
-   virtual void decreaseBy(rti1516::LogicalTimeInterval const & subtrahend)
-      throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
+   virtual void decreaseBy(rti1516e::LogicalTimeInterval const & subtrahend)
+      throw (rti1516e::IllegalTimeArithmetic, rti1516e::InvalidLogicalTimeInterval);
 
-   virtual std::unique_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTime const & subtrahend) const
-      throw (rti1516::InvalidLogicalTime);
+   virtual std::unique_ptr< rti1516e::LogicalTimeInterval > subtract(rti1516e::LogicalTime const & subtrahend) const
+      throw (rti1516e::InvalidLogicalTime);
 
-   virtual bool isGreaterThan(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime);
+   virtual bool isGreaterThan(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime);
 
-   virtual bool isLessThan(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime);
+   virtual bool isLessThan(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime);
 
-   virtual bool isEqualTo(rti1516::LogicalTime const & value) const
-   throw (rti1516::InvalidLogicalTime);
+   virtual bool isEqualTo(rti1516e::LogicalTime const & value) const
+   throw (rti1516e::InvalidLogicalTime);
 
-   virtual bool isGreaterThanOrEqualTo(rti1516::LogicalTime const & value) const
-   throw (rti1516::InvalidLogicalTime);
+   virtual bool isGreaterThanOrEqualTo(rti1516e::LogicalTime const & value) const
+   throw (rti1516e::InvalidLogicalTime);
 
-   virtual bool isLessThanOrEqualTo(rti1516::LogicalTime const & value) const
-   throw (rti1516::InvalidLogicalTime);
+   virtual bool isLessThanOrEqualTo(rti1516e::LogicalTime const & value) const
+   throw (rti1516e::InvalidLogicalTime);
 
    // JvY Begin
     virtual
-    rti1516::LogicalTime &
-    operator=(rti1516::LogicalTime const & value)
-      throw (rti1516::InvalidLogicalTime);
+    rti1516e::LogicalTime &
+    operator=(rti1516e::LogicalTime const & value)
+      throw (rti1516e::InvalidLogicalTime);
 
     virtual
     LogicalTimeDouble &
     operator=(LogicalTimeDouble const & value)
-      throw (rti1516::InvalidLogicalTime);
+      throw (rti1516e::InvalidLogicalTime);
 
 
     virtual
-    rti1516::LogicalTime &
-    operator+=(rti1516::LogicalTimeInterval const & addend)
-      throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
+    rti1516e::LogicalTime &
+    operator+=(rti1516e::LogicalTimeInterval const & addend)
+      throw (rti1516e::IllegalTimeArithmetic, rti1516e::InvalidLogicalTimeInterval)
 	{
 		increaseBy(addend);
 		return *this;
 	}
 
     virtual
-    rti1516::LogicalTime &
-    operator-=(rti1516::LogicalTimeInterval const & subtrahend)
-      throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
+    rti1516e::LogicalTime &
+    operator-=(rti1516e::LogicalTimeInterval const & subtrahend)
+      throw (rti1516e::IllegalTimeArithmetic, rti1516e::InvalidLogicalTimeInterval)
 	{
 		decreaseBy(subtrahend);
 		return *this;
@@ -134,54 +134,54 @@ public:
 
     virtual
     bool
-    operator>(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime)
+    operator>(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime)
 	{
 		return isGreaterThan(value);
 	}
 
     virtual
     bool
-    operator<(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime)
+    operator<(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime)
 	{
 		return isLessThan(value);
 	}
 
     virtual
     bool
-    operator>=(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime)
+    operator>=(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime)
 	{
 		return isGreaterThanOrEqualTo(value);
 	}
 
     virtual
     bool
-    operator<=(rti1516::LogicalTime const & value) const
-      throw (rti1516::InvalidLogicalTime)
+    operator<=(rti1516e::LogicalTime const & value) const
+      throw (rti1516e::InvalidLogicalTime)
 	{
 		return isLessThanOrEqualTo(value);
 	}
 
     // Generates an encoded value that can be used to send
     // LogicalTimes to other federates in updates or interactions
-    virtual rti1516::VariableLengthData encode() const;
+    virtual rti1516e::VariableLengthData encode() const;
 
     // Alternate encode for directly filling a buffer
     virtual unsigned long encodedLength() const;
     virtual unsigned long encode(void* buffer, unsigned long bufferSize) const 
-       throw (rti1516::CouldNotEncode);
+       throw (rti1516e::CouldNotEncode);
    
     // Decode encodedLogicalTime into self
-    virtual void decode(rti1516::VariableLengthData const & encodedLogicalTime)
-      throw (rti1516::InternalError,
-             rti1516::CouldNotDecode);
+    virtual void decode(rti1516e::VariableLengthData const & encodedLogicalTime)
+      throw (rti1516e::InternalError,
+             rti1516e::CouldNotDecode);
 
     // Alternate decode that reads directly from a buffer
     virtual void decode(void* buffer, unsigned long bufferSize)
-      throw (rti1516::InternalError,
-             rti1516::CouldNotDecode);
+      throw (rti1516e::InternalError,
+             rti1516e::CouldNotDecode);
 
     // Returns the name of the implementation, as needed by
     // createFederationExecution.
@@ -192,12 +192,12 @@ public:
 
 	// JvY End
 
-   //virtual std::unique_ptr< rti1516::EncodedLogicalTime > encode() const;
+   //virtual std::unique_ptr< rti1516e::EncodedLogicalTime > encode() const;
 
    virtual std::wstring toString() const;
 
    virtual bool operator==(LogicalTime const & left) const
-	   throw (rti1516::InvalidLogicalTime);
+	   throw (rti1516e::InvalidLogicalTime);
 
    virtual int64_t toMilliseconds() const;
 
@@ -210,7 +210,7 @@ private:
    friend class LogicalTimeFactoryDouble;
 };
 
-class RTI_EXPORT_FEDTIME LogicalTimeIntervalDouble : public rti1516::LogicalTimeInterval
+class RTI_EXPORT_FEDTIME LogicalTimeIntervalDouble : public rti1516e::LogicalTimeInterval
 {
 public:
    LogicalTimeIntervalDouble(double value);
@@ -229,36 +229,36 @@ public:
    virtual long getSeconds() const;
    virtual int getMicros() const;
 
-   virtual void setTo(rti1516::LogicalTimeInterval const & value)
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual void setTo(rti1516e::LogicalTimeInterval const & value)
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual std::unique_ptr< rti1516::LogicalTimeInterval > subtract(rti1516::LogicalTimeInterval const & subtrahend) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual std::unique_ptr< rti1516e::LogicalTimeInterval > subtract(rti1516e::LogicalTimeInterval const & subtrahend) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual bool isGreaterThan(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual bool isGreaterThan(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual bool isLessThan(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual bool isLessThan(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual bool isEqualTo(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual bool isEqualTo(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual bool isGreaterThanOrEqualTo(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual bool isGreaterThanOrEqualTo(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   virtual bool isLessThanOrEqualTo(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval);
+   virtual bool isLessThanOrEqualTo(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval);
    
-   //virtual std::unique_ptr< rti1516::EncodedLogicalTimeInterval > encode() const;
+   //virtual std::unique_ptr< rti1516e::EncodedLogicalTimeInterval > encode() const;
    
    virtual std::wstring toString() const;
 
    // JvY Begin
     virtual
     LogicalTimeInterval &
-    operator=(rti1516::LogicalTimeInterval const & value)
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator=(rti1516e::LogicalTimeInterval const & value)
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		setTo(value);
 		return *this;
@@ -268,78 +268,78 @@ public:
     // Set self to the difference between two LogicalTimes
     virtual
     void
-    setToDifference(rti1516::LogicalTime const & minuend,
-      rti1516::LogicalTime const& subtrahend)
-      throw (rti1516::InvalidLogicalTime);
+    setToDifference(rti1516e::LogicalTime const & minuend,
+      rti1516e::LogicalTime const& subtrahend)
+      throw (rti1516e::InvalidLogicalTime);
 
     virtual
-    rti1516::LogicalTimeInterval &
-    operator+=(rti1516::LogicalTimeInterval const & addend)
-      throw (rti1516::InvalidLogicalTimeInterval);
+    rti1516e::LogicalTimeInterval &
+    operator+=(rti1516e::LogicalTimeInterval const & addend)
+      throw (rti1516e::InvalidLogicalTimeInterval);
 
     virtual
-    rti1516::LogicalTimeInterval &
-    operator-=(rti1516::LogicalTimeInterval const & subtrahend)
-      throw (rti1516::InvalidLogicalTimeInterval);
+    rti1516e::LogicalTimeInterval &
+    operator-=(rti1516e::LogicalTimeInterval const & subtrahend)
+      throw (rti1516e::InvalidLogicalTimeInterval);
     
     virtual
     bool
-    operator>(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator>(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		return isGreaterThan(value);
 	}
 
     virtual
     bool
-    operator<(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator<(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		return isLessThan(value);
 	}
 
     virtual
     bool
-    operator==(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator==(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		return isEqualTo(value);
 	}
 
     virtual
     bool
-    operator>=(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator>=(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		return isGreaterThanOrEqualTo(value);
 	}
 
     virtual
     bool
-    operator<=(rti1516::LogicalTimeInterval const & value) const
-      throw (rti1516::InvalidLogicalTimeInterval)
+    operator<=(rti1516e::LogicalTimeInterval const & value) const
+      throw (rti1516e::InvalidLogicalTimeInterval)
 	{
 		return isLessThanOrEqualTo(value);
 	}
     
     // Generates an encoded value that can be used to send
     // LogicalTimeIntervals to other federates in updates or interactions
-    virtual rti1516::VariableLengthData encode() const;
+    virtual rti1516e::VariableLengthData encode() const;
 
     // Alternate encode for directly filling a buffer
     virtual unsigned long encodedLength() const;
     virtual unsigned long encode(void* buffer, unsigned long bufferSize) const 
-       throw (rti1516::CouldNotEncode);
+       throw (rti1516e::CouldNotEncode);
 
     // Decode encodedValue into self
-    virtual void decode(rti1516::VariableLengthData const & encodedValue)
-      throw (rti1516::InternalError,
-             rti1516::CouldNotDecode);
+    virtual void decode(rti1516e::VariableLengthData const & encodedValue)
+      throw (rti1516e::InternalError,
+             rti1516e::CouldNotDecode);
 
     // Alternate decode that reads directly from a buffer
     virtual void decode(void* buffer, unsigned long bufferSize)
-      throw (rti1516::InternalError,
-             rti1516::CouldNotDecode);
+      throw (rti1516e::InternalError,
+             rti1516e::CouldNotDecode);
 
     // Returns the name of the implementation, as needed by
     // createFederationExecution.
@@ -363,41 +363,41 @@ private:
 };
 
 
-class RTI_EXPORT_FEDTIME LogicalTimeDoubleFactory : public rti1516::LogicalTimeFactory
+class RTI_EXPORT_FEDTIME LogicalTimeDoubleFactory : public rti1516e::LogicalTimeFactory
 {
 public:
    virtual ~LogicalTimeDoubleFactory()
       throw ();
  
-   virtual std::unique_ptr< rti1516::LogicalTime > makeInitial()
-      throw (rti1516::InternalError);
+   virtual std::unique_ptr< rti1516e::LogicalTime > makeInitial()
+      throw (rti1516e::InternalError);
 
    // Returns a LogicalTime with a value of "initial"
     virtual
-    std::unique_ptr< rti1516::LogicalTime >
+    std::unique_ptr< rti1516e::LogicalTime >
     makeLogicalTime()
-	throw (rti1516::InternalError)
+	throw (rti1516e::InternalError)
 	{
 		return makeInitial();
 	}
     
     // Returns a LogicalTimeInterval with a value of "zero"
     virtual 
-    std::unique_ptr< rti1516::LogicalTimeInterval >
+    std::unique_ptr< rti1516e::LogicalTimeInterval >
     makeLogicalTimeInterval() 
-      throw (rti1516::InternalError)
+      throw (rti1516e::InternalError)
 	{
 		return makeZero();
 	}
 
-   virtual std::unique_ptr< rti1516::LogicalTimeInterval > makeZero()
-      throw (rti1516::InternalError);
+   virtual std::unique_ptr< rti1516e::LogicalTimeInterval > makeZero()
+      throw (rti1516e::InternalError);
  
-   virtual std::unique_ptr< rti1516::LogicalTimeInterval > epsilon()
-      throw (rti1516::InternalError);
+   virtual std::unique_ptr< rti1516e::LogicalTimeInterval > epsilon()
+      throw (rti1516e::InternalError);
 
-   //virtual std::unique_ptr< rti1516::LogicalTime > decode(rti1516::EncodedLogicalTime const & encodedLogicalTime)
-   //   throw (rti1516::InternalError, rti1516::CouldNotDecode);
+   //virtual std::unique_ptr< rti1516e::LogicalTime > decode(rti1516e::EncodedLogicalTime const & encodedLogicalTime)
+   //   throw (rti1516e::InternalError, rti1516e::CouldNotDecode);
 };
 
 class RTI_EXPORT_FEDTIME LogicalTimeFactoryDouble : public LogicalTimeDoubleFactory
@@ -426,10 +426,10 @@ public:
  
 };
 
-class RTI_EXPORT_FEDTIME LogicalTimeDoubleFactoryFactory : public rti1516::LogicalTimeFactoryFactory
+class RTI_EXPORT_FEDTIME LogicalTimeDoubleFactoryFactory : public rti1516e::LogicalTimeFactoryFactory
 {
 public:
-    static std::unique_ptr< rti1516::LogicalTimeFactory > 
+    static std::unique_ptr< rti1516e::LogicalTimeFactory > 
        makeLogicalTimeFactory(std::wstring const & implementationName);
 
 };

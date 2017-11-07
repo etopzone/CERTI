@@ -137,9 +137,9 @@ namespace rti1516e {
     }                                                                                                                  \
                                                                                                                        \
     /* Output operator for Handles          */                                                                         \
-    std::wostream& operator<<(std::wostream& str, HandleKind const& /*h*/)                                             \
+    std::wostream& operator<<(std::wostream& str, HandleKind const& h)                                                 \
     {                                                                                                                  \
-        return str;                                                                                                    \
+        return str << h.toString();                                                                                    \
     }                                                                                                                  \
 /* end DECLARE_HANDLE_CLASS */
 

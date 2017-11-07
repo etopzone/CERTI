@@ -27,6 +27,7 @@
 
 #include <cassert>
 
+using std::cout;
 using std::list;
 using std::endl;
 
@@ -41,6 +42,11 @@ namespace certi {
 */
 Socket* SecurityServer::getSocketLink(FederateHandle theFederate, TransportType theType) const
 {
+    if(theFederate == my_mom_federate_handle) {
+        cout << "getSocketLink(mom), returning nullptr" << endl;
+        return nullptr;
+    }
+    
     // G.Out(pdGendoc,"into SecurityServer::getSocketLink");
     Socket* sock = RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
     if (sock == nullptr)
@@ -67,6 +73,7 @@ bool SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
 bool SecurityServer::canFederateAccessData(FederateHandle theFederate, SecurityLevelID theDataLevelID)
 {
     if(theFederate == my_mom_federate_handle) {
+        cout << "canFederateAccessData(mom), returning true" << endl;
         return true;
     }
     
