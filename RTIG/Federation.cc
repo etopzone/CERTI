@@ -275,6 +275,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     }
 
     if (my_mom) {
+        my_mom->registerFederate(federate);
         my_mom->updateFederatesInFederation();
     }
 
@@ -947,6 +948,8 @@ bool Federation::check(FederateHandle federate_handle) const
 void Federation::kill(FederateHandle federate_handle) noexcept
 {
     Debug(D, pdInit) << "Killing Federate " << federate_handle << endl;
+    
+    // TODO update federate & federation    
 
     try {
         auto& federate = getFederate(federate_handle);
@@ -1181,6 +1184,7 @@ void Federation::remove(FederateHandle federate_handle)
     my_federates.erase(my_federates.find(federate_handle));
 
     if (my_mom) {
+        my_mom->deleteFederate(federate_handle);
         my_mom->updateFederatesInFederation();
     }
 

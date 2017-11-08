@@ -45,109 +45,31 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    unique_ptr<rti1516e::RTIambassador> ambassador;
-
-    auto amb_factory = make_unique<rti1516e::RTIambassadorFactory>();
-
-    cout << "=>create RTI Ambassador" << endl;
+    wstring federate_name(argv[1], argv[1] + strlen(argv[1]));
+    wstring action(argv[2], argv[2] + strlen(argv[2]));
+    wstring federation_name(argv[3], argv[3] + strlen(argv[3]));
+    wstring mode(argv[4], argv[4] + strlen(argv[4]));
 
     try {
+        auto amb_factory = make_unique<rti1516e::RTIambassadorFactory>();
+
+        cout << "  create RTI Ambassador" << endl;
+
+        unique_ptr<rti1516e::RTIambassador> ambassador;
         ambassador = amb_factory->createRTIambassador();
         cout << "* Ambassador created" << endl << endl;
 
-        auto fed_ambassador = make_unique<MOMFederateAmbassador>(*ambassador);
+        auto fed_ambassador = make_unique<MOMFederateAmbassador>(*ambassador, federation_name, federate_name);
 
-        ambassador->connect(*fed_ambassador, rti1516e::HLA_EVOKED);
-        cout << "* Ambassador connected" << endl << endl;
-
-        wstring federate_name(argv[1], argv[1] + strlen(argv[1]));
-
-        wstring action(argv[2], argv[2] + strlen(argv[2]));
-
-        wstring federation_name(argv[3], argv[3] + strlen(argv[3]));
-
-        wstring mode(argv[4], argv[4] + strlen(argv[4]));
+        fed_ambassador->connect();
 
         if (action == L"create") {
-            wcout << "=>createFederationExecution <" << federation_name << ">" << endl;
-
-            ambassador->createFederationExecution(federation_name, L"Test.xml");
+            fed_ambassador->createFederationExecution();
         }
 
-        wcout << "=>joinFederationExecution <" << federation_name << ">" << endl;
+        fed_ambassador->joinFederationExecution();
 
-        ambassador->joinFederationExecution(federate_name, federation_name);
-        cout << "* Federation joined" << endl;
-
-        cout << "=>subscribeObjectClasses" << endl;
-
-        cout << "  getObjectClassHandle for HLAmanager.HLAfederation" << endl;
-
-        auto federation_class_handle = ambassador->getObjectClassHandle(L"HLAmanager.HLAfederation");
-
-        rti1516e::AttributeHandleSet attributes;
-        for (auto attribute : {L"HLAfederationName",
-                               L"HLAfederatesInFederation",
-                               L"HLARTIversion",
-                               L"HLAMIMDesignator",
-                               L"HLAFOMmoduleDesignatorList",
-                               L"HLAcurrentFDD",
-                               L"HLAtimeImplementationName",
-                               L"HLAlastSaveName",
-                               L"HLAlastSaveTime",
-                               L"HLAnextSaveName",
-                               L"HLAnextSaveTime",
-                               L"HLAautoProvide"}) {
-            wcout << "  getAttributeHandle for " << attribute << endl;
-            attributes.insert(ambassador->getAttributeHandle(federation_class_handle, attribute));
-        }
-
-        cout << "  subscribeObjectClassAttributes for HLAmanager.HLAfederation" << endl;
-        ambassador->subscribeObjectClassAttributes(federation_class_handle, attributes);
-
-        cout << "  getObjectClassHandle for HLAmanager.HLAfederate" << endl;
-
-        auto federate_class_handle = ambassador->getObjectClassHandle(L"HLAmanager.HLAfederate");
-
-        attributes.clear();
-        for (auto attribute : {L"HLAfederateHandle",
-                               L"HLAfederateName",
-                               L"HLAfederateType",
-                               L"HLAfederateHost",
-                               L"HLARTIversion",
-                               L"HLAFOMmoduleDesignatorList",
-                               L"HLAtimeConstrained",
-                               L"HLAtimeRegulating",
-                               L"HLAasynchronousDelivery",
-                               L"HLAfederateState",
-                               L"HLAtimeManagerState",
-                               L"HLAlogicalTime",
-                               L"HLAlookahead",
-                               L"HLAGALT",
-                               L"HLALITS",
-                               L"HLAROlength",
-                               L"HLATSOlength",
-                               L"HLAreflectionsReceived",
-                               L"HLAupdatesSent",
-                               L"HLAinteractionsReceived",
-                               L"HLAinteractionsSent",
-                               L"HLAobjectInstancesThatCanBeDeleted",
-                               L"HLAobjectInstancesUpdated",
-                               L"HLAobjectInstancesReflected",
-                               L"HLAobjectInstancesDeleted",
-                               L"HLAobjectInstancesRemoved",
-                               L"HLAobjectInstancesRegistered",
-                               L"HLAobjectInstancesDiscovered",
-                               L"HLAtimeGrantedTime",
-                               L"HLAtimeAdvancingTime",
-                               L"HLAconveyRegionDesignatorSets",
-                               L"HLAconveyProducingFederate"}) {
-            wcout << "  getAttributeHandle for " << attribute << endl;
-            attributes.insert(ambassador->getAttributeHandle(federate_class_handle, attribute));
-        }
-
-        cout << "  subscribeObjectClassAttributes for HLAmanager.HLAfederate" << endl;
-        ambassador->subscribeObjectClassAttributes(federate_class_handle, attributes);
+        fed_ambassador->subscribeObjectClasses();
 
         cout << "# " << endl;
 

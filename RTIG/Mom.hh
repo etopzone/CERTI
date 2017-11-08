@@ -45,7 +45,11 @@ public:
     // Initialization
     void publishObjects();
     void publishAndSubscribeInteractions();
+    
+    // Object management
     void registerFederation();
+    void registerFederate(const Federate& federate);
+    void deleteFederate(const FederateHandle federate_handle);
 
     // Conditional Attributes
     void updateFederatesInFederation();
@@ -66,14 +70,23 @@ private:
     RootObject& my_root;
 
     ObjectHandle my_federation_object;
+    std::unordered_map<FederateHandle, ObjectHandle> my_federate_objects;
     
     std::unordered_map<std::string, ObjectClassHandle> my_object_class_cache;
     std::unordered_map<std::string, AttributeHandle> my_attribute_cache;
     std::unordered_map<std::string, InteractionClassHandle> my_interaction_class_cache;
 
-    std::unordered_map<AttributeHandle, AttributeValue_t> my_attribute_values_cache;
+    std::map<ObjectHandle, std::map<AttributeHandle, AttributeValue_t>> my_attribute_values_cache;
 
-    AttributeValue_t valueFromBuffer(MessageBuffer& mb);
+    AttributeValue_t encodeString(const std::string& str);
+    AttributeValue_t encodeBoolean(const bool data);
+    AttributeValue_t encodeUInt32(const uint32_t data);
+    AttributeValue_t encodeFederateHandleList();
+    AttributeValue_t encodeFederateState(const Federate& federate);
+
+    AttributeValue_t encodeMB();
+
+    MessageBuffer mb;
 };
 
 }

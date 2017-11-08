@@ -1,9 +1,9 @@
 #ifndef MOMFEDERATEAMBASSADOR_H
 #define MOMFEDERATEAMBASSADOR_H
 
-#include <RTI/RTI1516.h>
 #include <RTI/FederateAmbassador.h>
 #include <RTI/LogicalTime.h>
+#include <RTI/RTI1516.h>
 
 #include <iostream>
 #include <map>
@@ -12,9 +12,19 @@ using namespace rti1516e;
 
 class MOMFederateAmbassador : public FederateAmbassador {
 public:
-    MOMFederateAmbassador(RTIambassador& ambassador);
+    MOMFederateAmbassador(RTIambassador& ambassador,
+                          const std::wstring& federation_name,
+                          const std::wstring& federate_name);
 
     virtual ~MOMFederateAmbassador() = default;
+
+    void connect();
+
+    void createFederationExecution();
+
+    void joinFederationExecution();
+
+    void subscribeObjectClasses();
 
     // 4.4
     virtual void connectionLost(std::wstring const& faultDescription) throw(FederateInternalError) override;
@@ -102,8 +112,8 @@ public:
     virtual void objectInstanceNameReservationSucceeded(std::wstring const& theObjectInstanceName) throw(
         FederateInternalError) override;
 
-    virtual void
-    objectInstanceNameReservationFailed(std::wstring const& theObjectInstanceName) throw(FederateInternalError) override;
+    virtual void objectInstanceNameReservationFailed(std::wstring const& theObjectInstanceName) throw(
+        FederateInternalError) override;
 
     // 6.6
     virtual void multipleObjectInstanceNameReservationSucceeded(
@@ -113,9 +123,10 @@ public:
         std::set<std::wstring> const& theObjectInstanceNames) throw(FederateInternalError) override;
 
     // 6.9
-    virtual void discoverObjectInstance(ObjectInstanceHandle theObject,
-                                        ObjectClassHandle theObjectClass,
-                                        std::wstring const& theObjectInstanceName) throw(FederateInternalError) override;
+    virtual void
+    discoverObjectInstance(ObjectInstanceHandle theObject,
+                           ObjectClassHandle theObjectClass,
+                           std::wstring const& theObjectInstanceName) throw(FederateInternalError) override;
 
     virtual void discoverObjectInstance(ObjectInstanceHandle theObject,
                                         ObjectClassHandle theObjectClass,
@@ -227,10 +238,10 @@ public:
                                     AttributeHandleSet const& theAttributes) throw(FederateInternalError) override;
 
     // 6.24
-    virtual void
-    confirmAttributeTransportationTypeChange(ObjectInstanceHandle theObject,
-                                             AttributeHandleSet theAttributes,
-                                             TransportationType theTransportation) throw(FederateInternalError) override;
+    virtual void confirmAttributeTransportationTypeChange(
+        ObjectInstanceHandle theObject,
+        AttributeHandleSet theAttributes,
+        TransportationType theTransportation) throw(FederateInternalError) override;
 
     // 6.26
     virtual void
@@ -276,10 +287,10 @@ public:
                                   AttributeHandleSet const& theAttributes) throw(FederateInternalError) override;
 
     // 7.11
-    virtual void
-    requestAttributeOwnershipRelease(ObjectInstanceHandle theObject,
-                                     AttributeHandleSet const& candidateAttributes,
-                                     VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError) override;
+    virtual void requestAttributeOwnershipRelease(
+        ObjectInstanceHandle theObject,
+        AttributeHandleSet const& candidateAttributes,
+        VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError) override;
 
     // 7.16
     virtual void confirmAttributeOwnershipAcquisitionCancellation(
@@ -314,6 +325,27 @@ public:
 
 private:
     RTIambassador& my_ambassador;
+
+    const std::wstring& my_federation_name;
+    const std::wstring& my_federate_name;
+
+    ObjectClassHandle objectClassHandle(const std::wstring& object_class_name);
+
+    AttributeHandle attributeHandle(const std::wstring& object_name,
+                                    const std::wstring& attribute_name);
+
+    std::wstring attributeName(const std::wstring& object_class_name, const AttributeHandle handle);
+
+    void displayData();
+
+    std::map<std::wstring, ObjectClassHandle> my_object_class_cache;
+    std::map<std::pair<std::wstring, std::wstring>, AttributeHandle> my_attribute_cache;
+    std::map<ObjectClassHandle, AttributeHandleSet> my_attributes_of_interest;
+
+    std::map<ObjectInstanceHandle, AttributeHandleValueMap> my_data;
+
+    ObjectInstanceHandle my_federation;
+    std::vector<ObjectInstanceHandle> my_federates;
 };
 
 #endif // MOMFEDERATEAMBASSADOR_H
