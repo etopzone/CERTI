@@ -35,6 +35,7 @@ set(rtig_SRCS
   
   MessageEvent.hh
   MessageProcessor.cc MessageProcessor.hh
+  Mom.cc Mom.hh
   
   RTIG.cc RTIG.hh
   ${rtig_SRCS_generated}

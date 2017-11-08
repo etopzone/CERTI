@@ -73,7 +73,6 @@ bool SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
 bool SecurityServer::canFederateAccessData(FederateHandle theFederate, SecurityLevelID theDataLevelID)
 {
     if(theFederate == my_mom_federate_handle) {
-        cout << "canFederateAccessData(mom), returning true" << endl;
         return true;
     }
     

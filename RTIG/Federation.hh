@@ -42,6 +42,7 @@
 #include "HandleManager.hh"
 #include "LBTS.hh"
 #include "MessageBuffer.hh"
+#include "Mom.hh"
 
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -59,6 +60,7 @@ class SocketServer;
 class SocketTCP;
 
 namespace rtig {
+class Mom;
 
 class Federation {
 public:
@@ -441,8 +443,10 @@ public:
     Federate& getFederate(FederateHandle federate_handle);
 
 private:
-    void openFomFile(const int verboseLevel);
+    friend class Mom;
     
+    void openFomFile(const int verboseLevel);
+
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
 
@@ -454,14 +458,8 @@ private:
                               FederateHandle except_federate,
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
-    
+
     void enableMomIfAvailable();
-    bool isMomInRootObject();
-    void momPublishObjects();
-    void momPublishAndSubscribeInteractions();
-    void momRegisterFederation();
-    void momUpdateFederatesInFederation();
-    void momProvideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
     FederationHandle my_handle;
     std::string my_name;
@@ -482,13 +480,7 @@ private:
     /// The minimum NERx timestamp for this federation
     FederationTime my_min_NERx{};
 
-    bool my_mom_enabled {false};
-
-    /** This handle is used to detect MOM interactions.
-     * It does not really belong to the federation.
-     */
-    FederateHandle my_mom_federate_handle;
-    ObjectHandle my_mom_federation_object;
+    std::unique_ptr<Mom> my_mom;
 
     std::unordered_map<FederateHandle, std::unique_ptr<Federate>> my_federates{};
 
@@ -500,17 +492,16 @@ private:
     /// The message buffer used to send Network messages
     MessageBuffer my_nm_buffer{};
 
-    HandleManager<FederateHandle> my_federate_handle_generator {1};
-    HandleManager<ObjectHandle> my_objects_handle_generator {1};
+    HandleManager<FederateHandle> my_federate_handle_generator{1};
+    HandleManager<ObjectHandle> my_objects_handle_generator{1};
 
-    bool my_is_save_in_progress {false};
-    bool my_is_restore_in_progress {false};
-    bool my_save_status {true}; /// True if saving was correctly done, false otherwise.
-    bool my_restore_status {true}; /// True if restoring was correctly done.
-    std::string my_save_label {""}; /// The label associated with the save request.
+    bool my_is_save_in_progress{false};
+    bool my_is_restore_in_progress{false};
+    bool my_save_status{true}; /// True if saving was correctly done, false otherwise.
+    bool my_restore_status{true}; /// True if restoring was correctly done.
+    std::string my_save_label{""}; /// The label associated with the save request.
 };
 }
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
-

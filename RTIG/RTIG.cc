@@ -333,6 +333,7 @@ Socket* RTIG::processIncomingMessage(Socket* link)
     // Default Handler
     catch (Exception& e) {
         Debug(D, pdExcept) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
+        Debug(G, pdGendoc) << "Caught Exception: " << e.name() << " - " << e.reason() << std::endl;
 
         // Server Answer(only if an exception is raised)
         auto response = std::unique_ptr<NetworkMessage>(NM_Factory::create(messageType));

@@ -56,17 +56,6 @@ std::wostream& operator<<(std::wostream& os, const std::map<K, V>& v)
     return os;
 }
 
-/*
-std::wostream& operator<<(std::wostream& os, const XXX& v) {
-    
-    return os;
-}
-*/
-
-MOMFederateAmbassador::MOMFederateAmbassador(rti1516e::RTIambassador& ambassador) : my_ambassador{ambassador}
-{
-}
-
 std::wostream& operator<<(std::wostream& os, const FederationExecutionInformation& v)
 {
     return os << "FEI [name: " << v.federationExecutionName << ", time: " << v.logicalTimeImplementationName << " ] ";
@@ -74,7 +63,20 @@ std::wostream& operator<<(std::wostream& os, const FederationExecutionInformatio
 
 std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
 {
-    return os << "VLD [size: " << v.size() << ", data: " << v.data() << " ] ";
+    os << "VLD [";
+    
+    if(v.size() == 0) {
+        os << "empty";
+    }
+    else {
+        os << "size: " << v.size() << ", data: [ ";
+        for(auto i(0u); i < v.size(); ++i) {
+            os << static_cast<const uint8_t*>(v.data())[i] << " ";
+        }
+        os << "]";
+    }
+    os << "]";
+    return os;
 }
 
 std::wostream& operator<<(std::wostream& os, const SupplementalReflectInfo& v)
@@ -99,6 +101,17 @@ std::wostream& operator<<(std::wostream& os, const FederateRestoreStatus& v)
 {
     return os << "FRS [preRestoreHandle: " << v.preRestoreHandle << ", postRestoreHandle: " << v.postRestoreHandle
               << ", status: " << v.status << "] ";
+}
+
+/*
+std::wostream& operator<<(std::wostream& os, const XXX& v) {
+    
+    return os;
+}
+*/
+
+MOMFederateAmbassador::MOMFederateAmbassador(rti1516e::RTIambassador& ambassador) : my_ambassador{ambassador}
+{
 }
 
 void MOMFederateAmbassador::connectionLost(std::wstring const& faultDescription) throw(FederateInternalError)
