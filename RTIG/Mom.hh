@@ -42,10 +42,16 @@ public:
     
     FederateHandle getHandle() const;
     
+    // Initialization
     void publishObjects();
     void publishAndSubscribeInteractions();
     void registerFederation();
+
+    // Conditional Attributes
     void updateFederatesInFederation();
+    void updateNextSave(const std::string& label, const FederationTime& time);
+
+    // Support
     void provideAttributeValueUpdate(const ObjectHandle& object,
                                      const std::vector<AttributeHandle>& attributes);
     

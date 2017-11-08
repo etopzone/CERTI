@@ -263,7 +263,7 @@ bool Mom::isAvailableInRootObjectAndCompliant(const RootObject& root)
 }
 
 Mom::Mom(const FederateHandle handle, Federation& federation, RootObject& root)
-    : my_handle{handle}, my_federation{federation}, my_root{root}
+    : my_handle(handle), my_federation(federation), my_root(root)
 {
 }
 
@@ -428,6 +428,13 @@ void Mom::updateFederatesInFederation()
     provideAttributeValueUpdate(my_federation_object, {attribute});
 
     Debug(D, pdGendoc) << "exit  Mom::updateFederatesInFederation" << endl;
+}
+
+void Mom::updateNextSave(const std::string& /*label*/, const FederationTime& /*time*/)
+{
+    Debug(D, pdGendoc) << "enter Mom::updateNextSave" << endl;
+    std::cerr << "NOT IMPLEMENTED YET." << endl; // TODO
+    Debug(D, pdGendoc) << "enter Mom::updateNextSave" << endl;
 }
 
 void Mom::provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes)

@@ -688,6 +688,8 @@ void Federation::requestFederationSave(FederateHandle federate_handle, const str
 
     broadcastAnyMessage(&msg, 0, false);
 
+    my_mom->updateNextSave(label, time);
+
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave with time" << endl;
 }
 
