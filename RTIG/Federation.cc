@@ -1360,7 +1360,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             my_mom->processInteraction(
-                federate_handle, interaction_class_handle, parameter_handles, parameter_values, region_handle);
+                /*federate_handle, */interaction_class_handle, parameter_handles, parameter_values, region_handle);
         }
     }
 
@@ -1402,7 +1402,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             my_mom->processInteraction(
-                federate_handle, interaction_class_handle, parameter_handles, parameter_values, region_handle);
+                /*federate_handle, */interaction_class_handle, parameter_handles, parameter_values, region_handle);
         }
     }
 

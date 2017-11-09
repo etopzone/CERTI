@@ -24,6 +24,8 @@
 
 #include "PrettyDebug.hh"
 
+#include "InteractionSet.hh"
+
 using std::cout;
 using std::endl;
 
@@ -32,7 +34,7 @@ namespace rtig {
 
 static PrettyDebug D("MOM", __FILE__);
 
-void Mom::processInteraction(const FederateHandle federate_handle,
+void Mom::processInteraction(/*const FederateHandle federate_handle,*/
                              const InteractionClassHandle interaction_class_handle,
                              const std::vector<ParameterHandle>& parameter_handles,
                              const std::vector<ParameterValue_t>& parameter_values,
@@ -40,256 +42,295 @@ void Mom::processInteraction(const FederateHandle federate_handle,
 {
     Debug(D, pdGendoc) << "enter Mom::processInteraction" << endl;
 
-    Debug(D, pdGendoc) << federate_handle << endl;
     Debug(D, pdGendoc) << interaction_class_handle << endl;
     Debug(D, pdGendoc) << parameter_handles.size() << endl;
     Debug(D, pdGendoc) << region_handle << endl;
 
+    std::map<ParameterHandle, ParameterValue_t> parameters;
+    for (auto i(0u); i < parameter_handles.size(); ++i) {
+        parameters[parameter_handles[i]] = parameter_values[i];
+#if 0
+        std::cout << my_root.Interactions->getParameterName(parameter_handles[i], interaction_class_handle)
+                  << " == " << parameter_values[i].size() << "{ ";
+        for (const auto& byte : parameter_values[i]) {
+            std::cout << byte << "(" << static_cast<int>(byte) << ") ";
+        }
+        std::cout << "}" << std::endl;
+#endif
+    }
+
     if (interaction_class_handle == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"]) {
-        int reportPeriod;
-        processFederateSetTiming(federate_handle, reportPeriod);
+        processFederateSetTiming(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAreportPeriod")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState"]) {
-        ObjectHandle objectInstance;
-        AttributeHandle attribute;
-        bool HLAattributeState;
-        processFederateModifyAttributeState(federate_handle, objectInstance, attribute, HLAattributeState);
+        processFederateModifyAttributeState(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAattribute")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAattributeState")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"]) {
-        bool conveyRegionDesignatorSets;
-        bool conveyProducingFederate;
-        bool serviceReporting;
-        bool exceptionReporting;
         processFederateSetSwitches(
-            federate_handle, conveyRegionDesignatorSets, conveyProducingFederate, serviceReporting, exceptionReporting);
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAconveyRegionDesignatorSets")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAconveyProducingFederate")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAserviceReporting")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAexceptionReporting")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestPublications"]) {
-        processFederateRequestPublications(federate_handle);
+        processFederateRequestPublications(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions"]) {
-        processFederateRequestSubscriptions(federate_handle);
+        processFederateRequestSubscriptions(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted"]) {
-        processFederateRequestObjectInstancesThatCanBeDeleted(federate_handle);
+        processFederateRequestObjectInstancesThatCanBeDeleted(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated"]) {
-        processFederateRequestObjectInstancesUpdated(federate_handle);
+        processFederateRequestObjectInstancesUpdated(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected"]) {
-        processFederateRequestObjectInstancesReflected(federate_handle);
+        processFederateRequestObjectInstancesReflected(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent"]) {
-        processFederateRequestUpdatesSent(federate_handle);
+        processFederateRequestUpdatesSent(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent"]) {
-        processFederateRequestInteractionsSent(federate_handle);
+        processFederateRequestInteractionsSent(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived"]) {
-        processFederateRequestReflectionsReceived(federate_handle);
+        processFederateRequestReflectionsReceived(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived"]) {
-        processFederateRequestInteractionsReceived(federate_handle);
+        processFederateRequestInteractionsReceived(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]) {
-        ObjectHandle objectInstance;
-        processFederateRequestObjectInstanceInformation(federate_handle,
-                                                        objectInstance);
+        processFederateRequestObjectInstanceInformation(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"]) {
-        int FOMmoduleIndicator;
-        processFederateRequestFOMmoduleData(federate_handle, FOMmoduleIndicator);
+        processFederateRequestFOMmoduleData(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAFOMmoduleIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution"]) {
-        ResignAction resignAction;
-        processFederateResignFederationExecution(federate_handle, resignAction);
+        processFederateResignFederationExecution(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), 
+                                                 decodeResignAction(parameters[getParameterHandle(interaction_class_handle, "HLAresignAction")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved"]) {
-        std::string label;
-        processFederateSynchronizationPointAchieved(federate_handle, label);
+        processFederateSynchronizationPointAchieved(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAlabel")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun"]) {
-        processFederateFederateSaveBegun(federate_handle);
+        processFederateFederateSaveBegun(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete"]) {
-        bool successIndicator;
-        processFederateFederateSaveComplete(federate_handle, successIndicator);
+        processFederateFederateSaveComplete(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAsuccessIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete"]) {
-        bool successIndicator;
-        processFederateFederateRestoreComplete(federate_handle, successIndicator);
+        processFederateFederateRestoreComplete(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAsuccessIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes"]) {
-        ObjectClassHandle objectClass;
-        std::vector<AttributeHandle> attributeList;
-        processFederatePublishObjectClassAttributes(federate_handle, objectClass, attributeList);
+        processFederatePublishObjectClassAttributes(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes"]) {
-        ObjectClassHandle objectClass;
-        std::vector<AttributeHandle> attributeList;
-        processFederateUnpublishObjectClassAttributes(federate_handle, objectClass, attributeList);
+        processFederateUnpublishObjectClassAttributes(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass"]) {
-        InteractionClassHandle interactionClass;
-        processFederatePublishInteractionClass(federate_handle, interactionClass);
+        processFederatePublishInteractionClass(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass"]) {
-        InteractionClassHandle interactionClass;
-        processFederateUnpublishInteractionClass(federate_handle, interactionClass);
+        processFederateUnpublishInteractionClass(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes"]) {
-        ObjectClassHandle objectClass;
-        std::vector<AttributeHandle> attributeList;
-        bool active;
-        processFederateSubscribeObjectClassAttributes(federate_handle, objectClass, attributeList, active);
+        processFederateSubscribeObjectClassAttributes(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAactive")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes"]) {
-        ObjectClassHandle objectClass;
-        std::vector<AttributeHandle> attributeList;
-        processFederateUnsubscribeObjectClassAttributes(federate_handle, objectClass, attributeList);
+        processFederateUnsubscribeObjectClassAttributes(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass"]) {
-        InteractionClassHandle interactionClass;
-        bool active;
-        processFederateSubscribeInteractionClass(federate_handle, interactionClass, active);
+        processFederateSubscribeInteractionClass(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
+            decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAactive")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass"]) {
-        InteractionClassHandle interactionClass;
-        processFederateUnsubscribeInteractionClass(federate_handle, interactionClass);
+        processFederateUnsubscribeInteractionClass(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"]) {
-        ObjectHandle objectInstance;
-        std::string tag;
-        FederationTime timeStamp;
-        processFederateDeleteObjectInstance(federate_handle, objectInstance, tag, timeStamp);
+        processFederateDeleteObjectInstance(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
+            decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAtag")]),
+            decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance"]) {
-        ObjectHandle objectInstance;
-        processFederateLocalDeleteObjectInstance(federate_handle, objectInstance);
+        processFederateLocalDeleteObjectInstance(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange"]) {
-        ObjectHandle objectInstance;
-        std::vector<AttributeHandle> attributeList;
-        std::string transportation;
         processFederateRequestAttributeTransportationTypeChange(
-            federate_handle, objectInstance, attributeList, transportation);
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
+            decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAtransportation")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange"]) {
-        InteractionClassHandle interactionClass;
-        std::string transportation;
-        processFederateRequestInteractionTransportationTypeChange(federate_handle, interactionClass, transportation);
+        processFederateRequestInteractionTransportationTypeChange(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
+            decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAtransportation")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture"]) {
-        ObjectHandle objectInstance;
-        std::vector<AttributeHandle> attributeList;
-        processFederateUnconditionalAttributeOwnershipDivestiture(federate_handle, objectInstance, attributeList);
+        processFederateUnconditionalAttributeOwnershipDivestiture(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation"]) {
-        int lookahead;
-        processFederateEnableTimeRegulation(federate_handle, lookahead);
+        processFederateEnableTimeRegulation(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAlookahead")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation"]) {
-        processFederateDisableTimeRegulation(federate_handle);
+        processFederateDisableTimeRegulation(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained"]) {
-        processFederateEnableTimeConstrained(federate_handle);
+        processFederateEnableTimeConstrained(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained"]) {
-        processFederateDisableTimeConstrained(federate_handle);
+        processFederateDisableTimeConstrained(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest"]) {
-        FederationTime timeStamp;
-        processFederateTimeAdvanceRequest(federate_handle, timeStamp);
+        processFederateTimeAdvanceRequest(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), 
+                                          decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable"]) {
-        FederationTime timeStamp;
-        processFederateTimeAdvanceRequestAvailable(federate_handle, timeStamp);
+        processFederateTimeAdvanceRequestAvailable(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest"]) {
-        FederationTime timeStamp;
-        processFederateNextMessageRequest(federate_handle, timeStamp);
+        processFederateNextMessageRequest(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable"]) {
-        FederationTime timeStamp;
-        processFederateNextMessageRequestAvailable(federate_handle, timeStamp);
+        processFederateNextMessageRequestAvailable(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest"]) {
-        FederationTime timeStamp;
-        processFederateFlushQueueRequest(federate_handle, timeStamp);
+        processFederateFlushQueueRequest(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery"]) {
-        processFederateEnableAsynchronousDelivery(federate_handle);
+        processFederateEnableAsynchronousDelivery(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery"]) {
-        processFederateDisableAsynchronousDelivery(federate_handle);
+        processFederateDisableAsynchronousDelivery(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead"]) {
-        int lookahead;
-        processFederateModifyLookahead(federate_handle, lookahead);
+        processFederateModifyLookahead(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]), decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAlookahead")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType"]) {
-        ObjectHandle objectInstance;
-        std::vector<AttributeHandle> attributeList;
-        OrderType sendOrder;
-        processFederateChangeAttributeOrderType(federate_handle, objectInstance, attributeList, sendOrder);
+        processFederateChangeAttributeOrderType(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
+            decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
+            decodeOrderType(parameters[getParameterHandle(interaction_class_handle, "HLAsendOrder")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType"]) {
-        InteractionClassHandle interactionClass;
-        OrderType sendOrder;
-        processFederateChangeInteractionOrderType(federate_handle, interactionClass, sendOrder);
+        processFederateChangeInteractionOrderType(
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
+            decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
+            decodeOrderType(parameters[getParameterHandle(interaction_class_handle, "HLAsendOrder")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches"]) {
-        bool autoProvide;
-        processFederationSetSwitches(autoProvide);
+        processFederationSetSwitches(decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAautoProvide")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints"]) {
@@ -298,13 +339,11 @@ void Mom::processInteraction(const FederateHandle federate_handle,
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"]) {
-        std::string syncPointName;
-        processFederationRequestSynchronizationPointStatus(syncPointName);
+        processFederationRequestSynchronizationPointStatus(decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAsyncPointName")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"]) {
-        int FOMmoduleIndicator;
-        processFederationRequestFOMmoduleData(FOMmoduleIndicator);
+        processFederationRequestFOMmoduleData(decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAFOMmoduleIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestMIMData"]) {
@@ -344,6 +383,7 @@ void Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
 void Mom::processFederateRequestPublications(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestPublications" << endl;
+    std::cout << federate_handle << endl;
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestPublications" << endl;
 }
 
@@ -661,6 +701,18 @@ void Mom::processFederationRequestMIMData()
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestMIMData" << endl;
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestMIMData" << endl;
+}
+
+ParameterHandle Mom::getParameterHandle(const InteractionClassHandle interaction, const std::string& name)
+{
+    try {
+        return my_parameter_cache.at(name);
+    }
+    catch (std::out_of_range& e) {
+        auto handle = my_root.Interactions->getParameterHandle(name, interaction);
+        my_parameter_cache.insert(std::make_pair(name, handle));
+        return handle;
+    }
 }
 }
 }

@@ -424,6 +424,77 @@ AttributeValue_t Mom::encodeFederateState(const Federate& federate)
     }
 }
 
+std::string Mom::decodeString(const ParameterValue_t& data)
+{
+    mb.reset();
+    mb.write_bytes(&(data[0]), data.size());
+
+    return mb.read_string();
+}
+
+bool Mom::decodeBoolean(const ParameterValue_t& data)
+{
+    mb.reset();
+    mb.write_bytes(&(data[0]), data.size());
+
+    return mb.read_bool();
+}
+
+uint32_t Mom::decodeUInt32(const ParameterValue_t& data)
+{
+    mb.reset();
+    mb.write_bytes(&(data[0]), data.size());
+
+    return mb.read_uint32();
+}
+
+Mom::ResignAction Mom::decodeResignAction(const ParameterValue_t& data)
+{
+    switch(decodeUInt32(data)) {
+        case 1:
+            return ResignAction::DivestOwnership;
+        case 2:
+            return ResignAction::DeleteObjectInstances;
+        case 3:
+            return ResignAction::CancelPendingAcquisitions;
+        case 4:
+            return ResignAction::DeleteObjectInstancesThenDivestOwnership;
+        case 5:
+            return ResignAction::CancelPendingAcquisitionsThenDeleteObjectInstancesThenDivestOwnership;
+        case 6:
+            return ResignAction::NoActions;
+    }
+}
+
+std::vector<AttributeHandle> Mom::decodeVectorAttributeHandle(const ParameterValue_t& data)
+{
+    mb.reset();
+    mb.write_bytes(&(data[0]), data.size());
+    
+    std::vector<AttributeHandle> handles;
+    for(int i(0u); i<mb.read_uint32(); ++i) {
+        handles.push_back(mb.read_uint32());
+    }
+    
+    return handles;
+}
+
+FederationTime Mom::decodeFederationTime(const ParameterValue_t& data)
+{
+    // TODO
+    return 0;
+}
+
+Mom::OrderType Mom::decodeOrderType(const ParameterValue_t& data)
+{
+    switch(decodeUInt32(data)) {
+        case 0:
+            return OrderType::Receive;
+        case 1:
+            return OrderType::TimeStamp;
+    }
+}
+
 AttributeValue_t Mom::encodeMB()
 {
     AttributeValue_t value;

@@ -40,9 +40,19 @@ public:
 
     enum class TimeState { TimeGranted, TimeAdvancing };
 
-    enum class ResignAction {};
+    enum class ResignAction {
+        DivestOwnership,
+        DeleteObjectInstances,
+        CancelPendingAcquisitions,
+        DeleteObjectInstancesThenDivestOwnership,
+        CancelPendingAcquisitionsThenDeleteObjectInstancesThenDivestOwnership,
+        NoActions
+    };
 
-    enum class OrderType {};
+    enum class OrderType {
+        Receive,
+        TimeStamp
+    };
 
     static bool isAvailableInRootObjectAndCompliant(const RootObject& root);
 
@@ -97,7 +107,7 @@ public:
     void updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
     // Interactions
-    void processInteraction(const FederateHandle federate_handle,
+    void processInteraction(/*const FederateHandle federate_handle,*/
                             const InteractionClassHandle interaction_class_handle,
                             const std::vector<ParameterHandle>& parameter_handles,
                             const std::vector<ParameterValue_t>& parameter_values,
@@ -200,6 +210,9 @@ public:
 
 private:
     void display() const;
+    
+    ParameterHandle getParameterHandle(const InteractionClassHandle interaction, const std::string& name);
+    
     /** This handle is used to detect MOM interactions.
      * It does not really belong to the federation.
      */
@@ -214,6 +227,7 @@ private:
     std::unordered_map<std::string, ObjectClassHandle> my_object_class_cache;
     std::unordered_map<std::string, AttributeHandle> my_attribute_cache;
     std::unordered_map<std::string, InteractionClassHandle> my_interaction_class_cache;
+    std::unordered_map<std::string, ParameterHandle> my_parameter_cache;
 
     std::map<ObjectHandle, std::map<AttributeHandle, AttributeValue_t>> my_attribute_values_cache;
 
@@ -222,6 +236,15 @@ private:
     AttributeValue_t encodeUInt32(const uint32_t data);
     AttributeValue_t encodeFederateHandleList();
     AttributeValue_t encodeFederateState(const Federate& federate);
+
+    std::string decodeString(const ParameterValue_t& data);
+    bool decodeBoolean(const ParameterValue_t& data);
+    uint32_t decodeUInt32(const ParameterValue_t& data);
+    ResignAction decodeResignAction(const ParameterValue_t& data);
+    std::vector<AttributeHandle> decodeVectorAttributeHandle(const ParameterValue_t& data);
+    FedTime decodeFederationTime(const ParameterValue_t& data);
+    OrderType decodeOrderType(const ParameterValue_t& data);
+    
 
     AttributeValue_t encodeMB();
 
