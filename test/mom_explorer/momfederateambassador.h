@@ -26,6 +26,8 @@ public:
 
     void subscribeObjectClasses();
 
+    void publishAndsubscribeInteractions();
+
     // 4.4
     virtual void connectionLost(std::wstring const& faultDescription) throw(FederateInternalError) override;
 

@@ -71,6 +71,8 @@ int main(int argc, char** argv)
 
         fed_ambassador->subscribeObjectClasses();
 
+        fed_ambassador->publishAndsubscribeInteractions();
+
         cout << "# " << endl;
 
         if (mode == L"auto") {
@@ -82,12 +84,13 @@ int main(int argc, char** argv)
         else {
             string request;
             while (getline(cin, request)) {
+                std::cerr << request << std::endl;
                 try {
-                    if (request.empty()) {
+                    if (request == "t") {
                         wcout << "=>evokeCallback(0.1)" << endl;
                         ambassador->evokeCallback(0.1);
                     }
-                    if (request == "resign") {
+                    else if (request == "resign") {
                         cout << "=>resignFederationExecution(NO_ACTION)" << endl;
                         ambassador->resignFederationExecution(NO_ACTION);
                     }
@@ -105,9 +108,35 @@ int main(int argc, char** argv)
                         wcout << "=>enableTimeConstrained" << endl;
                         ambassador->enableTimeConstrained();
                     }
+                    else if (request == "dtr") {
+                        wcout << "=>disableTimeRegulation" << endl;
+                        ambassador->disableTimeRegulation();
+                    }
+                    else if (request == "dtc") {
+                        wcout << "=>disableTimeConstrained" << endl;
+                        ambassador->disableTimeConstrained();
+                    }
+                    else if (request == "req_publications") {
+                        wcout << "=>request publications" << endl;
+                        std::string tag;
+                        wcout << "\tFederate Handle ? " << endl;
+                        getline(cin, request);
+
+                        int handle = std::atoi(request.c_str());
+
+                        ambassador->sendInteraction(
+                            ambassador->getInteractionClassHandle(
+                                L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications"),
+                            {{ambassador->getParameterHandle(
+                                  ambassador->getInteractionClassHandle(L"HLAmanager.HLAfederate"), L"HLAfederate"),
+                              {&handle, 4}}},
+                            {tag.c_str(), tag.size()});
+                    }
                     else {
                         wcout << "**unknown command**" << endl;
                     }
+
+                    cout << endl << "# " << endl;
                 }
                 catch (rti1516e::Exception& e) {
                     wcout << "* Error: " << e.what() << endl;

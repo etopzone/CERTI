@@ -28,6 +28,8 @@ set(rtig_SRCS
     
     ${CERTI_SOURCE_DIR}/RTIG/Mom.hh
     ${CERTI_SOURCE_DIR}/RTIG/Mom.cc
+    ${CERTI_SOURCE_DIR}/RTIG/Mom_interactions.cc
+    ${CERTI_SOURCE_DIR}/RTIG/Mom_objects.cc
     
     ${CERTI_SOURCE_DIR}/RTIG/make_unique.hh
     

@@ -464,12 +464,11 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
 
     my_auditServer.setLevel(AuditLine::Level(8));
 
+        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+        .setConstrained(request.message()->getFederate(), request.message()->isConstrainedOn());
+
     if (request.message()->isConstrainedOn()) {
         my_auditServer << "ON at time " << request.message()->getDate().getTime();
-
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .getFederate(request.message()->getFederate())
-            .setConstrained(true);
 
         auto rep = make_unique<NM_Time_Constrained_Enabled>();
         rep->setFederate(request.message()->getFederate());
@@ -483,10 +482,6 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
     }
     else {
         my_auditServer << "OFF";
-
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .getFederate(request.message()->getFederate())
-            .setConstrained(false);
 
         Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " is no more constrained" << endl;

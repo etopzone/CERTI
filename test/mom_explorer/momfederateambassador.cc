@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <cstring>
+
 namespace {
 
 enum class DataType {
@@ -72,6 +74,10 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     auto type = the_mom_classes[object][attribute];
 
     std::wstring ret;
+    
+    if(data.size() == 8 && strncmp(static_cast<const char*>(data.data()), "\4\0\0\0TODO", 8) == 0) {
+        return L"Not yet implemented on server side.";
+    }
 
     switch (type) {
     case DataType::HLAunicodeString: {
@@ -83,8 +89,13 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
         ret += L"\"";
     } break;
     case DataType::HLAhandle:
+    case DataType::HLAmsec:
     case DataType::HLAcount:
         ret += std::to_wstring(*static_cast<const uint32_t*>(data.data()));
+        break;
+    case DataType::HLAboolean:
+    case DataType::HLAswitch:
+        ret += *static_cast<const uint32_t*>(data.data()) ? L"True" : L"False";
         break;
     case DataType::HLAhandleList: {
         if (data.size() == 0) {
@@ -265,6 +276,26 @@ void MOMFederateAmbassador::subscribeObjectClasses()
         std::wcout << "  subscribeObjectClassAttributes for " << pair.first << std::endl;
         my_ambassador.subscribeObjectClassAttributes(class_handle, attributes);
     }
+}
+
+void MOMFederateAmbassador::publishAndsubscribeInteractions()
+{
+    std::cout << "=>\tpublishAndsubscribeInteractions" << std::endl;
+
+    /*for (const auto& pair : the_mom_classes) {
+        auto class_handle = objectClassHandle(pair.first);
+
+        rti1516e::AttributeHandleSet attributes;
+        for (const auto& attr_pair : pair.second) {
+            attributes.insert(attributeHandle(pair.first, attr_pair.first));
+        }
+
+        std::wcout << "  subscribeObjectClassAttributes for " << pair.first << std::endl;
+        my_ambassador.subscribeObjectClassAttributes(class_handle, attributes);
+    }*/
+    my_ambassador.publishInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications"));
+    my_ambassador.subscribeInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication"));
+    my_ambassador.subscribeInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication"));
 }
 
 void MOMFederateAmbassador::connectionLost(std::wstring const& faultDescription) throw(FederateInternalError)

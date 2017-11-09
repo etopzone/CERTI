@@ -126,13 +126,6 @@ public:
     // -- Federate Management --
     // -------------------------
 
-    /** Add the Federate to the Federation, and return its new federate handle.
-     * 
-     * Also send Null messages from all others federates to initialize its LBTS, and
-     * finally a RequestPause message if the Federation is already paused.
-     */
-    FederateHandle add(const std::string& federate_name, SocketTCP* tcp_link);
-
     /** Return true if there are no Federates left in the Federation
      * 
      * else throw FederatesCurrentlyJoined.
@@ -147,16 +140,12 @@ public:
      */
     bool check(FederateHandle federate_handle) const;
 
-    /** Make a federate resign the federation.
-     *
-     * This function tries to remove all references to this federate in the federation.
-     * To be used when a Federate is supposed to have crashed.
+    /** Add the Federate to the Federation, and return its new federate handle.
      * 
-     * NOTE: Connection to the federate is already closed.
-     *
-     * @param federate_handle Handle of the federate to kill
+     * Also send Null messages from all others federates to initialize its LBTS, and
+     * finally a RequestPause message if the Federation is already paused.
      */
-    void kill(FederateHandle federate_handle) noexcept;
+    FederateHandle add(const std::string& federate_name, SocketTCP* tcp_link);
 
     /** Remove a federate.
      * 
@@ -167,6 +156,17 @@ public:
      * Federate Object is deleted.
      */
     void remove(FederateHandle federate_handle);
+
+    /** Make a federate resign the federation.
+     *
+     * This function tries to remove all references to this federate in the federation.
+     * To be used when a Federate is supposed to have crashed.
+     * 
+     * NOTE: Connection to the federate is already closed.
+     *
+     * @param federate_handle Handle of the federate to kill
+     */
+    void kill(FederateHandle federate_handle) noexcept;
 
     // ---------------------
     // -- Time Management --
@@ -181,7 +181,10 @@ public:
     /// Update the current time of a regulator federate.
     void updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous);
 
-    void removeRegulator(FederateHandle federate_handle); // includes Time Regulation already disabled.
+    /// includes Time Regulation already disabled.
+    void removeRegulator(FederateHandle federate_handle);
+    
+    void setConstrained(FederateHandle federate_handle, bool constrained);
 
     // Synchronization Management.
 
@@ -243,6 +246,28 @@ public:
     // -- Object Management --
     // -----------------------
 
+    void publishObject(FederateHandle federate_handle,
+                       ObjectClassHandle object_handle,
+                       const std::vector<AttributeHandle>& attributes,
+                       bool publish_or_unpublish);
+
+    /**
+     * Subscribes attributes to an object class. After subscription, attribute 
+     * publishers are notified by the federate service 
+     * startRegistrationForObjectClass.
+     * @param[in] federate_handle federate handle of the subscriber
+     * @param[in] object_handle subscripted object class handle 
+     * @param[in] attributes subscripted vector of attributes 
+     */
+    void subscribeObject(FederateHandle federate_handle,
+                         ObjectClassHandle object_handle,
+                         const std::vector<AttributeHandle>& attributes);
+
+    void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name);
+
+    ObjectHandle
+    registerObject(FederateHandle federate_handle, ObjectClassHandle class_handle, const std::string& name);
+
     /** Removes an object instance from federation.
      * 
      *  @param federate_handle Federate requesting removal
@@ -263,16 +288,6 @@ public:
      */
     void deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const std::string& user_tag);
 
-    void publishObject(FederateHandle federate_handle,
-                       ObjectClassHandle object_handle,
-                       const std::vector<AttributeHandle>& attributes,
-                       bool publish_or_unpublish);
-
-    void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name);
-
-    ObjectHandle
-    registerObject(FederateHandle federate_handle, ObjectClassHandle class_handle, const std::string& name);
-
     FederateHandle requestObjectOwner(FederateHandle federate_handle,
                                       ObjectHandle object_handle,
                                       const std::vector<AttributeHandle>& attributes);
@@ -280,18 +295,6 @@ public:
     void requestClassAttributeValueUpdate(FederateHandle federate_handle,
                                           ObjectClassHandle class_handle,
                                           const std::vector<AttributeHandle>& attributes);
-
-    /**
-     * Subscribes attributes to an object class. After subscription, attribute 
-     * publishers are notified by the federate service 
-     * startRegistrationForObjectClass.
-     * @param[in] federate_handle federate handle of the subscriber
-     * @param[in] object_handle subscripted object class handle 
-     * @param[in] attributes subscripted vector of attributes 
-     */
-    void subscribeObject(FederateHandle federate_handle,
-                         ObjectClassHandle object_handle,
-                         const std::vector<AttributeHandle>& attributes);
 
     void updateAttributeValues(FederateHandle federate_handle,
                                ObjectHandle object_handle,
@@ -310,6 +313,14 @@ public:
     // -- Interaction Management --
     // ----------------------------
 
+    void publishInteraction(FederateHandle federate_handle,
+                            InteractionClassHandle interaction_class_handle,
+                            bool publish_or_unpublish);
+
+    void subscribeInteraction(FederateHandle federate_handle,
+                              InteractionClassHandle interaction_class_handle,
+                              bool subscribe_or_unsubscribe);
+
     /// broadcastInteraction with time
     void broadcastInteraction(FederateHandle federate_handle,
                               InteractionClassHandle interaction_class_handle,
@@ -326,14 +337,6 @@ public:
                               const std::vector<ParameterValue_t>& parameters_values,
                               RegionHandle region,
                               const std::string& tag);
-
-    void publishInteraction(FederateHandle federate_handle,
-                            InteractionClassHandle interaction_class_handle,
-                            bool publish_or_unpublish);
-
-    void subscribeInteraction(FederateHandle federate_handle,
-                              InteractionClassHandle interaction_class_handle,
-                              bool subscribe_or_unsubscribe);
 
     // --------------------------
     // -- Ownership Management --
@@ -444,7 +447,7 @@ public:
 
 private:
     friend class Mom;
-    
+
     void openFomFile(const int verboseLevel);
 
     bool saveXmlData();
