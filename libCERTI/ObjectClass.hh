@@ -238,6 +238,10 @@ public:
 
 	const HandleObjectMap& getClassInstances(void) const
 		{ return _handleObjectMap; }
+
+	bool isFederatePublisher(FederateHandle the_federate) const ;
+	bool isSubscribed(FederateHandle) const ;
+
 private:
 	/*
 	 * private default constructor with no code
@@ -272,9 +276,6 @@ private:
 			NM_Attribute_Ownership_Base& msg);
 
 	void sendMessage(NetworkMessage *msg, FederateHandle theDest);
-
-	bool isFederatePublisher(FederateHandle the_federate) const ;
-	bool isSubscribed(FederateHandle) const ;
 
 	// The second parameter is the Class of whose behalf the message
 	// are sent. If SDM is called on the original class, the Federate

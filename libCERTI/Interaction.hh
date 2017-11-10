@@ -211,6 +211,8 @@ public:
     //! Interaction message Ordering Type(TSO, FIFO), currently not used.
     OrderType order;
 
+    bool isPublishing(FederateHandle);
+
 private:
     /*
      * private default constructor with no code
@@ -235,7 +237,6 @@ private:
     Parameter* getParameterByHandle(ParameterHandle the_handle) const;
 
     void deletePublisher(FederateHandle);
-    bool isPublishing(FederateHandle);
 
     // Attributes
     SecurityLevelID id; //!< The default Security Level for new parameters

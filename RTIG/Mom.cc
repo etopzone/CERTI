@@ -424,6 +424,44 @@ AttributeValue_t Mom::encodeFederateState(const Federate& federate)
     }
 }
 
+AttributeValue_t Mom::encodeVectorHandle(const std::vector<Handle>& data)
+{
+    mb.reset();
+
+    // uint32 : message lenght
+    mb.write_uint32(sizeof(uint32_t) * (1 + data.size()));
+
+    // uint32 : cardinality
+    mb.write_uint32(data.size());
+
+    // uint32=size : data
+    for (const auto& handle : data) {
+        mb.write_uint32(handle);
+    }
+
+    return encodeMB();
+}
+
+AttributeValue_t Mom::encodeObjectClassBasedCounts(std::map<Handle, int> data)
+{
+    mb.reset();
+
+    // uint32 : message lenght
+    mb.write_uint32(sizeof(uint32_t) * (1 + (data.size() * 3)));
+    
+    // uint32 : cardinality
+    mb.write_uint32(data.size());
+    
+    // uint32=size : data
+    for(const auto& pair: data) {
+        mb.write_uint32(2);
+        mb.write_uint32(pair.first);
+        mb.write_uint32(pair.second);
+    }
+
+    return encodeMB();
+}
+
 std::string Mom::decodeString(const ParameterValue_t& data)
 {
     mb.reset();
@@ -461,7 +499,7 @@ Mom::ResignAction Mom::decodeResignAction(const ParameterValue_t& data)
             return ResignAction::DeleteObjectInstancesThenDivestOwnership;
         case 5:
             return ResignAction::CancelPendingAcquisitionsThenDeleteObjectInstancesThenDivestOwnership;
-        case 6:
+        default:
             return ResignAction::NoActions;
     }
 }
@@ -472,7 +510,7 @@ std::vector<AttributeHandle> Mom::decodeVectorAttributeHandle(const ParameterVal
     mb.write_bytes(&(data[0]), data.size());
     
     std::vector<AttributeHandle> handles;
-    for(int i(0u); i<mb.read_uint32(); ++i) {
+    for(uint32_t i(0u); i<mb.read_uint32(); ++i) {
         handles.push_back(mb.read_uint32());
     }
     

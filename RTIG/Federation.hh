@@ -122,6 +122,8 @@ public:
 
     bool isMomEnabled() const;
 
+    bool isAutoProvideActive() const;
+
     // -------------------------
     // -- Federate Management --
     // -------------------------
@@ -464,9 +466,13 @@ private:
 
     void enableMomIfAvailable();
 
+    void setAutoProvide(const bool value);
+
     FederationHandle my_handle;
     std::string my_name;
     std::string my_FED_id;
+
+    bool my_auto_provide{false};
 
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC* MCLink;

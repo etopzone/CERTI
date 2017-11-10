@@ -222,6 +222,11 @@ bool Federation::isMomEnabled() const
     return my_mom.operator bool();
 }
 
+bool Federation::isAutoProvideActive() const
+{
+    return my_auto_provide;
+}
+
 bool Federation::empty() const
 {
     if (my_federates.empty()) {
@@ -1360,7 +1365,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             my_mom->processInteraction(
-                /*federate_handle, */interaction_class_handle, parameter_handles, parameter_values, region_handle);
+                /*federate_handle, */ interaction_class_handle, parameter_handles, parameter_values, region_handle);
         }
     }
 
@@ -1402,7 +1407,7 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             my_mom->processInteraction(
-                /*federate_handle, */interaction_class_handle, parameter_handles, parameter_values, region_handle);
+                /*federate_handle, */ interaction_class_handle, parameter_handles, parameter_values, region_handle);
         }
     }
 
@@ -2206,6 +2211,18 @@ void Federation::enableMomIfAvailable()
     }
 
     Debug(G, pdGendoc) << "exit  Federation::enableMomIfAvailable" << endl;
+}
+
+void Federation::setAutoProvide(const bool value)
+{
+    my_auto_provide = value;
+    
+    // TODO implement auto provide
+    Debug(D, pdDebug) << "Auto Provide not yet implemented." << endl;
+    
+    if (my_mom) {
+        my_mom->updateAutoProvide(value);
+    }
 }
 }
 } // namespace certi/rtig

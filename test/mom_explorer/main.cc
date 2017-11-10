@@ -116,21 +116,41 @@ int main(int argc, char** argv)
                         wcout << "=>disableTimeConstrained" << endl;
                         ambassador->disableTimeConstrained();
                     }
-                    else if (request == "req_publications") {
-                        wcout << "=>request publications" << endl;
+                    else if (request == "req") {
+                        wcout << "=>request" << endl;
                         std::string tag;
-                        wcout << "\tFederate Handle ? " << endl;
+                        
+                        wcout << "\tRequest ? " << endl;
                         getline(cin, request);
+                        if (request == "publications") {
+                            wcout << "\tFederate Handle ? " << endl;
+                            getline(cin, request);
 
-                        int handle = std::atoi(request.c_str());
+                            int handle = std::atoi(request.c_str());
 
-                        ambassador->sendInteraction(
-                            ambassador->getInteractionClassHandle(
-                                L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications"),
-                            {{ambassador->getParameterHandle(
-                                  ambassador->getInteractionClassHandle(L"HLAmanager.HLAfederate"), L"HLAfederate"),
-                              {&handle, 4}}},
-                            {tag.c_str(), tag.size()});
+                            ambassador->sendInteraction(
+                                ambassador->getInteractionClassHandle(
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications"),
+                                {{ambassador->getParameterHandle(
+                                      ambassador->getInteractionClassHandle(L"HLAmanager.HLAfederate"), L"HLAfederate"),
+                                  {&handle, 4}}},
+                                {tag.c_str(), tag.size()});
+                        }
+                        else if (request == "sps") {
+                            wcout << "\tSync point name ? " << endl;
+                            getline(cin, request);
+
+                            ambassador->sendInteraction(
+                                ambassador->getInteractionClassHandle(
+                                    L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"),
+                                {{ambassador->getParameterHandle(
+                                      ambassador->getInteractionClassHandle(L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"), L"HLAsyncPointName"),
+                                  {request.c_str(), request.size()}}},
+                                {tag.c_str(), tag.size()});
+                        }
+                        else {
+                            wcout << "\tUnknown request" << endl;
+                        }
                     }
                     else {
                         wcout << "**unknown command**" << endl;

@@ -117,7 +117,7 @@ public:
     void processFederateModifyAttributeState(const FederateHandle& federate_handle,
                                              const ObjectHandle objectInstance,
                                              const AttributeHandle attribute,
-                                             const bool HLAattributeState);
+                                             const bool attributeState);
     void processFederateSetSwitches(const FederateHandle& federate_handle,
                                     const bool conveyRegionDesignatorSets,
                                     const bool conveyProducingFederate,
@@ -207,6 +207,7 @@ public:
 
     // Support
     void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
+    void preparePeriodicAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
 private:
     void display() const;
@@ -231,11 +232,15 @@ private:
 
     std::map<ObjectHandle, std::map<AttributeHandle, AttributeValue_t>> my_attribute_values_cache;
 
+    std::map<ObjectHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
+
     AttributeValue_t encodeString(const std::string& str);
     AttributeValue_t encodeBoolean(const bool data);
     AttributeValue_t encodeUInt32(const uint32_t data);
     AttributeValue_t encodeFederateHandleList();
     AttributeValue_t encodeFederateState(const Federate& federate);
+    AttributeValue_t encodeVectorHandle(const std::vector<Handle>& data);
+    AttributeValue_t encodeObjectClassBasedCounts(std::map<Handle, int> data);
 
     std::string decodeString(const ParameterValue_t& data);
     bool decodeBoolean(const ParameterValue_t& data);
