@@ -34,6 +34,8 @@
 
 #include "momfederateambassador.h"
 
+#include "make_unique.hh"
+
 using namespace std;
 
 int main(int argc, char** argv)
