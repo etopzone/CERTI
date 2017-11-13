@@ -38,26 +38,27 @@
 #include <time.h>
 #include <utility>
 
-#include "AuditFile.hh"
-#include "Interaction.hh"
-#include "InteractionSet.hh"
-#include "LBTS.hh"
-#include "NM_Classes.hh"
-#include "NetworkMessage.hh"
-#include "Object.hh"
-#include "ObjectAttribute.hh"
-#include "ObjectClass.hh"
-#include "ObjectClassAttribute.hh"
-#include "ObjectClassSet.hh"
-#include "ObjectSet.hh"
-#include "PrettyDebug.hh"
-#include "RootObject.hh"
-#include "SecurityServer.hh"
-#include "SocketTCP.hh"
-#include "XmlParser.hh"
-#include "XmlParser2000.hh"
-#include "XmlParser2010.hh"
-#include "fed.hh"
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/Interaction.hh>
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/LBTS.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/Object.hh>
+#include <libCERTI/ObjectAttribute.hh>
+#include <libCERTI/ObjectClass.hh>
+#include <libCERTI/ObjectClassAttribute.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/ObjectSet.hh>
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/RootObject.hh>
+#include <libCERTI/SecurityServer.hh>
+#include <libCERTI/SocketTCP.hh>
+#include <libCERTI/XmlParser.hh>
+#include <libCERTI/XmlParser2000.hh>
+#include <libCERTI/XmlParser2010.hh>
+#include <libCERTI/fed.hh>
+
 #include "MessageEvent.hh"
 
 #include "make_unique.hh"

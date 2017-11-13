@@ -24,17 +24,18 @@
 #ifndef _CERTI_COMMUNICATIONS_HH
 #define _CERTI_COMMUNICATIONS_HH
 
-#include "certi.hh"
-#include "NetworkMessage.hh"
-#include "Message.hh"
-#include "SocketUN.hh"
-#include "SocketTCP.hh"
-#include "SocketUDP.hh"
-#ifdef FEDERATION_USES_MULTICAST
-#include "SocketMC.hh"
-#endif
-
 #include <list>
+
+#include <include/certi.hh>
+
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/Message.hh>
+#include <libCERTI/SocketUN.hh>
+#include <libCERTI/SocketTCP.hh>
+#include <libCERTI/SocketUDP.hh>
+#ifdef FEDERATION_USES_MULTICAST
+#include <libCERTI/SocketMC.hh>
+#endif
 
 namespace certi {
 namespace rtia {

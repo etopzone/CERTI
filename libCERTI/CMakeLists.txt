@@ -1,5 +1,5 @@
 # LibCERTI now depends on libHLA
-include_directories(${CERTI_SOURCE_DIR}/libHLA)
+include_directories(${CERTI_SOURCE_DIR})
 
 ##################################################################
 # Lib CERTI

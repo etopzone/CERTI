@@ -31,10 +31,10 @@
 #include <memory>
 #include <string>
 
-#include "FedTimeD.hh"
-#include "Socket.hh"
-#include <NetworkMessage.hh>
-#include <PrettyDebug.hh>
+#include <libCERTI/FedTimeD.hh>
+#include <libCERTI/Socket.hh>
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/PrettyDebug.hh>
 
 #ifdef _WIN32
 #include <signal.h>

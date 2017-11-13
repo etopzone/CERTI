@@ -32,17 +32,18 @@
 #include <memory>
 #include <unordered_map>
 
-#include "certi.hh"
+#include <include/certi.hh>
 
-#include "BaseRegion.hh"
-#include "BasicMessage.hh"
-#include "Exception.hh"
-#include "FedTimeD.hh"
-#include "Federate.hh"
-#include "HandleManager.hh"
-#include "LBTS.hh"
-#include "MessageBuffer.hh"
+#include <libCERTI/BaseRegion.hh>
+#include <libCERTI/BasicMessage.hh>
+#include <libCERTI/Exception.hh>
+#include <libCERTI/FedTimeD.hh>
+#include <libCERTI/HandleManager.hh>
+#include <libCERTI/LBTS.hh>
+#include <libHLA/MessageBuffer.hh>
+
 #include "MessageEvent.hh"
+#include "Federate.hh"
 #include "Mom.hh"
 
 #ifdef FEDERATION_USES_MULTICAST

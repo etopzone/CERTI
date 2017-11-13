@@ -24,7 +24,7 @@
 #ifndef _CERTI_RTIA_OM
 #define _CERTI_RTIA_OM
 
-#include "RootObject.hh"
+#include <libCERTI/RootObject.hh>
 
 namespace certi {
 namespace rtia {

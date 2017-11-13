@@ -2,7 +2,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/include/ieee1516-2010)
 include_directories(${CMAKE_BINARY_DIR}/include/ieee1516-2010)
 # Add libhla for hash function
-include_directories(${CMAKE_SOURCE_DIR}/libhla)
+include_directories(${CMAKE_SOURCE_DIR})
 
 # TO BE CONTINUED
 ##########################################################

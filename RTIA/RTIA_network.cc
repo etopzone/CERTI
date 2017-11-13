@@ -21,16 +21,19 @@
 // $Id: RTIA_network.cc,v 3.43 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "NM_Classes.hh"
-#include "RTIA.hh"
-#include "ObjectClassAttribute.hh"
-#include "Interaction.hh"
-#include "InteractionSet.hh"
-#include "ObjectClass.hh"
-#include "ObjectClassSet.hh"
-#include "ObjectSet.hh"
 #include <assert.h>
+
+#include <config.h>
+
+#include <libCERTI/Interaction.hh>
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/ObjectClass.hh>
+#include <libCERTI/ObjectClassAttribute.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/ObjectSet.hh>
+
+#include "RTIA.hh"
 
 namespace certi {
 namespace rtia {

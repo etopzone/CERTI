@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "certi.hh"
-#include <hla-1_3/fedtime.hh>
+#include <fedtime.hh>
 
 namespace {
 static constexpr int BUFLEN = 12;

@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include <SecurityServer.hh>
+#include <libCERTI/SecurityServer.hh>
 
 class MockSecurityServer : public certi::SecurityServer {
 public:

@@ -22,14 +22,15 @@
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
-#include "InteractionSet.hh"
-#include "ObjectClassSet.hh"
 #include "DeclarationManagement.hh"
-#include "NM_Classes.hh"
-#include "M_Classes.hh"
 
 #include <memory>
+
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/M_Classes.hh>
+
 
 namespace certi {
 namespace rtia {

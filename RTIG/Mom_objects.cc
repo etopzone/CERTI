@@ -23,7 +23,7 @@
 
 #include "Mom.hh"
 
-#include "PrettyDebug.hh"
+#include <libCERTI/PrettyDebug.hh>
 
 using std::cout;
 using std::endl;

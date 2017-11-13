@@ -24,7 +24,8 @@
 #ifndef _CERTI_RTIA_HH
 #define _CERTI_RTIA_HH
 
-// Project
+#include <libHLA/Clock.hh>
+
 #include "Communications.hh"
 #include "TimeManagement.hh"
 #include "FederationManagement.hh"
@@ -33,7 +34,6 @@
 #include "DeclarationManagement.hh"
 #include "DataDistribution.hh"
 #include "Statistics.hh"
-#include "Clock.hh"
 
 namespace certi {
 

@@ -22,13 +22,14 @@
 // ----------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
-#include <config.h>
-
-#include "M_Classes.hh"
-#include "NM_Classes.hh"
-#include "PrettyDebug.hh"
 
 #include <memory>
+
+#include <config.h>
+
+#include <libCERTI/M_Classes.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/PrettyDebug.hh>
 
 namespace certi {
 namespace rtia {

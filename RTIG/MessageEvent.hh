@@ -26,8 +26,8 @@
 #include <memory>
 #include <vector>
 
-#include <NetworkMessage.hh>
-#include <Socket.hh>
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/Socket.hh>
 
 namespace certi {
 

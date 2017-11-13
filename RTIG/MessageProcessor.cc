@@ -2,22 +2,23 @@
 
 #include <iostream>
 
-#include "AuditFile.hh"
-#include "Exception.hh"
-#include "FedTimeD.hh"
+#include <include/certi.hh>
+
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/Exception.hh>
+#include <libCERTI/FedTimeD.hh>
+#include <libCERTI/GAV.hh>
+#include <libCERTI/HandleManager.hh>
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/Socket.hh>
+#include <libCERTI/SocketServer.hh>
+#include <libCERTI/SocketTCP.hh>
+
+#include "make_unique.hh"
 #include "Federate.hh"
 #include "Federation.hh"
 #include "FederationsList.hh"
-#include "GAV.hh"
-#include "HandleManager.hh"
-#include "NetworkMessage.hh"
-#include "PrettyDebug.hh"
-#include "Socket.hh"
-#include "SocketServer.hh"
-#include "SocketTCP.hh"
-#include "certi.hh"
-
-#include "make_unique.hh"
 
 using std::endl;
 

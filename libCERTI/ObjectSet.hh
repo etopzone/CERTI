@@ -27,7 +27,7 @@
 // Project
 class Object;
 #include "GAV.hh"
-#include "MessageBuffer.hh"
+#include <libHLA/MessageBuffer.hh>
 #include "SecurityServer.hh"
 #include "certi.hh"
 

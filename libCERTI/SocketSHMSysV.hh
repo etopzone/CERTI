@@ -2,8 +2,8 @@
 #define SOCKET_SHM_SYSV_H
 
 // Specifics includes
-#include "SHMSysV.hh"
-#include "SemaphoreSysV.hh"
+#include <libHLA/SHMSysV.hh>
+#include <libHLA/SemaphoreSysV.hh>
 #include "SocketSHM.hh"
 
 class CERTI_EXPORT SocketSHMSysV : public SocketSHM {

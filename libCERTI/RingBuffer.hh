@@ -23,11 +23,11 @@
 #include <iostream>
 
 // Specifics includes
-#include "certi.hh"
+#include <include/certi.hh>
 #include "Exception.hh"
-#include "libhla.hh"
-#include "SHM.hh"
-#include "Semaphore.hh"
+#include <libHLA/libhla.hh>
+#include <libHLA/SHM.hh>
+#include <libHLA/Semaphore.hh>
 
 class CERTI_EXPORT RingBuffer {
 public:

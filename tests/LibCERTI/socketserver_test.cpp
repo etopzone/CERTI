@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <SocketServer.hh>
+#include <libCERTI/SocketServer.hh>
 
 #include "../mocks/sockettcp_mock.h"
 

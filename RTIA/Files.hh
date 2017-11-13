@@ -24,13 +24,13 @@
 #ifndef CERTI_RTIA_FILES_HH
 #define CERTI_RTIA_FILES_HH
 
+#include <list>
+#include <stdlib.h>
+
 #include "FederationManagement.hh"
 #include "DeclarationManagement.hh"
 #include "ObjectManagement.hh"
-#include "NetworkMessage.hh"
-
-#include <list>
-#include <stdlib.h>
+#include <libCERTI/NetworkMessage.hh>
 
 namespace certi {
 namespace rtia {

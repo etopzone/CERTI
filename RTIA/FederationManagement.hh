@@ -27,8 +27,10 @@
 #include <set>
 #include <string>
 
-#include "certi.hh"
-#include "NetworkMessage.hh"
+#include <include/certi.hh>
+
+#include <libCERTI/NetworkMessage.hh>
+
 #include "Communications.hh"
 #include "Statistics.hh"
 

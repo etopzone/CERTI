@@ -22,10 +22,12 @@
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-#include "RTIA.hh"
+
 #include <assert.h>
 #include <math.h>
 #include <limits.h>
+
+#include "RTIA.hh"
 
 namespace certi {
 namespace rtia {

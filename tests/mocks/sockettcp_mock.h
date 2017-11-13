@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include <SocketTCP.hh>
+#include <libCERTI/SocketTCP.hh>
 
 class MockSocketTcp : public certi::SocketTCP {
 public:

@@ -25,9 +25,10 @@
 
 #include <unordered_map>
 
+#include <libCERTI/RootObject.hh>
+
 #include "Federation.hh"
 #include "MessageEvent.hh"
-#include "RootObject.hh"
 
 namespace certi {
 class RootObject;

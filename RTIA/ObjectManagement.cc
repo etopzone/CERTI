@@ -20,19 +20,21 @@
 //
 // ----------------------------------------------------------------------------
 
+#include "ObjectManagement.hh"
+
 #include <cassert>
 #include <config.h>
 #include <iostream>
 #include <memory>
 
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/M_Classes.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/ObjectSet.hh>
+#include <libCERTI/PrettyDebug.hh>
+
 #include "FederationManagement.hh"
-#include "InteractionSet.hh"
-#include "M_Classes.hh"
-#include "NM_Classes.hh"
-#include "ObjectClassSet.hh"
-#include "ObjectManagement.hh"
-#include "ObjectSet.hh"
-#include "PrettyDebug.hh"
 #include "TimeManagement.hh"
 
 using std::cout;

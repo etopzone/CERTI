@@ -25,16 +25,16 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <process.h>
-#include "SocketSHMWin32.hh"
-#include "SemaphoreWin32.hh"
-#include "SHMWin32.hh"
+#include <libHLA/SocketSHMWin32.hh>
+#include <libHLA/SemaphoreWin32.hh>
+#include <libHLA/SHMWin32.hh>
 using libhla::ipc::SHMWin32;
 using libhla::ipc::SemaphoreWin32;
 #else
-#include "SHMPosix.hh"
-#include "SHMSysV.hh"
-#include "SemaphorePosix.hh"
-#include "SemaphoreSysV.hh"
+#include <libHLA/SHMPosix.hh>
+#include <libHLA/SHMSysV.hh>
+#include <libHLA/SemaphorePosix.hh>
+#include <libHLA/SemaphoreSysV.hh>
 using libhla::ipc::SHMPosix;
 using libhla::ipc::SemaphorePosix;
 using libhla::ipc::SHMSysV;

@@ -20,7 +20,7 @@
 #ifndef CERTI_SOCKET_MC_HH
 #define CERTI_SOCKET_MC_HH
 
-#include "MessageBuffer.hh"
+#include <libHLA/MessageBuffer.hh>
 #include "NetworkMessage.hh"
 #include "Socket.hh"
 

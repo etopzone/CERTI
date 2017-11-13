@@ -32,16 +32,17 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include "SocketSHMWin32.hh"
+#include <libCERTI/SocketSHMWin32.hh>
 #include <process.h>
 #include <windows.h>
 #else
-#include "SocketSHMPosix.hh"
-#include "SocketSHMSysV.hh"
 #include "unistd.h"
+#include <libCERTI/SocketSHMPosix.hh>
+#include <libCERTI/SocketSHMSysV.hh>
 #endif
 
-#include "RingBuffer.hh"
+#include <libCERTI/RingBuffer.hh>
+
 #include "SharedStruct.hh"
 
 #define NAME_AB "SocketAB" // Socket Name

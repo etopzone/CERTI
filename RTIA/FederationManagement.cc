@@ -24,15 +24,16 @@
 #include <config.h>
 #include "FederationManagement.hh"
 
-#include "TimeManagement.hh"
-#include "PrettyDebug.hh"
-#include "NM_Classes.hh"
-#include "M_Classes.hh"
-
 #include <cstring>
 #include <cstdio>
 #include <cassert>
 #include <memory>
+
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/M_Classes.hh>
+
+#include "TimeManagement.hh"
 
 namespace certi {
 namespace rtia {

@@ -24,21 +24,21 @@
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
 #define CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// Project
-#include "certi.hh"
+#include <iostream>
+
+#include <include/certi.hh>
+
+#include <libCERTI/LBTS.hh>
+#include <libCERTI/Message.hh>
+#include <libCERTI/PrettyDebug.hh>
+
 #include "Communications.hh"
-#include "FederationManagement.hh"
 #include "DeclarationManagement.hh"
+#include "FederationManagement.hh"
+#include "Files.hh"
 #include "ObjectManagement.hh"
 #include "OwnershipManagement.hh"
-#include "Files.hh"
-#include "LBTS.hh"
-#include "Message.hh"
-#include "Communications.hh"
-#include "PrettyDebug.hh"
 
-// Standard libraries
-#include <iostream>
 
 namespace certi {
 namespace rtia {

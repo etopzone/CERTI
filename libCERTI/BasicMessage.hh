@@ -24,7 +24,7 @@
 #ifndef LIBCERTI_BASIC_MESSAGE
 #define LIBCERTI_BASIC_MESSAGE
 
-#include "MessageBuffer.hh"
+#include <libHLA/MessageBuffer.hh>
 using libhla::MessageBuffer;
 #include "BaseRegion.hh"
 #include "Extent.hh"

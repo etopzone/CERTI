@@ -1,5 +1,5 @@
-#include "SHMPosix.hh"
-#include "SemaphorePosix.hh"
+#include <libHLA/SHMPosix.hh>
+#include <libHLA/SemaphorePosix.hh>
 #include "SocketSHMPosix.hh"
 
 using libhla::ipc::Semaphore;

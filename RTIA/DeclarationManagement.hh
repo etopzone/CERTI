@@ -24,12 +24,14 @@
 #ifndef _CERTI_RTIA_DM
 #define _CERTI_RTIA_DM
 
+#include <include/certi.hh>
+
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/RootObject.hh>
+
 #include "FederationManagement.hh"
 #include "Communications.hh"
 #include "Files.hh"
-#include "certi.hh"
-#include "RootObject.hh"
-#include "PrettyDebug.hh"
 
 namespace certi {
 namespace rtia {

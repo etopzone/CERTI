@@ -21,16 +21,17 @@
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
-#include <config.h>
-
-#include "Clock.hh"
-#include "M_Classes.hh"
-#include "RoutingSpace.hh"
-#include "XmlParser.hh"
-#include "fed.hh"
 
 #include <assert.h>
 #include <memory>
+
+#include <config.h>
+
+#include <libHLA/Clock.hh>
+#include <libCERTI/M_Classes.hh>
+#include <libCERTI/RoutingSpace.hh>
+#include <libCERTI/XmlParser.hh>
+#include <libCERTI/fed.hh>
 
 using std::string;
 using std::ifstream;

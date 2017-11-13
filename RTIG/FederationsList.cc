@@ -24,18 +24,17 @@
 
 #include <certi.hh>
 
-#include "AuditFile.hh"
-#include "Exception.hh"
-#include "Federation.hh"
-#include "PrettyDebug.hh"
-
 #include <algorithm>
 #include <ostream>
 #include <utility>
 
-#include "NM_Classes.hh"
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/Exception.hh>
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/NM_Classes.hh>
 
 #include "make_unique.hh"
+#include "Federation.hh"
 
 using std::endl;
 

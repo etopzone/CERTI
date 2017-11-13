@@ -21,13 +21,13 @@
 // $Id: main.cc,v 3.30 2014/02/28 15:53:34 erk Exp $
 // ----------------------------------------------------------------------------
 
+#include <csignal>
+#include <sys/types.h>
+
 #include <config.h>
 
 #include "RTIA.hh"
 #include "RTIA_cmdline.h"
-
-#include <csignal>
-#include <sys/types.h>
 
 using namespace certi;
 using namespace rtia;

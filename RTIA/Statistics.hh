@@ -23,12 +23,10 @@
 #ifndef CERTI_STATISTICS
 #define CERTI_STATISTICS
 
-// Project
-#include "Message.hh"
-#include "NetworkMessage.hh"
-
-// Standard libraries
 #include <map>
+
+#include <libCERTI/Message.hh>
+#include <libCERTI/NetworkMessage.hh>
 
 namespace certi {
 namespace rtia {

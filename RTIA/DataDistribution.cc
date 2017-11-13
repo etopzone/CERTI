@@ -24,19 +24,19 @@
 #include <config.h>
 #include "DataDistribution.hh"
 
-#include "Interaction.hh"
-#include "InteractionSet.hh"
-#include "Object.hh"
-#include "ObjectAttribute.hh"
-#include "ObjectClass.hh"
-#include "ObjectClassSet.hh"
-#include "ObjectClassAttribute.hh"
-#include "RoutingSpace.hh"
-#include "FedRegion.hh"
-#include "NM_Classes.hh"
-
 #include <cassert>
 #include <memory>
+
+#include <libCERTI/Interaction.hh>
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/Object.hh>
+#include <libCERTI/ObjectAttribute.hh>
+#include <libCERTI/ObjectClass.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/ObjectClassAttribute.hh>
+#include <libCERTI/RoutingSpace.hh>
+#include <libCERTI/FedRegion.hh>
+#include <libCERTI/NM_Classes.hh>
 
 using std::endl ;
 

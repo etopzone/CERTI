@@ -22,19 +22,20 @@
 // ----------------------------------------------------------------------------
 
 #include "Communications.hh"
-#include "M_Classes.hh"
-#include "NM_Classes.hh"
-#include "PrettyDebug.hh"
-#include <assert.h>
-#include <config.h>
-
-#include "SecureTCPSocket.hh"
-#include "SocketHTTPProxy.hh"
 
 #include <cerrno>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+
+#include <assert.h>
+#include <config.h>
+
+#include <libCERTI/M_Classes.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/SecureTCPSocket.hh>
+#include <libCERTI/SocketHTTPProxy.hh>
 
 using std::ifstream;
 using std::ios;

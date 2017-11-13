@@ -1,4 +1,5 @@
 # Add standard specific include directory
+include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include/ieee1516-2000)
 include_directories(${CMAKE_BINARY_DIR}/include/ieee1516-2000)
 

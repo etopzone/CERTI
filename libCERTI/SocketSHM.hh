@@ -3,8 +3,8 @@
 
 #include <iostream>
 // libhla includes
-#include "SHM.hh"
-#include "Semaphore.hh"
+#include <libHLA/SHM.hh>
+#include <libHLA/Semaphore.hh>
 
 // Specifics includes
 #include "Exception.hh"

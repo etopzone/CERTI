@@ -20,8 +20,8 @@
 
 #include "Federate.hh"
 
-#include "Exception.hh"
-#include "PrettyDebug.hh"
+#include <libCERTI/Exception.hh>
+#include <libCERTI/PrettyDebug.hh>
 
 static PrettyDebug G("GENDOC", __FILE__);
 

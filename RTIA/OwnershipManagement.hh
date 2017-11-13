@@ -24,12 +24,15 @@
 #ifndef _CERTI_RTIA_OWM
 #define _CERTI_RTIA_OWM
 
+#include <string>
+
+#include <include/certi.hh>
+
+#include <libCERTI/RootObject.hh>
+
 #include "Communications.hh"
 #include "FederationManagement.hh"
 #include "Files.hh"
-#include "RootObject.hh"
-#include "certi.hh"
-#include <string>
 
 namespace certi {
 namespace rtia {

@@ -22,10 +22,10 @@
 
 #include "Mom.hh"
 
-#include "PrettyDebug.hh"
+#include <libCERTI/PrettyDebug.hh>
 
-#include "InteractionSet.hh"
-#include "ObjectClassSet.hh"
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/ObjectClassSet.hh>
 
 using std::cout;
 using std::endl;

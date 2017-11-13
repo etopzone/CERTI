@@ -24,10 +24,10 @@
 #ifndef _CERTI_DATA_DISTRIBUTION
 #define _CERTI_DATA_DISTRIBUTION
 
-// Project
+#include <libCERTI/RootObject.hh>
+
 #include "Communications.hh"
 #include "FederationManagement.hh"
-#include "RootObject.hh"
 
 namespace certi {
 namespace rtia {

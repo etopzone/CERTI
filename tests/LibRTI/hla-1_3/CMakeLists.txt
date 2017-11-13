@@ -1,9 +1,9 @@
 enable_testing()
 
-include_directories(${CMAKE_SOURCE_DIR}/libRTI)
+include_directories(${CERTI_SOURCE_DIR})
+include_directories(${CERTI_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include/hla-1_3)
 include_directories(${CMAKE_BINARY_DIR}/include/hla-1_3)
-include_directories(${CERTI_BINARY_DIR}) # for config.h
 
 find_package(Threads REQUIRED)
 

@@ -25,14 +25,15 @@
 
 #include <vector>
 
-#include "AuditFile.hh"
-#include "FederationsList.hh"
-#include "HandleManager.hh"
-#include "MessageBuffer.hh"
-#include "MessageEvent.hh"
-#include "SocketServer.hh"
+#include <libHLA/MessageBuffer.hh>
 
-#include "NM_Classes.hh"
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/HandleManager.hh>
+#include <libCERTI/SocketServer.hh>
+#include <libCERTI/NM_Classes.hh>
+
+#include "FederationsList.hh"
+#include "MessageEvent.hh"
 
 namespace certi {
 

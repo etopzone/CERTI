@@ -1,7 +1,4 @@
-include_directories(
-  ${CMAKE_SOURCE_DIR}/libCERTI 
-  ${CMAKE_SOURCE_DIR}/libHLA
-  )
+include_directories(${CMAKE_SOURCE_DIR})
 
 find_library(RT_LIBRARY rt)
 add_executable(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)

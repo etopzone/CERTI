@@ -26,20 +26,20 @@
 // #include <netinet/in.h>
 #include <string>
 
-#include "AuditFile.hh"
-#include "BasicMessage.hh"
-#include "Exception.hh"
-#include "FederationsList.hh"
-#include "HandleManager.hh"
-#include "MessageBuffer.hh"
-#include "NM_Classes.hh" // IWYU pragma: export
-// #include "NetworkMessage.hh"
-// #include "SecureTCPSocket.hh"
-#include "SocketServer.hh"
-#include "SocketTCP.hh"
-#include "SocketUDP.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
+#include <libHLA/MessageBuffer.hh>
+
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/BasicMessage.hh>
+#include <libCERTI/Exception.hh>
+#include <libCERTI/HandleManager.hh>
+#include <libCERTI/NM_Classes.hh> // IWYU pragma: export
+#include <libCERTI/SocketServer.hh>
+#include <libCERTI/SocketTCP.hh>
+#include <libCERTI/SocketUDP.hh>
+
+#include "FederationsList.hh"
 #include "MessageProcessor.hh"
 
 namespace certi {
