@@ -235,7 +235,7 @@ std::wostream& operator<<(std::wostream& os, const XXX& v) {
 MOMFederateAmbassador::MOMFederateAmbassador(rti1516e::RTIambassador& ambassador,
                                              const std::wstring& federation_name,
                                              const std::wstring& federate_name)
-    : my_ambassador{ambassador}, my_federation_name{federation_name}, my_federate_name{federate_name}
+    : my_ambassador(ambassador), my_federation_name(federation_name), my_federate_name(federate_name)
 {
 }
 
