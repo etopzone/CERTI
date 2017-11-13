@@ -25,7 +25,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <process.h>
-#include <libHLA/SocketSHMWin32.hh>
+#include "SocketSHMWin32.hh"
 #include <libHLA/SemaphoreWin32.hh>
 #include <libHLA/SHMWin32.hh>
 using libhla::ipc::SHMWin32;
