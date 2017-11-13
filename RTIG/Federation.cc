@@ -58,6 +58,7 @@
 #include "XmlParser2000.hh"
 #include "XmlParser2010.hh"
 #include "fed.hh"
+#include "MessageEvent.hh"
 
 #include "make_unique.hh"
 
@@ -322,7 +323,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     return federate_handle;
 }
 
-void Federation::remove(FederateHandle federate_handle)
+std::unique_ptr<NM_Resign_Federation_Execution> Federation::remove(FederateHandle federate_handle)
 {
     //     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
     //     if (i != _handleFederateMap.end()) {
@@ -348,8 +349,15 @@ void Federation::remove(FederateHandle federate_handle)
         my_mom->deleteFederate(federate_handle);
         my_mom->updateFederatesInFederation();
     }
+    
+    auto rep = make_unique<NM_Resign_Federation_Execution>();
+
+    rep->setFederate(federate_handle);
+    rep->setFederation(my_handle.get());
 
     Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
+    
+    return rep;
 }
 
 void Federation::kill(FederateHandle federate_handle) noexcept
@@ -1332,7 +1340,7 @@ void Federation::subscribeInteraction(FederateHandle federate_handle,
                          << "(un)subscribes to Interaction " << interaction_class_handle << endl;
 }
 
-void Federation::broadcastInteraction(FederateHandle federate_handle,
+Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                                       InteractionClassHandle interaction_class_handle,
                                       const vector<ParameterHandle>& parameter_handles,
                                       const vector<ParameterValue_t>& parameter_values,
@@ -1341,6 +1349,8 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                       const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction with time" << endl;
+    
+    Responses responses;
 
     // It may throw FederateNotExecutionMember.
     check(federate_handle);
@@ -1361,18 +1371,28 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
                         << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
 
+    auto rep = make_unique<NM_Send_Interaction>();
+    rep->setFederate(federate_handle);
+    rep->setInteractionClass(interaction_class_handle);
+    rep->setTag(tag);
+
+    responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
+
     if (my_mom) {
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
-            my_mom->processInteraction(
+            auto mom_responses = my_mom->processInteraction(
                 /*federate_handle, */ interaction_class_handle, parameter_handles, parameter_values, region_handle);
+            responses.insert(end(responses), make_move_iterator(begin(mom_responses)), make_move_iterator(end(mom_responses)));
         }
     }
 
     Debug(G, pdGendoc) << "exit Federation::broadcastInteraction with time" << endl;
+
+    return responses;
 }
 
-void Federation::broadcastInteraction(FederateHandle federate_handle,
+Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                                       InteractionClassHandle interaction_class_handle,
                                       const vector<ParameterHandle>& parameter_handles,
                                       const vector<ParameterValue_t>& parameter_values,
@@ -1380,6 +1400,8 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                                       const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastInteraction without time" << endl;
+    
+    Responses responses;
 
     // It may throw FederateNotExecutionMember.
     check(federate_handle);
@@ -1403,15 +1425,25 @@ void Federation::broadcastInteraction(FederateHandle federate_handle,
                             << string(&(parameter_values[i][0]), parameter_values[i].size()) << endl;
     }
 
+    auto rep = make_unique<NM_Send_Interaction>();
+    rep->setFederate(federate_handle);
+    rep->setInteractionClass(interaction_class_handle);
+    rep->setTag(tag);
+
+    responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
+
     if (my_mom) {
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
-            my_mom->processInteraction(
+            auto mom_responses = my_mom->processInteraction(
                 /*federate_handle, */ interaction_class_handle, parameter_handles, parameter_values, region_handle);
+            responses.insert(end(responses), make_move_iterator(begin(mom_responses)), make_move_iterator(end(mom_responses)));
         }
     }
 
     Debug(G, pdGendoc) << "exit Federation::broadcastInteraction without time" << endl;
+
+    return responses;
 }
 
 bool Federation::isOwner(FederateHandle federate_handle, ObjectHandle object_handle, AttributeHandle attribute_handle)

@@ -40,7 +40,7 @@ MessageProcessor::MessageProcessor(AuditFile& audit_server,
 {
 }
 
-MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
+Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
 {
 #define xstr(a) str(a)
 #define str(a) #a
@@ -121,7 +121,7 @@ MessageProcessor::Responses MessageProcessor::processEvent(MessageEvent<NetworkM
     }
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>&& request)
 {
     Responses responses;
 
@@ -148,20 +148,14 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
     com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
 
     // inserer la nouvelle federation dans la liste des federations
-    my_federations->createFederation(federation, handle, my_socketServer, my_auditServer, com_mc);
+    auto rep = my_federations->createFederation(federation, handle, my_socketServer, my_auditServer, com_mc);
 
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 #else
-    my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, FEDid);
+    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, FEDid);
 #endif
     my_auditServer << " created";
-
-    auto rep = make_unique<NM_Create_Federation_Execution>();
-
-    rep->setFederation(handle.get());
-    rep->setFEDid(FEDid);
-    rep->setFederationName(federation);
 
     responses.emplace_back(request.socket(), std::move(rep));
 
@@ -170,7 +164,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Create_Fed
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&& request)
 {
     Responses responses;
 
@@ -236,7 +230,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Join_Feder
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>&& request)
 {
     Responses responses;
 
@@ -247,24 +241,18 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Resign_Fed
     Debug(D, pdTrace) << "Federate (" << request.message()->getFederate() << ") leaves federation ("
                       << request.message()->getFederation() << ")" << std::endl;
 
-    auto rep = make_unique<NM_Resign_Federation_Execution>();
-
-    my_federations.searchFederation(federation).remove(federate);
+    auto rep = my_federations.searchFederation(federation).remove(federate);
 
     Debug(D, pdInit) << "Federate " << federate << " is resigning from federation " << federation << endl;
 
     my_auditServer << "Federate " << federate << " resign federation(" << federation << ")";
-
-    // Send answer to RTIA
-    rep->setFederate(federate);
-    rep->setFederation(federation.get());
 
     responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution>&& request)
 {
     Responses responses;
 
@@ -295,7 +283,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Destroy_Fe
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory_Switch>&& request)
 {
     Responses responses;
 
@@ -325,8 +313,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Class_
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Switch>&& request)
 {
     Responses responses;
 
@@ -356,8 +343,7 @@ MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Advisory_Swi
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switch>&& request)
 {
     Responses responses;
 
@@ -387,7 +373,7 @@ MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advisory_Switc
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory_Switch>&& request)
 {
     Responses responses;
 
@@ -417,7 +403,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Attrib
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 {
     Responses responses;
 
@@ -458,13 +444,13 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_R
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 {
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(8));
 
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .setConstrained(request.message()->getFederate(), request.message()->isConstrainedOn());
 
     if (request.message()->isConstrainedOn()) {
@@ -490,7 +476,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Set_Time_C
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, bool anonymous)
+Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, bool anonymous)
 {
     my_auditServer.setLevel(AuditLine::Level(0));
 
@@ -510,7 +496,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& request)
 {
     my_auditServer.setLevel(AuditLine::Level(0));
 
@@ -534,8 +520,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Message_Nu
     return {};
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Point>&& request)
 {
     Responses responses;
 
@@ -595,7 +580,7 @@ MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchronization_Po
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
     my_auditServer.setLevel(AuditLine::Level(8));
 
@@ -613,7 +598,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Synchroniz
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)
 {
     Debug(D, pdTrace) << "Request federation save from federate " << request.message()->getFederate() << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -635,7 +620,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " begun save" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -650,7 +635,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -663,7 +648,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " save not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -676,7 +661,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_S
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " request a restoration" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -689,7 +674,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Fe
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -702,7 +687,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
 {
     Debug(D, pdTrace) << "Federate " << request.message()->getFederate() << " restore not complete" << std::endl;
     my_auditServer.setLevel(AuditLine::Level(8));
@@ -715,7 +700,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Federate_R
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
 {
     Responses responses;
 
@@ -743,7 +728,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Ob
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
 {
     Responses responses;
 
@@ -771,7 +756,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
 {
     Responses responses;
 
@@ -798,7 +783,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
 {
     Responses responses;
 
@@ -823,7 +808,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
 {
     Responses responses;
 
@@ -847,7 +832,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Publish_In
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
 {
     Responses responses;
 
@@ -869,7 +854,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unpublish_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
 {
     Responses responses;
 
@@ -893,7 +878,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Subscribe_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
 {
     Responses responses;
 
@@ -917,7 +902,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Unsubscrib
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Reserve_Object_Instance_Name>&& request)
 {
     my_auditServer.setLevel(AuditLine::Level(6));
 
@@ -929,7 +914,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Reserve_Ob
     return {};
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 {
     Responses responses;
 
@@ -966,7 +951,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Register_O
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& request)
 {
     Responses responses;
 
@@ -1017,7 +1002,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Update_Att
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
 {
     Responses responses;
 
@@ -1062,7 +1047,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Send_Inter
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
 {
     Responses responses;
 
@@ -1095,7 +1080,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Delete_Obj
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&& request)
 {
     Responses responses;
 
@@ -1122,8 +1107,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Query_Attr
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     Responses responses;
 
@@ -1151,8 +1135,7 @@ MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownership_Divesti
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Available>&& request)
 {
     Responses responses;
 
@@ -1179,8 +1162,7 @@ MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition_If_Ava
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
 {
     Responses responses;
 
@@ -1206,7 +1188,7 @@ MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Dive
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisition>&& request)
 {
     Responses responses;
 
@@ -1235,8 +1217,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
     return responses;
 }
 
-MessageProcessor::Responses
-MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_Divestiture>&& request)
 {
     Responses responses;
 
@@ -1263,7 +1244,7 @@ MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_Ownership_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federate>&& request)
 {
     Responses responses;
 
@@ -1297,7 +1278,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Is_Attribu
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_Response>&& request)
 {
     Responses responses;
 
@@ -1331,7 +1312,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Attribute_
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_Acquisition>&& request)
 {
     Responses responses;
 
@@ -1357,7 +1338,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Cancel_Att
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request)
 {
     Responses responses;
 
@@ -1380,7 +1361,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Create
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request)
 {
     Responses responses;
 
@@ -1401,7 +1382,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request)
 {
     Responses responses;
 
@@ -1425,7 +1406,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& request)
 {
     Responses responses;
 
@@ -1450,7 +1431,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Associ
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& request)
 {
     Responses responses;
 
@@ -1474,7 +1455,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unasso
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& request)
 {
     Responses responses;
 
@@ -1500,7 +1481,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&& request)
 {
     Responses responses;
 
@@ -1523,7 +1504,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&& request)
 {
     Responses responses;
 
@@ -1547,7 +1528,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscr
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>&& request)
 {
     Responses responses;
 
@@ -1571,7 +1552,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubs
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& request)
 {
     Responses responses;
 
@@ -1603,7 +1584,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_DDM_Regist
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request)
 {
     Responses responses;
 
@@ -1630,7 +1611,7 @@ MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Ob
     return responses;
 }
 
-MessageProcessor::Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request)
+Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request)
 {
     Responses responses;
 

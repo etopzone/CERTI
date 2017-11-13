@@ -207,66 +207,79 @@ void Mom::registerFederate(const Federate& federate)
     // Periodic
     attribute = my_attribute_cache["HLAROlength"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLATSOlength"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAreflectionsReceived"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAupdatesSent"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAinteractionsReceived"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAinteractionsSent"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesThatCanBeDeleted"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesUpdated"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesReflected"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesDeleted"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesRemoved"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesRegistered"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
     attribute = my_attribute_cache["HLAobjectInstancesDiscovered"];
     attributes.push_back(attribute);
+    my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
@@ -508,25 +521,17 @@ void Mom::updateLITS(const FederateHandle federate_handle, const FederationTime&
 void Mom::updateRoLenght(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateRoLenght" << endl;
-
-    auto attribute = my_attribute_cache["HLAROlength"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+    updateCountAttribute(federate_handle, "HLAROlength", delta);
+
     Debug(D, pdGendoc) << "exit  Mom::updateRoLenght" << endl;
 }
 
 void Mom::updateTsoLenght(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateTsoLenght" << endl;
-
-    auto attribute = my_attribute_cache["HLATSOlength"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLATSOlength", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateTsoLenght" << endl;
 }
@@ -534,12 +539,8 @@ void Mom::updateTsoLenght(const FederateHandle federate_handle, const int delta)
 void Mom::updateReflectionsReceived(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateReflectionsReceived" << endl;
-
-    auto attribute = my_attribute_cache["HLAreflectionsReceived"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAreflectionsReceived", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateReflectionsReceived" << endl;
 }
@@ -547,12 +548,8 @@ void Mom::updateReflectionsReceived(const FederateHandle federate_handle, const 
 void Mom::updateUpdatesSent(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateUpdatesSent" << endl;
-
-    auto attribute = my_attribute_cache["HLAupdatesSent"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAupdatesSent", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateUpdatesSent" << endl;
 }
@@ -560,12 +557,8 @@ void Mom::updateUpdatesSent(const FederateHandle federate_handle, const int delt
 void Mom::updateInteractionsReceived(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateInteractionsReceived" << endl;
-
-    auto attribute = my_attribute_cache["HLAinteractionsReceived"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAinteractionsReceived", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateInteractionsReceived" << endl;
 }
@@ -573,12 +566,8 @@ void Mom::updateInteractionsReceived(const FederateHandle federate_handle, const
 void Mom::updateInteractionsSent(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateInteractionsSent" << endl;
-
-    auto attribute = my_attribute_cache["HLAinteractionsSent"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAinteractionsSent", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateInteractionsSent" << endl;
 }
@@ -586,12 +575,8 @@ void Mom::updateInteractionsSent(const FederateHandle federate_handle, const int
 void Mom::updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesThatCanBeDeleted" << endl;
-
-    auto attribute = my_attribute_cache["HLAobjectInstancesThatCanBeDeleted"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
     
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesThatCanBeDeleted", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesThatCanBeDeleted" << endl;
 }
@@ -600,11 +585,7 @@ void Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle, con
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesUpdated" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesUpdated"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesUpdated", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesUpdated" << endl;
 }
@@ -613,11 +594,7 @@ void Mom::updateObjectInstancesReflected(const FederateHandle federate_handle, c
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesReflected" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesReflected"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesReflected", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesReflected" << endl;
 }
@@ -626,11 +603,7 @@ void Mom::updateObjectInstancesDeleted(const FederateHandle federate_handle, con
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesDeleted" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesDeleted"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesDeleted", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesDeleted" << endl;
 }
@@ -639,11 +612,7 @@ void Mom::updateObjectInstancesRemoved(const FederateHandle federate_handle, con
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesRemoved" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesRemoved"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesRemoved", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesRemoved" << endl;
 }
@@ -652,11 +621,7 @@ void Mom::updateObjectInstancesRegistered(const FederateHandle federate_handle, 
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesRegistered" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesRegistered"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesRegistered", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesRegistered" << endl;
 }
@@ -665,11 +630,7 @@ void Mom::updateObjectInstancesDiscovered(const FederateHandle federate_handle, 
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesDiscovered" << endl;
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesDiscovered"];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    updateCountAttribute(federate_handle, "HLAobjectInstancesDiscovered", delta);
     
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesDiscovered" << endl;
 }
@@ -724,6 +685,21 @@ void Mom::updateConveyProducingFederate(const FederateHandle federate_handle, co
     provideAttributeValueUpdate(my_federation_object, {attribute});
     
     Debug(D, pdGendoc) << "exit  Mom::updateConveyProducingFederate" << endl;
+}
+
+void Mom::updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta)
+{
+    Debug(D, pdGendoc) << "enter Mom::updateCountAttribute" << endl;
+
+    auto attribute = my_attribute_cache[attribute_name];
+    
+    my_count_attributes_cache[federate_handle][attribute] += delta;
+
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(my_count_attributes_cache[federate_handle][attribute]);
+    
+    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
+    
+    Debug(D, pdGendoc) << "exit  Mom::updateCountAttribute" << endl;
 }
 
 void Mom::provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes)

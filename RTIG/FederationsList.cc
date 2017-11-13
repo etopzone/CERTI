@@ -33,13 +33,14 @@
 #include <ostream>
 #include <utility>
 
+#include "NM_Classes.hh"
+
 #include "make_unique.hh"
 
 using std::endl;
 
 namespace certi {
 
-class NM_Join_Federation_Execution;
 class SocketServer;
 class SocketTCP;
 
@@ -70,13 +71,13 @@ void FederationsList::setVerboseLevel(const int verboseLevel) noexcept
 }
 
 #ifdef FEDERATION_USES_MULTICAST
-void FederationsList::createFederation(const std::string& name,
+std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
                                        const FederationHandle handle,
                                        SocketServer& server,
                                        AuditFile& audit,
                                        SocketMC* multicastSocket)
 #else
-void FederationsList::createFederation(const std::string& name,
+std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
                                        const FederationHandle handle,
                                        SocketServer& socket_server,
                                        AuditFile& audit,
@@ -122,6 +123,14 @@ void FederationsList::createFederation(const std::string& name,
         Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception" << std::endl;
         throw;
     }
+    
+    auto rep = make_unique<NM_Create_Federation_Execution>();
+
+    rep->setFederation(handle.get());
+    rep->setFEDid(FEDid);
+    rep->setFederationName(name);
+
+    return rep;
 }
 
 FederationHandle FederationsList::getFederationHandle(const std::string& name)

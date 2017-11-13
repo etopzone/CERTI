@@ -25,10 +25,11 @@
 #include "PrettyDebug.hh"
 
 #include "InteractionSet.hh"
+#include "MessageEvent.hh"
+#include "Object.hh"
 #include "ObjectClassAttribute.hh"
 #include "ObjectClassSet.hh"
 #include "ObjectSet.hh"
-#include "Object.hh"
 
 using std::cout;
 using std::endl;
@@ -66,14 +67,12 @@ namespace rtig {
 
 static PrettyDebug D("MOM", __FILE__);
 
-void Mom::processInteraction(/*const FederateHandle federate_handle,*/
-                             const InteractionClassHandle interaction_class_handle,
-                             const std::vector<ParameterHandle>& parameter_handles,
-                             const std::vector<ParameterValue_t>& parameter_values,
-                             const RegionHandle region_handle)
+Responses Mom::processInteraction(/*const FederateHandle federate_handle,*/
+                                  const InteractionClassHandle interaction_class_handle,
+                                  const std::vector<ParameterHandle>& parameter_handles,
+                                  const std::vector<ParameterValue_t>& parameter_values,
+                                  const RegionHandle region_handle)
 {
-    Debug(D, pdGendoc) << "enter Mom::processInteraction" << endl;
-
     Debug(D, pdGendoc) << interaction_class_handle << endl;
     Debug(D, pdGendoc) << parameter_handles.size() << endl;
     Debug(D, pdGendoc) << region_handle << endl;
@@ -92,13 +91,13 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
 
     if (interaction_class_handle == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"]) {
-        processFederateSetTiming(
+        return processFederateSetTiming(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAreportPeriod")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState"]) {
-        processFederateModifyAttributeState(
+        return processFederateModifyAttributeState(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAattribute")]),
@@ -106,7 +105,7 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches"]) {
-        processFederateSetSwitches(
+        return processFederateSetSwitches(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAconveyRegionDesignatorSets")]),
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAconveyProducingFederate")]),
@@ -115,120 +114,120 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestPublications"]) {
-        processFederateRequestPublications(
+        return processFederateRequestPublications(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions"]) {
-        processFederateRequestSubscriptions(
+        return processFederateRequestSubscriptions(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted"]) {
-        processFederateRequestObjectInstancesThatCanBeDeleted(
+        return processFederateRequestObjectInstancesThatCanBeDeleted(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated"]) {
-        processFederateRequestObjectInstancesUpdated(
+        return processFederateRequestObjectInstancesUpdated(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected"]) {
-        processFederateRequestObjectInstancesReflected(
+        return processFederateRequestObjectInstancesReflected(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent"]) {
-        processFederateRequestUpdatesSent(
+        return processFederateRequestUpdatesSent(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent"]) {
-        processFederateRequestInteractionsSent(
+        return processFederateRequestInteractionsSent(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived"]) {
-        processFederateRequestReflectionsReceived(
+        return processFederateRequestReflectionsReceived(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived"]) {
-        processFederateRequestInteractionsReceived(
+        return processFederateRequestInteractionsReceived(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation"]) {
-        processFederateRequestObjectInstanceInformation(
+        return processFederateRequestObjectInstanceInformation(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData"]) {
-        processFederateRequestFOMmoduleData(
+        return processFederateRequestFOMmoduleData(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAFOMmoduleIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution"]) {
-        processFederateResignFederationExecution(
+        return processFederateResignFederationExecution(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeResignAction(parameters[getParameterHandle(interaction_class_handle, "HLAresignAction")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved"]) {
-        processFederateSynchronizationPointAchieved(
+        return processFederateSynchronizationPointAchieved(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAlabel")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun"]) {
-        processFederateFederateSaveBegun(
+        return processFederateFederateSaveBegun(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete"]) {
-        processFederateFederateSaveComplete(
+        return processFederateFederateSaveComplete(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAsuccessIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete"]) {
-        processFederateFederateRestoreComplete(
+        return processFederateFederateRestoreComplete(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAsuccessIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes"]) {
-        processFederatePublishObjectClassAttributes(
+        return processFederatePublishObjectClassAttributes(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes"]) {
-        processFederateUnpublishObjectClassAttributes(
+        return processFederateUnpublishObjectClassAttributes(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass"]) {
-        processFederatePublishInteractionClass(
+        return processFederatePublishInteractionClass(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass"]) {
-        processFederateUnpublishInteractionClass(
+        return processFederateUnpublishInteractionClass(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes"]) {
-        processFederateSubscribeObjectClassAttributes(
+        return processFederateSubscribeObjectClassAttributes(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
@@ -236,27 +235,27 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes"]) {
-        processFederateUnsubscribeObjectClassAttributes(
+        return processFederateUnsubscribeObjectClassAttributes(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectClass")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass"]) {
-        processFederateSubscribeInteractionClass(
+        return processFederateSubscribeInteractionClass(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAactive")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass"]) {
-        processFederateUnsubscribeInteractionClass(
+        return processFederateUnsubscribeInteractionClass(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance"]) {
-        processFederateDeleteObjectInstance(
+        return processFederateDeleteObjectInstance(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
             decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAtag")]),
@@ -264,14 +263,14 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance"]) {
-        processFederateLocalDeleteObjectInstance(
+        return processFederateLocalDeleteObjectInstance(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange"]) {
-        processFederateRequestAttributeTransportationTypeChange(
+        return processFederateRequestAttributeTransportationTypeChange(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
@@ -280,7 +279,7 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange"]) {
-        processFederateRequestInteractionTransportationTypeChange(
+        return processFederateRequestInteractionTransportationTypeChange(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
             decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAtransportation")]));
@@ -288,81 +287,81 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture"]) {
-        processFederateUnconditionalAttributeOwnershipDivestiture(
+        return processFederateUnconditionalAttributeOwnershipDivestiture(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation"]) {
-        processFederateEnableTimeRegulation(
+        return processFederateEnableTimeRegulation(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAlookahead")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation"]) {
-        processFederateDisableTimeRegulation(
+        return processFederateDisableTimeRegulation(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained"]) {
-        processFederateEnableTimeConstrained(
+        return processFederateEnableTimeConstrained(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained"]) {
-        processFederateDisableTimeConstrained(
+        return processFederateDisableTimeConstrained(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest"]) {
-        processFederateTimeAdvanceRequest(
+        return processFederateTimeAdvanceRequest(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable"]) {
-        processFederateTimeAdvanceRequestAvailable(
+        return processFederateTimeAdvanceRequestAvailable(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest"]) {
-        processFederateNextMessageRequest(
+        return processFederateNextMessageRequest(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable"]) {
-        processFederateNextMessageRequestAvailable(
+        return processFederateNextMessageRequestAvailable(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest"]) {
-        processFederateFlushQueueRequest(
+        return processFederateFlushQueueRequest(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeFederationTime(parameters[getParameterHandle(interaction_class_handle, "HLAtimeStamp")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery"]) {
-        processFederateEnableAsynchronousDelivery(
+        return processFederateEnableAsynchronousDelivery(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery"]) {
-        processFederateDisableAsynchronousDelivery(
+        return processFederateDisableAsynchronousDelivery(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead"]) {
-        processFederateModifyLookahead(
+        return processFederateModifyLookahead(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAlookahead")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType"]) {
-        processFederateChangeAttributeOrderType(
+        return processFederateChangeAttributeOrderType(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAobjectInstance")]),
             decodeVectorAttributeHandle(parameters[getParameterHandle(interaction_class_handle, "HLAattributeList")]),
@@ -370,74 +369,80 @@ void Mom::processInteraction(/*const FederateHandle federate_handle,*/
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType"]) {
-        processFederateChangeInteractionOrderType(
+        return processFederateChangeInteractionOrderType(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAfederate")]),
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAinteractionClass")]),
             decodeOrderType(parameters[getParameterHandle(interaction_class_handle, "HLAsendOrder")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches"]) {
-        processFederationSetSwitches(
+        return processFederationSetSwitches(
             decodeBoolean(parameters[getParameterHandle(interaction_class_handle, "HLAautoProvide")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints"]) {
-        processFederationRequestSynchronizationPoints();
+        return processFederationRequestSynchronizationPoints();
     }
     else if (interaction_class_handle
              == my_interaction_class_cache
                     ["HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"]) {
-        processFederationRequestSynchronizationPointStatus(
+        return processFederationRequestSynchronizationPointStatus(
             decodeString(parameters[getParameterHandle(interaction_class_handle, "HLAsyncPointName")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData"]) {
-        processFederationRequestFOMmoduleData(
+        return processFederationRequestFOMmoduleData(
             decodeUInt32(parameters[getParameterHandle(interaction_class_handle, "HLAFOMmoduleIndicator")]));
     }
     else if (interaction_class_handle
              == my_interaction_class_cache["HLAmanager.HLAfederation.HLArequest.HLArequestMIMData"]) {
-        processFederationRequestMIMData();
+        return processFederationRequestMIMData();
     }
     else {
         Debug(D, pdGendoc) << "Unknown interaction" << endl;
+        return {};
     }
-    Debug(D, pdGendoc) << "exit  Mom::processInteraction" << endl;
 }
 
-void Mom::processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod)
+Responses Mom::processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSetTiming " << federate_handle << ", " << reportPeriod << endl;
 
     // TODO
 
+    return {};
+
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetTiming" << endl;
 }
 
-void Mom::processFederateModifyAttributeState(const FederateHandle& federate_handle,
-                                              const ObjectHandle objectInstance,
-                                              const AttributeHandle attribute,
-                                              const bool attributeState)
+Responses Mom::processFederateModifyAttributeState(const FederateHandle& federate_handle,
+                                                   const ObjectHandle objectInstance,
+                                                   const AttributeHandle attribute,
+                                                   const bool attributeState)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateModifyAttributeState " << federate_handle << ", " << objectInstance
                        << ", " << attribute << ", " << attributeState << endl;
 
     // TODO
 
+    return {};
+
     Debug(D, pdGendoc) << "exit  Mom::processFederateModifyAttributeState" << endl;
 }
 
-void Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
-                                     const bool conveyRegionDesignatorSets,
-                                     const bool conveyProducingFederate,
-                                     const bool serviceReporting,
-                                     const bool exceptionReporting)
+Responses Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
+                                          const bool conveyRegionDesignatorSets,
+                                          const bool conveyProducingFederate,
+                                          const bool serviceReporting,
+                                          const bool exceptionReporting)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSetSwitches " << federate_handle << ", "
                        << conveyRegionDesignatorSets << ", " << conveyProducingFederate << ", " << serviceReporting
                        << ", " << exceptionReporting << endl;
 
     // TODO
+
+    return {};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetSwitches" << endl;
 }
@@ -450,9 +455,11 @@ void Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
  * HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication shall be sent as a NULL
  * response with the HLAobjectClassCount parameter having a value of 0.
  */
-void Mom::processFederateRequestPublications(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestPublications(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestPublications " << federate_handle << endl;
+
+    Responses responses;
 
     /* The interaction shall be sent by the RTI in response to an interaction of class
      * HLAmanager.HLAfederate.HLArequest.HLArequestPublications. It shall report the attributes of one
@@ -482,7 +489,8 @@ void Mom::processFederateRequestPublications(const FederateHandle& federate_hand
 
         std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeUInt32(0)};
 
-        my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+        auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
     else {
         for (const auto& pair : publishingAttributes) {
@@ -499,7 +507,8 @@ void Mom::processFederateRequestPublications(const FederateHandle& federate_hand
                                                  encodeUInt32(pair.first),
                                                  encodeVectorHandle(pair.second)};
 
-            my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+            auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         }
     }
 
@@ -523,9 +532,12 @@ void Mom::processFederateRequestPublications(const FederateHandle& federate_hand
     }
     std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeVectorHandle(interactionClassList)};
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestPublications " << federate_handle << endl;
+
+    return responses;
 }
 
 /** Request that the RTI send report interactions that contain the subscription data of a joined federate.
@@ -538,9 +550,11 @@ void Mom::processFederateRequestPublications(const FederateHandle& federate_hand
  * HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription shall be sent as a NULL
  * response with the HLAobjectClassCount parameter having a value of 0.
  */
-void Mom::processFederateRequestSubscriptions(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestSubscriptions(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestSubscriptions " << federate_handle << endl;
+    
+    Responses responses;
 
     /** The interaction shall be sent by the RTI in response to an interaction of class HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions.
      * It shall report the attributes of one object class subscribed to
@@ -570,7 +584,8 @@ void Mom::processFederateRequestSubscriptions(const FederateHandle& federate_han
 
         std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeUInt32(0)};
 
-        my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+        auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
     else {
         for (const auto& pair : publishingAttributes) {
@@ -591,7 +606,8 @@ void Mom::processFederateRequestSubscriptions(const FederateHandle& federate_han
                                                  encodeString(""), // not implemented
                                                  encodeVectorHandle(pair.second)};
 
-            my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+            auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         }
     }
 
@@ -617,20 +633,23 @@ void Mom::processFederateRequestSubscriptions(const FederateHandle& federate_han
 
     std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeVectorHandle(interactionClassList)};
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestSubscriptions" << endl;
+
+    return responses;
 }
 
 /** Request that the RTI send a report interaction that contains the object instances that can be deleted at a
  * joined federate. It shall result in one interaction of class
  * HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted.
  */
-void Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstancesThatCanBeDeleted " << federate_handle
                        << endl;
-    
+
     /** The interaction shall be sent by the RTI in response to an interaction of class
      * HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted. It shall report
      * the number of object instances (by registered class of the object instances) whose
@@ -650,21 +669,32 @@ void Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHa
 
     std::vector<ObjectHandle> ownedObjectInstances;
     my_root.objects->getAllObjectInstancesFromFederate(federate_handle, ownedObjectInstances);
-    for(const auto& object: ownedObjectInstances) {
+    for (const auto& object : ownedObjectInstances) {
         ++objectInstancesCounts[object];
     }
 
-    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeObjectClassBasedCounts(objectInstancesCounts)};
-
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                         encodeObjectClassBasedCounts(objectInstancesCounts)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesThatCanBeDeleted" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestObjectInstancesUpdated(const FederateHandle& federate_handle)
+/** Request that the RTI send a report interaction that contains the object instance updating responsibility of a
+ * joined federate. It shall result in one interaction of class HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated.
+ */
+Responses Mom::processFederateRequestObjectInstancesUpdated(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstancesUpdated " << federate_handle << endl;
-
+    
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated. It shall report the number
+     * of object instances (by registered class of the object instances) for which the joined federate has
+     * successfully invoked the Update Attribute Values service. If the joined federate has no object instances
+     * that are updated for a given transport type, then a single interaction shall be sent as a NULL response with
+     * the HLAobjectInstanceCounts parameter having an undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated");
 
@@ -675,15 +705,15 @@ void Mom::processFederateRequestObjectInstancesUpdated(const FederateHandle& fed
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesUpdated" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestObjectInstancesReflected(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestObjectInstancesReflected(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstancesReflected " << federate_handle << endl;
-
+    
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected");
 
@@ -694,12 +724,12 @@ void Mom::processFederateRequestObjectInstancesReflected(const FederateHandle& f
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesReflected" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestUpdatesSent " << federate_handle << endl;
 
@@ -714,12 +744,12 @@ void Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_handl
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestUpdatesSent" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestInteractionsSent(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestInteractionsSent(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestInteractionsSent " << federate_handle << endl;
 
@@ -734,12 +764,12 @@ void Mom::processFederateRequestInteractionsSent(const FederateHandle& federate_
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionsSent" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestReflectionsReceived(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestReflectionsReceived(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestReflectionsReceived " << federate_handle << endl;
 
@@ -754,12 +784,12 @@ void Mom::processFederateRequestReflectionsReceived(const FederateHandle& federa
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestReflectionsReceived" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestInteractionsReceived(const FederateHandle& federate_handle)
+Responses Mom::processFederateRequestInteractionsReceived(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestInteractionsReceived " << federate_handle << endl;
 
@@ -774,13 +804,13 @@ void Mom::processFederateRequestInteractionsReceived(const FederateHandle& feder
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionsReceived" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
-                                                          const ObjectHandle& objectInstance)
+Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
+                                                               const ObjectHandle& objectInstance)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstanceInformation " << federate_handle << ", "
                        << objectInstance << endl;
@@ -798,12 +828,12 @@ void Mom::processFederateRequestObjectInstanceInformation(const FederateHandle& 
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstanceInformation" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator)
+Responses Mom::processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestFOMmoduleData " << federate_handle << ", "
                        << FOMmoduleIndicator << endl;
@@ -819,368 +849,504 @@ void Mom::processFederateRequestFOMmoduleData(const FederateHandle& federate_han
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestFOMmoduleData" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederateResignFederationExecution(const FederateHandle& federate_handle,
-                                                   const ResignAction resignAction)
+Responses Mom::processFederateResignFederationExecution(const FederateHandle& federate_handle,
+                                                        const ResignAction resignAction)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateResignFederationExecution " << federate_handle << ", "
                        << static_cast<int>(resignAction) << endl;
     std::cout << federate_handle << endl;
 
-    //     my_federation.remove(federate_handle); not working this way, must send response(s)
+    Responses responses;
+
+    auto rep = my_federation.remove(federate_handle);
+
+    responses.emplace_back(getSocketForFederate(federate_handle), std::move(rep));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateResignFederationExecution" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateSynchronizationPointAchieved(const FederateHandle& federate_handle, const std::string& label)
+Responses Mom::processFederateSynchronizationPointAchieved(const FederateHandle& federate_handle,
+                                                           const std::string& label)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSynchronizationPointAchieved " << federate_handle << ", " << label
                        << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSynchronizationPointAchieved" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateFederateSaveBegun(const FederateHandle& federate_handle)
+Responses Mom::processFederateFederateSaveBegun(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveBegun " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateSaveBegun" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateFederateSaveComplete(const FederateHandle& federate_handle, const bool successIndicator)
+Responses Mom::processFederateFederateSaveComplete(const FederateHandle& federate_handle, const bool successIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateSaveComplete" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateFederateRestoreComplete(const FederateHandle& federate_handle, const bool successIndicator)
+Responses Mom::processFederateFederateRestoreComplete(const FederateHandle& federate_handle,
+                                                      const bool successIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateRestoreComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateRestoreComplete" << endl;
+
+    return responses;
 }
 
-void Mom::processFederatePublishObjectClassAttributes(const FederateHandle& federate_handle,
-                                                      const ObjectClassHandle& objectClass,
-                                                      const std::vector<AttributeHandle>& attributeList)
+Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle& federate_handle,
+                                                           const ObjectClassHandle& objectClass,
+                                                           const std::vector<AttributeHandle>& attributeList)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederatePublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishObjectClassAttributes" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateUnpublishObjectClassAttributes(const FederateHandle& federate_handle,
-                                                        const ObjectClassHandle& objectClass,
-                                                        const std::vector<AttributeHandle>& attributeList)
+Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandle& federate_handle,
+                                                             const ObjectClassHandle& objectClass,
+                                                             const std::vector<AttributeHandle>& attributeList)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateUnpublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishObjectClassAttributes" << endl;
+
+    return responses;
 }
 
-void Mom::processFederatePublishInteractionClass(const FederateHandle& federate_handle,
-                                                 const InteractionClassHandle& interactionClass)
+Responses Mom::processFederatePublishInteractionClass(const FederateHandle& federate_handle,
+                                                      const InteractionClassHandle& interactionClass)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederatePublishInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishInteractionClass" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateUnpublishInteractionClass(const FederateHandle& federate_handle,
-                                                   const InteractionClassHandle& interactionClass)
+Responses Mom::processFederateUnpublishInteractionClass(const FederateHandle& federate_handle,
+                                                        const InteractionClassHandle& interactionClass)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateUnpublishInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishInteractionClass" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateSubscribeObjectClassAttributes(const FederateHandle& federate_handle,
-                                                        const ObjectClassHandle& objectClass,
-                                                        const std::vector<AttributeHandle>& attributeList,
-                                                        const bool active)
+Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandle& federate_handle,
+                                                             const ObjectClassHandle& objectClass,
+                                                             const std::vector<AttributeHandle>& attributeList,
+                                                             const bool active)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSubscribeObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << ", " << active << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeObjectClassAttributes" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHandle& federate_handle,
-                                                          const ObjectClassHandle& objectClass,
-                                                          const std::vector<AttributeHandle>& attributeList)
+Responses Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHandle& federate_handle,
+                                                               const ObjectClassHandle& objectClass,
+                                                               const std::vector<AttributeHandle>& attributeList)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateUnsubscribeObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeObjectClassAttributes" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateSubscribeInteractionClass(const FederateHandle& federate_handle,
-                                                   const InteractionClassHandle& interactionClass,
-                                                   const bool active)
+Responses Mom::processFederateSubscribeInteractionClass(const FederateHandle& federate_handle,
+                                                        const InteractionClassHandle& interactionClass,
+                                                        const bool active)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSubscribeInteractionClass " << federate_handle << ", "
                        << interactionClass << ", " << active << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeInteractionClass" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& federate_handle,
-                                                     const InteractionClassHandle& interactionClass)
+Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& federate_handle,
+                                                          const InteractionClassHandle& interactionClass)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateUnsubscribeInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeInteractionClass" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
-                                              const ObjectHandle& objectInstance,
-                                              const std::string& tag,
-                                              const FederationTime& timeStamp)
+Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
+                                                   const ObjectHandle& objectInstance,
+                                                   const std::string& tag,
+                                                   const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDeleteObjectInstance " << federate_handle << ", " << objectInstance
                        << ", " << tag << ", " << timeStamp << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDeleteObjectInstance" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& federate_handle,
-                                                   const ObjectHandle& objectInstance)
+Responses Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& federate_handle,
+                                                        const ObjectHandle& objectInstance)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateLocalDeleteObjectInstance " << federate_handle << ", "
                        << objectInstance << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateLocalDeleteObjectInstance" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandle& federate_handle,
-                                                                  const ObjectHandle& objectInstance,
-                                                                  const std::vector<AttributeHandle>& attributeList,
-                                                                  const std::string& transportation)
+Responses
+Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandle& federate_handle,
+                                                             const ObjectHandle& objectInstance,
+                                                             const std::vector<AttributeHandle>& attributeList,
+                                                             const std::string& transportation)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestAttributeTransportationTypeChange " << federate_handle
                        << ", " << objectInstance << ", " << attributeList.size() << ", " << transportation << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestAttributeTransportationTypeChange" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateRequestInteractionTransportationTypeChange(const FederateHandle& federate_handle,
-                                                                    const InteractionClassHandle& interactionClass,
-                                                                    const std::string& transportation)
+Responses Mom::processFederateRequestInteractionTransportationTypeChange(const FederateHandle& federate_handle,
+                                                                         const InteractionClassHandle& interactionClass,
+                                                                         const std::string& transportation)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestInteractionTransportationTypeChange " << federate_handle
                        << ", " << interactionClass << ", " << transportation << endl;
 
-    // TODO
+    Responses responses;
 
+    // TODO
+    
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionTransportationTypeChange" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHandle& federate_handle,
-                                                                    const ObjectHandle& objectInstance,
-                                                                    const std::vector<AttributeHandle>& attributeList)
+Responses
+Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHandle& federate_handle,
+                                                               const ObjectHandle& objectInstance,
+                                                               const std::vector<AttributeHandle>& attributeList)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateUnconditionalAttributeOwnershipDivestiture " << federate_handle
                        << ", " << objectInstance << ", " << attributeList.size() << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnconditionalAttributeOwnershipDivestiture" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateEnableTimeRegulation(const FederateHandle& federate_handle, const int lookahead)
+Responses Mom::processFederateEnableTimeRegulation(const FederateHandle& federate_handle, const int lookahead)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeRegulation " << federate_handle << ", " << lookahead
                        << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeRegulation" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateDisableTimeRegulation(const FederateHandle& federate_handle)
+Responses Mom::processFederateDisableTimeRegulation(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeRegulation " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeRegulation" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateEnableTimeConstrained(const FederateHandle& federate_handle)
+Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeConstrained " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeConstrained" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateDisableTimeConstrained(const FederateHandle& federate_handle)
+Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeConstrained " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeConstrained" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
+Responses Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateTimeAdvanceRequest " << federate_handle << ", " << timeStamp
                        << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequest" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& federate_handle,
-                                                     const FederationTime& timeStamp)
+Responses Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& federate_handle,
+                                                          const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateTimeAdvanceRequestAvailable " << federate_handle << ", "
                        << timeStamp << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequestAvailable" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateNextMessageRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
+Responses Mom::processFederateNextMessageRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateNextMessageRequest " << federate_handle << ", " << timeStamp
                        << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequest" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateNextMessageRequestAvailable(const FederateHandle& federate_handle,
-                                                     const FederationTime& timeStamp)
+Responses Mom::processFederateNextMessageRequestAvailable(const FederateHandle& federate_handle,
+                                                          const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateNextMessageRequestAvailable " << federate_handle << ", "
                        << timeStamp << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequestAvailable" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateFlushQueueRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
+Responses Mom::processFederateFlushQueueRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFlushQueueRequest " << federate_handle << ", " << timeStamp
                        << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFlushQueueRequest" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& federate_handle)
+Responses Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableAsynchronousDelivery " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableAsynchronousDelivery" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& federate_handle)
+Responses Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableAsynchronousDelivery " << federate_handle << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableAsynchronousDelivery" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateModifyLookahead(const FederateHandle& federate_handle, const int lookahead)
+Responses Mom::processFederateModifyLookahead(const FederateHandle& federate_handle, const int lookahead)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateModifyLookahead " << federate_handle << ", " << lookahead << endl;
+
+    Responses responses;
 
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateModifyLookahead" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateChangeAttributeOrderType(const FederateHandle& federate_handle,
-                                                  const ObjectHandle& objectInstance,
-                                                  const std::vector<AttributeHandle>& attributeList,
-                                                  const OrderType& sendOrder)
+Responses Mom::processFederateChangeAttributeOrderType(const FederateHandle& federate_handle,
+                                                       const ObjectHandle& objectInstance,
+                                                       const std::vector<AttributeHandle>& attributeList,
+                                                       const OrderType& sendOrder)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateChangeAttributeOrderType " << federate_handle << ", "
                        << objectInstance << ", " << attributeList.size() << ", " << static_cast<int>(sendOrder) << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeAttributeOrderType" << endl;
+
+    return responses;
 }
 
-void Mom::processFederateChangeInteractionOrderType(const FederateHandle& federate_handle,
-                                                    const InteractionClassHandle& interactionClass,
-                                                    const OrderType& sendOrder)
+Responses Mom::processFederateChangeInteractionOrderType(const FederateHandle& federate_handle,
+                                                         const InteractionClassHandle& interactionClass,
+                                                         const OrderType& sendOrder)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateChangeInteractionOrderType " << federate_handle << ", "
                        << interactionClass << ", " << static_cast<int>(sendOrder) << endl;
 
+    Responses responses;
+
     // TODO
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeInteractionOrderType" << endl;
+
+    return responses;
 }
 
-void Mom::processFederationSetSwitches(const bool autoProvide)
+Responses Mom::processFederationSetSwitches(const bool autoProvide)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationSetSwitches " << autoProvide << endl;
 
     my_federation.setAutoProvide(autoProvide);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationSetSwitches" << endl;
+    
+    return {};
 }
 
-void Mom::processFederationRequestSynchronizationPoints()
+Responses Mom::processFederationRequestSynchronizationPoints()
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestSynchronizationPoints" << endl;
 
@@ -1194,12 +1360,12 @@ void Mom::processFederationRequestSynchronizationPoints()
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestSynchronizationPoints" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederationRequestSynchronizationPointStatus(const std::string& syncPointName)
+Responses Mom::processFederationRequestSynchronizationPointStatus(const std::string& syncPointName)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestSynchronizationPointStatus " << syncPointName << endl;
 
@@ -1214,12 +1380,12 @@ void Mom::processFederationRequestSynchronizationPointStatus(const std::string& 
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestSynchronizationPointStatus" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederationRequestFOMmoduleData(const int FOMmoduleIndicator)
+Responses Mom::processFederationRequestFOMmoduleData(const int FOMmoduleIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestFOMmoduleData " << FOMmoduleIndicator << endl;
 
@@ -1234,12 +1400,12 @@ void Mom::processFederationRequestFOMmoduleData(const int FOMmoduleIndicator)
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestFOMmoduleData" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
-void Mom::processFederationRequestMIMData()
+Responses Mom::processFederationRequestMIMData()
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestMIMData" << endl;
 
@@ -1253,9 +1419,9 @@ void Mom::processFederationRequestMIMData()
 
     std::vector<AttributeValue_t> values;
 
-    my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestMIMData" << endl;
+
+    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
 ParameterHandle Mom::getParameterHandle(const InteractionClassHandle interaction, const std::string& name)
@@ -1268,6 +1434,11 @@ ParameterHandle Mom::getParameterHandle(const InteractionClassHandle interaction
         my_parameter_cache.insert(std::make_pair(name, handle));
         return handle;
     }
+}
+
+Socket* Mom::getSocketForFederate(const FederateHandle& federate_handle)
+{
+    return my_federation.my_server->getSocketLink(federate_handle);
 }
 }
 }

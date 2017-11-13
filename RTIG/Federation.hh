@@ -42,6 +42,7 @@
 #include "HandleManager.hh"
 #include "LBTS.hh"
 #include "MessageBuffer.hh"
+#include "MessageEvent.hh"
 #include "Mom.hh"
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -53,6 +54,7 @@ class AttributeHandleSet;
 class AuditFile;
 class Extent;
 class NM_Join_Federation_Execution;
+class NM_Resign_Federation_Execution;
 class NetworkMessage;
 class RootObject;
 class SecurityServer;
@@ -157,7 +159,7 @@ public:
      * @bug Currently does not check if Federate owns attributes. The
      * Federate Object is deleted.
      */
-    void remove(FederateHandle federate_handle);
+    std::unique_ptr<NM_Resign_Federation_Execution> remove(FederateHandle federate_handle);
 
     /** Make a federate resign the federation.
      *
@@ -185,7 +187,7 @@ public:
 
     /// includes Time Regulation already disabled.
     void removeRegulator(FederateHandle federate_handle);
-    
+
     void setConstrained(FederateHandle federate_handle, bool constrained);
 
     // Synchronization Management.
@@ -324,21 +326,21 @@ public:
                               bool subscribe_or_unsubscribe);
 
     /// broadcastInteraction with time
-    void broadcastInteraction(FederateHandle federate_handle,
-                              InteractionClassHandle interaction_class_handle,
-                              const std::vector<ParameterHandle>& theParameterList,
-                              const std::vector<ParameterValue_t>& attribute_values,
-                              FederationTime time,
-                              RegionHandle region,
-                              const std::string& tag);
+    Responses broadcastInteraction(FederateHandle federate_handle,
+                                   InteractionClassHandle interaction_class_handle,
+                                   const std::vector<ParameterHandle>& theParameterList,
+                                   const std::vector<ParameterValue_t>& attribute_values,
+                                   FederationTime time,
+                                   RegionHandle region,
+                                   const std::string& tag);
 
     /// broadcastInteraction without time
-    void broadcastInteraction(FederateHandle federate_handle,
-                              InteractionClassHandle interaction_class_handle,
-                              const std::vector<ParameterHandle>& parameters,
-                              const std::vector<ParameterValue_t>& parameters_values,
-                              RegionHandle region,
-                              const std::string& tag);
+    Responses broadcastInteraction(FederateHandle federate_handle,
+                                   InteractionClassHandle interaction_class_handle,
+                                   const std::vector<ParameterHandle>& parameters,
+                                   const std::vector<ParameterValue_t>& parameters_values,
+                                   RegionHandle region,
+                                   const std::string& tag);
 
     // --------------------------
     // -- Ownership Management --

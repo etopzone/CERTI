@@ -36,6 +36,7 @@ class AuditFile;
 class NM_Join_Federation_Execution;
 class SocketServer;
 class SocketTCP;
+class NM_Create_Federation_Execution;
 
 namespace rtig {
 
@@ -65,7 +66,7 @@ public:
      @param handle Federation handle
      @param mc_link
      */
-    void createFederation(const std::string& name,
+    std::unique_ptr<NM_Create_Federation_Execution> createFederation(const std::string& name,
                           const FederationHandle handle,
                           SocketServer& socket_server,
                           AuditFile& audit,
@@ -76,7 +77,7 @@ public:
      @param handle Federation handle
      @param FEDid execution id. of the federation (i.e. file name)
      */
-    void createFederation(const std::string& name,
+    std::unique_ptr<NM_Create_Federation_Execution> createFederation(const std::string& name,
                           const FederationHandle handle,
                           SocketServer& socket_server,
                           AuditFile& audit,

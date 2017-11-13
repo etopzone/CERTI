@@ -26,6 +26,7 @@
 #include <unordered_map>
 
 #include "Federation.hh"
+#include "MessageEvent.hh"
 #include "RootObject.hh"
 
 namespace certi {
@@ -49,10 +50,7 @@ public:
         NoActions
     };
 
-    enum class OrderType {
-        Receive,
-        TimeStamp
-    };
+    enum class OrderType { Receive, TimeStamp };
 
     static bool isAvailableInRootObjectAndCompliant(const RootObject& root);
 
@@ -106,114 +104,122 @@ public:
     void updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
     void updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
-    // Interactions
-    void processInteraction(/*const FederateHandle federate_handle,*/
-                            const InteractionClassHandle interaction_class_handle,
-                            const std::vector<ParameterHandle>& parameter_handles,
-                            const std::vector<ParameterValue_t>& parameter_values,
-                            const RegionHandle region_handle);
+    void
+    updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta);
 
-    void processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod);
-    void processFederateModifyAttributeState(const FederateHandle& federate_handle,
+    // Interactions
+    Responses processInteraction(/*const FederateHandle federate_handle,*/
+                                 const InteractionClassHandle interaction_class_handle,
+                                 const std::vector<ParameterHandle>& parameter_handles,
+                                 const std::vector<ParameterValue_t>& parameter_values,
+                                 const RegionHandle region_handle);
+
+    Responses processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod);
+    Responses processFederateModifyAttributeState(const FederateHandle& federate_handle,
                                              const ObjectHandle objectInstance,
                                              const AttributeHandle attribute,
                                              const bool attributeState);
-    void processFederateSetSwitches(const FederateHandle& federate_handle,
+    Responses processFederateSetSwitches(const FederateHandle& federate_handle,
                                     const bool conveyRegionDesignatorSets,
                                     const bool conveyProducingFederate,
                                     const bool serviceReporting,
                                     const bool exceptionReporting);
-    void processFederateRequestPublications(const FederateHandle& federate_handle);
-    void processFederateRequestSubscriptions(const FederateHandle& federate_handle);
-    void processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHandle& federate_handle);
-    void processFederateRequestObjectInstancesUpdated(const FederateHandle& federate_handle);
-    void processFederateRequestObjectInstancesReflected(const FederateHandle& federate_handle);
-    void processFederateRequestUpdatesSent(const FederateHandle& federate_handle);
-    void processFederateRequestInteractionsSent(const FederateHandle& federate_handle);
-    void processFederateRequestReflectionsReceived(const FederateHandle& federate_handle);
-    void processFederateRequestInteractionsReceived(const FederateHandle& federate_handle);
-    void processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
+    Responses processFederateRequestPublications(const FederateHandle& federate_handle);
+    Responses processFederateRequestSubscriptions(const FederateHandle& federate_handle);
+    Responses processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHandle& federate_handle);
+    Responses processFederateRequestObjectInstancesUpdated(const FederateHandle& federate_handle);
+    Responses processFederateRequestObjectInstancesReflected(const FederateHandle& federate_handle);
+    Responses processFederateRequestUpdatesSent(const FederateHandle& federate_handle);
+    Responses processFederateRequestInteractionsSent(const FederateHandle& federate_handle);
+    Responses processFederateRequestReflectionsReceived(const FederateHandle& federate_handle);
+    Responses processFederateRequestInteractionsReceived(const FederateHandle& federate_handle);
+    Responses processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
                                                          const ObjectHandle& objectInstance);
-    void processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator);
-    void processFederateResignFederationExecution(const FederateHandle& federate_handle,
-                                                  const ResignAction resignAction);
-    void processFederateSynchronizationPointAchieved(const FederateHandle& federate_handle, const std::string& label);
-    void processFederateFederateSaveBegun(const FederateHandle& federate_handle);
-    void processFederateFederateSaveComplete(const FederateHandle& federate_handle, const bool successIndicator);
-    void processFederateFederateRestoreComplete(const FederateHandle& federate_handle, const bool successIndicator);
-    void processFederatePublishObjectClassAttributes(const FederateHandle& federate_handle,
-                                                     const ObjectClassHandle& objectClass,
-                                                     const std::vector<AttributeHandle>& attributeList);
-    void processFederateUnpublishObjectClassAttributes(const FederateHandle& federate_handle,
-                                                       const ObjectClassHandle& objectClass,
-                                                       const std::vector<AttributeHandle>& attributeList);
-    void processFederatePublishInteractionClass(const FederateHandle& federate_handle,
-                                                const InteractionClassHandle& interactionClass);
-    void processFederateUnpublishInteractionClass(const FederateHandle& federate_handle,
-                                                  const InteractionClassHandle& interactionClass);
-    void processFederateSubscribeObjectClassAttributes(const FederateHandle& federate_handle,
-                                                       const ObjectClassHandle& objectClass,
-                                                       const std::vector<AttributeHandle>& attributeList,
+    Responses processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator);
+    Responses processFederateResignFederationExecution(const FederateHandle& federate_handle,
+                                                       const ResignAction resignAction);
+    Responses processFederateSynchronizationPointAchieved(const FederateHandle& federate_handle,
+                                                          const std::string& label);
+    Responses processFederateFederateSaveBegun(const FederateHandle& federate_handle);
+    Responses processFederateFederateSaveComplete(const FederateHandle& federate_handle, const bool successIndicator);
+    Responses processFederateFederateRestoreComplete(const FederateHandle& federate_handle,
+                                                     const bool successIndicator);
+    Responses processFederatePublishObjectClassAttributes(const FederateHandle& federate_handle,
+                                                          const ObjectClassHandle& objectClass,
+                                                          const std::vector<AttributeHandle>& attributeList);
+    Responses processFederateUnpublishObjectClassAttributes(const FederateHandle& federate_handle,
+                                                            const ObjectClassHandle& objectClass,
+                                                            const std::vector<AttributeHandle>& attributeList);
+    Responses processFederatePublishInteractionClass(const FederateHandle& federate_handle,
+                                                     const InteractionClassHandle& interactionClass);
+    Responses processFederateUnpublishInteractionClass(const FederateHandle& federate_handle,
+                                                       const InteractionClassHandle& interactionClass);
+    Responses processFederateSubscribeObjectClassAttributes(const FederateHandle& federate_handle,
+                                                            const ObjectClassHandle& objectClass,
+                                                            const std::vector<AttributeHandle>& attributeList,
+                                                            const bool active);
+    Responses processFederateUnsubscribeObjectClassAttributes(const FederateHandle& federate_handle,
+                                                              const ObjectClassHandle& objectClass,
+                                                              const std::vector<AttributeHandle>& attributeList);
+    Responses processFederateSubscribeInteractionClass(const FederateHandle& federate_handle,
+                                                       const InteractionClassHandle& interactionClass,
                                                        const bool active);
-    void processFederateUnsubscribeObjectClassAttributes(const FederateHandle& federate_handle,
-                                                         const ObjectClassHandle& objectClass,
-                                                         const std::vector<AttributeHandle>& attributeList);
-    void processFederateSubscribeInteractionClass(const FederateHandle& federate_handle,
-                                                  const InteractionClassHandle& interactionClass,
-                                                  const bool active);
-    void processFederateUnsubscribeInteractionClass(const FederateHandle& federate_handle,
-                                                    const InteractionClassHandle& interactionClass);
-    void processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
-                                             const ObjectHandle& objectInstance,
-                                             const std::string& tag,
-                                             const FederationTime& timeStamp);
-    void processFederateLocalDeleteObjectInstance(const FederateHandle& federate_handle,
-                                                  const ObjectHandle& objectInstance);
-    void processFederateRequestAttributeTransportationTypeChange(const FederateHandle& federate_handle,
-                                                                 const ObjectHandle& objectInstance,
-                                                                 const std::vector<AttributeHandle>& attributeList,
-                                                                 const std::string& transportation);
-    void processFederateRequestInteractionTransportationTypeChange(const FederateHandle& federate_handle,
-                                                                   const InteractionClassHandle& interactionClass,
-                                                                   const std::string& transportation);
-    void processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHandle& federate_handle,
-                                                                   const ObjectHandle& objectInstance,
-                                                                   const std::vector<AttributeHandle>& attributeList);
-    void processFederateEnableTimeRegulation(const FederateHandle& federate_handle, const int lookahead);
-    void processFederateDisableTimeRegulation(const FederateHandle& federate_handle);
-    void processFederateEnableTimeConstrained(const FederateHandle& federate_handle);
-    void processFederateDisableTimeConstrained(const FederateHandle& federate_handle);
-    void processFederateTimeAdvanceRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
-    void processFederateTimeAdvanceRequestAvailable(const FederateHandle& federate_handle, const FederationTime& timeStamp);
-    void processFederateNextMessageRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
-    void processFederateNextMessageRequestAvailable(const FederateHandle& federate_handle,
-                                                    const FederationTime& timeStamp);
-    void processFederateFlushQueueRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
-    void processFederateEnableAsynchronousDelivery(const FederateHandle& federate_handle);
-    void processFederateDisableAsynchronousDelivery(const FederateHandle& federate_handle);
-    void processFederateModifyLookahead(const FederateHandle& federate_handle, const int lookahead);
-    void processFederateChangeAttributeOrderType(const FederateHandle& federate_handle,
-                                                 const ObjectHandle& objectInstance,
-                                                 const std::vector<AttributeHandle>& attributeList,
-                                                 const OrderType& sendOrder);
-    void processFederateChangeInteractionOrderType(const FederateHandle& federate_handle,
-                                                   const InteractionClassHandle& interactionClass,
-                                                   const OrderType& sendOrder);
-    void processFederationSetSwitches(const bool autoProvide);
-    void processFederationRequestSynchronizationPoints();
-    void processFederationRequestSynchronizationPointStatus(const std::string& syncPointName);
-    void processFederationRequestFOMmoduleData(const int FOMmoduleIndicator);
-    void processFederationRequestMIMData();
+    Responses processFederateUnsubscribeInteractionClass(const FederateHandle& federate_handle,
+                                                         const InteractionClassHandle& interactionClass);
+    Responses processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
+                                                  const ObjectHandle& objectInstance,
+                                                  const std::string& tag,
+                                                  const FederationTime& timeStamp);
+    Responses processFederateLocalDeleteObjectInstance(const FederateHandle& federate_handle,
+                                                       const ObjectHandle& objectInstance);
+    Responses processFederateRequestAttributeTransportationTypeChange(const FederateHandle& federate_handle,
+                                                                      const ObjectHandle& objectInstance,
+                                                                      const std::vector<AttributeHandle>& attributeList,
+                                                                      const std::string& transportation);
+    Responses processFederateRequestInteractionTransportationTypeChange(const FederateHandle& federate_handle,
+                                                                        const InteractionClassHandle& interactionClass,
+                                                                        const std::string& transportation);
+    Responses
+    processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHandle& federate_handle,
+                                                              const ObjectHandle& objectInstance,
+                                                              const std::vector<AttributeHandle>& attributeList);
+    Responses processFederateEnableTimeRegulation(const FederateHandle& federate_handle, const int lookahead);
+    Responses processFederateDisableTimeRegulation(const FederateHandle& federate_handle);
+    Responses processFederateEnableTimeConstrained(const FederateHandle& federate_handle);
+    Responses processFederateDisableTimeConstrained(const FederateHandle& federate_handle);
+    Responses processFederateTimeAdvanceRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
+    Responses processFederateTimeAdvanceRequestAvailable(const FederateHandle& federate_handle,
+                                                         const FederationTime& timeStamp);
+    Responses processFederateNextMessageRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
+    Responses processFederateNextMessageRequestAvailable(const FederateHandle& federate_handle,
+                                                         const FederationTime& timeStamp);
+    Responses processFederateFlushQueueRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp);
+    Responses processFederateEnableAsynchronousDelivery(const FederateHandle& federate_handle);
+    Responses processFederateDisableAsynchronousDelivery(const FederateHandle& federate_handle);
+    Responses processFederateModifyLookahead(const FederateHandle& federate_handle, const int lookahead);
+    Responses processFederateChangeAttributeOrderType(const FederateHandle& federate_handle,
+                                                      const ObjectHandle& objectInstance,
+                                                      const std::vector<AttributeHandle>& attributeList,
+                                                      const OrderType& sendOrder);
+    Responses processFederateChangeInteractionOrderType(const FederateHandle& federate_handle,
+                                                        const InteractionClassHandle& interactionClass,
+                                                        const OrderType& sendOrder);
+    Responses processFederationSetSwitches(const bool autoProvide);
+    Responses processFederationRequestSynchronizationPoints();
+    Responses processFederationRequestSynchronizationPointStatus(const std::string& syncPointName);
+    Responses processFederationRequestFOMmoduleData(const int FOMmoduleIndicator);
+    Responses  processFederationRequestMIMData();
 
     // Support
     void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
-    void preparePeriodicAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
+    void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
+                                             const std::vector<AttributeHandle>& attributes);
 
 private:
     void display() const;
-    
+
     ParameterHandle getParameterHandle(const InteractionClassHandle interaction, const std::string& name);
-    
+
     /** This handle is used to detect MOM interactions.
      * It does not really belong to the federation.
      */
@@ -231,6 +237,7 @@ private:
     std::unordered_map<std::string, ParameterHandle> my_parameter_cache;
 
     std::map<ObjectHandle, std::map<AttributeHandle, AttributeValue_t>> my_attribute_values_cache;
+    std::map<FederateHandle, std::map<AttributeHandle, int>> my_count_attributes_cache;
 
     std::map<ObjectHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
 
@@ -249,11 +256,12 @@ private:
     std::vector<AttributeHandle> decodeVectorAttributeHandle(const ParameterValue_t& data);
     FedTime decodeFederationTime(const ParameterValue_t& data);
     OrderType decodeOrderType(const ParameterValue_t& data);
-    
 
     AttributeValue_t encodeMB();
 
     MessageBuffer mb;
+
+    Socket* getSocketForFederate(const FederateHandle& federate_handle);
 };
 }
 } // namespace certi/rtig

@@ -40,8 +40,6 @@ namespace rtig {
 
 class MessageProcessor {
 public:
-    using Responses = std::vector<MessageEvent<NetworkMessage>>;
-
     MessageProcessor(AuditFile& audit_server,
                      SocketServer& socket_server,
                      HandleManager<Handle>& handle_generator,

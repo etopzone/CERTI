@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
 
+
 #define TEST_FOR_FEDERATION
 #include <RTIG/Federation.hh>
 
+#include <libCERTI/NM_Classes.hh>
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/SocketServer.hh>
 
