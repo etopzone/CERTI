@@ -42,10 +42,38 @@ namespace rtig {
     
     // We never send those reports as of today :
     
+    /** The interaction shall be sent by the RTI when an exception occurs as the result of a service invocation at
+     * the indicated joined federate. This interaction shall be sent only if the
+     * HLAmanager.HLAfederate.HLAadjust.HLAexceptionReporting switch changing the HLAreportingState
+     * parameter sets the parameter to HLAtrue for the indicated joined federate.
+     */
     "HLAmanager.HLAfederate.HLAreport.HLAreportException"
+        /** In the case in which the HLAreportMOMexception interaction is
+        * sent by the RTI because a service interaction (an interaction that
+        * imitates a federate’s invocation of an HLA service) was sent and
+        * not all of the service’s preconditions are met, the value of this
+        * parameter shall be the name of the
+        * HLAinteractionRoot.HLA.Manager.HLAfederate.HLAservice
+        * interaction that was sent.
+        * In the case in which the HLAreportMOMexception interaction is
+        * sent by the RTI because a MOM interaction without all of the
+        * necessary parameters was sent, the value of this parameter shall
+        * be the name of the class of the interaction that was sent.
+        * The name of the interaction class provided shall always be fully
+        * qualified, as defined in the OMT, so as to avoid potential
+        * ambiguities.
+        */
         "HLAservice"
-        "HLAexception"
+        "HLAexception" /// Textual depiction of the exception.
     
+    /** This interaction shall be sent by the RTI whenever an HLA service is invoked, either by the indicated
+    * joined federate or by the RTI at the indicated joined federate, and the service reporting switch is enabled
+    * for the indicated joined federate.
+    * This interaction shall always contain the arguments supplied by the service invoker. If the service
+    * invocation was successful, the interaction also shall contain the value returned to the invoker (if the
+    * service returns a value); otherwise, the interaction also shall contain an indication of the exception that
+    * was raised to the invoker.
+    */
     "HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation"
         "HLAservice"
         "HLAsuccessIndicator"
@@ -54,11 +82,16 @@ namespace rtig {
         "HLAexception"
         "HLAserialNumber"
     
+    /** The interaction shall be sent by the RTI when one the following occurs: a MOM interaction without all the
+     * necessary parameters is sent or an interaction that imitates a federate’s invocation of an HLA service is
+     * sent and not all of the service’s preconditions are met.
+     */
     "HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception"
         "HLAservice"
         "HLAexception"
         "HLAparameterError"
     
+    /** The interaction shall be sent when a federate has been lost from the federation due to a fault. */
     "HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost"
         "HLAfederateName"
         "HLAtimestamp"
@@ -665,6 +698,7 @@ Responses Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const Feder
                                             getParameterHandle(interaction_handle, "HLAobjectInstanceCounts")};
     AttributeHandle privilegeToDelete = my_root.ObjectClasses->getAttributeHandle(
         "HLAprivilegeToDeleteObject", my_root.ObjectClasses->getHandleFromName("HLAobjectRoot"));
+    // FIXME as of now we only check for object ownership instead of looking at privilegeToDelete ownership
 
     std::map<ObjectClassHandle, int> objectInstancesCounts;
 
@@ -786,8 +820,9 @@ Responses Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_
     auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
+    std::map<ObjectClassHandle, int> bestEffortUpdates; // FIXME we do not track best effort for now
     std::vector<AttributeValue_t> bestEffortValues{
-        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts(bestEffortUpdates)};
     auto bestEffortResp
         = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
@@ -830,8 +865,9 @@ Responses Mom::processFederateRequestInteractionsSent(const FederateHandle& fede
     auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
+    std::map<ObjectClassHandle, int> bestEffortUpdates; // FIXME we do not track best effort for now
     std::vector<AttributeValue_t> bestEffortValues{
-        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts(bestEffortUpdates)};
     auto bestEffortResp
         = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
     responses.insert(
@@ -874,8 +910,9 @@ Responses Mom::processFederateRequestReflectionsReceived(const FederateHandle& f
     auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
+    std::map<ObjectClassHandle, int> bestEffortUpdates; // FIXME we do not track best effort for now
     std::vector<AttributeValue_t> bestEffortValues{
-        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts(bestEffortUpdates)};
     auto bestEffortResp
         = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
     responses.insert(
@@ -918,8 +955,9 @@ Responses Mom::processFederateRequestInteractionsReceived(const FederateHandle& 
     auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
+    std::map<ObjectClassHandle, int> bestEffortUpdates; // FIXME we do not track best effort for now
     std::vector<AttributeValue_t> bestEffortValues{
-        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts(bestEffortUpdates)};
     auto bestEffortResp
         = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
     responses.insert(
@@ -1676,18 +1714,16 @@ Responses Mom::processFederationRequestSynchronizationPointStatus(const std::str
         return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
     }
 
-    // TODO
-
     std::map<FederateHandle, int> syncPointFederates;
     for (const auto& pair : my_federation.my_federates) {
         if (pair.second->hasSynchronizationLabel(syncPointName)) {
             // we should trace if the federate is attempting to register or moving to sync point
-            // for now as the response is sent immediately we only trace the second one
+            // FIXME for now as the response is sent immediately we only trace the second one
             syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::MovingToSyncPoint);
         }
         else {
             // we should trace if the federate is waiting for the rest of the federation or does not care about the sync
-            // for now as the information is not available, we answer waiting
+            // FIXME for now as the information is not available, we answer waiting
             syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::WaitingForRestOfFederation);
         }
     }
