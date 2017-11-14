@@ -23,6 +23,7 @@
 
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
 
 #include <libCERTI/FedTimeD.hh>
 // #include "certi.hh"
@@ -136,7 +137,7 @@ public:
     void removeSynchronizationLabel(const std::string& label);
 
     /// Returns whether the federate is already synchronized with this label.
-    bool isSynchronizationLabel(const std::string& label) const;
+    bool hasSynchronizationLabel(const std::string& label) const;
 
 private:
     FederateHandle my_handle; /// Federate ID.

@@ -509,11 +509,10 @@ void Federation::registerSynchronization(FederateHandle federate_handle, const s
     // If not already in pending labels, insert to list.
     auto result = my_synchronization_labels.insert(std::make_pair(label, tag));
     if (!result.second) {
-        throw FederationAlreadyPaused("Label already pending"); // Label already pending.
+        throw FederationAlreadyPaused("Label already pending");
     }
 
     // Add label to each federate (may throw RTIinternalError).
-    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
     for (const auto& kv : my_federates) {
         kv.second->addSynchronizationLabel(label);
     }
@@ -539,7 +538,7 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     // If not already in pending labels, insert to list.
     auto result = my_synchronization_labels.insert(pair<const string, string>(label, tag));
     if (!result.second) {
-        throw FederationAlreadyPaused("Label already pending"); // Label already pending.
+        throw FederationAlreadyPaused("Label already pending");
     }
 
     // FIXME This check is here to avoid regression, but there is a possible BUG here
@@ -570,9 +569,8 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
     federate.removeSynchronizationLabel(label);
 
     // Test in every federate is synchronized. Otherwise, quit method.
-    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
     for (const auto& kv : my_federates) {
-        if (kv.second->isSynchronizationLabel(label)) {
+        if (kv.second->hasSynchronizationLabel(label)) {
             return;
         }
     }
@@ -1288,6 +1286,10 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
     // It may throw *NotDefined
     my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, time, tag);
+    
+    if(my_mom) {
+        my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
+    }
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
                          << object_handle << endl;
@@ -1309,6 +1311,12 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
     // It may throw *NotDefined
     my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
+    
+    if(my_mom) {
+        my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
+        my_mom->registerUpdate(federate, object->getClass());
+        my_mom->updateUpdatesSent(federate);
+    }
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
                          << object_handle << endl;
@@ -1380,6 +1388,9 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
+        my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
+        my_mom->updateInteractionsSent(federate_handle);
+        
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             auto mom_responses = my_mom->processInteraction(
@@ -1434,6 +1445,9 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
+        my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
+        my_mom->updateInteractionsSent(federate_handle);
+        
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
             auto mom_responses = my_mom->processInteraction(

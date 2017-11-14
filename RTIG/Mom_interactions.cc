@@ -554,7 +554,7 @@ Responses Mom::processFederateRequestPublications(const FederateHandle& federate
 Responses Mom::processFederateRequestSubscriptions(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestSubscriptions " << federate_handle << endl;
-    
+
     Responses responses;
 
     /** The interaction shall be sent by the RTI in response to an interaction of class HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions.
@@ -674,8 +674,7 @@ Responses Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const Feder
         ++objectInstancesCounts[object];
     }
 
-    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
-                                         encodeObjectClassBasedCounts(objectInstancesCounts)};
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeHandleBasedCounts(objectInstancesCounts)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesThatCanBeDeleted" << endl;
 
@@ -688,7 +687,7 @@ Responses Mom::processFederateRequestObjectInstancesThatCanBeDeleted(const Feder
 Responses Mom::processFederateRequestObjectInstancesUpdated(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstancesUpdated " << federate_handle << endl;
-    
+
     /** The interaction shall be sent by the RTI in response to an interaction of class
      * HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated. It shall report the number
      * of object instances (by registered class of the object instances) for which the joined federate has
@@ -702,38 +701,75 @@ Responses Mom::processFederateRequestObjectInstancesUpdated(const FederateHandle
     std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
                                             getParameterHandle(interaction_handle, "HLAobjectInstanceCounts")};
 
-    // TODO
+    std::map<ObjectClassHandle, int> objectInstancesCounts;
 
-    std::vector<AttributeValue_t> values;
+    for (const auto& pair : my_object_instances_updated[federate_handle]) {
+        if (not pair.second.empty()) {
+            objectInstancesCounts[pair.first] = pair.second.size();
+        }
+    }
+
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeHandleBasedCounts(objectInstancesCounts)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesUpdated" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Request that the RTI send a report interaction that contains the object instances for which a joined federate
+ * has had a Reflect Attribute Values † service invocation. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected.
+ */
 Responses Mom::processFederateRequestObjectInstancesReflected(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstancesReflected " << federate_handle << endl;
-    
+
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected. It shall report the number
+     * of object instances (by registered class of the object instances) for which the joined federate has had a
+     * Reflect Attribute Values † service invocation. If the joined federate has no object instances that are
+     * reflected for a given transport type, then a single interaction shall be sent as a NULL response with the
+     * HLAobjectInstanceCounts parameter having an undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected");
 
     std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
                                             getParameterHandle(interaction_handle, "HLAobjectInstanceCounts")};
 
-    // TODO
+    std::map<ObjectClassHandle, int> objectInstancesCounts;
 
-    std::vector<AttributeValue_t> values;
+    for (const auto& pair : my_object_instances_reflected[federate_handle]) {
+        if (not pair.second.empty()) {
+            objectInstancesCounts[pair.first] = pair.second.size();
+        }
+    }
+
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle), encodeHandleBasedCounts(objectInstancesCounts)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstancesReflected" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Request that the RTI send a report interaction that contains the number of updates that a joined federate
+ * has generated. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent for each transportation type.
+ */
 Responses Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestUpdatesSent " << federate_handle << endl;
 
+    Responses responses;
+
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent. It shall report the number of updates
+     * sent (by registered class of the object instances of the updates) by the joined federate since the beginning
+     * of the federation execution. One interaction of this class shall be sent by the RTI for each transportation
+     * type used. If the joined federate has no updates sent for a given transportation type, then a single
+     * interaction shall be sent as a NULL response with the HLAupdateCounts parameter having an undefined
+     * value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent");
 
@@ -741,19 +777,43 @@ Responses Mom::processFederateRequestUpdatesSent(const FederateHandle& federate_
                                             getParameterHandle(interaction_handle, "HLAtransportation"),
                                             getParameterHandle(interaction_handle, "HLAupdateCounts")};
 
-    // TODO
-
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                         encodeString("HLAreliable"),
+                                         encodeHandleBasedCounts(my_updates_sent[federate_handle])};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestUpdatesSent" << endl;
 
-    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    std::vector<AttributeValue_t> bestEffortValues{
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+    auto bestEffortResp
+        = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    return responses;
 }
 
+/** Request that the RTI send a report interaction that contains the number of interactions that a joined
+ * federate has generated. This count shall include interactions sent with region. It shall result in one
+ * interaction of class HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent for each
+ * transportation type.
+ */
 Responses Mom::processFederateRequestInteractionsSent(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestInteractionsSent " << federate_handle << endl;
 
+    Responses responses;
+
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent. It shall report the number of
+     * interactions sent (by sent class of the interactions) by the joined federate since the beginning of the
+     * federation execution. This count shall include interactions sent with region. One interaction of this class
+     * shall be sent by the RTI for each transportation type used. If the joined federate has no interactions sent for
+     * a given transportation type, then a single interaction shall be sent as a NULL response with the
+     * HLAinteractionCounts parameter having an undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent");
 
@@ -761,19 +821,43 @@ Responses Mom::processFederateRequestInteractionsSent(const FederateHandle& fede
                                             getParameterHandle(interaction_handle, "HLAtransportation"),
                                             getParameterHandle(interaction_handle, "HLAinteractionCounts")};
 
-    // TODO
-
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                         encodeString("HLAreliable"),
+                                         encodeHandleBasedCounts(my_interactions_sent[federate_handle])};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionsSent" << endl;
 
-    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    std::vector<AttributeValue_t> bestEffortValues{
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+    auto bestEffortResp
+        = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
+    responses.insert(
+        end(responses), make_move_iterator(begin(bestEffortResp)), make_move_iterator(end(bestEffortResp)));
+
+    return responses;
 }
 
+/** Request that the RTI send a report interaction that contains the number of reflections that a joined federate
+ * has received. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived for each transportation type.
+ */
 Responses Mom::processFederateRequestReflectionsReceived(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestReflectionsReceived " << federate_handle << endl;
 
+    Responses responses;
+
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived. It shall report the number of
+     * reflections received (by registered class of the object instances of the reflects) by the joined federate since
+     * the beginning of the federation execution. One interaction of this class shall be sent by the RTI for each
+     * transportation type used. If the joined federate has no reflections received for a given transportation type,
+     * then a single interaction shall be sent as a NULL response with the HLAreflectCounts parameter having
+     * an undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived");
 
@@ -781,19 +865,43 @@ Responses Mom::processFederateRequestReflectionsReceived(const FederateHandle& f
                                             getParameterHandle(interaction_handle, "HLAtransportation"),
                                             getParameterHandle(interaction_handle, "HLAreflectCounts")};
 
-    // TODO
-
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                         encodeString("HLAreliable"),
+                                         encodeHandleBasedCounts(my_reflections_received[federate_handle])};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestReflectionsReceived" << endl;
 
-    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    std::vector<AttributeValue_t> bestEffortValues{
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+    auto bestEffortResp
+        = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
+    responses.insert(
+        end(responses), make_move_iterator(begin(bestEffortResp)), make_move_iterator(end(bestEffortResp)));
+
+    return responses;
 }
 
+/** Request that the RTI send a report interaction that contains the number of interactions that a joined
+ * federate has received. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived for each transportation type.
+ */
 Responses Mom::processFederateRequestInteractionsReceived(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestInteractionsReceived " << federate_handle << endl;
 
+    Responses responses;
+
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived. It shall report the number of
+     * interactions received (by sent class of the interactions) by the joined federate since the beginning of the
+     * federation execution. One interaction of this class shall be sent by the RTI for each transportation type
+     * used. If the joined federate has no interactions received for a given transportation type, then a single
+     * interaction shall be sent as a NULL response with the HLAinteractionCounts parameter having an
+     * undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived");
 
@@ -801,21 +909,42 @@ Responses Mom::processFederateRequestInteractionsReceived(const FederateHandle& 
                                             getParameterHandle(interaction_handle, "HLAtransportation"),
                                             getParameterHandle(interaction_handle, "HLAinteractionCounts")};
 
-    // TODO
-
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                         encodeString("HLAreliable"),
+                                         encodeHandleBasedCounts(my_interactions_received[federate_handle])};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionsReceived" << endl;
 
-    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    auto resp = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    std::vector<AttributeValue_t> bestEffortValues{
+        encodeUInt32(federate_handle), encodeString("HLAbestEffort"), encodeHandleBasedCounts({})};
+    auto bestEffortResp
+        = my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, bestEffortValues, 0, "");
+    responses.insert(
+        end(responses), make_move_iterator(begin(bestEffortResp)), make_move_iterator(end(bestEffortResp)));
+
+    return responses;
 }
 
+/** Request that the RTI send a report interaction that contains the information that a joined federate maintains
+ * on a single object instance. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation.
+ */
 Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
                                                                const ObjectHandle& objectInstance)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestObjectInstanceInformation " << federate_handle << ", "
                        << objectInstance << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation. It shall report on a
+     * single object instance and portray the instance attributes of that object instance that are owned by the
+     * joined federate, the registered class of the object instance, and the known class of the object instance at
+     * that joined federate. If the joined federate does not know the object instance, a single interaction shall be
+     * sent as a NULL response with the HLAownedInstanceAttributeList parameter having an undefined value.
+     */
     auto interaction_handle = my_root.Interactions->getHandleFromName(
         "HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation");
 
@@ -825,20 +954,55 @@ Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHan
                                             getParameterHandle(interaction_handle, "HLAregisteredClass"),
                                             getParameterHandle(interaction_handle, "HLAknownClass")};
 
-    // TODO
+    try {
+        auto object = my_root.objects->getObject(objectInstance);
+        
+        ObjectClassHandle registeredClass = object->getClass();
+        ObjectClassHandle knownClass = registeredClass; // TODO
+        
+        std::vector<AttributeHandle> ownedInstanceAttributeList;
+        for(const auto& pair: my_root.ObjectClasses->getObjectFromHandle(registeredClass)->getHandleClassAttributeMap()) {
+            if(object->isAttributeOwnedByFederate(pair.first, federate_handle)) {
+                ownedInstanceAttributeList.push_back(pair.first);
+            }
+        }
+        
+        std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                             encodeUInt32(objectInstance),
+                                             encodeVectorHandle(ownedInstanceAttributeList),
+                                             encodeUInt32(registeredClass),
+                                             encodeUInt32(knownClass)};
 
-    std::vector<AttributeValue_t> values;
+        Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstanceInformation" << endl;
 
-    Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstanceInformation" << endl;
+        return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    }
+    catch (ObjectNotKnown& e) {
+        std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
+                                             encodeUInt32(objectInstance),
+                                             encodeVectorHandle({}),
+                                             encodeUInt32(0),
+                                             encodeUInt32(0)};
 
-    return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+        Debug(D, pdGendoc) << "exit  Mom::processFederateRequestObjectInstanceInformation" << endl;
+
+        return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    }
 }
 
+/** Request that the RTI shall send a report interaction with the content of the specified FOM module that was
+ * specified by the federate. The FOM module is indicated by the order number in the federate’s
+ * HLAFOMmoduleDesignatorList attribute.
+ */
 Responses Mom::processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateRequestFOMmoduleData " << federate_handle << ", "
                        << FOMmoduleIndicator << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData. It shall report the content of the
+     * specified FOM module for the federate.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData");
 
@@ -846,15 +1010,21 @@ Responses Mom::processFederateRequestFOMmoduleData(const FederateHandle& federat
                                             getParameterHandle(interaction_handle, "HLAFOMmoduleIndicator"),
                                             getParameterHandle(interaction_handle, "HLAFOMmoduleData")};
 
-    // TODO
+    std::string fomModuleData = "TODO"; // TODO
 
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{
+        encodeUInt32(federate_handle), encodeUInt32(FOMmoduleIndicator), encodeString(fomModuleData)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestFOMmoduleData" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Cause the RTI to react as if the Resign Federation Execution service has been invoked by the specified
+ * joined federate using the specified arguments (see 4.10).
+ * 
+ * A joined federate shall be able to send this interaction anytime.
+ */
 Responses Mom::processFederateResignFederationExecution(const FederateHandle& federate_handle,
                                                         const ResignAction resignAction)
 {
@@ -873,6 +1043,9 @@ Responses Mom::processFederateResignFederationExecution(const FederateHandle& fe
     return responses;
 }
 
+/** Cause the RTI to react as if the Synchronization Point Achieved service has been invoked by the specified
+ * joined federate using the specified arguments (see 4.14).
+ */
 Responses Mom::processFederateSynchronizationPointAchieved(const FederateHandle& federate_handle,
                                                            const std::string& label)
 {
@@ -888,6 +1061,9 @@ Responses Mom::processFederateSynchronizationPointAchieved(const FederateHandle&
     return responses;
 }
 
+/** Cause the RTI to react as if the Federate Save Begun service has been invoked by the specified joined
+ * federate using the specified arguments (see 4.18).
+ */
 Responses Mom::processFederateFederateSaveBegun(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveBegun " << federate_handle << endl;
@@ -901,6 +1077,9 @@ Responses Mom::processFederateFederateSaveBegun(const FederateHandle& federate_h
     return responses;
 }
 
+/** Cause the RTI to react as if the Federate Save Complete service has been invoked by the specified joined
+ * federate using the specified arguments (see 4.19).
+ */
 Responses Mom::processFederateFederateSaveComplete(const FederateHandle& federate_handle, const bool successIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveComplete " << federate_handle << ", "
@@ -915,6 +1094,9 @@ Responses Mom::processFederateFederateSaveComplete(const FederateHandle& federat
     return responses;
 }
 
+/** Cause the RTI to react as if the Federate Restore Complete service has been invoked by the specified
+ * joined federate using the specified arguments (see 4.28).
+ */
 Responses Mom::processFederateFederateRestoreComplete(const FederateHandle& federate_handle,
                                                       const bool successIndicator)
 {
@@ -930,6 +1112,9 @@ Responses Mom::processFederateFederateRestoreComplete(const FederateHandle& fede
     return responses;
 }
 
+/** Cause the RTI to react as if the Publish Object Class Attributes service has been invoked by the specified
+ * joined federate using the specified arguments (see 5.2).
+ */
 Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle& federate_handle,
                                                            const ObjectClassHandle& objectClass,
                                                            const std::vector<AttributeHandle>& attributeList)
@@ -946,6 +1131,9 @@ Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle&
     return responses;
 }
 
+/** Cause the RTI to react as if the Unpublish Object Class Attributes service has been invoked by the
+ * specified joined federate using the specified arguments (see 5.3).
+ */
 Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandle& federate_handle,
                                                              const ObjectClassHandle& objectClass,
                                                              const std::vector<AttributeHandle>& attributeList)
@@ -962,6 +1150,9 @@ Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandl
     return responses;
 }
 
+/** Cause the RTI to react as if the Publish Interaction Class service has been invoked by the specified joined
+ * federate using the specified arguments (see 5.4).
+ */
 Responses Mom::processFederatePublishInteractionClass(const FederateHandle& federate_handle,
                                                       const InteractionClassHandle& interactionClass)
 {
@@ -977,6 +1168,9 @@ Responses Mom::processFederatePublishInteractionClass(const FederateHandle& fede
     return responses;
 }
 
+/** Cause the RTI to react as if the Unpublish Interaction Class service has been invoked by the specified
+ * joined federate using the specified arguments (see 5.5).
+ */
 Responses Mom::processFederateUnpublishInteractionClass(const FederateHandle& federate_handle,
                                                         const InteractionClassHandle& interactionClass)
 {
@@ -992,6 +1186,9 @@ Responses Mom::processFederateUnpublishInteractionClass(const FederateHandle& fe
     return responses;
 }
 
+/** Cause the RTI to react as if the Subscribe Object Class Attributes service has been invoked by the
+ * specified joined federate using the specified arguments (see 5.6).
+ */
 Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandle& federate_handle,
                                                              const ObjectClassHandle& objectClass,
                                                              const std::vector<AttributeHandle>& attributeList,
@@ -1009,6 +1206,9 @@ Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandl
     return responses;
 }
 
+/** Cause the RTI to react as if the Unsubscribe Object Class Attributes service has been invoked by the
+ * specified joined federate using the specified arguments (see 5.7).
+ */
 Responses Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHandle& federate_handle,
                                                                const ObjectClassHandle& objectClass,
                                                                const std::vector<AttributeHandle>& attributeList)
@@ -1025,6 +1225,9 @@ Responses Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHan
     return responses;
 }
 
+/** Cause the RTI to react as if the Subscribe Interaction Class service has been invoked by the specified
+ * joined federate using the specified arguments (see 5.8).
+ */
 Responses Mom::processFederateSubscribeInteractionClass(const FederateHandle& federate_handle,
                                                         const InteractionClassHandle& interactionClass,
                                                         const bool active)
@@ -1041,6 +1244,9 @@ Responses Mom::processFederateSubscribeInteractionClass(const FederateHandle& fe
     return responses;
 }
 
+/** Cause the RTI to react as if the Unsubscribe Interaction Class service has been invoked by the specified
+ * joined federate using the specified arguments (see 5.9).
+ */
 Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& federate_handle,
                                                           const InteractionClassHandle& interactionClass)
 {
@@ -1056,6 +1262,11 @@ Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& 
     return responses;
 }
 
+/** Cause the RTI to react as if the Delete Object Instance service has been invoked by the specified joined
+ * federate using the specified arguments (see 6.14).
+ * If applicable, the retraction handle returned by invoking this service is discarded, and the scheduled action
+ * cannot be retracted.
+ */
 Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
                                                    const ObjectHandle& objectInstance,
                                                    const std::string& tag,
@@ -1073,6 +1284,9 @@ Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federat
     return responses;
 }
 
+/** Cause the RTI to react as if the Local Delete Object Instance service has been invoked by the specified
+ * joined federate using the specified arguments (see 6.16).
+ */
 Responses Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& federate_handle,
                                                         const ObjectHandle& objectInstance)
 {
@@ -1088,6 +1302,9 @@ Responses Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& fe
     return responses;
 }
 
+/** Cause the RTI to react as if the Request Attribute Transportation Type Change service has been invoked
+ * by the specified joined federate using the specified arguments (see 6.23).
+ */
 Responses
 Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandle& federate_handle,
                                                              const ObjectHandle& objectInstance,
@@ -1106,6 +1323,9 @@ Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandl
     return responses;
 }
 
+/** Cause the RTI to react as if the Request Interaction Transportation Type Change service has been invoked
+ * by the specified joined federate using the specified arguments (see 6.27)
+ */
 Responses Mom::processFederateRequestInteractionTransportationTypeChange(const FederateHandle& federate_handle,
                                                                          const InteractionClassHandle& interactionClass,
                                                                          const std::string& transportation)
@@ -1116,12 +1336,15 @@ Responses Mom::processFederateRequestInteractionTransportationTypeChange(const F
     Responses responses;
 
     // TODO
-    
+
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionTransportationTypeChange" << endl;
 
     return responses;
 }
 
+/** Cause the RTI to react as if the Unconditional Attribute Ownership Divestiture service has been invoked
+ * by the specified joined federate using the specified arguments (see 7.2).
+ */
 Responses
 Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHandle& federate_handle,
                                                                const ObjectHandle& objectInstance,
@@ -1139,6 +1362,9 @@ Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHan
     return responses;
 }
 
+/** Cause the RTI to react as if the Enable Time Regulation service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.2).
+ */
 Responses Mom::processFederateEnableTimeRegulation(const FederateHandle& federate_handle, const int lookahead)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeRegulation " << federate_handle << ", " << lookahead
@@ -1153,6 +1379,9 @@ Responses Mom::processFederateEnableTimeRegulation(const FederateHandle& federat
     return responses;
 }
 
+/** Cause the RTI to react as if the Disable Time Regulation service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.4).
+ */
 Responses Mom::processFederateDisableTimeRegulation(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeRegulation " << federate_handle << endl;
@@ -1166,6 +1395,9 @@ Responses Mom::processFederateDisableTimeRegulation(const FederateHandle& federa
     return responses;
 }
 
+/** Cause the RTI to react as if the Enable Time Constrained service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.5).
+ */
 Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeConstrained " << federate_handle << endl;
@@ -1179,6 +1411,9 @@ Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federa
     return responses;
 }
 
+/** Cause the RTI to react as if the Disable Time Constrained service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.7).
+ */
 Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeConstrained " << federate_handle << endl;
@@ -1192,6 +1427,9 @@ Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& feder
     return responses;
 }
 
+/** Cause the RTI to react as if the Time Advance Request service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.8).
+ */
 Responses Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateTimeAdvanceRequest " << federate_handle << ", " << timeStamp
@@ -1206,6 +1444,9 @@ Responses Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_
     return responses;
 }
 
+/** Cause the RTI to react as if the Time Advance Request Available service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.9)
+ */
 Responses Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& federate_handle,
                                                           const FederationTime& timeStamp)
 {
@@ -1221,6 +1462,9 @@ Responses Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& 
     return responses;
 }
 
+/** Cause the RTI to react as if the Next Message Request service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.10)
+ */
 Responses Mom::processFederateNextMessageRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateNextMessageRequest " << federate_handle << ", " << timeStamp
@@ -1235,6 +1479,9 @@ Responses Mom::processFederateNextMessageRequest(const FederateHandle& federate_
     return responses;
 }
 
+/** Cause the RTI to react as if the Next Message Request Available service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.11)
+ */
 Responses Mom::processFederateNextMessageRequestAvailable(const FederateHandle& federate_handle,
                                                           const FederationTime& timeStamp)
 {
@@ -1250,6 +1497,9 @@ Responses Mom::processFederateNextMessageRequestAvailable(const FederateHandle& 
     return responses;
 }
 
+/** Cause the RTI to react as if the Flush Queue Request service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.12)
+ */
 Responses Mom::processFederateFlushQueueRequest(const FederateHandle& federate_handle, const FederationTime& timeStamp)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFlushQueueRequest " << federate_handle << ", " << timeStamp
@@ -1264,6 +1514,9 @@ Responses Mom::processFederateFlushQueueRequest(const FederateHandle& federate_h
     return responses;
 }
 
+/** Cause the RTI to react as if the Enable Asynchronous Delivery service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.14)
+ */
 Responses Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableAsynchronousDelivery " << federate_handle << endl;
@@ -1277,6 +1530,9 @@ Responses Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& f
     return responses;
 }
 
+/** Cause the RTI to react as if the Disable Asynchronous Delivery service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.15)
+ */
 Responses Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableAsynchronousDelivery " << federate_handle << endl;
@@ -1290,6 +1546,9 @@ Responses Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& 
     return responses;
 }
 
+/** Cause the RTI to react as if the Modify Lookahead service has been invoked by the specified joined
+ * federate using the specified arguments (see 8.19)
+ */
 Responses Mom::processFederateModifyLookahead(const FederateHandle& federate_handle, const int lookahead)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateModifyLookahead " << federate_handle << ", " << lookahead << endl;
@@ -1303,6 +1562,9 @@ Responses Mom::processFederateModifyLookahead(const FederateHandle& federate_han
     return responses;
 }
 
+/** Cause the RTI to react as if the Change Attribute Order Type service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.23)
+ */
 Responses Mom::processFederateChangeAttributeOrderType(const FederateHandle& federate_handle,
                                                        const ObjectHandle& objectInstance,
                                                        const std::vector<AttributeHandle>& attributeList,
@@ -1320,6 +1582,9 @@ Responses Mom::processFederateChangeAttributeOrderType(const FederateHandle& fed
     return responses;
 }
 
+/** Cause the RTI to react as if the Change Interaction Order Type service has been invoked by the specified
+ * joined federate using the specified arguments (see 8.24)
+ */
 Responses Mom::processFederateChangeInteractionOrderType(const FederateHandle& federate_handle,
                                                          const InteractionClassHandle& interactionClass,
                                                          const OrderType& sendOrder)
@@ -1336,6 +1601,9 @@ Responses Mom::processFederateChangeInteractionOrderType(const FederateHandle& f
     return responses;
 }
 
+/** Set the values of federation execution-wide switches. A joined federate may send individual declared
+ * parameters of this subclass
+ */
 Responses Mom::processFederationSetSwitches(const bool autoProvide)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationSetSwitches " << autoProvide << endl;
@@ -1343,86 +1611,177 @@ Responses Mom::processFederationSetSwitches(const bool autoProvide)
     my_federation.setAutoProvide(autoProvide);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationSetSwitches" << endl;
-    
+
     return {};
 }
 
+/** Request that the RTI send a report interaction that contains a list of all in-progress federation
+ * synchronization points. It shall result in one interaction of class
+ * HLAmanager.HLAfederate.HLAreport.HLAreportSynchronizationPoints.
+ */
 Responses Mom::processFederationRequestSynchronizationPoints()
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestSynchronizationPoints" << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints. It shall report the list of
+     * active synchronization points in the federation execution. If there are no active synchronization points in
+     * the federation execution, a single interaction shall be sent as a NULL response with the HLAsyncPoints
+     * parameter having an undefined value.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints");
 
-    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
-                                            getParameterHandle(interaction_handle, "HLAsyncPoints")};
+    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAsyncPoints")};
 
-    // TODO
+    std::vector<std::string> syncPoints;
+    for (const auto& pair : my_federation.my_synchronization_labels) {
+        syncPoints.push_back(pair.first);
+    }
 
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeVectorString(syncPoints)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestSynchronizationPoints" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Request that the RTI send a report interaction that contains a list that includes each federate (and its
+ * synchronization status) that is associated with a particular synchronization point. It shall result in one
+ * interaction of class HLAmanager.HLAfederate.HLAreport.HLAreportSynchronizationPointStatus.
+ */
 Responses Mom::processFederationRequestSynchronizationPointStatus(const std::string& syncPointName)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestSynchronizationPointStatus " << syncPointName << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus. It shall report the
+     * status of a particular synchronization point. This report shall be a list that includes each federate (and its
+     * synchronization status) that is associated with the particular synchronization point.
+     * 
+     * One interaction of class HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus
+     * shall be sent by the RTI for each active synchronization point in the federation execution. If there is no
+     * active synchronization point with the given name from the request, then an interaction shall be sent as a
+     * NULL response with the HLAsyncPointFederates parameter having an undefined value.
+     */
     auto interaction_handle = my_root.Interactions->getHandleFromName(
         "HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus");
 
-    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
-                                            getParameterHandle(interaction_handle, "HLAsyncPointName"),
+    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAsyncPointName"),
                                             getParameterHandle(interaction_handle, "HLAsyncPointFederates")};
+
+    if (my_federation.my_synchronization_labels.find(syncPointName) == end(my_federation.my_synchronization_labels)) {
+        // no sync point, return NULL
+        std::vector<AttributeValue_t> values{encodeString(syncPointName), encodeHandleBasedCounts({})};
+        return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+    }
 
     // TODO
 
-    std::vector<AttributeValue_t> values;
+    std::map<FederateHandle, int> syncPointFederates;
+    for (const auto& pair : my_federation.my_federates) {
+        if (pair.second->hasSynchronizationLabel(syncPointName)) {
+            // we should trace if the federate is attempting to register or moving to sync point
+            // for now as the response is sent immediately we only trace the second one
+            syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::MovingToSyncPoint);
+        }
+        else {
+            // we should trace if the federate is waiting for the rest of the federation or does not care about the sync
+            // for now as the information is not available, we answer waiting
+            syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::WaitingForRestOfFederation);
+        }
+    }
+
+    std::vector<AttributeValue_t> values{encodeString(syncPointName), encodeHandleBasedCounts(syncPointFederates)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestSynchronizationPointStatus" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Requests that the RTI shall send a report interaction with the content of the specified FOM module for the
+ * federation. The FOM module is indicated by the order number in the federation’s
+ * HLAFOMmoduleDesignatorList attribute.
+ */
 Responses Mom::processFederationRequestFOMmoduleData(const int FOMmoduleIndicator)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestFOMmoduleData " << FOMmoduleIndicator << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData. It shall report the content of the
+     * specified FOM module for the federation.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData");
 
-    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
-                                            getParameterHandle(interaction_handle, "HLAFOMmoduleIndicator"),
+    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAFOMmoduleIndicator"),
                                             getParameterHandle(interaction_handle, "HLAFOMmoduleData")};
 
-    // TODO
+    std::string fomModuleData = "TODO"; // TODO
 
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeUInt32(FOMmoduleIndicator), encodeString(fomModuleData)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestFOMmoduleData" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
 }
 
+/** Requests that the RTI shall send a report interaction with the content of the MIM for the federation.
+ */
 Responses Mom::processFederationRequestMIMData()
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationRequestMIMData" << endl;
 
+    /** The interaction shall be sent by the RTI in response to an interaction of class
+     * HLAmanager.HLAfederation.HLArequest.HLArequest MIMData. It shall report the content of the MIM
+     * for the federation.
+     */
     auto interaction_handle
         = my_root.Interactions->getHandleFromName("HLAmanager.HLAfederation.HLAreport.HLAreportMIMData");
 
-    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAfederate"),
-                                            getParameterHandle(interaction_handle, "HLAMIMData")};
+    std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAMIMData")};
 
-    // TODO
+    std::string mimData = "TODO"; // TODO
 
-    std::vector<AttributeValue_t> values;
+    std::vector<AttributeValue_t> values{encodeString(mimData)};
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationRequestMIMData" << endl;
 
     return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
+}
+
+void Mom::registerObjectInstanceUpdated(const FederateHandle federate,
+                                        const ObjectClassHandle object,
+                                        const ObjectHandle instance)
+{
+    my_object_instances_updated[federate][object].insert(instance);
+}
+
+void Mom::registerObjectInstanceReflected(const FederateHandle federate,
+                                          const ObjectClassHandle object,
+                                          const ObjectHandle instance)
+{
+    my_object_instances_reflected[federate][object].insert(instance);
+}
+
+void Mom::registerUpdate(const FederateHandle federate, const ObjectClassHandle object)
+{
+    ++my_updates_sent[federate][object];
+}
+
+void Mom::registerReflection(const FederateHandle federate, const ObjectClassHandle object)
+{
+    ++my_reflections_received[federate][object];
+}
+
+void Mom::registerInteractionSent(const FederateHandle federate, const InteractionClassHandle interaction)
+{
+    ++my_interactions_sent[federate][interaction];
+}
+
+void Mom::registerInteractionReceived(const FederateHandle federate, const InteractionClassHandle interaction)
+{
+    ++my_interactions_received[federate][interaction];
 }
 
 ParameterHandle Mom::getParameterHandle(const InteractionClassHandle interaction, const std::string& name)

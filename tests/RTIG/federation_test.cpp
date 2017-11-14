@@ -531,11 +531,11 @@ TEST_F(FederationTest, RegisterSynchronizationAddsLabelToAllFederates)
 
     f.registerSynchronization(handle, "label", "tag");
 
-    ASSERT_TRUE(fed.isSynchronizationLabel("label"));
+    ASSERT_TRUE(fed.hasSynchronizationLabel("label"));
 
-    ASSERT_TRUE(fed1.isSynchronizationLabel("label"));
-    ASSERT_TRUE(fed2.isSynchronizationLabel("label"));
-    ASSERT_TRUE(fed3.isSynchronizationLabel("label"));
+    ASSERT_TRUE(fed1.hasSynchronizationLabel("label"));
+    ASSERT_TRUE(fed2.hasSynchronizationLabel("label"));
+    ASSERT_TRUE(fed3.hasSynchronizationLabel("label"));
 }
 
 TEST_F(FederationTest, RegisterSynchronizationThrowsIfUknFederate)
@@ -570,7 +570,7 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchroni
 
     f.registerSynchronization(handle, "label", "tag", federatesToUpdate);
 
-    ASSERT_FALSE(fed.isSynchronizationLabel("label")) << "Emitter is not synchronizing if set was empty";
+    ASSERT_FALSE(fed.hasSynchronizationLabel("label")) << "Emitter is not synchronizing if set was empty";
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederates)
@@ -589,11 +589,11 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederate
 
     f.registerSynchronization(handle, "label", "tag", federatesToUpdate);
 
-    ASSERT_TRUE(fed.isSynchronizationLabel("label")) << "The sync label must also be set to the emitter";
+    ASSERT_TRUE(fed.hasSynchronizationLabel("label")) << "The sync label must also be set to the emitter";
 
-    ASSERT_FALSE(f.getFederate(h1).isSynchronizationLabel("label"));
-    ASSERT_TRUE(f.getFederate(h2).isSynchronizationLabel("label"));
-    ASSERT_FALSE(f.getFederate(h3).isSynchronizationLabel("label"));
+    ASSERT_FALSE(f.getFederate(h1).hasSynchronizationLabel("label"));
+    ASSERT_TRUE(f.getFederate(h2).hasSynchronizationLabel("label"));
+    ASSERT_FALSE(f.getFederate(h3).hasSynchronizationLabel("label"));
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
@@ -640,7 +640,7 @@ TEST_F(FederationTest, UnregisterSynchronizationRemovesSyncLabelFromFederate)
 
     f.unregisterSynchronization(handle, "label");
 
-    ASSERT_FALSE(f.getFederate(handle).isSynchronizationLabel("label"));
+    ASSERT_FALSE(f.getFederate(handle).hasSynchronizationLabel("label"));
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationWithOtherFederatesPausedStillSynchronizing)

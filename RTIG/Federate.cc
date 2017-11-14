@@ -202,7 +202,7 @@ void Federate::removeSynchronizationLabel(const std::string& label)
     }
 }
 
-bool Federate::isSynchronizationLabel(const std::string& label) const
+bool Federate::hasSynchronizationLabel(const std::string& label) const
 {
     return my_syncLabels.find(label) != end(my_syncLabels);
 }

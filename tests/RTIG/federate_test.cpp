@@ -30,15 +30,15 @@ TEST(FederateTest, BasicSyncLabelManipulation)
 
     const std::string label{"firstLabel"};
 
-    ASSERT_FALSE(f.isSynchronizationLabel(label));
+    ASSERT_FALSE(f.hasSynchronizationLabel(label));
 
     f.addSynchronizationLabel(label);
 
-    ASSERT_TRUE(f.isSynchronizationLabel(label));
+    ASSERT_TRUE(f.hasSynchronizationLabel(label));
 
     f.removeSynchronizationLabel(label);
 
-    ASSERT_FALSE(f.isSynchronizationLabel(label));
+    ASSERT_FALSE(f.hasSynchronizationLabel(label));
 }
 
 TEST(FederateTest, CannotAddSameLabelTwice)

@@ -53,6 +53,13 @@ public:
 
     enum class OrderType { Receive, TimeStamp };
 
+    enum class SyncPointStatus {
+        NoActivity,
+        AttemptingToRegisterSyncPoint,
+        MovingToSyncPoint,
+        WaitingForRestOfFederation
+    };
+
     static bool isAvailableInRootObjectAndCompliant(const RootObject& root);
 
     Mom(const FederateHandle handle, Federation& federation, RootObject& root);
@@ -87,19 +94,19 @@ public:
     void updateLookahead(const FederateHandle federate_handle, const FederationTime& value);
     void updateGALT(const FederateHandle federate_handle, const FederationTime& value);
     void updateLITS(const FederateHandle federate_handle, const FederationTime& value);
-    void updateRoLenght(const FederateHandle federate_handle, const int delta);
-    void updateTsoLenght(const FederateHandle federate_handle, const int delta);
-    void updateReflectionsReceived(const FederateHandle federate_handle, const int delta);
-    void updateUpdatesSent(const FederateHandle federate_handle, const int delta);
-    void updateInteractionsReceived(const FederateHandle federate_handle, const int delta);
-    void updateInteractionsSent(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesUpdated(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesReflected(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta);
-    void updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta);
+    void updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
+    void updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
+    void updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    void updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
+    void updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    void updateInteractionsSent(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesUpdated(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesReflected(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
     void updateTimeGrantedTime(const FederateHandle federate_handle, const int value);
     void updateTimeAdvancingTime(const FederateHandle federate_handle, const int value);
     void updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
@@ -107,6 +114,8 @@ public:
 
     void
     updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta);
+
+    void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
     // Interactions
     Responses processInteraction(/*const FederateHandle federate_handle,*/
@@ -117,14 +126,14 @@ public:
 
     Responses processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod);
     Responses processFederateModifyAttributeState(const FederateHandle& federate_handle,
-                                             const ObjectHandle objectInstance,
-                                             const AttributeHandle attribute,
-                                             const bool attributeState);
+                                                  const ObjectHandle objectInstance,
+                                                  const AttributeHandle attribute,
+                                                  const bool attributeState);
     Responses processFederateSetSwitches(const FederateHandle& federate_handle,
-                                    const bool conveyRegionDesignatorSets,
-                                    const bool conveyProducingFederate,
-                                    const bool serviceReporting,
-                                    const bool exceptionReporting);
+                                         const bool conveyRegionDesignatorSets,
+                                         const bool conveyProducingFederate,
+                                         const bool serviceReporting,
+                                         const bool exceptionReporting);
     Responses processFederateRequestPublications(const FederateHandle& federate_handle);
     Responses processFederateRequestSubscriptions(const FederateHandle& federate_handle);
     Responses processFederateRequestObjectInstancesThatCanBeDeleted(const FederateHandle& federate_handle);
@@ -135,7 +144,7 @@ public:
     Responses processFederateRequestReflectionsReceived(const FederateHandle& federate_handle);
     Responses processFederateRequestInteractionsReceived(const FederateHandle& federate_handle);
     Responses processFederateRequestObjectInstanceInformation(const FederateHandle& federate_handle,
-                                                         const ObjectHandle& objectInstance);
+                                                              const ObjectHandle& objectInstance);
     Responses processFederateRequestFOMmoduleData(const FederateHandle& federate_handle, const int FOMmoduleIndicator);
     Responses processFederateResignFederationExecution(const FederateHandle& federate_handle,
                                                        const ResignAction resignAction);
@@ -209,17 +218,29 @@ public:
     Responses processFederationRequestSynchronizationPoints();
     Responses processFederationRequestSynchronizationPointStatus(const std::string& syncPointName);
     Responses processFederationRequestFOMmoduleData(const int FOMmoduleIndicator);
-    Responses  processFederationRequestMIMData();
+    Responses processFederationRequestMIMData();
 
+    void registerObjectInstanceUpdated(const FederateHandle federate,
+                                       const ObjectClassHandle object,
+                                       const ObjectHandle instance);
+    void registerObjectInstanceReflected(const FederateHandle federate,
+                                         const ObjectClassHandle object,
+                                         const ObjectHandle instance);
+    void registerUpdate(const FederateHandle federate, const ObjectClassHandle object);
+    void registerReflection(const FederateHandle federate, const ObjectClassHandle object);
+    void registerInteractionSent(const FederateHandle federate, const InteractionClassHandle interaction);
+    void registerInteractionReceived(const FederateHandle federate, const InteractionClassHandle interaction);
+
+private:
     // Support
-    void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
     void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
                                              const std::vector<AttributeHandle>& attributes);
 
-private:
     void display() const;
 
     ParameterHandle getParameterHandle(const InteractionClassHandle interaction, const std::string& name);
+
+    Socket* getSocketForFederate(const FederateHandle& federate_handle);
 
     /** This handle is used to detect MOM interactions.
      * It does not really belong to the federation.
@@ -248,7 +269,8 @@ private:
     AttributeValue_t encodeFederateHandleList();
     AttributeValue_t encodeFederateState(const Federate& federate);
     AttributeValue_t encodeVectorHandle(const std::vector<Handle>& data);
-    AttributeValue_t encodeObjectClassBasedCounts(std::map<Handle, int> data);
+    AttributeValue_t encodeHandleBasedCounts(std::map<Handle, int> data);
+    AttributeValue_t encodeVectorString(const std::vector<std::string>& data);
 
     std::string decodeString(const ParameterValue_t& data);
     bool decodeBoolean(const ParameterValue_t& data);
@@ -262,7 +284,13 @@ private:
 
     MessageBuffer mb;
 
-    Socket* getSocketForFederate(const FederateHandle& federate_handle);
+    std::map<FederateHandle, std::map<ObjectClassHandle, std::unordered_set<ObjectHandle>>> my_object_instances_updated;
+    std::map<FederateHandle, std::map<ObjectClassHandle, std::unordered_set<ObjectHandle>>>
+        my_object_instances_reflected;
+    std::map<FederateHandle, std::map<ObjectClassHandle, int>> my_updates_sent;
+    std::map<FederateHandle, std::map<ObjectClassHandle, int>> my_reflections_received;
+    std::map<FederateHandle, std::map<InteractionClassHandle, int>> my_interactions_sent;
+    std::map<FederateHandle, std::map<InteractionClassHandle, int>> my_interactions_received;
 };
 }
 } // namespace certi/rtig

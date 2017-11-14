@@ -22,6 +22,8 @@
 
 #include "Mom.hh"
 
+#include <numeric>
+
 #include <libCERTI/PrettyDebug.hh>
 
 #include <libCERTI/InteractionSet.hh>
@@ -442,21 +444,45 @@ AttributeValue_t Mom::encodeVectorHandle(const std::vector<Handle>& data)
     return encodeMB();
 }
 
-AttributeValue_t Mom::encodeObjectClassBasedCounts(std::map<Handle, int> data)
+AttributeValue_t Mom::encodeHandleBasedCounts(std::map<Handle, int> data)
 {
     mb.reset();
 
     // uint32 : message lenght
-    mb.write_uint32(sizeof(uint32_t) * (1 + (data.size() * 3)));
-    
+    mb.write_uint32(sizeof(uint32_t) * (1 + (data.size() * 2)));
+
     // uint32 : cardinality
     mb.write_uint32(data.size());
-    
+
     // uint32=size : data
-    for(const auto& pair: data) {
-        mb.write_uint32(2);
+    for (const auto& pair : data) {
         mb.write_uint32(pair.first);
         mb.write_uint32(pair.second);
+    }
+
+    return encodeMB();
+}
+
+AttributeValue_t Mom::encodeVectorString(const std::vector<std::string>& data)
+{
+    mb.reset();
+
+    // uint32 : message lenght
+    // = 1 uint for list cardinality
+    // + data.size() uint per string for its size
+    // + accumulate(data).size char per string char
+    mb.write_uint32(sizeof(uint32_t) * (1 + data.size())
+                    + sizeof(char)
+                        * std::accumulate(begin(data), end(data), 0, [](const int totalSize, const std::string& str) {
+                              return totalSize + str.size();
+                          }));
+
+    // uint32 : cardinality
+    mb.write_uint32(data.size());
+
+    // uint32=size : data
+    for (const std::string& str : data) {
+        mb.write_string(str);
     }
 
     return encodeMB();
@@ -488,19 +514,19 @@ uint32_t Mom::decodeUInt32(const ParameterValue_t& data)
 
 Mom::ResignAction Mom::decodeResignAction(const ParameterValue_t& data)
 {
-    switch(decodeUInt32(data)) {
-        case 1:
-            return ResignAction::DivestOwnership;
-        case 2:
-            return ResignAction::DeleteObjectInstances;
-        case 3:
-            return ResignAction::CancelPendingAcquisitions;
-        case 4:
-            return ResignAction::DeleteObjectInstancesThenDivestOwnership;
-        case 5:
-            return ResignAction::CancelPendingAcquisitionsThenDeleteObjectInstancesThenDivestOwnership;
-        default:
-            return ResignAction::NoActions;
+    switch (decodeUInt32(data)) {
+    case 1:
+        return ResignAction::DivestOwnership;
+    case 2:
+        return ResignAction::DeleteObjectInstances;
+    case 3:
+        return ResignAction::CancelPendingAcquisitions;
+    case 4:
+        return ResignAction::DeleteObjectInstancesThenDivestOwnership;
+    case 5:
+        return ResignAction::CancelPendingAcquisitionsThenDeleteObjectInstancesThenDivestOwnership;
+    default:
+        return ResignAction::NoActions;
     }
 }
 
@@ -508,12 +534,12 @@ std::vector<AttributeHandle> Mom::decodeVectorAttributeHandle(const ParameterVal
 {
     mb.reset();
     mb.write_bytes(&(data[0]), data.size());
-    
+
     std::vector<AttributeHandle> handles;
-    for(uint32_t i(0u); i<mb.read_uint32(); ++i) {
+    for (uint32_t i(0u); i < mb.read_uint32(); ++i) {
         handles.push_back(mb.read_uint32());
     }
-    
+
     return handles;
 }
 
@@ -525,11 +551,11 @@ FederationTime Mom::decodeFederationTime(const ParameterValue_t& data)
 
 Mom::OrderType Mom::decodeOrderType(const ParameterValue_t& data)
 {
-    switch(decodeUInt32(data)) {
-        case 0:
-            return OrderType::Receive;
-        case 1:
-            return OrderType::TimeStamp;
+    switch (decodeUInt32(data)) {
+    case 0:
+        return OrderType::Receive;
+    case 1:
+        return OrderType::TimeStamp;
     }
 }
 
