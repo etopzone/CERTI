@@ -994,17 +994,19 @@ Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHan
 
     try {
         auto object = my_root.objects->getObject(objectInstance);
-        
+
         ObjectClassHandle registeredClass = object->getClass();
-        ObjectClassHandle knownClass = registeredClass; // TODO
-        
+        ObjectClassHandle knownClass
+            = registeredClass; // FIXME is there a difference between registered and known class?
+
         std::vector<AttributeHandle> ownedInstanceAttributeList;
-        for(const auto& pair: my_root.ObjectClasses->getObjectFromHandle(registeredClass)->getHandleClassAttributeMap()) {
-            if(object->isAttributeOwnedByFederate(pair.first, federate_handle)) {
+        for (const auto& pair :
+             my_root.ObjectClasses->getObjectFromHandle(registeredClass)->getHandleClassAttributeMap()) {
+            if (object->isAttributeOwnedByFederate(pair.first, federate_handle)) {
                 ownedInstanceAttributeList.push_back(pair.first);
             }
         }
-        
+
         std::vector<AttributeValue_t> values{encodeUInt32(federate_handle),
                                              encodeUInt32(objectInstance),
                                              encodeVectorHandle(ownedInstanceAttributeList),
@@ -1708,23 +1710,20 @@ Responses Mom::processFederationRequestSynchronizationPointStatus(const std::str
     std::vector<AttributeHandle> parameters{getParameterHandle(interaction_handle, "HLAsyncPointName"),
                                             getParameterHandle(interaction_handle, "HLAsyncPointFederates")};
 
-    if (my_federation.my_synchronization_labels.find(syncPointName) == end(my_federation.my_synchronization_labels)) {
-        // no sync point, return NULL
-        std::vector<AttributeValue_t> values{encodeString(syncPointName), encodeHandleBasedCounts({})};
-        return my_federation.broadcastInteraction(my_handle, interaction_handle, parameters, values, 0, "");
-    }
-
     std::map<FederateHandle, int> syncPointFederates;
-    for (const auto& pair : my_federation.my_federates) {
-        if (pair.second->hasSynchronizationLabel(syncPointName)) {
-            // we should trace if the federate is attempting to register or moving to sync point
-            // FIXME for now as the response is sent immediately we only trace the second one
-            syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::MovingToSyncPoint);
-        }
-        else {
-            // we should trace if the federate is waiting for the rest of the federation or does not care about the sync
-            // FIXME for now as the information is not available, we answer waiting
-            syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::WaitingForRestOfFederation);
+
+    if (my_federation.my_synchronization_labels.find(syncPointName) != end(my_federation.my_synchronization_labels)) {
+        for (const auto& pair : my_federation.my_federates) {
+            if (pair.second->hasSynchronizationLabel(syncPointName)) {
+                // we should trace if the federate is attempting to register or moving to sync point
+                // FIXME for now as the response is sent immediately we only trace the second one
+                syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::MovingToSyncPoint);
+            }
+            else {
+                // we should trace if the federate is waiting for the rest of the federation or does not care about the sync
+                // FIXME for now as the information is not available, we answer waiting
+                syncPointFederates[pair.first] = static_cast<int>(SyncPointStatus::WaitingForRestOfFederation);
+            }
         }
     }
 
