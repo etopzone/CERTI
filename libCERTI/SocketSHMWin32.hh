@@ -2,8 +2,8 @@
 #define SOCKET_SHM_WIN32_H
 
 // Specifics includes
-#include "SemaphoreWin32.hh"
-#include "SHMWin32.hh"
+#include <libHLA/SemaphoreWin32.hh>
+#include <libHLA/SHMWin32.hh>
 #include "SocketSHM.hh"
 #include "certi.hh"
 
