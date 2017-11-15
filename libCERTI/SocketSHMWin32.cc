@@ -20,11 +20,11 @@
 
 #include "SocketSHMWin32.hh"
 
-#include "SHMWin32.hh"
+#include <libHLA/SHMWin32.hh>
 using libhla::ipc::SHM;
 using libhla::ipc::SHMWin32;
 
-#include "SemaphoreWin32.hh"
+#include <libHLA/SemaphoreWin32.hh>
 using libhla::ipc::Semaphore;
 using libhla::ipc::SemaphoreWin32;
 
