@@ -124,7 +124,7 @@ set_target_properties(FedTime1516e PROPERTIES PROJECT_LABEL LibFedTime1516e)
 set_target_properties(FedTime1516e PROPERTIES COMPILE_FLAGS "-DBUILDING_FEDTIME -DRTI_DISABLE_WARNINGS -DSTATIC_RTI")
 
 if(MINGW)
-    set_target_properties(FedTime1516e PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libFedTime1516.def")
+    set_target_properties(FedTime1516e PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libFedTime1516e.def")
     install(FILES ${LIBRARY_OUTPUT_PATH}/libFedTime1516e.def
             DESTINATION lib)
 endif(MINGW)
