@@ -202,7 +202,7 @@ public:
                                  const std::string& tag,
                                  const std::vector<FederateHandle>& federates);
 
-    void unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
+    Responses unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
     void broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);

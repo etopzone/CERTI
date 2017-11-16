@@ -584,8 +584,10 @@ void Federation::registerSynchronization(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::registerSynchronization for federate set" << endl;
 }
 
-void Federation::unregisterSynchronization(FederateHandle federate_handle, const string& label)
+Responses Federation::unregisterSynchronization(FederateHandle federate_handle, const string& label)
 {
+    Responses responses;
+
     Debug(G, pdGendoc) << "enter Federation::unregisterSynchronization" << endl;
 
     check(federate_handle);
@@ -600,30 +602,32 @@ void Federation::unregisterSynchronization(FederateHandle federate_handle, const
     // Test in every federate is synchronized. Otherwise, quit method.
     for (const auto& kv : my_federates) {
         if (kv.second->hasSynchronizationLabel(label)) {
-            return;
+            Debug(D, pdTerm) << "Federation " << my_handle << " is still paused on " << label << endl;
+
+            Debug(G, pdGendoc) << "exit  Federation::unregisterSynchronization" << endl;
+            return responses;
         }
     }
 
     // All federates from federation has called synchronizationPointAchieved.
 
     Debug(D, pdTerm) << "Federation " << my_handle << " is not Paused anymore" << endl;
-    // Remove label from federation list.
-    std::map<string, string>::iterator i = my_synchronization_labels.find(label);
-    if (i != my_synchronization_labels.end()) {
-        my_synchronization_labels.erase(i);
-    }
+
+    my_synchronization_labels.erase(label);
 
     // send a federationSynchronized().
-    NM_Federation_Synchronized msg;
-    msg.setFederation(my_handle.get());
-    msg.setFederate(federate_handle);
-    msg.setLabel(label);
+    auto msg = make_unique<NM_Federation_Synchronized>();
+    msg->setFederation(my_handle.get());
+    msg->setFederate(federate_handle);
+    msg->setLabel(label);
 
-    broadcastAnyMessage(&msg, 0, false);
+    responses = respondToAll(std::move(msg));
 
     Debug(D, pdTerm) << "Federation " << my_handle << " is synchronized on " << label << endl;
 
     Debug(G, pdGendoc) << "exit  Federation::unregisterSynchronization" << endl;
+
+    return responses;
 }
 
 void Federation::broadcastSynchronization(FederateHandle federate_handle, const string& label, const string& tag)

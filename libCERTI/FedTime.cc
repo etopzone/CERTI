@@ -74,7 +74,7 @@ void FedTime::setZero()
 }
 
 // ----------------------------------------------------------------------------
-bool FedTime::isZero()
+bool FedTime::isZero() const
 {
     return bool(_fedTime == _zero);
 }

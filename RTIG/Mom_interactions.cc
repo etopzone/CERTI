@@ -1107,7 +1107,6 @@ Responses Mom::processFederateResignFederationExecution(const FederateHandle& fe
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateResignFederationExecution " << federate_handle << ", "
                        << static_cast<int>(resignAction) << endl;
-    std::cout << federate_handle << endl;
 
     Responses responses;
 
@@ -1129,11 +1128,11 @@ Responses Mom::processFederateSynchronizationPointAchieved(const FederateHandle&
     Debug(D, pdGendoc) << "enter Mom::processFederateSynchronizationPointAchieved " << federate_handle << ", " << label
                        << endl;
 
-    my_federation.unregisterSynchronization(federate_handle, label);
+    Responses responses = my_federation.unregisterSynchronization(federate_handle, label);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSynchronizationPointAchieved" << endl;
 
-    return {};
+    return responses;
 }
 
 /** Cause the RTI to react as if the Federate Save Begun service has been invoked by the specified joined
@@ -1191,9 +1190,10 @@ Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle&
     Debug(D, pdGendoc) << "enter Mom::processFederatePublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
+    Responses responses = my_federation.publishObject(federate_handle,
+                                   objectClass,
+                                   attributeList,
+                                   true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishObjectClassAttributes" << endl;
 
@@ -1210,9 +1210,10 @@ Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandl
     Debug(D, pdGendoc) << "enter Mom::processFederateUnpublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
+    Responses responses = my_federation.publishObject(federate_handle,
+                                   objectClass,
+                                   attributeList,
+                                   false);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishObjectClassAttributes" << endl;
 
@@ -1228,9 +1229,7 @@ Responses Mom::processFederatePublishInteractionClass(const FederateHandle& fede
     Debug(D, pdGendoc) << "enter Mom::processFederatePublishInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
+    Responses responses = my_federation.publishInteraction(federate_handle, interactionClass, true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishInteractionClass" << endl;
 
@@ -1246,9 +1245,7 @@ Responses Mom::processFederateUnpublishInteractionClass(const FederateHandle& fe
     Debug(D, pdGendoc) << "enter Mom::processFederateUnpublishInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
+    Responses responses = my_federation.publishInteraction(federate_handle, interactionClass, false);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishInteractionClass" << endl;
 
@@ -1266,9 +1263,10 @@ Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandl
     Debug(D, pdGendoc) << "enter Mom::processFederateSubscribeObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << ", " << active << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
+    Responses responses = my_federation.subscribeObject(federate_handle,
+                                     objectClass,
+                                     attributeList,
+                                     true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeObjectClassAttributes" << endl;
 
@@ -1285,9 +1283,7 @@ Responses Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHan
     Debug(D, pdGendoc) << "enter Mom::processFederateUnsubscribeObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
+    Responses responses = my_federation.subscribeObject(federate_handle, objectClass, {}, false);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeObjectClassAttributes" << endl;
 
@@ -1304,9 +1300,7 @@ Responses Mom::processFederateSubscribeInteractionClass(const FederateHandle& fe
     Debug(D, pdGendoc) << "enter Mom::processFederateSubscribeInteractionClass " << federate_handle << ", "
                        << interactionClass << ", " << active << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
+    Responses responses = my_federation.subscribeInteraction(federate_handle, interactionClass, true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeInteractionClass" << endl;
 
@@ -1322,9 +1316,7 @@ Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& 
     Debug(D, pdGendoc) << "enter Mom::processFederateUnsubscribeInteractionClass " << federate_handle << ", "
                        << interactionClass << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
+    Responses responses = my_federation.subscribeInteraction(federate_handle, interactionClass, false);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeInteractionClass" << endl;
 
@@ -1342,10 +1334,20 @@ Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federat
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDeleteObjectInstance " << federate_handle << ", " << objectInstance
                        << ", " << tag << ", " << timeStamp << endl;
-
+                       
     Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
+    
+    if(timeStamp.isZero()) {
+    responses = my_federation.deleteObject(federate_handle,
+                                      objectInstance,
+                                      tag);
+    }
+    else {
+    responses = my_federation.deleteObject(federate_handle,
+                                      objectInstance,
+                                      timeStamp,
+                                      tag);
+    }
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDeleteObjectInstance" << endl;
 

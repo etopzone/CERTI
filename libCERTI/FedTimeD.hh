@@ -123,7 +123,7 @@ public:
 
 public:
     void setZero();
-    bool isZero();
+    bool isZero() const;
     void setEpsilon();
     void setPositiveInfinity();
     bool isPositiveInfinity() const;
