@@ -748,69 +748,21 @@ void Mom::preparePeriodicAttributeValueUpdate(const FederateHandle& federate,
 void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
 {
     Debug(D, pdGendoc) << "enter Mom::providePeriodicAttributeValueUpdatesIfApplicable" << endl;
-    std::cout << "=1=========================================================" << std::endl;
-    //     std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
-    for (const auto& kv : my_attributes_to_update_periodically) {
-        std::cout << "Federate: " << kv.first << endl;
-        for (const auto& attr : kv.second) {
-            std::cout << "\t\tAttribute: " << attr << std::endl;
-        }
-    }
-    std::cout << "=2=========================================================" << std::endl;
 
     auto now = std::chrono::system_clock::now();
-    //*/
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-    std::cout << "Current time: " << std::put_time(std::localtime(&now_c), "%F %T") << std::endl;
-    //*/
 
     for (auto& kv : my_attributes_to_update_periodically) {
         auto& settings = my_federates_update_settings[kv.first];
-        //*/
-        std::time_t last_c = std::chrono::system_clock::to_time_t(settings.lastUpdate);
-        std::cout << "Settings: " << settings.updateRate.count() << ", "
-                  << std::put_time(std::localtime(&last_c), "%F %T") << std::endl;
-        //*/
-        if (settings.updateRate == std::chrono::seconds(0)) {
-            std::cout << "Update disabled for federate " << kv.first << ", skipping." << std::endl;
-        }
-        else {
-            auto delta = now - settings.lastUpdate;
-            std::cout << "Delta: " << delta.count() << std::endl;
-            if (delta < settings.updateRate) {
-                std::cout << "Last update was less than updateRate, skipping." << std::endl;
-            }
-            else {
-                std::cout << "Updating values" << std::endl;
-                
+        
+        if (settings.updateRate != std::chrono::seconds(0)) {
+            if (now - settings.lastUpdate >= settings.updateRate) {
                 provideAttributeValueUpdate(my_federate_objects[kv.first], {begin(kv.second), end(kv.second)});
-                
-                /*
-                for (const auto& kv2 : kv.second) {
-                    std::vector<AttributeHandle> attributes(begin(kv2.second), end(kv2.second));
-                    for (const auto& attr : attributes) {
-                        std::cout << "  " << attr << std::endl;
-                    }
-                    provideAttributeValueUpdate(kv2.first, attributes);
-                    std::cout << "PAVU" << kv2.first << " " << kv2.second.size() << std::endl;
-                }*/
-                std::cout << "clear" << std::endl;
                 kv.second.clear();
-                std::cout << "update last update" << std::endl;
                 settings.lastUpdate = now;
-                std::cout << "done" << std::endl;
             }
         }
     }
-    std::cout << "=3=========================================================" << std::endl;
-    //     std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
-    for (const auto& kv : my_attributes_to_update_periodically) {
-        std::cout << "Federate: " << kv.first << endl;
-        for (const auto& attr : kv.second) {
-            std::cout << "\t\tAttribute: " << attr << std::endl;
-        }
-    }
-    std::cout << "=4=========================================================" << std::endl;
+    
     Debug(D, pdGendoc) << "exit  Mom::providePeriodicAttributeValueUpdatesIfApplicable" << endl;
 }
 }
