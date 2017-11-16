@@ -569,6 +569,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchron
 
 Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
+    Responses responses;
+    
     my_auditServer.setLevel(AuditLine::Level(8));
 
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
@@ -577,12 +579,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achiev
 
     my_auditServer << "Label \"" << request.message()->getLabel() << "\" ended";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .unregisterSynchronization(request.message()->getFederate(), request.message()->getLabel());
 
     Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " has synchronized" << endl;
 
-    return {};
+    return responses;
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& request)

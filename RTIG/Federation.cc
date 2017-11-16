@@ -592,8 +592,9 @@ Responses Federation::unregisterSynchronization(FederateHandle federate_handle, 
 
     check(federate_handle);
 
-    if (label.empty())
+    if (label.empty()) {
         throw RTIinternalError("Bad pause label(null).");
+    }
 
     // Set federate synchronized on this label.
     Federate& federate = getFederate(federate_handle);
