@@ -41,7 +41,7 @@ namespace rtig {
 
 #if 0
     
-    // We never send those reports as of today :
+    // FIXME We never send those reports as of today :
     
     /** The interaction shall be sent by the RTI when an exception occurs as the result of a service invocation at
      * the indicated joined federate. This interaction shall be sent only if the
@@ -114,14 +114,6 @@ Responses Mom::processInteraction(const InteractionClassHandle interaction_class
     std::map<ParameterHandle, ParameterValue_t> parameters;
     for (auto i(0u); i < parameter_handles.size(); ++i) {
         parameters[parameter_handles[i]] = parameter_values[i];
-#if 0
-        std::cout << my_root.Interactions->getParameterName(parameter_handles[i], interaction_class_handle)
-                  << " == " << parameter_values[i].size() << "{ ";
-        for (const auto& byte : parameter_values[i]) {
-            std::cout << byte << "(" << static_cast<int>(byte) << ") ";
-        }
-        std::cout << "}" << std::endl;
-#endif
     }
 
     if (interaction_class_handle == my_interaction_class_cache["HLAmanager.HLAfederate.HLAadjust.HLAsetTiming"]) {
@@ -1033,8 +1025,7 @@ Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHan
         auto object = my_root.objects->getObject(objectInstance);
 
         ObjectClassHandle registeredClass = object->getClass();
-        ObjectClassHandle knownClass
-            = registeredClass; // FIXME we do not differenciate known and registered class
+        ObjectClassHandle knownClass = registeredClass; // FIXME we do not differenciate known and registered class
 
         std::vector<AttributeHandle> ownedInstanceAttributeList;
         for (const auto& pair :
@@ -1190,10 +1181,7 @@ Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle&
     Debug(D, pdGendoc) << "enter Mom::processFederatePublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
-    Responses responses = my_federation.publishObject(federate_handle,
-                                   objectClass,
-                                   attributeList,
-                                   true);
+    Responses responses = my_federation.publishObject(federate_handle, objectClass, attributeList, true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishObjectClassAttributes" << endl;
 
@@ -1210,10 +1198,7 @@ Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandl
     Debug(D, pdGendoc) << "enter Mom::processFederateUnpublishObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << endl;
 
-    Responses responses = my_federation.publishObject(federate_handle,
-                                   objectClass,
-                                   attributeList,
-                                   false);
+    Responses responses = my_federation.publishObject(federate_handle, objectClass, attributeList, false);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishObjectClassAttributes" << endl;
 
@@ -1263,10 +1248,7 @@ Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandl
     Debug(D, pdGendoc) << "enter Mom::processFederateSubscribeObjectClassAttributes " << federate_handle << ", "
                        << objectClass << ", " << attributeList.size() << ", " << active << endl;
 
-    Responses responses = my_federation.subscribeObject(federate_handle,
-                                     objectClass,
-                                     attributeList,
-                                     true);
+    Responses responses = my_federation.subscribeObject(federate_handle, objectClass, attributeList, true);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeObjectClassAttributes" << endl;
 
@@ -1334,19 +1316,14 @@ Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federat
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDeleteObjectInstance " << federate_handle << ", " << objectInstance
                        << ", " << tag << ", " << timeStamp << endl;
-                       
+
     Responses responses;
-    
-    if(timeStamp.isZero()) {
-    responses = my_federation.deleteObject(federate_handle,
-                                      objectInstance,
-                                      tag);
+
+    if (timeStamp.isZero()) {
+        responses = my_federation.deleteObject(federate_handle, objectInstance, tag);
     }
     else {
-    responses = my_federation.deleteObject(federate_handle,
-                                      objectInstance,
-                                      timeStamp,
-                                      tag);
+        responses = my_federation.deleteObject(federate_handle, objectInstance, timeStamp, tag);
     }
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDeleteObjectInstance" << endl;
@@ -1365,7 +1342,7 @@ Responses Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& fe
 
     Responses responses;
 
-    // FIXME not implemented yet ?
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateLocalDeleteObjectInstance" << endl;
 
@@ -1386,7 +1363,7 @@ Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandl
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestAttributeTransportationTypeChange" << endl;
 
@@ -1405,7 +1382,7 @@ Responses Mom::processFederateRequestInteractionTransportationTypeChange(const F
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionTransportationTypeChange" << endl;
 
@@ -1423,9 +1400,7 @@ Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHan
     Debug(D, pdGendoc) << "enter Mom::processFederateUnconditionalAttributeOwnershipDivestiture " << federate_handle
                        << ", " << objectInstance << ", " << attributeList.size() << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
+    Responses responses = my_federation.divest(federate_handle, objectInstance, attributeList);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnconditionalAttributeOwnershipDivestiture" << endl;
 
@@ -1440,9 +1415,7 @@ Responses Mom::processFederateEnableTimeRegulation(const FederateHandle& federat
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeRegulation " << federate_handle << ", " << lookahead
                        << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
+    Responses responses = my_federation.addRegulator(federate_handle, 0); // FIXME what time should we put here ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeRegulation" << endl;
 
@@ -1456,9 +1429,7 @@ Responses Mom::processFederateDisableTimeRegulation(const FederateHandle& federa
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeRegulation " << federate_handle << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
+    Responses responses = my_federation.removeRegulator(federate_handle);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeRegulation" << endl;
 
@@ -1472,9 +1443,7 @@ Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federa
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeConstrained " << federate_handle << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
+    Responses responses =.setConstrained(federate_handle, true, 0); // FIXME what time should we put here ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeConstrained" << endl;
 
@@ -1488,9 +1457,7 @@ Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& feder
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeConstrained " << federate_handle << endl;
 
-    Responses responses;
-
-    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
+    Responses responses =.setConstrained(federate_handle, false, 0); // FIXME what time should we put here ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeConstrained" << endl;
 
@@ -1542,7 +1509,7 @@ Responses Mom::processFederateNextMessageRequest(const FederateHandle& federate_
 
     Responses responses;
 
-    // TODO
+    // TODO NULL_MESSAGE ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequest" << endl;
 
@@ -1560,7 +1527,7 @@ Responses Mom::processFederateNextMessageRequestAvailable(const FederateHandle& 
 
     Responses responses;
 
-    // TODO
+    // TODO NULL_MESSAGE ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequestAvailable" << endl;
 
@@ -1577,7 +1544,7 @@ Responses Mom::processFederateFlushQueueRequest(const FederateHandle& federate_h
 
     Responses responses;
 
-    // TODO
+    // TODO not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFlushQueueRequest" << endl;
 
@@ -1593,7 +1560,7 @@ Responses Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& f
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableAsynchronousDelivery" << endl;
 
@@ -1609,7 +1576,7 @@ Responses Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& 
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableAsynchronousDelivery" << endl;
 
@@ -1625,7 +1592,7 @@ Responses Mom::processFederateModifyLookahead(const FederateHandle& federate_han
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateModifyLookahead" << endl;
 
@@ -1645,7 +1612,7 @@ Responses Mom::processFederateChangeAttributeOrderType(const FederateHandle& fed
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeAttributeOrderType" << endl;
 
@@ -1664,7 +1631,7 @@ Responses Mom::processFederateChangeInteractionOrderType(const FederateHandle& f
 
     Responses responses;
 
-    // FIXME not handled yet
+    // FIXME not handled by certi
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeInteractionOrderType" << endl;
 
