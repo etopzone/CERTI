@@ -15,10 +15,10 @@
 #include <libCERTI/SocketServer.hh>
 #include <libCERTI/SocketTCP.hh>
 
-#include "make_unique.hh"
 #include "Federate.hh"
 #include "Federation.hh"
 #include "FederationsList.hh"
+#include "make_unique.hh"
 
 using std::endl;
 
@@ -158,7 +158,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
 #endif
     my_auditServer << " created";
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << handle.get() << endl;
 
@@ -188,8 +188,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     // Need to dump the FOM into that
     auto rep = make_unique<NM_Join_Federation_Execution>();
 
-    FederateHandle federate_handle
-        = my_federations.addFederate(federation_handle, federate, static_cast<SocketTCP*>(request.socket()), *rep);
+    FederateHandle federate_handle = my_federations.addFederate(
+        federation_handle, federate, static_cast<SocketTCP*>(request.sockets().front()), *rep);
 
     int regulators_count;
     int federates_count;
@@ -205,10 +205,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 #endif
 
     // Store Federate <->Socket reference.
-    my_socketServer.setReferences(request.socket()->returnSocket(), federation_handle, federate_handle, address, peer);
+    my_socketServer.setReferences(
+        request.sockets().front()->returnSocket(), federation_handle, federate_handle, address, peer);
 
     my_auditServer << "(" << federation_handle << ") with handle " << federate_handle << ". Socket "
-                   << int(request.socket()->returnSocket());
+                   << int(request.sockets().front()->returnSocket());
 
     // Prepare answer about JoinFederationExecution
     rep->setFederationName(federation);
@@ -226,7 +227,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     Debug(D, pdInit) << "Federate \"" << federate << "\" has joined Federation " << federation_handle
                      << " under handle " << federate_handle << endl;
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -248,7 +249,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>
 
     my_auditServer << "Federate " << federate << " resign federation(" << federation << ")";
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -279,7 +280,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Destroy_Federation_Execution
 
     Debug(G, pdGendoc) << "processDestroyFederation===>write DFE to RTIA" << endl;
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -309,7 +310,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Class_Relevance_Advisory
                          << request.message()->getFederation() << " clears AttributeRelevanceAdvisorySwitch" << endl;
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -339,7 +340,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Interaction_Relevance_Ad
                          << request.message()->getFederation() << " clears InteractionRelevanceAdvisorySwitch" << endl;
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -369,7 +370,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Relevance_Advi
                          << request.message()->getFederation() << " clears AttributeRelevanceAdvisorySwitch" << endl;
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -399,7 +400,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Attribute_Scope_Advisory
                          << request.message()->getFederation() << " clears AttributeScopeAdvisorySwitch" << endl;
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -416,18 +417,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& reque
     if (request.message()->isRegulatorOn()) {
         my_auditServer << "ON at time " << request.message()->getDate().getTime();
 
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .addRegulator(request.message()->getFederate(), request.message()->getDate());
-
-        // send timeRegulationEnabled() to federate.
-        auto rep = make_unique<NM_Time_Regulation_Enabled>();
-        rep->setFederate(request.message()->getFederate());
-        rep->setFederation(request.message()->getFederation());
-        rep->setDate(request.message()->getDate());
-
-        Debug(G, pdGendoc) << "      processSetTimeRegulating====> write TRE to RTIA" << endl;
-
-        responses.emplace_back(request.socket(), std::move(rep));
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .addRegulator(request.message()->getFederate(), request.message()->getDate());
 
         Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " sets TimeRegulation ON" << endl;
@@ -435,8 +426,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& reque
     else {
         my_auditServer << "OFF";
 
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .removeRegulator(request.message()->getFederate());
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .removeRegulator(request.message()->getFederate());
 
         Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " sets TimeRegulation OFF" << endl;
@@ -451,18 +442,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& requ
 
     my_auditServer.setLevel(AuditLine::Level(8));
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .setConstrained(request.message()->getFederate(), request.message()->isConstrainedOn());
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .setConstrained(request.message()->getFederate(),
+                                    request.message()->isConstrainedOn(),
+                                    request.message()->getDate());
 
     if (request.message()->isConstrainedOn()) {
         my_auditServer << "ON at time " << request.message()->getDate().getTime();
-
-        auto rep = make_unique<NM_Time_Constrained_Enabled>();
-        rep->setFederate(request.message()->getFederate());
-        rep->setFederation(request.message()->getFederation());
-        rep->setDate(request.message()->getDate());
-
-        responses.emplace_back(request.socket(), std::move(rep));
 
         Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " is now constrained" << endl;
@@ -515,7 +501,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Message_Null_Prime>&& reques
         nmsg->setFederation(request.message()->getFederation());
         nmsg->setFederate(0);
         //nmsg.show(std::cout);
-        return process({request.socket(), std::move(nmsg)}, true);
+        return process({request.sockets().front(), std::move(nmsg)}, true);
     }
 
     return {};
@@ -576,7 +562,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchron
         }
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -710,21 +696,15 @@ Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& requ
     my_auditServer << "Publish Object Class = " << request.message()->getObjectClass()
                    << ", # of att. = " << request.message()->getAttributesSize();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .publishObject(request.message()->getFederate(),
-                       request.message()->getObjectClass(),
-                       request.message()->getAttributes(),
-                       true);
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .publishObject(request.message()->getFederate(),
+                                   request.message()->getObjectClass(),
+                                   request.message()->getAttributes(),
+                                   true);
 
     Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " published object class "
                          << request.message()->getObjectClass() << endl;
-
-    auto rep = make_unique<NM_Publish_Object_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setObjectClass(request.message()->getObjectClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -738,21 +718,15 @@ Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& re
     my_auditServer << "Unpublish Object Class = " << request.message()->getObjectClass()
                    << ", # of att. = " << request.message()->getAttributesSize();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .publishObject(request.message()->getFederate(),
-                       request.message()->getObjectClass(),
-                       request.message()->getAttributes(),
-                       false);
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .publishObject(request.message()->getFederate(),
+                                   request.message()->getObjectClass(),
+                                   request.message()->getAttributes(),
+                                   false);
 
     Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " unpublished object class "
                          << request.message()->getObjectClass() << endl;
-
-    auto rep = make_unique<NM_Unpublish_Object_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setObjectClass(request.message()->getObjectClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -766,20 +740,15 @@ Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& re
     my_auditServer << "Subscribe Object Class = " << request.message()->getObjectClass()
                    << ", # of att. = " << request.message()->getAttributesSize();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .subscribeObject(
-            request.message()->getFederate(), request.message()->getObjectClass(), request.message()->getAttributes());
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .subscribeObject(request.message()->getFederate(),
+                                     request.message()->getObjectClass(),
+                                     request.message()->getAttributes(),
+                                     true);
 
     Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " subscribed to object class "
                          << request.message()->getObjectClass() << endl;
-
-    auto rep = make_unique<NM_Subscribe_Object_Class>();
-
-    rep->setFederate(request.message()->getFederate());
-    rep->setObjectClass(request.message()->getObjectClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -793,18 +762,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& 
     my_auditServer << "Unubscribe Object Class = " << request.message()->getObjectClass()
                    << ", # of att. = " << request.message()->getAttributesSize();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .subscribeObject(request.message()->getFederate(), request.message()->getObjectClass(), {});
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .subscribeObject(request.message()->getFederate(), request.message()->getObjectClass(), {}, false);
 
     Debug(D, pdRegister) << "Federate " << request.message()->getFederate() << " of Federation "
                          << request.message()->getFederation() << " subscribed to object class "
                          << request.message()->getObjectClass() << endl;
-
-    auto rep = make_unique<NM_Unsubscribe_Object_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setObjectClass(request.message()->getObjectClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -817,18 +780,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&&
 
     my_auditServer << "Publish Interaction Class = " << request.message()->getInteractionClass();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
+    responses
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
 
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " publishes Interaction "
                         << request.message()->getInteractionClass() << endl;
-
-    auto rep = make_unique<NM_Publish_Interaction_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setInteractionClass(request.message()->getInteractionClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -840,17 +798,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>
     my_auditServer.setLevel(AuditLine::Level(7));
 
     my_auditServer << "Unpublish Interaction Class = " << request.message()->getInteractionClass();
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
+    responses
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .publishInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " unpublishes Interaction "
                         << request.message()->getInteractionClass() << endl;
-
-    auto rep = make_unique<NM_Unpublish_Interaction_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setInteractionClass(request.message()->getInteractionClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -863,18 +816,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>
 
     my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
 
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " subscribed to Interaction "
                         << request.message()->getInteractionClass() << endl;
-
-    auto rep = make_unique<NM_Subscribe_Interaction_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setInteractionClass(request.message()->getInteractionClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -887,18 +834,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Clas
 
     my_auditServer << "Unsubscribe Interaction Class = " << request.message()->getInteractionClass();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
 
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " unsubscribed to Interaction "
                         << request.message()->getInteractionClass() << endl;
-
-    auto rep = make_unique<NM_Unsubscribe_Interaction_Class>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setInteractionClass(request.message()->getInteractionClass());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -947,7 +888,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 
     rep->setObject(object_handle);
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -998,7 +939,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& r
         rep->setTag(request.message()->getTag());
     }
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1043,7 +984,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
     rep->setLabel(request.message()->getLabel());
     rep->setTag(request.message()->getTag());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1057,26 +998,21 @@ Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
     my_auditServer << "Delete ObjID = " << request.message()->getObject();
 
     if (request.message()->isDated()) {
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .deleteObject(request.message()->getFederate(),
-                          request.message()->getObject(),
-                          request.message()->getDate(),
-                          request.message()->getLabel());
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .deleteObject(request.message()->getFederate(),
+                                      request.message()->getObject(),
+                                      request.message()->getDate(),
+                                      request.message()->getLabel());
     }
     else {
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .deleteObject(
-                request.message()->getFederate(), request.message()->getObject(), request.message()->getLabel());
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .deleteObject(request.message()->getFederate(),
+                                      request.message()->getObject(),
+                                      request.message()->getLabel());
     }
 
     Debug(D, pdRegister) << "Object # " << request.message()->getObject() << " of Federation "
                          << request.message()->getFederation() << " has been deleted" << endl;
-
-    auto rep = make_unique<NM_Delete_Object>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setObject(request.message()->getObject());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -1103,7 +1039,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Query_Attribute_Ownership>&&
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1131,7 +1067,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownersh
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1158,7 +1094,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisit
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1172,19 +1108,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Owne
     my_auditServer << "Object = " << request.message()->getObject()
                    << ", # of att. = " << request.message()->getAttributesSize();
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .divest(request.message()->getFederate(), request.message()->getObject(), request.message()->getAttributes());
 
     Debug(D, pdDebug) << "Federate " << request.message()->getFederate() << " of Federation "
                       << request.message()->getFederation() << " UnconditionalDivestiture "
                                                                "of object "
                       << request.message()->getObject() << endl;
-
-    auto rep = make_unique<NM_Unconditional_Attribute_Ownership_Divestiture>();
-    rep->setFederate(request.message()->getFederate());
-    rep->setObject(request.message()->getObject());
-
-    responses.emplace_back(request.socket(), std::move(rep));
 
     return responses;
 }
@@ -1213,7 +1143,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Acquisit
     rep->setObject(request.message()->getObject());
     rep->setAttributesSize(0);
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1240,7 +1170,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Cancel_Negotiated_Attribute_
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1274,7 +1204,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Is_Attribute_Owned_By_Federa
     rep->setObject(request.message()->getObject());
     rep->setAttribute(request.message()->getAttribute());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1308,7 +1238,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Attribute_Ownership_Release_
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep)); // Send answer to RTIA
+    responses.emplace_back(request.sockets().front(), std::move(rep)); // Send answer to RTIA
 
     return responses;
 }
@@ -1334,7 +1264,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Cancel_Attribute_Ownership_A
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1357,7 +1287,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Create_Region>&& request
                       << request.message()->getFederation() << " creates region " << rep->getRegion() << endl;
 
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1378,7 +1308,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Modify_Region>&& request
 
     auto rep = make_unique<NM_DDM_Modify_Region>();
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1402,7 +1332,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Delete_Region>&& request
 
     rep->setFederate(request.message()->getFederate());
     rep->setRegion(request.message()->getRegion());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1427,7 +1357,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Associate_Region>&& requ
 
     auto rep = make_unique<NM_DDM_Associate_Region>();
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1451,7 +1381,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Unassociate_Region>&& re
 
         auto rep = make_unique<NM_DDM_Unassociate_Region>();
         rep->setFederate(request.message()->getFederate());
-        responses.emplace_back(request.socket(), std::move(rep));
+        responses.emplace_back(request.sockets().front(), std::move(rep));
     }
     return responses;
 }
@@ -1477,7 +1407,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Attributes>&& 
     auto rep = make_unique<NM_DDM_Subscribe_Attributes>();
     rep->setFederate(request.message()->getFederate());
     rep->setObjectClass(request.message()->getObjectClass());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1500,7 +1430,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Attributes>&
 
     auto rep = make_unique<NM_DDM_Unsubscribe_Attributes>();
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1524,7 +1454,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Subscribe_Interaction>&&
 
     auto rep = make_unique<NM_DDM_Subscribe_Interaction>();
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1548,7 +1478,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Unsubscribe_Interaction>
 
     auto rep = make_unique<NM_DDM_Unsubscribe_Interaction>();
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1580,7 +1510,7 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& reque
                          << endl;
 
     rep->setFederate(request.message()->getFederate());
-    responses.emplace_back(request.socket(), std::move(rep)); // Send answer to RTIA
+    responses.emplace_back(request.sockets().front(), std::move(rep)); // Send answer to RTIA
 
     return responses;
 }
@@ -1607,7 +1537,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Val
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -1628,7 +1558,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Valu
     rep->setFederate(request.message()->getFederate());
     rep->setObjectClass(request.message()->getObjectClass());
 
-    responses.emplace_back(request.socket(), std::move(rep));
+    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }

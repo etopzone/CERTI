@@ -26,6 +26,7 @@
 
 #include <libCERTI/InteractionSet.hh>
 #include <libCERTI/Object.hh>
+#include <libCERTI/ObjectAttribute.hh>
 #include <libCERTI/ObjectClassAttribute.hh>
 #include <libCERTI/ObjectClassSet.hh>
 #include <libCERTI/ObjectSet.hh>
@@ -101,8 +102,7 @@ namespace rtig {
 
 static PrettyDebug D("MOM", __FILE__);
 
-Responses Mom::processInteraction(/*const FederateHandle federate_handle,*/
-                                  const InteractionClassHandle interaction_class_handle,
+Responses Mom::processInteraction(const InteractionClassHandle interaction_class_handle,
                                   const std::vector<ParameterHandle>& parameter_handles,
                                   const std::vector<ParameterValue_t>& parameter_values,
                                   const RegionHandle region_handle)
@@ -449,6 +449,26 @@ Responses Mom::processFederateSetTiming(const FederateHandle& federate_handle, c
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetTiming" << endl;
 }
 
+/** Modify the ownership state of an attribute of an object instance for the specified joined federate. If the
+ * interaction is used to give ownership of the instance attribute to the specified joined federate and another
+ * joined federate currently owns the instance attribute, the owning joined federate shall be divested of
+ * ownership of the instance attribute before ownership is granted to the specified joined federate. No
+ * notification of change of ownership of the instance attribute shall be provided to either joined federate.
+ * In order for ownership of the instance attribute to be granted to the specified joined federate, the following
+ * conditions shall be true:
+ * – The specified joined federate knows about the object instance.
+ * – The specified joined federate is publishing the corresponding class attribute at the known class of the
+ * specified object instance at that joined federate.
+ * – The specified instance attribute is not owned by the RTI (i.e., it is not a predefined attribute of a MOM
+ * object class).
+ * If one or more of the above conditions are not met, the interaction shall have no effect, and an error shall
+ * be reported via an interaction of class HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception.
+ * 
+ * @param federate_handle Handle of the federate concerned
+ * @param objectInstance Handle of the object instance whose attribute state is being changed.
+ * @param attribute Handle of the instance attribute whose state is being changed.
+ * @param attributeState New state for the attribute of the object instance. (false is Unowned, true is Owned)
+ */
 Responses Mom::processFederateModifyAttributeState(const FederateHandle& federate_handle,
                                                    const ObjectHandle objectInstance,
                                                    const AttributeHandle attribute,
@@ -457,7 +477,24 @@ Responses Mom::processFederateModifyAttributeState(const FederateHandle& federat
     Debug(D, pdGendoc) << "enter Mom::processFederateModifyAttributeState " << federate_handle << ", " << objectInstance
                        << ", " << attribute << ", " << attributeState << endl;
 
-    // TODO
+    auto object = my_root.objects->getObject(objectInstance);
+
+    // TODO catch everything and package it in a MOMexception
+    if (attributeState) {
+        // we want to grand federate_handle the ownership of objectInstance.attribute
+        // preconditions already checked by the call
+        my_federation.divest(object->getAttribute(attribute)->getOwner(), objectInstance, {attribute});
+        my_federation.acquire(federate_handle, objectInstance, {attribute}, "");
+    }
+    else {
+        // we want to divest federate_handle the ownership of objectInstance.attribute
+        if (object->isAttributeOwnedByFederate(federate_handle, attribute)) {
+            my_federation.divest(federate_handle, objectInstance, {attribute});
+        }
+        else {
+            // FIXME do nothing ?
+        }
+    }
 
     return {};
 
@@ -997,7 +1034,7 @@ Responses Mom::processFederateRequestObjectInstanceInformation(const FederateHan
 
         ObjectClassHandle registeredClass = object->getClass();
         ObjectClassHandle knownClass
-            = registeredClass; // FIXME is there a difference between registered and known class?
+            = registeredClass; // FIXME we do not differenciate known and registered class
 
         std::vector<AttributeHandle> ownedInstanceAttributeList;
         for (const auto& pair :
@@ -1092,13 +1129,11 @@ Responses Mom::processFederateSynchronizationPointAchieved(const FederateHandle&
     Debug(D, pdGendoc) << "enter Mom::processFederateSynchronizationPointAchieved " << federate_handle << ", " << label
                        << endl;
 
-    Responses responses;
-
-    // TODO
+    my_federation.unregisterSynchronization(federate_handle, label);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSynchronizationPointAchieved" << endl;
 
-    return responses;
+    return {};
 }
 
 /** Cause the RTI to react as if the Federate Save Begun service has been invoked by the specified joined
@@ -1108,13 +1143,11 @@ Responses Mom::processFederateFederateSaveBegun(const FederateHandle& federate_h
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveBegun " << federate_handle << endl;
 
-    Responses responses;
-
-    // TODO
+    my_federation.federateSaveBegun(federate_handle);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateSaveBegun" << endl;
 
-    return responses;
+    return {};
 }
 
 /** Cause the RTI to react as if the Federate Save Complete service has been invoked by the specified joined
@@ -1125,13 +1158,11 @@ Responses Mom::processFederateFederateSaveComplete(const FederateHandle& federat
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
-    Responses responses;
-
-    // TODO
+    my_federation.federateSaveStatus(federate_handle, successIndicator);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateSaveComplete" << endl;
 
-    return responses;
+    return {};
 }
 
 /** Cause the RTI to react as if the Federate Restore Complete service has been invoked by the specified
@@ -1143,13 +1174,11 @@ Responses Mom::processFederateFederateRestoreComplete(const FederateHandle& fede
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateRestoreComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
-    Responses responses;
-
-    // TODO
+    my_federation.federateRestoreStatus(federate_handle, successIndicator);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateFederateRestoreComplete" << endl;
 
-    return responses;
+    return {};
 }
 
 /** Cause the RTI to react as if the Publish Object Class Attributes service has been invoked by the specified
@@ -1164,7 +1193,7 @@ Responses Mom::processFederatePublishObjectClassAttributes(const FederateHandle&
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishObjectClassAttributes" << endl;
 
@@ -1183,7 +1212,7 @@ Responses Mom::processFederateUnpublishObjectClassAttributes(const FederateHandl
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Object_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishObjectClassAttributes" << endl;
 
@@ -1201,7 +1230,7 @@ Responses Mom::processFederatePublishInteractionClass(const FederateHandle& fede
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Publish_Interaction_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederatePublishInteractionClass" << endl;
 
@@ -1219,7 +1248,7 @@ Responses Mom::processFederateUnpublishInteractionClass(const FederateHandle& fe
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unpublish_Interaction_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnpublishInteractionClass" << endl;
 
@@ -1239,7 +1268,7 @@ Responses Mom::processFederateSubscribeObjectClassAttributes(const FederateHandl
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Object_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeObjectClassAttributes" << endl;
 
@@ -1258,7 +1287,7 @@ Responses Mom::processFederateUnsubscribeObjectClassAttributes(const FederateHan
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Object_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeObjectClassAttributes" << endl;
 
@@ -1277,7 +1306,7 @@ Responses Mom::processFederateSubscribeInteractionClass(const FederateHandle& fe
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSubscribeInteractionClass" << endl;
 
@@ -1295,7 +1324,7 @@ Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& 
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Class>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnsubscribeInteractionClass" << endl;
 
@@ -1304,8 +1333,7 @@ Responses Mom::processFederateUnsubscribeInteractionClass(const FederateHandle& 
 
 /** Cause the RTI to react as if the Delete Object Instance service has been invoked by the specified joined
  * federate using the specified arguments (see 6.14).
- * If applicable, the retraction handle returned by invoking this service is discarded, and the scheduled action
- * cannot be retracted.
+ * If applicable, the retraction handle returned by invoking this service is discarded, and the scheduled action cannot be retracted.
  */
 Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federate_handle,
                                                    const ObjectHandle& objectInstance,
@@ -1317,7 +1345,7 @@ Responses Mom::processFederateDeleteObjectInstance(const FederateHandle& federat
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Delete_Object>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDeleteObjectInstance" << endl;
 
@@ -1335,7 +1363,7 @@ Responses Mom::processFederateLocalDeleteObjectInstance(const FederateHandle& fe
 
     Responses responses;
 
-    // TODO
+    // FIXME not implemented yet ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateLocalDeleteObjectInstance" << endl;
 
@@ -1356,7 +1384,7 @@ Mom::processFederateRequestAttributeTransportationTypeChange(const FederateHandl
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestAttributeTransportationTypeChange" << endl;
 
@@ -1375,7 +1403,7 @@ Responses Mom::processFederateRequestInteractionTransportationTypeChange(const F
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateRequestInteractionTransportationTypeChange" << endl;
 
@@ -1395,7 +1423,7 @@ Mom::processFederateUnconditionalAttributeOwnershipDivestiture(const FederateHan
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Ownership_Divestiture>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateUnconditionalAttributeOwnershipDivestiture" << endl;
 
@@ -1412,7 +1440,7 @@ Responses Mom::processFederateEnableTimeRegulation(const FederateHandle& federat
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeRegulation" << endl;
 
@@ -1428,7 +1456,7 @@ Responses Mom::processFederateDisableTimeRegulation(const FederateHandle& federa
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Regulating>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeRegulation" << endl;
 
@@ -1444,7 +1472,7 @@ Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federa
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeConstrained" << endl;
 
@@ -1460,7 +1488,7 @@ Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& feder
 
     Responses responses;
 
-    // TODO
+    // TODO Responses MessageProcessor::process(MessageEvent<NM_Set_Time_Constrained>&& request)
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeConstrained" << endl;
 
@@ -1477,7 +1505,7 @@ Responses Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_
 
     Responses responses;
 
-    // TODO
+    // TODO NULL_MESSAGE ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequest" << endl;
 
@@ -1495,7 +1523,7 @@ Responses Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& 
 
     Responses responses;
 
-    // TODO
+    // TODO NULL_MESSAGE ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequestAvailable" << endl;
 
@@ -1563,7 +1591,7 @@ Responses Mom::processFederateEnableAsynchronousDelivery(const FederateHandle& f
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableAsynchronousDelivery" << endl;
 
@@ -1579,7 +1607,7 @@ Responses Mom::processFederateDisableAsynchronousDelivery(const FederateHandle& 
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableAsynchronousDelivery" << endl;
 
@@ -1595,7 +1623,7 @@ Responses Mom::processFederateModifyLookahead(const FederateHandle& federate_han
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateModifyLookahead" << endl;
 
@@ -1615,7 +1643,7 @@ Responses Mom::processFederateChangeAttributeOrderType(const FederateHandle& fed
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeAttributeOrderType" << endl;
 
@@ -1634,7 +1662,7 @@ Responses Mom::processFederateChangeInteractionOrderType(const FederateHandle& f
 
     Responses responses;
 
-    // TODO
+    // FIXME not handled yet
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateChangeInteractionOrderType" << endl;
 

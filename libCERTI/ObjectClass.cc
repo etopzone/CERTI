@@ -1245,8 +1245,7 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
             throw AttributeNotPublished("");
     }
 
-    //! TODO: replace 'compteur' with 'counter'
-    int compteur_notification = 0;
+    int notification_counter = 0;
     FederateHandle oldOwner;
     if (server != NULL) {
         // The federate have to publish the class
@@ -1283,10 +1282,10 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
                 //Qu'il soit offert ou libre
                 if (oa->isCandidate(theFederateHandle))
                     oa->removeCandidate(theFederateHandle);
-                AnswerNotification->setAttributes(theAttributeList[i], compteur_notification);
+                AnswerNotification->setAttributes(theAttributeList[i], notification_counter);
                 oa->setOwner(theFederateHandle);
                 oa->setDivesting(false);
-                compteur_notification++;
+                notification_counter++;
 
                 // object->Owner reste le champ de reference pour
                 // le privilegeToDelete
@@ -1300,8 +1299,8 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
                 oa->addCandidate(theFederateHandle);
             }
         }
-        if (compteur_notification != 0) {
-            AnswerNotification->setAttributesSize(compteur_notification);
+        if (notification_counter != 0) {
+            AnswerNotification->setAttributesSize(notification_counter);
             sendToFederate(AnswerNotification, theFederateHandle);
         }
         else

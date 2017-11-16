@@ -912,7 +912,7 @@ TEST_F(FederationTest, SubscribeInteractionThrowsOnUknFederate)
 
 TEST_F(FederationTest, SubscribeObjectThrowsOnUknFederate)
 {
-    ASSERT_THROW(f.subscribeObject(ukn_federate, 1, {}), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.subscribeObject(ukn_federate, 1, {}, true), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, UpdateAttrValuesTimedThrowsOnUknFederate)

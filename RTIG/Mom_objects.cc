@@ -388,6 +388,7 @@ void Mom::updateNextSave(const std::string& label, const FederationTime& /*time*
     
     Debug(D, pdGendoc) << "enter Mom::updateNextSave" << endl;
 }
+
 void Mom::updateAutoProvide(const bool value)
 {
     Debug(D, pdGendoc) << "enter Mom::updateAutoProvide" << endl;

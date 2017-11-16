@@ -118,8 +118,7 @@ public:
     void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
     // Interactions
-    Responses processInteraction(/*const FederateHandle federate_handle,*/
-                                 const InteractionClassHandle interaction_class_handle,
+    Responses processInteraction(const InteractionClassHandle interaction_class_handle,
                                  const std::vector<ParameterHandle>& parameter_handles,
                                  const std::vector<ParameterValue_t>& parameter_values,
                                  const RegionHandle region_handle);
@@ -232,6 +231,8 @@ public:
     void registerInteractionReceived(const FederateHandle federate, const InteractionClassHandle interaction);
 
 private:
+    
+    
     // Support
     void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
                                              const std::vector<AttributeHandle>& attributes);

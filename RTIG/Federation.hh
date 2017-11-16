@@ -181,15 +181,15 @@ public:
      * 
      * Check if it's already present, but not if the Time 'time' is allowed or not.
      */
-    void addRegulator(FederateHandle federate_handle, FederationTime time); // includes Time Regulation already enabled.
+    Responses addRegulator(FederateHandle federate_handle, FederationTime time); // includes Time Regulation already enabled.
 
     /// Update the current time of a regulator federate.
     void updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous);
 
     /// includes Time Regulation already disabled.
-    void removeRegulator(FederateHandle federate_handle);
+    Responses removeRegulator(FederateHandle federate_handle);
 
-    void setConstrained(FederateHandle federate_handle, bool constrained);
+    Responses setConstrained(FederateHandle federate_handle, bool constrained,  FederationTime time);
 
     // Synchronization Management.
 
@@ -251,7 +251,7 @@ public:
     // -- Object Management --
     // -----------------------
 
-    void publishObject(FederateHandle federate_handle,
+    Responses publishObject(FederateHandle federate_handle,
                        ObjectClassHandle object_handle,
                        const std::vector<AttributeHandle>& attributes,
                        bool publish_or_unpublish);
@@ -264,9 +264,10 @@ public:
      * @param[in] object_handle subscripted object class handle 
      * @param[in] attributes subscripted vector of attributes 
      */
-    void subscribeObject(FederateHandle federate_handle,
+    Responses subscribeObject(FederateHandle federate_handle,
                          ObjectClassHandle object_handle,
-                         const std::vector<AttributeHandle>& attributes);
+                         const std::vector<AttributeHandle>& attributes,
+                                      const bool subscribe_or_unsubscribe);
 
     void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name);
 
@@ -280,7 +281,7 @@ public:
      *  @param time Federation Time
      *  @param user_tag Label for this operation
      */
-    void deleteObject(FederateHandle federate_handle,
+    Responses deleteObject(FederateHandle federate_handle,
                       ObjectHandle object_handle,
                       FederationTime time,
                       const std::string& user_tag);
@@ -291,7 +292,7 @@ public:
      *  @param object_handle Object handle
      *  @param user_tag Label for this operation
      */
-    void deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const std::string& user_tag);
+    Responses deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const std::string& user_tag);
 
     FederateHandle requestObjectOwner(FederateHandle federate_handle,
                                       ObjectHandle object_handle,
@@ -318,11 +319,11 @@ public:
     // -- Interaction Management --
     // ----------------------------
 
-    void publishInteraction(FederateHandle federate_handle,
+    Responses publishInteraction(FederateHandle federate_handle,
                             InteractionClassHandle interaction_class_handle,
                             bool publish_or_unpublish);
 
-    void subscribeInteraction(FederateHandle federate_handle,
+    Responses subscribeInteraction(FederateHandle federate_handle,
                               InteractionClassHandle interaction_class_handle,
                               bool subscribe_or_unsubscribe);
 
@@ -362,7 +363,7 @@ public:
                             ObjectHandle object_handle,
                             const std::vector<AttributeHandle>& attributes);
 
-    void
+    Responses
     divest(FederateHandle federate_handle, ObjectHandle object_handle, const std::vector<AttributeHandle>& attributes);
 
     void acquire(FederateHandle federate_handle,
@@ -466,6 +467,9 @@ private:
                               FederateHandle except_federate,
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
+    
+    Responses respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except = 0);
+    Responses respondToSome(std::unique_ptr<NetworkMessage> message, const std::vector<FederateHandle> recipients);
 
     void enableMomIfAvailable();
 

@@ -323,8 +323,6 @@ void Mom::publishObjects()
         my_federation.publishObject(my_handle, object_handle, attributes, true);
     }
 
-    my_root.display();
-
     Debug(D, pdGendoc) << "exit  Mom::publishObjects" << endl;
 }
 

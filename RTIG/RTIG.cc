@@ -32,9 +32,9 @@
 #include <string>
 
 #include <libCERTI/FedTimeD.hh>
-#include <libCERTI/Socket.hh>
 #include <libCERTI/NetworkMessage.hh>
 #include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/Socket.hh>
 
 #ifdef _WIN32
 #include <signal.h>
@@ -305,9 +305,7 @@ Socket* RTIG::processIncomingMessage(Socket* link)
             auto responses = my_processor.processEvent(std::move(msg));
 
             for (auto& response : responses) {
-                // send message
-                // std::cout << "Sending response " << response.message()->getMessageType() << " to " << response.socket() << std::endl;
-                response.message()->send(response.socket(), my_NM_msgBufSend); // send answer to RTIA
+                response.message()->send(response.sockets(), my_NM_msgBufSend); // send answer to RTIA
             }
         }
 

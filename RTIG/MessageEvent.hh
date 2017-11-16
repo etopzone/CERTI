@@ -38,21 +38,26 @@ class MessageEvent {
 public:
     // cppcheck-suppress noExplicitConstructor
     MessageEvent(Socket* socket, std::unique_ptr<NM>&& message)
-        : my_socket{socket}, my_message{std::forward<decltype(my_message)>(message)}
+        : my_sockets({socket}), my_message(std::forward<decltype(my_message)>(message))
+    {
+    }
+    // cppcheck-suppress noExplicitConstructor
+    MessageEvent(std::vector<Socket*> sockets, std::unique_ptr<NM>&& message)
+        : my_sockets(sockets), my_message(std::forward<decltype(my_message)>(message))
     {
     }
 
     MessageEvent(const MessageEvent<NM>& other) = delete;
     MessageEvent& operator=(const MessageEvent<NM>& rhs) = delete;
 
-    MessageEvent(MessageEvent<NM>&& other) : my_socket{other.my_socket}
+    MessageEvent(MessageEvent<NM>&& other) : my_sockets{other.my_sockets}
     {
         my_message.swap(other.my_message);
     }
 
     MessageEvent& operator=(MessageEvent<NM>&& other)
     {
-        my_socket = other.my_socket;
+        my_sockets = other.my_sockets;
         my_message.swap(other.my_message);
         return *this;
     }
@@ -63,19 +68,19 @@ public:
     template <typename Base>
     explicit MessageEvent(MessageEvent<Base>&& other) : my_message{static_cast<NM*>(other.my_message.release())}
     {
-        my_socket = other.my_socket;
+        my_sockets = other.my_sockets;
     }
 
     ~MessageEvent() = default;
 
-    inline const Socket* socket() const
+    inline const std::vector<Socket*> sockets() const
     {
-        return my_socket;
+        return my_sockets;
     }
 
-    inline Socket* socket()
+    inline std::vector<Socket*> sockets()
     {
-        return my_socket;
+        return my_sockets;
     }
 
     inline const NM* message() const
@@ -89,7 +94,7 @@ public:
     }
 
 private:
-    Socket* my_socket;
+    std::vector<Socket*> my_sockets;
     std::unique_ptr<NM> my_message;
 };
 
