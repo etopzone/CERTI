@@ -434,7 +434,7 @@ Responses Mom::processFederateSetTiming(const FederateHandle& federate_handle, c
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateSetTiming " << federate_handle << ", " << reportPeriod << endl;
 
-    // TODO
+    my_federates_update_settings[federate_handle].updateRate = std::chrono::seconds(reportPeriod);
 
     return {};
 
