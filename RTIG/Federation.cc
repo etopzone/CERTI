@@ -1347,7 +1347,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
     // It may throw *NotDefined
     my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
 
-    if (my_mom) {
+    if (my_mom && federate != my_mom->getHandle()) {
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
         my_mom->registerUpdate(federate, object->getClass());
         my_mom->updateUpdatesSent(federate);

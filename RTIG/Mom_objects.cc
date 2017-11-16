@@ -20,9 +20,11 @@
 //
 // ----------------------------------------------------------------------------
 
-
 #include "Mom.hh"
 
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include <libCERTI/PrettyDebug.hh>
 
 using std::cout;
@@ -336,9 +338,9 @@ void Mom::updateFomModuleDesignatorList(const std::vector<std::string>& value)
     auto attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateFomModuleDesignatorList" << endl;
 }
 
@@ -349,9 +351,9 @@ void Mom::updateCurrentFDD(const std::string& value)
     auto attribute = my_attribute_cache["HLAcurrentFDD"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateCurrentFDD" << endl;
 }
 
@@ -361,14 +363,16 @@ void Mom::updateLastSave()
 
     auto attribute = my_attribute_cache["HLAlastSaveName"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveName"]]; // TODO
+    my_attribute_values_cache[my_federation_object][attribute]
+        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveName"]]; // TODO
 
     auto attribute2 = my_attribute_cache["HLAlastSaveTime"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveTime"]]; // TODO
-    
+    my_attribute_values_cache[my_federation_object][attribute]
+        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveTime"]]; // TODO
+
     provideAttributeValueUpdate(my_federation_object, {attribute, attribute2});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateLastSave" << endl;
 }
 
@@ -383,9 +387,9 @@ void Mom::updateNextSave(const std::string& label, const FederationTime& /*time*
     auto attribute2 = my_attribute_cache["HLAnextSaveTime"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute, attribute2});
-    
+
     Debug(D, pdGendoc) << "enter Mom::updateNextSave" << endl;
 }
 
@@ -396,9 +400,9 @@ void Mom::updateAutoProvide(const bool value)
     auto attribute = my_attribute_cache["HLAautoProvide"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateAutoProvide" << endl;
 }
 
@@ -408,10 +412,11 @@ void Mom::updateTimeConstrained(const Federate& federate)
 
     auto attribute = my_attribute_cache["HLAtimeConstrained"];
 
-    my_attribute_values_cache[my_federate_objects[federate.getHandle()]][attribute] = encodeBoolean(federate.isConstrained());
-    
+    my_attribute_values_cache[my_federate_objects[federate.getHandle()]][attribute]
+        = encodeBoolean(federate.isConstrained());
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateTimeConstrained" << endl;
 }
 
@@ -421,10 +426,11 @@ void Mom::updateTimeRegulating(const Federate& federate)
 
     auto attribute = my_attribute_cache["HLAtimeRegulating"];
 
-    my_attribute_values_cache[my_federate_objects[federate.getHandle()]][attribute] = encodeBoolean(federate.isRegulator());
-    
+    my_attribute_values_cache[my_federate_objects[federate.getHandle()]][attribute]
+        = encodeBoolean(federate.isRegulator());
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateTimeRegulating" << endl;
 }
 
@@ -433,11 +439,11 @@ void Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, const
     Debug(D, pdGendoc) << "enter Mom::updateAsynchronousDelivery" << endl;
 
     auto attribute = my_attribute_cache["HLAasynchronousDelivery"];
-    
+
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateAsynchronousDelivery" << endl;
 }
 
@@ -446,11 +452,11 @@ void Mom::updateFederateState(const Federate& federate)
     Debug(D, pdGendoc) << "enter Mom::updateFederateState" << endl;
 
     auto attribute = my_attribute_cache["HLAfederateState"];
-    
+
     my_attribute_values_cache[my_federate_objects[federate.getHandle()]][attribute] = encodeFederateState(federate);
 
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateFederateState" << endl;
 }
 
@@ -461,9 +467,9 @@ void Mom::updateTimeManagerState(const FederateHandle federate_handle, const Tim
     auto attribute = my_attribute_cache["HLAtimeManagerState"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateTimeManagerState" << endl;
 }
 
@@ -474,9 +480,9 @@ void Mom::updateLogicalTime(const FederateHandle federate_handle, const Federati
     auto attribute = my_attribute_cache["HLAlogicalTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateLogicalTime" << endl;
 }
 
@@ -487,9 +493,9 @@ void Mom::updateLookahead(const FederateHandle federate_handle, const Federation
     auto attribute = my_attribute_cache["HLAlookahead"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateLookahead" << endl;
 }
 
@@ -500,9 +506,9 @@ void Mom::updateGALT(const FederateHandle federate_handle, const FederationTime&
     auto attribute = my_attribute_cache["HLAGALT"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateGALT" << endl;
 }
 
@@ -513,16 +519,16 @@ void Mom::updateLITS(const FederateHandle federate_handle, const FederationTime&
     auto attribute = my_attribute_cache["HLALITS"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateLITS" << endl;
 }
 
 void Mom::updateRoLenght(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateRoLenght" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAROlength", delta);
 
     Debug(D, pdGendoc) << "exit  Mom::updateRoLenght" << endl;
@@ -531,54 +537,54 @@ void Mom::updateRoLenght(const FederateHandle federate_handle, const int delta)
 void Mom::updateTsoLenght(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateTsoLenght" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLATSOlength", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateTsoLenght" << endl;
 }
 
 void Mom::updateReflectionsReceived(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateReflectionsReceived" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAreflectionsReceived", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateReflectionsReceived" << endl;
 }
 
 void Mom::updateUpdatesSent(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateUpdatesSent" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAupdatesSent", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateUpdatesSent" << endl;
 }
 
 void Mom::updateInteractionsReceived(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateInteractionsReceived" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAinteractionsReceived", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateInteractionsReceived" << endl;
 }
 
 void Mom::updateInteractionsSent(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateInteractionsSent" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAinteractionsSent", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateInteractionsSent" << endl;
 }
 
 void Mom::updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesThatCanBeDeleted" << endl;
-    
+
     updateCountAttribute(federate_handle, "HLAobjectInstancesThatCanBeDeleted", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesThatCanBeDeleted" << endl;
 }
 
@@ -587,7 +593,7 @@ void Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle, con
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesUpdated" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesUpdated", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesUpdated" << endl;
 }
 
@@ -596,7 +602,7 @@ void Mom::updateObjectInstancesReflected(const FederateHandle federate_handle, c
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesReflected" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesReflected", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesReflected" << endl;
 }
 
@@ -605,7 +611,7 @@ void Mom::updateObjectInstancesDeleted(const FederateHandle federate_handle, con
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesDeleted" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesDeleted", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesDeleted" << endl;
 }
 
@@ -614,7 +620,7 @@ void Mom::updateObjectInstancesRemoved(const FederateHandle federate_handle, con
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesRemoved" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesRemoved", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesRemoved" << endl;
 }
 
@@ -623,7 +629,7 @@ void Mom::updateObjectInstancesRegistered(const FederateHandle federate_handle, 
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesRegistered" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesRegistered", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesRegistered" << endl;
 }
 
@@ -632,7 +638,7 @@ void Mom::updateObjectInstancesDiscovered(const FederateHandle federate_handle, 
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesDiscovered" << endl;
 
     updateCountAttribute(federate_handle, "HLAobjectInstancesDiscovered", delta);
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesDiscovered" << endl;
 }
 
@@ -643,9 +649,9 @@ void Mom::updateTimeGrantedTime(const FederateHandle federate_handle, const int 
     auto attribute = my_attribute_cache["HLAtimeGrantedTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateTimeGrantedTime" << endl;
 }
 
@@ -656,9 +662,9 @@ void Mom::updateTimeAdvancingTime(const FederateHandle federate_handle, const in
     auto attribute = my_attribute_cache["HLAtimeAdvancingTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
     Debug(D, pdGendoc) << "exit  Mom::updateTimeAdvancingTime" << endl;
 }
 
@@ -669,9 +675,9 @@ void Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_handle,
     auto attribute = my_attribute_cache["HLAconveyRegionDesignatorSets"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateConveyRegionDesignatorSets" << endl;
 }
 
@@ -682,37 +688,33 @@ void Mom::updateConveyProducingFederate(const FederateHandle federate_handle, co
     auto attribute = my_attribute_cache["HLAconveyProducingFederate"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
-    
+
     provideAttributeValueUpdate(my_federation_object, {attribute});
-    
+
     Debug(D, pdGendoc) << "exit  Mom::updateConveyProducingFederate" << endl;
 }
 
-void Mom::updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta)
+void Mom::updateCountAttribute(const FederateHandle& federate_handle,
+                               const std::string& attribute_name,
+                               const int delta)
 {
     Debug(D, pdGendoc) << "enter Mom::updateCountAttribute" << endl;
 
     auto attribute = my_attribute_cache[attribute_name];
-    
+
     my_count_attributes_cache[federate_handle][attribute] += delta;
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(my_count_attributes_cache[federate_handle][attribute]);
-    
-    preparePeriodicAttributeValueUpdate(my_federation_object, {attribute});
-    
-    Debug(D, pdGendoc) << "exit  Mom::updateCountAttribute" << endl;
-}
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute]
+        = encodeUInt32(my_count_attributes_cache[federate_handle][attribute]);
 
-void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
-{
-    std::cout << "====================================================================================================================================" << std::endl;
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
+
+    Debug(D, pdGendoc) << "exit  Mom::updateCountAttribute" << endl;
 }
 
 void Mom::provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes)
 {
     Debug(D, pdGendoc) << "enter Mom::provideAttributeValueUpdate" << endl;
-
-    display();
 
     std::vector<AttributeValue_t> values;
 
@@ -725,15 +727,91 @@ void Mom::provideAttributeValueUpdate(const ObjectHandle& object, const std::vec
     Debug(D, pdGendoc) << "exit  Mom::provideAttributeValueUpdate" << endl;
 }
 
-void Mom::preparePeriodicAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes)
+void Mom::preparePeriodicAttributeValueUpdate(const FederateHandle& federate,
+                                              const std::vector<AttributeHandle>& attributes)
 {
     Debug(D, pdGendoc) << "enter Mom::preparePeriodicAttributeValueUpdate" << endl;
 
-    for (const auto& attribute : attributes) {
-        my_attributes_to_update_periodically[object].insert(attribute);
+    if (federate == my_handle) {
+        return;
     }
 
+    for (const auto& attribute : attributes) {
+        my_attributes_to_update_periodically[federate].insert(attribute);
+    }
+
+    providePeriodicAttributeValueUpdatesIfApplicable();
+
     Debug(D, pdGendoc) << "exit  Mom::preparePeriodicAttributeValueUpdate" << endl;
+}
+
+void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
+{
+    Debug(D, pdGendoc) << "enter Mom::providePeriodicAttributeValueUpdatesIfApplicable" << endl;
+    std::cout << "=1=========================================================" << std::endl;
+    //     std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
+    for (const auto& kv : my_attributes_to_update_periodically) {
+        std::cout << "Federate: " << kv.first << endl;
+        for (const auto& attr : kv.second) {
+            std::cout << "\t\tAttribute: " << attr << std::endl;
+        }
+    }
+    std::cout << "=2=========================================================" << std::endl;
+
+    auto now = std::chrono::system_clock::now();
+    //*/
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::cout << "Current time: " << std::put_time(std::localtime(&now_c), "%F %T") << std::endl;
+    //*/
+
+    for (auto& kv : my_attributes_to_update_periodically) {
+        auto& settings = my_federates_update_settings[kv.first];
+        //*/
+        std::time_t last_c = std::chrono::system_clock::to_time_t(settings.lastUpdate);
+        std::cout << "Settings: " << settings.updateRate.count() << ", "
+                  << std::put_time(std::localtime(&last_c), "%F %T") << std::endl;
+        //*/
+        if (settings.updateRate == std::chrono::seconds(0)) {
+            std::cout << "Update disabled for federate " << kv.first << ", skipping." << std::endl;
+        }
+        else {
+            auto delta = now - settings.lastUpdate;
+            std::cout << "Delta: " << delta.count() << std::endl;
+            if (delta < settings.updateRate) {
+                std::cout << "Last update was less than updateRate, skipping." << std::endl;
+            }
+            else {
+                std::cout << "Updating values" << std::endl;
+                
+                provideAttributeValueUpdate(my_federate_objects[kv.first], {begin(kv.second), end(kv.second)});
+                
+                /*
+                for (const auto& kv2 : kv.second) {
+                    std::vector<AttributeHandle> attributes(begin(kv2.second), end(kv2.second));
+                    for (const auto& attr : attributes) {
+                        std::cout << "  " << attr << std::endl;
+                    }
+                    provideAttributeValueUpdate(kv2.first, attributes);
+                    std::cout << "PAVU" << kv2.first << " " << kv2.second.size() << std::endl;
+                }*/
+                std::cout << "clear" << std::endl;
+                kv.second.clear();
+                std::cout << "update last update" << std::endl;
+                settings.lastUpdate = now;
+                std::cout << "done" << std::endl;
+            }
+        }
+    }
+    std::cout << "=3=========================================================" << std::endl;
+    //     std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
+    for (const auto& kv : my_attributes_to_update_periodically) {
+        std::cout << "Federate: " << kv.first << endl;
+        for (const auto& attr : kv.second) {
+            std::cout << "\t\tAttribute: " << attr << std::endl;
+        }
+    }
+    std::cout << "=4=========================================================" << std::endl;
+    Debug(D, pdGendoc) << "exit  Mom::providePeriodicAttributeValueUpdatesIfApplicable" << endl;
 }
 }
 }

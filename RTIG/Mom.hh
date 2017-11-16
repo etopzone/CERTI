@@ -232,9 +232,9 @@ public:
     void registerInteractionReceived(const FederateHandle federate, const InteractionClassHandle interaction);
 
 private:
-    struct FederateUpdate{
-        std::chrono::seconds updateRate;
-        std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+    struct FederateUpdateSettings {
+        std::chrono::seconds updateRate {1};
+        std::chrono::time_point<std::chrono::system_clock> lastUpdate {};
     };
     
     // Support
@@ -267,7 +267,8 @@ private:
     std::map<ObjectHandle, std::map<AttributeHandle, AttributeValue_t>> my_attribute_values_cache;
     std::map<FederateHandle, std::map<AttributeHandle, int>> my_count_attributes_cache;
 
-    std::map<ObjectHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
+    std::map<FederateHandle, FederateUpdateSettings> my_federates_update_settings;
+    std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
 
     AttributeValue_t encodeString(const std::string& str);
     AttributeValue_t encodeBoolean(const bool data);
