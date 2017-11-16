@@ -703,6 +703,11 @@ void Mom::updateCountAttribute(const FederateHandle& federate_handle, const std:
     Debug(D, pdGendoc) << "exit  Mom::updateCountAttribute" << endl;
 }
 
+void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
+{
+    std::cout << "====================================================================================================================================" << std::endl;
+}
+
 void Mom::provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes)
 {
     Debug(D, pdGendoc) << "enter Mom::provideAttributeValueUpdate" << endl;

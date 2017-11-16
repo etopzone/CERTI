@@ -119,6 +119,18 @@ public:
      */
     void setAttributeScopeAdvisorySwitch(const bool val);
 
+    bool isConveyRegionDesignatorSetsSwitch() const noexcept;
+    void setConveyRegionDesignatorSetsSwitch(const bool val);
+
+    bool isConveyProducingFederateSwitch() const noexcept;
+    void setConveyProducingFederateSwitch(const bool val);
+
+    bool isServiceReportingSwitch() const noexcept;
+    void setServiceReportingSwitch(const bool val);
+
+    bool isExceptionReportingSwitch() const noexcept;
+    void setExceptionReportingSwitch(const bool val);
+
     bool isSaving() const noexcept;
 
     void setSaving(const bool s) noexcept;
@@ -168,9 +180,14 @@ private:
     bool my_interactionRelevanceAdvisorySwitch{true};
     bool my_attributeRelevanceAdvisorySwitch{false};
     bool my_attributeScopeAdvisorySwitch{false};
+    bool my_conveyRegionDesignatorSetsSwitch{false};
+    bool my_conveyProducingFederateSwitch{false};
+    bool my_serviceReportingSwitch{false};
+    bool my_exceptionReportingSwitch{false};
 
     bool my_isCurrentlySaving{false};
     bool my_isCurrentlyRestoring{false};
+
 
     /// List of labels to synchronize.
     std::unordered_set<std::string> my_syncLabels{};

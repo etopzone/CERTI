@@ -24,6 +24,7 @@
 #define _CERTI_RTIG_MOM_HH
 
 #include <unordered_map>
+#include <chrono>
 
 #include <libCERTI/RootObject.hh>
 
@@ -231,11 +232,15 @@ public:
     void registerInteractionReceived(const FederateHandle federate, const InteractionClassHandle interaction);
 
 private:
-    
+    struct FederateUpdate{
+        std::chrono::seconds updateRate;
+        std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+    };
     
     // Support
     void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
                                              const std::vector<AttributeHandle>& attributes);
+    void providePeriodicAttributeValueUpdatesIfApplicable();
 
     void display() const;
 

@@ -162,6 +162,46 @@ void Federate::setAttributeScopeAdvisorySwitch(const bool val)
     my_attributeScopeAdvisorySwitch = val;
 }
 
+bool Federate::isConveyRegionDesignatorSetsSwitch() const noexcept
+{
+    return my_conveyRegionDesignatorSetsSwitch;
+}
+
+void Federate::setConveyRegionDesignatorSetsSwitch(const bool val)
+{
+    my_conveyRegionDesignatorSetsSwitch = val;
+}
+
+bool Federate::isConveyProducingFederateSwitch() const noexcept
+{
+    return my_conveyProducingFederateSwitch;
+}
+
+void Federate::setConveyProducingFederateSwitch(const bool val)
+{
+    my_conveyProducingFederateSwitch = val;
+}
+
+bool Federate::isServiceReportingSwitch() const noexcept
+{
+    return my_serviceReportingSwitch;
+}
+
+void Federate::setServiceReportingSwitch(const bool val)
+{
+    my_serviceReportingSwitch = val;
+}
+
+bool Federate::isExceptionReportingSwitch() const noexcept
+{
+    return my_exceptionReportingSwitch;
+}
+
+void Federate::setExceptionReportingSwitch(const bool val)
+{
+    my_exceptionReportingSwitch = val;
+}
+
 bool Federate::isSaving() const noexcept
 {
     return my_isCurrentlySaving;
