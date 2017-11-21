@@ -88,34 +88,34 @@ void Mom::registerFederation()
     // Conditional
     attribute = my_attribute_cache["HLAlastSaveName"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = {};
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString("");
 
     // Conditional
     attribute = my_attribute_cache["HLAlastSaveTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = {};
+    my_attribute_values_cache[my_federation_object][attribute] = encodeUInt32(0);
 
     // Conditional
     attribute = my_attribute_cache["HLAnextSaveName"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = {};
+    my_attribute_values_cache[my_federation_object][attribute] = encodeUInt32(0);
 
     // Conditional
     attribute = my_attribute_cache["HLAnextSaveTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = {};
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString("");
 
     // Conditional
     attribute = my_attribute_cache["HLAautoProvide"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = {};
+    my_attribute_values_cache[my_federation_object][attribute] = encodeBoolean(my_federation.isAutoProvideActive());
 
     provideAttributeValueUpdate(my_federation_object, attributes);
 
     Debug(D, pdGendoc) << "exit  Mom::registerFederation" << endl;
 }
 
-void Mom::registerFederate(const Federate& federate)
+void Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
 {
     Debug(D, pdGendoc) << "enter Mom::registerFederate" << endl;
 
@@ -144,17 +144,17 @@ void Mom::registerFederate(const Federate& federate)
     // Static
     attribute = my_attribute_cache["HLAfederateType"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("NOT-COMPLIANT");
+    my_attribute_values_cache[federate_object][attribute] = encodeString("NOT-COMPLIANT"); // FIXME not compliant
 
     // Static
     attribute = my_attribute_cache["HLAfederateHost"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeIp(tcp_link->returnAdress());
 
     // Static
     attribute = my_attribute_cache["HLARTIversion"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeString("1516-2010");
 
     // Static
     attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
@@ -174,7 +174,7 @@ void Mom::registerFederate(const Federate& federate)
     // Conditional
     attribute = my_attribute_cache["HLAasynchronousDelivery"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeBoolean(/*TODO info in RTIA */ false);
 
     // Conditional
     attribute = my_attribute_cache["HLAfederateState"];
@@ -184,27 +184,27 @@ void Mom::registerFederate(const Federate& federate)
     // Conditional
     attribute = my_attribute_cache["HLAtimeManagerState"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLAlogicalTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLAlookahead"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLAGALT"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLALITS"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLAROlength"];
@@ -287,22 +287,23 @@ void Mom::registerFederate(const Federate& federate)
     // Periodic
     attribute = my_attribute_cache["HLAtimeGrantedTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Periodic
     attribute = my_attribute_cache["HLAtimeAdvancingTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
 
     // Conditional
     attribute = my_attribute_cache["HLAconveyRegionDesignatorSets"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute]
+        = encodeBoolean(federate.isConveyRegionDesignatorSetsSwitch());
 
     // Conditional
     attribute = my_attribute_cache["HLAconveyProducingFederate"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeBoolean(federate.isConveyProducingFederateSwitch());
 
     provideAttributeValueUpdate(federate_object, attributes);
 
@@ -399,7 +400,7 @@ void Mom::updateAutoProvide(const bool value)
 
     auto attribute = my_attribute_cache["HLAautoProvide"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federation_object][attribute] = encodeBoolean(value);
 
     provideAttributeValueUpdate(my_federation_object, {attribute});
 
@@ -588,20 +589,40 @@ void Mom::updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_ha
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesThatCanBeDeleted" << endl;
 }
 
-void Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle, const int delta)
+void Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesUpdated" << endl;
 
-    updateCountAttribute(federate_handle, "HLAobjectInstancesUpdated", delta);
+    int count = 0;
+
+    for (const auto& pair : my_object_instances_updated[federate_handle]) {
+        count += pair.second.size();
+    }
+
+    auto attribute = my_attribute_cache["HLAobjectInstancesUpdated"];
+
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(count);
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesUpdated" << endl;
 }
 
-void Mom::updateObjectInstancesReflected(const FederateHandle federate_handle, const int delta)
+void Mom::updateObjectInstancesReflected(const FederateHandle federate_handle)
 {
     Debug(D, pdGendoc) << "enter Mom::updateObjectInstancesReflected" << endl;
 
-    updateCountAttribute(federate_handle, "HLAobjectInstancesReflected", delta);
+    int count = 0;
+
+    for (const auto& pair : my_object_instances_reflected[federate_handle]) {
+        count += pair.second.size();
+    }
+
+    auto attribute = my_attribute_cache["HLAobjectInstancesReflected"];
+
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(count);
+
+    preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 
     Debug(D, pdGendoc) << "exit  Mom::updateObjectInstancesReflected" << endl;
 }
@@ -753,7 +774,7 @@ void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
 
     for (auto& kv : my_attributes_to_update_periodically) {
         auto& settings = my_federates_update_settings[kv.first];
-        
+
         if (settings.updateRate != std::chrono::seconds(0)) {
             if (now - settings.lastUpdate >= settings.updateRate) {
                 provideAttributeValueUpdate(my_federate_objects[kv.first], {begin(kv.second), end(kv.second)});
@@ -762,7 +783,7 @@ void Mom::providePeriodicAttributeValueUpdatesIfApplicable()
             }
         }
     }
-    
+
     Debug(D, pdGendoc) << "exit  Mom::providePeriodicAttributeValueUpdatesIfApplicable" << endl;
 }
 }

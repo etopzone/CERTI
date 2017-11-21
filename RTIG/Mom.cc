@@ -393,6 +393,23 @@ AttributeValue_t Mom::encodeUInt32(const uint32_t data)
     return encodeMB();
 }
 
+AttributeValue_t Mom::encodeIp(const unsigned long ip)
+{
+    mb.reset();
+    mb.write_uint32(ip);
+
+    std::string str;
+
+    for (auto i = 0; i < 4; ++i) {
+        if (i != 0) {
+            str += ".";
+        }
+        str += std::to_string(mb.read_char());
+    }
+
+    return encodeString(str);
+}
+
 AttributeValue_t Mom::encodeFederateHandleList()
 {
     mb.reset();
@@ -543,8 +560,8 @@ std::vector<AttributeHandle> Mom::decodeVectorAttributeHandle(const ParameterVal
 
 FederationTime Mom::decodeFederationTime(const ParameterValue_t& data)
 {
-    // TODO
-    return 0;
+    mb.reset();
+    return FederationTime(mb.read_double());
 }
 
 Mom::OrderType Mom::decodeOrderType(const ParameterValue_t& data)

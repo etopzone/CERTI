@@ -450,6 +450,8 @@ public:
 
     /// Return the Federate whose Handle is theHandle, if found.
     Federate& getFederate(FederateHandle federate_handle);
+    
+    RootObject& getRootObject();
 
 private:
     friend class Mom;

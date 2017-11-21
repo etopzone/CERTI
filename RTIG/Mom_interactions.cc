@@ -504,11 +504,15 @@ Responses Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
                        << ", " << exceptionReporting << endl;
 
     auto& federate = my_federation.getFederate(federate_handle);
-    
+
     federate.setConveyRegionDesignatorSetsSwitch(conveyRegionDesignatorSets);
     federate.setConveyProducingFederateSwitch(conveyProducingFederate);
     federate.setServiceReportingSwitch(serviceReporting);
     federate.setExceptionReportingSwitch(exceptionReporting);
+
+    // FIXME should be done on Federate instead of here
+    updateConveyRegionDesignatorSets(federate_handle, conveyRegionDesignatorSets);
+    updateConveyProducingFederate(federate_handle, conveyProducingFederate);
 
     return {};
 
@@ -1448,7 +1452,8 @@ Responses Mom::processFederateEnableTimeConstrained(const FederateHandle& federa
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateEnableTimeConstrained " << federate_handle << endl;
 
-    Responses responses = my_federation.setConstrained(federate_handle, true, 0); // FIXME what time should we put here ?
+    Responses responses
+        = my_federation.setConstrained(federate_handle, true, 0); // FIXME what time should we put here ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateEnableTimeConstrained" << endl;
 
@@ -1462,7 +1467,8 @@ Responses Mom::processFederateDisableTimeConstrained(const FederateHandle& feder
 {
     Debug(D, pdGendoc) << "enter Mom::processFederateDisableTimeConstrained " << federate_handle << endl;
 
-    Responses responses = my_federation.setConstrained(federate_handle, false, 0); // FIXME what time should we put here ?
+    Responses responses
+        = my_federation.setConstrained(federate_handle, false, 0); // FIXME what time should we put here ?
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateDisableTimeConstrained" << endl;
 

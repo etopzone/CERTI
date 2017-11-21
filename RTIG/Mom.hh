@@ -23,8 +23,8 @@
 #ifndef _CERTI_RTIG_MOM_HH
 #define _CERTI_RTIG_MOM_HH
 
-#include <unordered_map>
 #include <chrono>
+#include <unordered_map>
 
 #include <libCERTI/RootObject.hh>
 
@@ -73,14 +73,14 @@ public:
 
     // Object management
     void registerFederation();
-    void registerFederate(const Federate& federate);
+    void registerFederate(const Federate& federate, SocketTCP* tcp_link);
     void deleteFederate(const FederateHandle federate_handle);
 
     // Conditional Attributes
     // Federation
     void updateFederatesInFederation();
-    void updateFomModuleDesignatorList(const std::vector<std::string>& value);
-    void updateCurrentFDD(const std::string& value);
+    void updateFomModuleDesignatorList(const std::vector<std::string>& value); // TODO in phase 3
+    void updateCurrentFDD(const std::string& value); // TODO in phase 3
     void updateLastSave();
     void updateNextSave(const std::string& label, const FederationTime& time);
     void updateAutoProvide(const bool value);
@@ -88,28 +88,28 @@ public:
     // Federate
     void updateTimeConstrained(const Federate& federate);
     void updateTimeRegulating(const Federate& federate);
-    void updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value);
+    void updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value); // TODO info in rtia
     void updateFederateState(const Federate& federate);
-    void updateTimeManagerState(const FederateHandle federate_handle, const TimeState value);
-    void updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value);
-    void updateLookahead(const FederateHandle federate_handle, const FederationTime& value);
-    void updateGALT(const FederateHandle federate_handle, const FederationTime& value);
-    void updateLITS(const FederateHandle federate_handle, const FederationTime& value);
-    void updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
-    void updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
-    void updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    void updateTimeManagerState(const FederateHandle federate_handle, const TimeState value); // TODO info in rtia
+    void updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    void updateLookahead(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    void updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    void updateLITS(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    /* never used */ void updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ void updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ void updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
     void updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
-    void updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ void updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
     void updateInteractionsSent(const FederateHandle federate_handle, const int delta = 1);
     void updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesUpdated(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesReflected(const FederateHandle federate_handle, const int delta = 1);
+    void updateObjectInstancesUpdated(const FederateHandle federate_handle);
+    void updateObjectInstancesReflected(const FederateHandle federate_handle);
     void updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta = 1);
     void updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
     void updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
     void updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
-    void updateTimeGrantedTime(const FederateHandle federate_handle, const int value);
-    void updateTimeAdvancingTime(const FederateHandle federate_handle, const int value);
+    void updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
+    void updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
     void updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
     void updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
@@ -233,10 +233,10 @@ public:
 
 private:
     struct FederateUpdateSettings {
-        std::chrono::seconds updateRate {0};
-        std::chrono::time_point<std::chrono::system_clock> lastUpdate {};
+        std::chrono::seconds updateRate{0};
+        std::chrono::time_point<std::chrono::system_clock> lastUpdate{};
     };
-    
+
     // Support
     void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
                                              const std::vector<AttributeHandle>& attributes);
@@ -273,6 +273,7 @@ private:
     AttributeValue_t encodeString(const std::string& str);
     AttributeValue_t encodeBoolean(const bool data);
     AttributeValue_t encodeUInt32(const uint32_t data);
+    AttributeValue_t encodeIp(const unsigned long ip);
     AttributeValue_t encodeFederateHandleList();
     AttributeValue_t encodeFederateState(const Federate& federate);
     AttributeValue_t encodeVectorHandle(const std::vector<Handle>& data);
@@ -284,7 +285,7 @@ private:
     uint32_t decodeUInt32(const ParameterValue_t& data);
     ResignAction decodeResignAction(const ParameterValue_t& data);
     std::vector<AttributeHandle> decodeVectorAttributeHandle(const ParameterValue_t& data);
-    FedTime decodeFederationTime(const ParameterValue_t& data);
+    FederationTime decodeFederationTime(const ParameterValue_t& data);
     OrderType decodeOrderType(const ParameterValue_t& data);
 
     AttributeValue_t encodeMB();

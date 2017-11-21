@@ -317,7 +317,7 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     }
 
     if (my_mom) {
-        my_mom->registerFederate(federate);
+        my_mom->registerFederate(federate, tcp_link);
         my_mom->updateFederatesInFederation();
     }
 
@@ -1183,6 +1183,13 @@ Federation::registerObject(FederateHandle federate, ObjectClassHandle class_hand
         my_objects_handle_generator.free(id);
         throw;
     }
+
+    if (my_mom) {
+        my_mom->updateObjectInstancesThatCanBeDeleted(federate);
+        my_mom->updateObjectInstancesRegistered(federate);
+        // TODO should updateObjectInstancesDiscovered
+    }
+
     Debug(G, pdGendoc) << "exit Federation::registerObject" << endl;
     return id;
 }
@@ -1208,6 +1215,11 @@ Responses Federation::deleteObject(FederateHandle federate_handle,
 
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
+    if (my_mom) {
+        my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
+        my_mom->updateObjectInstancesDeleted(federate_handle);
+    }
+
     return responses;
 }
 
@@ -1228,6 +1240,12 @@ Responses Federation::deleteObject(FederateHandle federate_handle, ObjectHandle 
     rep->setObject(object_handle);
 
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
+
+    if (my_mom) {
+        my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
+        my_mom->updateObjectInstancesDeleted(federate_handle);
+        // TODO should updateObjectInstancesRemoved
+    }
 
     return responses;
 }
@@ -1349,8 +1367,12 @@ void Federation::updateAttributeValues(FederateHandle federate,
 
     if (my_mom && federate != my_mom->getHandle()) {
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
+        // TODO should registerObjectInstanceReflected
         my_mom->registerUpdate(federate, object->getClass());
         my_mom->updateUpdatesSent(federate);
+        my_mom->updateObjectInstancesUpdated(federate);
+        // TODO should updateReflectionsReceived
+        // TODO should updateObjectInstancesReflected
     }
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
@@ -1460,6 +1482,7 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
     if (my_mom) {
         my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
         my_mom->updateInteractionsSent(federate_handle);
+        // TODO should updateInteractionsReceived
 
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
@@ -2380,6 +2403,11 @@ void Federation::setAutoProvide(const bool value)
     if (my_mom) {
         my_mom->updateAutoProvide(value);
     }
+}
+
+RootObject& Federation::getRootObject()
+{
+    return *my_root_object;
 }
 }
 } // namespace certi/rtig
