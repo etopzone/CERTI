@@ -5,7 +5,7 @@
 #include <libHLA/SemaphoreWin32.hh>
 #include <libHLA/SHMWin32.hh>
 #include "SocketSHM.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 class CERTI_EXPORT SocketSHMWin32 : public SocketSHM {
 private:

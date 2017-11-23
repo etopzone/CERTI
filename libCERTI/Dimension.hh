@@ -27,7 +27,7 @@
 // CERTI headers
 #include "Handled.hh"
 #include "Named.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 namespace certi {
 

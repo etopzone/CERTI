@@ -34,7 +34,7 @@ class SecurityServer;
 #include "MessageEvent.hh"
 #include "ObjectClass.hh"
 #include "TreeNamedAndHandledSet.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // System headers
 #include <string>

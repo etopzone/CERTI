@@ -30,7 +30,7 @@
 #include "NameReservation.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 namespace certi {
 

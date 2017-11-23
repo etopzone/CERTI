@@ -23,7 +23,7 @@
 #define LIBCERTI_HANDLE_MANAGER
 
 #include "Exception.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <limits>
 #include <list>

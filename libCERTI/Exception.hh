@@ -24,7 +24,7 @@
 #ifndef _CERTI_EXCEPTION_HH
 #define _CERTI_EXCEPTION_HH
 
-#include "certi.hh"
+#include <include/certi.hh>
 #include <string>
 
 namespace certi {

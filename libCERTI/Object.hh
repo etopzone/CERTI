@@ -34,7 +34,7 @@ class RTIRegion;
 #include "Exception.hh"
 #include "Handled.hh"
 #include "Named.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <map>
 

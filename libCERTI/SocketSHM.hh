@@ -8,7 +8,7 @@
 
 // Specifics includes
 #include "Exception.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 class CERTI_EXPORT SocketSHM {
 public:

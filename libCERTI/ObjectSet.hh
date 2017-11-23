@@ -29,7 +29,7 @@ class Object;
 #include "GAV.hh"
 #include <libHLA/MessageBuffer.hh>
 #include "SecurityServer.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // Standard
 #include <map>

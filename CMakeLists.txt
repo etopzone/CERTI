@@ -106,8 +106,11 @@ endif()
 option(COMPILE_WITH_C11
        "Compile code with C11 feature enabled" ON)
 
+option(COMPILE_UNIT_TESTS
+       "Compile unit tests" OFF)
+
 option(COMPILE_WITH_COVERAGE
-       "Compile code with coverage flags" OFF)
+       "Compile unit tests with coverage flags" OFF)
 
 option(BUILD_DOC
        "Build documentation (using doxygen)" OFF)
@@ -263,20 +266,6 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
-
-if (COMPILE_WITH_COVERAGE)
-    MESSAGE(STATUS "Compiling with code coverage flags")
-    
-    include (CodeCoverage)
-    
-    APPEND_COVERAGE_COMPILER_FLAGS()
-    set (CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
-    
-    set (COVERAGE_EXCLUDES
-         'test/*'
-         'build.tests.gtest/*'
-         '/usr/include/*' )
-endif()
 
 IF (WIN32)
     IF (MINGW)
@@ -558,10 +547,27 @@ add_subdirectory( RTIG )
 add_subdirectory( RTIA )
 add_subdirectory( libRTI )
 add_subdirectory( test )
-add_subdirectory( tests )
 add_subdirectory( doc )
 add_subdirectory( scripts )
 add_subdirectory( xml )
+
+if (COMPILE_UNIT_TESTS)
+    add_subdirectory( tests )
+    
+    if (COMPILE_WITH_COVERAGE)
+        MESSAGE(STATUS "Compiling with code coverage flags")
+        
+        include (CodeCoverage)
+        
+        APPEND_COVERAGE_COMPILER_FLAGS()
+        set (CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+        
+        set (COVERAGE_EXCLUDES
+             'test/*'
+             'build.tests.gtest/*'
+             '/usr/include/*' )
+    endif()
+endif()
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")

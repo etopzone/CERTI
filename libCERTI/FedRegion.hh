@@ -25,7 +25,7 @@
 #define CERTI_FED_REGION_HH
 
 #include "BaseRegion.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 namespace certi {
 

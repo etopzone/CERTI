@@ -26,7 +26,7 @@
 
 #include "AuditLine.hh"
 #include "Exception.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <fstream>
 #include <string>

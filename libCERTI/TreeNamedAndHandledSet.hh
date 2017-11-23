@@ -27,7 +27,7 @@
 
 // CERTI headers
 #include "Named.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // System headers
 #include <algorithm>

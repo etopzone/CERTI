@@ -26,7 +26,7 @@
 #include "NM_Classes.hh"
 #include "NetworkMessage.hh"
 #include "SecurityServer.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <unordered_map>
 

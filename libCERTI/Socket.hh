@@ -21,7 +21,7 @@
 #define CERTI_SOCKET_HH
 
 #include "Exception.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 #ifdef _WIN32
 #ifndef NOMINMAX
 #define NOMINMAX

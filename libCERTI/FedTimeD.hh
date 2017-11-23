@@ -24,7 +24,7 @@
 #ifndef CERTI_FEDTIMED_HH
 #define CERTI_FEDTIMED_HH
 
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <math.h>
 #include <ostream>

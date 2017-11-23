@@ -26,7 +26,7 @@
 #define _CERTI_SECURITY_LEVEL_HH
 
 #include "Exception.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <string>
 

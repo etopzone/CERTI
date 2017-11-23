@@ -24,7 +24,7 @@
 #ifndef LIBCERTI_NAMED_HH
 #define LIBCERTI_NAMED_HH
 
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <string>
 

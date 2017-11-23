@@ -21,7 +21,7 @@
 #define CERTI_SOCKET_TCP_HH
 
 #include "Socket.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // This is the read buffer of TCP sockets. It must be at least as long
 // as the longest data ever received by a socket.

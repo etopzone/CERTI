@@ -40,7 +40,7 @@ class ObjectClassBroadcastList;
 #include "NM_Classes.hh"
 #include "Named.hh"
 #include "SecurityServer.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // Standard
 #include <map>

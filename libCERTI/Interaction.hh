@@ -35,7 +35,7 @@ class InteractionSet;
 #include "Parameter.hh"
 #include "SecurityServer.hh"
 #include "Subscribable.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 #include <map>
 #include <set>

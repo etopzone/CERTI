@@ -25,7 +25,7 @@
 
 #include "GSSAPIHandler.hh"
 #include "SocketTCP.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 namespace certi {
 

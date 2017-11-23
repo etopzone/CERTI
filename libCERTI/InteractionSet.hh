@@ -28,7 +28,7 @@
 #include "Interaction.hh"
 #include "SecurityServer.hh"
 #include "TreeNamedAndHandledSet.hh"
-#include "certi.hh"
+#include <include/certi.hh>
 
 // System headers
 #include <map>

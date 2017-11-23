@@ -12,7 +12,7 @@
 
 #include "FedTimeD.hh"
 
-#include "certi.hh"
+#include <include/certi.hh>
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2008  ONERA
