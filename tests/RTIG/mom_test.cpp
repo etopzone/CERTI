@@ -18,10 +18,14 @@ static const ::certi::FederateHandle ukn_federate{42};
 }
 
 class MomTest : public ::testing::Test {
+public:
+    MomTest() {
+        f.enableMomIfAvailable();
+    }
 protected:
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-
+    
     Federation f{"MOM", federation_handle, s, a, "Test.xml", 0};
 
     ::certi::ObjectClassHandle federateOCH{

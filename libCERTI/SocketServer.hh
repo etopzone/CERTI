@@ -135,9 +135,9 @@ public:
      * 
      * JYR : sorry but we return NULL (avoid rtig crash) because development needed
      */
-    Socket* getSocketLink(FederationHandle the_federation,
-                          FederateHandle the_federate,
-                          TransportType the_type = RELIABLE) const;
+    virtual Socket* getSocketLink(FederationHandle the_federation,
+                                  FederateHandle the_federate,
+                                  TransportType the_type = RELIABLE) const;
 
     SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const;
 

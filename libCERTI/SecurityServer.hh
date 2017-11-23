@@ -79,7 +79,7 @@ private:
     SecurityLevelID getLevel(const std::string& theFederate) const;
 
     void insertPublicLevel();
-    
+
     FederateHandle my_mom_federate_handle;
 };
 }

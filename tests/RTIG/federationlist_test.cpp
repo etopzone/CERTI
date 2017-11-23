@@ -5,6 +5,7 @@
 
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/SocketServer.hh>
+#include <libCERTI/SocketTCP.hh>
 
 #include <libCERTI/NM_Classes.hh>
 

@@ -256,7 +256,8 @@ bool Federation::check(FederateHandle federate_handle) const
     return true;
 }
 
-std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses>
+Federation::add(const string& federate_name, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -291,7 +292,6 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
             nullMessage->setDate(clock.second);
             Debug(D, pdTerm) << "Sending NULL message from " << clock.first << " to new federate." << endl;
 
-            //             nullMessage.send(tcp_link, my_nm_buffer);
             responses.emplace_back(tcp_link, std::move(nullMessage));
         }
 
@@ -306,7 +306,6 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
                 asp->setTag(kv.second);
                 Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " to the new Federate" << endl;
 
-                //                 ASPMessage.send(tcp_link, my_nm_buffer);
                 responses.emplace_back(tcp_link, std::move(asp));
 
                 federate.addSynchronizationLabel(kv.first);

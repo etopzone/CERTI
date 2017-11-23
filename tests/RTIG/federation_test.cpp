@@ -6,6 +6,7 @@
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/NM_Classes.hh>
 #include <libCERTI/SocketServer.hh>
+#include <libCERTI/SocketTCP.hh>
 
 #include <config.h>
 
@@ -88,13 +89,25 @@ static const ::certi::FederateHandle ukn_federate{42};
 
 static constexpr int quiet{0};
 static constexpr int verbose{1};
+
+class FakeSocketServer: public ::certi::SocketServer {
+    using SocketServer::SocketServer;
+    
+    virtual ::certi::Socket* getSocketLink(::certi::FederationHandle /*the_federation*/,
+                          ::certi::FederateHandle /*the_federate*/,
+                          ::certi::TransportType /*the_type*/ = ::certi::RELIABLE) const override
+                          {
+                              return nullptr;
+                          }
+    
+};
 }
 
 class FederationTest : public ::testing::Test {
 protected:
-    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    FakeSocketServer s{new ::certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-
+    
     TemporaryFedFile tmp{"Sample.fed"};
 
     Federation f{"name", federation_handle, s, a, "Sample.fed", quiet};
@@ -271,14 +284,13 @@ TEST_F(FederationTest, CannotAddSameFederateTwice)
 /// FIXME This should not send NM. Move to Processing!
 TEST_F(FederationTest, AddFederateWithoutRegulatorsReceiveNoMessage)
 {
-    MockSocketTcp socket;
-    EXPECT_CALL(socket, send(_, _)).Times(0);
-
-    f.add("federate", &socket);
+    auto responses = f.add("federate", nullptr).second;
+    
+    ASSERT_EQ(0u, responses.size());
 }
 
 /// FIXME This should not send NM. Move to Processing!
-TEST_F(FederationTest, AddFederateReceiveNullMessageFromRegulator)
+TEST_F(FederationTest, AddFederateRespondNullMessageFromRegulator)
 {
     auto fed = f.add("regul1", nullptr).first;
 
@@ -295,10 +307,11 @@ TEST_F(FederationTest, AddFederateReceiveNullMessageFromRegulator)
 
     ASSERT_EQ(1, f.getNbRegulators());
 
-    MockSocketTcp socket;
-    EXPECT_CALL(socket, send(_, _)).Times(1);
-
-    f.add("federate", &socket);
+    auto responses = f.add("federate", nullptr).second;
+    
+    ASSERT_EQ(1u, responses.size());
+    ASSERT_EQ(::certi::NetworkMessage::Type::MESSAGE_NULL, responses.front().message()->getMessageType());
+    ASSERT_EQ(fed, responses.front().message()->getFederate());
 
     ASSERT_EQ(2, f.getNbFederates());
 }
@@ -308,10 +321,10 @@ TEST_F(FederationTest, AddFederateSynchronizingReceiveASPMessage)
 {
     f.registerSynchronization(f.add("sync_emitter", nullptr).first, "label", "tag");
 
-    MockSocketTcp socket;
-    EXPECT_CALL(socket, send(_, _)).Times(1);
-
-    f.add("federate", &socket);
+    auto responses = f.add("federate", nullptr).second;
+    
+    ASSERT_EQ(1u, responses.size());
+    ASSERT_EQ(::certi::NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT, responses.front().message()->getMessageType());
 
     ASSERT_EQ(2, f.getNbFederates());
 }
@@ -319,7 +332,7 @@ TEST_F(FederationTest, AddFederateSynchronizingReceiveASPMessage)
 TEST_F(FederationTest, RemoveFederateUpdatesUnderlying)
 {
     auto fed = f.add("fed", nullptr).first;
-
+    
     f.remove(fed);
 
     ASSERT_TRUE(f.empty());
@@ -332,9 +345,12 @@ TEST_F(FederationTest, RemoveFederateThrowsOnUnknownFederate)
 
 TEST_F(FederationTest, CannotRemoveSameFederateTwice)
 {
+    std::cout << f.getNbFederates() << std::endl;
     auto fed = f.add("federate", nullptr).first;
+    std::cout << f.getNbFederates() << std::endl;
 
     f.remove(fed);
+    std::cout << f.getNbFederates() << std::endl;
 
     ASSERT_THROW(f.remove(fed), ::certi::FederateNotExecutionMember);
 }

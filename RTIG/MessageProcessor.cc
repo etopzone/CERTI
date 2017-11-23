@@ -206,7 +206,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 #else
     my_federations.info(federation_handle, federates_count, regulators_count, is_syncing);
 #endif
-
+ 
     // Store Federate <->Socket reference.
     my_socketServer.setReferences(
         request.sockets().front()->returnSocket(), federation_handle, federate_handle, address, peer);
