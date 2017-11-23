@@ -552,8 +552,6 @@ add_subdirectory( scripts )
 add_subdirectory( xml )
 
 if (COMPILE_UNIT_TESTS)
-    add_subdirectory( tests )
-    
     if (COMPILE_WITH_COVERAGE)
         MESSAGE(STATUS "Compiling with code coverage flags")
         
@@ -567,6 +565,8 @@ if (COMPILE_UNIT_TESTS)
              'build.tests.gtest/*'
              '/usr/include/*' )
     endif()
+    
+    add_subdirectory( tests )
 endif()
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
