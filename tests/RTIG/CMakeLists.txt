@@ -19,8 +19,6 @@ set(rtig_SRCS
     ${CERTI_SOURCE_DIR}/RTIG/FederationsList.hh
     ${CERTI_SOURCE_DIR}/RTIG/FederationsList.cc
     
-    ${CERTI_SOURCE_DIR}/RTIG/MessageEvent.hh
-    
     ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.hh
     ${CERTI_SOURCE_DIR}/RTIG/MessageProcessor.cc
     

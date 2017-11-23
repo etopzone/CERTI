@@ -302,11 +302,8 @@ void Mom::publishObjects()
 
     for (const auto& pair : the_required_object_classes) {
         if (pair.second.first != MomAction::Publish) {
-            std::cout << "skip " << pair.first << std::endl;
             continue;
         }
-
-        std::cout << "publish " << pair.first << std::endl;
 
         auto object_handle = my_root.ObjectClasses->getHandleFromName(pair.first);
         my_object_class_cache.insert(std::make_pair(pair.first, object_handle));

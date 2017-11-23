@@ -98,7 +98,7 @@ void ObjectClass::addInheritedClassAttributes(ObjectClass* the_child)
   take a look at ObjectClassSet::RegisterObject to understand
   what is going on...
 */
-void ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const Object* source)
+Responses ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const Object* source)
 {
     G.Out(pdGendoc, "enter ObjectClass::broadcastClassMessage");
     // 1. Set ObjectHandle to local class Handle.
@@ -106,8 +106,8 @@ void ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const
 
     G.Out(pdGendoc, "      ObjectClass::broadcastClassMessage handle=%d", handle);
     // 2. Update message attribute list by removing child's attributes.
-    if ((ocbList->getMsg()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES)
-        || (ocbList->getMsg()->getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+    if ((ocbList->getMsg().getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES)
+        || (ocbList->getMsg().getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
         for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
             // If the attribute is not in that class, remove it from the message.
             if (hasAttribute(ocbList->getMsgRAV()->getAttributes(attr))) {
@@ -119,14 +119,14 @@ void ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const
         }
     }
     // 3. Add class/attributes subscribers to the list.
-    switch (ocbList->getMsg()->getMessageType()) {
+    switch (ocbList->getMsg().getMessageType()) {
     case NetworkMessage::Type::DISCOVER_OBJECT:
     case NetworkMessage::Type::REMOVE_OBJECT: {
         // For each federate, add it to list if at least one attribute has
         // been subscribed.
         FederateHandle federate = 0;
         for (federate = 1; federate <= maxSubscriberHandle; federate++) {
-            if (isSubscribed(federate) && (federate != (ocbList->getMsg()->getFederate()))) {
+            if (isSubscribed(federate) && (federate != (ocbList->getMsg().getFederate()))) {
                 ocbList->addFederate(federate);
             }
         }
@@ -166,8 +166,9 @@ void ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const
         throw RTIinternalError("BroadcastClassMsg: Unexpected message type.");
     }
     // 4. Send pending messages.
-    ocbList->sendPendingMessage(server);
+    auto ret = ocbList->preparePendingMessage(*server);
     G.Out(pdGendoc, "exit  ObjectClass::broadcastClassMessage");
+    return ret;
 }
 
 // ----------------------------------------------------------------------------
@@ -291,11 +292,13 @@ ObjectClass::~ObjectClass()
    the message broadcasting, by giving the list to our parent
    class.
 */
-ObjectClassBroadcastList* ObjectClass::deleteInstance(FederateHandle the_federate,
-                                                      Object* object,
-                                                      const FederationTime& theTime,
-                                                      const std::string& the_tag)
+std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::deleteInstance(FederateHandle the_federate,
+                                                                            Object* object,
+                                                                            const FederationTime& theTime,
+                                                                            const std::string& the_tag)
 {
+    Responses ret;
+
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
         D.Out(pdExcept, "Delete Object %d: Federate %d not owner.", object->getHandle(), the_federate);
@@ -313,7 +316,7 @@ ObjectClassBroadcastList* ObjectClass::deleteInstance(FederateHandle the_federat
     if (server != NULL) {
         D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
 
-        NM_Remove_Object* answer = new NM_Remove_Object();
+        auto answer = std::make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -324,8 +327,8 @@ ObjectClassBroadcastList* ObjectClass::deleteInstance(FederateHandle the_federat
         answer->setDate(theTime);
         answer->setLabel(the_tag);
 
-        ocbList = new ObjectClassBroadcastList(answer, 0);
-        broadcastClassMessage(ocbList);
+        ocbList = new ObjectClassBroadcastList(std::move(answer));
+        ret = broadcastClassMessage(ocbList);
     }
     else {
         D.Out(pdRegister, "Object %u deleted in class %u, no broadcast to do.", object->getHandle(), handle);
@@ -333,7 +336,7 @@ ObjectClassBroadcastList* ObjectClass::deleteInstance(FederateHandle the_federat
 
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
-    return ocbList;
+    return {ocbList, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
@@ -344,9 +347,10 @@ ObjectClassBroadcastList* ObjectClass::deleteInstance(FederateHandle the_federat
    the message broadcasting, by giving the list to our parent
    class.
 */
-ObjectClassBroadcastList*
+std::pair<ObjectClassBroadcastList*, Responses>
 ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const std::string& the_tag)
 {
+    Responses ret;
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
         D.Out(pdExcept, "Delete Object %d: Federate %d not owner.", object->getHandle(), the_federate);
@@ -364,7 +368,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
     if (server != NULL) {
         D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
 
-        NM_Remove_Object* answer = new NM_Remove_Object();
+        auto answer = std::make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setObjectClass(handle); // Class Handle FIXME why do we have a class handle in REMOVE OBJECT?
@@ -373,8 +377,8 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
         // without time
         answer->setLabel(the_tag);
 
-        ocbList = new ObjectClassBroadcastList(answer, 0);
-        broadcastClassMessage(ocbList);
+        ocbList = new ObjectClassBroadcastList(std::move(answer));
+        ret = broadcastClassMessage(ocbList);
     }
     else {
         D.Out(pdRegister, "Object %u deleted in class %u, no broadcast to do.", object->getHandle(), handle);
@@ -382,7 +386,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
 
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
-    return ocbList;
+    return {ocbList, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
@@ -515,9 +519,10 @@ bool ObjectClass::isInstanceInClass(ObjectHandle objectHandle)
 
 // ----------------------------------------------------------------------------
 //! killFederate.
-ObjectClassBroadcastList* ObjectClass::killFederate(FederateHandle the_federate) noexcept
+std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::killFederate(FederateHandle the_federate) noexcept
 {
     D.Out(pdRegister, "Object Class %d: Killing Federate %d.", handle, the_federate);
+
     std::vector<AttributeHandle> liste_vide;
     try {
         // Does federate is publishing something ? (not important)
@@ -550,7 +555,7 @@ ObjectClassBroadcastList* ObjectClass::killFederate(FederateHandle the_federate)
     D.Out(pdRegister, "Object Class %d:Federate %d killed.", handle, the_federate);
 
     // Return NULL if the Federate did not own any instance.
-    return NULL;
+    return {nullptr, Responses()};
 }
 
 // ----------------------------------------------------------------------------
@@ -601,9 +606,10 @@ void ObjectClass::publish(FederateHandle theFederateHandle,
   order to allow our ObjectClassSet to go on with the message broadcasting,
   by giving the list to our parent class.
 */
-ObjectClassBroadcastList*
+std::pair<ObjectClassBroadcastList*, Responses>
 ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_object, ObjectClassHandle /*classHandle*/)
 {
+    Responses ret;
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
         D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
@@ -642,7 +648,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
     if (server != NULL) {
         D.Out(pdRegister, "Object %u registered in class %u, now broadcasting...", the_object->getHandle(), handle);
 
-        NM_Discover_Object* answer = new NM_Discover_Object();
+        auto answer = std::make_unique<NM_Discover_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -652,8 +658,8 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
         // BUG FIXME strange!!
         //answer->setDate(0.0);
 
-        ocbList = new ObjectClassBroadcastList(answer, 0);
-        broadcastClassMessage(ocbList);
+        ocbList = new ObjectClassBroadcastList(std::move(answer));
+        ret = broadcastClassMessage(ocbList);
     }
     else {
         D.Out(pdRegister, "Object %u registered in class %u, no broadcast to do.", the_object->getHandle(), handle);
@@ -661,7 +667,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
 
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
-    return ocbList;
+    return {ocbList, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
@@ -718,12 +724,12 @@ bool ObjectClass::sendDiscoverMessages(FederateHandle federate, ObjectClassHandl
 }
 
 // A class' LevelID can only be increased.
-void ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID)
+void ObjectClass::setSecurityLevelId(SecurityLevelID levelID)
 {
-    if (!server->dominates(new_levelID, securityLevelId))
+    if (!server->dominates(levelID, securityLevelId))
         throw SecurityError("Attempt to lower object class level.");
 
-    securityLevelId = new_levelID;
+    securityLevelId = levelID;
 }
 
 // ----------------------------------------------------------------------------
@@ -764,14 +770,17 @@ bool ObjectClass::subscribe(FederateHandle fed, const std::vector<AttributeHandl
 
 // ----------------------------------------------------------------------------
 //! update Attribute Values with time.
-ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_federate,
-                                                             Object* object,
-                                                             const std::vector<AttributeHandle>& the_attributes,
-                                                             const std::vector<AttributeValue_t>& the_values,
-                                                             int the_size,
-                                                             FederationTime the_time,
-                                                             const std::string& the_tag)
+std::pair<ObjectClassBroadcastList*, Responses>
+ObjectClass::updateAttributeValues(FederateHandle the_federate,
+                                   Object* object,
+                                   const std::vector<AttributeHandle>& the_attributes,
+                                   const std::vector<AttributeValue_t>& the_values,
+                                   int the_size,
+                                   FederationTime the_time,
+                                   const std::string& the_tag)
 {
+    Responses ret;
+
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute* oa;
     for (int i = 0; i < the_size; i++) {
@@ -785,7 +794,7 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        NM_Reflect_Attribute_Values* answer = new NM_Reflect_Attribute_Values();
+        auto answer = std::make_unique<NM_Reflect_Attribute_Values>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -801,11 +810,11 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
             answer->setValues(the_values[i], i);
         }
 
-        ocbList = new ObjectClassBroadcastList(answer, _handleClassAttributeMap.size());
+        ocbList = new ObjectClassBroadcastList(std::move(answer), _handleClassAttributeMap.size());
 
         D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
 
-        broadcastClassMessage(ocbList, object);
+        ret = broadcastClassMessage(ocbList, object);
     }
     else {
         D.Out(pdExcept, "UpdateAttributeValues should not be called on the RTIA.");
@@ -814,32 +823,35 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
 
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
-    return ocbList;
+    return {ocbList, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
 //! update Attribute Values without time.
-ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_federate,
-                                                             Object* object,
-                                                             const std::vector<AttributeHandle>& the_attributes,
-                                                             const std::vector<AttributeValue_t>& the_values,
-                                                             int the_size,
-                                                             const std::string& the_tag)
+std::pair<ObjectClassBroadcastList*, Responses>
+ObjectClass::updateAttributeValues(FederateHandle the_federate,
+                                   Object* object,
+                                   const std::vector<AttributeHandle>& the_attributes,
+                                   const std::vector<AttributeValue_t>& the_values,
+                                   int the_size,
+                                   const std::string& the_tag)
 {
+    Responses ret;
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute* oa;
     for (int i = 0; i < the_size; i++) {
         oa = object->getAttribute(the_attributes[i]);
 
         if (oa->getOwner() != the_federate) {
-            throw AttributeNotOwned("Attribute #" + std::to_string(the_attributes[i]) + " is not owned by federate #" + std::to_string(the_federate));
+            throw AttributeNotOwned("Attribute #" + std::to_string(the_attributes[i]) + " is not owned by federate #"
+                                    + std::to_string(the_federate));
         }
     }
 
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        NM_Reflect_Attribute_Values* answer = new NM_Reflect_Attribute_Values();
+        auto answer = std::make_unique<NM_Reflect_Attribute_Values>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -856,11 +868,11 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
             answer->setValues(the_values[i], i);
         }
 
-        ocbList = new ObjectClassBroadcastList(answer, _handleClassAttributeMap.size());
+        ocbList = new ObjectClassBroadcastList(std::move(answer), _handleClassAttributeMap.size());
 
         D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
 
-        broadcastClassMessage(ocbList, object);
+        ret = broadcastClassMessage(ocbList, object);
     }
     else {
         D.Out(pdExcept, "UpdateAttributeValues should not be called on the RTIA.");
@@ -869,17 +881,18 @@ ObjectClassBroadcastList* ObjectClass::updateAttributeValues(FederateHandle the_
 
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
-    return ocbList;
+    return {ocbList, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
 //! negotiatedAttributeOwnershipDivestiture.
-ObjectClassBroadcastList*
+std::pair<ObjectClassBroadcastList*, Responses>
 ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                      Object* object,
                                                      const std::vector<AttributeHandle>& theAttributeList,
                                                      const std::string& theTag)
 {
+    Responses ret;
     // Pre-conditions checking
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
@@ -905,17 +918,17 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
             throw AttributeAlreadyBeingDivested("");
     }
 
-    int compteur_acquisition = 0;
-    int compteur_assumption = 0;
-    int compteur_divestiture = 0;
+    int acquisition_count = 0;
+    int assumption_count = 0;
+    int divestiture_count = 0;
     ObjectClassBroadcastList* List = NULL;
     FederateHandle NewOwner;
 
     if (server != NULL) {
-        NM_Request_Attribute_Ownership_Assumption* AnswerAssumption = new NM_Request_Attribute_Ownership_Assumption();
+        auto answerAssumption = std::make_unique<NM_Request_Attribute_Ownership_Assumption>();
         NM_Attribute_Ownership_Divestiture_Notification AnswerDivestiture;
 
-        AnswerAssumption->setAttributesSize(theAttributeList.size());
+        answerAssumption->setAttributesSize(theAttributeList.size());
 
         CDiffusion diffusionAcquisition;
 
@@ -939,52 +952,49 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
                 // Reinitialise divesting
                 oa->setDivesting(false);
 
-                ++compteur_acquisition;
+                ++acquisition_count;
                 diffusionAcquisition.push_back(DiffusionPair(NewOwner, oa->getHandle()));
 
-                AnswerDivestiture.setAttributes(theAttributeList[i], compteur_divestiture);
-                compteur_divestiture++;
+                AnswerDivestiture.setAttributes(theAttributeList[i], divestiture_count);
+                divestiture_count++;
                 /* FIXME not sure that this should be done */
                 if (oca->isNamed("privilegeToDelete")) {
                     object->setOwner(NewOwner);
                 }
             }
             else {
-                AnswerAssumption->setAttributes(theAttributeList[i], compteur_assumption);
+                answerAssumption->setAttributes(theAttributeList[i], assumption_count);
                 oa->setDivesting(true);
-                compteur_assumption++;
+                assumption_count++;
             }
         }
 
-        if (compteur_acquisition != 0) {
+        if (acquisition_count != 0) {
             NM_Attribute_Ownership_Acquisition_Notification AOAN;
             sendToOwners(diffusionAcquisition, object, theFederateHandle, theTag, AOAN);
         }
 
-        if (compteur_divestiture != 0) {
+        if (divestiture_count != 0) {
             AnswerDivestiture.setFederation(server->federation().get());
             AnswerDivestiture.setFederate(theFederateHandle);
             AnswerDivestiture.setObject(object->getHandle());
             AnswerDivestiture.setLabel(std::string());
-            AnswerDivestiture.setAttributesSize(compteur_divestiture);
+            AnswerDivestiture.setAttributesSize(divestiture_count);
             sendToFederate(&AnswerDivestiture, theFederateHandle);
         }
 
-        if (compteur_assumption != 0) {
-            AnswerAssumption->setFederation(server->federation().get());
-            AnswerAssumption->setFederate(theFederateHandle);
-            AnswerAssumption->setException(Exception::Type::NO_EXCEPTION);
-            AnswerAssumption->setObject(object->getHandle());
-            AnswerAssumption->setLabel(theTag);
-            AnswerAssumption->setAttributesSize(compteur_assumption);
+        if (assumption_count != 0) {
+            answerAssumption->setFederation(server->federation().get());
+            answerAssumption->setFederate(theFederateHandle);
+            answerAssumption->setException(Exception::Type::NO_EXCEPTION);
+            answerAssumption->setObject(object->getHandle());
+            answerAssumption->setLabel(theTag);
+            answerAssumption->setAttributesSize(assumption_count);
 
-            List = new ObjectClassBroadcastList(AnswerAssumption, _handleClassAttributeMap.size());
+            List = new ObjectClassBroadcastList(std::move(answerAssumption), _handleClassAttributeMap.size());
 
             D.Out(pdProtocol, "Object %u divestiture in class %u, now broadcasting...", object->getHandle(), handle);
-            broadcastClassMessage(List);
-        }
-        else {
-            delete AnswerAssumption;
+            ret = broadcastClassMessage(List);
         }
     }
     else {
@@ -996,7 +1006,7 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
     }
 
     // Return the BroadcastList in case it had to be passed to the parent class.
-    return List;
+    return {List, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------
@@ -1122,9 +1132,11 @@ void ObjectClass::attributeOwnershipAcquisitionIfAvailable(FederateHandle the_fe
 
 // ----------------------------------------------------------------------------
 //! unconditionalAttributeOwnershipDivestiture.
-ObjectClassBroadcastList* ObjectClass::unconditionalAttributeOwnershipDivestiture(
+std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::unconditionalAttributeOwnershipDivestiture(
     FederateHandle theFederateHandle, Object* object, const std::vector<AttributeHandle>& theAttributeList)
 {
+    Responses ret;
+
     // Pre-conditions checking
     // Do all attribute handles exist?
     // If not then AttributeNotDefined will be thrown.
@@ -1144,14 +1156,13 @@ ObjectClassBroadcastList* ObjectClass::unconditionalAttributeOwnershipDivestitur
                                                 << ">.");
     }
 
-    int compteur_assumption = 0;
-    NM_Unconditional_Attribute_Ownership_Divestiture* AnswerAssumption = NULL;
+    int assumption_count = 0;
     ObjectClassBroadcastList* List = NULL;
     FederateHandle NewOwner;
 
     if (server != NULL) {
-        AnswerAssumption = new NM_Unconditional_Attribute_Ownership_Divestiture();
-        AnswerAssumption->setAttributesSize(theAttributeList.size());
+        auto answerAssumption = std::make_unique<NM_Unconditional_Attribute_Ownership_Divestiture>();
+        answerAssumption->setAttributesSize(theAttributeList.size());
         CDiffusion diffusionAcquisition;
 
         for (unsigned i = 0; i < theAttributeList.size(); i++) {
@@ -1180,29 +1191,26 @@ ObjectClassBroadcastList* ObjectClass::unconditionalAttributeOwnershipDivestitur
                 }
             }
             else {
-                AnswerAssumption->setAttributes(theAttributeList[i], compteur_assumption);
+                answerAssumption->setAttributes(theAttributeList[i], assumption_count);
                 oa->setOwner(0);
                 oa->setDivesting(false);
-                compteur_assumption++;
+                assumption_count++;
             }
         }
 
-        if (compteur_assumption != 0) {
-            AnswerAssumption->setFederation(server->federation().get());
-            AnswerAssumption->setFederate(theFederateHandle);
-            AnswerAssumption->setException(Exception::Type::NO_EXCEPTION);
-            AnswerAssumption->setObject(object->getHandle());
-            AnswerAssumption->setLabel(std::string());
-            AnswerAssumption->setAttributesSize(compteur_assumption);
+        if (assumption_count != 0) {
+            answerAssumption->setFederation(server->federation().get());
+            answerAssumption->setFederate(theFederateHandle);
+            answerAssumption->setException(Exception::Type::NO_EXCEPTION);
+            answerAssumption->setObject(object->getHandle());
+            answerAssumption->setLabel(std::string());
+            answerAssumption->setAttributesSize(assumption_count);
 
-            List = new ObjectClassBroadcastList(AnswerAssumption, _handleClassAttributeMap.size());
+            List = new ObjectClassBroadcastList(std::move(answerAssumption), _handleClassAttributeMap.size());
 
             D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
 
-            broadcastClassMessage(List);
-        }
-        else {
-            delete AnswerAssumption;
+            ret = broadcastClassMessage(List);
         }
 
         if (!diffusionAcquisition.empty()) {
@@ -1221,7 +1229,7 @@ ObjectClassBroadcastList* ObjectClass::unconditionalAttributeOwnershipDivestitur
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
     //! List could be equal to NULL
-    return List;
+    return {List, std::move(ret)};
 }
 
 // ----------------------------------------------------------------------------

@@ -34,7 +34,6 @@ set(rtig_SRCS
   FederationsList.cc FederationsList.hh
   main.cc
   
-  MessageEvent.hh
   MessageProcessor.cc MessageProcessor.hh
   Mom.cc Mom_interactions.cc Mom_objects.cc Mom.hh
   

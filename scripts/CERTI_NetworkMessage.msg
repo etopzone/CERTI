@@ -163,7 +163,12 @@ message NM_FOM_Interaction_Class {
 
 message NM_Close_Connexion : merge NetworkMessage {}
 
-message NM_Message_Null : merge NetworkMessage {}
+message NM_Message_Null : merge NetworkMessage {
+	required uint8 tarCount
+	required uint8 taraCount
+	required uint8 nerCount
+	required uint8 neraCount
+}
 
 // Create the federation execution
 message NM_Create_Federation_Execution : merge NetworkMessage {

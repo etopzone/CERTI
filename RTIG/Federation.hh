@@ -40,9 +40,9 @@
 #include <libCERTI/FedTimeD.hh>
 #include <libCERTI/HandleManager.hh>
 #include <libCERTI/LBTS.hh>
+#include <libCERTI/MessageEvent.hh>
 #include <libHLA/MessageBuffer.hh>
 
-#include "MessageEvent.hh"
 #include "Federate.hh"
 #include "Mom.hh"
 
@@ -127,6 +127,8 @@ public:
 
     bool isAutoProvideActive() const;
 
+    Responses enableMomIfAvailable();
+
     // -------------------------
     // -- Federate Management --
     // -------------------------
@@ -150,7 +152,7 @@ public:
      * Also send Null messages from all others federates to initialize its LBTS, and
      * finally a RequestPause message if the Federation is already paused.
      */
-    FederateHandle add(const std::string& federate_name, SocketTCP* tcp_link);
+    std::pair<FederateHandle, Responses> add(const std::string& federate_name, SocketTCP* tcp_link);
 
     /** Remove a federate.
      * 
@@ -160,7 +162,7 @@ public:
      * @bug Currently does not check if Federate owns attributes. The
      * Federate Object is deleted.
      */
-    std::unique_ptr<NM_Resign_Federation_Execution> remove(FederateHandle federate_handle);
+    Responses remove(FederateHandle federate_handle);
 
     /** Make a federate resign the federation.
      *
@@ -171,7 +173,7 @@ public:
      *
      * @param federate_handle Handle of the federate to kill
      */
-    void kill(FederateHandle federate_handle) noexcept;
+    Responses kill(FederateHandle federate_handle) noexcept;
 
     // ---------------------
     // -- Time Management --
@@ -181,7 +183,8 @@ public:
      * 
      * Check if it's already present, but not if the Time 'time' is allowed or not.
      */
-    Responses addRegulator(FederateHandle federate_handle, FederationTime time); // includes Time Regulation already enabled.
+    Responses addRegulator(FederateHandle federate_handle,
+                           FederationTime time); // includes Time Regulation already enabled.
 
     /// Update the current time of a regulator federate.
     void updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous);
@@ -189,7 +192,7 @@ public:
     /// includes Time Regulation already disabled.
     Responses removeRegulator(FederateHandle federate_handle);
 
-    Responses setConstrained(FederateHandle federate_handle, bool constrained,  FederationTime time);
+    Responses setConstrained(FederateHandle federate_handle, bool constrained, FederationTime time);
 
     // Synchronization Management.
 
@@ -220,14 +223,14 @@ public:
      * This service puts each federate from federation in saving state.
      * time is not managed yet.
      */
-    void requestFederationSave(FederateHandle federate_handle, const std::string& label, FederationTime time);
+    Responses requestFederationSave(FederateHandle federate_handle, const std::string& label, FederationTime time);
 
     /** Request a federation save without time.
      * 
      * This service puts each federate from federation in saving state.
      * time is not managed yet.
      */
-    void requestFederationSave(FederateHandle federate_handle, const std::string& label);
+    Responses requestFederationSave(FederateHandle federate_handle, const std::string& label);
 
     /** Received from a federate to inform a save has been received and is being processed.
      * 
@@ -236,25 +239,25 @@ public:
     void federateSaveBegun(FederateHandle federate_handle);
 
     /// Informs that a federate returns a save end message (with success or not!).
-    void federateSaveStatus(FederateHandle federate_handle, bool status);
+    Responses federateSaveStatus(FederateHandle federate_handle, bool status);
 
     /// Informs that a federate is requesting a save.
-    void requestFederationRestore(FederateHandle federate_handle, const std::string& label);
+    Responses requestFederationRestore(FederateHandle federate_handle, const std::string& label);
 
     /** Informs that a federate has ended a restore.
      * 
      * If each federate in federation has ended restoring, this service send a federation restore status.
      */
-    void federateRestoreStatus(FederateHandle federate_handle, bool status);
+    Responses federateRestoreStatus(FederateHandle federate_handle, bool status);
 
     // -----------------------
     // -- Object Management --
     // -----------------------
 
     Responses publishObject(FederateHandle federate_handle,
-                       ObjectClassHandle object_handle,
-                       const std::vector<AttributeHandle>& attributes,
-                       bool publish_or_unpublish);
+                            ObjectClassHandle object_handle,
+                            const std::vector<AttributeHandle>& attributes,
+                            bool publish_or_unpublish);
 
     /**
      * Subscribes attributes to an object class. After subscription, attribute 
@@ -265,13 +268,13 @@ public:
      * @param[in] attributes subscripted vector of attributes 
      */
     Responses subscribeObject(FederateHandle federate_handle,
-                         ObjectClassHandle object_handle,
-                         const std::vector<AttributeHandle>& attributes,
-                                      const bool subscribe_or_unsubscribe);
+                              ObjectClassHandle object_handle,
+                              const std::vector<AttributeHandle>& attributes,
+                              const bool subscribe_or_unsubscribe);
 
-    void reserveObjectInstanceName(FederateHandle federate_handle, std::string new_object_name);
+    void reserveObjectInstanceName(FederateHandle federate_handle, std::string object_name);
 
-    ObjectHandle
+    std::pair<ObjectHandle, Responses>
     registerObject(FederateHandle federate_handle, ObjectClassHandle class_handle, const std::string& name);
 
     /** Removes an object instance from federation.
@@ -282,9 +285,9 @@ public:
      *  @param user_tag Label for this operation
      */
     Responses deleteObject(FederateHandle federate_handle,
-                      ObjectHandle object_handle,
-                      FederationTime time,
-                      const std::string& user_tag);
+                           ObjectHandle object_handle,
+                           FederationTime time,
+                           const std::string& user_tag);
 
     /** Removes an object instance from federation.
      * 
@@ -294,38 +297,38 @@ public:
      */
     Responses deleteObject(FederateHandle federate_handle, ObjectHandle object_handle, const std::string& user_tag);
 
-    FederateHandle requestObjectOwner(FederateHandle federate_handle,
-                                      ObjectHandle object_handle,
-                                      const std::vector<AttributeHandle>& attributes);
+    std::pair<FederateHandle, Responses> requestObjectOwner(FederateHandle federate_handle,
+                                                            ObjectHandle object_handle,
+                                                            const std::vector<AttributeHandle>& attributes);
 
-    void requestClassAttributeValueUpdate(FederateHandle federate_handle,
-                                          ObjectClassHandle class_handle,
-                                          const std::vector<AttributeHandle>& attributes);
+    Responses requestClassAttributeValueUpdate(FederateHandle federate_handle,
+                                               ObjectClassHandle class_handle,
+                                               const std::vector<AttributeHandle>& attributes);
 
-    void updateAttributeValues(FederateHandle federate_handle,
-                               ObjectHandle object_handle,
-                               const std::vector<AttributeHandle>& attributes,
-                               const std::vector<AttributeValue_t>& attribute_values,
-                               FederationTime time,
-                               const std::string& tag);
+    Responses updateAttributeValues(FederateHandle federate_handle,
+                                    ObjectHandle object_handle,
+                                    const std::vector<AttributeHandle>& attributes,
+                                    const std::vector<AttributeValue_t>& attribute_values,
+                                    FederationTime time,
+                                    const std::string& tag);
 
-    void updateAttributeValues(FederateHandle federate_handle,
-                               ObjectHandle object_handle,
-                               const std::vector<AttributeHandle>& attributes,
-                               const std::vector<AttributeValue_t>& attribute_values,
-                               const std::string& tag);
+    Responses updateAttributeValues(FederateHandle federate_handle,
+                                    ObjectHandle object_handle,
+                                    const std::vector<AttributeHandle>& attributes,
+                                    const std::vector<AttributeValue_t>& attribute_values,
+                                    const std::string& tag);
 
     // ----------------------------
     // -- Interaction Management --
     // ----------------------------
 
     Responses publishInteraction(FederateHandle federate_handle,
-                            InteractionClassHandle interaction_class_handle,
-                            bool publish_or_unpublish);
+                                 InteractionClassHandle interaction_class_handle,
+                                 bool publish_or_unpublish);
 
     Responses subscribeInteraction(FederateHandle federate_handle,
-                              InteractionClassHandle interaction_class_handle,
-                              bool subscribe_or_unsubscribe);
+                                   InteractionClassHandle interaction_class_handle,
+                                   bool subscribe_or_unsubscribe);
 
     /// broadcastInteraction with time
     Responses broadcastInteraction(FederateHandle federate_handle,
@@ -354,10 +357,10 @@ public:
                                  ObjectHandle object_handle,
                                  AttributeHandle attribute_handle);
 
-    void negotiateDivestiture(FederateHandle federate_handle,
-                              ObjectHandle object_handle,
-                              const std::vector<AttributeHandle>& attributes,
-                              const std::string& tag);
+    Responses negotiateDivestiture(FederateHandle federate_handle,
+                                   ObjectHandle object_handle,
+                                   const std::vector<AttributeHandle>& attributes,
+                                   const std::string& tag);
 
     void acquireIfAvailable(FederateHandle federate_handle,
                             ObjectHandle object_handle,
@@ -416,11 +419,11 @@ public:
                                   InteractionClassHandle interaction_class_handle,
                                   RegionHandle region_handle);
 
-    ObjectHandle registerObjectWithRegion(FederateHandle federate_handle,
-                                          ObjectClassHandle object_class_handle,
-                                          const std::string& name,
-                                          RegionHandle region_handle,
-                                          const std::vector<AttributeHandle>& attributes);
+    std::pair<ObjectHandle, Responses> registerObjectWithRegion(FederateHandle federate_handle,
+                                                                ObjectClassHandle object_class_handle,
+                                                                const std::string& name,
+                                                                RegionHandle region_handle,
+                                                                const std::vector<AttributeHandle>& attributes);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
 
@@ -450,7 +453,7 @@ public:
 
     /// Return the Federate whose Handle is theHandle, if found.
     Federate& getFederate(FederateHandle federate_handle);
-    
+
     RootObject& getRootObject();
 
 private:
@@ -469,13 +472,11 @@ private:
                               FederateHandle except_federate,
                               const std::vector<FederateHandle>& fede_array,
                               uint32_t nbfed);
-    
+
     Responses respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except = 0);
     Responses respondToSome(std::unique_ptr<NetworkMessage> message, const std::vector<FederateHandle> recipients);
 
-    void enableMomIfAvailable();
-
-    void setAutoProvide(const bool value);
+    Responses setAutoProvide(const bool value);
 
     FederationHandle my_handle;
     std::string my_name;

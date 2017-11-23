@@ -132,21 +132,21 @@ void Interaction::addInheritedClassParameter(Interaction* the_child)
   Interaction Message of their child to their own subscribers.
   See InteractionSet::SendInteraction.
  */
-void Interaction::broadcastInteractionMessage(InteractionBroadcastList* ibList, const RTIRegion* region)
+Responses Interaction::broadcastInteractionMessage(InteractionBroadcastList* ibList, const RTIRegion* region)
 {
     G.Out(pdGendoc, "enter Interaction::broadcastInteractionMessage");
 
     // 1. Set InteractionHandle to local class Handle.
-    ibList->message->setInteractionClass(handle);
+    ibList->getMessage().setInteractionClass(handle);
 
     // 2. Update message Parameters list by removing child's Parameters.
-    for (uint32_t i = 0; i < ibList->message->getParametersSize();) {
+    for (uint32_t i = 0; i < ibList->getMessage().getParametersSize();) {
         // If the Parameter is not in that class, remove it from the message.
-        if (hasParameter(ibList->message->getParameters(i))) {
+        if (hasParameter(ibList->getMessage().getParameters(i))) {
             ++i;
         }
         else {
-            ibList->message->removeParameters(i);
+            ibList->getMessage().removeParameters(i);
         }
     }
 
@@ -155,9 +155,11 @@ void Interaction::broadcastInteractionMessage(InteractionBroadcastList* ibList, 
 
     // 4. Send pending messages.
     D.Out(pdDebug, "Calling SendPendingMessage...");
-    ibList->sendPendingMessage(server);
+    auto ret = ibList->preparePendingMessage(*server);
 
     G.Out(pdGendoc, "exit Interaction::broadcastInteractionMessage");
+
+    return ret;
 } /* end of broadcastInteractionMessage */
 
 // ----------------------------------------------------------------------------
@@ -355,43 +357,46 @@ void Interaction::unpublish(FederateHandle the_handle)
   Message(to all federates who subscribed to this Interaction Class).
   with time
  */
-InteractionBroadcastList* Interaction::sendInteraction(FederateHandle federate_handle,
-                                                       const std::vector<ParameterHandle>& parameter_list,
-                                                       const std::vector<ParameterValue_t>& value_list,
-                                                       uint16_t list_size,
-                                                       FederationTime time,
-                                                       const RTIRegion* region,
-                                                       const std::string& the_tag)
+std::pair<InteractionBroadcastList*, Responses>
+Interaction::sendInteraction(FederateHandle federate_handle,
+                             const std::vector<ParameterHandle>& parameter_list,
+                             const std::vector<ParameterValue_t>& value_list,
+                             uint16_t list_size,
+                             FederationTime time,
+                             const RTIRegion* region,
+                             const std::string& the_tag)
 {
     G.Out(pdGendoc, "enter Interaction::sendInteraction with time");
+
+    Responses responses;
+    InteractionBroadcastList* ibList;
 
     // Pre-conditions checking
     if (!isPublishing(federate_handle))
         throw FederateNotPublishing("");
 
     // Prepare and Broadcast message for this class
-    InteractionBroadcastList* ibList = NULL;
     if (server != NULL) {
-        NM_Receive_Interaction* answer = new NM_Receive_Interaction();
-        answer->setException(Exception::Type::NO_EXCEPTION);
-        answer->setFederation(server->federation().get());
-        answer->setFederate(federate_handle);
-        answer->setInteractionClass(handle); // Interaction Class Handle
-        answer->setDate(time);
+        NM_Receive_Interaction answer;
+        answer.setException(Exception::Type::NO_EXCEPTION);
+        answer.setFederation(server->federation().get());
+        answer.setFederate(federate_handle);
+        answer.setInteractionClass(handle); // Interaction Class Handle
+        answer.setDate(time);
 
-        answer->setLabel(the_tag);
+        answer.setLabel(the_tag);
 
-        answer->setParametersSize(list_size);
-        answer->setValuesSize(list_size);
+        answer.setParametersSize(list_size);
+        answer.setValuesSize(list_size);
         for (int i = 0; i < list_size; i++) {
-            answer->setParameters(parameter_list[i], i);
-            answer->setValues(value_list[i], i);
+            answer.setParameters(parameter_list[i], i);
+            answer.setValues(value_list[i], i);
         }
 
         D.Out(pdProtocol, "Preparing broadcast list.");
         ibList = new InteractionBroadcastList(answer);
 
-        broadcastInteractionMessage(ibList, region);
+        responses = broadcastInteractionMessage(ibList, region);
     }
     else
         // SendInteraction should not be called on the RTIA.
@@ -401,7 +406,7 @@ InteractionBroadcastList* Interaction::sendInteraction(FederateHandle federate_h
 
     // Return the BroadcastList in case it had to be passed to the
     // parent class.
-    return ibList;
+    return {ibList, std::move(responses)};
 }
 
 // ----------------------------------------------------------------------------
@@ -409,41 +414,44 @@ InteractionBroadcastList* Interaction::sendInteraction(FederateHandle federate_h
   Message(to all federates who subscribed to this Interaction Class).
   without time
  */
-InteractionBroadcastList* Interaction::sendInteraction(FederateHandle federate_handle,
-                                                       const std::vector<ParameterHandle>& parameter_list,
-                                                       const std::vector<ParameterValue_t>& value_list,
-                                                       uint16_t list_size,
-                                                       const RTIRegion* region,
-                                                       const std::string& the_tag)
+std::pair<InteractionBroadcastList*, Responses>
+Interaction::sendInteraction(FederateHandle federate_handle,
+                             const std::vector<ParameterHandle>& parameter_list,
+                             const std::vector<ParameterValue_t>& value_list,
+                             uint16_t list_size,
+                             const RTIRegion* region,
+                             const std::string& the_tag)
 {
     G.Out(pdGendoc, "enter Interaction::sendInteraction without time");
+
+    Responses responses;
+    InteractionBroadcastList* ibList;
 
     // Pre-conditions checking
     if (!isPublishing(federate_handle))
         throw FederateNotPublishing("");
 
     // Prepare and Broadcast message for this class
-    InteractionBroadcastList* ibList = NULL;
     if (server != NULL) {
-        NM_Receive_Interaction* answer = new NM_Receive_Interaction();
-        answer->setException(Exception::Type::NO_EXCEPTION);
-        answer->setFederation(server->federation().get());
-        answer->setFederate(federate_handle);
-        answer->setInteractionClass(handle); // Interaction Class Handle
-        answer->setLabel(the_tag);
+        NM_Receive_Interaction answer;
+        answer.setException(Exception::Type::NO_EXCEPTION);
+        answer.setFederation(server->federation().get());
+        answer.setFederate(federate_handle);
+        answer.setInteractionClass(handle); // Interaction Class Handle
+        answer.setLabel(the_tag);
 
-        answer->setParametersSize(list_size);
-        answer->setValuesSize(list_size);
+        answer.setParametersSize(list_size);
+        answer.setValuesSize(list_size);
 
         for (int i = 0; i < list_size; i++) {
-            answer->setParameters(parameter_list[i], i);
-            answer->setValues(value_list[i], i);
+            answer.setParameters(parameter_list[i], i);
+            answer.setValues(value_list[i], i);
         }
 
         D.Out(pdProtocol, "Preparing broadcast list.");
         ibList = new InteractionBroadcastList(answer);
 
-        broadcastInteractionMessage(ibList, region);
+        responses = broadcastInteractionMessage(ibList, region);
     }
     else
         // SendInteraction should not be called on the RTIA.
@@ -453,7 +461,7 @@ InteractionBroadcastList* Interaction::sendInteraction(FederateHandle federate_h
 
     // Return the BroadcastList in case it had to be passed to the
     // parent class.
-    return ibList;
+    return {ibList, std::move(responses)};
 }
 
 // ----------------------------------------------------------------------------

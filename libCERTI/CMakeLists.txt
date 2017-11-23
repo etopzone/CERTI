@@ -67,6 +67,7 @@ set(CERTI_SUPPORT_SRCS
     TreeNamedAndHandledSet.hh
     StrongType.hh
     Handle.hh
+    MessageEvent.hh
 )
 
 set(CERTI_SOCKET_SRCS

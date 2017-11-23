@@ -22,45 +22,34 @@
 #ifndef CERTI_INTERACTION_BROADCAST_LIST_HH
 #define CERTI_INTERACTION_BROADCAST_LIST_HH
 
+#include "MessageEvent.hh"
 #include "NM_Classes.hh"
 #include "NetworkMessage.hh"
 #include "SecurityServer.hh"
 #include "certi.hh"
 
-#include <list>
+#include <unordered_map>
 
 namespace certi {
 
-struct InteractionBroadcastLine {
-public:
-    enum State { sent, waiting, notSub };
-
-    InteractionBroadcastLine(FederateHandle fed, State init = notSub) : federate(fed), state(init){};
-
-    FederateHandle federate;
-    State state;
-};
-
 class InteractionBroadcastList {
 public:
-    InteractionBroadcastList(NM_Receive_Interaction* theMsg);
-    ~InteractionBroadcastList();
+    InteractionBroadcastList(NM_Receive_Interaction message);
 
-    void clear();
+    ~InteractionBroadcastList() = default;
+
     void addFederate(FederateHandle theFederate);
-    void sendPendingMessage(SecurityServer* Server);
 
-    /** 
-     * The Message to be broadcasted. This message must be allocated before
-     * calling the constructor of the class, be is deleted by the destructor.
-     */
-    NM_Receive_Interaction* message;
+    Responses preparePendingMessage(SecurityServer& server);
+
+    NM_Receive_Interaction& getMessage();
 
 private:
-    InteractionBroadcastLine* getLineWithFederate(FederateHandle theFederate);
-    /* The message buffer used to send Network messages */
-    MessageBuffer NM_msgBufSend;
-    std::list<InteractionBroadcastLine*> lines;
+    enum class State { Sent, Waiting, NotSub };
+
+    NM_Receive_Interaction my_message;
+
+    std::unordered_map<FederateHandle, State> my_lines;
 };
 }
 

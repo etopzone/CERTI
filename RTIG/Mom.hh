@@ -26,10 +26,10 @@
 #include <chrono>
 #include <unordered_map>
 
+#include <libCERTI/MessageEvent.hh>
 #include <libCERTI/RootObject.hh>
 
 #include "Federation.hh"
-#include "MessageEvent.hh"
 
 namespace certi {
 class RootObject;
@@ -72,51 +72,52 @@ public:
     void publishAndSubscribeInteractions();
 
     // Object management
-    void registerFederation();
-    void registerFederate(const Federate& federate, SocketTCP* tcp_link);
+    Responses registerFederation();
+    Responses registerFederate(const Federate& federate, SocketTCP* tcp_link);
     void deleteFederate(const FederateHandle federate_handle);
 
     // Conditional Attributes
     // Federation
-    void updateFederatesInFederation();
-    void updateFomModuleDesignatorList(const std::vector<std::string>& value); // TODO in phase 3
-    void updateCurrentFDD(const std::string& value); // TODO in phase 3
-    void updateLastSave();
-    void updateNextSave(const std::string& label, const FederationTime& time);
-    void updateAutoProvide(const bool value);
+    Responses updateFederatesInFederation();
+    Responses updateFomModuleDesignatorList(const std::vector<std::string>& value); // TODO in phase 3
+    Responses updateCurrentFDD(const std::string& value); // TODO in phase 3
+    Responses updateLastSave();
+    Responses updateNextSave(const std::string& label, const FederationTime& time);
+    Responses updateAutoProvide(const bool value);
 
     // Federate
-    void updateTimeConstrained(const Federate& federate);
-    void updateTimeRegulating(const Federate& federate);
-    void updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value); // TODO info in rtia
-    void updateFederateState(const Federate& federate);
-    void updateTimeManagerState(const FederateHandle federate_handle, const TimeState value); // TODO info in rtia
-    void updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    void updateLookahead(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    void updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    void updateLITS(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    /* never used */ void updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ void updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ void updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
-    void updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ void updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
-    void updateInteractionsSent(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesUpdated(const FederateHandle federate_handle);
-    void updateObjectInstancesReflected(const FederateHandle federate_handle);
-    void updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
-    void updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
-    void updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
-    void updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
-    void updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
-    void updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
+    Responses updateTimeConstrained(const Federate& federate);
+    Responses updateTimeRegulating(const Federate& federate);
+    Responses updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value); // TODO info in rtia
+    Responses updateFederateState(const Federate& federate);
+    Responses updateTimeManagerState(const FederateHandle federate_handle, const TimeState value); // TODO info in rtia
+    Responses updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    Responses updateLookahead(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    Responses updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    Responses updateLITS(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
+    /* never used */ Responses updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ Responses updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ Responses updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
+    /* never used */ Responses updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateInteractionsSent(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateObjectInstancesUpdated(const FederateHandle federate_handle);
+    Responses updateObjectInstancesReflected(const FederateHandle federate_handle);
+    Responses updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
+    Responses updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
+    Responses updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
+    Responses updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
-    void
+    // TODO move private
+    Responses
     updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta);
 
-    void provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
+    Responses provideAttributeValueUpdate(const ObjectHandle& object, const std::vector<AttributeHandle>& attributes);
 
     // Interactions
     Responses processInteraction(const InteractionClassHandle interaction_class_handle,
@@ -238,9 +239,9 @@ private:
     };
 
     // Support
-    void preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
-                                             const std::vector<AttributeHandle>& attributes);
-    void providePeriodicAttributeValueUpdatesIfApplicable();
+    Responses preparePeriodicAttributeValueUpdate(const ObjectHandle& object,
+                                                  const std::vector<AttributeHandle>& attributes);
+    Responses providePeriodicAttributeValueUpdatesIfApplicable();
 
     void display() const;
 

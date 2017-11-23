@@ -153,7 +153,7 @@ SpaceHandle ObjectClassAttribute::getSpace() const
 //! Add all attribute's subscribers to the broadcast list
 void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList* ocblist, const RTIRegion* region)
 {
-    switch (ocblist->getMsg()->getMessageType()) {
+    switch (ocblist->getMsg().getMessageType()) {
     case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES: {
         addFederatesIfOverlap(*ocblist, region, handle);
     } break;

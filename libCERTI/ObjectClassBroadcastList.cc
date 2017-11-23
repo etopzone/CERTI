@@ -65,7 +65,7 @@ void ObjectBroadcastLine::setState(const AttributeHandle attribute, const State 
 bool ObjectBroadcastLine::isWaitingAny(const AttributeHandle max_handle) const
 {
     for (unsigned int attrIndex = 1; attrIndex <= max_handle; ++attrIndex) {
-        if (stateFor(attrIndex) == ObjectBroadcastLine::waiting) {
+        if (stateFor(attrIndex) == State::Waiting) {
             return true;
         }
     }
@@ -76,7 +76,7 @@ bool ObjectBroadcastLine::isWaitingAny(const AttributeHandle max_handle) const
 bool ObjectBroadcastLine::isWaitingAll(const std::vector<AttributeHandle>& attributes) const
 {
     for (auto& handle : attributes) {
-        if (stateFor(handle) != waiting) {
+        if (stateFor(handle) != State::Waiting) {
             return false;
         }
     }
@@ -84,39 +84,32 @@ bool ObjectBroadcastLine::isWaitingAll(const std::vector<AttributeHandle>& attri
     return true;
 }
 
-ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message, AttributeHandle maxAttHandle)
-    : msg{message}
-    , msgRO{nullptr}
-    , msgDO{nullptr}
-    , msgRAV{nullptr}
-    , msgRAOA{nullptr}
-    , msgAODN{nullptr}
-    , maxHandle{maxAttHandle}
+ObjectClassBroadcastList::ObjectClassBroadcastList(std::unique_ptr<NetworkMessage> message,
+                                                   AttributeHandle maxAttHandle)
+    : my_message{std::move(message)}, maxHandle{maxAttHandle}
 {
-    ObjectBroadcastLine* firstLine = NULL;
-
-    if (msg == nullptr) {
+    if (!my_message) {
         throw RTIinternalError("Null Broadcast Message.");
     }
 
     /* Initialize specific pointer
-                                                            * FIXMEthis is ugly and will be reworked
-                                                            */
-    switch (msg->getMessageType()) {
+     * FIXMEthis is ugly and will be reworked
+     */
+    switch (my_message->getMessageType()) {
     case NetworkMessage::Type::REMOVE_OBJECT:
-        msgRO = static_cast<NM_Remove_Object*>(msg);
+        msgRO = static_cast<NM_Remove_Object*>(my_message.get());
         break;
     case NetworkMessage::Type::DISCOVER_OBJECT:
-        msgDO = static_cast<NM_Discover_Object*>(msg);
+        msgDO = static_cast<NM_Discover_Object*>(my_message.get());
         break;
     case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
-        msgRAV = static_cast<NM_Reflect_Attribute_Values*>(msg);
+        msgRAV = static_cast<NM_Reflect_Attribute_Values*>(my_message.get());
         break;
     case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        msgRAOA = static_cast<NM_Request_Attribute_Ownership_Assumption*>(msg);
+        msgRAOA = static_cast<NM_Request_Attribute_Ownership_Assumption*>(my_message.get());
         break;
     case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        msgAODN = static_cast<NM_Attribute_Ownership_Divestiture_Notification*>(msg);
+        msgAODN = static_cast<NM_Attribute_Ownership_Divestiture_Notification*>(my_message.get());
         break;
     default:
         throw RTIinternalError("Unexpected type of message");
@@ -124,20 +117,14 @@ ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage* message, Attr
     }
 
     // Add reference of the sender.
-    if (msg->getFederate() != 0) {
-        firstLine = new ObjectBroadcastLine(msg->getFederate(), ObjectBroadcastLine::sent);
-        lines.push_front(firstLine);
+    if (my_message->getFederate() != 0) {
+        my_lines.emplace_back(my_message->getFederate(), ObjectBroadcastLine::State::Sent);
     }
 }
 
-ObjectClassBroadcastList::~ObjectClassBroadcastList()
+NetworkMessage& ObjectClassBroadcastList::getMsg()
 {
-    clear();
-}
-
-NetworkMessage* ObjectClassBroadcastList::getMsg()
-{
-    return msg;
+    return *my_message;
 }
 
 NM_Remove_Object* ObjectClassBroadcastList::getMsgRO()
@@ -165,21 +152,6 @@ NM_Attribute_Ownership_Divestiture_Notification* ObjectClassBroadcastList::getMs
     return msgAODN;
 }
 
-void ObjectClassBroadcastList::clear()
-{
-    delete msg;
-    msg = nullptr;
-
-    maxHandle = 0;
-
-    while (!lines.empty()) {
-        delete lines.front();
-        lines.pop_front();
-    }
-
-    Debug(D, pdTerm) << "List is now empty" << std::endl;
-}
-
 void ObjectClassBroadcastList::addFederate(FederateHandle theFederate, AttributeHandle theAttribute)
 {
     if (theAttribute > maxHandle) {
@@ -187,18 +159,19 @@ void ObjectClassBroadcastList::addFederate(FederateHandle theFederate, Attribute
         throw RTIinternalError("Invalid Attribute Handle");
     }
 
-    ObjectBroadcastLine* line = getLineWithFederate(theFederate);
+    auto it = std::find_if(begin(my_lines), end(my_lines), [&](const ObjectBroadcastLine& line) {
+        return line.getFederate() == theFederate;
+    });
 
-    if (line == 0) {
-        line = new ObjectBroadcastLine(theFederate, ObjectBroadcastLine::notSub);
-        lines.push_front(line);
+    if (it == end(my_lines)) {
         Debug(D, pdRegister) << "Adding new line in list for Federate " << theFederate << std::endl;
+        my_lines.emplace_back(theFederate, ObjectBroadcastLine::State::NotSub);
+        my_lines.back().setState(theAttribute, ObjectBroadcastLine::State::Waiting);
     }
-
-    if (line->stateFor(theAttribute) != ObjectBroadcastLine::sent) {
-        line->setState(theAttribute, ObjectBroadcastLine::waiting);
+    else if (it->stateFor(theAttribute) != ObjectBroadcastLine::State::Sent) {
+        it->setState(theAttribute, ObjectBroadcastLine::State::Waiting);
         Debug(D, pdRegister) << "List attribute " << theAttribute << " for Federate " << theFederate
-                             << " is now ObjectBroadcastLine::waiting." << std::endl;
+                             << " is now :waiting." << std::endl;
     }
     else {
         Debug(D, pdTrace) << "Message already sent to federate " << theFederate << " about attribute " << theAttribute
@@ -206,20 +179,16 @@ void ObjectClassBroadcastList::addFederate(FederateHandle theFederate, Attribute
     }
 }
 
-void ObjectClassBroadcastList::sendPendingMessage(SecurityServer* server)
+Responses ObjectClassBroadcastList::preparePendingMessage(SecurityServer& server)
 {
     Debug(G, pdGendoc) << "enter ObjectClassBroadcastList::sendPendingMessage" << std::endl;
-    switch (msg->getMessageType()) {
+    switch (my_message->getMessageType()) {
     case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
     case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        sendPendingRAVMessage(server);
-        break;
-
+        return preparePendingRAVMessage(server);
     case NetworkMessage::Type::DISCOVER_OBJECT:
     case NetworkMessage::Type::REMOVE_OBJECT:
-        sendPendingDOMessage(server);
-        break;
-
+        return preparePendingDOMessage(server);
     default:
         throw RTIinternalError("Unknown message type to broadcast.");
         Debug(G, pdGendoc) << "exit  ObjectClassBroadcastList::sendPendingMessage" << std::endl;
@@ -229,9 +198,9 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer* server)
 void ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass)
 {
     /* Initialize specific pointer
-                                                            * FIXMEthis is ugly and will be reworked
-                                                            * */
-    switch (msg->getMessageType()) {
+     * FIXME this is ugly and will be reworked
+     */
+    switch (my_message->getMessageType()) {
     case NetworkMessage::Type::REMOVE_OBJECT:
         msgRO->setObjectClass(objectClass);
         break;
@@ -256,214 +225,175 @@ void ObjectClassBroadcastList::upcastTo(ObjectClassHandle objectClass)
     }
 }
 
-void ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer* server)
+Responses ObjectClassBroadcastList::preparePendingDOMessage(SecurityServer& server)
 {
-    for (auto& line : lines) {
+    Responses responses;
+
+    std::vector<Socket*> sockets;
+    for (auto& line : my_lines) {
         // If the federate waits for a message (attribute 0 == waiting)
-        if (line->stateFor(0) == ObjectBroadcastLine::waiting) {
-            // 1. Send the message to the federate
-            Debug(D, pdProtocol) << "Broadcasting message to Federate " << line->getFederate() << std::endl;
+        if (line.stateFor(0) == ObjectBroadcastLine::State::Waiting) {
+            // 1. Prepare message for federate
+            Debug(D, pdProtocol) << "Broadcasting message to Federate " << line.getFederate() << std::endl;
             try {
-                Socket* socket = server->getSocketLink(line->getFederate());
-                if (socket) {
-                    msg->send(socket, NM_msgBufSend);
-                }
+#ifdef HLA_USES_UDP
+                sockets.push_back(server.getSocketLink(line.getFederate(), BEST_EFFORT));
+#else
+                sockets.push_back(server.getSocketLink(line.getFederate()));
+#endif
             }
-            catch (RTIinternalError& e) {
+            catch (Exception& e) {
                 Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting." << std::endl;
-            }
-            catch (NetworkError& e) {
-                Debug(D, pdExcept) << "Network error while broadcasting, ignoring." << std::endl;
             }
 
             // 2. Mark the message as sent
-            line->setState(0, ObjectBroadcastLine::sent);
+            line.setState(0, ObjectBroadcastLine::State::Sent);
         }
         else {
-            Debug(D, pdProtocol) << "No message sent to Federate " << line->getFederate() << std::endl;
+            Debug(D, pdProtocol) << "No message sent to Federate " << line.getFederate() << std::endl;
         }
     }
+
+    if (sockets.size() != 0) {
+        if (msgDO) {
+            responses.emplace_back(sockets, createResponseMessage(msgDO));
+        }
+        else if (msgRO) {
+            responses.emplace_back(sockets, createResponseMessage(msgRO));
+        }
+    }
+
+    return responses;
 }
 
-void ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer* server)
+Responses ObjectClassBroadcastList::preparePendingRAVMessage(SecurityServer& server)
 {
+    Debug(G, pdGendoc) << "enter ObjectClassBroadcastList::sendPendingRAVMessage" << std::endl;
+
+    Responses responses;
+
     std::vector<AttributeHandle> relevantAttributes;
 
-    if (NULL != msgRAV) {
+    if (msgRAV) {
         relevantAttributes = msgRAV->getAttributes();
     }
 
-    if (NULL != msgRAOA) {
+    if (msgRAOA) {
         relevantAttributes = msgRAOA->getAttributes();
     }
 
-    Debug(G, pdGendoc) << "enter ObjectClassBroadcastList::sendPendingRAVMessage" << std::endl;
-    // For each line :
-    for (auto& line : lines) {
-        // Si AU MOINS UN des attributs est en ObjectBroadcastLine::waiting
-        if (line->isWaitingAny(maxHandle)) {
-            NetworkMessage* currentMessage{nullptr};
+    for (auto& line : my_lines) {
+        // If *at least* one of the attributes is waiting
+        if (line.isWaitingAny(maxHandle)) {
+            std::unique_ptr<NetworkMessage> currentMessage;
 
-            if (line->isWaitingAll(relevantAttributes)) {
+            if (line.isWaitingAll(relevantAttributes)) {
                 // YES: Nothing to do.
-                currentMessage = msg;
-                Debug(D, pdProtocol) << "Broadcasting complete message to Federate " << line->getFederate()
-                                     << std::endl;
+                if (msgRAV) {
+                    currentMessage = createResponseMessage(msgRAV);
+                }
+                if (msgRAOA) {
+                    currentMessage = createResponseMessage(msgRAOA);
+                }
+                Debug(D, pdProtocol) << "Broadcasting complete message to Federate " << line.getFederate() << std::endl;
             }
             else {
                 // NO: Create a new message containing only relevant attributes.
                 if (msgRAV) {
-                    currentMessage = createReducedMessageWithValue(msgRAV, line);
+                    currentMessage = createResponseMessageWithValues(msgRAV, line);
                 }
                 if (msgRAOA) {
-                    currentMessage = createReducedMessage(msgRAOA, line);
+                    currentMessage = createResponseMessage(msgRAOA, line);
                 }
-                Debug(D, pdProtocol) << "Broadcasting reduced message to Federate " << line->getFederate() << std::endl;
+                Debug(D, pdProtocol) << "Broadcasting reduced message to Federate " << line.getFederate() << std::endl;
             }
 
             // 2. Send appropriate message
             try {
+                std::vector<Socket*> sockets;
 #ifdef HLA_USES_UDP
-                Socket* socket = server->getSocketLink(line->getFederate(), BEST_EFFORT);
+                sockets.push_back(server.getSocketLink(line.getFederate(), BEST_EFFORT));
 #else
-                Socket* socket = server->getSocketLink(line->getFederate());
+                sockets.push_back(server.getSocketLink(line.getFederate()));
 #endif
-                if (socket) {
-                    Debug(G, pdGendoc) << "                                 sendPendingRAVMessage=====> write"
-                                       << std::endl;
-                    currentMessage->send(socket, NM_msgBufSend);
-                }
+                responses.emplace_back(sockets, std::move(currentMessage));
             }
-            catch (RTIinternalError& e) {
+            catch (Exception& e) {
                 Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting." << std::endl;
-            }
-            catch (NetworkError& e) {
-                Debug(D, pdExcept) << "Network error while broadcasting, ignoring." << std::endl;
             }
 
             // 3. mark attributes as sent.
             for (unsigned int attrIndex = 1; attrIndex <= maxHandle; attrIndex++) {
-                if (line->stateFor(attrIndex) == ObjectBroadcastLine::waiting) {
-                    line->setState(attrIndex, ObjectBroadcastLine::sent);
+                if (line.stateFor(attrIndex) == ObjectBroadcastLine::State::Waiting) {
+                    line.setState(attrIndex, ObjectBroadcastLine::State::Sent);
                 }
             }
-
-            // 4. Delete any created message
-            if (currentMessage != msg) {
-                delete currentMessage;
-            }
+            //*/
         }
         else {
-            Debug(D, pdProtocol) << "No message sent to Federate " << line->getFederate() << std::endl;
+            Debug(D, pdProtocol) << "No message sent to Federate " << line.getFederate() << std::endl;
         }
 
         Debug(G, pdGendoc) << "exit  ObjectClassBroadcastList::sendPendingRAVMessage" << std::endl;
     }
+
+    return responses;
 }
 
 template <typename T>
-T* ObjectClassBroadcastList::createReducedMessage(T* msg, ObjectBroadcastLine* line)
+std::unique_ptr<NetworkMessage> ObjectClassBroadcastList::createResponseMessage(T* message,
+                                                                                const ObjectBroadcastLine& line)
 {
-    // Create the reduced message
-    // FIXME whould be better to msg->clone() if a clone method was generated
-    // FIXME or maybe copy constructor
-    // FIXME T *reducedMessage = new T(msg)
-    T* reducedMessage = new T();
+    auto reducedMessage = std::make_unique<T>(*message);
 
-    // Copy static informations.
-    reducedMessage->setException(msg->getException());
-    reducedMessage->setFederation(msg->getFederation());
-    reducedMessage->setFederate(msg->getFederate());
-    reducedMessage->setObject(msg->getObject());
-    if (msg->isDated()) {
-        reducedMessage->setDate(msg->getDate());
-    }
-    if (msg->isTagged()) {
-        reducedMessage->setTag(msg->getTag());
-    }
-
-    if (msg->isLabelled()) {
-        reducedMessage->setLabel(msg->getLabel());
-    }
-
-    // Copy attributes that are in the bsWaiting state in Line.
-    uint32_t currentSize;
-    AttributeHandle currentAttrib;
-
-    currentSize = 0;
+    // Copy attributes that are in the Waiting state in Line.
+    uint32_t currentSize = 0;
     reducedMessage->setAttributesSize(currentSize);
 
-    for (uint32_t i = 0; i < msg->getAttributesSize(); ++i) {
-        currentAttrib = msg->getAttributes(i);
-        if (line->stateFor(currentAttrib) == ObjectBroadcastLine::waiting) {
+    for (uint32_t i = 0; i < message->getAttributesSize(); ++i) {
+        auto currentAttrib = message->getAttributes(i);
+        if (line.stateFor(currentAttrib) == ObjectBroadcastLine::State::Waiting) {
             // Update number of attributes in ReducedMessage.
             ++currentSize;
-            ;
+
             reducedMessage->setAttributesSize(currentSize);
-            // Copy Attribute Handle.
             reducedMessage->setAttributes(currentAttrib, currentSize - 1);
         }
     }
-    return reducedMessage;
+    return std::unique_ptr<NetworkMessage>(static_cast<NetworkMessage*>(reducedMessage.release()));
 }
 
 template <typename T>
-T* ObjectClassBroadcastList::createReducedMessageWithValue(T* msg, ObjectBroadcastLine* line)
+std::unique_ptr<NetworkMessage>
+ObjectClassBroadcastList::createResponseMessageWithValues(T* message, const ObjectBroadcastLine& line)
 {
-    // Create the reduced message
-    // FIXME whould be better to msg->clone() if a clone method was generated
-    // FIXME or maybe copy constructor
-    // FIXME T *reducedMessage = new T(msg)
-    T* reducedMessage = new T();
+    auto reducedMessage = std::make_unique<T>(*message);
 
-    // Copy static informations.
-    reducedMessage->setException(msg->getException());
-    reducedMessage->setFederation(msg->getFederation());
-    reducedMessage->setFederate(msg->getFederate());
-    reducedMessage->setObject(msg->getObject());
-    if (msg->isDated()) {
-        reducedMessage->setDate(msg->getDate());
-    }
-    if (msg->isTagged()) {
-        reducedMessage->setTag(msg->getTag());
-    }
-
-    if (msg->isLabelled()) {
-        reducedMessage->setLabel(msg->getLabel());
-    }
-
-    // Copy attributes that are in the bsWaiting state in Line.
-    uint32_t currentSize;
-    AttributeHandle currentAttrib;
-
-    currentSize = 0;
+    // Copy attributes that are in the Waiting state in Line.
+    uint32_t currentSize = 0;
     reducedMessage->setAttributesSize(currentSize);
 
-    for (uint32_t i = 0; i < msg->getAttributesSize(); ++i) {
-        currentAttrib = msg->getAttributes(i);
-        if (line->stateFor(currentAttrib) == ObjectBroadcastLine::waiting) {
+    for (uint32_t i = 0; i < message->getAttributesSize(); ++i) {
+        auto currentAttrib = message->getAttributes(i);
+        if (line.stateFor(currentAttrib) == ObjectBroadcastLine::State::Waiting) {
             // Update number of attributes in ReducedMessage.
             ++currentSize;
+
             reducedMessage->setAttributesSize(currentSize);
-            // Copy Attribute Handle.
             reducedMessage->setAttributes(currentAttrib, currentSize - 1);
 
             reducedMessage->setValuesSize(currentSize);
-            // Copy Attribute Value.
-            reducedMessage->setValues(msg->getValues(i), currentSize - 1);
+            reducedMessage->setValues(message->getValues(i), currentSize - 1);
         }
     }
-    return reducedMessage;
+    return std::unique_ptr<NetworkMessage>(static_cast<NetworkMessage*>(reducedMessage.release()));
 }
 
-ObjectBroadcastLine* ObjectClassBroadcastList::getLineWithFederate(FederateHandle theFederate)
+template <typename T>
+std::unique_ptr<NetworkMessage> ObjectClassBroadcastList::createResponseMessage(T* message)
 {
-    list<ObjectBroadcastLine*>::iterator i;
-    for (i = lines.begin(); i != lines.end(); i++) {
-        if ((*i)->getFederate() == theFederate)
-            return (*i);
-    }
+    auto reducedMessage = std::make_unique<T>(*message);
 
-    return 0;
+    return std::unique_ptr<NetworkMessage>(static_cast<NetworkMessage*>(reducedMessage.release()));
 }
 } // namespace certi

@@ -8,7 +8,7 @@
 #include "temporaryfedfile.h"
 
 using ::certi::rtig::MessageProcessor;
-using ::certi::rtig::MessageEvent;
+using ::certi::MessageEvent;
 
 using ::certi::NetworkMessage;
 

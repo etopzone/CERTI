@@ -30,11 +30,11 @@
 
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/Exception.hh>
-#include <libCERTI/PrettyDebug.hh>
 #include <libCERTI/NM_Classes.hh>
+#include <libCERTI/PrettyDebug.hh>
 
-#include "make_unique.hh"
 #include "Federation.hh"
+#include "make_unique.hh"
 
 using std::endl;
 
@@ -71,16 +71,16 @@ void FederationsList::setVerboseLevel(const int verboseLevel) noexcept
 
 #ifdef FEDERATION_USES_MULTICAST
 std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
-                                       const FederationHandle handle,
-                                       SocketServer& server,
-                                       AuditFile& audit,
-                                       SocketMC* multicastSocket)
+                                                                                  const FederationHandle handle,
+                                                                                  SocketServer& server,
+                                                                                  AuditFile& audit,
+                                                                                  SocketMC* multicastSocket)
 #else
 std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
-                                       const FederationHandle handle,
-                                       SocketServer& socket_server,
-                                       AuditFile& audit,
-                                       const std::string& FEDid)
+                                                                                  const FederationHandle handle,
+                                                                                  SocketServer& socket_server,
+                                                                                  AuditFile& audit,
+                                                                                  const std::string& FEDid)
 #endif
 {
     Debug(G, pdGendoc) << "enter FederationsList::createFederation" << std::endl;
@@ -122,7 +122,7 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
         Debug(G, pdGendoc) << "exit FederationsList::createFederation on exception" << std::endl;
         throw;
     }
-    
+
     auto rep = make_unique<NM_Create_Federation_Execution>();
 
     rep->setFederation(handle.get());
@@ -193,10 +193,10 @@ void FederationsList::info(const FederationHandle handle,
     Debug(G, pdGendoc) << "exit  FederationsList::info" << std::endl;
 }
 
-FederateHandle FederationsList::addFederate(const FederationHandle handle,
-                                            const std::string& federateName,
-                                            SocketTCP* federateTcpLink,
-                                            NM_Join_Federation_Execution& objectModelData)
+std::pair<FederateHandle, Responses> FederationsList::addFederate(const FederationHandle handle,
+                                                                  const std::string& federateName,
+                                                                  SocketTCP* federateTcpLink,
+                                                                  NM_Join_Federation_Execution& objectModelData)
 {
     Debug(G, pdGendoc) << "enter FederationsList::addFederate" << std::endl;
 
@@ -206,23 +206,23 @@ FederateHandle FederationsList::addFederate(const FederationHandle handle,
 
     // It may raise a bunch of exceptions
     // adding the federate and return its handle
-    FederateHandle federate = federation.add(federateName, federateTcpLink);
+    auto handleAndResponses = federation.add(federateName, federateTcpLink);
 
     federation.getFOM(objectModelData);
 
     Debug(G, pdGendoc) << "exit FederationsList::addFederate" << std::endl;
 
-    return federate;
+    return handleAndResponses;
 }
 
-void FederationsList::killFederate(const FederationHandle federation, const FederateHandle federate) noexcept
+Responses FederationsList::killFederate(const FederationHandle federation, const FederateHandle federate) noexcept
 {
     try {
-        searchFederation(federation).kill(federate);
+        return searchFederation(federation).kill(federate);
     }
     catch (Exception& e) {
         // It may have thrown FederationExecutionDoesNotExist
-        return;
+        return Responses();
     }
 }
 

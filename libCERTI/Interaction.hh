@@ -31,6 +31,7 @@ class InteractionSet;
 } // namespace certi
 
 // CERTI headers
+#include "MessageEvent.hh"
 #include "Parameter.hh"
 #include "SecurityServer.hh"
 #include "Subscribable.hh"
@@ -174,22 +175,22 @@ public:
     void
     isReady(FederateHandle federate_handle, const std::vector<ParameterHandle>& parameter_list, uint16_t list_size);
 
-    InteractionBroadcastList* sendInteraction(FederateHandle federate_handle,
-                                              const std::vector<ParameterHandle>& parameter_list,
-                                              const std::vector<ParameterValue_t>& value_list,
-                                              uint16_t list_size,
-                                              FederationTime the_time,
-                                              const RTIRegion*,
-                                              const std::string& the_tag);
+    std::pair<InteractionBroadcastList*, Responses> sendInteraction(FederateHandle federate_handle,
+                                                                    const std::vector<ParameterHandle>& parameter_list,
+                                                                    const std::vector<ParameterValue_t>& value_list,
+                                                                    uint16_t list_size,
+                                                                    FederationTime the_time,
+                                                                    const RTIRegion*,
+                                                                    const std::string& the_tag);
 
-    InteractionBroadcastList* sendInteraction(FederateHandle federate_handle,
-                                              const std::vector<ParameterHandle>& parameter_list,
-                                              const std::vector<ParameterValue_t>& value_list,
-                                              uint16_t list_size,
-                                              const RTIRegion*,
-                                              const std::string& the_tag);
+    std::pair<InteractionBroadcastList*, Responses> sendInteraction(FederateHandle federate_handle,
+                                                                    const std::vector<ParameterHandle>& parameter_list,
+                                                                    const std::vector<ParameterValue_t>& value_list,
+                                                                    uint16_t list_size,
+                                                                    const RTIRegion*,
+                                                                    const std::string& the_tag);
 
-    void broadcastInteractionMessage(InteractionBroadcastList*, const RTIRegion*);
+    Responses broadcastInteractionMessage(InteractionBroadcastList*, const RTIRegion*);
 
     /**
      * Getter for the parameter list of the interaction class.

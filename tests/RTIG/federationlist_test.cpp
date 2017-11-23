@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <RTIG/FederationsList.hh>
 #include <RTIG/Federation.hh>
+#include <RTIG/FederationsList.hh>
 
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/SocketServer.hh>
@@ -72,10 +72,10 @@ TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
 {
     TemporaryFedFile tmp{"FedList.fed"};
     f.createFederation("fed", federation_handle, s, a, "FedList.fed");
-    
+
     certi::NM_Join_Federation_Execution message{};
     f.addFederate(federation_handle, "federate", nullptr, message);
-    
+
     ASSERT_THROW(f.destroyFederation(federation_handle), ::certi::FederatesCurrentlyJoined);
 }
 
@@ -83,9 +83,9 @@ TEST_F(FederationsListTest, DestroyFederationRemovesFederation)
 {
     TemporaryFedFile tmp{"FedList.fed"};
     f.createFederation("fed", federation_handle, s, a, "FedList.fed");
-    
+
     f.destroyFederation(federation_handle);
-    
+
     ASSERT_THROW(f.searchFederation(federation_handle), ::certi::FederationExecutionDoesNotExist);
 }
 
@@ -118,8 +118,8 @@ TEST_F(FederationsListTest, addFederateThrowsOnUknFederation)
 TEST_F(FederationsListTest, VerboseLevelGettersAndSetters)
 {
     ASSERT_EQ(0, f.getVerboseLevel());
-    
+
     f.setVerboseLevel(2);
-    
+
     ASSERT_EQ(2, f.getVerboseLevel());
 }

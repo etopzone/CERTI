@@ -103,7 +103,13 @@ ObjectHandle ObjectManagement::registerObject(
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(), rep->getLabel());
+        auto responses = rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(), rep->getLabel());
+        std::cout << "==========================" << std::endl;
+        std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
+        for (auto& rep : responses) {
+            std::cout << (int) rep.message()->getMessageType() << std::endl;
+        }
+        std::cout << "==========================" << std::endl;
         return rep->getObject();
     }
     else {
@@ -339,7 +345,8 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
 
         // Send network message and then wait for answer.
         comm->sendMessage(&req);
-        std::unique_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
+        std::unique_ptr<NetworkMessage> rep(
+            comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
         e = rep->getException();
         evtrHandle = rep->eventRetraction;
     }
@@ -460,7 +467,13 @@ EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandl
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        auto responses = rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        std::cout << "==========================" << std::endl;
+        std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
+        for (auto& rep : responses) {
+            std::cout << (int) rep.message()->getMessageType() << std::endl;
+        }
+        std::cout << "==========================" << std::endl;
     }
 
     return rep->eventRetraction;
@@ -483,7 +496,13 @@ void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::str
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        auto responses = rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        std::cout << "==========================" << std::endl;
+        std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
+        for (auto& rep : responses) {
+            std::cout << (int) rep.message()->getMessageType() << std::endl;
+        }
+        std::cout << "==========================" << std::endl;
     }
 } /* end of deleteObject */
 
@@ -522,7 +541,13 @@ void ObjectManagement::removeObject(ObjectHandle the_object,
 
     comm->requestFederateService(&req);
 
-    rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
+    auto responses = rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
+    std::cout << "==========================" << std::endl;
+    std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
+    for (auto& rep : responses) {
+        std::cout << (int) rep.message()->getMessageType() << std::endl;
+    }
+    std::cout << "==========================" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -539,7 +564,13 @@ void ObjectManagement::removeObject(ObjectHandle the_object,
 
     comm->requestFederateService(&req);
 
-    rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
+    auto responses = rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
+    std::cout << "==========================" << std::endl;
+    std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
+    for (auto& rep : responses) {
+        std::cout << (int) rep.message()->getMessageType() << std::endl;
+    }
+    std::cout << "==========================" << std::endl;
 }
 
 // ----------------------------------------------------------------------------

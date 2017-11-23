@@ -385,7 +385,9 @@ void RTIG::closeConnection(Socket* link, bool emergency)
 
     if (emergency) {
         Debug(D, pdExcept) << "Killing Federate(" << federation << ", " << federate << ")..." << std::endl;
-        my_federations.killFederate(federation, federate);
+        for (auto& response : my_federations.killFederate(federation, federate)) {
+            response.message()->send(response.sockets(), my_NM_msgBufSend);
+        }
         Debug(D, pdExcept) << "Federate(" << federation << ", " << federate << ") killed" << std::endl;
     }
 

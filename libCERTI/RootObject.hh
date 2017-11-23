@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "HandleManager.hh"
+#include "MessageEvent.hh"
 #include "NameReservation.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
@@ -113,15 +114,15 @@ public:
     // Object Management
     bool reserveObjectInstanceName(FederateHandle the_federate, const std::string& the_object_name);
 
-    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&);
+    Responses registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&);
 
     FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, FederationTime theTime, const std::string& theTag);
+    Responses deleteObjectInstance(FederateHandle, ObjectHandle, FederationTime theTime, const std::string& theTag);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag);
+    Responses deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag);
 
-    void killFederate(FederateHandle);
+    Responses killFederate(FederateHandle);
 
     // Access to elements of the RootObject hierarchy
     ObjectAttribute* getObjectAttribute(ObjectHandle, AttributeHandle);

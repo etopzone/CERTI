@@ -92,9 +92,9 @@ void RootObject::display() const
             space.display();
         }
     }
-    
+
     objects->display();
-    
+
     std::cout << std::endl << "Root Object Tree ENDS." << std::endl;
     std::cout << "------------------------" << std::endl;
 }
@@ -219,13 +219,14 @@ bool RootObject::reserveObjectInstanceName(FederateHandle the_federate, const st
     return true;
 }
 
-void RootObject::registerObjectInstance(FederateHandle the_federate,
-                                        ObjectClassHandle the_class,
-                                        ObjectHandle the_object,
-                                        const std::string& the_object_name)
+Responses RootObject::registerObjectInstance(FederateHandle the_federate,
+                                             ObjectClassHandle the_class,
+                                             ObjectHandle the_object,
+                                             const std::string& the_object_name)
 {
     Debug(D, pdRegister) << "Federate " << the_federate << " attempts to register instance " << the_object
                          << " in class " << the_class << std::endl;
+    Responses ret;
 
     auto it = reservedNames->find(the_object_name);
     if (it != reservedNames->end()) {
@@ -238,7 +239,7 @@ void RootObject::registerObjectInstance(FederateHandle the_federate,
     Object* object;
     object = objects->registerObjectInstance(the_federate, the_class, the_object, the_object_name);
     try {
-        ObjectClasses->registerObjectInstance(the_federate, object, the_class);
+        ret = ObjectClasses->registerObjectInstance(the_federate, object, the_class);
     }
     catch (...) {
         // the object is added to the ObjectSet before we check to see if the
@@ -254,32 +255,38 @@ void RootObject::registerObjectInstance(FederateHandle the_federate,
         reservedNames->erase(it);
         delete nr;
     }
+
+    return ret;
 }
 
-void RootObject::deleteObjectInstance(FederateHandle the_federate,
-                                      ObjectHandle objectHandle,
-                                      FederationTime theTime,
-                                      const std::string& the_tag)
+Responses RootObject::deleteObjectInstance(FederateHandle the_federate,
+                                           ObjectHandle objectHandle,
+                                           FederationTime theTime,
+                                           const std::string& the_tag)
 {
+    Responses ret;
     Object* object = objects->getObject(objectHandle);
-    ObjectClasses->deleteObject(the_federate, object, theTime, the_tag);
+    ret = ObjectClasses->deleteObject(the_federate, object, theTime, the_tag);
     objects->deleteObjectInstance(the_federate, objectHandle, the_tag);
+    return ret;
 }
 
-void RootObject::deleteObjectInstance(FederateHandle the_federate,
-                                      ObjectHandle objectHandle,
-                                      const std::string& the_tag)
+Responses
+RootObject::deleteObjectInstance(FederateHandle the_federate, ObjectHandle objectHandle, const std::string& the_tag)
 {
+    Responses ret;
     Object* object = objects->getObject(objectHandle);
-    ObjectClasses->deleteObject(the_federate, object, the_tag);
+    ret = ObjectClasses->deleteObject(the_federate, object, the_tag);
     objects->deleteObjectInstance(the_federate, objectHandle, the_tag);
+    return ret;
 }
 
-void RootObject::killFederate(FederateHandle the_federate)
+Responses RootObject::killFederate(FederateHandle the_federate)
 {
-    ObjectClasses->killFederate(the_federate);
+    Responses ret = ObjectClasses->killFederate(the_federate);
     Interactions->killFederate(the_federate);
     objects->killFederate(the_federate);
+    return ret;
 }
 
 ObjectClassAttribute* RootObject::getObjectClassAttribute(ObjectHandle object, AttributeHandle attribute)

@@ -29,11 +29,11 @@
 
 #include <libCERTI/AuditFile.hh>
 #include <libCERTI/HandleManager.hh>
-#include <libCERTI/SocketServer.hh>
+#include <libCERTI/MessageEvent.hh>
 #include <libCERTI/NM_Classes.hh>
+#include <libCERTI/SocketServer.hh>
 
 #include "FederationsList.hh"
-#include "MessageEvent.hh"
 
 namespace certi {
 

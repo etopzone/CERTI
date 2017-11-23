@@ -25,13 +25,12 @@
 #include <libCERTI/PrettyDebug.hh>
 
 #include <libCERTI/InteractionSet.hh>
+#include <libCERTI/MessageEvent.hh>
 #include <libCERTI/Object.hh>
 #include <libCERTI/ObjectAttribute.hh>
 #include <libCERTI/ObjectClassAttribute.hh>
 #include <libCERTI/ObjectClassSet.hh>
 #include <libCERTI/ObjectSet.hh>
-
-#include "MessageEvent.hh"
 
 using std::cout;
 using std::endl;
@@ -503,6 +502,8 @@ Responses Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
                        << conveyRegionDesignatorSets << ", " << conveyProducingFederate << ", " << serviceReporting
                        << ", " << exceptionReporting << endl;
 
+    Responses responses;
+
     auto& federate = my_federation.getFederate(federate_handle);
 
     federate.setConveyRegionDesignatorSetsSwitch(conveyRegionDesignatorSets);
@@ -511,12 +512,15 @@ Responses Mom::processFederateSetSwitches(const FederateHandle& federate_handle,
     federate.setExceptionReportingSwitch(exceptionReporting);
 
     // FIXME should be done on Federate instead of here
-    updateConveyRegionDesignatorSets(federate_handle, conveyRegionDesignatorSets);
-    updateConveyProducingFederate(federate_handle, conveyProducingFederate);
+    auto resp = updateConveyRegionDesignatorSets(federate_handle, conveyRegionDesignatorSets);
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
-    return {};
+    auto resp2 = updateConveyProducingFederate(federate_handle, conveyProducingFederate);
+    responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetSwitches" << endl;
+
+    return responses;
 }
 
 /** Request that the RTI send report interactions that contain the publication data of a joined federate.
@@ -1110,9 +1114,7 @@ Responses Mom::processFederateResignFederationExecution(const FederateHandle& fe
 
     Responses responses;
 
-    auto rep = my_federation.remove(federate_handle);
-
-    responses.emplace_back(getSocketForFederate(federate_handle), std::move(rep));
+    responses = my_federation.remove(federate_handle);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateResignFederationExecution" << endl;
 
@@ -1157,11 +1159,7 @@ Responses Mom::processFederateFederateSaveComplete(const FederateHandle& federat
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateSaveComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
-    my_federation.federateSaveStatus(federate_handle, successIndicator);
-
-    Debug(D, pdGendoc) << "exit  Mom::processFederateFederateSaveComplete" << endl;
-
-    return {};
+    return my_federation.federateSaveStatus(federate_handle, successIndicator);
 }
 
 /** Cause the RTI to react as if the Federate Restore Complete service has been invoked by the specified
@@ -1173,11 +1171,7 @@ Responses Mom::processFederateFederateRestoreComplete(const FederateHandle& fede
     Debug(D, pdGendoc) << "enter Mom::processFederateFederateRestoreComplete " << federate_handle << ", "
                        << successIndicator << endl;
 
-    my_federation.federateRestoreStatus(federate_handle, successIndicator);
-
-    Debug(D, pdGendoc) << "exit  Mom::processFederateFederateRestoreComplete" << endl;
-
-    return {};
+    return my_federation.federateRestoreStatus(federate_handle, successIndicator);
 }
 
 /** Cause the RTI to react as if the Publish Object Class Attributes service has been invoked by the specified
@@ -1656,11 +1650,11 @@ Responses Mom::processFederationSetSwitches(const bool autoProvide)
 {
     Debug(D, pdGendoc) << "enter Mom::processFederationSetSwitches " << autoProvide << endl;
 
-    my_federation.setAutoProvide(autoProvide);
+    auto ret = my_federation.setAutoProvide(autoProvide);
 
     Debug(D, pdGendoc) << "exit  Mom::processFederationSetSwitches" << endl;
 
-    return {};
+    return ret;
 }
 
 /** Request that the RTI send a report interaction that contains a list of all in-progress federation

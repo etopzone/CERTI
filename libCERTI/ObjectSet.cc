@@ -60,8 +60,7 @@ ObjectSet::~ObjectSet()
 void ObjectSet::display() const
 {
     std::cout << "Object set: " << size() << std::endl;
-    for(const auto& pair: *this)
-    {
+    for (const auto& pair : *this) {
         std::cout << "****" << std::endl;
         std::cout << "Object #" << pair.first << std::endl;
         pair.second->display();

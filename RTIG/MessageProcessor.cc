@@ -158,6 +158,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
 #endif
     my_auditServer << " created";
 
+    responses = my_federations.searchFederation(FederationHandle(rep->getFederation())).enableMomIfAvailable();
+
     responses.emplace_back(request.sockets().front(), std::move(rep));
 
     Debug(D, pdInit) << "Federation \"" << federation << "\" created with Handle " << handle.get() << endl;
@@ -188,7 +190,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     // Need to dump the FOM into that
     auto rep = make_unique<NM_Join_Federation_Execution>();
 
-    FederateHandle federate_handle = my_federations.addFederate(
+    FederateHandle federate_handle;
+    std::tie(federate_handle, responses) = my_federations.addFederate(
         federation_handle, federate, static_cast<SocketTCP*>(request.sockets().front()), *rep);
 
     int regulators_count;
@@ -243,13 +246,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Resign_Federation_Execution>
     Debug(D, pdTrace) << "Federate (" << request.message()->getFederate() << ") leaves federation ("
                       << request.message()->getFederation() << ")" << std::endl;
 
-    auto rep = my_federations.searchFederation(federation).remove(federate);
+    responses = my_federations.searchFederation(federation).remove(federate);
 
     Debug(D, pdInit) << "Federate " << federate << " is resigning from federation " << federation << endl;
 
     my_auditServer << "Federate " << federate << " resign federation(" << federation << ")";
-
-    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }
@@ -570,7 +571,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchron
 Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achieved>&& request)
 {
     Responses responses;
-    
+
     my_auditServer.setLevel(AuditLine::Level(8));
 
     Debug(D, pdTrace) << "Federation " << request.message()->getFederation()
@@ -580,7 +581,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Synchronization_Point_Achiev
     my_auditServer << "Label \"" << request.message()->getLabel() << "\" ended";
 
     responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .unregisterSynchronization(request.message()->getFederate(), request.message()->getLabel());
+                    .unregisterSynchronization(request.message()->getFederate(), request.message()->getLabel());
 
     Debug(D, pdTerm) << "Federate " << request.message()->getFederate() << " has synchronized" << endl;
 
@@ -596,17 +597,15 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Save>&& r
 
     if (request.message()->isDated()) {
         // With time
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+        return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
             .requestFederationSave(
                 request.message()->getFederate(), request.message()->getLabel(), request.message()->getDate());
     }
     else {
         // Without time
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+        return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
             .requestFederationSave(request.message()->getFederate(), request.message()->getLabel());
     }
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Begun>&& request)
@@ -631,10 +630,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Complete>&& re
 
     my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .federateSaveStatus(request.message()->getFederate(), true);
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&& request)
@@ -644,10 +641,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Federate_Save_Not_Complete>&
 
     my_auditServer << "Federate " << request.message()->getFederate() << " save ended";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .federateSaveStatus(request.message()->getFederate(), false);
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&& request)
@@ -657,10 +652,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Federation_Restore>&
 
     my_auditServer << "Federate " << request.message()->getFederate() << " request restore";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .requestFederationRestore(request.message()->getFederate(), request.message()->getLabel());
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&& request)
@@ -670,10 +663,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Complete>&&
 
     my_auditServer << "Federate " << request.message()->getFederate() << " restore ended";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .federateRestoreStatus(request.message()->getFederate(), true);
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complete>&& request)
@@ -683,10 +674,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Federate_Restore_Not_Complet
 
     my_auditServer << "Federate " << request.message()->getFederate() << " restore ended";
 
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .federateRestoreStatus(request.message()->getFederate(), false);
-
-    return {};
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Publish_Object_Class>&& request)
@@ -818,8 +807,9 @@ Responses MessageProcessor::process(MessageEvent<NM_Subscribe_Interaction_Class>
 
     my_auditServer << "Subscribe Interaction Class = " << request.message()->getInteractionClass();
 
-    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
+    responses
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), true);
 
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " subscribed to Interaction "
@@ -836,8 +826,9 @@ Responses MessageProcessor::process(MessageEvent<NM_Unsubscribe_Interaction_Clas
 
     my_auditServer << "Unsubscribe Interaction Class = " << request.message()->getInteractionClass();
 
-    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
+    responses
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .subscribeInteraction(request.message()->getFederate(), request.message()->getInteractionClass(), false);
 
     Debug(D, pdRequest) << "Federate " << request.message()->getFederate() << " of Federation "
                         << request.message()->getFederation() << " unsubscribed to Interaction "
@@ -866,10 +857,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
 
     my_auditServer << "Register Object Class = " << request.message()->getObjectClass();
 
-    auto object_handle = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-                             .registerObject(request.message()->getFederate(),
-                                             request.message()->getObjectClass(),
-                                             request.message()->getLabel());
+    ObjectHandle object_handle;
+    std::tie(object_handle, responses)
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .registerObject(
+                  request.message()->getFederate(), request.message()->getObjectClass(), request.message()->getLabel());
 
     Debug(D, pdRegister) << "Object \"" << request.message()->getLabel() << "\" of Federate "
                          << request.message()->getFederate() << " has been registered under ID " << object_handle
@@ -907,22 +899,22 @@ Responses MessageProcessor::process(MessageEvent<NM_Update_Attribute_Values>&& r
     // Forward the call
     if (request.message()->isDated()) {
         // UAV with time
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .updateAttributeValues(request.message()->getFederate(),
-                                   request.message()->getObject(),
-                                   request.message()->getAttributes(),
-                                   request.message()->getValues(),
-                                   request.message()->getDate(),
-                                   request.message()->getLabel());
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .updateAttributeValues(request.message()->getFederate(),
+                                               request.message()->getObject(),
+                                               request.message()->getAttributes(),
+                                               request.message()->getValues(),
+                                               request.message()->getDate(),
+                                               request.message()->getLabel());
     }
     else {
         // UAV without time
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .updateAttributeValues(request.message()->getFederate(),
-                                   request.message()->getObject(),
-                                   request.message()->getAttributes(),
-                                   request.message()->getValues(),
-                                   request.message()->getLabel());
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                        .updateAttributeValues(request.message()->getFederate(),
+                                               request.message()->getObject(),
+                                               request.message()->getAttributes(),
+                                               request.message()->getValues(),
+                                               request.message()->getLabel());
     }
 
     // Building answer (Network Message)
@@ -1054,11 +1046,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Negotiated_Attribute_Ownersh
 
     my_auditServer << "Object = " << request.message()->getObject()
                    << ", # of att. = " << request.message()->getAttributesSize();
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .negotiateDivestiture(request.message()->getFederate(),
-                              request.message()->getObject(),
-                              request.message()->getAttributes(),
-                              request.message()->getLabel());
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .negotiateDivestiture(request.message()->getFederate(),
+                                          request.message()->getObject(),
+                                          request.message()->getAttributes(),
+                                          request.message()->getLabel());
 
     Debug(D, pdDebug) << "Federate " << request.message()->getFederate() << " of Federation "
                       << request.message()->getFederation() << " negotiate "
@@ -1111,7 +1103,9 @@ Responses MessageProcessor::process(MessageEvent<NM_Unconditional_Attribute_Owne
                    << ", # of att. = " << request.message()->getAttributesSize();
 
     responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .divest(request.message()->getFederate(), request.message()->getObject(), request.message()->getAttributes());
+                    .divest(request.message()->getFederate(),
+                            request.message()->getObject(),
+                            request.message()->getAttributes());
 
     Debug(D, pdDebug) << "Federate " << request.message()->getFederate() << " of Federation "
                       << request.message()->getFederation() << " UnconditionalDivestiture "
@@ -1500,12 +1494,14 @@ Responses MessageProcessor::process(MessageEvent<NM_DDM_Register_Object>&& reque
     //     - request.message()->region  (coming from NetworkMessage::region)
     //     - request.message()->regions (coming from BasicMessage::regions)
     // would be nice to sort those thing out.
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .registerObjectWithRegion(request.message()->getFederate(),
-                                  request.message()->getObjectClass(),
-                                  request.message()->getLabel(),
-                                  request.message()->getRegion(),
-                                  request.message()->getAttributes());
+    ObjectHandle object_handle;
+    std::tie(object_handle, responses)
+        = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+              .registerObjectWithRegion(request.message()->getFederate(),
+                                        request.message()->getObjectClass(),
+                                        request.message()->getLabel(),
+                                        request.message()->getRegion(),
+                                        request.message()->getAttributes());
 
     Debug(D, pdRegister) << "Object \"" << request.message()->getLabel() << "\" of Federate "
                          << request.message()->getFederate() << " has been registered under ID " << rep->getObject()
@@ -1523,19 +1519,16 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Object_Attribute_Val
 
     my_auditServer.setLevel(AuditLine::Level(6));
 
-    auto rep = make_unique<NM_Request_Object_Attribute_Value_Update>();
     my_auditServer << "ObjID = " << request.message()->getObject();
 
-    // We have to do verifications about this object and we need owner
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .requestObjectOwner(request.message()->getFederate(),
+                                        request.message()->getObject(),
+                                        request.message()->getAttributes())
+                    .second;
+
+    auto rep = make_unique<NM_Request_Object_Attribute_Value_Update>();
     rep->setException(Exception::Type::NO_EXCEPTION);
-
-    // While searching for the federate owner we will send
-    // a NM_Provide_Attribute_Value_Update
-    // (see Federation::requestObjectOwner)
-    (void) my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .requestObjectOwner(
-            request.message()->getFederate(), request.message()->getObject(), request.message()->getAttributes());
-
     rep->setFederate(request.message()->getFederate());
     rep->setObject(request.message()->getObject());
 
@@ -1550,13 +1543,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Valu
 
     my_auditServer.setLevel(AuditLine::Level(6));
 
+    responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+                    .requestClassAttributeValueUpdate(request.message()->getFederate(),
+                                                      request.message()->getObjectClass(),
+                                                      request.message()->getAttributes());
+
     auto rep = make_unique<NM_Request_Class_Attribute_Value_Update>();
-
     rep->setException(Exception::Type::NO_EXCEPTION);
-    my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-        .requestClassAttributeValueUpdate(
-            request.message()->getFederate(), request.message()->getObjectClass(), request.message()->getAttributes());
-
     rep->setFederate(request.message()->getFederate());
     rep->setObjectClass(request.message()->getObjectClass());
 

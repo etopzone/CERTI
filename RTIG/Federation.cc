@@ -42,6 +42,7 @@
 #include <libCERTI/Interaction.hh>
 #include <libCERTI/InteractionSet.hh>
 #include <libCERTI/LBTS.hh>
+#include <libCERTI/MessageEvent.hh>
 #include <libCERTI/NM_Classes.hh>
 #include <libCERTI/NetworkMessage.hh>
 #include <libCERTI/Object.hh>
@@ -58,8 +59,6 @@
 #include <libCERTI/XmlParser2000.hh>
 #include <libCERTI/XmlParser2010.hh>
 #include <libCERTI/fed.hh>
-
-#include "MessageEvent.hh"
 
 #include "make_unique.hh"
 
@@ -168,8 +167,6 @@ Federation::Federation(const string& federation_name,
 
     my_min_NERx.setZero();
 
-    enableMomIfAvailable();
-
     Debug(G, pdGendoc) << "exit Federation::Federation" << endl;
 }
 
@@ -259,7 +256,7 @@ bool Federation::check(FederateHandle federate_handle) const
     return true;
 }
 
-FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -269,6 +266,8 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     catch (FederateNotExecutionMember& e) {
         // Nothing to do.
     }
+
+    Responses responses;
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
     auto result
@@ -281,33 +280,35 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     // Send, to the newly added federate, a Null message from each regulating
     // federate (i) with their logical time h(i). This permits to calculate
     // its LBTS.
-    NM_Message_Null nullMessage;
-    NM_Announce_Synchronization_Point ASPMessage;
     try {
         vector<LBTS::FederateClock> clocks;
         my_regulators.get(clocks);
 
         for (const auto& clock : clocks) {
-            nullMessage.setFederation(my_handle.get());
-            nullMessage.setFederate(clock.first);
-            nullMessage.setDate(clock.second);
-            Debug(D, pdTerm) << "Sending NULL message from " << nullMessage.getFederate() << " to new federate."
-                             << endl;
+            auto nullMessage = std::make_unique<NM_Message_Null>();
+            nullMessage->setFederation(my_handle.get());
+            nullMessage->setFederate(clock.first);
+            nullMessage->setDate(clock.second);
+            Debug(D, pdTerm) << "Sending NULL message from " << clock.first << " to new federate." << endl;
 
-            nullMessage.send(tcp_link, my_nm_buffer);
+            //             nullMessage.send(tcp_link, my_nm_buffer);
+            responses.emplace_back(tcp_link, std::move(nullMessage));
         }
 
         // If federation is synchronizing, put federate in same state.
         if (isSynchronizing()) {
-            ASPMessage.setFederate(federate_handle);
-            ASPMessage.setFederation(my_handle.get());
+            auto asp = std::make_unique<NM_Announce_Synchronization_Point>();
+            asp->setFederate(federate_handle);
+            asp->setFederation(my_handle.get());
 
             for (const auto& kv : my_synchronization_labels) {
-                ASPMessage.setLabel(kv.first);
-                ASPMessage.setTag(kv.second);
+                asp->setLabel(kv.first);
+                asp->setTag(kv.second);
                 Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " to the new Federate" << endl;
 
-                ASPMessage.send(tcp_link, my_nm_buffer);
+                //                 ASPMessage.send(tcp_link, my_nm_buffer);
+                responses.emplace_back(tcp_link, std::move(asp));
+
                 federate.addSynchronizationLabel(kv.first);
             }
         }
@@ -317,15 +318,16 @@ FederateHandle Federation::add(const string& federate_name, SocketTCP* tcp_link)
     }
 
     if (my_mom) {
-        my_mom->registerFederate(federate, tcp_link);
-        my_mom->updateFederatesInFederation();
+        auto resp = my_mom->registerFederate(federate, tcp_link);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+        auto resp2 = my_mom->updateFederatesInFederation();
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
     }
 
-    return federate_handle;
+    return {federate_handle, std::move(responses)};
 }
 
-// FIXME should return response
-std::unique_ptr<NM_Resign_Federation_Execution> Federation::remove(FederateHandle federate_handle)
+Responses Federation::remove(FederateHandle federate_handle)
 {
     //     HandleFederateMap::iterator i = _handleFederateMap.find(federate_handle);
     //     if (i != _handleFederateMap.end()) {
@@ -343,28 +345,34 @@ std::unique_ptr<NM_Resign_Federation_Execution> Federation::remove(FederateHandl
 
     check(federate_handle);
 
+    Responses responses;
+
     my_federate_handle_generator.free(federate_handle);
 
     my_federates.erase(my_federates.find(federate_handle));
 
     if (my_mom) {
         my_mom->deleteFederate(federate_handle);
-        my_mom->updateFederatesInFederation();
+        responses = my_mom->updateFederatesInFederation();
     }
 
-    auto rep = make_unique<NM_Resign_Federation_Execution>();
+    auto rep = std::make_unique<NM_Resign_Federation_Execution>();
 
     rep->setFederate(federate_handle);
     rep->setFederation(my_handle.get());
 
     Debug(D, pdInit) << "Federation " << my_handle << ": Removed Federate " << federate_handle << endl;
 
-    return rep;
+    responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
+
+    return responses;
 }
 
-void Federation::kill(FederateHandle federate_handle) noexcept
+Responses Federation::kill(FederateHandle federate_handle) noexcept
 {
     Debug(D, pdInit) << "Killing Federate " << federate_handle << endl;
+
+    Responses responses;
 
     try {
         auto& federate = getFederate(federate_handle);
@@ -389,12 +397,14 @@ void Federation::kill(FederateHandle federate_handle) noexcept
         }
 
         // Remove references to this federate in root object
-        my_root_object->killFederate(federate_handle);
+        responses = my_root_object->killFederate(federate_handle);
         Debug(D, pdTrace) << "Federate " << federate_handle << " removed from the Root Object " << endl;
 
         // delete from federations list
         try {
-            remove(federate_handle);
+            auto resp = remove(federate_handle);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
             Debug(D, pdInit) << "Federate " << federate_handle << " removed" << endl;
         }
         catch (Exception& e) {
@@ -403,6 +413,8 @@ void Federation::kill(FederateHandle federate_handle) noexcept
     catch (FederateNotExecutionMember& e) {
         Debug(D, pdInit) << "Federate " << federate_handle << " was not from this federation" << endl;
     }
+
+    return responses;
 }
 
 Responses Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
@@ -437,7 +449,8 @@ Responses Federation::addRegulator(FederateHandle federate_handle, FederationTim
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
-        my_mom->updateTimeRegulating(federate);
+        auto resp = my_mom->updateTimeRegulating(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
 
     return responses;
@@ -495,7 +508,8 @@ Responses Federation::removeRegulator(FederateHandle federate_handle)
     responses = respondToAll(std::move(rep));
 
     if (my_mom) {
-        my_mom->updateTimeRegulating(federate);
+        auto resp = my_mom->updateTimeRegulating(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
 
     return responses;
@@ -519,7 +533,8 @@ Responses Federation::setConstrained(FederateHandle federate_handle, bool constr
     }
 
     if (my_mom) {
-        my_mom->updateTimeConstrained(federate);
+        auto resp = my_mom->updateTimeConstrained(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
 
     return responses;
@@ -682,9 +697,10 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << endl;
 }
 
-void Federation::requestFederationSave(FederateHandle federate_handle, const string& label, FederationTime time)
+Responses Federation::requestFederationSave(FederateHandle federate_handle, const string& label, FederationTime time)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave with time" << endl;
+    Responses responses;
 
     check(federate_handle);
 
@@ -695,7 +711,8 @@ void Federation::requestFederationSave(FederateHandle federate_handle, const str
     for (const auto& kv : my_federates) {
         kv.second->setSaving(true);
         if (my_mom) {
-            my_mom->updateFederateState(*kv.second);
+            auto resp = my_mom->updateFederateState(*kv.second);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         }
     }
 
@@ -703,27 +720,35 @@ void Federation::requestFederationSave(FederateHandle federate_handle, const str
     my_is_save_in_progress = true;
     my_save_label = label;
 
-    NM_Initiate_Federate_Save msg;
-    msg.setFederate(federate_handle);
-    msg.setFederation(my_handle.get());
-    msg.setLabel(label);
+    auto msg = std::make_unique<NM_Initiate_Federate_Save>();
+    msg->setFederate(federate_handle);
+    msg->setFederation(my_handle.get());
+    msg->setLabel(label);
     // timed message
-    msg.setDate(time);
+    msg->setDate(time);
 
     Debug(G, pdGendoc) << "      requestFederationSave====>broadcast I_F_S to all" << endl;
 
-    broadcastAnyMessage(&msg, 0, false);
+    //     broadcastAnyMessage(&msg, 0, false);
+    auto resp = respondToAll(std::move(msg));
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     if (my_mom) {
-        my_mom->updateNextSave(label, time);
+        auto resp = my_mom->updateNextSave(label, time);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
 
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave with time" << endl;
+
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+    return responses;
 }
 
-void Federation::requestFederationSave(FederateHandle federate_handle, const string& the_label)
+Responses Federation::requestFederationSave(FederateHandle federate_handle, const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationSave without time" << endl;
+    Responses responses;
 
     check(federate_handle);
 
@@ -735,7 +760,8 @@ void Federation::requestFederationSave(FederateHandle federate_handle, const str
     for (const auto& kv : my_federates) {
         kv.second->setSaving(true);
         if (my_mom) {
-            my_mom->updateFederateState(*kv.second);
+            auto resp = my_mom->updateFederateState(*kv.second);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         }
     }
 
@@ -743,20 +769,25 @@ void Federation::requestFederationSave(FederateHandle federate_handle, const str
     my_is_save_in_progress = true;
     my_save_label = the_label;
 
-    NM_Initiate_Federate_Save msg;
-    msg.setFederate(federate_handle);
-    msg.setFederation(my_handle.get());
-    msg.setLabel(the_label);
+    auto msg = std::make_unique<NM_Initiate_Federate_Save>();
+    msg->setFederate(federate_handle);
+    msg->setFederation(my_handle.get());
+    msg->setLabel(the_label);
 
     Debug(G, pdGendoc) << "                  requestFederationSave====>broadcast I_F_S to all" << endl;
 
-    broadcastAnyMessage(&msg, 0, false);
+    //     broadcastAnyMessage(&msg, 0, false);
+    auto resp = respondToAll(std::move(msg));
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     if (my_mom) {
-        my_mom->updateNextSave(the_label, 0);
+        auto resp = my_mom->updateNextSave(the_label, 0);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
     }
 
     Debug(G, pdGendoc) << "exit  Federation::requestFederationSave without time" << endl;
+
+    return responses;
 }
 
 void Federation::federateSaveBegun(FederateHandle federate_handle)
@@ -766,15 +797,16 @@ void Federation::federateSaveBegun(FederateHandle federate_handle)
     Debug(G, pdGendoc) << "exit  Federation::federateSaveBegun" << endl;
 }
 
-void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
+Responses Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
 {
     Debug(G, pdGendoc) << "enter Federation::federateSaveStatus" << endl;
+    Responses responses;
 
     Federate& federate = getFederate(federate_handle);
     federate.setSaving(false);
 
     if (my_mom) {
-        my_mom->updateFederateState(federate);
+        responses = my_mom->updateFederateState(federate);
     }
 
     if (status == false) {
@@ -785,7 +817,7 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
     for (const auto& kv : my_federates) {
         if (kv.second->isSaving()) {
             Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus one federate has not save ended" << endl;
-            return;
+            return responses;
         }
     }
 
@@ -801,7 +833,9 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
 
-    broadcastAnyMessage(msg.get(), 0, false);
+    //     broadcastAnyMessage(msg.get(), 0, false);
+    auto resp = respondToAll(std::move(msg));
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     Debug(G, pdGendoc) << "            =======> broadcast F_S or F_N_S" << endl;
 
@@ -810,16 +844,22 @@ void Federation::federateSaveStatus(FederateHandle federate_handle, bool status)
     my_is_save_in_progress = false;
 
     if (my_mom) {
-        my_mom->updateLastSave();
-        my_mom->updateNextSave("", 0);
+        auto resp = my_mom->updateLastSave();
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+        auto resp2 = my_mom->updateNextSave("", 0);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
     }
 
     Debug(G, pdGendoc) << "exit  Federation::federateSaveStatus" << endl;
+
+    return responses;
 }
 
-void Federation::requestFederationRestore(FederateHandle federate_handle, const string& the_label)
+Responses Federation::requestFederationRestore(FederateHandle federate_handle, const string& the_label)
 {
     Debug(G, pdGendoc) << "enter Federation::requestFederationRestore" << endl;
+    Responses responses;
 
     check(federate_handle);
 
@@ -839,14 +879,9 @@ void Federation::requestFederationRestore(FederateHandle federate_handle, const 
     // JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
     success = true;
 
-    NetworkMessage* msg = NM_Factory::create(success ? NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED
-                                                     : NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED);
-
-    msg->setFederate(federate_handle);
-    msg->setFederation(my_handle.get());
-    msg->setLabel(the_label);
-
-    Socket* socket = my_server->getSocketLink(msg->getFederate());
+    std::unique_ptr<NetworkMessage> msg(
+        NM_Factory::create(success ? NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED
+                                   : NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED));
 
     if (success) {
         Debug(G, pdGendoc) << "             =====> send message R_F_R_S to RTIA" << endl;
@@ -855,56 +890,66 @@ void Federation::requestFederationRestore(FederateHandle federate_handle, const 
         Debug(G, pdGendoc) << "             =====> send message R_F_R_F to RTIA" << endl;
     }
 
-    msg->send(socket, my_nm_buffer);
-    delete msg;
+    msg->setFederate(federate_handle);
+    msg->setFederation(my_handle.get());
+    msg->setLabel(the_label);
+
+    //     msg->send(socket, my_nm_buffer);
+
+    responses.emplace_back(my_server->getSocketLink(msg->getFederate()), std::move(msg));
 
     // Reading file failed: not restoring !
     if (!success) {
         Debug(G, pdGendoc) << "exit  Federation::requestFederationRestore on success false" << endl;
-        return;
+        return responses;
     }
 
     // Otherwise...
     for (const auto& kv : my_federates) {
         kv.second->setRestoring(true);
         if (my_mom) {
-            my_mom->updateFederateState(*kv.second);
+            auto resp = my_mom->updateFederateState(*kv.second);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         }
     }
     my_restore_status = true;
     my_is_restore_in_progress = true;
 
     // Informs federates a new restore is being done.
-    msg = NM_Factory::create(NetworkMessage::Type::FEDERATION_RESTORE_BEGUN);
-    msg->setFederate(federate_handle);
-    msg->setFederation(my_handle.get());
+    std::unique_ptr<NetworkMessage> restoreBegun(NM_Factory::create(NetworkMessage::Type::FEDERATION_RESTORE_BEGUN));
+    restoreBegun->setFederate(federate_handle);
+    restoreBegun->setFederation(my_handle.get());
 
     Debug(G, pdGendoc) << "             =====> broadcast message F_R_B" << endl;
 
-    broadcastAnyMessage(msg, 0, false);
-    delete msg;
-
-    // For each federate, send an initiateFederateRestore with correct handle.
-    msg = NM_Factory::create(NetworkMessage::Type::INITIATE_FEDERATE_RESTORE);
-    msg->setFederation(my_handle.get());
-    msg->setLabel(the_label);
+    //     broadcastAnyMessage(msg, 0, false);
+    auto resp = respondToAll(std::move(restoreBegun));
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     for (const auto& kv : my_federates) {
-        msg->setFederate(kv.second->getHandle());
+        // For each federate, send an initiateFederateRestore with correct handle.
+        std::unique_ptr<NetworkMessage> ifr(NM_Factory::create(NetworkMessage::Type::INITIATE_FEDERATE_RESTORE));
+        ifr->setFederation(my_handle.get());
+        ifr->setLabel(the_label);
+
+        ifr->setFederate(kv.second->getHandle());
 
         // send message.
-        socket = my_server->getSocketLink(kv.second->getHandle());
         Debug(G, pdGendoc) << "             =====> send message I_F_R to federate " << kv.second->getHandle() << endl;
-        msg->send(socket, my_nm_buffer);
+        //         msg->send(socket, my_nm_buffer);
+        responses.emplace_back(my_server->getSocketLink(kv.second->getHandle()), std::move(ifr));
     }
 
-    delete msg;
     Debug(G, pdGendoc) << "exit  Federation::requestFederationRestore" << endl;
+
+    return responses;
 }
 
-void Federation::federateRestoreStatus(FederateHandle federate_handle, bool status)
+Responses Federation::federateRestoreStatus(FederateHandle federate_handle, bool status)
 {
     Debug(G, pdGendoc) << "enter Federation::federateRestoreStatus" << endl;
+    Responses responses;
+
     Federate& federate = getFederate(federate_handle);
     federate.setRestoring(false);
 
@@ -913,7 +958,7 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
     }
 
     if (my_mom) {
-        my_mom->updateFederateState(federate);
+        responses = my_mom->updateFederateState(federate);
     }
 
     auto a_federate_is_still_restoring
@@ -922,7 +967,7 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
           });
 
     if (a_federate_is_still_restoring) {
-        return;
+        return responses;
     }
 
     // Send end restore message.
@@ -932,12 +977,16 @@ void Federation::federateRestoreStatus(FederateHandle federate_handle, bool stat
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
 
-    broadcastAnyMessage(msg.get(), 0, false);
+    //     broadcastAnyMessage(msg.get(), 0, false);
+    auto resp = respondToAll(std::move(msg));
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
     // Reinitialize state.
     my_restore_status = true;
     my_is_restore_in_progress = false;
     Debug(G, pdGendoc) << "exit  Federation::federateRestoreStatus" << endl;
+
+    return responses;
 }
 
 Responses Federation::publishObject(FederateHandle federate_handle,
@@ -1155,10 +1204,11 @@ void Federation::reserveObjectInstanceName(FederateHandle theFederateHandle, str
     Debug(G, pdGendoc) << "exit  Federation::reserveObjectInstanceName" << endl;
 }
 
-ObjectHandle
+std::pair<ObjectHandle, Responses>
 Federation::registerObject(FederateHandle federate, ObjectClassHandle class_handle, const string& object_name)
 {
     ObjectHandle id = my_objects_handle_generator.provide();
+    Responses responses;
 
     Debug(G, pdGendoc) << "enter Federation::registerObject" << endl;
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " registering Object " << id
@@ -1175,7 +1225,7 @@ Federation::registerObject(FederateHandle federate, ObjectClassHandle class_hand
 
     // Register Object.
     try {
-        my_root_object->registerObjectInstance(federate, class_handle, id, strname);
+        responses = my_root_object->registerObjectInstance(federate, class_handle, id, strname);
     }
     catch (...) { //If an exception was thrown, the object instance was not added
         //and we can free the object handle id for future use and rethrow
@@ -1185,13 +1235,15 @@ Federation::registerObject(FederateHandle federate, ObjectClassHandle class_hand
     }
 
     if (my_mom) {
-        my_mom->updateObjectInstancesThatCanBeDeleted(federate);
-        my_mom->updateObjectInstancesRegistered(federate);
+        auto resp = my_mom->updateObjectInstancesThatCanBeDeleted(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+        auto resp2 = my_mom->updateObjectInstancesRegistered(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
         // TODO should updateObjectInstancesDiscovered
     }
 
     Debug(G, pdGendoc) << "exit Federation::registerObject" << endl;
-    return id;
+    return {id, std::move(responses)};
 }
 
 Responses Federation::deleteObject(FederateHandle federate_handle,
@@ -1206,7 +1258,9 @@ Responses Federation::deleteObject(FederateHandle federate_handle,
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
                          << object_handle << endl;
 
-    my_root_object->deleteObjectInstance(federate_handle, object_handle, time, tag);
+    auto resp = my_root_object->deleteObjectInstance(federate_handle, object_handle, time, tag);
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
     my_objects_handle_generator.free(object_handle);
 
     auto rep = make_unique<NM_Delete_Object>();
@@ -1216,8 +1270,10 @@ Responses Federation::deleteObject(FederateHandle federate_handle,
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
-        my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
-        my_mom->updateObjectInstancesDeleted(federate_handle);
+        auto resp = my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+        auto resp2 = my_mom->updateObjectInstancesDeleted(federate_handle);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
     }
 
     return responses;
@@ -1232,7 +1288,9 @@ Responses Federation::deleteObject(FederateHandle federate_handle, ObjectHandle 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate_handle << " destroys object "
                          << object_handle << endl;
 
-    my_root_object->deleteObjectInstance(federate_handle, object_handle, tag);
+    auto resp = my_root_object->deleteObjectInstance(federate_handle, object_handle, tag);
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
     my_objects_handle_generator.free(object_handle);
 
     auto rep = make_unique<NM_Delete_Object>();
@@ -1242,19 +1300,25 @@ Responses Federation::deleteObject(FederateHandle federate_handle, ObjectHandle 
     responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
-        my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
-        my_mom->updateObjectInstancesDeleted(federate_handle);
+        auto resp = my_mom->updateObjectInstancesThatCanBeDeleted(federate_handle, -1);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
+        auto resp2 = my_mom->updateObjectInstancesDeleted(federate_handle);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
+
         // TODO should updateObjectInstancesRemoved
     }
 
     return responses;
 }
 
-FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
-                                              ObjectHandle theObject,
-                                              const vector<AttributeHandle>& theAttributeList)
+std::pair<FederateHandle, Responses> Federation::requestObjectOwner(FederateHandle theFederateHandle,
+                                                                    ObjectHandle theObject,
+                                                                    const vector<AttributeHandle>& theAttributeList)
 {
     Debug(G, pdGendoc) << "enter Federation::requestObjectOwner" << endl;
+
+    Responses responses;
 
     // Find owner of each attribute and store them by owner
     std::map<FederateHandle, vector<AttributeHandle>> attributesForFederates;
@@ -1278,22 +1342,25 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     // Send a PAVU to each owner with the list of attributes
     for (const auto& pair : attributesForFederates) {
         if (my_mom && pair.first == my_mom->getHandle()) {
-            my_mom->provideAttributeValueUpdate(theObject, pair.second);
+            auto resp = my_mom->provideAttributeValueUpdate(theObject, pair.second);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+
             continue;
         }
 
-        NM_Provide_Attribute_Value_Update message;
+        auto message = std::make_unique<NM_Provide_Attribute_Value_Update>();
 
         // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
-        message.setFederate(theFederateHandle);
-        message.setObject(theObject);
-        message.setAttributesSize(pair.second.size());
+        message->setFederate(theFederateHandle);
+        message->setObject(theObject);
+        message->setAttributesSize(pair.second.size());
         auto i = 0u;
         for (const auto& attribute : pair.second) {
-            message.setAttributes(attribute, ++i);
+            message->setAttributes(attribute, ++i);
         }
 
-        message.send(my_server->getSocketLink(pair.first), my_nm_buffer);
+        //         message.send(my_server->getSocketLink(pair.first), my_nm_buffer);
+        responses.emplace_back(my_server->getSocketLink(pair.first), std::move(message));
     }
 
     // Request Object.
@@ -1302,14 +1369,15 @@ FederateHandle Federation::requestObjectOwner(FederateHandle theFederateHandle,
     Debug(G, pdGendoc) << "            requestObjectOwner ===> write PAVU to RTIA " << theOwnerHandle << endl;
     Debug(G, pdGendoc) << "exit  Federation::requestObjectOwner" << endl;
 
-    return theOwnerHandle;
+    return {theOwnerHandle, std::move(responses)};
 }
 
-void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
-                                                  ObjectClassHandle theClassHandle,
-                                                  const vector<AttributeHandle>& theAttributeList)
+Responses Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHandle,
+                                                       ObjectClassHandle theClassHandle,
+                                                       const vector<AttributeHandle>& theAttributeList)
 {
     Debug(G, pdGendoc) << "enter Federation::requestClassAttributeValueUpdate" << endl;
+    Responses responses;
 
     // get object class
     ObjectClass* oClass = my_root_object->getObjectClass(theClassHandle);
@@ -1320,26 +1388,31 @@ void Federation::requestClassAttributeValueUpdate(FederateHandle theFederateHand
     // send PAVU for all objects of this class
     ObjectClass::HandleObjectMap instances = oClass->getClassInstances();
     for (ObjectClass::HandleObjectMap::const_iterator it = instances.begin(); it != instances.end(); ++it) {
-        requestObjectOwner(theFederateHandle, it->first, theAttributeList);
+        auto resp = requestObjectOwner(theFederateHandle, it->first, theAttributeList);
+        responses.insert(end(responses), make_move_iterator(begin(resp.second)), make_move_iterator(end(resp.second)));
     }
     Debug(G, pdGendoc) << "exit  Federation::requestClassAttributeValueUpdate" << endl;
+
+    return responses;
 }
 
-void Federation::updateAttributeValues(FederateHandle federate,
-                                       ObjectHandle object_handle,
-                                       const vector<AttributeHandle>& attributes,
-                                       const vector<AttributeValue_t>& values,
-                                       FederationTime time,
-                                       const string& tag)
+Responses Federation::updateAttributeValues(FederateHandle federate,
+                                            ObjectHandle object_handle,
+                                            const vector<AttributeHandle>& attributes,
+                                            const vector<AttributeValue_t>& values,
+                                            FederationTime time,
+                                            const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues with time" << endl;
+    Responses responses;
+
     check(federate);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
 
     // It may throw *NotDefined
-    my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, time, tag);
+    responses = my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, time, tag);
 
     if (my_mom) {
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
@@ -1348,29 +1421,34 @@ void Federation::updateAttributeValues(FederateHandle federate,
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
                          << object_handle << endl;
     Debug(G, pdGendoc) << "exit  Federation::updateAttributeValues with time" << endl;
+    return responses;
 }
 
-void Federation::updateAttributeValues(FederateHandle federate,
-                                       ObjectHandle object_handle,
-                                       const vector<AttributeHandle>& attributes,
-                                       const vector<AttributeValue_t>& values,
-                                       const string& tag)
+Responses Federation::updateAttributeValues(FederateHandle federate,
+                                            ObjectHandle object_handle,
+                                            const vector<AttributeHandle>& attributes,
+                                            const vector<AttributeValue_t>& values,
+                                            const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::updateAttributeValues without time" << endl;
+    Responses responses;
+
     check(federate);
 
     // Get the object pointer by id from the root object
     Object* object = my_root_object->objects->getObject(object_handle);
 
     // It may throw *NotDefined
-    my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
+    responses = my_root_object->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
 
     if (my_mom && federate != my_mom->getHandle()) {
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
         // TODO should registerObjectInstanceReflected
         my_mom->registerUpdate(federate, object->getClass());
-        my_mom->updateUpdatesSent(federate);
-        my_mom->updateObjectInstancesUpdated(federate);
+        auto resp = my_mom->updateUpdatesSent(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+        auto resp2 = my_mom->updateObjectInstancesUpdated(federate);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
         // TODO should updateReflectionsReceived
         // TODO should updateObjectInstancesReflected
     }
@@ -1378,6 +1456,7 @@ void Federation::updateAttributeValues(FederateHandle federate,
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
                          << object_handle << endl;
     Debug(G, pdGendoc) << "exit  Federation::updateAttributeValues without time" << endl;
+    return responses;
 }
 
 Responses Federation::publishInteraction(FederateHandle federate_handle,
@@ -1461,14 +1540,14 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
         region = my_root_object->getRegion(region_handle);
     }
 
-    my_root_object->Interactions->broadcastInteraction(federate_handle,
-                                                       interaction_class_handle,
-                                                       parameter_handles,
-                                                       parameter_values,
-                                                       parameter_handles.size(),
-                                                       time,
-                                                       region,
-                                                       tag);
+    responses = my_root_object->Interactions->broadcastInteraction(federate_handle,
+                                                                   interaction_class_handle,
+                                                                   parameter_handles,
+                                                                   parameter_values,
+                                                                   parameter_handles.size(),
+                                                                   time,
+                                                                   region,
+                                                                   tag);
     Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
                         << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
 
@@ -1481,7 +1560,8 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
 
     if (my_mom) {
         my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
-        my_mom->updateInteractionsSent(federate_handle);
+        auto resp = my_mom->updateInteractionsSent(federate_handle);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         // TODO should updateInteractionsReceived
 
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
@@ -1516,13 +1596,13 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
         region = my_root_object->getRegion(region_handle);
     }
 
-    my_root_object->Interactions->broadcastInteraction(federate_handle,
-                                                       interaction_class_handle,
-                                                       parameter_handles,
-                                                       parameter_values,
-                                                       parameter_handles.size(),
-                                                       region,
-                                                       tag);
+    responses = my_root_object->Interactions->broadcastInteraction(federate_handle,
+                                                                   interaction_class_handle,
+                                                                   parameter_handles,
+                                                                   parameter_values,
+                                                                   parameter_handles.size(),
+                                                                   region,
+                                                                   tag);
     Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
                         << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
     for (size_t i{0u}; i < parameter_handles.size(); i++) {
@@ -1539,7 +1619,8 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
 
     if (my_mom) {
         my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
-        my_mom->updateInteractionsSent(federate_handle);
+        auto resp = my_mom->updateInteractionsSent(federate_handle);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
         if (my_root_object->Interactions->getObjectFromHandle(interaction_class_handle)
                 ->isSubscribed(my_mom->getHandle())) {
@@ -1577,10 +1658,10 @@ void Federation::queryAttributeOwnership(FederateHandle federate_handle,
     my_root_object->objects->queryAttributeOwnership(federate_handle, object_handle, attribute_handle);
 }
 
-void Federation::negotiateDivestiture(FederateHandle federate_handle,
-                                      ObjectHandle object_handle,
-                                      const vector<AttributeHandle>& attribs,
-                                      const string& tag)
+Responses Federation::negotiateDivestiture(FederateHandle federate_handle,
+                                           ObjectHandle object_handle,
+                                           const vector<AttributeHandle>& attribs,
+                                           const string& tag)
 {
     check(federate_handle);
 
@@ -1588,7 +1669,8 @@ void Federation::negotiateDivestiture(FederateHandle federate_handle,
     Object* object = my_root_object->objects->getObject(object_handle);
 
     // It may throw *NotDefined
-    my_root_object->ObjectClasses->negotiatedAttributeOwnershipDivestiture(federate_handle, object, attribs, tag);
+    return my_root_object->ObjectClasses->negotiatedAttributeOwnershipDivestiture(
+        federate_handle, object, attribs, tag);
 }
 
 void Federation::acquireIfAvailable(FederateHandle federate_handle,
@@ -1615,7 +1697,8 @@ Federation::divest(FederateHandle federate_handle, ObjectHandle object_handle, c
     Object* object = my_root_object->objects->getObject(object_handle);
 
     // It may throw *NotDefined
-    my_root_object->ObjectClasses->unconditionalAttributeOwnershipDivestiture(federate_handle, object, attrs);
+    responses
+        = my_root_object->ObjectClasses->unconditionalAttributeOwnershipDivestiture(federate_handle, object, attrs);
 
     auto rep = make_unique<NM_Unconditional_Attribute_Ownership_Divestiture>();
     rep->setFederate(federate_handle);
@@ -1779,13 +1862,15 @@ void Federation::unsubscribeInteractionWR(FederateHandle federate_handle,
     my_root_object->getInteractionClass(interaction_class_handle)->unsubscribe(federate_handle, region);
 }
 
-ObjectHandle Federation::registerObjectWithRegion(FederateHandle federate_handle,
-                                                  ObjectClassHandle class_handle,
-                                                  const string& object_name,
-                                                  RegionHandle region_handle,
-                                                  const vector<AttributeHandle>& attributes)
+std::pair<ObjectHandle, Responses> Federation::registerObjectWithRegion(FederateHandle federate_handle,
+                                                                        ObjectClassHandle class_handle,
+                                                                        const string& object_name,
+                                                                        RegionHandle region_handle,
+                                                                        const vector<AttributeHandle>& attributes)
 {
     Debug(G, pdGendoc) << "enter Federation::registerObjectWithRegion" << endl;
+    Responses responses;
+
     check(federate_handle);
 
     // Register object
@@ -1801,7 +1886,7 @@ ObjectHandle Federation::registerObjectWithRegion(FederateHandle federate_handle
         strname = "HLAObject_" + std::to_string(object);
     }
 
-    my_root_object->registerObjectInstance(federate_handle, class_handle, object, strname);
+    responses = my_root_object->registerObjectInstance(federate_handle, class_handle, object, strname);
 
     Debug(D, pdDebug) << "- object \"" << strname << "\" registered" << endl;
 
@@ -1815,7 +1900,7 @@ ObjectHandle Federation::registerObjectWithRegion(FederateHandle federate_handle
 
     Debug(D, pdDebug) << "- " << attributes.size() << " attribute(s) associated with region " << region_handle << endl;
     Debug(G, pdGendoc) << "exit  Federation::registerObjectWithRegion" << endl;
-    return object;
+    return {object, std::move(responses)};
 }
 
 void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)
@@ -2333,7 +2418,7 @@ Responses Federation::respondToAll(std::unique_ptr<NetworkMessage> message, cons
     for (const auto& pair : my_federates) {
         if (pair.first != except) {
 #ifdef HLA_USES_UDP
-            sockets.push_back(server->getSocketLink(pair.first, BEST_EFFORT));
+            sockets.push_back(my_server->getSocketLink(pair.first, BEST_EFFORT));
 #else
             sockets.push_back(my_server->getSocketLink(pair.first));
 #endif
@@ -2364,9 +2449,11 @@ Responses Federation::respondToSome(std::unique_ptr<NetworkMessage> message,
     return responses;
 }
 
-void Federation::enableMomIfAvailable()
+Responses Federation::enableMomIfAvailable()
 {
     Debug(G, pdGendoc) << "enter Federation::enableMomIfAvailable" << endl;
+
+    Responses responses;
 
     if (Mom::isAvailableInRootObjectAndCompliant(*my_root_object)) {
         try {
@@ -2377,7 +2464,7 @@ void Federation::enableMomIfAvailable()
             my_mom->publishObjects();
             my_mom->publishAndSubscribeInteractions();
 
-            my_mom->registerFederation();
+            responses = my_mom->registerFederation();
 
             std::cout << "MOM enabled with federate handle " << my_mom->getHandle() << endl;
         }
@@ -2391,9 +2478,11 @@ void Federation::enableMomIfAvailable()
     }
 
     Debug(G, pdGendoc) << "exit  Federation::enableMomIfAvailable" << endl;
+
+    return responses;
 }
 
-void Federation::setAutoProvide(const bool value)
+Responses Federation::setAutoProvide(const bool value)
 {
     my_auto_provide = value;
 
@@ -2401,8 +2490,9 @@ void Federation::setAutoProvide(const bool value)
     Debug(D, pdDebug) << "Auto Provide not yet implemented." << endl;
 
     if (my_mom) {
-        my_mom->updateAutoProvide(value);
+        return my_mom->updateAutoProvide(value);
     }
+    return Responses();
 }
 
 RootObject& Federation::getRootObject()

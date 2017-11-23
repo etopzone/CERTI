@@ -43,7 +43,6 @@ namespace certi {
 Socket* SecurityServer::getSocketLink(FederateHandle theFederate, TransportType theType) const
 {
     if(theFederate == my_mom_federate_handle) {
-        cout << "getSocketLink(mom), returning nullptr" << endl;
         return nullptr;
     }
     

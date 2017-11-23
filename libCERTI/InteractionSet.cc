@@ -58,29 +58,32 @@ void InteractionSet::addClass(Interaction* newClass, Interaction* parentClass)
 
 // ----------------------------------------------------------------------------
 //! broadcastInteraction with time.
-void InteractionSet::broadcastInteraction(FederateHandle federate_handle,
-                                          InteractionClassHandle interaction_handle,
-                                          const std::vector<ParameterHandle>& parameter_list,
-                                          const std::vector<ParameterValue_t>& value_list,
-                                          uint16_t list_size,
-                                          FederationTime the_time,
-                                          const RTIRegion* region,
-                                          const std::string& the_tag)
+Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
+                                               InteractionClassHandle interaction_handle,
+                                               const std::vector<ParameterHandle>& parameter_list,
+                                               const std::vector<ParameterValue_t>& value_list,
+                                               uint16_t list_size,
+                                               FederationTime the_time,
+                                               const RTIRegion* region,
+                                               const std::string& the_tag)
 {
     G.Out(pdGendoc, "enter InteractionSet::broadcastInteraction with time");
+
+    Responses responses;
 
     // It may throw InteractionClassNotDefined.
     Interaction* theInteraction = getObjectFromHandle(interaction_handle);
 
     InteractionBroadcastList* ibList;
-    ibList = theInteraction->sendInteraction(
+    std::tie(ibList, responses) = theInteraction->sendInteraction(
         federate_handle, parameter_list, value_list, list_size, the_time, region, the_tag);
 
     // Pass the Message(and its BroadcastList) to the Parent Classes.
     if (ibList != NULL) {
         while (theInteraction->getSuperclass() != 0) {
             theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
-            theInteraction->broadcastInteractionMessage(ibList, region);
+            auto resp = theInteraction->broadcastInteractionMessage(ibList, region);
+            responses.insert(std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
         }
         delete ibList;
     }
@@ -90,32 +93,38 @@ void InteractionSet::broadcastInteraction(FederateHandle federate_handle,
     }
     G.Out(pdGendoc, "exit InteractionSet::broadcastInteraction with time");
 
+    return responses;
+
 } /* end of broadcastInteraction (with time) */
 
 // ----------------------------------------------------------------------------
 //! broadcastInteraction without time
-void InteractionSet::broadcastInteraction(FederateHandle federate_handle,
-                                          InteractionClassHandle interaction_handle,
-                                          const std::vector<ParameterHandle>& parameter_list,
-                                          const std::vector<ParameterValue_t>& value_list,
-                                          uint16_t list_size,
-                                          const RTIRegion* region,
-                                          const std::string& the_tag)
+Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
+                                               InteractionClassHandle interaction_handle,
+                                               const std::vector<ParameterHandle>& parameter_list,
+                                               const std::vector<ParameterValue_t>& value_list,
+                                               uint16_t list_size,
+                                               const RTIRegion* region,
+                                               const std::string& the_tag)
 {
     G.Out(pdGendoc, "enter InteractionSet::broadcastInteraction without time");
+
+    Responses responses;
 
     // It may throw InteractionClassNotDefined.
     //InteractionClassHandle currentClass = interaction_handle ;
     Interaction* theInteraction = getObjectFromHandle(interaction_handle);
 
     InteractionBroadcastList* ibList;
-    ibList = theInteraction->sendInteraction(federate_handle, parameter_list, value_list, list_size, region, the_tag);
+    std::tie(ibList, responses)
+        = theInteraction->sendInteraction(federate_handle, parameter_list, value_list, list_size, region, the_tag);
 
     // Pass the Message(and its BroadcastList) to the Parent Classes.
     if (ibList != NULL) {
         while (theInteraction->getSuperclass() != 0) {
             theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
-            theInteraction->broadcastInteractionMessage(ibList, region);
+            auto resp = theInteraction->broadcastInteractionMessage(ibList, region);
+            responses.insert(std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
         }
         delete ibList;
     }
@@ -124,6 +133,8 @@ void InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
     }
     G.Out(pdGendoc, "exit InteractionSet::broadcastInteraction without time");
+
+    return responses;
 } /* end of broadcastInteraction (WITHOUT time) */
 
 // ----------------------------------------------------------------------------

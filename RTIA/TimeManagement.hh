@@ -226,7 +226,11 @@ private:
     FederationTimeDelta _lookahead_courant ;
     bool _is_regulating;
     bool _is_constrained;
-
+    
+    uint8_t my_tar_counter {0};
+    uint8_t my_tara_counter {0};
+    uint8_t my_ner_counter {0};
+    uint8_t my_nera_counter {0};
 };
 
 }} // namespace certi/rtia

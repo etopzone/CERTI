@@ -109,6 +109,16 @@ TimeManagement::sendNullMessage(FederationTime logicalTime) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
         msg.setDate(logicalTime);
+        
+        msg.setTarCount(my_tar_counter);
+        msg.setTaraCount(my_tara_counter);
+        msg.setNerCount(my_ner_counter);
+        msg.setNeraCount(my_nera_counter);
+        
+        my_tar_counter = 0;
+        my_tara_counter = 0;
+        my_ner_counter = 0;
+        my_nera_counter = 0;
 
         comm->sendMessage(&msg);
         lastNullMessageDate = logicalTime ;
@@ -551,6 +561,8 @@ void
 TimeManagement::nextEventRequest(FederationTime logicalTime,
                                  Exception::Type &e)
 {
+    ++my_ner_counter;
+    
     e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
@@ -592,6 +604,8 @@ void
 TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
                                  Exception::Type &e)
 {
+    ++my_nera_counter;
+    
     e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
@@ -977,6 +991,8 @@ void
 TimeManagement::timeAdvanceRequest(FederationTime logical_time,
                                    Exception::Type &e)
 {
+    ++my_tar_counter;
+    
     e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications
@@ -1026,6 +1042,8 @@ void
 TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
                                    Exception::Type &e)
 {
+    ++my_tara_counter;
+    
     e = Exception::Type::NO_EXCEPTION ;
 
     // Verifications

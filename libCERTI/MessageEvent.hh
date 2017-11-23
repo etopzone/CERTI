@@ -31,8 +31,6 @@
 
 namespace certi {
 
-namespace rtig {
-
 template <class NM>
 class MessageEvent {
 public:
@@ -99,7 +97,6 @@ private:
 };
 
 using Responses = std::vector<MessageEvent<NetworkMessage>>;
-}
 }
 
 #endif // CERTI_MESSAGEEVENT_H

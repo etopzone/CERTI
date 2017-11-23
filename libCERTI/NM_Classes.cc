@@ -1,7 +1,7 @@
-// Generated on 2017 August Fri, 11 at 14:01:42 by the CERTI message generator
-#include "NM_Classes.hh"
+// Generated on 2017 November Tue, 21 at 15:07:48 by the CERTI message generator
 #include <string>
 #include <vector>
+#include "NM_Classes.hh"
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2008  ONERA
@@ -64,11 +64,11 @@ void NM_FOM_Dimension::setName(const std::string& newName)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Dimension& msg)
 {
     os << "[NM_FOM_Dimension - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  handle = " << msg.handle << std::endl;
     os << "  name = " << msg.name << std::endl;
-
+    
     os << "[NM_FOM_Dimension - End]" << std::endl;
     return os;
 }
@@ -155,16 +155,16 @@ void NM_FOM_Routing_Space::removeDimensions(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Routing_Space& msg)
 {
     os << "[NM_FOM_Routing_Space - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  space = " << msg.space << std::endl;
     os << "  name = " << msg.name << std::endl;
     os << "  dimensions [] =" << std::endl;
-    for (const auto& element : msg.dimensions) {
+    for (const auto& element: msg.dimensions) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_FOM_Routing_Space - End]" << std::endl;
     return os;
 }
@@ -242,14 +242,14 @@ void NM_FOM_Attribute::setTransport(const TransportType& newTransport)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Attribute& msg)
 {
     os << "[NM_FOM_Attribute - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  handle = " << msg.handle << std::endl;
     os << "  name = " << msg.name << std::endl;
     os << "  spaceHandle = " << msg.spaceHandle << std::endl;
     os << "  order = " << msg.order << std::endl;
     os << "  transport = " << msg.transport << std::endl;
-
+    
     os << "[NM_FOM_Attribute - End]" << std::endl;
     return os;
 }
@@ -348,17 +348,17 @@ void NM_FOM_Object_Class::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Object_Class& msg)
 {
     os << "[NM_FOM_Object_Class - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  handle = " << msg.handle << std::endl;
     os << "  superClass = " << msg.superClass << std::endl;
     os << "  name = " << msg.name << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_FOM_Object_Class - End]" << std::endl;
     return os;
 }
@@ -400,11 +400,11 @@ void NM_FOM_Parameter::setName(const std::string& newName)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Parameter& msg)
 {
     os << "[NM_FOM_Parameter - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  handle = " << msg.handle << std::endl;
     os << "  name = " << msg.name << std::endl;
-
+    
     os << "[NM_FOM_Parameter - End]" << std::endl;
     return os;
 }
@@ -539,7 +539,7 @@ void NM_FOM_Interaction_Class::removeParameters(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_FOM_Interaction_Class& msg)
 {
     os << "[NM_FOM_Interaction_Class - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  name = " << msg.name << std::endl;
@@ -548,11 +548,11 @@ std::ostream& operator<<(std::ostream& os, const NM_FOM_Interaction_Class& msg)
     os << "  order = " << msg.order << std::endl;
     os << "  transport = " << msg.transport << std::endl;
     os << "  parameters [] =" << std::endl;
-    for (const auto& element : msg.parameters) {
+    for (const auto& element: msg.parameters) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_FOM_Interaction_Class - End]" << std::endl;
     return os;
 }
@@ -567,6 +567,84 @@ NM_Message_Null::NM_Message_Null()
 {
     this->messageName = "NM_Message_Null";
     this->type = NetworkMessage::Type::MESSAGE_NULL;
+}
+
+void NM_Message_Null::serialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::serialize(msgBuffer);
+    // Specific serialization code
+    msgBuffer.write_uint8(tarCount);
+    msgBuffer.write_uint8(taraCount);
+    msgBuffer.write_uint8(nerCount);
+    msgBuffer.write_uint8(neraCount);
+}
+
+void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::deserialize(msgBuffer);
+    // Specific deserialization code
+    tarCount = msgBuffer.read_uint8();
+    taraCount = msgBuffer.read_uint8();
+    nerCount = msgBuffer.read_uint8();
+    neraCount = msgBuffer.read_uint8();
+}
+
+const uint8_t& NM_Message_Null::getTarCount() const
+{
+    return tarCount;
+}
+
+void NM_Message_Null::setTarCount(const uint8_t& newTarCount)
+{
+    tarCount = newTarCount;
+}
+
+const uint8_t& NM_Message_Null::getTaraCount() const
+{
+    return taraCount;
+}
+
+void NM_Message_Null::setTaraCount(const uint8_t& newTaraCount)
+{
+    taraCount = newTaraCount;
+}
+
+const uint8_t& NM_Message_Null::getNerCount() const
+{
+    return nerCount;
+}
+
+void NM_Message_Null::setNerCount(const uint8_t& newNerCount)
+{
+    nerCount = newNerCount;
+}
+
+const uint8_t& NM_Message_Null::getNeraCount() const
+{
+    return neraCount;
+}
+
+void NM_Message_Null::setNeraCount(const uint8_t& newNeraCount)
+{
+    neraCount = newNeraCount;
+}
+
+std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg)
+{
+    os << "[NM_Message_Null - Begin]" << std::endl;
+    
+    os << static_cast<const NM_Message_Null::Super&>(msg); // show parent class
+    
+    // Specific display
+    os << "  tarCount = " << msg.tarCount << std::endl;
+    os << "  taraCount = " << msg.taraCount << std::endl;
+    os << "  nerCount = " << msg.nerCount << std::endl;
+    os << "  neraCount = " << msg.neraCount << std::endl;
+    
+    os << "[NM_Message_Null - End]" << std::endl;
+    return os;
 }
 
 NM_Create_Federation_Execution::NM_Create_Federation_Execution()
@@ -616,13 +694,13 @@ void NM_Create_Federation_Execution::setFEDid(const std::string& newFEDid)
 std::ostream& operator<<(std::ostream& os, const NM_Create_Federation_Execution& msg)
 {
     os << "[NM_Create_Federation_Execution - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Create_Federation_Execution::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  federationName = " << msg.federationName << std::endl;
     os << "  FEDid = " << msg.FEDid << std::endl;
-
+    
     os << "[NM_Create_Federation_Execution - End]" << std::endl;
     return os;
 }
@@ -662,12 +740,12 @@ void NM_Destroy_Federation_Execution::setFederationName(const std::string& newFe
 std::ostream& operator<<(std::ostream& os, const NM_Destroy_Federation_Execution& msg)
 {
     os << "[NM_Destroy_Federation_Execution - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Destroy_Federation_Execution::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  federationName = " << msg.federationName << std::endl;
-
+    
     os << "[NM_Destroy_Federation_Execution - End]" << std::endl;
     return os;
 }
@@ -889,8 +967,7 @@ NM_FOM_Interaction_Class& NM_Join_Federation_Execution::getInteractionClasses(ui
     return interactionClasses[rank];
 }
 
-void NM_Join_Federation_Execution::setInteractionClasses(const NM_FOM_Interaction_Class& newInteractionClasses,
-                                                         uint32_t rank)
+void NM_Join_Federation_Execution::setInteractionClasses(const NM_FOM_Interaction_Class& newInteractionClasses, uint32_t rank)
 {
     interactionClasses[rank] = newInteractionClasses;
 }
@@ -903,9 +980,9 @@ void NM_Join_Federation_Execution::removeInteractionClasses(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Join_Federation_Execution& msg)
 {
     os << "[NM_Join_Federation_Execution - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Join_Federation_Execution::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  numberOfRegulators = " << msg.numberOfRegulators << std::endl;
     os << "  multicastAddress = " << msg.multicastAddress << std::endl;
@@ -914,21 +991,21 @@ std::ostream& operator<<(std::ostream& os, const NM_Join_Federation_Execution& m
     os << "  federationName = " << msg.federationName << std::endl;
     os << "  federateName = " << msg.federateName << std::endl;
     os << "  routingSpaces [] =" << std::endl;
-    for (const auto& element : msg.routingSpaces) {
+    for (const auto& element: msg.routingSpaces) {
         os << element;
     }
     os << std::endl;
     os << "  objectClasses [] =" << std::endl;
-    for (const auto& element : msg.objectClasses) {
+    for (const auto& element: msg.objectClasses) {
         os << element;
     }
     os << std::endl;
     os << "  interactionClasses [] =" << std::endl;
-    for (const auto& element : msg.interactionClasses) {
+    for (const auto& element: msg.interactionClasses) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Join_Federation_Execution - End]" << std::endl;
     return os;
 }
@@ -979,12 +1056,12 @@ bool NM_Set_Time_Regulating::isRegulatorOn() const
 std::ostream& operator<<(std::ostream& os, const NM_Set_Time_Regulating& msg)
 {
     os << "[NM_Set_Time_Regulating - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Time_Regulating::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  regulator = " << msg.regulator << std::endl;
-
+    
     os << "[NM_Set_Time_Regulating - End]" << std::endl;
     return os;
 }
@@ -1029,12 +1106,12 @@ bool NM_Set_Time_Constrained::isConstrainedOn() const
 std::ostream& operator<<(std::ostream& os, const NM_Set_Time_Constrained& msg)
 {
     os << "[NM_Set_Time_Constrained - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Time_Constrained::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  constrained = " << msg.constrained << std::endl;
-
+    
     os << "[NM_Set_Time_Constrained - End]" << std::endl;
     return os;
 }
@@ -1091,12 +1168,12 @@ bool NM_Set_Class_Relevance_Advisory_Switch::isClassRelevanceAdvisorySwitchOn() 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Class_Relevance_Advisory_Switch& msg)
 {
     os << "[NM_Set_Class_Relevance_Advisory_Switch - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Class_Relevance_Advisory_Switch::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  classRelevanceAdvisorySwitch = " << msg.classRelevanceAdvisorySwitch << std::endl;
-
+    
     os << "[NM_Set_Class_Relevance_Advisory_Switch - End]" << std::endl;
     return os;
 }
@@ -1141,12 +1218,12 @@ bool NM_Set_Interaction_Relevance_Advisory_Switch::isInteractionRelevanceAdvisor
 std::ostream& operator<<(std::ostream& os, const NM_Set_Interaction_Relevance_Advisory_Switch& msg)
 {
     os << "[NM_Set_Interaction_Relevance_Advisory_Switch - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Interaction_Relevance_Advisory_Switch::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionRelevanceAdvisorySwitch = " << msg.interactionRelevanceAdvisorySwitch << std::endl;
-
+    
     os << "[NM_Set_Interaction_Relevance_Advisory_Switch - End]" << std::endl;
     return os;
 }
@@ -1191,12 +1268,12 @@ bool NM_Set_Attribute_Relevance_Advisory_Switch::isAttributeRelevanceAdvisorySwi
 std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Relevance_Advisory_Switch& msg)
 {
     os << "[NM_Set_Attribute_Relevance_Advisory_Switch - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Attribute_Relevance_Advisory_Switch::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributeRelevanceAdvisorySwitch = " << msg.attributeRelevanceAdvisorySwitch << std::endl;
-
+    
     os << "[NM_Set_Attribute_Relevance_Advisory_Switch - End]" << std::endl;
     return os;
 }
@@ -1241,12 +1318,12 @@ bool NM_Set_Attribute_Scope_Advisory_Switch::isAttributeScopeAdvisorySwitchOn() 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Scope_Advisory_Switch& msg)
 {
     os << "[NM_Set_Attribute_Scope_Advisory_Switch - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Set_Attribute_Scope_Advisory_Switch::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributeScopeAdvisorySwitch = " << msg.attributeScopeAdvisorySwitch << std::endl;
-
+    
     os << "[NM_Set_Attribute_Scope_Advisory_Switch - End]" << std::endl;
     return os;
 }
@@ -1331,17 +1408,17 @@ void NM_Register_Federation_Synchronization_Point::removeFederates(uint32_t rank
 std::ostream& operator<<(std::ostream& os, const NM_Register_Federation_Synchronization_Point& msg)
 {
     os << "[NM_Register_Federation_Synchronization_Point - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Register_Federation_Synchronization_Point::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  exists = " << msg.exists << std::endl;
     os << "  federates [] =" << std::endl;
-    for (const auto& element : msg.federates) {
+    for (const auto& element: msg.federates) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Register_Federation_Synchronization_Point - End]" << std::endl;
     return os;
 }
@@ -1405,13 +1482,13 @@ bool NM_Confirm_Synchronization_Point_Registration::hasFailureReason() const
 std::ostream& operator<<(std::ostream& os, const NM_Confirm_Synchronization_Point_Registration& msg)
 {
     os << "[NM_Confirm_Synchronization_Point_Registration - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Confirm_Synchronization_Point_Registration::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  successIndicator = " << msg.successIndicator << std::endl;
     os << "  (opt) failureReason =" << msg.failureReason << std::endl;
-
+    
     os << "[NM_Confirm_Synchronization_Point_Registration - End]" << std::endl;
     return os;
 }
@@ -1610,17 +1687,17 @@ void NM_Publish_Object_Class::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Publish_Object_Class& msg)
 {
     os << "[NM_Publish_Object_Class - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Publish_Object_Class::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Publish_Object_Class - End]" << std::endl;
     return os;
 }
@@ -1666,12 +1743,12 @@ void NM_Publish_Interaction_Class::setInteractionClass(const InteractionClassHan
 std::ostream& operator<<(std::ostream& os, const NM_Publish_Interaction_Class& msg)
 {
     os << "[NM_Publish_Interaction_Class - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Publish_Interaction_Class::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
-
+    
     os << "[NM_Publish_Interaction_Class - End]" << std::endl;
     return os;
 }
@@ -1762,17 +1839,17 @@ void NM_Subscribe_Object_Class::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Subscribe_Object_Class& msg)
 {
     os << "[NM_Subscribe_Object_Class - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Subscribe_Object_Class::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Subscribe_Object_Class - End]" << std::endl;
     return os;
 }
@@ -1878,14 +1955,14 @@ void NM_Register_Object::setObject(const ObjectHandle& newObject)
 std::ostream& operator<<(std::ostream& os, const NM_Register_Object& msg)
 {
     os << "[NM_Register_Object - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Register_Object::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  (opt) objectName =" << msg.objectName << std::endl;
     os << "  object = " << msg.object << std::endl;
-
+    
     os << "[NM_Register_Object - End]" << std::endl;
     return os;
 }
@@ -1937,13 +2014,13 @@ void NM_Discover_Object::setObject(const ObjectHandle& newObject)
 std::ostream& operator<<(std::ostream& os, const NM_Discover_Object& msg)
 {
     os << "[NM_Discover_Object - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Discover_Object::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  object = " << msg.object << std::endl;
-
+    
     os << "[NM_Discover_Object - End]" << std::endl;
     return os;
 }
@@ -1968,13 +2045,13 @@ void NM_Update_Attribute_Values::serialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = values.size();
     msgBuffer.write_uint32(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //serialize native whose representation is 'repeated' byte
+        //serialize native whose representation is 'repeated' byte 
         msgBuffer.write_uint32(values[i].size());
-        msgBuffer.write_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.write_bytes(&(values[i][0]),values[i].size());
     }
     msgBuffer.write_bool(_hasEvent);
     if (_hasEvent) {
-    }
+            }
 }
 
 void NM_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -1991,13 +2068,13 @@ void NM_Update_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = msgBuffer.read_uint32();
     values.resize(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //deserialize native whose representation is 'repeated' byte
+        //deserialize native whose representation is 'repeated' byte 
         values[i].resize(msgBuffer.read_uint32());
-        msgBuffer.read_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.read_bytes(&(values[i][0]),values[i].size());
     }
     _hasEvent = msgBuffer.read_bool();
     if (_hasEvent) {
-    }
+            }
 }
 
 const ObjectHandle& NM_Update_Attribute_Values::getObject() const
@@ -2099,24 +2176,23 @@ bool NM_Update_Attribute_Values::hasEvent() const
 std::ostream& operator<<(std::ostream& os, const NM_Update_Attribute_Values& msg)
 {
     os << "[NM_Update_Attribute_Values - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Update_Attribute_Values::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element : msg.values) {
+    for (const auto& element: msg.values) {
         os << "// TODO field <values> of type <AttributeValue_t>";
     }
     os << std::endl;
-    os << "  (opt) event ="
-       << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
-
+    os << "  (opt) event =" << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
+    
     os << "[NM_Update_Attribute_Values - End]" << std::endl;
     return os;
 }
@@ -2141,13 +2217,13 @@ void NM_Reflect_Attribute_Values::serialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = values.size();
     msgBuffer.write_uint32(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //serialize native whose representation is 'repeated' byte
+        //serialize native whose representation is 'repeated' byte 
         msgBuffer.write_uint32(values[i].size());
-        msgBuffer.write_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.write_bytes(&(values[i][0]),values[i].size());
     }
     msgBuffer.write_bool(_hasEvent);
     if (_hasEvent) {
-    }
+            }
 }
 
 void NM_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -2164,13 +2240,13 @@ void NM_Reflect_Attribute_Values::deserialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = msgBuffer.read_uint32();
     values.resize(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //deserialize native whose representation is 'repeated' byte
+        //deserialize native whose representation is 'repeated' byte 
         values[i].resize(msgBuffer.read_uint32());
-        msgBuffer.read_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.read_bytes(&(values[i][0]),values[i].size());
     }
     _hasEvent = msgBuffer.read_bool();
     if (_hasEvent) {
-    }
+            }
 }
 
 const ObjectHandle& NM_Reflect_Attribute_Values::getObject() const
@@ -2272,24 +2348,23 @@ bool NM_Reflect_Attribute_Values::hasEvent() const
 std::ostream& operator<<(std::ostream& os, const NM_Reflect_Attribute_Values& msg)
 {
     os << "[NM_Reflect_Attribute_Values - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Reflect_Attribute_Values::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element : msg.values) {
+    for (const auto& element: msg.values) {
         os << "// TODO field <values> of type <AttributeValue_t>";
     }
     os << std::endl;
-    os << "  (opt) event ="
-       << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
-
+    os << "  (opt) event =" << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
+    
     os << "[NM_Reflect_Attribute_Values - End]" << std::endl;
     return os;
 }
@@ -2314,9 +2389,9 @@ void NM_Send_Interaction::serialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = values.size();
     msgBuffer.write_uint32(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //serialize native whose representation is 'repeated' byte
+        //serialize native whose representation is 'repeated' byte 
         msgBuffer.write_uint32(values[i].size());
-        msgBuffer.write_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.write_bytes(&(values[i][0]),values[i].size());
     }
     msgBuffer.write_uint32(region);
 }
@@ -2335,9 +2410,9 @@ void NM_Send_Interaction::deserialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = msgBuffer.read_uint32();
     values.resize(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //deserialize native whose representation is 'repeated' byte
+        //deserialize native whose representation is 'repeated' byte 
         values[i].resize(msgBuffer.read_uint32());
-        msgBuffer.read_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.read_bytes(&(values[i][0]),values[i].size());
     }
     region = static_cast<RegionHandle>(msgBuffer.read_uint32());
 }
@@ -2435,23 +2510,23 @@ void NM_Send_Interaction::setRegion(const RegionHandle& newRegion)
 std::ostream& operator<<(std::ostream& os, const NM_Send_Interaction& msg)
 {
     os << "[NM_Send_Interaction - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Send_Interaction::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  parameters [] =" << std::endl;
-    for (const auto& element : msg.parameters) {
+    for (const auto& element: msg.parameters) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element : msg.values) {
+    for (const auto& element: msg.values) {
         os << "// TODO field <values> of type <ParameterValue_t>";
     }
     os << std::endl;
     os << "  region = " << msg.region << std::endl;
-
+    
     os << "[NM_Send_Interaction - End]" << std::endl;
     return os;
 }
@@ -2476,13 +2551,13 @@ void NM_Receive_Interaction::serialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = values.size();
     msgBuffer.write_uint32(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //serialize native whose representation is 'repeated' byte
+        //serialize native whose representation is 'repeated' byte 
         msgBuffer.write_uint32(values[i].size());
-        msgBuffer.write_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.write_bytes(&(values[i][0]),values[i].size());
     }
     msgBuffer.write_bool(_hasEvent);
     if (_hasEvent) {
-    }
+            }
 }
 
 void NM_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -2499,13 +2574,13 @@ void NM_Receive_Interaction::deserialize(libhla::MessageBuffer& msgBuffer)
     uint32_t valuesSize = msgBuffer.read_uint32();
     values.resize(valuesSize);
     for (uint32_t i = 0; i < valuesSize; ++i) {
-        //deserialize native whose representation is 'repeated' byte
+        //deserialize native whose representation is 'repeated' byte 
         values[i].resize(msgBuffer.read_uint32());
-        msgBuffer.read_bytes(&(values[i][0]), values[i].size());
+        msgBuffer.read_bytes(&(values[i][0]),values[i].size());
     }
     _hasEvent = msgBuffer.read_bool();
     if (_hasEvent) {
-    }
+            }
 }
 
 const InteractionClassHandle& NM_Receive_Interaction::getInteractionClass() const
@@ -2607,24 +2682,23 @@ bool NM_Receive_Interaction::hasEvent() const
 std::ostream& operator<<(std::ostream& os, const NM_Receive_Interaction& msg)
 {
     os << "[NM_Receive_Interaction - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Receive_Interaction::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  parameters [] =" << std::endl;
-    for (const auto& element : msg.parameters) {
+    for (const auto& element: msg.parameters) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element : msg.values) {
+    for (const auto& element: msg.values) {
         os << "// TODO field <values> of type <ParameterValue_t>";
     }
     os << std::endl;
-    os << "  (opt) event ="
-       << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
-
+    os << "  (opt) event =" << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
+    
     os << "[NM_Receive_Interaction - End]" << std::endl;
     return os;
 }
@@ -2643,7 +2717,7 @@ void NM_Delete_Object::serialize(libhla::MessageBuffer& msgBuffer)
     msgBuffer.write_uint32(object);
     msgBuffer.write_bool(_hasEvent);
     if (_hasEvent) {
-    }
+            }
 }
 
 void NM_Delete_Object::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -2654,7 +2728,7 @@ void NM_Delete_Object::deserialize(libhla::MessageBuffer& msgBuffer)
     object = static_cast<ObjectHandle>(msgBuffer.read_uint32());
     _hasEvent = msgBuffer.read_bool();
     if (_hasEvent) {
-    }
+            }
 }
 
 const ObjectHandle& NM_Delete_Object::getObject() const
@@ -2686,14 +2760,13 @@ bool NM_Delete_Object::hasEvent() const
 std::ostream& operator<<(std::ostream& os, const NM_Delete_Object& msg)
 {
     os << "[NM_Delete_Object - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Delete_Object::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
-    os << "  (opt) event ="
-       << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
-
+    os << "  (opt) event =" << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
+    
     os << "[NM_Delete_Object - End]" << std::endl;
     return os;
 }
@@ -2713,7 +2786,7 @@ void NM_Remove_Object::serialize(libhla::MessageBuffer& msgBuffer)
     msgBuffer.write_uint32(objectClass);
     msgBuffer.write_bool(_hasEvent);
     if (_hasEvent) {
-    }
+            }
 }
 
 void NM_Remove_Object::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -2725,7 +2798,7 @@ void NM_Remove_Object::deserialize(libhla::MessageBuffer& msgBuffer)
     objectClass = static_cast<ObjectClassHandle>(msgBuffer.read_uint32());
     _hasEvent = msgBuffer.read_bool();
     if (_hasEvent) {
-    }
+            }
 }
 
 const ObjectHandle& NM_Remove_Object::getObject() const
@@ -2767,15 +2840,14 @@ bool NM_Remove_Object::hasEvent() const
 std::ostream& operator<<(std::ostream& os, const NM_Remove_Object& msg)
 {
     os << "[NM_Remove_Object - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Remove_Object::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  objectClass = " << msg.objectClass << std::endl;
-    os << "  (opt) event ="
-       << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
-
+    os << "  (opt) event =" << "// TODO field <event> of type <EventRetractionHandle>" << std::endl;
+    
     os << "[NM_Remove_Object - End]" << std::endl;
     return os;
 }
@@ -2872,18 +2944,18 @@ void NM_Change_Attribute_Transport_Type::setTransport(const TransportType& newTr
 std::ostream& operator<<(std::ostream& os, const NM_Change_Attribute_Transport_Type& msg)
 {
     os << "[NM_Change_Attribute_Transport_Type - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Change_Attribute_Transport_Type::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  transport = " << msg.transport << std::endl;
-
+    
     os << "[NM_Change_Attribute_Transport_Type - End]" << std::endl;
     return os;
 }
@@ -2980,18 +3052,18 @@ void NM_Change_Attribute_Order_Type::setOrder(const OrderType& newOrder)
 std::ostream& operator<<(std::ostream& os, const NM_Change_Attribute_Order_Type& msg)
 {
     os << "[NM_Change_Attribute_Order_Type - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Change_Attribute_Order_Type::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  order = " << msg.order << std::endl;
-
+    
     os << "[NM_Change_Attribute_Order_Type - End]" << std::endl;
     return os;
 }
@@ -3043,13 +3115,13 @@ void NM_Change_Interaction_Transport_Type::setTransport(const TransportType& new
 std::ostream& operator<<(std::ostream& os, const NM_Change_Interaction_Transport_Type& msg)
 {
     os << "[NM_Change_Interaction_Transport_Type - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Change_Interaction_Transport_Type::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  transport = " << msg.transport << std::endl;
-
+    
     os << "[NM_Change_Interaction_Transport_Type - End]" << std::endl;
     return os;
 }
@@ -3101,13 +3173,13 @@ void NM_Change_Interaction_Order_Type::setOrder(const OrderType& newOrder)
 std::ostream& operator<<(std::ostream& os, const NM_Change_Interaction_Order_Type& msg)
 {
     os << "[NM_Change_Interaction_Order_Type - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Change_Interaction_Order_Type::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  order = " << msg.order << std::endl;
-
+    
     os << "[NM_Change_Interaction_Order_Type - End]" << std::endl;
     return os;
 }
@@ -3192,17 +3264,17 @@ void NM_Request_Class_Attribute_Value_Update::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Request_Class_Attribute_Value_Update& msg)
 {
     os << "[NM_Request_Class_Attribute_Value_Update - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Request_Class_Attribute_Value_Update::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Request_Class_Attribute_Value_Update - End]" << std::endl;
     return os;
 }
@@ -3287,17 +3359,17 @@ void NM_Request_Object_Attribute_Value_Update::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Request_Object_Attribute_Value_Update& msg)
 {
     os << "[NM_Request_Object_Attribute_Value_Update - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Request_Object_Attribute_Value_Update::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Request_Object_Attribute_Value_Update - End]" << std::endl;
     return os;
 }
@@ -3349,13 +3421,13 @@ void NM_Is_Attribute_Owned_By_Federate::setAttribute(const AttributeHandle& newA
 std::ostream& operator<<(std::ostream& os, const NM_Is_Attribute_Owned_By_Federate& msg)
 {
     os << "[NM_Is_Attribute_Owned_By_Federate - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Is_Attribute_Owned_By_Federate::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attribute = " << msg.attribute << std::endl;
-
+    
     os << "[NM_Is_Attribute_Owned_By_Federate - End]" << std::endl;
     return os;
 }
@@ -3407,13 +3479,13 @@ void NM_Query_Attribute_Ownership::setAttribute(const AttributeHandle& newAttrib
 std::ostream& operator<<(std::ostream& os, const NM_Query_Attribute_Ownership& msg)
 {
     os << "[NM_Query_Attribute_Ownership - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Query_Attribute_Ownership::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attribute = " << msg.attribute << std::endl;
-
+    
     os << "[NM_Query_Attribute_Ownership - End]" << std::endl;
     return os;
 }
@@ -3465,13 +3537,13 @@ void NM_Attribute_Is_Not_Owned::setAttribute(const AttributeHandle& newAttribute
 std::ostream& operator<<(std::ostream& os, const NM_Attribute_Is_Not_Owned& msg)
 {
     os << "[NM_Attribute_Is_Not_Owned - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Attribute_Is_Not_Owned::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attribute = " << msg.attribute << std::endl;
-
+    
     os << "[NM_Attribute_Is_Not_Owned - End]" << std::endl;
     return os;
 }
@@ -3523,13 +3595,13 @@ void NM_Inform_Attribute_Ownership::setAttribute(const AttributeHandle& newAttri
 std::ostream& operator<<(std::ostream& os, const NM_Inform_Attribute_Ownership& msg)
 {
     os << "[NM_Inform_Attribute_Ownership - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Inform_Attribute_Ownership::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attribute = " << msg.attribute << std::endl;
-
+    
     os << "[NM_Inform_Attribute_Ownership - End]" << std::endl;
     return os;
 }
@@ -3614,17 +3686,17 @@ void NM_Attribute_Ownership_Base::removeAttributes(uint32_t rank)
 std::ostream& operator<<(std::ostream& os, const NM_Attribute_Ownership_Base& msg)
 {
     os << "[NM_Attribute_Ownership_Base - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Attribute_Ownership_Base::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
-
+    
     os << "[NM_Attribute_Ownership_Base - End]" << std::endl;
     return os;
 }
@@ -3823,12 +3895,12 @@ void NM_DDM_Create_Region::setNbExtents(const uint32_t& newNbExtents)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Create_Region& msg)
 {
     os << "[NM_DDM_Create_Region - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Create_Region::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3836,7 +3908,7 @@ std::ostream& operator<<(std::ostream& os, const NM_DDM_Create_Region& msg)
     os << "  space = " << msg.space << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  nbExtents = " << msg.nbExtents << std::endl;
-
+    
     os << "[NM_DDM_Create_Region - End]" << std::endl;
     return os;
 }
@@ -3933,18 +4005,18 @@ void NM_DDM_Modify_Region::setRegion(const RegionHandle& newRegion)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Modify_Region& msg)
 {
     os << "[NM_DDM_Modify_Region - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Modify_Region::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
     os << "  region = " << msg.region << std::endl;
-
+    
     os << "[NM_DDM_Modify_Region - End]" << std::endl;
     return os;
 }
@@ -3984,12 +4056,12 @@ void NM_DDM_Delete_Region::setRegion(const RegionHandle& newRegion)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Delete_Region& msg)
 {
     os << "[NM_DDM_Delete_Region - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Delete_Region::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  region = " << msg.region << std::endl;
-
+    
     os << "[NM_DDM_Delete_Region - End]" << std::endl;
     return os;
 }
@@ -4098,19 +4170,19 @@ void NM_DDM_Associate_Region::setObject(const ObjectHandle& newObject)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Associate_Region& msg)
 {
     os << "[NM_DDM_Associate_Region - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Associate_Region::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  object = " << msg.object << std::endl;
-
+    
     os << "[NM_DDM_Associate_Region - End]" << std::endl;
     return os;
 }
@@ -4219,19 +4291,19 @@ void NM_DDM_Unassociate_Region::setDDM_bool(const bool& newDDM_bool)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Unassociate_Region& msg)
 {
     os << "[NM_DDM_Unassociate_Region - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Unassociate_Region::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
-
+    
     os << "[NM_DDM_Unassociate_Region - End]" << std::endl;
     return os;
 }
@@ -4376,13 +4448,13 @@ void NM_DDM_Register_Object::setDDM_bool(const bool& newDDM_bool)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Register_Object& msg)
 {
     os << "[NM_DDM_Register_Object - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Register_Object::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4390,7 +4462,7 @@ std::ostream& operator<<(std::ostream& os, const NM_DDM_Register_Object& msg)
     os << "  (opt) objectInstanceName =" << msg.objectInstanceName << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
-
+    
     os << "[NM_DDM_Register_Object - End]" << std::endl;
     return os;
 }
@@ -4499,19 +4571,19 @@ void NM_DDM_Subscribe_Attributes::setDDM_bool(const bool& newDDM_bool)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Subscribe_Attributes& msg)
 {
     os << "[NM_DDM_Subscribe_Attributes - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Subscribe_Attributes::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
-
+    
     os << "[NM_DDM_Subscribe_Attributes - End]" << std::endl;
     return os;
 }
@@ -4620,19 +4692,19 @@ void NM_DDM_Unsubscribe_Attributes::setDDM_bool(const bool& newDDM_bool)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Unsubscribe_Attributes& msg)
 {
     os << "[NM_DDM_Unsubscribe_Attributes - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Unsubscribe_Attributes::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element : msg.attributes) {
+    for (const auto& element: msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
-
+    
     os << "[NM_DDM_Unsubscribe_Attributes - End]" << std::endl;
     return os;
 }
@@ -4696,14 +4768,14 @@ void NM_DDM_Subscribe_Interaction::setDDM_bool(const bool& newDDM_bool)
 std::ostream& operator<<(std::ostream& os, const NM_DDM_Subscribe_Interaction& msg)
 {
     os << "[NM_DDM_Subscribe_Interaction - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_DDM_Subscribe_Interaction::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  DDM_bool = " << msg.DDM_bool << std::endl;
-
+    
     os << "[NM_DDM_Subscribe_Interaction - End]" << std::endl;
     return os;
 }
@@ -4755,12 +4827,12 @@ void NM_Start_Registration_For_Object_Class::setObjectClass(const ObjectClassHan
 std::ostream& operator<<(std::ostream& os, const NM_Start_Registration_For_Object_Class& msg)
 {
     os << "[NM_Start_Registration_For_Object_Class - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Start_Registration_For_Object_Class::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
-
+    
     os << "[NM_Start_Registration_For_Object_Class - End]" << std::endl;
     return os;
 }
@@ -4800,12 +4872,12 @@ void NM_Stop_Registration_For_Object_Class::setObjectClass(const ObjectClassHand
 std::ostream& operator<<(std::ostream& os, const NM_Stop_Registration_For_Object_Class& msg)
 {
     os << "[NM_Stop_Registration_For_Object_Class - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Stop_Registration_For_Object_Class::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
-
+    
     os << "[NM_Stop_Registration_For_Object_Class - End]" << std::endl;
     return os;
 }
@@ -4845,12 +4917,12 @@ void NM_Reserve_Object_Instance_Name::setObjectName(const std::string& newObject
 std::ostream& operator<<(std::ostream& os, const NM_Reserve_Object_Instance_Name& msg)
 {
     os << "[NM_Reserve_Object_Instance_Name - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Reserve_Object_Instance_Name::Super&>(msg); // show parent class
-
+    
     // Specific display
     os << "  objectName = " << msg.objectName << std::endl;
-
+    
     os << "[NM_Reserve_Object_Instance_Name - End]" << std::endl;
     return os;
 }
@@ -4906,13 +4978,12 @@ void NM_Message_Null_Prime::setTimestamp(const FederationTime& newTimestamp)
 std::ostream& operator<<(std::ostream& os, const NM_Message_Null_Prime& msg)
 {
     os << "[NM_Message_Null_Prime - Begin]" << std::endl;
-
+    
     os << static_cast<const NM_Message_Null_Prime::Super&>(msg); // show parent class
-
+    
     // Specific display
-    os << "  timestamp = "
-       << "// TODO field <timestamp> of type <FederationTime>" << std::endl;
-
+    os << "  timestamp = " << "// TODO field <timestamp> of type <FederationTime>" << std::endl;
+    
     os << "[NM_Message_Null_Prime - End]" << std::endl;
     return os;
 }
@@ -5018,329 +5089,326 @@ bool New_NetworkMessage::hasTag() const
 std::ostream& operator<<(std::ostream& os, const New_NetworkMessage& msg)
 {
     os << "[New_NetworkMessage - Begin]" << std::endl;
-
+    
     // Specific display
     os << "  type = " << msg.type << std::endl;
-    os << "  (opt) date ="
-       << "// TODO field <date> of type <FederationTime>" << std::endl;
+    os << "  (opt) date =" << "// TODO field <date> of type <FederationTime>" << std::endl;
     os << "  (opt) label =" << msg.label << std::endl;
     os << "  (opt) tag =" << msg.tag << std::endl;
-
+    
     os << "[New_NetworkMessage - End]" << std::endl;
     return os;
 }
 
-NetworkMessage* NM_Factory::create(NM_Type type)
-{
+NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSignal) { 
     NetworkMessage* msg = NULL;
 
     switch (type) {
-    case NetworkMessage::Type::NOT_USED:
-        throw NetworkError("NOT_USED message type should not be used!!");
-        break;
-    case NetworkMessage::Type::CLOSE_CONNEXION:
-        msg = new NM_Close_Connexion();
-        break;
-    case NetworkMessage::Type::MESSAGE_NULL:
-        msg = new NM_Message_Null();
-        break;
-    case NetworkMessage::Type::CREATE_FEDERATION_EXECUTION:
-        msg = new NM_Create_Federation_Execution();
-        break;
-    case NetworkMessage::Type::DESTROY_FEDERATION_EXECUTION:
-        msg = new NM_Destroy_Federation_Execution();
-        break;
-    case NetworkMessage::Type::JOIN_FEDERATION_EXECUTION:
-        msg = new NM_Join_Federation_Execution();
-        break;
-    case NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION:
-        msg = new NM_Resign_Federation_Execution();
-        break;
-    case NetworkMessage::Type::SET_TIME_REGULATING:
-        msg = new NM_Set_Time_Regulating();
-        break;
-    case NetworkMessage::Type::SET_TIME_CONSTRAINED:
-        msg = new NM_Set_Time_Constrained();
-        break;
-    case NetworkMessage::Type::TIME_REGULATION_ENABLED:
-        msg = new NM_Time_Regulation_Enabled();
-        break;
-    case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
-        msg = new NM_Time_Constrained_Enabled();
-        break;
-    case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        msg = new NM_Set_Class_Relevance_Advisory_Switch();
-        break;
-    case NetworkMessage::Type::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        msg = new NM_Set_Interaction_Relevance_Advisory_Switch();
-        break;
-    case NetworkMessage::Type::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        msg = new NM_Set_Attribute_Relevance_Advisory_Switch();
-        break;
-    case NetworkMessage::Type::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        msg = new NM_Set_Attribute_Scope_Advisory_Switch();
-        break;
-    case NetworkMessage::Type::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        msg = new NM_Register_Federation_Synchronization_Point();
-        break;
-    case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
-        msg = new NM_Confirm_Synchronization_Point_Registration();
-        break;
-    case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
-        msg = new NM_Announce_Synchronization_Point();
-        break;
-    case NetworkMessage::Type::SYNCHRONIZATION_POINT_ACHIEVED:
-        msg = new NM_Synchronization_Point_Achieved();
-        break;
-    case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
-        msg = new NM_Federation_Synchronized();
-        break;
-    case NetworkMessage::Type::REQUEST_FEDERATION_SAVE:
-        msg = new NM_Request_Federation_Save();
-        break;
-    case NetworkMessage::Type::FEDERATE_SAVE_BEGUN:
-        msg = new NM_Federate_Save_Begun();
-        break;
-    case NetworkMessage::Type::FEDERATE_SAVE_COMPLETE:
-        msg = new NM_Federate_Save_Complete();
-        break;
-    case NetworkMessage::Type::FEDERATE_SAVE_NOT_COMPLETE:
-        msg = new NM_Federate_Save_Not_Complete();
-        break;
-    case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
-        msg = new NM_Initiate_Federate_Save();
-        break;
-    case NetworkMessage::Type::FEDERATION_SAVED:
-        msg = new NM_Federation_Saved();
-        break;
-    case NetworkMessage::Type::FEDERATION_NOT_SAVED:
-        msg = new NM_Federation_Not_Saved();
-        break;
-    case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE:
-        msg = new NM_Request_Federation_Restore();
-        break;
-    case NetworkMessage::Type::FEDERATE_RESTORE_COMPLETE:
-        msg = new NM_Federate_Restore_Complete();
-        break;
-    case NetworkMessage::Type::FEDERATE_RESTORE_NOT_COMPLETE:
-        msg = new NM_Federate_Restore_Not_Complete();
-        break;
-    case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-        msg = new NM_Request_Federation_Restore_Succeeded();
-        break;
-    case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
-        msg = new NM_Request_Federation_Restore_Failed();
-        break;
-    case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
-        msg = new NM_Federation_Restore_Begun();
-        break;
-    case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
-        msg = new NM_Initiate_Federate_Restore();
-        break;
-    case NetworkMessage::Type::FEDERATION_RESTORED:
-        msg = new NM_Federation_Restored();
-        break;
-    case NetworkMessage::Type::FEDERATION_NOT_RESTORED:
-        msg = new NM_Federation_Not_Restored();
-        break;
-    case NetworkMessage::Type::PUBLISH_OBJECT_CLASS:
-        msg = new NM_Publish_Object_Class();
-        break;
-    case NetworkMessage::Type::UNPUBLISH_OBJECT_CLASS:
-        msg = new NM_Unpublish_Object_Class();
-        break;
-    case NetworkMessage::Type::PUBLISH_INTERACTION_CLASS:
-        msg = new NM_Publish_Interaction_Class();
-        break;
-    case NetworkMessage::Type::UNPUBLISH_INTERACTION_CLASS:
-        msg = new NM_Unpublish_Interaction_Class();
-        break;
-    case NetworkMessage::Type::SUBSCRIBE_OBJECT_CLASS:
-        msg = new NM_Subscribe_Object_Class();
-        break;
-    case NetworkMessage::Type::UNSUBSCRIBE_OBJECT_CLASS:
-        msg = new NM_Unsubscribe_Object_Class();
-        break;
-    case NetworkMessage::Type::SUBSCRIBE_INTERACTION_CLASS:
-        msg = new NM_Subscribe_Interaction_Class();
-        break;
-    case NetworkMessage::Type::UNSUBSCRIBE_INTERACTION_CLASS:
-        msg = new NM_Unsubscribe_Interaction_Class();
-        break;
-    case NetworkMessage::Type::TURN_INTERACTIONS_ON:
-        msg = new NM_Turn_Interactions_On();
-        break;
-    case NetworkMessage::Type::TURN_INTERACTIONS_OFF:
-        msg = new NM_Turn_Interactions_Off();
-        break;
-    case NetworkMessage::Type::REGISTER_OBJECT:
-        msg = new NM_Register_Object();
-        break;
-    case NetworkMessage::Type::DISCOVER_OBJECT:
-        msg = new NM_Discover_Object();
-        break;
-    case NetworkMessage::Type::UPDATE_ATTRIBUTE_VALUES:
-        msg = new NM_Update_Attribute_Values();
-        break;
-    case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
-        msg = new NM_Reflect_Attribute_Values();
-        break;
-    case NetworkMessage::Type::SEND_INTERACTION:
-        msg = new NM_Send_Interaction();
-        break;
-    case NetworkMessage::Type::RECEIVE_INTERACTION:
-        msg = new NM_Receive_Interaction();
-        break;
-    case NetworkMessage::Type::DELETE_OBJECT:
-        msg = new NM_Delete_Object();
-        break;
-    case NetworkMessage::Type::REMOVE_OBJECT:
-        msg = new NM_Remove_Object();
-        break;
-    case NetworkMessage::Type::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
-        msg = new NM_Change_Attribute_Transport_Type();
-        break;
-    case NetworkMessage::Type::CHANGE_ATTRIBUTE_ORDER_TYPE:
-        msg = new NM_Change_Attribute_Order_Type();
-        break;
-    case NetworkMessage::Type::CHANGE_INTERACTION_TRANSPORT_TYPE:
-        msg = new NM_Change_Interaction_Transport_Type();
-        break;
-    case NetworkMessage::Type::CHANGE_INTERACTION_ORDER_TYPE:
-        msg = new NM_Change_Interaction_Order_Type();
-        break;
-    case NetworkMessage::Type::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-        msg = new NM_Request_Class_Attribute_Value_Update();
-        break;
-    case NetworkMessage::Type::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        msg = new NM_Request_Object_Attribute_Value_Update();
-        break;
-    case NetworkMessage::Type::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        msg = new NM_Is_Attribute_Owned_By_Federate();
-        break;
-    case NetworkMessage::Type::QUERY_ATTRIBUTE_OWNERSHIP:
-        msg = new NM_Query_Attribute_Ownership();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED:
-        msg = new NM_Attribute_Is_Not_Owned();
-        break;
-    case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP:
-        msg = new NM_Inform_Attribute_Ownership();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_BASE:
-        msg = new NM_Attribute_Ownership_Base();
-        break;
-    case NetworkMessage::Type::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        msg = new NM_Negotiated_Attribute_Ownership_Divestiture();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        msg = new NM_Attribute_Ownership_Acquisition_Notification();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        msg = new NM_Attribute_Ownership_Divestiture_Notification();
-        break;
-    case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        msg = new NM_Request_Attribute_Ownership_Assumption();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        msg = new NM_Attribute_Ownership_Unavailable();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        msg = new NM_Attribute_Ownership_Acquisition_If_Available();
-        break;
-    case NetworkMessage::Type::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        msg = new NM_Unconditional_Attribute_Ownership_Divestiture();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        msg = new NM_Attribute_Ownership_Acquisition();
-        break;
-    case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-        msg = new NM_Request_Attribute_Ownership_Release();
-        break;
-    case NetworkMessage::Type::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        msg = new NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
-        break;
-    case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        msg = new NM_Attribute_Ownership_Release_Response();
-        break;
-    case NetworkMessage::Type::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        msg = new NM_Cancel_Attribute_Ownership_Acquisition();
-        break;
-    case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-        msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
-        break;
-    case NetworkMessage::Type::DDM_CREATE_REGION:
-        msg = new NM_DDM_Create_Region();
-        break;
-    case NetworkMessage::Type::DDM_MODIFY_REGION:
-        msg = new NM_DDM_Modify_Region();
-        break;
-    case NetworkMessage::Type::DDM_DELETE_REGION:
-        msg = new NM_DDM_Delete_Region();
-        break;
-    case NetworkMessage::Type::DDM_ASSOCIATE_REGION:
-        msg = new NM_DDM_Associate_Region();
-        break;
-    case NetworkMessage::Type::DDM_UNASSOCIATE_REGION:
-        msg = new NM_DDM_Unassociate_Region();
-        break;
-    case NetworkMessage::Type::DDM_REGISTER_OBJECT:
-        msg = new NM_DDM_Register_Object();
-        break;
-    case NetworkMessage::Type::DDM_SUBSCRIBE_ATTRIBUTES:
-        msg = new NM_DDM_Subscribe_Attributes();
-        break;
-    case NetworkMessage::Type::DDM_UNSUBSCRIBE_ATTRIBUTES:
-        msg = new NM_DDM_Unsubscribe_Attributes();
-        break;
-    case NetworkMessage::Type::DDM_SUBSCRIBE_INTERACTION:
-        msg = new NM_DDM_Subscribe_Interaction();
-        break;
-    case NetworkMessage::Type::DDM_UNSUBSCRIBE_INTERACTION:
-        msg = new NM_DDM_Unsubscribe_Interaction();
-        break;
-    case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-        msg = new NM_Provide_Attribute_Value_Update();
-        break;
-    case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
-        msg = new NM_Start_Registration_For_Object_Class();
-        break;
-    case NetworkMessage::Type::STOP_REGISTRATION_FOR_OBJECT_CLASS:
-        msg = new NM_Stop_Registration_For_Object_Class();
-        break;
-    case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME:
-        msg = new NM_Reserve_Object_Instance_Name();
-        break;
-    case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
-        msg = new NM_Reserve_Object_Instance_Name_Succeeded();
-        break;
-    case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
-        msg = new NM_Reserve_Object_Instance_Name_Failed();
-        break;
-    case NetworkMessage::Type::MESSAGE_NULL_PRIME:
-        msg = new NM_Message_Null_Prime();
-        break;
-    case NetworkMessage::Type::LAST:
-        throw NetworkError("LAST message type should not be used!!");
-        break;
+        case NetworkMessage::Type::NOT_USED:
+            throw NetworkError("NOT_USED message type should not be used!!");
+            break;
+        case NetworkMessage::Type::CLOSE_CONNEXION:
+            msg = new NM_Close_Connexion();
+            break;
+        case NetworkMessage::Type::MESSAGE_NULL:
+            msg = new NM_Message_Null();
+            break;
+        case NetworkMessage::Type::CREATE_FEDERATION_EXECUTION:
+            msg = new NM_Create_Federation_Execution();
+            break;
+        case NetworkMessage::Type::DESTROY_FEDERATION_EXECUTION:
+            msg = new NM_Destroy_Federation_Execution();
+            break;
+        case NetworkMessage::Type::JOIN_FEDERATION_EXECUTION:
+            msg = new NM_Join_Federation_Execution();
+            break;
+        case NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION:
+            msg = new NM_Resign_Federation_Execution();
+            break;
+        case NetworkMessage::Type::SET_TIME_REGULATING:
+            msg = new NM_Set_Time_Regulating();
+            break;
+        case NetworkMessage::Type::SET_TIME_CONSTRAINED:
+            msg = new NM_Set_Time_Constrained();
+            break;
+        case NetworkMessage::Type::TIME_REGULATION_ENABLED:
+            msg = new NM_Time_Regulation_Enabled();
+            break;
+        case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
+            msg = new NM_Time_Constrained_Enabled();
+            break;
+        case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+            msg = new NM_Set_Class_Relevance_Advisory_Switch();
+            break;
+        case NetworkMessage::Type::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+            msg = new NM_Set_Interaction_Relevance_Advisory_Switch();
+            break;
+        case NetworkMessage::Type::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+            msg = new NM_Set_Attribute_Relevance_Advisory_Switch();
+            break;
+        case NetworkMessage::Type::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+            msg = new NM_Set_Attribute_Scope_Advisory_Switch();
+            break;
+        case NetworkMessage::Type::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+            msg = new NM_Register_Federation_Synchronization_Point();
+            break;
+        case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
+            msg = new NM_Confirm_Synchronization_Point_Registration();
+            break;
+        case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
+            msg = new NM_Announce_Synchronization_Point();
+            break;
+        case NetworkMessage::Type::SYNCHRONIZATION_POINT_ACHIEVED:
+            msg = new NM_Synchronization_Point_Achieved();
+            break;
+        case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
+            msg = new NM_Federation_Synchronized();
+            break;
+        case NetworkMessage::Type::REQUEST_FEDERATION_SAVE:
+            msg = new NM_Request_Federation_Save();
+            break;
+        case NetworkMessage::Type::FEDERATE_SAVE_BEGUN:
+            msg = new NM_Federate_Save_Begun();
+            break;
+        case NetworkMessage::Type::FEDERATE_SAVE_COMPLETE:
+            msg = new NM_Federate_Save_Complete();
+            break;
+        case NetworkMessage::Type::FEDERATE_SAVE_NOT_COMPLETE:
+            msg = new NM_Federate_Save_Not_Complete();
+            break;
+        case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
+            msg = new NM_Initiate_Federate_Save();
+            break;
+        case NetworkMessage::Type::FEDERATION_SAVED:
+            msg = new NM_Federation_Saved();
+            break;
+        case NetworkMessage::Type::FEDERATION_NOT_SAVED:
+            msg = new NM_Federation_Not_Saved();
+            break;
+        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE:
+            msg = new NM_Request_Federation_Restore();
+            break;
+        case NetworkMessage::Type::FEDERATE_RESTORE_COMPLETE:
+            msg = new NM_Federate_Restore_Complete();
+            break;
+        case NetworkMessage::Type::FEDERATE_RESTORE_NOT_COMPLETE:
+            msg = new NM_Federate_Restore_Not_Complete();
+            break;
+        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+            msg = new NM_Request_Federation_Restore_Succeeded();
+            break;
+        case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
+            msg = new NM_Request_Federation_Restore_Failed();
+            break;
+        case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
+            msg = new NM_Federation_Restore_Begun();
+            break;
+        case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
+            msg = new NM_Initiate_Federate_Restore();
+            break;
+        case NetworkMessage::Type::FEDERATION_RESTORED:
+            msg = new NM_Federation_Restored();
+            break;
+        case NetworkMessage::Type::FEDERATION_NOT_RESTORED:
+            msg = new NM_Federation_Not_Restored();
+            break;
+        case NetworkMessage::Type::PUBLISH_OBJECT_CLASS:
+            msg = new NM_Publish_Object_Class();
+            break;
+        case NetworkMessage::Type::UNPUBLISH_OBJECT_CLASS:
+            msg = new NM_Unpublish_Object_Class();
+            break;
+        case NetworkMessage::Type::PUBLISH_INTERACTION_CLASS:
+            msg = new NM_Publish_Interaction_Class();
+            break;
+        case NetworkMessage::Type::UNPUBLISH_INTERACTION_CLASS:
+            msg = new NM_Unpublish_Interaction_Class();
+            break;
+        case NetworkMessage::Type::SUBSCRIBE_OBJECT_CLASS:
+            msg = new NM_Subscribe_Object_Class();
+            break;
+        case NetworkMessage::Type::UNSUBSCRIBE_OBJECT_CLASS:
+            msg = new NM_Unsubscribe_Object_Class();
+            break;
+        case NetworkMessage::Type::SUBSCRIBE_INTERACTION_CLASS:
+            msg = new NM_Subscribe_Interaction_Class();
+            break;
+        case NetworkMessage::Type::UNSUBSCRIBE_INTERACTION_CLASS:
+            msg = new NM_Unsubscribe_Interaction_Class();
+            break;
+        case NetworkMessage::Type::TURN_INTERACTIONS_ON:
+            msg = new NM_Turn_Interactions_On();
+            break;
+        case NetworkMessage::Type::TURN_INTERACTIONS_OFF:
+            msg = new NM_Turn_Interactions_Off();
+            break;
+        case NetworkMessage::Type::REGISTER_OBJECT:
+            msg = new NM_Register_Object();
+            break;
+        case NetworkMessage::Type::DISCOVER_OBJECT:
+            msg = new NM_Discover_Object();
+            break;
+        case NetworkMessage::Type::UPDATE_ATTRIBUTE_VALUES:
+            msg = new NM_Update_Attribute_Values();
+            break;
+        case NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES:
+            msg = new NM_Reflect_Attribute_Values();
+            break;
+        case NetworkMessage::Type::SEND_INTERACTION:
+            msg = new NM_Send_Interaction();
+            break;
+        case NetworkMessage::Type::RECEIVE_INTERACTION:
+            msg = new NM_Receive_Interaction();
+            break;
+        case NetworkMessage::Type::DELETE_OBJECT:
+            msg = new NM_Delete_Object();
+            break;
+        case NetworkMessage::Type::REMOVE_OBJECT:
+            msg = new NM_Remove_Object();
+            break;
+        case NetworkMessage::Type::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+            msg = new NM_Change_Attribute_Transport_Type();
+            break;
+        case NetworkMessage::Type::CHANGE_ATTRIBUTE_ORDER_TYPE:
+            msg = new NM_Change_Attribute_Order_Type();
+            break;
+        case NetworkMessage::Type::CHANGE_INTERACTION_TRANSPORT_TYPE:
+            msg = new NM_Change_Interaction_Transport_Type();
+            break;
+        case NetworkMessage::Type::CHANGE_INTERACTION_ORDER_TYPE:
+            msg = new NM_Change_Interaction_Order_Type();
+            break;
+        case NetworkMessage::Type::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+            msg = new NM_Request_Class_Attribute_Value_Update();
+            break;
+        case NetworkMessage::Type::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+            msg = new NM_Request_Object_Attribute_Value_Update();
+            break;
+        case NetworkMessage::Type::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+            msg = new NM_Is_Attribute_Owned_By_Federate();
+            break;
+        case NetworkMessage::Type::QUERY_ATTRIBUTE_OWNERSHIP:
+            msg = new NM_Query_Attribute_Ownership();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED:
+            msg = new NM_Attribute_Is_Not_Owned();
+            break;
+        case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP:
+            msg = new NM_Inform_Attribute_Ownership();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_BASE:
+            msg = new NM_Attribute_Ownership_Base();
+            break;
+        case NetworkMessage::Type::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+            msg = new NM_Negotiated_Attribute_Ownership_Divestiture();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+            msg = new NM_Attribute_Ownership_Acquisition_Notification();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+            msg = new NM_Attribute_Ownership_Divestiture_Notification();
+            break;
+        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+            msg = new NM_Request_Attribute_Ownership_Assumption();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+            msg = new NM_Attribute_Ownership_Unavailable();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+            msg = new NM_Attribute_Ownership_Acquisition_If_Available();
+            break;
+        case NetworkMessage::Type::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+            msg = new NM_Unconditional_Attribute_Ownership_Divestiture();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION:
+            msg = new NM_Attribute_Ownership_Acquisition();
+            break;
+        case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+            msg = new NM_Request_Attribute_Ownership_Release();
+            break;
+        case NetworkMessage::Type::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+            msg = new NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
+            break;
+        case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+            msg = new NM_Attribute_Ownership_Release_Response();
+            break;
+        case NetworkMessage::Type::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+            msg = new NM_Cancel_Attribute_Ownership_Acquisition();
+            break;
+        case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+            msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
+            break;
+        case NetworkMessage::Type::DDM_CREATE_REGION:
+            msg = new NM_DDM_Create_Region();
+            break;
+        case NetworkMessage::Type::DDM_MODIFY_REGION:
+            msg = new NM_DDM_Modify_Region();
+            break;
+        case NetworkMessage::Type::DDM_DELETE_REGION:
+            msg = new NM_DDM_Delete_Region();
+            break;
+        case NetworkMessage::Type::DDM_ASSOCIATE_REGION:
+            msg = new NM_DDM_Associate_Region();
+            break;
+        case NetworkMessage::Type::DDM_UNASSOCIATE_REGION:
+            msg = new NM_DDM_Unassociate_Region();
+            break;
+        case NetworkMessage::Type::DDM_REGISTER_OBJECT:
+            msg = new NM_DDM_Register_Object();
+            break;
+        case NetworkMessage::Type::DDM_SUBSCRIBE_ATTRIBUTES:
+            msg = new NM_DDM_Subscribe_Attributes();
+            break;
+        case NetworkMessage::Type::DDM_UNSUBSCRIBE_ATTRIBUTES:
+            msg = new NM_DDM_Unsubscribe_Attributes();
+            break;
+        case NetworkMessage::Type::DDM_SUBSCRIBE_INTERACTION:
+            msg = new NM_DDM_Subscribe_Interaction();
+            break;
+        case NetworkMessage::Type::DDM_UNSUBSCRIBE_INTERACTION:
+            msg = new NM_DDM_Unsubscribe_Interaction();
+            break;
+        case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+            msg = new NM_Provide_Attribute_Value_Update();
+            break;
+        case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
+            msg = new NM_Start_Registration_For_Object_Class();
+            break;
+        case NetworkMessage::Type::STOP_REGISTRATION_FOR_OBJECT_CLASS:
+            msg = new NM_Stop_Registration_For_Object_Class();
+            break;
+        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME:
+            msg = new NM_Reserve_Object_Instance_Name();
+            break;
+        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
+            msg = new NM_Reserve_Object_Instance_Name_Succeeded();
+            break;
+        case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
+            msg = new NM_Reserve_Object_Instance_Name_Failed();
+            break;
+        case NetworkMessage::Type::MESSAGE_NULL_PRIME:
+            msg = new NM_Message_Null_Prime();
+            break;
+        case NetworkMessage::Type::LAST:
+            throw NetworkError("LAST message type should not be used!!");
+            break;
     } // end if switch (type)
     return msg;
 } /* end of NM_Factory::create */
 
-NetworkMessage* NM_Factory::receive(NMStreamType stream)
-{
+NetworkMessage* NM_Factory::receive(NMStreamType stream) throw (NetworkError ,NetworkSignal) { 
     // FIXME This is not thread safe
     static libhla::MessageBuffer msgBuffer;
-    NetworkMessage msgGen;
+    NetworkMessage  msgGen;
     NetworkMessage* msg;
 
-    // receive generic message
-    msgGen.receive(stream, msgBuffer);
-    // create specific message from type
+    // receive generic message 
+    msgGen.receive(stream,msgBuffer);
+    // create specific message from type 
     msg = NM_Factory::create(msgGen.getMessageType());
     msgBuffer.assumeSizeFromReservedBytes();
     msg->deserialize(msgBuffer);
     return msg;
-} /* end of NM_Factory::receive */
+} /* end of NM_Factory::receive */ 
 
-} // end of namespace certi
+} // end of namespace certi 

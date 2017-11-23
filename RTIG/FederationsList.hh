@@ -28,6 +28,7 @@
 #include <unordered_map>
 
 #include <libCERTI/Handle.hh>
+#include <libCERTI/MessageEvent.hh>
 
 namespace certi {
 
@@ -66,10 +67,10 @@ public:
      @param mc_link
      */
     std::unique_ptr<NM_Create_Federation_Execution> createFederation(const std::string& name,
-                          const FederationHandle handle,
-                          SocketServer& socket_server,
-                          AuditFile& audit,
-                          SocketMC* multicastSocket);
+                                                                     const FederationHandle handle,
+                                                                     SocketServer& socket_server,
+                                                                     AuditFile& audit,
+                                                                     SocketMC* multicastSocket);
 #else
     /** createFederation (with FEDERATION_USES_MULTICAST not defined)
      @ p*aram name Federation name
@@ -77,10 +78,10 @@ public:
      @param FEDid execution id. of the federation (i.e. file name)
      */
     std::unique_ptr<NM_Create_Federation_Execution> createFederation(const std::string& name,
-                          const FederationHandle handle,
-                          SocketServer& socket_server,
-                          AuditFile& audit,
-                          const std::string& FEDid);
+                                                                     const FederationHandle handle,
+                                                                     SocketServer& socket_server,
+                                                                     AuditFile& audit,
+                                                                     const std::string& FEDid);
 #endif
 
     /** Return the Handle of the Federation named "name" if it is found in the
@@ -109,15 +110,15 @@ public:
      * to initialize its LBTS, and finally a RequestPause message if the
      * Federation is already paused.
      */
-    FederateHandle addFederate(const FederationHandle handle,
-                               const std::string& federateName,
-                               SocketTCP* federateTcpLink,
-                               NM_Join_Federation_Execution& objectModelData);
+    std::pair<FederateHandle, Responses> addFederate(const FederationHandle handle,
+                                                     const std::string& federateName,
+                                                     SocketTCP* federateTcpLink,
+                                                     NM_Join_Federation_Execution& objectModelData);
 
     /** This Method tries to remove all references to this Federate in the
      * Federation. To be used when a Federate is supposed to have crashed.
      */
-    void killFederate(const FederationHandle federation, const FederateHandle federate) noexcept;
+    Responses killFederate(const FederationHandle federation, const FederateHandle federate) noexcept;
 
     /** Search federation from handle.
      * 

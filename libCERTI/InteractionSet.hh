@@ -91,22 +91,22 @@ public:
                  const std::vector<ParameterHandle>& paramArray,
                  uint16_t paramArraySize);
 
-    void broadcastInteraction(FederateHandle theFederateHandle,
-                              InteractionClassHandle theInteractionHandle,
-                              const std::vector<ParameterHandle>& theParameterList,
-                              const std::vector<ParameterValue_t>& theValueList,
-                              uint16_t theListSize,
-                              FederationTime theTime,
-                              const RTIRegion*,
-                              const std::string& theTag);
+    Responses broadcastInteraction(FederateHandle theFederateHandle,
+                                   InteractionClassHandle theInteractionHandle,
+                                   const std::vector<ParameterHandle>& theParameterList,
+                                   const std::vector<ParameterValue_t>& theValueList,
+                                   uint16_t theListSize,
+                                   FederationTime theTime,
+                                   const RTIRegion*,
+                                   const std::string& theTag);
 
-    void broadcastInteraction(FederateHandle theFederateHandle,
-                              InteractionClassHandle theInteractionHandle,
-                              const std::vector<ParameterHandle>& theParameterList,
-                              const std::vector<ParameterValue_t>& theValueList,
-                              uint16_t theListSize,
-                              const RTIRegion*,
-                              const std::string& theTag);
+    Responses broadcastInteraction(FederateHandle theFederateHandle,
+                                   InteractionClassHandle theInteractionHandle,
+                                   const std::vector<ParameterHandle>& theParameterList,
+                                   const std::vector<ParameterValue_t>& theValueList,
+                                   uint16_t theListSize,
+                                   const RTIRegion*,
+                                   const std::string& theTag);
 
 private:
     SecurityServer* server;
