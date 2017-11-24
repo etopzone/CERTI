@@ -59,6 +59,8 @@ public:
 
     virtual Socket* getSocketLink(FederateHandle theFederate, TransportType theType = RELIABLE) const;
 
+    FederateHandle getFederateHandle(Socket* theSocket) const;
+
     // Security related methods
     bool dominates(SecurityLevelID A, SecurityLevelID B) const;
 

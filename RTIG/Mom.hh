@@ -97,9 +97,9 @@ public:
     Responses updateLITS(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
     /* never used */ Responses updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
     /* never used */ Responses updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ Responses updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
     Responses updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ Responses updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
     Responses updateInteractionsSent(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesUpdated(const FederateHandle federate_handle);

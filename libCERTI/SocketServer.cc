@@ -203,6 +203,17 @@ SocketTuple* SocketServer::getWithReferences(FederationHandle the_federation, Fe
                                                         << " is not a member of Federation "
                                                         << the_federation);
 }
+    
+FederateHandle SocketServer::getFederateFromSocket(FederationHandle the_federation, Socket* socket) const
+{
+    for(const auto& tuple: *this) {
+        if((tuple->Federation == the_federation) && (tuple->BestEffortLink == socket || tuple->ReliableLink == socket)) {
+            return tuple->Federate;
+        }
+    }
+
+    throw RTIinternalError("Federate not found.");
+}
 
 SocketTuple* SocketServer::getWithSocket(long socket_descriptor) const
 {

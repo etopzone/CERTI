@@ -46,13 +46,12 @@ Socket* SecurityServer::getSocketLink(FederateHandle theFederate, TransportType 
         return nullptr;
     }
 
-    // G.Out(pdGendoc,"into SecurityServer::getSocketLink");
-    Socket* sock = RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
-    if (sock == nullptr)
-        // Federate killed
-        return nullptr;
-    else
-        return sock;
+    return RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
+}
+
+FederateHandle SecurityServer::getFederateHandle(Socket* theSocket) const
+{
+    return RTIG_SocketServer.getFederateFromSocket(myFederation, theSocket);
 }
 
 // ----------------------------------------------------------------------------

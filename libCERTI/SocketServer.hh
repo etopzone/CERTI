@@ -140,6 +140,8 @@ public:
                                   TransportType the_type = RELIABLE) const;
 
     SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const;
+    
+    FederateHandle getFederateFromSocket(FederationHandle the_federation, Socket* socket) const;
 
 private:
     // The Server socket object(used for Accepts)
