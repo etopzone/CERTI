@@ -36,6 +36,12 @@
 
 #include "make_unique.hh"
 
+#ifdef _WIN32
+#include <windows.h>
+#define    sleep(a)              Sleep(a * 1000)
+#define    usleep(a)             Sleep(a / 1000)
+#endif
+
 using namespace std;
 
 int main(int argc, char** argv)

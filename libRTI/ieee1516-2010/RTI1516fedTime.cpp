@@ -264,12 +264,12 @@ rti1516e::VariableLengthData RTI1516fedTime::encode() const
 
 // Alternate encode for directly filling a buffer
 
-unsigned long RTI1516fedTime::encodedLength() const
+size_t RTI1516fedTime::encodedLength() const
 {
     return sizeof(double);
 }
 
-unsigned long RTI1516fedTime::encode(void* buffer, unsigned long bufferSize) const throw(rti1516e::CouldNotEncode)
+size_t RTI1516fedTime::encode(void* buffer, size_t bufferSize) const throw(rti1516e::CouldNotEncode)
 {
     if (bufferSize >= sizeof(double)) {
 #ifdef HOST_IS_BIG_ENDIAN
@@ -310,7 +310,7 @@ void RTI1516fedTime::decode(rti1516e::VariableLengthData const& encodedLogicalTi
 
 // Alternate decode that reads directly from a buffer
 
-void RTI1516fedTime::decode(void* buffer, unsigned long bufferSize) throw(rti1516e::InternalError,
+void RTI1516fedTime::decode(void* buffer, size_t bufferSize) throw(rti1516e::InternalError,
                                                                           rti1516e::CouldNotDecode)
 {
     if (bufferSize >= sizeof(double)) {
@@ -603,12 +603,12 @@ rti1516e::VariableLengthData RTI1516fedTimeInterval::encode() const
 
 // Alternate encode for directly filling a buffer
 
-unsigned long RTI1516fedTimeInterval::encodedLength() const
+size_t RTI1516fedTimeInterval::encodedLength() const
 {
     return sizeof(double);
 }
 
-unsigned long RTI1516fedTimeInterval::encode(void* buffer, unsigned long bufferSize) const
+size_t RTI1516fedTimeInterval::encode(void* buffer, size_t bufferSize) const
     throw(rti1516e::CouldNotEncode)
 {
     if (bufferSize >= sizeof(double)) {
@@ -650,7 +650,7 @@ void RTI1516fedTimeInterval::decode(rti1516e::VariableLengthData const& encodedV
 
 // Alternate decode that reads directly from a buffer
 
-void RTI1516fedTimeInterval::decode(void* buffer, unsigned long bufferSize) throw(rti1516e::InternalError,
+void RTI1516fedTimeInterval::decode(void* buffer, size_t bufferSize) throw(rti1516e::InternalError,
                                                                                   rti1516e::CouldNotDecode)
 {
     if (bufferSize >= sizeof(double)) {

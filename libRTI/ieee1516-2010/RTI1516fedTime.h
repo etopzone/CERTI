@@ -88,12 +88,12 @@ public:
 
 	// Alternate encode for directly filling a buffer
 	virtual 
-		unsigned long 
+		size_t 
 		encodedLength() const;
 
 	virtual 
-		unsigned long 
-		encode(void* buffer, unsigned long bufferSize) const 
+		size_t 
+		encode(void* buffer, size_t bufferSize) const 
 		throw (rti1516e::CouldNotEncode);
 
 	// Decode encodedLogicalTime into self
@@ -107,7 +107,7 @@ public:
 	// Alternate decode that reads directly from a buffer
 	virtual 
 		void 
-		decode(void* buffer, unsigned long bufferSize)
+		decode(void* buffer, size_t bufferSize)
 		throw (rti1516e::InternalError,
 		rti1516e::CouldNotDecode);
 
@@ -223,12 +223,12 @@ public:
 
 	// Alternate encode for directly filling a buffer
 	virtual 
-		unsigned long 
+		size_t 
 		encodedLength() const;
 
 	virtual 
-		unsigned long 
-		encode(void* buffer, unsigned long bufferSize) const 
+		size_t 
+		encode(void* buffer, size_t bufferSize) const 
 		throw (rti1516e::CouldNotEncode);
 
 	// Decode encodedValue into self
@@ -241,7 +241,7 @@ public:
 	// Alternate decode that reads directly from a buffer
 	virtual 
 		void 
-		decode(void* buffer, unsigned long bufferSize)
+		decode(void* buffer, size_t bufferSize)
 		throw (rti1516e::InternalError, rti1516e::CouldNotDecode);
 
 	virtual 
@@ -333,3 +333,4 @@ private:
 
 
 # endif // RTI1516_FED_TIME_H
+
