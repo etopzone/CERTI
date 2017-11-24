@@ -78,6 +78,19 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     if(data.size() == 8 && strncmp(static_cast<const char*>(data.data()), "\4\0\0\0TODO", 8) == 0) {
         return L"Not yet implemented on server side.";
     }
+    
+    if(data.size() == 0) {
+        return L"{empty}";
+    }
+    
+#if 0
+    std::cout << "DECODE DATA:";
+    for(auto i=0u; i<data.size(); ++i) {
+        auto byte = static_cast<const uint8_t*>(data.data())[i];
+        std::cout << " " << static_cast<int>(byte);
+    }
+    std::cout << std::endl;
+#endif
 
     switch (type) {
     case DataType::HLAunicodeString: {
@@ -109,7 +122,8 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
                 if (i != 0) {
                     ret += L", ";
                 }
-                auto value = std::to_string(static_cast<const uint32_t*>(data.data())[4 + 4 * i]);
+                auto intValue = static_cast<const uint32_t*>(data.data())[1 + i];
+                auto value = std::to_string(intValue);
                 ret += std::wstring(begin(value), end(value));
             }
             ret += L"}";
