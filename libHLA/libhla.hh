@@ -40,7 +40,9 @@
 #endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-    #pragma warning(disable : 4251)
+    #if defined(_MSC_VER)
+        #pragma warning(disable : 4251)
+    #endif
     #ifndef ANY_DLL_EXPORT
         #define ANY_DLL_EXPORT __declspec(dllexport)
         #define ANY_DLL_IMPORT __declspec(dllimport)

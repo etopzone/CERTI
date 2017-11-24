@@ -23,7 +23,7 @@
 #ifndef LogicalTimeDouble_h
 #define LogicalTimeDouble_h
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_MSC_VER)
 #pragma warning(disable:4290)
 #endif
 

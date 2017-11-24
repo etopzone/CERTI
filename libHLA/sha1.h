@@ -21,40 +21,42 @@
 #define _SHA1_H_
 
 #ifdef _MSC_VER
-typedef unsigned __int64 uint64_t;
-typedef signed __int64 int64_t;
-typedef unsigned __int32 uint32_t;
-typedef signed __int32 int32_t;
-typedef unsigned __int16 uint16_t;
-typedef signed __int16 int16_t;
-typedef unsigned __int8 uint8_t;
-typedef signed __int8 int8_t;
-typedef short int int_least16_t;
+    typedef unsigned __int64 uint64_t;
+    typedef signed __int64 int64_t;
+    typedef unsigned __int32 uint32_t;
+    typedef signed __int32 int32_t;
+    typedef unsigned __int16 uint16_t;
+    typedef signed __int16 int16_t;
+    typedef unsigned __int8 uint8_t;
+    typedef signed __int8 int8_t;
+    typedef short int int_least16_t;
 #else
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-#pragma warning(disable : 4251)
-#define ANY_DLL_EXPORT __declspec(dllexport)
-#define ANY_DLL_IMPORT __declspec(dllimport)
-#define ANY_DLL_LOCAL
+    #if defined(_MSC_VER)
+        #pragma warning(disable : 4251)
+    #endif
+    #define ANY_DLL_EXPORT __declspec(dllexport)
+    #define ANY_DLL_IMPORT __declspec(dllimport)
+    #define ANY_DLL_LOCAL
 #else
-#if (__GNUC__ >= 4)
-#define ANY_DLL_EXPORT __attribute__((visibility("default")))
-#define ANY_DLL_IMPORT __attribute__((visibility("default")))
-#define ANY_DLL_LOCAL __attribute__((visibility("hidden")))
-#else
-#define ANY_DLL_EXPORT
-#define ANY_DLL_IMPORT
-#define ANY_DLL_LOCAL
-#endif
+    #if (__GNUC__ >= 4)
+        #define ANY_DLL_EXPORT __attribute__((visibility("default")))
+        #define ANY_DLL_IMPORT __attribute__((visibility("default")))
+        #define ANY_DLL_LOCAL __attribute__((visibility("hidden")))
+    #else
+        #define ANY_DLL_EXPORT
+        #define ANY_DLL_IMPORT
+        #define ANY_DLL_LOCAL
+    #endif
 #endif
 
 #if defined(HLA_EXPORTS)
-#define HLA_EXPORT ANY_DLL_EXPORT
+    #define HLA_EXPORT ANY_DLL_EXPORT
 #else
-#define HLA_EXPORT ANY_DLL_IMPORT
+    #define HLA_EXPORT ANY_DLL_IMPORT
 #endif
 
 /* BEGIN_C_DECLS should be used at the beginning of your declarations,
@@ -63,11 +65,11 @@ typedef short int int_least16_t;
 #undef BEGIN_C_DECLS
 #undef END_C_DECLS
 #ifdef __cplusplus
-#define BEGIN_C_DECLS extern "C" {
-#define END_C_DECLS }
+    #define BEGIN_C_DECLS extern "C" {
+    #define END_C_DECLS }
 #else
-#define BEGIN_C_DECLS /* empty */
-#define END_C_DECLS /* empty */
+    #define BEGIN_C_DECLS /* empty */
+    #define END_C_DECLS /* empty */
 #endif
 
 /*

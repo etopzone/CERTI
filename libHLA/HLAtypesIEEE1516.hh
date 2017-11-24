@@ -111,8 +111,8 @@ public:
 
 } // namespace libhla
 
-#if defined(_WIN32)
-#pragma warning(disable : 4503) // suppress warning C4503: decorated name length exceeded
+#if defined(_WIN32) &&  defined(_MSC_VER)
+    #pragma warning(disable : 4503) // suppress warning C4503: decorated name length exceeded
 #endif
 
 #include "HLAbasicType.hh"
