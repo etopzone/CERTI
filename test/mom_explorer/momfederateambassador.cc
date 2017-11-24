@@ -90,9 +90,10 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     } break;
     case DataType::HLAhandle:
     case DataType::HLAmsec:
-    case DataType::HLAcount:
-        ret += std::to_wstring(*static_cast<const uint32_t*>(data.data()));
-        break;
+    case DataType::HLAcount: {
+        auto value = std::to_string(*static_cast<const uint32_t*>(data.data()));
+        ret += std::wstring(begin(value), end(value));
+    } break;
     case DataType::HLAboolean:
     case DataType::HLAswitch:
         ret += *static_cast<const uint32_t*>(data.data()) ? L"True" : L"False";
@@ -108,7 +109,8 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
                 if (i != 0) {
                     ret += L", ";
                 }
-                ret += std::to_wstring(static_cast<const uint32_t*>(data.data())[4 + 4 * i]);
+                auto value = std::to_string(static_cast<const uint32_t*>(data.data())[4 + 4 * i]);
+                ret += std::wstring(begin(value), end(value));
             }
             ret += L"}";
         }
