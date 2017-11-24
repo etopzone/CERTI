@@ -29,6 +29,8 @@
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
 
+#include <include/make_unique.hh>
+
 using std::list;
 
 namespace certi {
@@ -344,7 +346,7 @@ template <typename T>
 std::unique_ptr<NetworkMessage> ObjectClassBroadcastList::createResponseMessage(T* message,
                                                                                 const ObjectBroadcastLine& line)
 {
-    auto reducedMessage = std::make_unique<T>(*message);
+    auto reducedMessage = make_unique<T>(*message);
 
     // Copy attributes that are in the Waiting state in Line.
     uint32_t currentSize = 0;
@@ -367,7 +369,7 @@ template <typename T>
 std::unique_ptr<NetworkMessage>
 ObjectClassBroadcastList::createResponseMessageWithValues(T* message, const ObjectBroadcastLine& line)
 {
-    auto reducedMessage = std::make_unique<T>(*message);
+    auto reducedMessage = make_unique<T>(*message);
 
     // Copy attributes that are in the Waiting state in Line.
     uint32_t currentSize = 0;
@@ -392,7 +394,7 @@ ObjectClassBroadcastList::createResponseMessageWithValues(T* message, const Obje
 template <typename T>
 std::unique_ptr<NetworkMessage> ObjectClassBroadcastList::createResponseMessage(T* message)
 {
-    auto reducedMessage = std::make_unique<T>(*message);
+    auto reducedMessage = make_unique<T>(*message);
 
     return std::unique_ptr<NetworkMessage>(static_cast<NetworkMessage*>(reducedMessage.release()));
 }

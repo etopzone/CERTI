@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <RTIG/make_unique.hh>
+#include <include/make_unique.hh>
 #include <RTIG/MessageProcessor.hh>
 
 #include "../mocks/sockettcp_mock.h"

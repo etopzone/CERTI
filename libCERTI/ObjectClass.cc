@@ -38,6 +38,8 @@
 #include <memory>
 #include <sstream>
 
+#include <include/make_unique.hh>
+
 using std::cout;
 using std::endl;
 
@@ -316,7 +318,7 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::deleteInstance(Fede
     if (server != NULL) {
         D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
 
-        auto answer = std::make_unique<NM_Remove_Object>();
+        auto answer = make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -368,7 +370,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
     if (server != NULL) {
         D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
 
-        auto answer = std::make_unique<NM_Remove_Object>();
+        auto answer = make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setObjectClass(handle); // Class Handle FIXME why do we have a class handle in REMOVE OBJECT?
@@ -648,7 +650,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
     if (server != NULL) {
         D.Out(pdRegister, "Object %u registered in class %u, now broadcasting...", the_object->getHandle(), handle);
 
-        auto answer = std::make_unique<NM_Discover_Object>();
+        auto answer = make_unique<NM_Discover_Object>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -794,7 +796,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        auto answer = std::make_unique<NM_Reflect_Attribute_Values>();
+        auto answer = make_unique<NM_Reflect_Attribute_Values>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -851,7 +853,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        auto answer = std::make_unique<NM_Reflect_Attribute_Values>();
+        auto answer = make_unique<NM_Reflect_Attribute_Values>();
         answer->setFederation(server->federation().get());
         answer->setFederate(the_federate);
         answer->setException(Exception::Type::NO_EXCEPTION);
@@ -925,7 +927,7 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
     FederateHandle NewOwner;
 
     if (server != NULL) {
-        auto answerAssumption = std::make_unique<NM_Request_Attribute_Ownership_Assumption>();
+        auto answerAssumption = make_unique<NM_Request_Attribute_Ownership_Assumption>();
         NM_Attribute_Ownership_Divestiture_Notification AnswerDivestiture;
 
         answerAssumption->setAttributesSize(theAttributeList.size());
@@ -1161,7 +1163,7 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::unconditionalAttrib
     FederateHandle NewOwner;
 
     if (server != NULL) {
-        auto answerAssumption = std::make_unique<NM_Unconditional_Attribute_Ownership_Divestiture>();
+        auto answerAssumption = make_unique<NM_Unconditional_Attribute_Ownership_Divestiture>();
         answerAssumption->setAttributesSize(theAttributeList.size());
         CDiffusion diffusionAcquisition;
 

@@ -2,7 +2,7 @@
 
 #include "libCERTI/NetworkMessage.hh"
 
-#include "RTIG/make_unique.hh"
+#include <include/make_unique.hh>
 
 using ::certi::NetworkMessage;
 

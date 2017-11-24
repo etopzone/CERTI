@@ -60,7 +60,7 @@
 #include <libCERTI/XmlParser2010.hh>
 #include <libCERTI/fed.hh>
 
-#include "make_unique.hh"
+#include <include/make_unique.hh>
 
 using std::pair;
 using std::ifstream;
@@ -286,7 +286,7 @@ Federation::add(const string& federate_name, SocketTCP* tcp_link)
         my_regulators.get(clocks);
 
         for (const auto& clock : clocks) {
-            auto nullMessage = std::make_unique<NM_Message_Null>();
+            auto nullMessage = make_unique<NM_Message_Null>();
             nullMessage->setFederation(my_handle.get());
             nullMessage->setFederate(clock.first);
             nullMessage->setDate(clock.second);
@@ -297,7 +297,7 @@ Federation::add(const string& federate_name, SocketTCP* tcp_link)
 
         // If federation is synchronizing, put federate in same state.
         if (isSynchronizing()) {
-            auto asp = std::make_unique<NM_Announce_Synchronization_Point>();
+            auto asp = make_unique<NM_Announce_Synchronization_Point>();
             asp->setFederate(federate_handle);
             asp->setFederation(my_handle.get());
 
@@ -355,7 +355,7 @@ Responses Federation::remove(FederateHandle federate_handle)
         responses = my_mom->updateFederatesInFederation();
     }
 
-    auto rep = std::make_unique<NM_Resign_Federation_Execution>();
+    auto rep = make_unique<NM_Resign_Federation_Execution>();
 
     rep->setFederate(federate_handle);
     rep->setFederation(my_handle.get());
@@ -719,7 +719,7 @@ Responses Federation::requestFederationSave(FederateHandle federate_handle, cons
     my_is_save_in_progress = true;
     my_save_label = label;
 
-    auto msg = std::make_unique<NM_Initiate_Federate_Save>();
+    auto msg = make_unique<NM_Initiate_Federate_Save>();
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
     msg->setLabel(label);
@@ -768,7 +768,7 @@ Responses Federation::requestFederationSave(FederateHandle federate_handle, cons
     my_is_save_in_progress = true;
     my_save_label = the_label;
 
-    auto msg = std::make_unique<NM_Initiate_Federate_Save>();
+    auto msg = make_unique<NM_Initiate_Federate_Save>();
     msg->setFederate(federate_handle);
     msg->setFederation(my_handle.get());
     msg->setLabel(the_label);
@@ -1347,7 +1347,7 @@ std::pair<FederateHandle, Responses> Federation::requestObjectOwner(FederateHand
             continue;
         }
 
-        auto message = std::make_unique<NM_Provide_Attribute_Value_Update>();
+        auto message = make_unique<NM_Provide_Attribute_Value_Update>();
 
         // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
         message->setFederate(theFederateHandle);
