@@ -24,6 +24,8 @@
 #include "InteractionBroadcastList.hh"
 #include "PrettyDebug.hh"
 
+#include <include/make_unique.hh>
+
 using std::list;
 
 namespace certi {
@@ -87,7 +89,7 @@ Responses InteractionBroadcastList::preparePendingMessage(SecurityServer& server
         }
     }
 
-    ret.emplace_back(sockets, std::make_unique<NM_Receive_Interaction>(my_message));
+    ret.emplace_back(sockets, make_unique<NM_Receive_Interaction>(my_message));
 
     Debug(G, pdGendoc) << "exit  InteractionBroadcastList::preparePendingMessage" << std::endl;
 
