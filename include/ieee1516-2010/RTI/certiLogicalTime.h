@@ -112,8 +112,8 @@ namespace rti1516e
     virtual VariableLengthData encode() const = 0;
 
     // Alternate encode for directly filling a buffer
-    virtual unsigned long encodedLength() const = 0;
-    virtual unsigned long encode(void* buffer, unsigned long bufferSize) const 
+    virtual size_t encodedLength() const = 0;
+    virtual size_t encode(void* buffer, size_t bufferSize) const 
        throw (CouldNotEncode) = 0;
    
     // Decode encodedLogicalTime into self
@@ -122,7 +122,7 @@ namespace rti1516e
              CouldNotDecode) = 0;
 
     // Alternate decode that reads directly from a buffer
-    virtual void decode(void* buffer, unsigned long bufferSize)
+    virtual void decode(void* buffer, size_t bufferSize)
       throw (InternalError,
              CouldNotDecode) = 0;
 
