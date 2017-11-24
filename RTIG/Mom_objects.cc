@@ -61,7 +61,7 @@ Responses Mom::registerFederation()
     my_attribute_values_cache[my_federation_object][attribute] = encodeFederateHandleList();
 
     // Static
-    attribute = my_attribute_cache["HLARTIversion"];
+    attribute = my_attribute_cache["HLARTIversion"]; // FIXME attribute duplicated between federate and federation 
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("1516-2010");
 
