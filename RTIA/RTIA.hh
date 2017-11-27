@@ -91,9 +91,8 @@ private:
 
     /**
      * Process one message from RTIG (i.e. a NetworkMessage).
-     * @param[in] request
      */
-    void processNetworkMessage(NetworkMessage * request);
+    void processNetworkMessage(NetworkMessage* request);
 
     /**
      * Process a service request coming from the Federate (i.e. a Message).
@@ -101,7 +100,7 @@ private:
      * @param[in,out] request the message request coming from the federate
      *                the message is destroyed before return
      */
-    void processFederateRequest(Message *request);
+    void processFederateRequest(Message* request);
 
     /**
      * The method called by processFederateRequest in order to
@@ -109,7 +108,7 @@ private:
      * @param[in] request the federate request message
      * @param[out] answer answer message to be sent back to the federate
      */
-    void initFederateProcessing(Message *request, Message* answer);
+    void initFederateProcessing(Message* request, Message* answer);
 
     /**
      * The method called by processFederateRequest in order to
@@ -119,7 +118,7 @@ private:
      * @param[out] answer answer message to be sent back to the federate
      * @param[out] e exception raised (if any).
      */
-    void chooseFederateProcessing(Message *request, Message* answer, Exception::Type &e);
+    void chooseFederateProcessing(Message* request, Message* answer, Exception::Type &e);
 
     /**
      * RTIA processes the TICK_REQUEST.

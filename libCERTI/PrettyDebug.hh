@@ -90,9 +90,9 @@ public:
     PrettyDebug(const char* name, const char* header);
     ~PrettyDebug();
 
-    void enableDebugLevel(pdDebugLevel Level);
-    void enableDebugLevel(pdDebugLevel Level, std::ostream& stream);
-    void disableDebugLevel(pdDebugLevel Level);
+    void enableDebugLevel(pdDebugLevel level);
+    void enableDebugLevel(pdDebugLevel level, std::ostream& stream);
+    void disableDebugLevel(pdDebugLevel level);
 
     // Get the ostream to print debug messages to.
     // Returns zero if debugging is not enabled for the given level.

@@ -63,17 +63,17 @@ public:
 
 	virtual
 		RTI1516fedTime &
-		operator=(RTI1516fedTime const & value)
+		operator=(RTI1516fedTime const & other)
 		throw ();
 
 	virtual
 		rti1516::LogicalTime &
-		operator+=(rti1516::LogicalTimeInterval const & addend)
+		operator+=(rti1516::LogicalTimeInterval const & value)
 		throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
 
 	virtual
 		rti1516::LogicalTime &
-		operator-=(rti1516::LogicalTimeInterval const & subtrahend)
+		operator-=(rti1516::LogicalTimeInterval const & value)
 		throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
 
 	virtual
@@ -203,12 +203,12 @@ public:
 
 	virtual
 		rti1516::LogicalTimeInterval &
-		operator+=(rti1516::LogicalTimeInterval const & addend)
+		operator+=(rti1516::LogicalTimeInterval const & value)
 		throw (rti1516::InvalidLogicalTimeInterval);
 
 	virtual
 		rti1516::LogicalTimeInterval &
-		operator-=(rti1516::LogicalTimeInterval const & subtrahend)
+		operator-=(rti1516::LogicalTimeInterval const & value)
 		throw (rti1516::InvalidLogicalTimeInterval);
 
 	virtual

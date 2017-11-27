@@ -35,7 +35,7 @@ static PrettyDebug D("HLAGSSAPI", "(H-GSSAPI) - ");
 /*! Retrieve credential for Local principal.
   Parameter can be GSS_C_INITIATE(client) or GSS_C_ACCEPT(server).
 */
-void GSSAPIHandler::acquireCred(int InitOrAccept)
+void GSSAPIHandler::acquireCred(int initOrAccept)
 {
     D.Out(pdInit, "GSSAPI: Acquire Credential.");
 
@@ -43,7 +43,7 @@ void GSSAPIHandler::acquireCred(int InitOrAccept)
                             LocalName, // Principal Name
                             HLA_GSS_SESSION_DURATION, // Expiration delay
                             GSS_C_NULL_OID_SET,
-                            InitOrAccept, // Cred. used to init.
+                            initOrAccept, // Cred. used to init.
                             &Credential, // Returned Credential
                             NULL,
                             NULL);
@@ -56,7 +56,7 @@ void GSSAPIHandler::acquireCred(int InitOrAccept)
   remote side, AcceptSecContext will be directly called. In both case, Local
   Name must have been previously set.
 */
-void GSSAPIHandler::acceptSecContext(SocketTCP* Socket)
+void GSSAPIHandler::acceptSecContext(SocketTCP* socket)
 {
     // The Input and Output Buffers used by the initial Handshake.
 
@@ -95,7 +95,7 @@ void GSSAPIHandler::acceptSecContext(SocketTCP* Socket)
     do {
         // Wait for peer's response if needed(InputToken may be allocated)
 
-        getToken(Socket, InputToken);
+        getToken(socket, InputToken);
 
         D.Out(pdInit, "GSSAPI: Received Security Context Token(%d bytes)", InputToken.length);
 
@@ -144,7 +144,7 @@ void GSSAPIHandler::acceptSecContext(SocketTCP* Socket)
         if (OutputToken.length > 0) {
             D.Out(pdInit, "GSSAPI: Accept Sec Context sending answer Token(%d bytes).", OutputToken.length);
 
-            sendToken(Socket, OutputToken);
+            sendToken(socket, OutputToken);
 
             gss_release_buffer(&Minor, &OutputToken);
 
@@ -210,17 +210,17 @@ GSSAPIHandler::~GSSAPIHandler()
 
 // ----------------------------------------------------------------------------
 /*! Throw NetworkError exception if 'Code' is different from GSS_S_COMPLETE.
-  An Error message is displayed, starting with ContextString if not NULL.
+  An Error message is displayed, starting with contextString if not NULL.
 */
-void GSSAPIHandler::detectError(char* ContextString)
+void GSSAPIHandler::detectError(char* contextString)
 {
     gss_buffer_desc ErrorMessage;
 
     if (GSS_ERROR(Code)) {
         gss_display_status(&Minor, Code, GSS_C_GSS_CODE, GSS_MECH_DES, NULL, &ErrorMessage);
 
-        if (ContextString != NULL)
-            printf("%s: %s\n", ContextString, (char*) ErrorMessage.value);
+        if (contextString != NULL)
+            printf("%s: %s\n", contextString, (char*) ErrorMessage.value);
         else
             printf("GSSAPI: %s\n", (char*) ErrorMessage.value);
 
@@ -234,7 +234,7 @@ void GSSAPIHandler::detectError(char* ContextString)
 /*! All buffers contain clear-text messages. Incoming buffer value array is
   allocated by getMessage, and must be freed by calling ReleaseBuffer.
 */
-void GSSAPIHandler::getMessage(SocketTCP* Socket, gss_buffer_t IncomingBuffer)
+void GSSAPIHandler::getMessage(SocketTCP* socket, gss_buffer_t incoming_buffer)
 {
     gss_buffer_desc SealedToken;
     gss_buffer_desc Signature;
@@ -245,33 +245,33 @@ void GSSAPIHandler::getMessage(SocketTCP* Socket, gss_buffer_t IncomingBuffer)
     switch (RTI_GSSAPI_USAGE) {
     case RTI_GSS_NOTHING:
         // Get non-encrypted token.
-        getToken(Socket, SealedToken);
+        getToken(socket, SealedToken);
 
         // 'Copy' non encrypted Token into Incoming Buffer(just change pointers)
-        IncomingBuffer->value = SealedToken.value;
-        IncomingBuffer->length = SealedToken.length;
+        incoming_buffer->value = SealedToken.value;
+        incoming_buffer->length = SealedToken.length;
 
-        // Don't free SealedToken ! IncomingBuffer will be freed by a call
+        // Don't free SealedToken ! incoming_buffer will be freed by a call
         // to GSSAPIHandler::ReleaseBuffer.
         break;
 
     case RTI_GSS_SIGN_ONLY:
         // Get Token(ie "Buffer Length" + "Buffer" + "Signature Token")
-        getToken(Socket, SealedToken);
+        getToken(socket, SealedToken);
 
         // Get Buffer length
-        memcpy(&(IncomingBuffer->length), SealedToken.value, sizeof(OM_uint32));
+        memcpy(&(incoming_buffer->length), SealedToken.value, sizeof(OM_uint32));
 
         // Get Buffer
-        IncomingBuffer->value = (void*) calloc(IncomingBuffer->length, sizeof(char));
+        incoming_buffer->value = (void*) calloc(incoming_buffer->length, sizeof(char));
 
-        memcpy(IncomingBuffer->value, (char*) SealedToken.value + sizeof(OM_uint32), IncomingBuffer->length);
+        memcpy(incoming_buffer->value, (char*) SealedToken.value + sizeof(OM_uint32), incoming_buffer->length);
 
         // Check Signature
-        Signature.value = (char*) SealedToken.value + sizeof(OM_uint32) + IncomingBuffer->length;
-        Signature.length = SealedToken.length - sizeof(OM_uint32) - IncomingBuffer->length;
+        Signature.value = (char*) SealedToken.value + sizeof(OM_uint32) + incoming_buffer->length;
+        Signature.length = SealedToken.length - sizeof(OM_uint32) - incoming_buffer->length;
 
-        Code = gss_verify(&Minor, Context, IncomingBuffer, &Signature, &QOPState);
+        Code = gss_verify(&Minor, Context, incoming_buffer, &Signature, &QOPState);
 
         detectError("GSSAPI: Get Message[verify]");
 
@@ -283,10 +283,10 @@ void GSSAPIHandler::getMessage(SocketTCP* Socket, gss_buffer_t IncomingBuffer)
     case RTI_GSS_ENCRYPT:
 
         // Get encrypted token.
-        getToken(Socket, SealedToken);
+        getToken(socket, SealedToken);
 
         // Decrypt Token
-        Code = gss_unseal(&Minor, Context, &SealedToken, IncomingBuffer, &ConfWasUsed, &QOPState);
+        Code = gss_unseal(&Minor, Context, &SealedToken, incoming_buffer, &ConfWasUsed, &QOPState);
 
         free(SealedToken.value);
         break;
@@ -341,16 +341,16 @@ char* GSSAPIHandler::getRemoteName()
   allocates(with calloc) enough space for the incoming token. Memory must be
   freed with free().
 */
-void GSSAPIHandler::getToken(SocketTCP* Socket, gss_buffer_desc& Buffer)
+void GSSAPIHandler::getToken(SocketTCP* socket, gss_buffer_desc& buffer)
 {
     // Read Token size.
-    Socket->SocketTCP::receive((void*) &Buffer.length, sizeof(Buffer.length));
+    socket->SocketTCP::receive((void*) &buffer.length, sizeof(buffer.length));
 
     // Allocate memory for content.
-    Buffer.value = (void*) calloc(Buffer.length, sizeof(char));
+    buffer.value = (void*) calloc(buffer.length, sizeof(char));
 
     // Read content.
-    Socket->SocketTCP::receive((void*) Buffer.value, Buffer.length);
+    socket->SocketTCP::receive((void*) buffer.value, buffer.length);
 }
 
 // ----------------------------------------------------------------------------
@@ -358,7 +358,7 @@ void GSSAPIHandler::getToken(SocketTCP* Socket, gss_buffer_desc& Buffer)
   On the remote side, AcceptSecContext will be directly called. In both
   case, Local Name must have been previously set.
 */
-void GSSAPIHandler::initSecContext(SocketTCP* Socket)
+void GSSAPIHandler::initSecContext(SocketTCP* socket)
 {
     // The Input and Output Buffers used by the initial Handshake.
 
@@ -440,7 +440,7 @@ void GSSAPIHandler::initSecContext(SocketTCP* Socket)
         if (OutputToken.length > 0) {
             D.Out(pdInit, "GSSAPI: Init Sec Context sending Token(%d bytes).", OutputToken.length);
 
-            sendToken(Socket, OutputToken);
+            sendToken(socket, OutputToken);
 
             gss_release_buffer(&Minor, &OutputToken);
 
@@ -453,7 +453,7 @@ void GSSAPIHandler::initSecContext(SocketTCP* Socket)
         if (Code == GSS_S_CONTINUE_NEEDED) {
             D.Out(pdInit, "GSSAPI: Init Sec Context waiting for server answer...");
 
-            getToken(Socket, InputToken);
+            getToken(socket, InputToken);
         }
 
     } while (Code != GSS_S_COMPLETE); // Loop until no response is needed
@@ -463,31 +463,31 @@ void GSSAPIHandler::initSecContext(SocketTCP* Socket)
 /*! All buffers contain clear-text messages. Incoming buffer value array is
   allocated by GetMessage, and must be freed by calling releaseBuffer.
 */
-void GSSAPIHandler::releaseBuffer(gss_buffer_t IncomingBuffer)
+void GSSAPIHandler::releaseBuffer(gss_buffer_t incoming_buffer)
 {
     switch (RTI_GSSAPI_USAGE) {
     case RTI_GSS_NOTHING:
     case RTI_GSS_SIGN_ONLY:
         // Buffer was allocated by GetToken
-        free(IncomingBuffer->value);
-        IncomingBuffer->value = NULL;
-        IncomingBuffer->length = 0;
+        free(incoming_buffer->value);
+        incoming_buffer->value = NULL;
+        incoming_buffer->length = 0;
         break;
 
     case RTI_GSS_ENCRYPT:
-        gss_release_buffer(&Minor, IncomingBuffer);
+        gss_release_buffer(&Minor, incoming_buffer);
     }
 }
 
 // ----------------------------------------------------------------------------
 //! sendMessage.
-void GSSAPIHandler::sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer)
+void GSSAPIHandler::sendMessage(SocketTCP* socket, gss_buffer_t outcoming_buffer)
 {
     gss_buffer_desc SealedToken;
     gss_buffer_desc SignatureToken;
 
-    OM_uint32 OutLength = OutcomingBuffer->length;
-    void* OutValue = OutcomingBuffer->value;
+    OM_uint32 OutLength = outcoming_buffer->length;
+    void* OutValue = outcoming_buffer->value;
     int ConfState;
 
     detectError("GSSAPI: Seal Message");
@@ -495,12 +495,12 @@ void GSSAPIHandler::sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer)
     switch (RTI_GSSAPI_USAGE) {
     case RTI_GSS_NOTHING:
         // Send clear-text message.
-        sendToken(Socket, *OutcomingBuffer);
+        sendToken(socket, *outcoming_buffer);
         break;
 
     case RTI_GSS_SIGN_ONLY:
         // Compute Signature Token
-        Code = gss_sign(&Minor, Context, GSS_C_QOP_DEFAULT, OutcomingBuffer, &SignatureToken);
+        Code = gss_sign(&Minor, Context, GSS_C_QOP_DEFAULT, outcoming_buffer, &SignatureToken);
 
         detectError("GSSAPI: Send Message[sign]");
 
@@ -511,17 +511,17 @@ void GSSAPIHandler::sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer)
 
         SealedToken.value = (void*) calloc(SealedToken.length, sizeof(char));
 
-        // Copy OutcomingBuffer length
+        // Copy outcoming_buffer length
         memcpy(SealedToken.value, &(OutLength), sizeof(OM_uint32));
 
-        // Copy OutcomingBuffer
+        // Copy outcoming_buffer
         memcpy((char*) SealedToken.value + sizeof(OM_uint32), OutValue, OutLength);
 
         // Copy SignatureToken
         memcpy((char*) SealedToken.value + sizeof(OM_uint32) + OutLength, SignatureToken.value, SignatureToken.length);
 
         // Send resulting Token
-        sendToken(Socket, SealedToken);
+        sendToken(socket, SealedToken);
 
         // Free memory
         free(SealedToken.value);
@@ -531,11 +531,11 @@ void GSSAPIHandler::sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer)
 
     case RTI_GSS_ENCRYPT:
 
-        Code = gss_seal(&Minor, Context, RTI_TRUE, GSS_C_QOP_DEFAULT, OutcomingBuffer, &ConfState, &SealedToken);
+        Code = gss_seal(&Minor, Context, RTI_TRUE, GSS_C_QOP_DEFAULT, outcoming_buffer, &ConfState, &SealedToken);
 
         detectError("GSSAPI: Send Message[seal]");
 
-        sendToken(Socket, SealedToken);
+        sendToken(socket, SealedToken);
         gss_release_buffer(&Minor, &SealedToken);
     }
 }
@@ -548,29 +548,29 @@ void GSSAPIHandler::sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer)
   allocates(with calloc) enough space for the incoming token. Memory must be
   freed with free().
 */
-void GSSAPIHandler::sendToken(SocketTCP* Socket, gss_buffer_desc Buffer)
+void GSSAPIHandler::sendToken(SocketTCP* socket, gss_buffer_desc buffer)
 {
     // Write Token Length
-    Socket->SocketTCP::send((void*) &Buffer.length, sizeof(Buffer.length));
+    socket->SocketTCP::send((void*) &buffer.length, sizeof(buffer.length));
 
     // Write Token Content
-    Socket->SocketTCP::send((void*) Buffer.value, Buffer.length);
+    socket->SocketTCP::send((void*) buffer.value, buffer.length);
 }
 
 // ----------------------------------------------------------------------------
 //! setLocalName.
-void GSSAPIHandler::setLocalName(char* PrincipalName)
+void GSSAPIHandler::setLocalName(char* principal_name)
 {
     char* p;
     char bidon[80];
 
     gss_buffer_desc LocalBuffer = GSS_C_EMPTY_BUFFER;
 
-    strcpy(bidon, PrincipalName);
+    strcpy(bidon, principal_name);
 
     // Put Principal Name in GSSAPI buffer
 
-    if ((PrincipalName == NULL) || (strlen(PrincipalName) == 0))
+    if ((principal_name == NULL) || (strlen(principal_name) == 0))
         throw NetworkError("Bad Local Principal Name.");
 
     // Remove any machine name(like in rtip@jocaste)
@@ -595,23 +595,23 @@ void GSSAPIHandler::setLocalName(char* PrincipalName)
 //! setRemoveName.
 /*! For client, before InitSecCntxt.
  */
-void GSSAPIHandler::setRemoteName(char* PrincipalName)
+void GSSAPIHandler::setRemoteName(char* principal_name)
 {
     gss_buffer_desc LocalBuffer = GSS_C_EMPTY_BUFFER;
 
     // Put Principal Name in GSSAPI buffer
 
-    if ((PrincipalName == NULL) || (strlen(PrincipalName) == 0))
+    if ((principal_name == NULL) || (strlen(principal_name) == 0))
         throw NetworkError("Bad Local Principal Name.");
 
-    LocalBuffer.value = PrincipalName;
-    LocalBuffer.length = strlen(PrincipalName) + 1;
+    LocalBuffer.value = principal_name;
+    LocalBuffer.length = strlen(principal_name) + 1;
 
     // Give Name to GSSAPI
 
     Code = gss_import_name(&Minor, (gss_buffer_t) &LocalBuffer, GSS_C_NULL_OID, &RemoteName);
 
-    D.Out(pdInit, "GSSAPI: Remote Name set to %s.", PrincipalName);
+    D.Out(pdInit, "GSSAPI: Remote Name set to %s.", principal_name);
 
     detectError("GSSAPI/setRemoteName");
 }

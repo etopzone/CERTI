@@ -38,7 +38,7 @@ public:
     RingBuffer(const std::string& RingBuffer_Name,
                const BUFFER_SIDE_t& RingBuffer_Side,
                const int RingBuffer_Size,
-               const std::string& SHM_Sem_Type) // SHM_Sem_Type = Posix,SysV ou Win32
+               const std::string& Shm_Sem_Type) // SHM_Sem_Type = Posix,SysV ou Win32
         ;
     // Destructor
     ~RingBuffer();

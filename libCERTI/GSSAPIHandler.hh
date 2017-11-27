@@ -42,8 +42,8 @@ public:
     // -----------
     // -- Names --
     // -----------
-    void setLocalName(char* PrincipalName);
-    void setRemoteName(char* PrincipalName);
+    void setLocalName(char* principal_name);
+    void setRemoteName(char* principal_name);
     char* getRemoteName();
 
     // ------------------
@@ -55,9 +55,9 @@ public:
     // ------------------------------
     // -- Message Exchange Methods --
     // ------------------------------
-    void getMessage(SocketTCP* Socket, gss_buffer_t IncomingBuffer);
-    void releaseBuffer(gss_buffer_t IncomingBuffer);
-    void sendMessage(SocketTCP* Socket, gss_buffer_t OutcomingBuffer);
+    void getMessage(SocketTCP* Socket, gss_buffer_t incoming_buffer);
+    void releaseBuffer(gss_buffer_t incoming_buffer);
+    void sendMessage(SocketTCP* Socket, gss_buffer_t outcoming_buffer);
 
 private:
     // ---------------------

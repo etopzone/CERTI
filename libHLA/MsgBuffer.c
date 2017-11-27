@@ -170,10 +170,10 @@ void MB_create(MsgBuffer_t* msg)
     memset(msg->buffer, 0, msg->bufferMaxSize);
 } /* end of MB_MessageBuffer() */
 
-void MB_createWithSize(MsgBuffer_t* msg, uint32_t n)
+void MB_createWithSize(MsgBuffer_t* msg, uint32_t bufferMaxSize)
 {
     MB_initialize(msg);
-    MB_reallocate(msg, n);
+    MB_reallocate(msg, bufferMaxSize);
     memset(msg->buffer, 0, msg->bufferMaxSize);
 } /* end of MB_MessageBuffer(uint32_t) */
 

@@ -33,7 +33,7 @@ public:
 
 protected:
     int sendHTTPConnect(const char* addr, in_port_t port);
-    size_t receiveLine(char* Buffer, size_t maxSize);
+    size_t receiveLine(char* buffer, size_t max_size);
 };
 
 } // namespace certi

@@ -435,9 +435,9 @@ Responses Mom::processFederateSetTiming(const FederateHandle& federate_handle, c
 
     my_federates_update_settings[federate_handle].updateRate = std::chrono::seconds(reportPeriod);
 
-    return {};
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetTiming" << endl;
+
+    return {};
 }
 
 /** Modify the ownership state of an attribute of an object instance for the specified joined federate. If the
@@ -487,9 +487,9 @@ Responses Mom::processFederateModifyAttributeState(const FederateHandle& federat
         }
     }
 
-    return {};
-
     Debug(D, pdGendoc) << "exit  Mom::processFederateModifyAttributeState" << endl;
+
+    return {};
 }
 
 Responses Mom::processFederateSetSwitches(const FederateHandle& federate_handle,

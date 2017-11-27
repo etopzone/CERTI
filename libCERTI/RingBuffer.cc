@@ -629,11 +629,11 @@ void RingBuffer::Receive(void* Buffer, size_t Size)
                 throw(certi::MessageNotReceived("RingBuffer::Receive() failed."));
                 ;
             }
-            throw(certi::BufferEmpty("RingBuffer::Receive() failed."));
-
 #ifdef DEBUG
             std::cout << "lllll RingBuffer::Receive(...) --> Nothing to Read on _Shm_SC !!" << std::endl;
 #endif
+
+            throw(certi::BufferEmpty("RingBuffer::Receive() failed."));
         }
         else {
 #ifdef DEBUG
@@ -720,11 +720,11 @@ void RingBuffer::Receive(void* Buffer, size_t Size)
                           << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
                 throw(certi::MessageNotReceived("RingBuffer::Receive() failed."));
             }
-            throw(certi::BufferEmpty("RingBuffer::Receive() failed."));
-
 #ifdef DEBUG
             std::cout << "RingBuffer::Receive(...) --> Nothing to Read on _Shm_CS !!" << std::endl;
 #endif
+
+            throw(certi::BufferEmpty("RingBuffer::Receive() failed."));
         }
         else {
 #ifdef DEBUG

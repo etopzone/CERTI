@@ -79,10 +79,10 @@ MessageBuffer::MessageBuffer()
     memset(buffer, 0, bufferMaxSize);
 } /* end of MessageBuffer::MessageBuffer() */
 
-MessageBuffer::MessageBuffer(uint32_t n)
+MessageBuffer::MessageBuffer(uint32_t bufferMaxSize)
 {
     initialize();
-    reallocate(n);
+    reallocate(bufferMaxSize);
     memset(buffer, 0, bufferMaxSize);
 } /* end of MessageBuffer::MessageBuffer(uint32_t) */
 

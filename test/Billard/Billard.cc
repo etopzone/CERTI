@@ -642,9 +642,8 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
 			 RTI::ObjectHandle id)
 {
     libhla::MessageBuffer buffer;
-    RTI::ParameterHandleValuePairSet *parameterSet=NULL ;
 
-    parameterSet = RTI::ParameterSetFactory::create(3);
+    RTI::ParameterHandleValuePairSet* parameterSet = RTI::ParameterSetFactory::create(3);
 
     buffer.reset();
     buffer.write_int32(id);

@@ -52,7 +52,7 @@ public:
 
     int accept(SocketTCP* server);
     virtual void send(const unsigned char*, size_t);
-    virtual void receive(void* Buffer, unsigned long Size);
+    virtual void receive(void* buffer, unsigned long size);
 
     virtual bool isDataReady() const;
 

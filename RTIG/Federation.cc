@@ -256,8 +256,7 @@ bool Federation::check(FederateHandle federate_handle) const
     return true;
 }
 
-std::pair<FederateHandle, Responses>
-Federation::add(const string& federate_name, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -1406,34 +1405,33 @@ Responses Federation::updateAttributeValues(FederateHandle federate,
 
     if (my_mom && federate != my_mom->getHandle()) {
         std::map<FederateHandle, int> reflections;
-        for(const auto& rep: responses) {
-            for(const auto& socket: rep.sockets()) {
-                if(rep.message()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES) {
+        for (const auto& rep : responses) {
+            for (const auto& socket : rep.sockets()) {
+                if (rep.message()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES) {
                     ++reflections[my_server->getFederateHandle(socket)];
                 }
             }
         }
-        
+
         my_mom->registerUpdate(federate, object->getClass());
-        
+
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
         auto resp = my_mom->updateUpdatesSent(federate);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-        
+
         auto resp2 = my_mom->updateObjectInstancesUpdated(federate);
         responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
-        
-        for(const auto& r: reflections) {
+
+        for (const auto& r : reflections) {
             my_mom->registerReflection(r.first, object->getClass());
-            
+
             my_mom->registerObjectInstanceReflected(r.first, object->getClass(), object_handle);
             auto resp3 = my_mom->updateReflectionsReceived(r.first, r.second);
             responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
-        
+
             auto resp4 = my_mom->updateObjectInstancesReflected(r.first);
             responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
         }
-        
     }
 
     Debug(D, pdRegister) << "Federation " << my_handle << ": Federate " << federate << " updated attributes of Object "
@@ -1461,30 +1459,30 @@ Responses Federation::updateAttributeValues(FederateHandle federate,
 
     if (my_mom && federate != my_mom->getHandle()) {
         std::map<FederateHandle, int> reflections;
-        for(const auto& rep: responses) {
-            for(const auto& socket: rep.sockets()) {
-                if(rep.message()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES) {
+        for (const auto& rep : responses) {
+            for (const auto& socket : rep.sockets()) {
+                if (rep.message()->getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES) {
                     ++reflections[my_server->getFederateHandle(socket)];
                 }
             }
         }
-        
+
         my_mom->registerUpdate(federate, object->getClass());
-        
+
         my_mom->registerObjectInstanceUpdated(federate, object->getClass(), object_handle);
         auto resp = my_mom->updateUpdatesSent(federate);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-        
+
         auto resp2 = my_mom->updateObjectInstancesUpdated(federate);
         responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
-        
-        for(const auto& r: reflections) {
+
+        for (const auto& r : reflections) {
             my_mom->registerReflection(r.first, object->getClass());
-            
+
             my_mom->registerObjectInstanceReflected(r.first, object->getClass(), object_handle);
             auto resp3 = my_mom->updateReflectionsReceived(r.first, r.second);
             responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
-        
+
             auto resp4 = my_mom->updateObjectInstancesReflected(r.first);
             responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
         }
@@ -1597,19 +1595,19 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
 
     if (my_mom) {
         std::map<FederateHandle, int> interactions;
-        for(const auto& rep: responses) {
-            for(const auto& socket: rep.sockets()) {
-                if(rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
+        for (const auto& rep : responses) {
+            for (const auto& socket : rep.sockets()) {
+                if (rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
                     ++interactions[my_server->getFederateHandle(socket)];
                 }
             }
         }
-        
+
         my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
         auto resp = my_mom->updateInteractionsSent(federate_handle);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-        
-        for(const auto& i: interactions) {
+
+        for (const auto& i : interactions) {
             my_mom->registerInteractionReceived(i.first, interaction_class_handle);
             auto resp2 = my_mom->updateInteractionsReceived(i.first);
             responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
@@ -1670,19 +1668,19 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
 
     if (my_mom) {
         std::map<FederateHandle, int> interactions;
-        for(const auto& rep: responses) {
-            for(const auto& socket: rep.sockets()) {
-                if(rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
+        for (const auto& rep : responses) {
+            for (const auto& socket : rep.sockets()) {
+                if (rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
                     ++interactions[my_server->getFederateHandle(socket)];
                 }
             }
         }
-        
+
         my_mom->registerInteractionSent(federate_handle, interaction_class_handle);
         auto resp = my_mom->updateInteractionsSent(federate_handle);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-        
-        for(const auto& i: interactions) {
+
+        for (const auto& i : interactions) {
             my_mom->registerInteractionReceived(i.first, interaction_class_handle);
             auto resp2 = my_mom->updateInteractionsReceived(i.first);
             responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
@@ -2497,7 +2495,7 @@ Responses Federation::respondToAll(std::unique_ptr<NetworkMessage> message, cons
 }
 
 Responses Federation::respondToSome(std::unique_ptr<NetworkMessage> message,
-                                    const std::vector<FederateHandle> recipients)
+                                    const std::vector<FederateHandle>& recipients)
 {
     Responses responses;
 

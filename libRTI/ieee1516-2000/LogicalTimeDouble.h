@@ -196,7 +196,7 @@ public:
 
    virtual std::wstring toString() const;
 
-   virtual bool operator==(LogicalTime const & left) const
+   virtual bool operator==(LogicalTime const & lt_left) const
 	   throw (rti1516::InvalidLogicalTime);
 
    virtual int64_t toMilliseconds() const;
@@ -331,8 +331,8 @@ public:
     virtual unsigned long encode(void* buffer, unsigned long bufferSize) const 
        throw (rti1516::CouldNotEncode);
 
-    // Decode encodedValue into self
-    virtual void decode(rti1516::VariableLengthData const & encodedValue)
+    // Decode encodedLogicalTimeInterval into self
+    virtual void decode(rti1516::VariableLengthData const & encodedLogicalTimeInterval)
       throw (rti1516::InternalError,
              rti1516::CouldNotDecode);
 

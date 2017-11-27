@@ -89,11 +89,11 @@ public:
                                          Exception::Type &e);
 
     // 5.10
-    void startRegistrationForObjectClass(ObjectClassHandle theClass,
+    void startRegistrationForObjectClass(ObjectClassHandle the_class,
                                          Exception::Type &e);
 
     // 5.11
-    void stopRegistrationForObjectClass(ObjectClassHandle theClass,
+    void stopRegistrationForObjectClass(ObjectClassHandle the_class,
                                         Exception::Type &e);
 
     /**
@@ -110,11 +110,11 @@ public:
                                                Exception::Type &e);
 
     // 5.12
-    void turnInteractionsOn(InteractionClassHandle theHandle,
+    void turnInteractionsOn(InteractionClassHandle interaction,
                             Exception::Type &e);
 
     // 5.13
-    void turnInteractionsOff(InteractionClassHandle theHandle,
+    void turnInteractionsOff(InteractionClassHandle interaction,
                              Exception::Type &e);
 
 protected:

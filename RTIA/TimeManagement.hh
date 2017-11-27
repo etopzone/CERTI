@@ -39,45 +39,38 @@
 #include "ObjectManagement.hh"
 #include "OwnershipManagement.hh"
 
-
 namespace certi {
 namespace rtia {
 
-class OwnershipManagement ;
+class OwnershipManagement;
 
 typedef enum {
-    PAS_D_AVANCEE=1, /*!< No time advancing request pending */
-    TAR,             /*!< TimeAdvanceRequest pending        */
-    NER,             /*!< NextEventRequest                  */
-    TARA,            /*!< TimeAdvanceRequestAvailable       */
-    NERA             /*!< NextEventRequestAvailable         */
-} TypeAvancee ;
+    PAS_D_AVANCEE = 1, /*!< No time advancing request pending */
+    TAR, /*!< TimeAdvanceRequest pending        */
+    NER, /*!< NextEventRequest                  */
+    TARA, /*!< TimeAdvanceRequestAvailable       */
+    NERA /*!< NextEventRequestAvailable         */
+} TypeAvancee;
 
-typedef enum {
-    AFTER_TAR_OR_NER=1,
-    AFTER_TAR_OR_NER_WITH_ZERO_LK,
-    AFTER_TARA_OR_NERA
-} TypeGrantedState ;
+typedef enum { AFTER_TAR_OR_NER = 1, AFTER_TAR_OR_NER_WITH_ZERO_LK, AFTER_TARA_OR_NERA } TypeGrantedState;
 
 /**
  * The [distrbuted] time management class.
  * This class is instantiated in CERTI LRC (RTIA) and maintains
  * local view of LBTS and other time management related data and services.
  */
-class TimeManagement : public LBTS
-{
+class TimeManagement : public LBTS {
 public:
-    TimeManagement(Communications *,
-                   Queues*,
-                   FederationManagement *,
-		   DeclarationManagement *,
-                   ObjectManagement *,
-                   OwnershipManagement *);
-
+    TimeManagement(Communications* GC,
+                   Queues* GQueues,
+                   FederationManagement* GF,
+                   DeclarationManagement* GD,
+                   ObjectManagement* GO,
+                   OwnershipManagement* GP);
 
     // Advance Time Methods
-    void nextEventRequest(FederationTime heure_logique, Exception::Type &e);
-    void nextEventRequestAvailable(FederationTime heure_logique, Exception::Type &e);
+    void nextEventRequest(FederationTime logical_time, Exception::Type& e);
+    void nextEventRequestAvailable(FederationTime logical_time, Exception::Type& e);
 
     /**
      * Try to deliver some message to the federate (command or FIFO)
@@ -89,29 +82,49 @@ public:
      * @param[out] e exception which may have occurred during tick
      * @return true if there is more message for the federate to handle
      */
-    bool tick(Exception::Type &e);
+    bool tick(Exception::Type& e);
 
-    void timeAdvanceRequest(FederationTime heure_logique, Exception::Type &e);
-    void timeAdvanceRequestAvailable(FederationTime heure_logique, Exception::Type &e);
+    /** Either nextEventRequest or timeAdvanceRequest is called by federate to
+     * determine time to reach. It then calls tick() until a timeAdvanceGrant is
+     * received.
+     */
+    void timeAdvanceRequest(FederationTime logical_time, Exception::Type& e);
+    void timeAdvanceRequestAvailable(FederationTime logical_time, Exception::Type& e);
+
+    /// Returns true if the time stamp of a time advance request is correct
     bool testValidTime(FederationTime theTime);
 
     // Change Federate Time State
-    void setLookahead(FederationTimeDelta lookahead, Exception::Type &e);
-    void setTimeConstrained(bool etat, Exception::Type &e);
-    void setTimeRegulating(bool etat,FederationTime heure_logique,
-                           FederationTimeDelta lookahead, Exception::Type &e);
-    void StopperAvanceTemps() {
-        _avancee_en_cours = PAS_D_AVANCEE ;
+    void setLookahead(FederationTimeDelta lookahead, Exception::Type& e);
+    void setTimeConstrained(bool etat, Exception::Type& e);
+    void setTimeRegulating(bool etat, FederationTime logical_time, FederationTimeDelta lookahead, Exception::Type& e);
+    void StopperAvanceTemps()
+    {
+        _avancee_en_cours = PAS_D_AVANCEE;
     };
 
     // Request Attribute Methods
     FederationTime requestFederationTime();
-    FederationTime requestFederateTime() { return(_heure_courante); };
+    FederationTime requestFederateTime()
+    {
+        return (_heure_courante);
+    };
     FederationTimeDelta requestLookahead();
+
+    /// Return the min of LBTS and the time stamp of the next TSO message
     FederationTime requestMinNextEventTime();
-    FederationTime requestLBTS() { return _LBTS ; };
-    bool requestContraintState() { return _is_constrained ; };
-    bool requestRegulateurState() { return _is_regulating ; };
+    FederationTime requestLBTS()
+    {
+        return _LBTS;
+    };
+    bool requestContraintState()
+    {
+        return _is_constrained;
+    };
+    bool requestRegulateurState()
+    {
+        return _is_regulating;
+    };
 
     /**
      * The different tick state values.
@@ -123,12 +136,12 @@ public:
      *    - tick(minTime,maxTime)
      */
     enum {
-        NO_TICK,        /*!< No tick request received from federate */
-        TICK_BLOCKING,  /*!< A 'blocking' tick request has been received */
-        TICK_NEXT,      /*!< This is the continuation state of a previous
+        NO_TICK, /*!< No tick request received from federate */
+        TICK_BLOCKING, /*!< A 'blocking' tick request has been received */
+        TICK_NEXT, /*!< This is the continuation state of a previous
                              (blocking with timeout) tick request */
-        TICK_CALLBACK,  /*!< Time management needs to treat a Callback */
-        TICK_RETURN     /*!< Time management will terminate the tick call
+        TICK_CALLBACK, /*!< Time management needs to treat a Callback */
+        TICK_RETURN /*!< Time management will terminate the tick call
                              because of an error in a callback or because this is the end
                              (timeout)
                          */
@@ -139,8 +152,8 @@ public:
      * try to handle multiple callback in the allowed
      * amount of time tick(minTime,maxTime)
      */
-    bool _tick_multiple;  // process multiple callbacks
-    bool _tick_result;  // tick() return value
+    bool _tick_multiple; // process multiple callbacks
+    bool _tick_result; // tick() return value
 
     TickTime _tick_timeout;
     TickTime _tick_max_tick;
@@ -148,10 +161,9 @@ public:
     /**
      * Is asynchronous delivery enabled/disabled.
      */
-    bool _asynchronous_delivery ;
+    bool _asynchronous_delivery;
 
 private:
-
     /**
      * Main time advancing method.
      * This method is called by @ref tick().
@@ -160,21 +172,21 @@ private:
      * @param[out] msg_restant
      * @param[out] e exception will be updated to
      */
-    void advance(bool &msg_restant, Exception::Type &e);
+    void advance(bool& msg_restant, Exception::Type& e);
 
     /**
      * This method is called by @ref advance which is called by tick. This call is
      * done only if request type does correspond. It delivers TSO messages to
      * federate and if no messages are available, delivers a TimeAdvanceGrant.
      */
-    void timeAdvance(bool &msg_restant, Exception::Type &e);
+    void timeAdvance(bool& msg_restant, Exception::Type& e);
 
     /**
      * This method is called by @ref advance which is called by tick. This call
      * is done only if request type does correspond. It delivers TSO messages to
      * federate and if no messages are available, delivers a TimeAdvanceGrant.
      */
-    void nextEventAdvance(bool &msg_restant, Exception::Type &e);
+    void nextEventAdvance(bool& msg_restant, Exception::Type& e);
 
     /**
      * Once every messages has been delivered to federate, logical time can be
@@ -191,7 +203,7 @@ private:
      * Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
      * @param[in] msg the message to be handled.
      */
-    bool executeFederateService(NetworkMessage &msg);
+    bool executeFederateService(NetworkMessage& msg);
     /**
      * Send a null message to RTIG containing Logicaal Time + Lookahead.
      * This is the Null Message Algorithm from Chandy-Misra-Bryant
@@ -201,39 +213,39 @@ private:
      */
     void sendNullMessage(FederationTime logicalTime);
     void sendNullPrimeMessage(FederationTime logicalTime);
-    void timeRegulationEnabled(FederationTime, Exception::Type &e);
-    void timeConstrainedEnabled(FederationTime, Exception::Type &e);
+    void timeRegulationEnabled(FederationTime, Exception::Type& e);
+    void timeConstrainedEnabled(FederationTime, Exception::Type& e);
 
     // Other RTIA Objects
-    Communications *comm ;
-    Queues *queues ;
-    FederationManagement *fm ;
-    DeclarationManagement *dm ;
-    ObjectManagement *om ;
-    OwnershipManagement *owm ;
+    Communications* comm;
+    Queues* queues;
+    FederationManagement* fm;
+    DeclarationManagement* dm;
+    ObjectManagement* om;
+    OwnershipManagement* owm;
 
     /// Federate State
-    FederationTime lastNullMessageDate ;
+    FederationTime lastNullMessageDate;
     FederationTime lastNullPrimeMessageDate;
 
     /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
-    TypeAvancee _avancee_en_cours ;
-    FederationTime date_avancee ;
-    TypeGrantedState _type_granted_state ; 
+    TypeAvancee _avancee_en_cours;
+    FederationTime date_avancee;
+    TypeGrantedState _type_granted_state;
 
     // Federate Data
-    FederationTime      _heure_courante ;
-    FederationTimeDelta _lookahead_courant ;
+    FederationTime _heure_courante;
+    FederationTimeDelta _lookahead_courant;
     bool _is_regulating;
     bool _is_constrained;
-    
-    uint8_t my_tar_counter {0};
-    uint8_t my_tara_counter {0};
-    uint8_t my_ner_counter {0};
-    uint8_t my_nera_counter {0};
-};
 
-}} // namespace certi/rtia
+    uint8_t my_tar_counter{0};
+    uint8_t my_tara_counter{0};
+    uint8_t my_ner_counter{0};
+    uint8_t my_nera_counter{0};
+};
+}
+} // namespace certi/rtia
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 

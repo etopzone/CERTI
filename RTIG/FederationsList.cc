@@ -72,7 +72,7 @@ void FederationsList::setVerboseLevel(const int verboseLevel) noexcept
 #ifdef FEDERATION_USES_MULTICAST
 std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
                                                                                   const FederationHandle handle,
-                                                                                  SocketServer& server,
+                                                                                  SocketServer& socket_server,
                                                                                   AuditFile& audit,
                                                                                   SocketMC* multicastSocket)
 #else

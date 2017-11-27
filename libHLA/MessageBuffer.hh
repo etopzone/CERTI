@@ -77,7 +77,7 @@ public:
     /**
 	 * Constructor with size.
 	 * Build a MessageBuffer with provisionned bufSize buffer.
-	 * @param[in] bufferMaxSize, the [initial] maixmum size of the buffer
+	 * @param[in] bufferMaxSize the [initial] maixmum size of the buffer
 	 */
     MessageBuffer(uint32_t bufferMaxSize);
 

@@ -465,16 +465,18 @@ private:
     bool restoreXmlData(std::string docFilename);
 
     /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
-    void broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous);
+    [[deprecated("use respondToAll and return Responses instead")]] void
+    broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous);
 
     /// Broadcast 'msg' to some Federates except the specified one
-    void broadcastSomeMessage(NetworkMessage* msg,
-                              FederateHandle except_federate,
-                              const std::vector<FederateHandle>& fede_array,
-                              uint32_t nbfed);
+    [[deprecated("use respondToSome and return Responses instead")]] void
+    broadcastSomeMessage(NetworkMessage* msg,
+                         FederateHandle except_federate,
+                         const std::vector<FederateHandle>& fede_array,
+                         uint32_t nbfed);
 
     Responses respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except = 0);
-    Responses respondToSome(std::unique_ptr<NetworkMessage> message, const std::vector<FederateHandle> recipients);
+    Responses respondToSome(std::unique_ptr<NetworkMessage> message, const std::vector<FederateHandle>& recipients);
 
     Responses setAutoProvide(const bool value);
 

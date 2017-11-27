@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.hh,v 3.8 2009/04/08 10:47:17 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_FILES_HH
@@ -27,53 +26,66 @@
 #include <list>
 #include <stdlib.h>
 
-#include "FederationManagement.hh"
 #include "DeclarationManagement.hh"
+#include "FederationManagement.hh"
 #include "ObjectManagement.hh"
 #include <libCERTI/NetworkMessage.hh>
 
 namespace certi {
 namespace rtia {
 
-class FederationManagement ;
-class DeclarationManagement ;
-class ObjectManagement ;
+class FederationManagement;
+class DeclarationManagement;
+class ObjectManagement;
 
-class Queues
-{
+class Queues {
 public:
     // File FIFO(First In First Out, or Receive Order)
-    void insertFifoMessage(NetworkMessage *msg);
-    NetworkMessage *giveFifoMessage(bool &, bool &);
+    /// Insert a message to end FIFO list.
+    void insertFifoMessage(NetworkMessage* msg);
+
+    /// Give a FIFO message to federate.
+    NetworkMessage* giveFifoMessage(bool& gave_msg, bool& has_remaining_msg);
 
     // File TSO(Time Stamp Order)
-    void insertTsoMessage(NetworkMessage *msg);
-    NetworkMessage *giveTsoMessage(FederationTime heure_logique,
-                                   bool &msg_donne,
-                                   bool &msg_restant);
-    void nextTsoDate(bool &trouve, FederationTime &heure_logique);
+    /// TSO list is sorted by message logical time.
+    void insertTsoMessage(NetworkMessage* msg);
+
+    /** 'heure_logique' is the minimum value between current LBTS and current
+     * time
+     */
+    NetworkMessage* giveTsoMessage(FederationTime logical_time, bool& gave_msg, bool& has_remaining_msg);
+
+    /// Returns logical time from first message in TSO list.
+    void nextTsoDate(bool& found, FederationTime& logical_time);
 
     // File Commandes(ex: requestPause)
-    void insertBeginCommand(NetworkMessage *msg);
-    void insertLastCommand(NetworkMessage *msg);
-    NetworkMessage *giveCommandMessage(bool &msg_donne, bool &msg_restant);
+    /** Insert a message with a command (ex: requestPause) to the beginning of
+     *  command list.
+     */
+    void insertBeginCommand(NetworkMessage* msg);
+    /// Insert a message with a command at the end of command list.
+    void insertLastCommand(NetworkMessage* msg);
 
-    FederationManagement *fm ;
-    DeclarationManagement *dm ;
-    ObjectManagement *om ;
+    /** Give all the commands to the federate (en invoquant les services
+     *  "RTI Initiated" du federe).
+     */
+    NetworkMessage* giveCommandMessage(bool& msg_donne, bool& msg_restant);
+
+    FederationManagement* fm;
+    DeclarationManagement* dm;
+    ObjectManagement* om;
 
 private:
     // Attributes
-    std::list<NetworkMessage *> fifos ; //!< FIFO list.
-    std::list<NetworkMessage *> tsos ; //!< TSO list.
-    std::list<NetworkMessage *> commands ; //!< commands list.
+    std::list<NetworkMessage*> fifos; /// FIFO list.
+    std::list<NetworkMessage*> tsos; /// TSO list.
+    std::list<NetworkMessage*> commands; /// commands list.
 
-    // Call a service on the federate.
-    void executeFederateService(NetworkMessage *);
+    /// Call a service on the federate.
+    void executeFederateService(NetworkMessage*);
 };
-
-}} // namespace certi/rtia
+}
+} // namespace certi/rtia
 
 #endif // CERTI_RTIA_FILES_HH
-
-// $Id: Files.hh,v 3.8 2009/04/08 10:47:17 approx Exp $
