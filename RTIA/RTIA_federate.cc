@@ -383,37 +383,32 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, Exception::Type&
         EventRetraction event;
         UAVq = static_cast<M_Update_Attribute_Values*>(req);
         UAVr = static_cast<M_Update_Attribute_Values*>(rep);
-        try {
-            if (req->isDated()) {
-                D.Out(pdTrace,
-                      "Receiving Message from Federate, type "
-                      "UpdateAttribValues with TIMESTAMP.");
-                event.setSN(om->updateAttributeValues(UAVq->getObject(),
-                                                      UAVq->getAttributes(),
-                                                      UAVq->getValues(),
-                                                      UAVq->getAttributesSize(),
-                                                      UAVq->getDate(),
-                                                      UAVq->getTag(),
-                                                      e));
-                //FIXME event.setSendingFederate()
-                UAVr->setEventRetraction(event);
-                // answer should contains the date too
-                UAVr->setDate(UAVq->getDate());
-            }
-            else {
-                D.Out(pdTrace,
-                      "Receiving Message from Federate, type "
-                      "UpdateAttribValues without TIMESTAMP.");
-                om->updateAttributeValues(UAVq->getObject(),
-                                          UAVq->getAttributes(),
-                                          UAVq->getValues(),
-                                          UAVq->getAttributesSize(),
-                                          UAVq->getTag(),
-                                          e);
-            }
+        if (req->isDated()) {
+            D.Out(pdTrace,
+                    "Receiving Message from Federate, type "
+                    "UpdateAttribValues with TIMESTAMP.");
+            event.setSN(om->updateAttributeValues(UAVq->getObject(),
+                                                    UAVq->getAttributes(),
+                                                    UAVq->getValues(),
+                                                    UAVq->getAttributesSize(),
+                                                    UAVq->getDate(),
+                                                    UAVq->getTag(),
+                                                    e));
+            //FIXME event.setSendingFederate()
+            UAVr->setEventRetraction(event);
+            // answer should contains the date too
+            UAVr->setDate(UAVq->getDate());
         }
-        catch (Exception* e) {
-            throw e;
+        else {
+            D.Out(pdTrace,
+                    "Receiving Message from Federate, type "
+                    "UpdateAttribValues without TIMESTAMP.");
+            om->updateAttributeValues(UAVq->getObject(),
+                                        UAVq->getAttributes(),
+                                        UAVq->getValues(),
+                                        UAVq->getAttributesSize(),
+                                        UAVq->getTag(),
+                                        e);
         }
     } break;
 
@@ -455,23 +450,17 @@ void RTIA::chooseFederateProcessing(Message* req, Message* rep, Exception::Type&
         DOIr = static_cast<M_Delete_Object_Instance*>(rep);
         G.Out(pdGendoc, "D_O_I into RTIA::chooseFederateProcessing");
 
-        try {
-            if (DOIq->isDated()) {
-                D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance with \
-				TIMESTAMP.");
-                event.setSN(om->deleteObject(DOIq->getObject(), DOIq->getDate(), DOIq->getTag(), e));
-                // FIXME event.setSendingFederate();
-                DOIr->setEventRetraction(event);
-            }
-            else {
-                D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance without \
-				TIMESTAMP.");
-                om->deleteObject(DOIq->getObject(), DOIq->getTag(), e);
-            }
+        if (DOIq->isDated()) {
+            D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance with \
+            TIMESTAMP.");
+            event.setSN(om->deleteObject(DOIq->getObject(), DOIq->getDate(), DOIq->getTag(), e));
+            // FIXME event.setSendingFederate();
+            DOIr->setEventRetraction(event);
         }
-        catch (Exception* e) {
-            // FIXME what's the purpose of this catch?
-            throw e;
+        else {
+            D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance without \
+            TIMESTAMP.");
+            om->deleteObject(DOIq->getObject(), DOIq->getTag(), e);
         }
     } break;
 

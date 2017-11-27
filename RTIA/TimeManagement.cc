@@ -169,9 +169,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         try {
             fm->federationSynchronized(msg.getLabel());
         }
-        catch (RTIinternalError &e) {
+        catch (RTIinternalError& e) {
             Debug(D,pdError) << "RTIA:RTIinternalError in federationSynchronized." << std::endl ;
-            throw e;
+            throw;
         }
         break ;
 
@@ -184,10 +184,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
             fm->synchronizationPointRegistrationFailed(CSPR.getLabel());
           }
         }
-        catch (RTIinternalError &e) {
+        catch (RTIinternalError& e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError in synchronizationPointRegistration"
                 "Succeeded." << std::endl ;
-            throw e ;
+            throw;
         }
         break ;
 
@@ -195,9 +195,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
         try {
             fm->announceSynchronizationPoint(msg.getLabel(), msg.getTag());
         }
-        catch (RTIinternalError &e) {
+        catch (RTIinternalError& e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError in announceSynchronizationPoint." << std::endl ;
-            throw e ;
+            throw;
         }
         break ;
 
@@ -212,9 +212,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg) {
                                msg.getRefException());
 
         }
-        catch (RTIinternalError &e) {
+        catch (RTIinternalError& e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError in discoverObject." << std::endl ;
-            throw e ;
+            throw;
         }
         break ;
 
@@ -880,7 +880,7 @@ TimeManagement::tick(Exception::Type &e)
         }
         catch (RTIinternalError &e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError thrown in tick (execute)." << std::endl ;
-            throw e ;
+            throw;
         }
     }
     // No message: we try to send TSO messages.
@@ -892,7 +892,7 @@ TimeManagement::tick(Exception::Type &e)
         }
         catch (RTIinternalError &e) {
         	Debug(D,pdError) << "RTIA:RTIinternalError thrown in tick (Advance)." << std::endl ;
-            throw e ;
+            throw;
         }
     }
 

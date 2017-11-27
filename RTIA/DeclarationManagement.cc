@@ -75,7 +75,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     catch (Exception *e) {
         G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass on exception") ;
         D.Out(pdExcept, "Exception catched in PublishObjectClass.");
-        throw e ;
+        throw;
     }
 
     // RTIG update
@@ -117,7 +117,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
                                            false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
-        throw e ;
+        throw;
     }
 
     // RTIG update
@@ -152,7 +152,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
                                           true);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in publishInteractionClass.");
-        throw e ;
+        throw;
     }
 
     // RTIG (may be non-local) request
@@ -185,7 +185,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
                                           false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
-        throw e ;
+        throw;
     }
 
     // Partie RTIG
@@ -286,7 +286,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
         rootObject->Interactions->subscribe(fm->federate, theClassHandle, 0, true);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
-        throw e ;
+        throw;
     }
 
     // Partie RTIG    
@@ -322,7 +322,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
         rootObject->Interactions->subscribe(fm->federate, theClassHandle, 0, false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
-        throw e ;
+        throw;
     }
 
     // Partie RTIG    
