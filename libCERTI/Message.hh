@@ -207,6 +207,8 @@ public:
 
         LAST // should be the "last" (not used)
     };
+    
+    static constexpr size_t the_message_type_count = static_cast<size_t>(LAST);
 
 public:
     /** Default Message creator */
@@ -286,6 +288,8 @@ protected:
 private:
     Message& operator=(const Message&);
 };
+
+std::ostream& operator<<(std::ostream& os, const Message::Type& msg);
 
 std::ostream& operator<<(std::ostream& os, const Message& msg);
 

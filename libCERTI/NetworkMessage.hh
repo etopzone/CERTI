@@ -149,7 +149,9 @@ public:
         MESSAGE_NULL_PRIME, // CERTI specific for handling NER or NERA and zero-lk
         LAST
     };
-
+    
+    static constexpr size_t the_message_type_count = static_cast<size_t>(NetworkMessage::Type::LAST);
+    
     NetworkMessage();
     virtual ~NetworkMessage();
 
@@ -292,7 +294,7 @@ protected:
 private:
 };
 
-// std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type);
+std::ostream& operator<<(std::ostream& os, const NetworkMessage::Type& msg_type);
 
 std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg);
 
