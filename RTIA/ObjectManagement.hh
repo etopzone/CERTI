@@ -48,6 +48,15 @@ public:
                                 FederationTime,
                                 Exception::Type& e);
 
+    /** updateAttributeValues with time
+     *    @param theObjectHandle Object handle
+     *    @param attribArray attribute handles array (pointer)
+     *    @param valueArray value array (pointer)
+     *    @param attribArraySize attribute and value array size
+     *    @param theTime time of the federation
+     *    @param theTag user tag (pointer)
+     *    @param e exception address (may be modified)
+     */
     EventRetractionHandle updateAttributeValues(ObjectHandle theObjectHandle,
                                                 const std::vector<AttributeHandle>& attribArray,
                                                 const std::vector<AttributeValue_t>& valueArray,
@@ -56,6 +65,14 @@ public:
                                                 const std::string& theTag,
                                                 Exception::Type& e);
 
+    /** updateAttributeValues without time
+     *    @param theObjectHandle Object handle
+     *    @param attribArray attribute handles array (pointer)
+     *    @param valueArray value array (pointer)
+     *    @param attribArraySize attribute and value array size
+     *    @param theTag user tag (pointer)
+     *    @param e exception address (may be modified)
+     */
     void updateAttributeValues(ObjectHandle theObjectHandle,
                                const std::vector<AttributeHandle>& attribArray,
                                const std::vector<AttributeValue_t>& valueArray,
@@ -124,9 +141,7 @@ public:
 
     void deleteObject(ObjectHandle theObjectHandle, const std::string& theTag, Exception::Type& e);
 
-    /**
-     * Delete all objects [instance] owned by this federate.
-     */
+    /// Delete all objects [instance] owned by this federate.
     void deleteAllObjects(Exception::Type& e);
 
     void removeObject(ObjectHandle the_object,
@@ -177,8 +192,7 @@ public:
 
     void reflectRetraction(EventRetractionHandle, Exception::Type& e);
 
-    /**
-     * Transmits the Networkmessage NM_Set_Attribute_Scope_Advisory_Switch to 
+    /** Transmits the Networkmessage NM_Set_Attribute_Scope_Advisory_Switch to 
      * RTIG. The transmission sets the AttributeScopeAdvisory switch at RTIG 
      * side to the value of the input parameter state. The invocation is caused
      * by a successfull transmission of the message 
@@ -201,8 +215,7 @@ public:
                               const uint16_t attribArraySize,
                               Exception::Type& e);
 
-    /**
-     * Transmits the Networkmessage NM_Set_Attribute_Relevance_Advisory_Switch 
+    /** Transmits the Networkmessage NM_Set_Attribute_Relevance_Advisory_Switch 
      * to RTIG. The transmission sets the AttributeRelevanceAdvisory switch at 
      * RTIG side to the value of the input parameter state. The invocation is 
      * caused by a successfull transmission of the message 

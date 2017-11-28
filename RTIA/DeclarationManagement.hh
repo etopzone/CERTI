@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.12 2011/09/02 21:42:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -114,5 +113,3 @@ protected:
 } // namespace certi/rtia
 
 #endif // _CERTI_RTIA_DM
-
-// $Id: DeclarationManagement.hh,v 3.12 2011/09/02 21:42:25 erk Exp $

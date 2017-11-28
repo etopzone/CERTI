@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.10 2010/02/27 16:53:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
@@ -143,5 +142,3 @@ protected:
 } // namespace certi/rtia
 
 #endif // _CERTI_RTIA_OWM
-
-// $Id: OwnershipManagement.hh,v 3.10 2010/02/27 16:53:36 erk Exp $

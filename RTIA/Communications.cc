@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.40 2014/03/03 14:26:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -49,8 +48,6 @@ namespace rtia {
 static PrettyDebug D("RTIA_COMM", "(RTIA Comm) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-// ----------------------------------------------------------------------------
-
 NetworkMessage* Communications::waitMessage(NetworkMessage::Type type_msg, FederateHandle numeroFedere)
 {
     assert(static_cast<std::underlying_type<NetworkMessage::Type>::type>(type_msg) > 0
@@ -80,10 +77,8 @@ NetworkMessage* Communications::waitMessage(NetworkMessage::Type type_msg, Feder
     assert(msg != NULL);
     assert(msg->getMessageType() == type_msg);
     return msg;
-} /* end of waitMessage */
+}
 
-// ----------------------------------------------------------------------------
-//! Communications.
 Communications::Communications(int RTIA_port, int RTIA_fd)
 {
     char nom_serveur_RTIG[200];
@@ -142,8 +137,6 @@ Communications::Communications(int RTIA_port, int RTIA_fd)
     socketUDP->createConnection(certihost, atoi(udp_port));
 }
 
-// ----------------------------------------------------------------------------
-//! ~Communications.
 Communications::~Communications()
 {
     // Advertise RTIG that TCP link is being closed.
@@ -163,8 +156,6 @@ Communications::~Communications()
     G.Out(pdGendoc, "exit  Communications::~Communications");
 }
 
-// ----------------------------------------------------------------------------
-//! Request a service to federate.
 void Communications::requestFederateService(Message* req)
 {
     // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
@@ -175,23 +166,16 @@ void Communications::requestFederateService(Message* req)
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
 
-// ----------------------------------------------------------------------------
 unsigned long Communications::getAddress()
 {
     return socketUDP->getAddr();
 }
 
-// ----------------------------------------------------------------------------
 unsigned int Communications::getPort()
 {
     return socketUDP->getPort();
 }
 
-// ----------------------------------------------------------------------------
-//! read message.
-/*! Reads a message either from the network or from the federate
-  Returns the actual source in the 1st parameter (RTIG=>1 federate=>2)
-*/
 void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout)
 {
     const int tcp_fd(socketTCP->returnSocket());
@@ -300,14 +284,8 @@ void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** 
             n = 3;
         }
     }
-} /* end of readMessage */
+}
 
-// ----------------------------------------------------------------------------
-/*! Returns true if a 'type_msg' message coming from federate
-  'numeroFedere' (or any other federate if numeroFedere == 0) was in
-  the queue and was copied in 'msg'. If no such message is found,
-  returns RTI_FALSE.
-*/
 bool Communications::searchMessage(NetworkMessage::Type type_msg, FederateHandle numeroFedere, NetworkMessage** msg)
 {
     list<NetworkMessage*>::iterator i;
@@ -327,19 +305,16 @@ bool Communications::searchMessage(NetworkMessage::Type type_msg, FederateHandle
     return false;
 }
 
-// ----------------------------------------------------------------------------
 void Communications::sendMessage(NetworkMessage* Msg)
 {
     Msg->send(socketTCP, NM_msgBufSend);
 }
 
-// ----------------------------------------------------------------------------
 void Communications::sendUN(Message* Msg)
 {
     Msg->send(socketUN, msgBufSend);
 }
 
-// ----------------------------------------------------------------------------
 Message* Communications::receiveUN()
 {
     Message* msg = M_Factory::receive(socketUN);
@@ -347,5 +322,3 @@ Message* Communications::receiveUN()
 }
 }
 } // namespace certi/rtia
-
-// $Id: Communications.cc,v 3.40 2014/03/03 14:26:37 erk Exp $

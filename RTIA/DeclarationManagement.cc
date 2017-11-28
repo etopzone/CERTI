@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.36 2011/09/02 21:42:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
@@ -37,8 +36,6 @@ namespace rtia {
 static PrettyDebug D("RTIA_DM", "(RTIA DM) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-// ----------------------------------------------------------------------------
-//! DeclarationManagement
 DeclarationManagement::DeclarationManagement(Communications* GC, FederationManagement* GF, RootObject* theRootObj)
 {
     comm = GC;
@@ -46,14 +43,10 @@ DeclarationManagement::DeclarationManagement(Communications* GC, FederationManag
     rootObject = theRootObj;
 }
 
-// ----------------------------------------------------------------------------
-// ~DeclarationManagement
 DeclarationManagement::~DeclarationManagement()
 {
 }
 
-// ----------------------------------------------------------------------------
-// publishObjectClass
 void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                                const std::vector<AttributeHandle>& attribArray,
                                                Exception::Type& e)
@@ -90,10 +83,8 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     e = rep->getException();
     G.Out(pdGendoc, "exit  DeclarationManagement::publishObjectClass");
-} /* end of publishObjectClass */
+}
 
-// ----------------------------------------------------------------------------
-// unpublishObjectClass
 void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle, Exception::Type& e)
 {
     // Dummy var containing no Attribute at all
@@ -125,10 +116,8 @@ void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandl
         comm->waitMessage(NetworkMessage::Type::UNPUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of unpublishObjectClass */
+}
 
-// ----------------------------------------------------------------------------
-// publishInteractionClass
 void DeclarationManagement::publishInteractionClass(InteractionClassHandle theInteractionHandle, Exception::Type& e)
 {
     e = Exception::Type::NO_EXCEPTION;
@@ -154,10 +143,8 @@ void DeclarationManagement::publishInteractionClass(InteractionClassHandle theIn
         comm->waitMessage(NetworkMessage::Type::PUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of publishInteractionClass */
+}
 
-// ----------------------------------------------------------------------------
-// unpublishInteractionClass
 void DeclarationManagement::unpublishInteractionClass(InteractionClassHandle theInteractionHandle, Exception::Type& e)
 {
     e = Exception::Type::NO_EXCEPTION;
@@ -184,10 +171,8 @@ void DeclarationManagement::unpublishInteractionClass(InteractionClassHandle the
         comm->waitMessage(NetworkMessage::Type::UNPUBLISH_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of unpublishInteractionClass */
+}
 
-// ----------------------------------------------------------------------------
-// subscribeObjectClassAttribute
 void DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                                                           const std::vector<AttributeHandle>& attribArray,
                                                           uint32_t attribArraySize,
@@ -219,10 +204,8 @@ void DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle theC
 
     e = rep->getException();
     G.Out(pdGendoc, "exit  DeclarationManagement::subscribeObjectClassAttribute");
-} /* end of subscribeObjectClassAttribute */
+}
 
-// ----------------------------------------------------------------------------
-// unsubscribeObjectClassAttribute
 void DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle, Exception::Type& e)
 {
     NM_Unsubscribe_Object_Class req;
@@ -242,10 +225,8 @@ void DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle th
         comm->waitMessage(NetworkMessage::Type::UNSUBSCRIBE_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of unsubscribeObjectClassAttribute */
+}
 
-// ----------------------------------------------------------------------------
-// subscribeInteractionClass
 void DeclarationManagement::subscribeInteractionClass(InteractionClassHandle theClassHandle, Exception::Type& e)
 {
     NM_Subscribe_Interaction_Class req;
@@ -276,10 +257,8 @@ void DeclarationManagement::subscribeInteractionClass(InteractionClassHandle the
         comm->waitMessage(NetworkMessage::Type::SUBSCRIBE_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of subscribeInteractionClass */
+}
 
-// ----------------------------------------------------------------------------
-// unsubscribeInteractionClass
 void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle theClassHandle, Exception::Type& e)
 {
     NM_Unsubscribe_Interaction_Class req;
@@ -310,7 +289,7 @@ void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle t
         comm->waitMessage(NetworkMessage::Type::UNSUBSCRIBE_INTERACTION_CLASS, req.getFederate()));
 
     e = rep->getException();
-} /* end of unsubscribeInteractionClass */
+}
 
 void DeclarationManagement::setClassRelevanceAdvisorySwitch(bool state, Exception::Type& e)
 {
@@ -335,8 +314,6 @@ void DeclarationManagement::setClassRelevanceAdvisorySwitch(bool state, Exceptio
     G.Out(pdGendoc, "exit DeclarationManagement::setClassRelevanceAdvisorySwitch");
 }
 
-// ----------------------------------------------------------------------------
-// startRegistrationForObjectClass
 void DeclarationManagement::startRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& /*e*/)
 {
     G.Out(pdGendoc, "enter DeclarationManagement::startRegistrationForObjectClass");
@@ -350,8 +327,6 @@ void DeclarationManagement::startRegistrationForObjectClass(ObjectClassHandle th
     G.Out(pdGendoc, "exit  DeclarationManagement::startRegistrationForObjectClass");
 }
 
-// ----------------------------------------------------------------------------
-// stopRegistrationForObjectClass
 void DeclarationManagement::stopRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& e)
 {
     M_Stop_Registration_For_Object_Class req;
@@ -397,8 +372,6 @@ void DeclarationManagement::setInteractionRelevanceAdvisorySwitch(bool state, Ex
     G.Out(pdGendoc, "exit DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
 }
 
-// ----------------------------------------------------------------------------
-// turnInteractionsOn
 void DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction, Exception::Type& e)
 {
     M_Turn_Interactions_On req;
@@ -414,8 +387,6 @@ void DeclarationManagement::turnInteractionsOn(InteractionClassHandle interactio
     e = rep->getExceptionType();
 }
 
-// ----------------------------------------------------------------------------
-// turnInteractionsOff
 void DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction, Exception::Type& e)
 {
     M_Turn_Interactions_Off req;
@@ -432,5 +403,3 @@ void DeclarationManagement::turnInteractionsOff(InteractionClassHandle interacti
 }
 }
 } // namespace certi/rtia
-
-// $Id: DeclarationManagement.cc,v 3.36 2011/09/02 21:42:24 erk Exp $

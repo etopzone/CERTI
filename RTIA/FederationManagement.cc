@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.89 2011/09/01 13:50:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -41,8 +40,6 @@ namespace rtia {
 static PrettyDebug D("RTIA_FM", "(RTIA FM) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-// ----------------------------------------------------------------------------
-//! FederationManagement.
 FederationManagement::FederationManagement(Communications* GC, Statistics* newStat)
     : savingState(false), restoringState(false)
 {
@@ -61,8 +58,6 @@ FederationManagement::FederationManagement(Communications* GC, Statistics* newSt
     G.Out(pdGendoc, "exit  FederationManagement::FederationManagement");
 }
 
-// ----------------------------------------------------------------------------
-//! Destructor.
 FederationManagement::~FederationManagement()
 {
     G.Out(pdGendoc, "enter ~FederationManagement");
@@ -86,8 +81,6 @@ FederationManagement::~FederationManagement()
     G.Out(pdGendoc, "exit  ~FederationManagement");
 }
 
-// ----------------------------------------------------------------------------
-//! createFederationExecution.
 void FederationManagement::createFederationExecution(const std::string& theName,
                                                      const std::string& fedId,
                                                      Exception::Type& e) throw(FederationExecutionAlreadyExists,
@@ -163,8 +156,6 @@ void FederationManagement::createFederationExecution(const std::string& theName,
     G.Out(pdGendoc, "exit FederationManagement::createFederationExecution");
 }
 
-// ----------------------------------------------------------------------------
-//! destroyFederationExecution.
 void FederationManagement::destroyFederationExecution(const std::string& theName, Exception::Type& e)
 {
     NM_Destroy_Federation_Execution requete;
@@ -203,8 +194,6 @@ void FederationManagement::destroyFederationExecution(const std::string& theName
     G.Out(pdGendoc, "exit  FederationManagement::destroyFederationExecution");
 }
 
-// ----------------------------------------------------------------------------
-//! joinFederationExecution.
 FederateHandle FederationManagement::joinFederationExecution(const std::string& Federate,
                                                              const std::string& Federation,
                                                              RootObject* rootObject,
@@ -274,10 +263,6 @@ FederateHandle FederationManagement::joinFederationExecution(const std::string& 
     return (0);
 }
 
-// -------------------------------
-// -- resignFederationExecution --
-// -------------------------------
-
 void FederationManagement::resignFederationExecution(ResignAction, Exception::Type& e)
 {
     NM_Resign_Federation_Execution msg;
@@ -318,7 +303,6 @@ void FederationManagement::resignFederationExecution(ResignAction, Exception::Ty
     }
 }
 
-// Resigns if we are still member, call this before we throw away all the rtia members
 void FederationManagement::resignFederationExecutionForTermination()
 {
     G.Out(pdGendoc, "enter FederationManagement::resignFederationExecutionForTermination");
@@ -331,8 +315,6 @@ void FederationManagement::resignFederationExecutionForTermination()
     G.Out(pdGendoc, "exit  FederationManagement::resignFederationExecutionForTermination");
 }
 
-// ----------------------------------------------------------------------------
-//! Register synchronization.
 void FederationManagement::registerSynchronization(const std::string& label, const std::string& tag, Exception::Type& e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
@@ -365,8 +347,6 @@ void FederationManagement::registerSynchronization(const std::string& label, con
     G.Out(pdGendoc, "exit  FederationManagement::registerSynchronization");
 }
 
-// ----------------------------------------------------------------------------
-//! Register synchronization with set of federates
 void FederationManagement::registerSynchronization(const std::string& label,
                                                    const std::string& tag,
                                                    unsigned short array_size,
@@ -405,8 +385,7 @@ void FederationManagement::registerSynchronization(const std::string& label,
 
     G.Out(pdGendoc, "exit  FederationManagement::registerSynchronization with federate set");
 }
-// ----------------------------------------------------------------------------
-//! Unregister synchronization.
+
 void FederationManagement::unregisterSynchronization(const std::string& label, Exception::Type& e)
 {
     D.Out(pdProtocol, "unregisterSynchronization.");
@@ -434,7 +413,6 @@ void FederationManagement::unregisterSynchronization(const std::string& label, E
     }
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::announceSynchronizationPoint(const std::string& label, const std::string& tag)
 {
     D.Out(pdInit, "Announce Synchronization Point \"%s\"(%s).", label.c_str(), tag.c_str());
@@ -450,7 +428,6 @@ void FederationManagement::announceSynchronizationPoint(const std::string& label
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::synchronizationPointRegistrationFailed(const std::string& label)
 {
     D.Out(pdInit, "Synchronization Point Registration Failed \"%s\".", label.c_str());
@@ -465,7 +442,6 @@ void FederationManagement::synchronizationPointRegistrationFailed(const std::str
     G.Out(pdGendoc, "exit  FederationManagement::synchronizationPointRegistrationFailed");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::synchronizationPointRegistrationSucceeded(const std::string& label)
 {
     D.Out(pdInit, "Synchronization Point Registration Succeeded \"%s\".", label.c_str());
@@ -480,7 +456,6 @@ void FederationManagement::synchronizationPointRegistrationSucceeded(const std::
     G.Out(pdGendoc, "exit  FederationManagement::synchronizationPointRegistrationSucceeded");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federationSynchronized(const std::string& label)
 {
     D.Out(pdInit, "Federation Synchronized \"%s\".", label.c_str());
@@ -491,8 +466,6 @@ void FederationManagement::federationSynchronized(const std::string& label)
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-// requestFederationSave with time
 void FederationManagement::requestFederationSave(const std::string& label,
                                                  FederationTime the_time,
                                                  Exception::Type& /*e*/)
@@ -519,8 +492,6 @@ void FederationManagement::requestFederationSave(const std::string& label,
     // e = rep.exception ;
 }
 
-// ----------------------------------------------------------------------------
-// requestFederationSave without time
 void FederationManagement::requestFederationSave(const std::string& label, Exception::Type& /*e*/)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
@@ -542,7 +513,6 @@ void FederationManagement::requestFederationSave(const std::string& label, Excep
           "without time");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federateSaveBegun(Exception::Type&)
 {
     G.Out(pdGendoc, "enter FederationManagement::federateSaveBegun");
@@ -563,7 +533,6 @@ void FederationManagement::federateSaveBegun(Exception::Type&)
     G.Out(pdGendoc, "exit  FederationManagement::federateSaveBegun");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federateSaveStatus(bool status, Exception::Type&)
 {
     G.Out(pdGendoc, "enter FederationManagement::federateSaveStatus");
@@ -590,7 +559,6 @@ void FederationManagement::federateSaveStatus(bool status, Exception::Type&)
     G.Out(pdGendoc, "exit  FederationManagement::federateSaveStatus");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::initiateFederateSave(const std::string& label)
 {
     G.Out(pdGendoc, "enter FederationManagement::initiateFederateSave");
@@ -607,7 +575,6 @@ void FederationManagement::initiateFederateSave(const std::string& label)
     G.Out(pdGendoc, "exit  FederationManagement::initiateFederateSave");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federationSavedStatus(bool status)
 {
     G.Out(pdGendoc, "enter FederationManagement::federationSavedStatus");
@@ -625,7 +592,6 @@ void FederationManagement::federationSavedStatus(bool status)
     G.Out(pdGendoc, "exit  FederationManagement::federationSavedStatus");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::requestFederationRestore(const std::string& label, Exception::Type&)
 {
     G.Out(pdGendoc, "enter FederationManagement::requestFederationRestore");
@@ -646,7 +612,6 @@ void FederationManagement::requestFederationRestore(const std::string& label, Ex
     G.Out(pdGendoc, "exit  FederationManagement::requestFederationRestore");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federateRestoreStatus(bool status, Exception::Type&)
 {
     D.Out(pdInit, "Federate %srestored.", status ? "" : "not ");
@@ -662,7 +627,6 @@ void FederationManagement::federateRestoreStatus(bool status, Exception::Type&)
     comm->sendMessage(req.get());
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::requestFederationRestoreStatus(bool status,
                                                           const std::string& label,
                                                           const std::string& reason)
@@ -687,7 +651,6 @@ void FederationManagement::requestFederationRestoreStatus(bool status,
     G.Out(pdGendoc, "exit  FederationManagement::requestFederationRestoreStatus");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federationRestoreBegun()
 {
     G.Out(pdGendoc, "enter FederationManagement::federationRestoreBegun");
@@ -698,7 +661,6 @@ void FederationManagement::federationRestoreBegun()
     G.Out(pdGendoc, "exit  FederationManagement::federationRestoreBegun");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::initiateFederateRestore(const std::string& label, FederateHandle handle)
 {
     G.Out(pdGendoc, "enter FederationManagement::initiateFederateRestore");
@@ -715,7 +677,6 @@ void FederationManagement::initiateFederateRestore(const std::string& label, Fed
     G.Out(pdGendoc, "exit  FederationManagement::initiateFederateRestore");
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::federationRestoredStatus(bool status)
 {
     D.Out(pdInit, "Federation %srestored.", status ? "" : "not ");
@@ -735,7 +696,6 @@ void FederationManagement::federationRestoredStatus(bool status)
     delete req;
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::checkFederationSaving() throw(SaveInProgress)
 {
     if (savingState) {
@@ -743,7 +703,6 @@ void FederationManagement::checkFederationSaving() throw(SaveInProgress)
     }
 }
 
-// ----------------------------------------------------------------------------
 void FederationManagement::checkFederationRestoring() throw(RestoreInProgress)
 {
     if (restoringState) {

@@ -61,7 +61,6 @@ ObjectManagement::~ObjectManagement()
 {
 }
 
-// ----------------------------------------------------------------------------
 void ObjectManagement::reserveObjectName(const std::string& newObjName, Exception::Type& e)
 {
     NM_Reserve_Object_Instance_Name req;
@@ -83,8 +82,6 @@ void ObjectManagement::reserveObjectName(const std::string& newObjName, Exceptio
     // JvY TODO: Finish handling on other side (and return path)
 }
 
-// ----------------------------------------------------------------------------
-//! registerObject
 ObjectHandle ObjectManagement::registerObject(
     ObjectClassHandle the_class, const std::string& theObjectName, FederationTime, FederationTime, Exception::Type& e)
 {
@@ -117,17 +114,6 @@ ObjectHandle ObjectManagement::registerObject(
     }
 }
 
-// ----------------------------------------------------------------------------
-//! updateAttributeValues
-/** with time
-    @param theObjectHandle Object handle
-    @param attribArray attribute handles array (pointer)
-    @param valueArray value array (pointer)
-    @param attribArraySize attribute and value array size
-    @param theTime time of the federation
-    @param theTag user tag (pointer)
-    @param e exception address (may be modified)
- */
 EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                                               const std::vector<AttributeHandle>& attribArray,
                                                               const std::vector<AttributeValue_t>& valueArray,
@@ -178,16 +164,6 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
     return evtrHandle;
 }
 
-// ----------------------------------------------------------------------------
-//! updateAttributeValues
-/** without time
-    @param theObjectHandle Object handle
-    @param attribArray attribute handles array (pointer)
-    @param valueArray value array (pointer)
-    @param attribArraySize attribute and value array size
-    @param theTag user tag (pointer)
-    @param e exception address (may be modified)
- */
 void ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                              const std::vector<AttributeHandle>& attribArray,
                                              const std::vector<AttributeValue_t>& valueArray,
@@ -220,8 +196,6 @@ void ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     G.Out(pdGendoc, "exit  ObjectManagement::updateAttributeValues without time");
 }
 
-// ----------------------------------------------------------------------------
-//! discoverObject.
 void ObjectManagement::discoverObject(ObjectHandle the_object,
                                       ObjectClassHandle the_class,
                                       const std::string& the_name,
@@ -247,8 +221,6 @@ void ObjectManagement::discoverObject(ObjectHandle the_object,
 	 */
 }
 
-// ----------------------------------------------------------------------------
-//! reflectAttributeValues with time
 void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                               const std::vector<AttributeHandle>& the_attributes,
                                               const std::vector<AttributeValue_t>& the_values,
@@ -279,8 +251,6 @@ void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     G.Out(pdGendoc, "exit  ObjectManagement::reflectAttributeValues with time");
 }
 
-// ----------------------------------------------------------------------------
-//! reflectAttributeValues without time
 void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                               const std::vector<AttributeHandle>& the_attributes,
                                               const std::vector<AttributeValue_t>& the_values,
@@ -305,8 +275,6 @@ void ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     G.Out(pdGendoc, "exit  ObjectManagement::reflectAttributeValues without time");
 }
 
-// ----------------------------------------------------------------------------
-//! sendInteraction with time
 EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                                         const std::vector<ParameterHandle>& paramArray,
                                                         const std::vector<ParameterValue_t>& valueArray,
@@ -358,8 +326,6 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
     return evtrHandle;
 }
 
-// ----------------------------------------------------------------------------
-//! sendInteraction without time
 void ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                        const std::vector<ParameterHandle>& paramArray,
                                        const std::vector<ParameterValue_t>& valueArray,
@@ -394,10 +360,8 @@ void ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     e = rep->getException();
 
-} /* end of sendInteraction */
+}
 
-// ----------------------------------------------------------------------------
-//! receiveInteraction with time
 void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                           const std::vector<ParameterHandle>& the_parameters,
                                           const std::vector<ParameterValue_t>& the_values,
@@ -424,8 +388,6 @@ void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! receiveInteraction without time
 void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                           const std::vector<ParameterHandle>& the_parameters,
                                           const std::vector<ParameterValue_t>& the_values,
@@ -446,8 +408,6 @@ void ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! deleteObject with time
 EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                                      FederationTime theTime,
                                                      const std::string& theTag,
@@ -477,10 +437,8 @@ EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandl
     }
 
     return rep->eventRetraction;
-} /* end deleteObject */
+}
 
-// ----------------------------------------------------------------------------
-//! deleteObject without time
 void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::string& theTag, Exception::Type& e)
 {
     NM_Delete_Object req;
@@ -504,9 +462,7 @@ void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::str
         }
         std::cout << "==========================" << std::endl;
     }
-} /* end of deleteObject */
-
-// ----------------------------------------------------------------------------
+}
 
 void ObjectManagement::deleteAllObjects(Exception::Type& e)
 {
@@ -518,10 +474,8 @@ void ObjectManagement::deleteAllObjects(Exception::Type& e)
          ++it) {
         this->deleteObject((*it), "", e);
     }
-} /* end of deleteAllObjects */
+}
 
-// ----------------------------------------------------------------------------
-//! removeObject with time
 void ObjectManagement::removeObject(ObjectHandle the_object,
                                     FederateHandle the_federate,
                                     FederationTime theTime,
@@ -550,8 +504,6 @@ void ObjectManagement::removeObject(ObjectHandle the_object,
     std::cout << "==========================" << std::endl;
 }
 
-// ----------------------------------------------------------------------------
-//! removeObject without time
 void ObjectManagement::removeObject(ObjectHandle the_object,
                                     FederateHandle the_federate,
                                     const std::string& the_tag,
@@ -573,8 +525,6 @@ void ObjectManagement::removeObject(ObjectHandle the_object,
     std::cout << "==========================" << std::endl;
 }
 
-// ----------------------------------------------------------------------------
-//! changeAttributeTransportType
 EventRetractionHandle ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
                                                                      const std::vector<AttributeHandle>& attribArray,
                                                                      uint32_t attribArraySize,
@@ -603,8 +553,6 @@ EventRetractionHandle ObjectManagement::changeAttributeTransportType(ObjectHandl
     return rep->eventRetraction;
 }
 
-// ----------------------------------------------------------------------------
-//! changeAttributeOrderType
 EventRetractionHandle ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
                                                                  const std::vector<AttributeHandle>& attribArray,
                                                                  uint32_t attribArraySize,
@@ -633,8 +581,6 @@ EventRetractionHandle ObjectManagement::changeAttributeOrderType(ObjectHandle th
     return rep->eventRetraction;
 }
 
-// ----------------------------------------------------------------------------
-//! changeInteractionTransportType
 EventRetractionHandle
 ObjectManagement::changeInteractionTransportType(InteractionClassHandle id, TransportType theType, Exception::Type& e)
 {
@@ -653,8 +599,6 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id, Tran
     return rep->eventRetraction;
 }
 
-// ----------------------------------------------------------------------------
-//! changeInteractionOrderType
 EventRetractionHandle
 ObjectManagement::changeInteractionOrderType(InteractionClassHandle id, OrderType theType, Exception::Type& e)
 {
@@ -673,10 +617,8 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id, OrderTyp
     e = rep->getException();
 
     return rep->eventRetraction;
-} /* end of changeInteractionOrderType */
+}
 
-// ----------------------------------------------------------------------------
-//! requestObjectAttributeValueUpdate
 void ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                          const std::vector<AttributeHandle>& attribs,
                                                          uint32_t attribArraySize,
@@ -701,10 +643,8 @@ void ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     e = rep->getException();
     G.Out(pdGendoc, "exit  ObjectManagement::requestObjectAttributeValueUpdate");
 
-} /* end of requestObjectAttributeValueUpdate */
+}
 
-// ----------------------------------------------------------------------------
-//! requestClassAttributeValueUpdate
 void ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
                                                         const std::vector<AttributeHandle>& attribs,
                                                         uint32_t attribArraySize,
@@ -730,11 +670,7 @@ void ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theCla
 
     G.Out(pdGendoc, "exit  ObjectManagement::requestClassAttributeValueUpdate");
 
-} /* end of requestClassAttributeValueUpdate */
-
-// --------------------------------------
-// -- 4.15 provideAttributeValueUpdate --
-// --------------------------------------
+}
 
 void ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
                                                    const std::vector<AttributeHandle>& the_attributes,
@@ -754,26 +690,16 @@ void ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
     G.Out(pdGendoc, "exit  ObjectManagement::provideAttributeValueUpdate");
 }
 
-// ------------------
-// -- 4.16 retract --
-// ------------------
-
 void ObjectManagement::retract(EventRetractionHandle /*theHandle*/, Exception::Type& /*e*/)
 {
     throw RTIinternalError("ObjectManagement::retract not implemented.");
 }
-
-// ----------------------------
-// -- 4.17 reflectRetraction --
-// ----------------------------
 
 void ObjectManagement::reflectRetraction(EventRetractionHandle, Exception::Type&)
 {
     throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
 }
 
-// ----------------------------------------------------------------------------
-//! getObjectClassHandle.
 ObjectClassHandle ObjectManagement::getObjectClassHandle(const std::string& theName)
 {
     ObjectClassHandle handle;
@@ -789,29 +715,21 @@ ObjectClassHandle ObjectManagement::getObjectClassHandle(const std::string& theN
     return handle;
 }
 
-// ----------------------------------------------------------------------------
-//! getObjectClassName.
 const std::string& ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 {
     return rootObject->ObjectClasses->getObjectClassName(theHandle);
 }
 
-// ----------------------------------------------------------------------------
-//! Returns the object instance handle.
 ObjectHandle ObjectManagement::getObjectInstanceHandle(const std::string& the_name)
 {
     return rootObject->objects->getObjectInstanceHandle(the_name);
 }
 
-// ----------------------------------------------------------------------------
-//! Returns the object instance name.
 const std::string& ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
 {
     return rootObject->objects->getObjectInstanceName(the_object);
 }
 
-// ----------------------------------------------------------------------------
-//! getAttributeHandle.
 AttributeHandle ObjectManagement::getAttributeHandle(const std::string& theName, ObjectClassHandle theClassHandle)
 {
     AttributeHandle handle;
@@ -827,52 +745,38 @@ AttributeHandle ObjectManagement::getAttributeHandle(const std::string& theName,
     return handle;
 }
 
-// ----------------------------------------------------------------------------
-//! getAttributeName.
 const std::string& ObjectManagement::getAttributeName(AttributeHandle theHandle, ObjectClassHandle theClassHandle)
 {
     return rootObject->ObjectClasses->getAttributeName(theHandle, theClassHandle);
 }
 
-// ----------------------------------------------------------------------------
-//! getInteractionClassHandle.
 InteractionClassHandle ObjectManagement::getInteractionClassHandle(const std::string& theName)
 {
     return rootObject->Interactions->getInteractionClassHandle(theName);
 }
 
-// ----------------------------------------------------------------------------
-//! getInteractionClassName.
 const std::string& ObjectManagement::getInteractionClassName(InteractionClassHandle theClassHandle)
 {
     return rootObject->Interactions->getInteractionClassName(theClassHandle);
 }
 
-// ----------------------------------------------------------------------------
-//! getParameterHandle.
 ParameterHandle ObjectManagement::getParameterHandle(const std::string& theParameterName,
                                                      InteractionClassHandle theClassHandle)
 {
     return rootObject->Interactions->getParameterHandle(theParameterName, theClassHandle);
 }
 
-// ----------------------------------------------------------------------------
-//! getParameterName.
 const std::string& ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
                                                       InteractionClassHandle theClassHandle)
 {
     return rootObject->Interactions->getParameterName(theParameterHandle, theClassHandle);
 }
 
-// ----------------------------------------------------------------------------
-//! getObjectClass
 ObjectClassHandle ObjectManagement::getObjectClass(ObjectHandle object)
 {
     return rootObject->objects->getObjectClass(object);
 }
 
-// ----------------------------------------------------------------------------
-//! getTransportationHandle
 TransportType ObjectManagement::getTransportationHandle(const std::string& theName)
 {
     for (unsigned i = 0; i < sizeof(transportTypeList) / sizeof(transportTypeList[0]); ++i) {
@@ -883,8 +787,6 @@ TransportType ObjectManagement::getTransportationHandle(const std::string& theNa
     throw NameNotFound(theName);
 }
 
-// ----------------------------------------------------------------------------
-//! getTransportationName
 const std::string& ObjectManagement::getTransportationName(TransportType theType)
 {
     for (unsigned i = 0; i < sizeof(transportTypeList) / sizeof(transportTypeList[0]); ++i) {
@@ -895,8 +797,6 @@ const std::string& ObjectManagement::getTransportationName(TransportType theType
     throw InvalidTransportationHandle("");
 }
 
-// ----------------------------------------------------------------------------
-//! getOrderingHandle
 OrderType ObjectManagement::getOrderingHandle(const std::string& theName)
 {
     for (unsigned i = 0; i < sizeof(orderTypeList) / sizeof(orderTypeList[0]); ++i) {
@@ -907,8 +807,6 @@ OrderType ObjectManagement::getOrderingHandle(const std::string& theName)
     throw NameNotFound(theName);
 }
 
-// ----------------------------------------------------------------------------
-//! getOrderingName
 const std::string& ObjectManagement::getOrderingName(OrderType theType)
 {
     for (unsigned i = 0; i < sizeof(orderTypeList) / sizeof(orderTypeList[0]); ++i) {
@@ -942,9 +840,6 @@ void ObjectManagement::setAttributeScopeAdvisorySwitch(bool state, Exception::Ty
     G.Out(pdGendoc, "exit ObjectManagement::setAttributeScopeAdvisorySwitch");
 }
 
-// --------------------------------------
-// -- 6.13 attributesInScope
-// --------------------------------------
 void ObjectManagement::attributesInScope(ObjectHandle theObject,
                                          const std::vector<AttributeHandle>& attribArray,
                                          const uint16_t attribArraySize,
@@ -964,10 +859,6 @@ void ObjectManagement::attributesInScope(ObjectHandle theObject,
 
     G.Out(pdGendoc, "exit  ObjectManagement::attributesInScope");
 }
-
-// --------------------------------------
-// -- 6.14 attributesOutOfScope
-// --------------------------------------
 
 void ObjectManagement::attributesOutOfScope(ObjectHandle theObject,
                                             const std::vector<AttributeHandle>& attribArray,
@@ -1012,10 +903,6 @@ void ObjectManagement::setAttributeRelevanceAdvisorySwitch(bool state, Exception
     G.Out(pdGendoc, "exit ObjectManagement::setAttributeRelevanceAdvisorySwitch");
 }
 
-// --------------------------------------
-// -- 6.17 turnUpdatesOnForObjectInstance
-// --------------------------------------
-
 void ObjectManagement::turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                                                       const std::vector<AttributeHandle>& attribArray,
                                                       const uint16_t attribArraySize,
@@ -1035,10 +922,6 @@ void ObjectManagement::turnUpdatesOnForObjectInstance(ObjectHandle theObject,
 
     G.Out(pdGendoc, "exit  ObjectManagement::turnUpdatesOnForObjectInstance");
 }
-
-// --------------------------------------
-// -- 6.18 turnUpdatesOffForObjectInstance
-// --------------------------------------
 
 void ObjectManagement::turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                                                        const std::vector<AttributeHandle>& attribArray,
@@ -1060,7 +943,6 @@ void ObjectManagement::turnUpdatesOffForObjectInstance(ObjectHandle theObject,
     G.Out(pdGendoc, "exit  ObjectManagement::turnUpdatesOffForObjectInstance");
 }
 
-// 1516 - 6.3
 void ObjectManagement::nameReservationSucceeded(const std::string& reservedName)
 {
     M_Reserve_Object_Instance_Name_Succeeded req;

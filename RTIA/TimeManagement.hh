@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.28 2010/11/20 16:52:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -248,5 +247,3 @@ private:
 } // namespace certi/rtia
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
-
-// $Id: TimeManagement.hh,v 3.28 2010/11/20 16:52:44 erk Exp $

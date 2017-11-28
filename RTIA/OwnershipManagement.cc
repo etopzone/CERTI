@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.25 2010/03/23 13:13:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
@@ -36,22 +35,16 @@ namespace rtia {
 
 static PrettyDebug D("RTIA_OWM", "(RTIA OwM) ");
 
-// ----------------------------------------------------------------------------
-//! Constructor.
 OwnershipManagement::OwnershipManagement(Communications* GC, FederationManagement* GF)
 {
     comm = GC;
     fm = GF;
 }
 
-// ----------------------------------------------------------------------------
-//! Destructor.
 OwnershipManagement::~OwnershipManagement()
 {
 }
 
-// ----------------------------------------------------------------------------
-//! isAttributeOwnedByFederate.
 std::string
 OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject, AttributeHandle theAttribute, Exception::Type& e)
 {
@@ -82,8 +75,6 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject, AttributeH
     }
 }
 
-// ----------------------------------------------------------------------------
-//! queryAttributeOwnership.
 void OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
                                                   AttributeHandle theAttribute,
                                                   Exception::Type& e)
@@ -108,8 +99,6 @@ void OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! negotiatedAttributeOwnershipDivestiture.
 void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                                                   const std::vector<AttributeHandle>& attribArray,
                                                                   uint32_t attribArraySize,
@@ -139,8 +128,6 @@ void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle t
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! cancelNnegotiatedAttributeOwnershipDivestiture.
 void OwnershipManagement::cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                                                         const std::vector<AttributeHandle>& attribArray,
                                                                         uint32_t attribArraySize,
@@ -166,8 +153,6 @@ void OwnershipManagement::cancelnegotiatedAttributeOwnershipDivestiture(ObjectHa
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipAcquisitionIfAvailable.
 void OwnershipManagement::attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
                                                                    const std::vector<AttributeHandle>& attribArray,
                                                                    uint32_t attribArraySize,
@@ -193,8 +178,6 @@ void OwnershipManagement::attributeOwnershipAcquisitionIfAvailable(ObjectHandle 
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! unconditionalAttributeOwnershipDivestiture.
 void OwnershipManagement::unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
                                                                      const std::vector<AttributeHandle>& attribArray,
                                                                      uint32_t attribArraySize,
@@ -220,8 +203,6 @@ void OwnershipManagement::unconditionalAttributeOwnershipDivestiture(ObjectHandl
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipAcquisition.
 void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
                                                         const std::vector<AttributeHandle>& attribArray,
                                                         uint32_t attribArraySize,
@@ -250,8 +231,6 @@ void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipRealeaseResponse.
 AttributeHandleSet*
 OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
                                                         const std::vector<AttributeHandle>& attribArray,
@@ -292,8 +271,6 @@ OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
         return NULL;
 }
 
-// ----------------------------------------------------------------------------
-//! cancelAttributeOwnershipAcquisition.
 void OwnershipManagement::cancelattributeOwnershipAcquisition(ObjectHandle theObject,
                                                               const std::vector<AttributeHandle>& attribArray,
                                                               uint32_t attribArraySize,
@@ -319,8 +296,6 @@ void OwnershipManagement::cancelattributeOwnershipAcquisition(ObjectHandle theOb
     e = rep->getException();
 }
 
-// ----------------------------------------------------------------------------
-//! informAttributeOwnership.
 void OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
                                                    AttributeHandle the_attribute,
                                                    FederateHandle the_owner,
@@ -335,8 +310,6 @@ void OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! attributeIsNotOwned.
 void OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
                                               AttributeHandle the_attribute,
                                               FederateHandle,
@@ -351,8 +324,6 @@ void OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipUnavailable.
 void OwnershipManagement::attributeOwnershipUnavailable(ObjectHandle the_object,
                                                         const std::vector<AttributeHandle>& the_attributes,
                                                         uint32_t the_size,
@@ -370,8 +341,6 @@ void OwnershipManagement::attributeOwnershipUnavailable(ObjectHandle the_object,
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipAcquisitionNotification.
 void OwnershipManagement::attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
                                                                     const std::vector<AttributeHandle>& the_attributes,
                                                                     uint32_t the_size,
@@ -389,8 +358,6 @@ void OwnershipManagement::attributeOwnershipAcquisitionNotification(ObjectHandle
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! requestAttributeOwnershipAssumption.
 void OwnershipManagement::requestAttributeOwnershipAssumption(ObjectHandle the_object,
                                                               const std::vector<AttributeHandle>& the_attributes,
                                                               uint32_t the_size,
@@ -409,8 +376,6 @@ void OwnershipManagement::requestAttributeOwnershipAssumption(ObjectHandle the_o
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! requestAttributeOwnershipRelease.
 void OwnershipManagement::requestAttributeOwnershipRelease(ObjectHandle the_object,
                                                            const std::vector<AttributeHandle>& the_attributes,
                                                            uint32_t the_size,
@@ -428,8 +393,6 @@ void OwnershipManagement::requestAttributeOwnershipRelease(ObjectHandle the_obje
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! attributeOwnershipDivestitureNotification.
 void OwnershipManagement::attributeOwnershipDivestitureNotification(ObjectHandle the_object,
                                                                     const std::vector<AttributeHandle>& the_attributes,
                                                                     uint32_t the_size,
@@ -445,8 +408,6 @@ void OwnershipManagement::attributeOwnershipDivestitureNotification(ObjectHandle
     comm->requestFederateService(&req);
 }
 
-// ----------------------------------------------------------------------------
-//! confirmattributeOwnershipAcquisitionCancellation.
 void OwnershipManagement::confirmAttributeOwnershipAcquisitionCancellation(
     ObjectHandle the_object,
     const std::vector<AttributeHandle>& the_attributes,
@@ -464,5 +425,3 @@ void OwnershipManagement::confirmAttributeOwnershipAcquisitionCancellation(
 }
 }
 } // namespace certi/rtia
-
-// $Id: OwnershipManagement.cc,v 3.25 2010/03/23 13:13:27 erk Exp $

@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.31 2010/03/14 15:35:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -62,6 +61,8 @@ public:
                                            Exception::Type& e);
 
     void resignFederationExecution(ResignAction action, Exception::Type& e);
+    
+    /// Resigns if we are still member, call this before we throw away all the rtia members
     void resignFederationExecutionForTermination();
 
     // Synchronization.
@@ -98,16 +99,15 @@ public:
     Handle _numero_federation;
     FederateHandle federate;
 
-    /**
-     * State of the connection towards the federate. The state is changed
+    /** State of the connection towards the federate. The state is changed
      * through the OPEN_CONNEXION and CLOSE_CONNEXION messages.
      */
     typedef enum ConnectionState {
-        //! Initial state before OPEN_CONNEXION; no other message allowed.
+        /// Initial state before OPEN_CONNEXION; no other message allowed.
         CONNECTION_PRELUDE,
-        //! Communication is active.
+        /// Communication is active.
         CONNECTION_READY,
-        //! State after CLOSE_CONNEXION; no further messages allowed.
+        /// State after CLOSE_CONNEXION; no further messages allowed.
         CONNECTION_FIN
     } ConnectionState_t;
 
@@ -131,5 +131,3 @@ private:
 } // namespace certi/rtia
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
-
-// $Id: FederationManagement.hh,v 3.31 2010/03/14 15:35:53 gotthardp Exp $
