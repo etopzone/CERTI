@@ -32,70 +32,65 @@
 namespace certi {
 namespace rtia {
 
-class DataDistribution
-{
+class DataDistribution {
 public:
-    DataDistribution(RootObject *, FederationManagement *, Communications *);
+    DataDistribution(RootObject*, FederationManagement*, Communications*);
 
-    SpaceHandle getRoutingSpaceHandle(const std::string&) const ;
+    SpaceHandle getRoutingSpaceHandle(const std::string&) const;
 
-    const std::string& getRoutingSpaceName(SpaceHandle) const ;
+    const std::string& getRoutingSpaceName(SpaceHandle) const;
 
-    DimensionHandle getDimensionHandle(const std::string&, SpaceHandle) const
-        throw (SpaceNotDefined, NameNotFound);
+    DimensionHandle getDimensionHandle(const std::string&, SpaceHandle) const throw(SpaceNotDefined, NameNotFound);
 
-    const std::string& getDimensionName(DimensionHandle, SpaceHandle) const
-        throw (SpaceNotDefined, DimensionNotDefined);
+    const std::string& getDimensionName(DimensionHandle, SpaceHandle) const throw(SpaceNotDefined, DimensionNotDefined);
 
     SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle) const
-        throw (ObjectClassNotDefined, AttributeNotDefined);
+        throw(ObjectClassNotDefined, AttributeNotDefined);
 
-    SpaceHandle getInteractionSpace(InteractionClassHandle) const
-        throw (InteractionClassNotDefined);
+    SpaceHandle getInteractionSpace(InteractionClassHandle) const throw(InteractionClassNotDefined);
 
-    long createRegion(SpaceHandle, unsigned long, Exception::Type &)
-        throw (SpaceNotDefined);
+    long createRegion(SpaceHandle, unsigned long, Exception::Type&) throw(SpaceNotDefined);
 
-    void modifyRegion(RegionHandle, const std::vector<Extent> &,
-		      Exception::Type&);
-    
-    void deleteRegion(long, Exception::Type&)
-        throw (RegionNotKnown, RegionInUse);
+    void modifyRegion(RegionHandle, const std::vector<Extent>&, Exception::Type&);
 
-    void associateRegion(ObjectHandle, RegionHandle, const std::vector <AttributeHandle> &,
-			 uint32_t, Exception::Type&)
-	throw (RegionNotKnown);
+    void deleteRegion(long, Exception::Type&) throw(RegionNotKnown, RegionInUse);
 
-    ObjectHandle registerObject(ObjectClassHandle, const std::string&,
-				const std::vector <AttributeHandle> &, uint32_t,
-				const std::vector<RegionHandle>,
-				Exception::Type&);
+    void associateRegion(ObjectHandle,
+                         RegionHandle,
+                         const std::vector<AttributeHandle>&,
+                         uint32_t,
+                         Exception::Type&) throw(RegionNotKnown);
 
-    void unassociateRegion(ObjectHandle, RegionHandle, Exception::Type&e)
-	throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown);
+    ObjectHandle registerObject(ObjectClassHandle,
+                                const std::string&,
+                                const std::vector<AttributeHandle>&,
+                                uint32_t,
+                                const std::vector<RegionHandle>,
+                                Exception::Type&);
 
-    void subscribe(ObjectClassHandle, RegionHandle, const std::vector <AttributeHandle> &, uint32_t,
-		   Exception::Type&)
-	throw (RegionNotKnown);
+    void unassociateRegion(ObjectHandle, RegionHandle, Exception::Type& e) throw(ObjectNotKnown,
+                                                                                 InvalidRegionContext,
+                                                                                 RegionNotKnown);
 
-    void unsubscribeAttributes(ObjectClassHandle, RegionHandle, Exception::Type&)
-	throw (RegionNotKnown);
+    void subscribe(ObjectClassHandle,
+                   RegionHandle,
+                   const std::vector<AttributeHandle>&,
+                   uint32_t,
+                   Exception::Type&) throw(RegionNotKnown);
 
-    void subscribeInteraction(InteractionClassHandle, RegionHandle,
-			      Exception::Type&)
-	throw (RegionNotKnown);
+    void unsubscribeAttributes(ObjectClassHandle, RegionHandle, Exception::Type&) throw(RegionNotKnown);
 
-    void unsubscribeInteraction(InteractionClassHandle, RegionHandle,
-				Exception::Type&)
-	throw (RegionNotKnown);
-    
+    void subscribeInteraction(InteractionClassHandle, RegionHandle, Exception::Type&) throw(RegionNotKnown);
+
+    void unsubscribeInteraction(InteractionClassHandle, RegionHandle, Exception::Type&) throw(RegionNotKnown);
+
 private:
-    RootObject *rootObject ;
-    FederationManagement *fm ;
-    Communications *comm ;
+    RootObject* rootObject;
+    FederationManagement* fm;
+    Communications* comm;
 };
-
-}} // namespace certi/rtia
+}
+} // namespace certi/rtia
 
 #endif // _CERTI_DATA_DISTRIBUTION
 

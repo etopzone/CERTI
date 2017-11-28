@@ -36,35 +36,40 @@ namespace rtia {
   RTIA/RTIG. Statistics are displayed on exit only if
   CERTI_NO_STATISTICS environment variable has not been set.
 */
-class Statistics
-{
+class Statistics {
 public:
     Statistics();
 
     void rtiService(NetworkMessage::Type);
     void federateService(Message::Type);
-    bool display() { return myDisplay ; };
-    bool displayZero() { return myDisplayZero ; };
-    
-    friend std::ostream &operator<<(std::ostream &, Statistics &);
+    bool display()
+    {
+        return myDisplay;
+    };
+    bool displayZero()
+    {
+        return myDisplayZero;
+    };
+
+    friend std::ostream& operator<<(std::ostream&, Statistics&);
 
 protected:
     //! Collects number of messages exchanged between federate and RTIA.
-    std::vector<int> federateServiceSet ;
+    std::vector<int> federateServiceSet;
     //! Collects number of messages exchanged between RTIG and RTIA.
-    std::vector<int> rtiServiceSet ;
+    std::vector<int> rtiServiceSet;
     //! Names of Message messages
-    static std::vector<std::string> fedMessageName ;
+    static std::vector<std::string> fedMessageName;
     //! Names of NetworkMessage-class messages
-    static std::vector<std::string> rtiMessageName ;
+    static std::vector<std::string> rtiMessageName;
     //! Display number of sent messages, for each message type
-    bool myDisplay ;
+    bool myDisplay;
     //! Display messages information including messages not sent
-    bool myDisplayZero ; 
+    bool myDisplayZero;
     //! names initialized ?
-    static bool initialized ;
+    static bool initialized;
 };
-
-}} // namespaces
+}
+} // namespaces
 
 #endif // CERTI_STATISTICS

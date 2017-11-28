@@ -29,51 +29,44 @@
 #include <libCERTI/PrettyDebug.hh>
 #include <libCERTI/RootObject.hh>
 
-#include "FederationManagement.hh"
 #include "Communications.hh"
+#include "FederationManagement.hh"
 #include "Files.hh"
 
 namespace certi {
 namespace rtia {
 
 // Prototypes de classes existantes
-class Communications ;
-class Queues ;
-class FederationManagement ;
+class Communications;
+class Queues;
+class FederationManagement;
 
 // Classe de gestion des declarations(publications et subscriptions).
-class DeclarationManagement
-{
+class DeclarationManagement {
 public:
     DeclarationManagement(Communications*, FederationManagement*, RootObject*);
     ~DeclarationManagement();
 
     void publishObjectClass(ObjectClassHandle theClassHandle,
-                            const std::vector <AttributeHandle> &attribArray,
-                            Exception::Type &e);
+                            const std::vector<AttributeHandle>& attribArray,
+                            Exception::Type& e);
 
-    void unpublishObjectClass(ObjectClassHandle theClassHandle,
-                              Exception::Type &e);
+    void unpublishObjectClass(ObjectClassHandle theClassHandle, Exception::Type& e);
 
-    void publishInteractionClass(InteractionClassHandle theInteractionHandle,
-                                 Exception::Type &e);
+    void publishInteractionClass(InteractionClassHandle theInteractionHandle, Exception::Type& e);
 
-    void unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
-                                   Exception::Type &e);
+    void unpublishInteractionClass(InteractionClassHandle theInteractionHandle, Exception::Type& e);
 
     void subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                       const std::vector <AttributeHandle> &attribArray,
+                                       const std::vector<AttributeHandle>& attribArray,
                                        uint32_t attribArraySize,
-                                       Exception::Type &e);
+                                       Exception::Type& e);
 
-    void unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                         Exception::Type &e);
+    void unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle, Exception::Type& e);
 
-    void subscribeInteractionClass(InteractionClassHandle theClassHandle,
-                                   Exception::Type &e);
+    void subscribeInteractionClass(InteractionClassHandle theClassHandle, Exception::Type& e);
 
-    void unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
-                                     Exception::Type &e);
+    void unsubscribeInteractionClass(InteractionClassHandle theClassHandle, Exception::Type& e);
 
     /**
      * Transmits the Networkmessage NM_Set_Class_Relevance_Advisory_Switch to 
@@ -85,16 +78,13 @@ public:
      * false means disable
      * @param[in,out] e is a reference to a possible exception
      */
-    void setClassRelevanceAdvisorySwitch(bool state,
-                                         Exception::Type &e);
+    void setClassRelevanceAdvisorySwitch(bool state, Exception::Type& e);
 
     // 5.10
-    void startRegistrationForObjectClass(ObjectClassHandle the_class,
-                                         Exception::Type &e);
+    void startRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& e);
 
     // 5.11
-    void stopRegistrationForObjectClass(ObjectClassHandle the_class,
-                                        Exception::Type &e);
+    void stopRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& e);
 
     /**
      * Transmits the Networkmessage NM_Set_Interaction_Relevance_Advisory_Switch
@@ -106,25 +96,22 @@ public:
      * false means disable
      * @param[in,out] e is a reference to a possible exception
      */
-    void setInteractionRelevanceAdvisorySwitch(bool state,
-                                               Exception::Type &e);
+    void setInteractionRelevanceAdvisorySwitch(bool state, Exception::Type& e);
 
     // 5.12
-    void turnInteractionsOn(InteractionClassHandle interaction,
-                            Exception::Type &e);
+    void turnInteractionsOn(InteractionClassHandle interaction, Exception::Type& e);
 
     // 5.13
-    void turnInteractionsOff(InteractionClassHandle interaction,
-                             Exception::Type &e);
+    void turnInteractionsOff(InteractionClassHandle interaction, Exception::Type& e);
 
 protected:
-    Communications *comm ;
-    Queues *queues ;
-    FederationManagement *fm ;
-    RootObject *rootObject ;
+    Communications* comm;
+    Queues* queues;
+    FederationManagement* fm;
+    RootObject* rootObject;
 };
-
-}} // namespace certi/rtia
+}
+} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_DM
 

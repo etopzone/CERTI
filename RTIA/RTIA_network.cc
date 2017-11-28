@@ -52,13 +52,14 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
 
     switch (msgType) {
     case NetworkMessage::Type::MESSAGE_NULL: {
-        D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).", 
+        D.Out(pdTrace,
+              "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
               request->getDate().getTime());
 
         //request->show(std::cout);
-        DNULL.Out(
-            pdDebug, "NULL message received (Federate=%d, Time = %f)", 
-                  request->getFederate(), 
+        DNULL.Out(pdDebug,
+                  "NULL message received (Federate=%d, Time = %f)",
+                  request->getFederate(),
                   request->getDate().getTime());
         tm->update(request->getFederate(), request->getDate());
         delete request;

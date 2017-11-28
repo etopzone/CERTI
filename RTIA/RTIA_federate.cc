@@ -27,11 +27,11 @@
 
 #include <config.h>
 
-#include <libHLA/Clock.hh>
 #include <libCERTI/M_Classes.hh>
 #include <libCERTI/RoutingSpace.hh>
 #include <libCERTI/XmlParser.hh>
 #include <libCERTI/fed.hh>
+#include <libHLA/Clock.hh>
 
 using std::string;
 using std::ifstream;
@@ -167,7 +167,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         else {
             // JOIN FAILED
             switch (e) {
-                case Exception::Type::FederateAlreadyExecutionMember:
+            case Exception::Type::FederateAlreadyExecutionMember:
                 throw FederateAlreadyExecutionMember("Federate yet joined or same name");
                 break;
             case Exception::Type::FederationExecutionDoesNotExist:
@@ -385,15 +385,15 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         UAVr = static_cast<M_Update_Attribute_Values*>(answer);
         if (request->isDated()) {
             D.Out(pdTrace,
-                    "Receiving Message from Federate, type "
-                    "UpdateAttribValues with TIMESTAMP.");
+                  "Receiving Message from Federate, type "
+                  "UpdateAttribValues with TIMESTAMP.");
             event.setSN(om->updateAttributeValues(UAVq->getObject(),
-                                                    UAVq->getAttributes(),
-                                                    UAVq->getValues(),
-                                                    UAVq->getAttributesSize(),
-                                                    UAVq->getDate(),
-                                                    UAVq->getTag(),
-                                                    e));
+                                                  UAVq->getAttributes(),
+                                                  UAVq->getValues(),
+                                                  UAVq->getAttributesSize(),
+                                                  UAVq->getDate(),
+                                                  UAVq->getTag(),
+                                                  e));
             //FIXME event.setSendingFederate()
             UAVr->setEventRetraction(event);
             // answer should contains the date too
@@ -401,14 +401,14 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         }
         else {
             D.Out(pdTrace,
-                    "Receiving Message from Federate, type "
-                    "UpdateAttribValues without TIMESTAMP.");
+                  "Receiving Message from Federate, type "
+                  "UpdateAttribValues without TIMESTAMP.");
             om->updateAttributeValues(UAVq->getObject(),
-                                        UAVq->getAttributes(),
-                                        UAVq->getValues(),
-                                        UAVq->getAttributesSize(),
-                                        UAVq->getTag(),
-                                        e);
+                                      UAVq->getAttributes(),
+                                      UAVq->getValues(),
+                                      UAVq->getAttributesSize(),
+                                      UAVq->getTag(),
+                                      e);
         }
     } break;
 
@@ -1020,10 +1020,12 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     } break;
 
     case Message::ENABLE_TIME_REGULATION:
-        tm->setTimeRegulating(true, request->getDate(), static_cast<M_Enable_Time_Regulation*>(request)->getLookahead(), e);
+        tm->setTimeRegulating(
+            true, request->getDate(), static_cast<M_Enable_Time_Regulation*>(request)->getLookahead(), e);
         break;
     case Message::DISABLE_TIME_REGULATION:
-        tm->setTimeRegulating(false, request->getDate(), static_cast<M_Disable_Time_Regulation*>(request)->getLookahead(), e);
+        tm->setTimeRegulating(
+            false, request->getDate(), static_cast<M_Disable_Time_Regulation*>(request)->getLookahead(), e);
         break;
 
     case Message::ENABLE_TIME_CONSTRAINED:
@@ -1208,19 +1210,20 @@ void RTIA::initFederateProcessing(Message* request, Message* answer)
         }
         else {
             answer->setException(Exception::Type::RTIinternalError,
-                              stringize() << "RTIA protocol version mismatch"
-                                          << "; federate "
-                                          << OCq->getVersionMajor()
-                                          << "."
-                                          << OCq->getVersionMinor()
-                                          << ", RTIA "
-                                          << CERTI_Message::versionMajor
-                                          << "."
-                                          << CERTI_Message::versionMinor);
+                                 stringize() << "RTIA protocol version mismatch"
+                                             << "; federate "
+                                             << OCq->getVersionMajor()
+                                             << "."
+                                             << OCq->getVersionMinor()
+                                             << ", RTIA "
+                                             << CERTI_Message::versionMajor
+                                             << "."
+                                             << CERTI_Message::versionMinor);
         }
     }
     else {
-        answer->setException(Exception::Type::RTIinternalError, "RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
+        answer->setException(Exception::Type::RTIinternalError,
+                             "RTIA protocol version mismatch; expecting OPEN_CONNECTION first.");
     }
     stat.federateService(request->getMessageType());
 }

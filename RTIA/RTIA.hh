@@ -27,13 +27,13 @@
 #include <libHLA/Clock.hh>
 
 #include "Communications.hh"
-#include "TimeManagement.hh"
+#include "DataDistribution.hh"
+#include "DeclarationManagement.hh"
 #include "FederationManagement.hh"
 #include "ObjectManagement.hh"
 #include "OwnershipManagement.hh"
-#include "DeclarationManagement.hh"
-#include "DataDistribution.hh"
 #include "Statistics.hh"
+#include "TimeManagement.hh"
 
 namespace certi {
 
@@ -49,10 +49,9 @@ namespace rtia {
  * RTIA is a reactive process which process Message from federate
  * and NetworkMessage from RTIG.
  */
-class RTIA
-{
+class RTIA {
 public:
-	/**
+    /**
 	 * RTIA constructor.
 	 * @param[in] RTIA_port the TCP port used
 	 * @param[in] RTIA_fd the file descriptor
@@ -73,21 +72,20 @@ public:
     void displayStatistics();
 
 private:
-    RootObject *rootObject ;
+    RootObject* rootObject;
 
-    FederationManagement *fm ;
-    TimeManagement *tm ;
-    Communications *comm ;
-    Queues *queues ;
-    ObjectManagement *om ;
-    OwnershipManagement *owm ;
-    DeclarationManagement *dm ;
-    DataDistribution *ddm ;
-    libhla::clock::Clock* clock ;
-    Statistics stat ;
+    FederationManagement* fm;
+    TimeManagement* tm;
+    Communications* comm;
+    Queues* queues;
+    ObjectManagement* om;
+    OwnershipManagement* owm;
+    DeclarationManagement* dm;
+    DataDistribution* ddm;
+    libhla::clock::Clock* clock;
+    Statistics stat;
 
-    void saveAndRestoreStatus(Message::Type type)
-        throw (SaveInProgress, RestoreInProgress);
+    void saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, RestoreInProgress);
 
     /**
      * Process one message from RTIG (i.e. a NetworkMessage).
@@ -118,15 +116,15 @@ private:
      * @param[out] answer answer message to be sent back to the federate
      * @param[out] e exception raised (if any).
      */
-    void chooseFederateProcessing(Message* request, Message* answer, Exception::Type &e);
+    void chooseFederateProcessing(Message* request, Message* answer, Exception::Type& e);
 
     /**
      * RTIA processes the TICK_REQUEST.
      */
     void processOngoingTick();
 };
-
-}} // namespace certi
+}
+} // namespace certi
 
 #endif // _CERTI_RTIA_HH
 
