@@ -49,15 +49,15 @@ public:
     // ------------------
     // -- Init Session --
     // ------------------
-    void initSecContext(SocketTCP* Socket);
-    void acceptSecContext(SocketTCP* Socket);
+    void initSecContext(SocketTCP* socket);
+    void acceptSecContext(SocketTCP* socket);
 
     // ------------------------------
     // -- Message Exchange Methods --
     // ------------------------------
-    void getMessage(SocketTCP* Socket, gss_buffer_t incoming_buffer);
+    void getMessage(SocketTCP* socket, gss_buffer_t incoming_buffer);
     void releaseBuffer(gss_buffer_t incoming_buffer);
-    void sendMessage(SocketTCP* Socket, gss_buffer_t outcoming_buffer);
+    void sendMessage(SocketTCP* socket, gss_buffer_t outcoming_buffer);
 
 private:
     // ---------------------

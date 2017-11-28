@@ -70,7 +70,7 @@ public:
     /** Give all the commands to the federate (en invoquant les services
      *  "RTI Initiated" du federe).
      */
-    NetworkMessage* giveCommandMessage(bool& msg_donne, bool& msg_restant);
+    NetworkMessage* giveCommandMessage(bool& gave_msg, bool& has_remaining_msg);
 
     FederationManagement* fm;
     DeclarationManagement* dm;

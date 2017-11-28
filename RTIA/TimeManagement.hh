@@ -92,7 +92,7 @@ public:
     void timeAdvanceRequestAvailable(FederationTime logical_time, Exception::Type& e);
 
     /// Returns true if the time stamp of a time advance request is correct
-    bool testValidTime(FederationTime theTime);
+    bool testValidTime(FederationTime logical_time);
 
     // Change Federate Time State
     void setLookahead(FederationTimeDelta lookahead, Exception::Type& e);
@@ -211,10 +211,10 @@ private:
      *  http://www.cs.utexas.edu/users/misra/scannedPdf.dir/DistrSimulation.pdf
      *  @param[in] logicalTime the logical time of the NULL message to be sent
      */
-    void sendNullMessage(FederationTime logicalTime);
-    void sendNullPrimeMessage(FederationTime logicalTime);
-    void timeRegulationEnabled(FederationTime, Exception::Type& e);
-    void timeConstrainedEnabled(FederationTime, Exception::Type& e);
+    void sendNullMessage(FederationTime logical_time);
+    void sendNullPrimeMessage(FederationTime logical_time);
+    void timeRegulationEnabled(FederationTime logical_time, Exception::Type& e);
+    void timeConstrainedEnabled(FederationTime logical_time, Exception::Type& e);
 
     // Other RTIA Objects
     Communications* comm;

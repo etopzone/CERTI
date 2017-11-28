@@ -719,43 +719,43 @@ void TimeManagement::setTimeRegulating(bool etat,
     }
 }
 
-void TimeManagement::timeRegulationEnabled(FederationTime theTime, Exception::Type& /*e*/)
+void TimeManagement::timeRegulationEnabled(FederationTime logical_time, Exception::Type& /*e*/)
 {
     M_Time_Regulation_Enabled req;
 
     D.Out(pdDebug, "Sending TIME_REGULATION_ENABLED to Federate");
-    req.setDate(theTime);
+    req.setDate(logical_time);
     comm->requestFederateService(&req);
 }
 
-void TimeManagement::timeConstrainedEnabled(FederationTime theTime, Exception::Type& /*e*/)
+void TimeManagement::timeConstrainedEnabled(FederationTime logical_time, Exception::Type& /*e*/)
 {
     M_Time_Constrained_Enabled req;
 
     D.Out(pdDebug, "Sending TIME_CONSTRAINED_ENABLED to Federate");
-    req.setDate(theTime);
+    req.setDate(logical_time);
     comm->requestFederateService(&req);
 }
 
-bool TimeManagement::testValidTime(FederationTime theTime)
+bool TimeManagement::testValidTime(FederationTime logical_time)
 {
     if (_avancee_en_cours == PAS_D_AVANCEE) {
         if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-            if (theTime <= _heure_courante)
+            if (logical_time <= _heure_courante)
                 return false;
         }
         else { // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-            if (theTime < _heure_courante + _lookahead_courant)
+            if (logical_time < _heure_courante + _lookahead_courant)
                 return false;
         }
     }
     else {
         if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-            if (theTime <= date_avancee)
+            if (logical_time <= date_avancee)
                 return false;
         }
         else { // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-            if (theTime < date_avancee + _lookahead_courant)
+            if (logical_time < date_avancee + _lookahead_courant)
                 return false;
         }
     }
