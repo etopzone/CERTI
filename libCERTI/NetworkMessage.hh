@@ -294,9 +294,9 @@ protected:
 private:
 };
 
-std::ostream& CERTI_EXPORT operator<<(std::ostream& os, const NetworkMessage::Type& msg_type);
+std::ostream& operator<<(std::ostream& os, const NetworkMessage::Type& msg_type);
 
-std::ostream& CERTI_EXPORT operator<<(std::ostream& os, const NetworkMessage& msg);
+std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg);
 
 // BUG: FIXME this is used by SocketMC and should
 //      be thrown away as soon as possible.

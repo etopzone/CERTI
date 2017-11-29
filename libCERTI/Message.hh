@@ -289,9 +289,9 @@ private:
     Message& operator=(const Message&);
 };
 
-std::ostream& CERTI_EXPORT operator<<(std::ostream& os, const Message::Type& msg);
+std::ostream& operator<<(std::ostream& os, const Message::Type& msg);
 
-std::ostream& CERTI_EXPORT operator<<(std::ostream& os, const Message& msg);
+std::ostream& operator<<(std::ostream& os, const Message& msg);
 
 } // namespace certi
 

@@ -1,6 +1,3 @@
-#include_directories(${CERTI_SOURCE_DIR}/libHLA)
-#include_directories(${CMAKE_SOURCE_DIR}/libCERTI)
-#include_directories(${CMAKE_SOURCE_DIR}/libRTI)
 include_directories(${CMAKE_SOURCE_DIR})
 
 find_program(GENGETOPT_PROGRAM NAMES gengetopt)

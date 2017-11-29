@@ -1,4 +1,3 @@
-
 include_directories(${CMAKE_SOURCE_DIR})
 
 find_program(GENGETOPT_PROGRAM NAMES gengetopt)
@@ -42,8 +41,6 @@ set(rtia_SRCS
   Statistics.cc Statistics.hh
   TimeManagement.cc TimeManagement.hh  
   )
-
-include_directories(${CMAKE_SOURCE_DIR}/libHLA)
 
 add_executable(rtia ${rtia_SRCS})
 target_link_libraries(rtia CERTI)
