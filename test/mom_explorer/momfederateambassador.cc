@@ -130,8 +130,15 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
         }
 
     } break;
-    default:
-        ret = L"To be decoded";
+    default: {
+        ret = L"To be decoded:";
+        for(auto i=0u; i<data.size(); ++i) {
+            auto byte = static_cast<const uint8_t*>(data.data())[i];
+            ret += L" ";
+            auto value = std::to_string(static_cast<int>(byte));
+            ret += std::wstring(begin(value), end(value));
+        }
+    }
     }
 
     return ret;

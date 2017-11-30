@@ -80,7 +80,7 @@ public:
     // Federation
     Responses updateFederatesInFederation();
     Responses updateFomModuleDesignatorList(const std::vector<std::string>& value); // TODO in phase 3
-    Responses updateCurrentFDD(const std::string& value); // TODO in phase 3
+    Responses updateCurrentFDD(const std::string& value); // idem
     Responses updateLastSave();
     Responses updateNextSave(const std::string& label, const FederationTime& time);
     Responses updateAutoProvide(const bool value);
@@ -88,15 +88,15 @@ public:
     // Federate
     Responses updateTimeConstrained(const Federate& federate);
     Responses updateTimeRegulating(const Federate& federate);
-    Responses updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value); // TODO info in rtia
+    Responses updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value);
     Responses updateFederateState(const Federate& federate);
-    Responses updateTimeManagerState(const FederateHandle federate_handle, const TimeState value); // TODO info in rtia
-    Responses updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    Responses updateLookahead(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    Responses updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    Responses updateLITS(const FederateHandle federate_handle, const FederationTime& value); // TODO info in rtia
-    /* never used */ Responses updateRoLenght(const FederateHandle federate_handle, const int delta = 1);
-    /* never used */ Responses updateTsoLenght(const FederateHandle federate_handle, const int delta = 1);
+    Responses updateTimeManagerState(const FederateHandle federate_handle, const TimeState value);
+    Responses updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value);
+    Responses updateLookahead(const FederateHandle federate_handle, const FederationTime& value);
+    Responses updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO gathered from RTIA but check if we cannot get them in RTIG
+    Responses updateLITS(const FederateHandle federate_handle, const FederationTime& value); // idem
+    Responses updateRoLenght(const FederateHandle federate_handle, const int delta = 1); // TODO check if available from queues or not compliant
+    Responses updateTsoLenght(const FederateHandle federate_handle, const int delta = 1); // idem
     Responses updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
     Responses updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
     Responses updateInteractionsReceived(const FederateHandle federate_handle, const int delta = 1);
@@ -108,12 +108,11 @@ public:
     Responses updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
-    Responses updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
-    Responses updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // TODO info in rtia
+    Responses updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO this will be resource intensive, check if we want to support it
+    Responses updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // idem
     Responses updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
     Responses updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
-    // TODO move private
     Responses
     updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta);
 
@@ -234,7 +233,7 @@ public:
 
 private:
     struct FederateUpdateSettings {
-        std::chrono::seconds updateRate{0};
+        std::chrono::seconds updateRate{1};
         std::chrono::time_point<std::chrono::system_clock> lastUpdate{};
     };
 
@@ -274,6 +273,7 @@ private:
     AttributeValue_t encodeString(const std::string& str);
     AttributeValue_t encodeBoolean(const bool data);
     AttributeValue_t encodeUInt32(const uint32_t data);
+    AttributeValue_t encodeTime(const FederationTime& time);
     AttributeValue_t encodeIp(const unsigned long ip);
     AttributeValue_t encodeFederateHandleList();
     AttributeValue_t encodeFederateState(const Federate& federate);
@@ -305,3 +305,4 @@ private:
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_MOM_HH
+

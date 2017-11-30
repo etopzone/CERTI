@@ -1,4 +1,4 @@
-// Generated on 2017 November Tue, 21 at 15:07:48 by the CERTI message generator
+// Generated on 2017 November Wed, 29 at 23:29:15 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -12,7 +12,7 @@
 
 #include "FedTimeD.hh"
 
-#include <include/certi.hh>
+#include "certi.hh"
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2008  ONERA
@@ -286,26 +286,26 @@ public:
     virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
     // Attributes accessors and mutators
-    const uint8_t& getTarCount() const;
-    void setTarCount(const uint8_t& newTarCount);
+    const FederationTime& getLookahead() const;
+    void setLookahead(const FederationTime& newLookahead);
     
-    const uint8_t& getTaraCount() const;
-    void setTaraCount(const uint8_t& newTaraCount);
+    const bool& getState() const;
+    void setState(const bool& newState);
     
-    const uint8_t& getNerCount() const;
-    void setNerCount(const uint8_t& newNerCount);
+    const FederationTime& getGalt() const;
+    void setGalt(const FederationTime& newGalt);
     
-    const uint8_t& getNeraCount() const;
-    void setNeraCount(const uint8_t& newNeraCount);
+    const FederationTime& getLits() const;
+    void setLits(const FederationTime& newLits);
     
     using Super = NetworkMessage;
     friend std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);
 
 protected:
-    uint8_t tarCount;
-    uint8_t taraCount;
-    uint8_t nerCount;
-    uint8_t neraCount;
+    FederationTime lookahead;
+    bool state;
+    FederationTime galt;
+    FederationTime lits;
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);
@@ -2120,6 +2120,54 @@ protected:
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Message_Null_Prime& msg);
+
+
+class CERTI_EXPORT NM_Enable_Asynchronous_Delivery : public NetworkMessage {
+public:
+    NM_Enable_Asynchronous_Delivery();
+    virtual ~NM_Enable_Asynchronous_Delivery() = default;
+    
+};
+
+
+class CERTI_EXPORT NM_Disable_Asynchronous_Delivery : public NetworkMessage {
+public:
+    NM_Disable_Asynchronous_Delivery();
+    virtual ~NM_Disable_Asynchronous_Delivery() = default;
+    
+};
+
+
+class CERTI_EXPORT NM_Time_Advance_Request : public NetworkMessage {
+public:
+    NM_Time_Advance_Request();
+    virtual ~NM_Time_Advance_Request() = default;
+    
+};
+
+
+class CERTI_EXPORT NM_Time_Advance_Request_Available : public NetworkMessage {
+public:
+    NM_Time_Advance_Request_Available();
+    virtual ~NM_Time_Advance_Request_Available() = default;
+    
+};
+
+
+class CERTI_EXPORT NM_Next_Message_Request : public NetworkMessage {
+public:
+    NM_Next_Message_Request();
+    virtual ~NM_Next_Message_Request() = default;
+    
+};
+
+
+class CERTI_EXPORT NM_Next_Message_Request_Available : public NetworkMessage {
+public:
+    NM_Next_Message_Request_Available();
+    virtual ~NM_Next_Message_Request_Available() = default;
+    
+};
 
 
 class CERTI_EXPORT New_NetworkMessage {

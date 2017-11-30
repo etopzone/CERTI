@@ -390,6 +390,19 @@ AttributeValue_t Mom::encodeUInt32(const uint32_t data)
     return encodeMB();
 }
 
+AttributeValue_t Mom::encodeTime(const FederationTime& time)
+{
+    mb.reset();
+    
+    // uint32 : message lenght
+    mb.write_uint32(sizeof(double));
+    
+    // uint32 : data
+    mb.write_double(time.getTime());
+    
+    return encodeMB();
+}
+
 AttributeValue_t Mom::encodeIp(const unsigned long ip)
 {
     mb.reset();
@@ -558,6 +571,8 @@ std::vector<AttributeHandle> Mom::decodeVectorAttributeHandle(const ParameterVal
 FederationTime Mom::decodeFederationTime(const ParameterValue_t& data)
 {
     mb.reset();
+    mb.write_bytes(&(data[0]), data.size());
+    
     return FederationTime(mb.read_double());
 }
 

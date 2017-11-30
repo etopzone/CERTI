@@ -187,7 +187,13 @@ public:
                            FederationTime time); // includes Time Regulation already enabled.
 
     /// Update the current time of a regulator federate.
-    void updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous);
+    Responses updateRegulator(FederateHandle federate_handle,
+                              FederationTime time,
+                              FederationTime lookahead,
+                              bool time_manager_state,
+                              FederationTime galt,
+                              FederationTime lits,
+                              bool anonymous);
 
     /// includes Time Regulation already disabled.
     Responses removeRegulator(FederateHandle federate_handle);
@@ -424,6 +430,8 @@ public:
                                                                 const std::string& name,
                                                                 RegionHandle region_handle,
                                                                 const std::vector<AttributeHandle>& attributes);
+    
+    Responses updateAsynchronousDelivery(FederateHandle federate_handle, bool status);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
 

@@ -114,6 +114,8 @@ private:
     Responses process(MessageEvent<NM_DDM_Register_Object>&& request);
     Responses process(MessageEvent<NM_Request_Object_Attribute_Value_Update>&& request);
     Responses process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request);
+    Responses process(MessageEvent<NM_Enable_Asynchronous_Delivery>&& request);
+    Responses process(MessageEvent<NM_Disable_Asynchronous_Delivery>&& request);
 
     AuditFile& my_auditServer;
     SocketServer& my_socketServer;

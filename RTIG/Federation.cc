@@ -454,8 +454,17 @@ Responses Federation::addRegulator(FederateHandle federate_handle, FederationTim
     return responses;
 }
 
-void Federation::updateRegulator(FederateHandle federate_handle, FederationTime time, bool anonymous)
+Responses Federation::updateRegulator(FederateHandle federate_handle,
+                                      FederationTime time,
+                                      FederationTime lookahead,
+                                      bool time_manager_state,
+                                      FederationTime galt,
+                                      FederationTime lits, bool anonymous)
 {
+    Responses responses;
+    
+    std::cout << "UR t" << time.getTime() << " l" << lookahead.getTime() << " g" << galt.getTime() << " l" << lits.getTime() << std::endl;
+    
     // if it is an anonymous update (from NULL PRIME message), no need to check federate.
     if (!anonymous) {
         // It may throw FederateNotExecutionMember
@@ -469,6 +478,18 @@ void Federation::updateRegulator(FederateHandle federate_handle, FederationTime 
         Debug(D, pdDebug) << "Federation " << my_handle << ": Federate " << federate_handle << "'s new time is "
                           << time.getTime() << endl;
         my_regulators.update(federate_handle, time);
+        
+        if(my_mom) {
+            responses = my_mom->updateLogicalTime(federate_handle, time);
+            auto resp = my_mom->updateLookahead(federate_handle, lookahead);
+            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+            auto resp2 = my_mom->updateTimeManagerState(federate_handle, time_manager_state ? Mom::TimeState::TimeAdvancing : Mom::TimeState::TimeGranted);
+            responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
+            auto resp3 = my_mom->updateGALT(federate_handle, galt);
+            responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
+            auto resp4 = my_mom->updateLITS(federate_handle, lits);
+            responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
+        }
     }
 
     NM_Message_Null msg;
@@ -482,6 +503,8 @@ void Federation::updateRegulator(FederateHandle federate_handle, FederationTime 
     msg.setDate(time);
     DNULL.Out(pdDebug, "Snd NULL MSG (Federate=%d, Time = %f)", msg.getFederate(), msg.getDate().getTime());
     broadcastAnyMessage(&msg, federate_handle, anonymous);
+    
+    return responses;
 }
 
 Responses Federation::removeRegulator(FederateHandle federate_handle)
@@ -1965,6 +1988,14 @@ std::pair<ObjectHandle, Responses> Federation::registerObjectWithRegion(Federate
     Debug(D, pdDebug) << "- " << attributes.size() << " attribute(s) associated with region " << region_handle << endl;
     Debug(G, pdGendoc) << "exit  Federation::registerObjectWithRegion" << endl;
     return {object, std::move(responses)};
+}
+
+Responses Federation::updateAsynchronousDelivery(FederateHandle federate_handle, bool status)
+{
+    if(my_mom) {
+        return my_mom->updateAsynchronousDelivery(federate_handle, status);
+    }
+    return {};
 }
 
 void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)

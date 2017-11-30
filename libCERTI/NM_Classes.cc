@@ -1,4 +1,4 @@
-// Generated on 2017 November Tue, 21 at 15:07:48 by the CERTI message generator
+// Generated on 2017 November Wed, 29 at 23:29:15 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -574,10 +574,16 @@ void NM_Message_Null::serialize(libhla::MessageBuffer& msgBuffer)
     // Call parent class
     Super::serialize(msgBuffer);
     // Specific serialization code
-    msgBuffer.write_uint8(tarCount);
-    msgBuffer.write_uint8(taraCount);
-    msgBuffer.write_uint8(nerCount);
-    msgBuffer.write_uint8(neraCount);
+    // FIXME FIXME FIXME
+    //don't know how to serialize native field <lookahead> of type <FederationTime>
+    //probably no 'representation' given
+    msgBuffer.write_bool(state);
+    // FIXME FIXME FIXME
+    //don't know how to serialize native field <galt> of type <FederationTime>
+    //probably no 'representation' given
+    // FIXME FIXME FIXME
+    //don't know how to serialize native field <lits> of type <FederationTime>
+    //probably no 'representation' given
 }
 
 void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -585,50 +591,56 @@ void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
     // Call parent class
     Super::deserialize(msgBuffer);
     // Specific deserialization code
-    tarCount = msgBuffer.read_uint8();
-    taraCount = msgBuffer.read_uint8();
-    nerCount = msgBuffer.read_uint8();
-    neraCount = msgBuffer.read_uint8();
+    // FIXME FIXME FIXME
+    //don't know how to deserialize native field <lookahead> of type <FederationTime>
+    //probably no 'representation' given
+    state = msgBuffer.read_bool();
+    // FIXME FIXME FIXME
+    //don't know how to deserialize native field <galt> of type <FederationTime>
+    //probably no 'representation' given
+    // FIXME FIXME FIXME
+    //don't know how to deserialize native field <lits> of type <FederationTime>
+    //probably no 'representation' given
 }
 
-const uint8_t& NM_Message_Null::getTarCount() const
+const FederationTime& NM_Message_Null::getLookahead() const
 {
-    return tarCount;
+    return lookahead;
 }
 
-void NM_Message_Null::setTarCount(const uint8_t& newTarCount)
+void NM_Message_Null::setLookahead(const FederationTime& newLookahead)
 {
-    tarCount = newTarCount;
+    lookahead = newLookahead;
 }
 
-const uint8_t& NM_Message_Null::getTaraCount() const
+const bool& NM_Message_Null::getState() const
 {
-    return taraCount;
+    return state;
 }
 
-void NM_Message_Null::setTaraCount(const uint8_t& newTaraCount)
+void NM_Message_Null::setState(const bool& newState)
 {
-    taraCount = newTaraCount;
+    state = newState;
 }
 
-const uint8_t& NM_Message_Null::getNerCount() const
+const FederationTime& NM_Message_Null::getGalt() const
 {
-    return nerCount;
+    return galt;
 }
 
-void NM_Message_Null::setNerCount(const uint8_t& newNerCount)
+void NM_Message_Null::setGalt(const FederationTime& newGalt)
 {
-    nerCount = newNerCount;
+    galt = newGalt;
 }
 
-const uint8_t& NM_Message_Null::getNeraCount() const
+const FederationTime& NM_Message_Null::getLits() const
 {
-    return neraCount;
+    return lits;
 }
 
-void NM_Message_Null::setNeraCount(const uint8_t& newNeraCount)
+void NM_Message_Null::setLits(const FederationTime& newLits)
 {
-    neraCount = newNeraCount;
+    lits = newLits;
 }
 
 std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg)
@@ -638,10 +650,10 @@ std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg)
     os << static_cast<const NM_Message_Null::Super&>(msg); // show parent class
     
     // Specific display
-    os << "  tarCount = " << msg.tarCount << std::endl;
-    os << "  taraCount = " << msg.taraCount << std::endl;
-    os << "  nerCount = " << msg.nerCount << std::endl;
-    os << "  neraCount = " << msg.neraCount << std::endl;
+    os << "  lookahead = " << "// TODO field <lookahead> of type <FederationTime>" << std::endl;
+    os << "  state = " << msg.state << std::endl;
+    os << "  galt = " << "// TODO field <galt> of type <FederationTime>" << std::endl;
+    os << "  lits = " << "// TODO field <lits> of type <FederationTime>" << std::endl;
     
     os << "[NM_Message_Null - End]" << std::endl;
     return os;
@@ -4988,6 +5000,42 @@ std::ostream& operator<<(std::ostream& os, const NM_Message_Null_Prime& msg)
     return os;
 }
 
+NM_Enable_Asynchronous_Delivery::NM_Enable_Asynchronous_Delivery()
+{
+    this->messageName = "NM_Enable_Asynchronous_Delivery";
+    this->type = NetworkMessage::Type::ENABLE_ASYNCHRONOUS_DELIVERY;
+}
+
+NM_Disable_Asynchronous_Delivery::NM_Disable_Asynchronous_Delivery()
+{
+    this->messageName = "NM_Disable_Asynchronous_Delivery";
+    this->type = NetworkMessage::Type::DISABLE_ASYNCHRONOUS_DELIVERY;
+}
+
+NM_Time_Advance_Request::NM_Time_Advance_Request()
+{
+    this->messageName = "NM_Time_Advance_Request";
+    this->type = NetworkMessage::Type::TIME_ADVANCE_REQUEST;
+}
+
+NM_Time_Advance_Request_Available::NM_Time_Advance_Request_Available()
+{
+    this->messageName = "NM_Time_Advance_Request_Available";
+    this->type = NetworkMessage::Type::TIME_ADVANCE_REQUEST_AVAILABLE;
+}
+
+NM_Next_Message_Request::NM_Next_Message_Request()
+{
+    this->messageName = "NM_Next_Message_Request";
+    this->type = NetworkMessage::Type::NEXT_MESSAGE_REQUEST;
+}
+
+NM_Next_Message_Request_Available::NM_Next_Message_Request_Available()
+{
+    this->messageName = "NM_Next_Message_Request_Available";
+    this->type = NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE;
+}
+
 void New_NetworkMessage::serialize(libhla::MessageBuffer& msgBuffer)
 {
     // Specific serialization code
@@ -5388,6 +5436,24 @@ NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSig
             break;
         case NetworkMessage::Type::MESSAGE_NULL_PRIME:
             msg = new NM_Message_Null_Prime();
+            break;
+        case NetworkMessage::Type::ENABLE_ASYNCHRONOUS_DELIVERY:
+            msg = new NM_Enable_Asynchronous_Delivery();
+            break;
+        case NetworkMessage::Type::DISABLE_ASYNCHRONOUS_DELIVERY:
+            msg = new NM_Disable_Asynchronous_Delivery();
+            break;
+        case NetworkMessage::Type::TIME_ADVANCE_REQUEST:
+            msg = new NM_Time_Advance_Request();
+            break;
+        case NetworkMessage::Type::TIME_ADVANCE_REQUEST_AVAILABLE:
+            msg = new NM_Time_Advance_Request_Available();
+            break;
+        case NetworkMessage::Type::NEXT_MESSAGE_REQUEST:
+            msg = new NM_Next_Message_Request();
+            break;
+        case NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE:
+            msg = new NM_Next_Message_Request_Available();
             break;
         case NetworkMessage::Type::LAST:
             throw NetworkError("LAST message type should not be used!!");

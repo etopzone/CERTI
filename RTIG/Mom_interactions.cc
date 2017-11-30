@@ -26,11 +26,14 @@
 
 #include <libCERTI/InteractionSet.hh>
 #include <libCERTI/MessageEvent.hh>
+#include <libCERTI/NM_Classes.hh>
 #include <libCERTI/Object.hh>
 #include <libCERTI/ObjectAttribute.hh>
 #include <libCERTI/ObjectClassAttribute.hh>
 #include <libCERTI/ObjectClassSet.hh>
 #include <libCERTI/ObjectSet.hh>
+
+#include <include/make_unique.hh>
 
 using std::cout;
 using std::endl;
@@ -1478,8 +1481,14 @@ Responses Mom::processFederateTimeAdvanceRequest(const FederateHandle& federate_
                        << endl;
 
     Responses responses;
-
-    // TODO NULL_MESSAGE ?
+    
+    auto message = make_unique<NM_Time_Advance_Request>();
+    
+    message->setFederation(my_federation.getHandle().get());
+    message->setFederate(federate_handle);
+    message->setDate(timeStamp);
+    
+    responses.emplace_back(getSocketForFederate(federate_handle), std::move(message));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequest" << endl;
 
@@ -1497,7 +1506,13 @@ Responses Mom::processFederateTimeAdvanceRequestAvailable(const FederateHandle& 
 
     Responses responses;
 
-    // TODO NULL_MESSAGE ?
+    auto message = make_unique<NM_Time_Advance_Request_Available>();
+    
+    message->setFederation(my_federation.getHandle().get());
+    message->setFederate(federate_handle);
+    message->setDate(timeStamp);
+    
+    responses.emplace_back(getSocketForFederate(federate_handle), std::move(message));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateTimeAdvanceRequestAvailable" << endl;
 
@@ -1513,8 +1528,14 @@ Responses Mom::processFederateNextMessageRequest(const FederateHandle& federate_
                        << endl;
 
     Responses responses;
-
-    // TODO NULL_MESSAGE ?
+    
+    auto message = make_unique<NM_Next_Message_Request>();
+    
+    message->setFederation(my_federation.getHandle().get());
+    message->setFederate(federate_handle);
+    message->setDate(timeStamp);
+    
+    responses.emplace_back(getSocketForFederate(federate_handle), std::move(message));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequest" << endl;
 
@@ -1531,8 +1552,14 @@ Responses Mom::processFederateNextMessageRequestAvailable(const FederateHandle& 
                        << timeStamp << endl;
 
     Responses responses;
-
-    // TODO NULL_MESSAGE ?
+    
+    auto message = make_unique<NM_Next_Message_Request_Available>();
+    
+    message->setFederation(my_federation.getHandle().get());
+    message->setFederate(federate_handle);
+    message->setDate(timeStamp);
+    
+    responses.emplace_back(getSocketForFederate(federate_handle), std::move(message));
 
     Debug(D, pdGendoc) << "exit  Mom::processFederateNextMessageRequestAvailable" << endl;
 

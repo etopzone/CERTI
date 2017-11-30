@@ -176,7 +176,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Conditional
     attribute = my_attribute_cache["HLAasynchronousDelivery"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeBoolean(/*TODO info in RTIA */ false);
+    my_attribute_values_cache[federate_object][attribute] = encodeBoolean(false);
 
     // Conditional
     attribute = my_attribute_cache["HLAfederateState"];
@@ -186,27 +186,27 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Conditional
     attribute = my_attribute_cache["HLAtimeManagerState"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeBoolean(false);
 
     // Periodic
     attribute = my_attribute_cache["HLAlogicalTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
     attribute = my_attribute_cache["HLAlookahead"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
     attribute = my_attribute_cache["HLAGALT"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
     attribute = my_attribute_cache["HLALITS"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
     attribute = my_attribute_cache["HLAROlength"];
@@ -289,12 +289,12 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Periodic
     attribute = my_attribute_cache["HLAtimeGrantedTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
     attribute = my_attribute_cache["HLAtimeAdvancingTime"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeUInt32(/*TODO info in RTIA */ 0);
+    my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Conditional
     attribute = my_attribute_cache["HLAconveyRegionDesignatorSets"];
@@ -365,16 +365,16 @@ Responses Mom::updateLastSave()
     return provideAttributeValueUpdate(my_federation_object, {attribute, attribute2});
 }
 
-Responses Mom::updateNextSave(const std::string& label, const FederationTime& /*time*/)
+Responses Mom::updateNextSave(const std::string& label, const FederationTime& time)
 {
     auto attribute = my_attribute_cache["HLAnextSaveName"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(label); // TODO
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(label);
 
     auto attribute2 = my_attribute_cache["HLAnextSaveTime"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
-
+    my_attribute_values_cache[my_federation_object][attribute] = encodeTime(time);
+    
     return provideAttributeValueUpdate(my_federation_object, {attribute, attribute2});
 }
 
@@ -415,7 +415,7 @@ Responses Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, 
 
     auto object = my_federate_objects[federate_handle];
 
-    my_attribute_values_cache[object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[object][attribute] = encodeBoolean(value);
 
     return provideAttributeValueUpdate(object, {attribute});
 }
@@ -437,7 +437,7 @@ Responses Mom::updateTimeManagerState(const FederateHandle federate_handle, cons
 
     auto object = my_federate_objects[federate_handle];
 
-    my_attribute_values_cache[object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[object][attribute] = encodeBoolean(value == TimeState::TimeAdvancing);
 
     return provideAttributeValueUpdate(object, {attribute});
 }
@@ -446,7 +446,7 @@ Responses Mom::updateLogicalTime(const FederateHandle federate_handle, const Fed
 {
     auto attribute = my_attribute_cache["HLAlogicalTime"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -455,7 +455,7 @@ Responses Mom::updateLookahead(const FederateHandle federate_handle, const Feder
 {
     auto attribute = my_attribute_cache["HLAlookahead"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -464,7 +464,7 @@ Responses Mom::updateGALT(const FederateHandle federate_handle, const Federation
 {
     auto attribute = my_attribute_cache["HLAGALT"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -473,7 +473,7 @@ Responses Mom::updateLITS(const FederateHandle federate_handle, const Federation
 {
     auto attribute = my_attribute_cache["HLALITS"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -567,7 +567,7 @@ Responses Mom::updateTimeGrantedTime(const FederateHandle federate_handle, const
 {
     auto attribute = my_attribute_cache["HLAtimeGrantedTime"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -576,7 +576,7 @@ Responses Mom::updateTimeAdvancingTime(const FederateHandle federate_handle, con
 {
     auto attribute = my_attribute_cache["HLAtimeAdvancingTime"];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
 }
@@ -587,7 +587,7 @@ Responses Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_ha
 
     auto object = my_federate_objects[federate_handle];
 
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeBoolean(value);
 
     return provideAttributeValueUpdate(object, {attribute});
 }
@@ -598,7 +598,7 @@ Responses Mom::updateConveyProducingFederate(const FederateHandle federate_handl
 
     auto object = my_federate_objects[federate_handle];
 
-    my_attribute_values_cache[object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[object][attribute] = encodeBoolean(value);
 
     return provideAttributeValueUpdate(object, {attribute});
 }

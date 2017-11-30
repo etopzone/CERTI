@@ -86,7 +86,7 @@ int main(int argc, char** argv)
         if (mode == L"auto") {
             while (true) {
                 ambassador->evokeCallback(0.1);
-                sleep(1);
+//                 sleep(1);
             }
         }
         else {

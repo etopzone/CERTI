@@ -164,10 +164,10 @@ message NM_FOM_Interaction_Class {
 message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {
-	required uint8 tarCount
-	required uint8 taraCount
-	required uint8 nerCount
-	required uint8 neraCount
+	required FederationTime lookahead
+	required bool state
+	required FederationTime galt
+	required FederationTime lits
 }
 
 // Create the federation execution
@@ -552,6 +552,24 @@ message NM_Reserve_Object_Instance_Name_Failed : merge NM_Reserve_Object_Instanc
 
 message NM_Message_Null_Prime : merge NetworkMessage {
    required FederationTime timestamp
+}
+
+message NM_Enable_Asynchronous_Delivery : merge NetworkMessage {
+}
+
+message NM_Disable_Asynchronous_Delivery : merge NetworkMessage {
+}
+
+message NM_Time_Advance_Request : merge NetworkMessage {
+}
+
+message NM_Time_Advance_Request_Available : merge NetworkMessage {
+}
+
+message NM_Next_Message_Request : merge NetworkMessage {
+}
+
+message NM_Next_Message_Request_Available : merge NetworkMessage {
 }
 
 message New_NetworkMessage {

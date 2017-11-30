@@ -648,20 +648,36 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         D.Out(pdTrace,
               "Receiving Message from Federate, "
               "type EnableAsynchronousDelivery.");
-        if (!tm->_asynchronous_delivery)
+        if (!tm->_asynchronous_delivery) {
             tm->_asynchronous_delivery = true;
-        else
+            
+            NM_Enable_Asynchronous_Delivery req;
+        
+            req.setFederation(fm->_numero_federation);
+            req.setFederate(fm->federate);
+            comm->sendMessage(&req);
+        }
+        else {
             e = Exception::Type::AsynchronousDeliveryAlreadyEnabled;
+        }
         break;
 
     case Message::DISABLE_ASYNCHRONOUS_DELIVERY:
         D.Out(pdTrace,
               "Receiving Message from Federate, "
               "type DisableAsynchronousDelivery.");
-        if (tm->_asynchronous_delivery)
+        if (tm->_asynchronous_delivery) {
             tm->_asynchronous_delivery = false;
-        else
+            
+            NM_Disable_Asynchronous_Delivery req;
+            
+            req.setFederation(fm->_numero_federation);
+            req.setFederate(fm->federate);
+            comm->sendMessage(&req);
+        }
+        else {
             e = Exception::Type::AsynchronousDeliveryAlreadyDisabled;
+        }
         break;
 
     case Message::QUERY_FEDERATE_TIME:

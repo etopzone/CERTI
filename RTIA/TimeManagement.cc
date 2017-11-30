@@ -103,15 +103,10 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
         msg.setFederate(fm->federate);
         msg.setDate(logical_time);
 
-        msg.setTarCount(my_tar_counter);
-        msg.setTaraCount(my_tara_counter);
-        msg.setNerCount(my_ner_counter);
-        msg.setNeraCount(my_nera_counter);
-
-        my_tar_counter = 0;
-        my_tara_counter = 0;
-        my_ner_counter = 0;
-        my_nera_counter = 0;
+        msg.setLookahead(_lookahead_courant);
+        msg.setState(_avancee_en_cours == TAR);
+        msg.setGalt(_LBTS);
+        msg.setLits(requestMinNextEventTime());
 
         comm->sendMessage(&msg);
         lastNullMessageDate = logical_time;

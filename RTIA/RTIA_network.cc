@@ -401,6 +401,50 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
               " type reserveObjectInstanceNameFaild.");
         queues->insertLastCommand(request);
         break;
+        
+    case NetworkMessage::Type::TIME_ADVANCE_REQUEST: {
+        D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequest.");
+        
+        Exception::Type e;
+        tm->timeAdvanceRequest(request->getDate(), e);
+        if(e != Exception::Type::NO_EXCEPTION) {
+            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        }
+        break;
+    }
+        
+    case NetworkMessage::Type::TIME_ADVANCE_REQUEST_AVAILABLE: {
+        D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequestAvailable.");
+        
+        Exception::Type e;
+        tm->timeAdvanceRequestAvailable(request->getDate(), e);
+        if(e != Exception::Type::NO_EXCEPTION) {
+            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        }
+        break;
+    }
+        
+    case NetworkMessage::Type::NEXT_MESSAGE_REQUEST: {
+        D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequest.");
+        
+        Exception::Type e;
+        tm->nextEventRequest(request->getDate(), e);
+        if(e != Exception::Type::NO_EXCEPTION) {
+            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        }
+        break;
+    }
+        
+    case NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE: {
+        D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequestAvailable.");
+        
+        Exception::Type e;
+        tm->nextEventRequestAvailable(request->getDate(), e);
+        if(e != Exception::Type::NO_EXCEPTION) {
+            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        }
+        break;
+    }
 
     default: {
         D.Out(pdTrace, "Receving Message from RTIG, unknown type %d.", msgType);

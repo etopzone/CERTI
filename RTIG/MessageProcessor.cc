@@ -108,6 +108,8 @@ Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
         BASIC_CASE(DDM_UNSUBSCRIBE_ATTRIBUTES, NM_DDM_Unsubscribe_Attributes);
         BASIC_CASE(DDM_SUBSCRIBE_INTERACTION, NM_DDM_Subscribe_Interaction);
         BASIC_CASE(DDM_UNSUBSCRIBE_INTERACTION, NM_DDM_Unsubscribe_Interaction);
+        BASIC_CASE(ENABLE_ASYNCHRONOUS_DELIVERY, NM_Enable_Asynchronous_Delivery);
+        BASIC_CASE(DISABLE_ASYNCHRONOUS_DELIVERY, NM_Disable_Asynchronous_Delivery);
 
     case NetworkMessage::Type::CLOSE_CONNEXION:
         throw RTIinternalError("Close connection: Should have been handled by RTIG");
@@ -475,8 +477,14 @@ Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, boo
 
     // Catch all exceptions because RTIA does not expect an answer anyway.
     try {
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .updateRegulator(request.message()->getFederate(), request.message()->getDate(), anonymous);
+        return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+            .updateRegulator(request.message()->getFederate(),
+                             request.message()->getDate(),
+                             request.message()->getLookahead(),
+                             request.message()->getState(),
+                             request.message()->getGalt(),
+                             request.message()->getLits(),
+                             anonymous);
     }
     catch (Exception& e) {
     }
@@ -1556,6 +1564,18 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Valu
     responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
+}
+
+Responses MessageProcessor::process(MessageEvent<NM_Enable_Asynchronous_Delivery>&& request)
+{
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    .updateAsynchronousDelivery(request.message()->getFederate(), true);
+}
+
+Responses MessageProcessor::process(MessageEvent<NM_Disable_Asynchronous_Delivery>&& request)
+{
+    return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+    .updateAsynchronousDelivery(request.message()->getFederate(), false);
 }
 }
 }
