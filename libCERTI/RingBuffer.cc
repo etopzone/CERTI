@@ -128,7 +128,7 @@ RingBuffer::RingBuffer(const std::string& name,
             _Sem_CS->Create_Init(1, Semaphore::buildSemName(_Name + "_BUFFER_CS"));
 
 #ifdef _WIN32
-            if (Shm_Sem_Type == "Win32") {
+            if (semaphore_type == "Win32") {
                 _Shm_CS = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size, true);
                 _Shm_SC = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size);
                 _Pw_Pr_CS = new SHMWin32(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int), true);
