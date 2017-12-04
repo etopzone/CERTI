@@ -90,74 +90,30 @@ RingBuffer::RingBuffer(const std::string& name,
     }
 #endif
 
-    if (_Side == BUFFER_SC) {
-        try {
-            _Sem_SC->Create_Init(1, Semaphore::buildSemName(name + "_BUFFER_SC"));
-        }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "RingBuffer::RingBuffer() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::RingBufferNotCreated("RingBuffer() failed."));
-        }
-    }
-    else {
-        try {
-            _Sem_CS->Create_Init(1, Semaphore::buildSemName(name + "_BUFFER_CS"));
-        }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "RingBuffer::RingBuffer() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::RingBufferNotCreated("RingBuffer() failed."));
-        }
-    }
-
-    if (_Side == BUFFER_SC) {
-#ifdef _WIN32
-        _Shm_SC = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_BUFFER_SC"), RingBuffer_Size, true);
-        _Shm_CS = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_BUFFER_CS"), RingBuffer_Size);
-        _Pw_Pr_SC = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_IND_SC"), 3 * sizeof(int), true);
-        _Pw_Pr_CS = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_IND_CS"), 3 * sizeof(int));
-#else
-        if (semaphore_type == "SysV") {
-            _Shm_SC = new SHMSysV(SHM::buildShmName(name + "_BUFFER_SC"), size, true);
-            _Shm_CS = new SHMSysV(SHM::buildShmName(name + "_BUFFER_CS"), size);
-            _Pw_Pr_SC = new SHMSysV(SHM::buildShmName(name + "_IND_SC"), 3 * sizeof(int), true);
-            _Pw_Pr_CS = new SHMSysV(SHM::buildShmName(name + "_IND_CS"), 3 * sizeof(int));
-        }
-        if (semaphore_type == "Posix") {
-            _Shm_SC = new SHMPosix(SHM::buildShmName(name + "_BUFFER_SC"), size, true);
-            _Shm_CS = new SHMPosix(SHM::buildShmName(name + "_BUFFER_CS"), size);
-            _Pw_Pr_SC = new SHMPosix(SHM::buildShmName(name + "_IND_SC"), 3 * sizeof(int), true);
-            _Pw_Pr_CS = new SHMPosix(SHM::buildShmName(name + "_IND_CS"), 3 * sizeof(int));
-        }
-#endif
-    }
-    else {
-#ifdef _WIN32
-        if (Shm_Sem_Type == "Win32") {
-            _Shm_CS = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_BUFFER_CS"), RingBuffer_Size, true);
-            _Shm_SC = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_BUFFER_SC"), RingBuffer_Size);
-            _Pw_Pr_CS = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_IND_CS"), 3 * sizeof(int), true);
-            _Pw_Pr_SC = new SHMWin32(SHM::buildShmName(RingBuffer_Name + "_IND_SC"), 3 * sizeof(int));
-        }
-#else
-        if (semaphore_type == "SysV") {
-            _Shm_CS = new SHMSysV(SHM::buildShmName(name + "_BUFFER_CS"), size, true);
-            _Shm_SC = new SHMSysV(SHM::buildShmName(name + "_BUFFER_SC"), size);
-            _Pw_Pr_CS = new SHMSysV(SHM::buildShmName(name + "_IND_CS"), 3 * sizeof(int), true);
-            _Pw_Pr_SC = new SHMSysV(SHM::buildShmName(name + "_IND_SC"), 3 * sizeof(int));
-        }
-        if (semaphore_type == "Posix") {
-            _Shm_CS = new SHMPosix(SHM::buildShmName(name + "_BUFFER_CS"), size, true);
-            _Shm_SC = new SHMPosix(SHM::buildShmName(name + "_BUFFER_SC"), size);
-            _Pw_Pr_CS = new SHMPosix(SHM::buildShmName(name + "_IND_CS"), 3 * sizeof(int), true);
-            _Pw_Pr_SC = new SHMPosix(SHM::buildShmName(name + "_IND_SC"), 3 * sizeof(int));
-        }
-#endif
-    }
-
     try {
         if (_Side == BUFFER_SC) {
+            _Sem_SC->Create_Init(1, Semaphore::buildSemName(_Name + "_BUFFER_SC"));
+
+#ifdef _WIN32
+            _Shm_SC = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size, true);
+            _Shm_CS = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size);
+            _Pw_Pr_SC = new SHMWin32(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int), true);
+            _Pw_Pr_CS = new SHMWin32(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int));
+#else
+            if (semaphore_type == "SysV") {
+                _Shm_SC = new SHMSysV(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size, true);
+                _Shm_CS = new SHMSysV(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size);
+                _Pw_Pr_SC = new SHMSysV(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int), true);
+                _Pw_Pr_CS = new SHMSysV(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int));
+            }
+            if (semaphore_type == "Posix") {
+                _Shm_SC = new SHMPosix(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size, true);
+                _Shm_CS = new SHMPosix(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size);
+                _Pw_Pr_SC = new SHMPosix(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int), true);
+                _Pw_Pr_CS = new SHMPosix(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int));
+            }
+#endif
+
             _Shm_SC->Open();
             _Shm_SC->Attach();
             _Pw_Pr_SC->Open();
@@ -169,6 +125,30 @@ RingBuffer::RingBuffer(const std::string& name,
             Debug(D, pdDebug) << " -----> Adresse : _Pw_Pr_SC->GetShm() = " << _Pw_Pr_SC->GetShm() << std::endl;
         }
         else {
+            _Sem_CS->Create_Init(1, Semaphore::buildSemName(_Name + "_BUFFER_CS"));
+
+#ifdef _WIN32
+            if (Shm_Sem_Type == "Win32") {
+                _Shm_CS = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size, true);
+                _Shm_SC = new SHMWin32(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size);
+                _Pw_Pr_CS = new SHMWin32(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int), true);
+                _Pw_Pr_SC = new SHMWin32(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int));
+            }
+#else
+            if (semaphore_type == "SysV") {
+                _Shm_CS = new SHMSysV(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size, true);
+                _Shm_SC = new SHMSysV(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size);
+                _Pw_Pr_CS = new SHMSysV(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int), true);
+                _Pw_Pr_SC = new SHMSysV(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int));
+            }
+            if (semaphore_type == "Posix") {
+                _Shm_CS = new SHMPosix(SHM::buildShmName(_Name + "_BUFFER_CS"), _Size, true);
+                _Shm_SC = new SHMPosix(SHM::buildShmName(_Name + "_BUFFER_SC"), _Size);
+                _Pw_Pr_CS = new SHMPosix(SHM::buildShmName(_Name + "_IND_CS"), 3 * sizeof(int), true);
+                _Pw_Pr_SC = new SHMPosix(SHM::buildShmName(_Name + "_IND_SC"), 3 * sizeof(int));
+            }
+#endif
+
             _Shm_CS->Open();
             _Shm_CS->Attach();
             _Pw_Pr_CS->Open();
@@ -179,6 +159,11 @@ RingBuffer::RingBuffer(const std::string& name,
             Debug(D, pdDebug) << "  -----> Adresse : _Shm_CS->GetShm() = " << _Shm_CS->GetShm() << std::endl;
             Debug(D, pdDebug) << "  -----> Adresse : _Pw_Pr_CS->GetShm() = " << _Pw_Pr_CS->GetShm() << std::endl;
         }
+    }
+    catch (Semaphore::SemaphoreNotCreated& e) {
+        std::cout << "RingBuffer::RingBuffer() Exception. "
+                  << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
+        throw(certi::RingBufferNotCreated("RingBuffer() failed."));
     }
     catch (SHM::SharedMemoryNotOpen& e) {
         std::cout << "RingBuffer::RingBuffer() Exception. "
@@ -197,12 +182,7 @@ void RingBuffer::Attach()
     try {
         if (_Side == BUFFER_CS) {
             _Sem_SC->Attach(Semaphore::buildSemName(_Name + "_BUFFER_SC"));
-        }
-        else {
-            _Sem_CS->Attach(Semaphore::buildSemName(_Name + "_BUFFER_CS"));
-        }
 
-        if (_Side == BUFFER_CS) {
             _Shm_SC->Open();
             _Shm_SC->Attach();
             _Pw_Pr_SC->Open();
@@ -213,8 +193,12 @@ void RingBuffer::Attach()
                 << std::endl;
             Debug(D, pdDebug) << " Adresse : _Shm_SC->GetShm() = " << _Shm_SC->GetShm() << std::endl;
             Debug(D, pdDebug) << " Adresse : _Pw_Pr_SC->GetShm() = " << _Pw_Pr_SC->GetShm() << std::endl;
+
+            memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int));
         }
         else {
+            _Sem_CS->Attach(Semaphore::buildSemName(_Name + "_BUFFER_CS"));
+
             _Shm_CS->Open();
             _Shm_CS->Attach();
             _Pw_Pr_CS->Open();
@@ -225,6 +209,8 @@ void RingBuffer::Attach()
                 << std::endl;
             Debug(D, pdDebug) << " Adresse : _Shm_CS->GetShm() = " << _Shm_CS->GetShm() << std::endl;
             Debug(D, pdDebug) << " Adresse : _Pw_Pr_CS->GetShm() = " << _Pw_Pr_CS->GetShm() << std::endl;
+
+            memcpy(_Pw_Pr_SC->GetShm(), _Tab_SC, 3 * sizeof(int));
         }
     }
     catch (Semaphore::SemaphoreNotOpen& e) {
@@ -241,13 +227,6 @@ void RingBuffer::Attach()
         std::cout << "RingBuffer::Attach() Exception. "
                   << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
         throw(certi::RingBufferNotAttached("Attach() failed."));
-    }
-
-    if (_Side == BUFFER_CS) {
-        memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int));
-    }
-    else {
-        memcpy(_Pw_Pr_SC->GetShm(), _Tab_SC, 3 * sizeof(int));
     }
 }
 
@@ -456,7 +435,6 @@ void RingBuffer::Receive(void* Buffer, size_t Size)
                 memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int));
 
                 Debug(D, pdDebug) << "APRES  memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int) ) ; !! " << std::endl;
-
             }
 
             _Sem_CS->V();
@@ -466,7 +444,7 @@ void RingBuffer::Receive(void* Buffer, size_t Size)
 
             memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int));
 
-             // Is there enough space in the buffer?
+            // Is there enough space in the buffer?
             if (_Tab_SC[0] == (int) _Size) {
                 _Sem_SC->V();
                 Debug(D, pdDebug) << "RingBuffer::Receive(...) --> Nothing to Read on _Shm_CS !!" << std::endl;
@@ -513,7 +491,6 @@ void RingBuffer::Receive(void* Buffer, size_t Size)
                                   << " | Write_SC = " << _Tab_SC[1] << "| Read_SC = " << _Tab_SC[2] << std::endl;
 
                 memcpy(_Pw_Pr_SC->GetShm(), _Tab_SC, 3 * sizeof(int));
-
             }
             _Sem_SC->V();
         }
@@ -547,5 +524,4 @@ void RingBuffer::Close()
         throw(certi::RingBufferNotClosed("RingBuffer::Close() failed."));
         ;
     }
-
 }
