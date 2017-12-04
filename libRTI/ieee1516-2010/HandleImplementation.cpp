@@ -141,7 +141,7 @@ std::wstring HandleImplementation::toString() const
 
 #define DECLARE_HANDLE_IMPLEMENTATION_CLASS(HIK)                                                                       \
                                                                                                                        \
-    /* Constructs an invalid handle                           */                                                       \
+    /* Constructs an invalid handle */                                                                                 \
     HIK::HIK() : HandleImplementation()                                                                                \
     {                                                                                                                  \
     }                                                                                                                  \
@@ -167,7 +167,7 @@ std::wstring HandleImplementation::toString() const
         return *this;                                                                                                  \
     }                                                                                                                  \
                                                                                                                        \
-    /* All invalid handles are equivalent                     */                                                       \
+    /* All invalid handles are equivalent */                                                                           \
     bool HIK::operator==(HIK const& rhs) const                                                                         \
     {                                                                                                                  \
         return _value == rhs._value;                                                                                   \
