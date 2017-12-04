@@ -222,9 +222,7 @@ void XmlParser::parseClass(ObjectClass* parent)
 void XmlParser::parseInteraction(Interaction* parent)
 {
     Debug(D, pdTrace) << "New Interaction Class" << endl;
-    std::string name;
-    TransportType transport;
-    OrderType order;
+    std::string name; // FIXME never used?
 
     xmlNodePtr prev = cur;
 
@@ -238,7 +236,7 @@ void XmlParser::parseInteraction(Interaction* parent)
     //name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
     // Transportation
-
+    TransportType transport{RELIABLE};
     if (!xmlStrcmp(intClassProp.transportation, VALUE_RELIABLE)) {
         transport = RELIABLE;
     }
@@ -246,11 +244,11 @@ void XmlParser::parseInteraction(Interaction* parent)
         transport = BEST_EFFORT;
     }
     else {
-        // TODO LATER FIXME warning: variable 'transport' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-        // assert(false);
+        cerr << "warning: No transportation provided, defaulting to reliable" << endl;
     }
 
     // Order
+    OrderType order{TIMESTAMP};
     if (!xmlStrcmp(intClassProp.order, VALUE_TSO)) {
         order = TIMESTAMP;
     }
@@ -258,8 +256,7 @@ void XmlParser::parseInteraction(Interaction* parent)
         order = RECEIVE;
     }
     else {
-        // TODO LATER FIXME warning: variable 'order' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-        // assert(false);
+        cerr << "warning: No order provided, defaulting to TSO" << endl;
     }
 
     Interaction* current
