@@ -91,7 +91,7 @@ void Statistics::show(std::ostream& s) const
     for (const auto count : my_rti_service_count) {
         if (count > 0 || displayZero()) {
             s.width(8);
-            s << count << ' ' << /*static_cast<NetworkMessage::Type>(i) <<*/ " (MSG#" << i << ")" << endl;
+            s << count << ' ' << static_cast<NetworkMessage::Type>(i) << " (MSG#" << i << ")" << endl;
         }
         ++i;
     }

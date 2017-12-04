@@ -62,7 +62,7 @@ std::ostream& NetworkMessage::show(std::ostream& out)
     case msg_:                                                                                                         \
         return os << STRINGIZE(msg_);
 
-#if 0
+#if 1
 std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type)
 {
     switch(msg_type) {
