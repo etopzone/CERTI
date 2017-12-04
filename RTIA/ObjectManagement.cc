@@ -122,12 +122,12 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
                                                               const std::string& theTag,
                                                               Exception::Type& e)
 {
-    NM_Update_Attribute_Values req;
     EventRetractionHandle evtrHandle;
 
     G.Out(pdGendoc, "enter ObjectManagement::updateAttributeValues with time");
     if (tm->testValidTime(theTime)) {
         // Building request (req NetworkMessage)
+        NM_Update_Attribute_Values req;
         req.setFederation(fm->_numero_federation);
         req.setFederate(fm->federate);
         req.setObject(theObjectHandle);
@@ -157,9 +157,9 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
 
         D.Out(pdDebug, errorMsg.str().c_str());
         e = Exception::Type::InvalidFederationTime;
+        evtrHandle = 0;
     }
 
-    // FIXME returned evtrHandle carry uninitialized value
     G.Out(pdGendoc, "exit ObjectManagement::updateAttributeValues with time");
     return evtrHandle;
 }
@@ -284,17 +284,15 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
                                                         RegionHandle region,
                                                         Exception::Type& e)
 {
-    NM_Send_Interaction req;
-    bool validCall;
     EventRetractionHandle evtrHandle;
 
-    validCall = tm->testValidTime(theTime);
-    if (validCall) {
+    if (tm->testValidTime(theTime)) {
         G.Out(pdGendoc, "ObjectManagement::sendInteraction with time");
         // Local test to know if interaction is correct.
         rootObject->Interactions->isReady(fm->federate, theInteraction, paramArray, paramArraySize);
 
         // Building network message (req) to RTIG.
+        NM_Send_Interaction req;
         req.setInteractionClass(theInteraction);
         // true for UAV with time
         req.setDate(theTime);
@@ -320,9 +318,9 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
     }
     else {
         e = Exception::Type::InvalidFederationTime;
+        evtrHandle = 0;
     }
 
-    // FIXME returned evtrHandle carry uninitialized value
     return evtrHandle;
 }
 
