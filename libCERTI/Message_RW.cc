@@ -46,13 +46,12 @@ std::ostream& Message::show(std::ostream& out)
 #define STRINGIZE(m) #m
 #define CASE(msg_)                                                                                                     \
     case msg_:                                                                                                         \
-        return os << STRINGIZE(msg_);
+        return STRINGIZE(msg_);
 
-#if 0
-std::ostream& operator<<(std::ostream& os, const Message::Type& msg_type)
+std::string to_string(const Message::Type& msg_type)
 {
     switch (msg_type) {
-        CASE(Message::NOT_USED)
+//         CASE(Message::NOT_USED)
         CASE(Message::OPEN_CONNEXION)
         CASE(Message::CLOSE_CONNEXION)
         CASE(Message::CREATE_FEDERATION_EXECUTION)
@@ -200,12 +199,11 @@ std::ostream& operator<<(std::ostream& os, const Message::Type& msg_type)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED)
-        CASE(Message::LAST)
+//         CASE(Message::LAST)
         default:
-            return os << "Unknown NetworkMessage::Type";
+            return "Unknown NetworkMessage::Type";
     }
-};
-#endif
+}
 
 std::ostream& operator<<(std::ostream& os, const Message& msg)
 {

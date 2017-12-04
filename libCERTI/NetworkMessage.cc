@@ -60,10 +60,9 @@ std::ostream& NetworkMessage::show(std::ostream& out)
 #define STRINGIZE(m) #m
 #define CASE(msg_)                                                                                                     \
     case msg_:                                                                                                         \
-        return os << STRINGIZE(msg_);
+        return STRINGIZE(msg_);
 
-#if 1
-std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type)
+std::string to_string(const NetworkMessage::Type& msg_type)
 {
     switch(msg_type) {
 //         CASE(NetworkMessage::Type::NOT_USED)
@@ -163,10 +162,9 @@ std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_typ
         CASE(NetworkMessage::Type::MESSAGE_NULL_PRIME)
 //         CASE(NetworkMessage::Type::LAST)
         default:
-            return os << "Unknown NetworkMessage::Type";
+            return "Unknown NetworkMessage::Type";
     }
 }
-#endif
 
 std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg)
 {

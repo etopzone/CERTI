@@ -61,12 +61,12 @@ void Statistics::federateService(Message::Type service)
 bool Statistics::display() const
 {
     return my_display;
-};
+}
 
 bool Statistics::displayZero() const
 {
     return my_display_zero;
-};
+}
 
 void Statistics::show(std::ostream& s) const
 {
@@ -78,7 +78,7 @@ void Statistics::show(std::ostream& s) const
     for (const auto count : my_federate_service_count) {
         if (count > 0 || displayZero()) {
             s.width(8);
-            s << count << ' ' << /*static_cast<Message::Type>(i) << */" (MSG#" << i << ")" << endl;
+            s << count << ' ' << to_string(static_cast<Message::Type>(i)) << " (MSG#" << i << ")" << endl;
         }
         ++i;
     }
@@ -91,7 +91,7 @@ void Statistics::show(std::ostream& s) const
     for (const auto count : my_rti_service_count) {
         if (count > 0 || displayZero()) {
             s.width(8);
-            s << count << ' ' << static_cast<NetworkMessage::Type>(i) << " (MSG#" << i << ")" << endl;
+            s << count << ' ' << to_string(static_cast<NetworkMessage::Type>(i)) << " (MSG#" << i << ")" << endl;
         }
         ++i;
     }

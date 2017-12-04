@@ -300,7 +300,7 @@ protected:
 private:
 };
 
-std::ostream& operator<<(std::ostream& os, const NetworkMessage::Type& msg_type);
+std::string to_string(const NetworkMessage::Type& msg_type);
 
 std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg);
 
