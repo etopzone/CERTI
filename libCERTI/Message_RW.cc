@@ -48,7 +48,7 @@ std::ostream& Message::show(std::ostream& out)
     case msg_:                                                                                                         \
         return STRINGIZE(msg_);
 
-std::string to_string(const Message::Type& msg_type)
+std::string Message::to_string(const Message::Type& msg_type)
 {
     switch (msg_type) {
 //         CASE(Message::NOT_USED)

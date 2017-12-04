@@ -62,7 +62,7 @@ std::ostream& NetworkMessage::show(std::ostream& out)
     case msg_:                                                                                                         \
         return STRINGIZE(msg_);
 
-std::string to_string(const NetworkMessage::Type& msg_type)
+std::string NetworkMessage::to_string(const NetworkMessage::Type& msg_type)
 {
     switch(msg_type) {
 //         CASE(NetworkMessage::Type::NOT_USED)

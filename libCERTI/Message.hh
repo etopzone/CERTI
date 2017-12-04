@@ -210,6 +210,8 @@ public:
     
     static constexpr size_t the_message_type_count = static_cast<size_t>(LAST);
 
+    static std::string to_string(const Message::Type& msg_type);
+
 public:
     /** Default Message creator */
     Message();
@@ -288,8 +290,6 @@ protected:
 private:
     Message& operator=(const Message&);
 };
-
-std::string to_string(const Message::Type& msg_type);
 
 std::ostream& operator<<(std::ostream& os, const Message& msg);
 

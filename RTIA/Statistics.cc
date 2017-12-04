@@ -78,7 +78,7 @@ void Statistics::show(std::ostream& s) const
     for (const auto count : my_federate_service_count) {
         if (count > 0 || displayZero()) {
             s.width(8);
-            s << count << ' ' << to_string(static_cast<Message::Type>(i)) << " (MSG#" << i << ")" << endl;
+            s << count << ' ' << Message::to_string(static_cast<Message::Type>(i)) << " (MSG#" << i << ")" << endl;
         }
         ++i;
     }
@@ -91,7 +91,7 @@ void Statistics::show(std::ostream& s) const
     for (const auto count : my_rti_service_count) {
         if (count > 0 || displayZero()) {
             s.width(8);
-            s << count << ' ' << to_string(static_cast<NetworkMessage::Type>(i)) << " (MSG#" << i << ")" << endl;
+            s << count << ' ' << NetworkMessage::to_string(static_cast<NetworkMessage::Type>(i)) << " (MSG#" << i << ")" << endl;
         }
         ++i;
     }

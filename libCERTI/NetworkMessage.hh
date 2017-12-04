@@ -157,6 +157,8 @@ public:
     };
     
     static constexpr size_t the_message_type_count = static_cast<size_t>(NetworkMessage::Type::LAST);
+
+    static std::string to_string(const NetworkMessage::Type& msg_type);
     
     NetworkMessage();
     virtual ~NetworkMessage();
@@ -299,8 +301,6 @@ protected:
 
 private:
 };
-
-std::string to_string(const NetworkMessage::Type& msg_type);
 
 std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg);
 
