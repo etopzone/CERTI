@@ -62,6 +62,7 @@ std::ostream& NetworkMessage::show(std::ostream& out)
     case msg_:                                                                                                         \
         return os << STRINGIZE(msg_);
 
+#if 0
 std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_type)
 {
     switch(msg_type) {
@@ -165,6 +166,7 @@ std::ostream& operator << (std::ostream& os, const NetworkMessage::Type& msg_typ
             return os << "Unknown NetworkMessage::Type";
     }
 }
+#endif
 
 std::ostream& operator<<(std::ostream& os, const NetworkMessage& msg)
 {

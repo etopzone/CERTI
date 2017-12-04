@@ -289,7 +289,7 @@ private:
     Message& operator=(const Message&);
 };
 
-std::ostream& operator<<(std::ostream& os, const Message::Type& msg);
+// std::ostream& operator<<(std::ostream& os, const Message::Type& msg);
 
 std::ostream& operator<<(std::ostream& os, const Message& msg);
 
