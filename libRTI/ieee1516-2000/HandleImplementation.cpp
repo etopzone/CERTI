@@ -170,11 +170,13 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation() :
 
 MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(
     MessageRetractionHandleImplementation const& rhs)
+: HandleImplementation()
 {
     _value = rhs._value;
 }
 
 MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(VariableLengthData const& encodedValue)
+: HandleImplementation()
 {
     ULong val1 = 0;
     ULong val2 = 0;
@@ -210,7 +212,7 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(Var
     _serialNum = newSerialNum;
 }
 
-MessageRetractionHandleImplementation::~MessageRetractionHandleImplementation() throw()
+MessageRetractionHandleImplementation::~MessageRetractionHandleImplementation() noexcept
 {
 }
 

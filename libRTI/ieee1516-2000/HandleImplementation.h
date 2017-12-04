@@ -118,7 +118,7 @@ DEFINE_HANDLE_IMPLEMENTATION_CLASS(ParameterHandle)
 DEFINE_HANDLE_IMPLEMENTATION_CLASS(DimensionHandle)
 DEFINE_HANDLE_IMPLEMENTATION_CLASS(RegionHandle)
 
-class MessageRetractionHandleImplementation : public HandleImplementation {
+class RTI_EXPORT MessageRetractionHandleImplementation : public HandleImplementation {
 public:
     /* Constructs an invalid handle                           */
     MessageRetractionHandleImplementation();
@@ -127,7 +127,7 @@ public:
 
     explicit MessageRetractionHandleImplementation(VariableLengthData const& encodedValue);
 
-    virtual ~MessageRetractionHandleImplementation() throw();
+    virtual ~MessageRetractionHandleImplementation() noexcept;
 
     virtual MessageRetractionHandleImplementation& operator=(MessageRetractionHandleImplementation const& rhs);
 
