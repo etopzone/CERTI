@@ -136,7 +136,7 @@ public:
 
     explicit MessageRetractionHandleImplementation(VariableLengthData const& encodedValue);
 
-    virtual ~MessageRetractionHandleImplementation() throw();
+    virtual ~MessageRetractionHandleImplementation() noexcept;
 
     virtual MessageRetractionHandleImplementation& operator=(MessageRetractionHandleImplementation const& rhs);
 

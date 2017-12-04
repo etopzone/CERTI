@@ -199,6 +199,7 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation() :
 
 MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(
     MessageRetractionHandleImplementation const& rhs)
+    : HandleImplementation()
 {
     _value = rhs._value;
 }
@@ -239,7 +240,7 @@ MessageRetractionHandleImplementation::MessageRetractionHandleImplementation(Var
     _serialNum = newSerialNum;
 }
 
-MessageRetractionHandleImplementation::~MessageRetractionHandleImplementation() throw()
+MessageRetractionHandleImplementation::~MessageRetractionHandleImplementation() noexcept
 {
 }
 
