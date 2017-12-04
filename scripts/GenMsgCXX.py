@@ -705,6 +705,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             
     def writeStreamFieldStatement(self, stream, field):
         indexField = False
+        doesNotKnowHowToPrintField = False
+        
         if field.qualifier == 'optional':
             # optionnal
             stream.write(self.getIndent() + 'os << "  (opt) %s ="' % field.name)
@@ -712,7 +714,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
             # repeated
             indexField = True
             stream.write(self.getIndent() + 'os << "  %s [] =" << std::endl;\n' % field.name)
-            stream.write(self.getIndent() + 'for (const auto& element: msg.%s) {\n' % field.name )
+            stream.write(self.getIndent() + 'for (const auto& element : msg.%s) {\n' % field.name )
             self.indent()
             stream.write(self.getIndent() + 'os')
         else:
@@ -731,7 +733,7 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
                 stream.write(' << %s' % ('element' if indexField else ('msg.' + field.name)))
             else:
                 # native field case
-                # stream.write(self.getIndent() + self.commentLineBeginWith + " TODO FIXME inherited message\n")
+                doesNotKnowHowToPrintField = True
                 stream.write(' << "')
                 stream.write(self.commentLineBeginWith + " TODO field <%s> of type <%s>" % (field.name, field.typeid.name))
                 stream.write('"')
@@ -741,6 +743,8 @@ class CXXGenerator(GenMsgBase.CodeGenerator):
 
         if field.qualifier == 'repeated':
             stream.write(';\n')
+            if doesNotKnowHowToPrintField:
+                stream.write(self.getIndent() + "(void) element;\n")
             self.unIndent()
             stream.write(self.getIndent() + '}\n')
             stream.write(self.getIndent() + 'os << std::endl;\n')

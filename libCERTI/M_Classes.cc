@@ -1,4 +1,4 @@
-// Generated on 2017 November Wed, 29 at 23:29:15 by the CERTI message generator
+// Generated on 2017 December Mon, 04 at 16:22:04 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "M_Classes.hh"
@@ -429,7 +429,7 @@ std::ostream& operator<<(std::ostream& os, const M_Register_Federation_Synchroni
     
     // Specific display
     os << "  federateSet [] =" << std::endl;
-    for (const auto& element: msg.federateSet) {
+    for (const auto& element : msg.federateSet) {
         os << element;
     }
     os << std::endl;
@@ -728,7 +728,7 @@ std::ostream& operator<<(std::ostream& os, const M_Publish_Object_Class& msg)
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -970,7 +970,7 @@ std::ostream& operator<<(std::ostream& os, const M_Subscribe_Object_Class_Attrib
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -1550,13 +1550,14 @@ std::ostream& operator<<(std::ostream& os, const M_Update_Attribute_Values& msg)
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element: msg.values) {
+    for (const auto& element : msg.values) {
         os << "// TODO field <values> of type <AttributeValue_t>";
+        (void) element;
     }
     os << std::endl;
     os << "  (opt) eventRetraction =" << msg.eventRetraction << std::endl;
@@ -1833,13 +1834,14 @@ std::ostream& operator<<(std::ostream& os, const M_Reflect_Attribute_Values& msg
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element: msg.values) {
+    for (const auto& element : msg.values) {
         os << "// TODO field <values> of type <AttributeValue_t>";
+        (void) element;
     }
     os << std::endl;
     os << "  (opt) eventRetraction =" << msg.eventRetraction << std::endl;
@@ -2019,13 +2021,14 @@ std::ostream& operator<<(std::ostream& os, const M_Send_Interaction& msg)
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  parameters [] =" << std::endl;
-    for (const auto& element: msg.parameters) {
+    for (const auto& element : msg.parameters) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element: msg.values) {
+    for (const auto& element : msg.values) {
         os << "// TODO field <values> of type <ParameterValue_t>";
+        (void) element;
     }
     os << std::endl;
     os << "  region = " << msg.region << std::endl;
@@ -2206,13 +2209,14 @@ std::ostream& operator<<(std::ostream& os, const M_Receive_Interaction& msg)
     // Specific display
     os << "  interactionClass = " << msg.interactionClass << std::endl;
     os << "  parameters [] =" << std::endl;
-    for (const auto& element: msg.parameters) {
+    for (const auto& element : msg.parameters) {
         os << element;
     }
     os << std::endl;
     os << "  values [] =" << std::endl;
-    for (const auto& element: msg.values) {
+    for (const auto& element : msg.values) {
         os << "// TODO field <values> of type <ParameterValue_t>";
+        (void) element;
     }
     os << std::endl;
     os << "  region = " << msg.region << std::endl;
@@ -2571,7 +2575,7 @@ std::ostream& operator<<(std::ostream& os, const M_Change_Attribute_Transportati
     os << "  orderType = " << msg.orderType << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -2737,7 +2741,7 @@ std::ostream& operator<<(std::ostream& os, const M_Request_Object_Attribute_Valu
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -2832,7 +2836,7 @@ std::ostream& operator<<(std::ostream& os, const M_Request_Class_Attribute_Value
     // Specific display
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -2927,7 +2931,7 @@ std::ostream& operator<<(std::ostream& os, const M_Provide_Attribute_Value_Updat
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3022,7 +3026,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attributes_In_Scope& msg)
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3117,7 +3121,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attributes_Out_Of_Scope& msg)
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3212,7 +3216,7 @@ std::ostream& operator<<(std::ostream& os, const M_Turn_Updates_On_For_Object_In
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3307,7 +3311,7 @@ std::ostream& operator<<(std::ostream& os, const M_Turn_Updates_Off_For_Object_I
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3408,7 +3412,7 @@ std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_A
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3503,7 +3507,7 @@ std::ostream& operator<<(std::ostream& os, const M_Negotiated_Attribute_Ownershi
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3598,7 +3602,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Divestitu
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3693,7 +3697,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisiti
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3788,7 +3792,7 @@ std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_A
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -3883,7 +3887,7 @@ std::ostream& operator<<(std::ostream& os, const M_Request_Attribute_Ownership_R
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4242,7 +4246,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisiti
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4337,7 +4341,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Unavailab
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4432,7 +4436,7 @@ std::ostream& operator<<(std::ostream& os, const M_Unconditional_Attribute_Owner
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4527,7 +4531,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Acquisiti
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4622,7 +4626,7 @@ std::ostream& operator<<(std::ostream& os, const M_Cancel_Negotiated_Attribute_O
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4717,7 +4721,7 @@ std::ostream& operator<<(std::ostream& os, const M_Attribute_Ownership_Release_R
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4812,7 +4816,7 @@ std::ostream& operator<<(std::ostream& os, const M_Cancel_Attribute_Ownership_Ac
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -4907,7 +4911,7 @@ std::ostream& operator<<(std::ostream& os, const M_Confirm_Attribute_Ownership_A
     // Specific display
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -5028,7 +5032,7 @@ std::ostream& operator<<(std::ostream& os, const M_Change_Attribute_Order_Type& 
     os << "  order = " << msg.order << std::endl;
     os << "  object = " << msg.object << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -5531,8 +5535,9 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Create_Region& msg)
     // Specific display
     os << "  space = " << msg.space << std::endl;
     os << "  extentSet [] =" << std::endl;
-    for (const auto& element: msg.extentSet) {
+    for (const auto& element : msg.extentSet) {
         os << "// TODO field <extentSet> of type <Extent>";
+        (void) element;
     }
     os << std::endl;
     os << "  region = " << msg.region << std::endl;
@@ -5631,8 +5636,9 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Modify_Region& msg)
     // Specific display
     os << "  region = " << msg.region << std::endl;
     os << "  extentSet [] =" << std::endl;
-    for (const auto& element: msg.extentSet) {
+    for (const auto& element : msg.extentSet) {
         os << "// TODO field <extentSet> of type <Extent>";
+        (void) element;
     }
     os << std::endl;
     
@@ -5809,7 +5815,7 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Register_Object& msg)
     os << "  object = " << msg.object << std::endl;
     os << "  (opt) objectInstanceName =" << msg.objectInstanceName << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -5917,7 +5923,7 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Associate_Region& msg)
     os << "  object = " << msg.object << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -6101,7 +6107,7 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Subscribe_Attributes& msg
     os << "  region = " << msg.region << std::endl;
     os << "  passive = " << msg.passive << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
@@ -6419,7 +6425,7 @@ std::ostream& operator<<(std::ostream& os, const M_Ddm_Request_Update& msg)
     os << "  objectClass = " << msg.objectClass << std::endl;
     os << "  region = " << msg.region << std::endl;
     os << "  attributes [] =" << std::endl;
-    for (const auto& element: msg.attributes) {
+    for (const auto& element : msg.attributes) {
         os << element;
     }
     os << std::endl;
