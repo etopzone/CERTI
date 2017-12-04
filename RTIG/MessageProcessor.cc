@@ -208,7 +208,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 #else
     my_federations.info(federation_handle, federates_count, regulators_count, is_syncing);
 #endif
- 
+
     // Store Federate <->Socket reference.
     my_socketServer.setReferences(
         request.sockets().front()->returnSocket(), federation_handle, federate_handle, address, peer);
@@ -563,11 +563,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Federation_Synchron
     if (rep->getSuccessIndicator()) {
         // boolean true means a federates set exists
         if (request.message()->getExists()) {
-            my_federations.searchFederation(federation)
-                .broadcastSynchronization(federate, label, tag, request.message()->getFederates());
+            responses = my_federations.searchFederation(federation)
+                            .broadcastSynchronization(federate, label, tag, request.message()->getFederates());
         }
         else {
-            my_federations.searchFederation(federation).broadcastSynchronization(federate, label, tag);
+            responses = my_federations.searchFederation(federation).broadcastSynchronization(federate, label, tag);
         }
     }
 
@@ -1569,13 +1569,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Request_Class_Attribute_Valu
 Responses MessageProcessor::process(MessageEvent<NM_Enable_Asynchronous_Delivery>&& request)
 {
     return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-    .updateAsynchronousDelivery(request.message()->getFederate(), true);
+        .updateAsynchronousDelivery(request.message()->getFederate(), true);
 }
 
 Responses MessageProcessor::process(MessageEvent<NM_Disable_Asynchronous_Delivery>&& request)
 {
     return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-    .updateAsynchronousDelivery(request.message()->getFederate(), false);
+        .updateAsynchronousDelivery(request.message()->getFederate(), false);
 }
 }
 }

@@ -214,10 +214,10 @@ public:
     Responses unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
-    void broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
+    Responses broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
-    void broadcastSynchronization(FederateHandle federate_handle,
+    Responses broadcastSynchronization(FederateHandle federate_handle,
                                   const std::string& label,
                                   const std::string& tag,
                                   const std::vector<FederateHandle>& federates);
@@ -471,17 +471,6 @@ private:
 
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
-
-    /// Broadcast 'msg' to all Federate except the specified one (unless this is an anonymous update)
-    [[deprecated("use respondToAll and return Responses instead")]] void
-    broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous);
-
-    /// Broadcast 'msg' to some Federates except the specified one
-    [[deprecated("use respondToSome and return Responses instead")]] void
-    broadcastSomeMessage(NetworkMessage* msg,
-                         FederateHandle except_federate,
-                         const std::vector<FederateHandle>& fede_array,
-                         uint32_t nbfed);
 
     Responses respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except = 0);
     Responses respondToSome(std::unique_ptr<NetworkMessage> message, const std::vector<FederateHandle>& recipients);

@@ -492,17 +492,20 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
         }
     }
 
-    NM_Message_Null msg;
-    msg.setFederation(my_handle.get());
+    auto msg = make_unique<NM_Message_Null>();
+    msg->setFederation(my_handle.get());
     if (anonymous) {
-        msg.setFederate(0);
+        msg->setFederate(0);
     }
     else {
-        msg.setFederate(federate_handle);
+        msg->setFederate(federate_handle);
     }
-    msg.setDate(time);
-    DNULL.Out(pdDebug, "Snd NULL MSG (Federate=%d, Time = %f)", msg.getFederate(), msg.getDate().getTime());
-    broadcastAnyMessage(&msg, federate_handle, anonymous);
+    msg->setDate(time);
+    
+    auto resp = respondToAll(std::move(msg), federate_handle);
+    responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+    
+    Debug(DNULL, pdDebug) << "Send NULL MSG (Federate=" << msg->getFederate() << ", Time = " << msg->getDate().getTime() << ")" << std::endl;
     
     return responses;
 }
@@ -667,9 +670,11 @@ Responses Federation::unregisterSynchronization(FederateHandle federate_handle, 
     return responses;
 }
 
-void Federation::broadcastSynchronization(FederateHandle federate_handle, const string& label, const string& tag)
+Responses Federation::broadcastSynchronization(FederateHandle federate_handle, const string& label, const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
+    
+    Responses responses;
 
     check(federate_handle);
 
@@ -678,25 +683,29 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle, const 
     }
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
-    NM_Announce_Synchronization_Point msg;
-    msg.setFederate(federate_handle);
-    msg.setFederation(my_handle.get());
-    msg.setLabel(label);
-    msg.setTag(tag);
+    auto msg = make_unique<NM_Announce_Synchronization_Point>();
+    msg->setFederate(federate_handle);
+    msg->setFederation(my_handle.get());
+    msg->setLabel(label);
+    msg->setTag(tag);
 
     Debug(G, pdGendoc) << "      broadcastSynchronization is calling broadcastAnyMessage for all federates" << endl;
 
-    broadcastAnyMessage(&msg, 0, false);
+    responses = respondToAll(std::move(msg));
 
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization" << endl;
+    
+    return responses;
 }
 
-void Federation::broadcastSynchronization(FederateHandle federate_handle,
+Responses Federation::broadcastSynchronization(FederateHandle federate_handle,
                                           const string& label,
                                           const string& tag,
                                           const vector<FederateHandle>& federate_set)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
+    
+    Responses responses;
 
     check(federate_handle);
 
@@ -705,17 +714,19 @@ void Federation::broadcastSynchronization(FederateHandle federate_handle,
     }
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
-    NM_Announce_Synchronization_Point msg;
-    msg.setFederate(federate_handle);
-    msg.setFederation(my_handle.get());
-    msg.setLabel(label);
-    msg.setTag(tag);
+    auto msg = make_unique<NM_Announce_Synchronization_Point>();
+    msg->setFederate(federate_handle);
+    msg->setFederation(my_handle.get());
+    msg->setLabel(label);
+    msg->setTag(tag);
 
     Debug(G, pdGendoc) << "      broadcastSynchronization is calling broadcastSomeMessage" << endl;
 
-    broadcastSomeMessage(&msg, 0, federate_set, federate_set.size());
+    responses = respondToSome(std::move(msg), federate_set);
 
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << endl;
+    
+    return responses;
 }
 
 Responses Federation::requestFederationSave(FederateHandle federate_handle, const string& label, FederationTime time)
@@ -2429,80 +2440,6 @@ bool Federation::restoreXmlData(string docFilename)
 
     return status;
 #endif // HAVE_XML
-}
-
-void Federation::broadcastAnyMessage(NetworkMessage* msg, FederateHandle except_federate, bool anonymous)
-{
-    Socket* socket = nullptr;
-
-    // Broadcast the message 'msg' to all Federates in the Federation
-    // except to Federate whose Handle is 'Except_Federate'.
-    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-    for (const auto& kv : my_federates) {
-        if (anonymous || (kv.second->getHandle() != except_federate)) {
-            try {
-#ifdef HLA_USES_UDP
-                socket = server->getSocketLink(kv.second->getHandle(), BEST_EFFORT);
-#else
-                socket = my_server->getSocketLink(kv.second->getHandle());
-#endif
-                msg->send(socket, my_nm_buffer);
-            }
-            catch (RTIinternalError& e) {
-                Debug(D, pdExcept) << "Reference to a killed Federate while "
-                                   << "broadcasting." << endl;
-            }
-            catch (NetworkError& e) {
-                Debug(D, pdExcept) << "Network error while broadcasting, ignoring" << endl;
-            }
-        }
-    }
-
-    // BUG: If except = 0, could use Multicast.
-}
-
-void Federation::broadcastSomeMessage(NetworkMessage* msg,
-                                      FederateHandle except_federate,
-                                      const vector<FederateHandle>& fede_array,
-                                      uint32_t nbfed)
-{
-    uint32_t ifed;
-    Socket* socket = NULL;
-
-    if (fede_array.size() != 0 || nbfed == 0) {
-        // Broadcast the message 'msg' to some Federates (done in fede_array)
-        // in the Federation
-        // except to Federate whose Handle is 'Except_Federate'.
-        //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
-        for (const auto& kv : my_federates) {
-            if (kv.second->getHandle() != except_federate) {
-                ifed = 0;
-                while (ifed < nbfed) {
-                    if (kv.second->getHandle() == fede_array[ifed])
-                    // Federate i has to be informed because into fede_array
-                    {
-                        try {
-#ifdef HLA_USES_UDP
-                            socket = server->getSocketLink(kv.second->getHandle(), BEST_EFFORT);
-#else
-                            socket = my_server->getSocketLink(kv.second->getHandle());
-#endif
-                            msg->send(socket, my_nm_buffer);
-                        }
-                        catch (RTIinternalError& e) {
-                            Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting" << endl;
-                        }
-                        catch (NetworkError& e) {
-                            Debug(D, pdExcept) << "Network error while broadcasting, ignoring" << endl;
-                        }
-                    }
-                    ifed++;
-                }
-            }
-        }
-    }
-
-    // BUG: If except = 0, could use Multicast.
 }
 
 Responses Federation::respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except)
