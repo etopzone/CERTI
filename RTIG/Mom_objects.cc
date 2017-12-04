@@ -332,7 +332,7 @@ Responses Mom::updateFederatesInFederation()
     return provideAttributeValueUpdate(my_federation_object, {attribute});
 }
 
-Responses Mom::updateFomModuleDesignatorList(const std::vector<std::string>& value)
+Responses Mom::updateFomModuleDesignatorList(const std::vector<std::string>& /*value*/)
 {
     auto attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
 
@@ -341,7 +341,7 @@ Responses Mom::updateFomModuleDesignatorList(const std::vector<std::string>& val
     return provideAttributeValueUpdate(my_federation_object, {attribute});
 }
 
-Responses Mom::updateCurrentFDD(const std::string& value)
+Responses Mom::updateCurrentFDD(const std::string& /*value*/)
 {
     auto attribute = my_attribute_cache["HLAcurrentFDD"];
 

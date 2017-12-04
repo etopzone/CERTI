@@ -579,10 +579,11 @@ FederationTime Mom::decodeFederationTime(const ParameterValue_t& data)
 Mom::OrderType Mom::decodeOrderType(const ParameterValue_t& data)
 {
     switch (decodeUInt32(data)) {
-    case 0:
-        return OrderType::Receive;
     case 1:
         return OrderType::TimeStamp;
+    case 0:
+    default:
+        return OrderType::Receive;
     }
 }
 
