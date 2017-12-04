@@ -35,10 +35,10 @@ public:
     typedef enum { BUFFER_SC, BUFFER_CS } BUFFER_SIDE_t;
 
     // Constructor
-    RingBuffer(const std::string& RingBuffer_Name,
-               const BUFFER_SIDE_t& RingBuffer_Side,
-               const int RingBuffer_Size,
-               const std::string& Shm_Sem_Type) // SHM_Sem_Type = Posix,SysV ou Win32
+    RingBuffer(const std::string& name,
+               const BUFFER_SIDE_t& side,
+               const size_t size,
+               const std::string& semaphore_type) // SHM_Sem_Type = Posix,SysV ou Win32
         ;
     // Destructor
     ~RingBuffer();
