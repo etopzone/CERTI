@@ -97,7 +97,7 @@ bool SecurityServer::canFederateAccessData(FederateHandle theFederate, SecurityL
         secure_socket = dynamic_cast<SecureTCPSocket*>(federate_socket);
     }
 
-    if (secure_socket) {
+    if (secure_socket == nullptr) {
         // If not, all federate are at Public Level.
         return dominates(PublicLevelID, theDataLevelID);
     }
