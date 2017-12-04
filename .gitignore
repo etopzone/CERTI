@@ -4,7 +4,8 @@ build*/
 *.kdev4
 
 output
-install
+install/
+install*/
 
 ## C++
 
