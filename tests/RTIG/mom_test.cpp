@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#ifdef HAVE_XML
+
 #include <RTIG/Federation.hh>
 #include <libCERTI/ObjectClass.hh>
 #include <libCERTI/ObjectClassSet.hh>
@@ -14,7 +16,7 @@ static const ::certi::FederationHandle invalid_handle{0};
 
 static const ::certi::FederationHandle federation_handle{1};
 
-static const ::certi::FederateHandle ukn_federate{42};
+// static const ::certi::FederateHandle ukn_federate{42};
 }
 
 class MomTest : public ::testing::Test {
@@ -191,3 +193,5 @@ TEST_F(MomTest, 11_4_1_l_The_RTI_shall_always_supply_all_pre_defined_parameters_
 {
     // ok
 }
+
+#endif
