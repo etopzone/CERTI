@@ -23,6 +23,7 @@
 #ifndef HandleImplementation_h
 #define HandleImplementation_h
 
+#include <RTI/Handle.h>
 #include <RTI/Exception.h>
 #include <RTI/SpecificConfig.h>
 #include <RTI/VariableLengthData.h>
