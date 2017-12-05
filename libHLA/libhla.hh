@@ -126,55 +126,48 @@
  */
 namespace libhla {
 
-/**
- * Helper class to simplify string construction. Implemented as
- * a stringstream wrapper.
- *
- * For example:
- * throw AttributeNotDefined(stringize() << "value: " << number);
- */
-template <typename C>
-struct basic_stringize {
-    template <typename T>
-    basic_stringize<C>& operator<<(const T& t)
+class HLA_EXPORT Exception {
+public:
+    virtual ~Exception() = default;
+
+    std::string name() const
     {
-        m_s << t;
-        return *this;
+        return my_name;
     }
 
-    // note: must not return reference
-    operator const std::basic_string<C>() const
+    std::string reason() const
     {
-        return m_s.str();
+        return my_reason;
+    }
+
+protected:
+    Exception(const std::string& name, const std::string& reason) : my_name(name), my_reason(reason)
+    {
     }
 
 private:
-    std::basic_stringstream<C> m_s;
+    const std::string my_name;
+    const std::string my_reason;
 };
 
-typedef basic_stringize<char> stringize;
-typedef basic_stringize<wchar_t> wstringize;
-
-class HLA_EXPORT Exception {
-public:
-    const std::string _reason;
-    const char* _name;
-
-    Exception(const std::string& reason) : _reason(reason)
-    {
-    }
-    
-    virtual ~Exception() = default;
-};
-
-#define LIBHLA_EXCEPTION(A)                                                                                            \
-    class HLA_EXPORT A : public Exception {                                                                            \
+#define LIBHLA_EXCEPTION_CHILD(Parent, A)                                                                              \
+    class HLA_EXPORT A : public Parent {                                                                               \
     public:                                                                                                            \
-        A(const std::string& reason) : Exception(reason)                                                               \
+        A(const std::string& reason) : Parent(#A, reason)                                                              \
         {                                                                                                              \
-            _name = #A;                                                                                                \
+        }                                                                                                              \
+                                                                                                                       \
+    protected:                                                                                                         \
+        A(const std::string& name, const std::string& reason) : Parent(name, reason)                                   \
+        {                                                                                                              \
         }                                                                                                              \
     };
+
+#define LIBHLA_EXCEPTION(A) LIBHLA_EXCEPTION_CHILD(Exception, A)
+
+#define DEBUG_EXCEPTION(D, e)                                                                                          \
+    Debug(D, pdExcept) << __func__ << " Exception '" << e.name() << "': " << e.reason() << std::endl
+
 } // namespace libhla
 
 #endif // LIBHLA_HH_INCLUDED

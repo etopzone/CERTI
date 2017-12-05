@@ -224,14 +224,14 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n)
 int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n)
 {
     if (n + readOffset > writeOffset) {
-        throw MessageBufferError(stringize() << "read_uint8s::invalid read of size <" << n
-                                             << "> inside a buffer of readable size <"
-                                             << (int32_t) writeOffset - readOffset
-                                             << "> (writeOffset="
-                                             << writeOffset
-                                             << ",readOffset="
-                                             << readOffset
-                                             << ").");
+        throw MessageBufferError("read_uint8s::invalid read of size <" + std::to_string(n)
+                                 + "> inside a buffer of readable size <"
+                                 + std::to_string(static_cast<int32_t>(writeOffset - readOffset))
+                                 + "> (writeOffset="
+                                 + std::to_string(writeOffset)
+                                 + ",readOffset="
+                                 + std::to_string(readOffset)
+                                 + ").");
     }
 
     memcpy(data, buffer + readOffset, n);
@@ -272,14 +272,14 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n)
     uint16_t an_uint16;
 
     if (2 * n + readOffset > writeOffset) {
-        throw MessageBufferError(stringize() << "read_uint16s::invalid read of size <" << 2 * n
-                                             << "> inside a buffer of readable size <"
-                                             << (int32_t) writeOffset - readOffset
-                                             << "> (writeOffset="
-                                             << writeOffset
-                                             << ",readOffset="
-                                             << readOffset
-                                             << ").");
+        throw MessageBufferError("read_uint16s::invalid read of size <" + std::to_string(2 * n)
+                                 + "> inside a buffer of readable size <"
+                                 + std::to_string(static_cast<int32_t>(writeOffset - readOffset))
+                                 + "> (writeOffset="
+                                 + std::to_string(writeOffset)
+                                 + ",readOffset="
+                                 + std::to_string(readOffset)
+                                 + ").");
     }
 
     /* do not swap byte if it is not necessary */
@@ -331,14 +331,14 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n)
     uint32_t an_uint32;
 
     if (4 * n + readOffset > writeOffset) {
-        throw MessageBufferError(stringize() << "read_uint32s::invalid read of size <" << 4 * n
-                                             << "> inside a buffer of readable size <"
-                                             << (int32_t) writeOffset - readOffset
-                                             << "> (writeOffset="
-                                             << writeOffset
-                                             << ",readOffset="
-                                             << readOffset
-                                             << ").");
+        throw MessageBufferError("read_uint32s::invalid read of size <" + std::to_string(4 * n)
+                                 + "> inside a buffer of readable size <"
+                                 + std::to_string(static_cast<int32_t>(writeOffset - readOffset))
+                                 + "> (writeOffset="
+                                 + std::to_string(writeOffset)
+                                 + ",readOffset="
+                                 + std::to_string(readOffset)
+                                 + ").");
     }
 
     /* do not swap byte if it is not necessary */
@@ -403,14 +403,14 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n)
     //std::cerr  << "read_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 
     if (8 * n + readOffset > writeOffset) {
-        throw MessageBufferError(stringize() << "read_uint64s::invalid read of size <" << 4 * n
-                                             << "> inside a buffer of readable size <"
-                                             << (int32_t) writeOffset - readOffset
-                                             << "> (writeOffset="
-                                             << writeOffset
-                                             << ",readOffset="
-                                             << readOffset
-                                             << ").");
+        throw MessageBufferError("read_uint64s::invalid read of size <" + std::to_string(4 * n)
+                                 + "> inside a buffer of readable size <"
+                                 + std::to_string(static_cast<int32_t>(writeOffset - readOffset))
+                                 + "> (writeOffset="
+                                 + std::to_string(writeOffset)
+                                 + ",readOffset="
+                                 + std::to_string(readOffset)
+                                 + ").");
     }
 
     /* do not swap byte if it is not necessary */
@@ -484,14 +484,14 @@ void MessageBuffer::read_string(std::string& s)
     int32_t len = read_int32();
 
     if (len + readOffset > writeOffset) {
-        throw MessageBufferError(stringize() << "read_string::invalid read of size <" << len
-                                             << "> inside a buffer of readable size <"
-                                             << (int32_t) writeOffset - readOffset
-                                             << "> (writeOffset="
-                                             << writeOffset
-                                             << ",readOffset="
-                                             << readOffset
-                                             << ").");
+        throw MessageBufferError("read_string::invalid read of size <" + std::to_string(len)
+                                 + "> inside a buffer of readable size <"
+                                 + std::to_string(static_cast<int32_t>(writeOffset - readOffset))
+                                 + "> (writeOffset="
+                                 + std::to_string(writeOffset)
+                                 + ",readOffset="
+                                 + std::to_string(readOffset)
+                                 + ").");
     }
 
     s.assign(reinterpret_cast<const char*>(buffer + readOffset), len);
