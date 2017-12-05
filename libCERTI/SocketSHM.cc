@@ -26,7 +26,7 @@ void SocketSHM::Connect()
         }
     }
     catch (libhla::ipc::SHM::SharedMemoryNotAttached& e) {
-        DEBUG_EXCEPTION(D, e);;
+        DEBUG_EXCEPTION(D, e);
         throw(certi::SocketNotConnected("Connect() failed."));
     }
 }
@@ -48,7 +48,7 @@ void SocketSHM::Send(void* Buffer)
         }
     }
     catch (libhla::ipc::Semaphore::SemaphoreHandlingError& e) {
-        DEBUG_EXCEPTION(D, e);;
+        DEBUG_EXCEPTION(D, e);
         throw(certi::MessageNotSent("Send() failed."));
     }
 
@@ -72,7 +72,7 @@ void SocketSHM::Receive(void* Buffer)
         }
     }
     catch (libhla::ipc::Semaphore::SemaphoreHandlingError& e) {
-        DEBUG_EXCEPTION(D, e);;
+        DEBUG_EXCEPTION(D, e);
         throw(certi::MessageNotReceived("Receive() failed."));
     }
 
@@ -88,11 +88,11 @@ void SocketSHM::Close()
         _Shm_CS->Close();
     }
     catch (libhla::ipc::SHM::SharedMemoryNotClosed& e) {
-        DEBUG_EXCEPTION(D, e);;
+        DEBUG_EXCEPTION(D, e);
         throw(certi::SocketNotClosed("Close() failed."));
     }
     catch (libhla::ipc::SHM::HandleNotClosed& e) {
-        DEBUG_EXCEPTION(D, e);;
+        DEBUG_EXCEPTION(D, e);
         throw(certi::SocketNotClosed("Close() failed."));
     }
 }

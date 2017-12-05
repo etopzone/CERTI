@@ -28,6 +28,12 @@ using libhla::ipc::SHMWin32;
 using libhla::ipc::Semaphore;
 using libhla::ipc::SemaphoreWin32;
 
+#include "PrettyDebug.hh"
+
+namespace {
+static PrettyDebug D("SOCKET", __FILE__);
+}
+
 // ************************************************
 // Constructor with args
 // ************************************************
@@ -51,41 +57,19 @@ SocketSHMWin32::SocketSHMWin32(const std::string& Socket_Name, const SHM_SIDE_t&
 
     int init_full = 0, init_empty = 1; // Initialisation values
 
-    if (_Side == SHM_SC) {
-        try {
+    try {
+        if (_Side == SHM_SC) {
             _Sem_full_SC->Create_Init(init_full, Semaphore::buildSemName(Socket_Name + "_FULL_SC"));
-        }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotCreated("SocketSHMWin32() failed."));
-        }
-        try {
             _Sem_empty_SC->Create_Init(init_empty, Semaphore::buildSemName(Socket_Name + "_EMPTY_SC"));
         }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotCreated("SocketSHMWin32() failed."));
-        }
-    }
-    else {
-        try {
+        else {
             _Sem_full_CS->Create_Init(init_full, Semaphore::buildSemName(Socket_Name + "_FULL_CS"));
-        }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotCreated("SocketSHMWin32() failed."));
-        }
-        try {
             _Sem_empty_CS->Create_Init(init_empty, Semaphore::buildSemName(Socket_Name + "_EMPTY_CS"));
         }
-        catch (Semaphore::SemaphoreNotCreated& e) {
-            std::cout << "SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotCreated("SocketSHMWin32() failed."));
-        }
+    }
+    catch (Semaphore::SemaphoreNotCreated& e) {
+        DEBUG_EXCEPTION(D, e);
+        throw(certi::SocketSHMNotCreated("SocketSHMWin32() failed."));
     }
 }
 
@@ -94,38 +78,20 @@ SocketSHMWin32::SocketSHMWin32(const std::string& Socket_Name, const SHM_SIDE_t&
 // ************************************************
 SocketSHMWin32::~SocketSHMWin32()
 {
-    if (_Side == SHM_SC) {
-        try {
+    try {
+        if (_Side == SHM_SC) {
             _Sem_full_SC->Delete();
-        }
-        catch (Semaphore::HandleNotClosed& e) {
-            std::cerr << "~SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-        }
-        try {
             _Sem_empty_SC->Delete();
         }
-        catch (Semaphore::HandleNotClosed& e) {
-            std::cerr << "~SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-        }
-    }
-    else {
-        try {
+        else {
             _Sem_full_CS->Delete();
-        }
-        catch (Semaphore::HandleNotClosed& e) {
-            std::cerr << "~SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-        }
-        try {
             _Sem_empty_CS->Delete();
         }
-        catch (Semaphore::HandleNotClosed& e) {
-            std::cerr << "~SocketSHMWin32() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-        }
     }
+    catch (Semaphore::HandleNotClosed& e) {
+        DEBUG_EXCEPTION(D, e);
+    }
+
     delete _Sem_full_SC;
     delete _Sem_empty_SC;
     delete _Sem_full_CS;
@@ -141,157 +107,51 @@ SocketSHMWin32::~SocketSHMWin32()
 // ************************************************
 void SocketSHMWin32::Open() throw(certi::SocketSHMNotOpen)
 {
-    if (_Side == SHM_SC) {
-        try {
+    try {
+        if (_Side == SHM_SC) {
             _Sem_empty_SC->P();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_SC->Open();
-        }
-        catch (SHM::SharedMemoryNotOpen& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_SC->Attach();
-        }
-        catch (SHM::SharedMemoryNotAttached& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Sem_full_SC->V();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
 
-#ifdef DEBUG
-        std::cout << " The SHM from Server to Customer is Open " << std::endl;
-#endif
-    }
-    else {
-        try {
+            Debug(D, pdDebug) << " The SHM from Server to Customer is Open " << std::endl;
+        }
+        else {
             _Sem_empty_CS->P();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_CS->Open();
-        }
-        catch (SHM::SharedMemoryNotOpen& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_CS->Attach();
-        }
-        catch (SHM::SharedMemoryNotAttached& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Sem_full_CS->V();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
 
-#ifdef DEBUG
-        std::cout << " The SHM from Customer to Server is Create and Attach" << std::endl;
-#endif
-    }
-    if (_Side == SHM_CS) {
-        try {
+            Debug(D, pdDebug) << " The SHM from Customer to Server is Create and Attach" << std::endl;
+        }
+        if (_Side == SHM_CS) {
             _Sem_full_SC->P();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_SC->Open();
-        }
-        catch (SHM::SharedMemoryNotOpen& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_SC->Attach();
-        }
-        catch (SHM::SharedMemoryNotAttached& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Sem_empty_SC->V();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
 
-#ifdef DEBUG
-        std::cout << " The SHM from Server to Customer is identified and attached " << std::endl;
-#endif
-    }
-    else {
-        try {
+            Debug(D, pdDebug) << " The SHM from Server to Customer is identified and attached " << std::endl;
+        }
+        else {
             _Sem_full_CS->P();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_CS->Open();
-        }
-        catch (SHM::SharedMemoryNotOpen& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Shm_CS->Attach();
-        }
-        catch (SHM::SharedMemoryNotAttached& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
-        try {
             _Sem_empty_CS->V();
-        }
-        catch (Semaphore::SemaphoreHandlingError& e) {
-            std::cout << "SocketSHMWin32::Open() Exception. "
-                      << "Name is : " << e._name << " Reason is : " << e._reason << std::endl;
-            throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
-        }
 
-#ifdef DEBUG
-        std::cout << " The SHM from Customer to Server is identified and attached " << std::endl;
-#endif
+            Debug(D, pdDebug) << " The SHM from Customer to Server is identified and attached " << std::endl;
+        }
+    }
+    catch (Semaphore::SemaphoreHandlingError& e) {
+        DEBUG_EXCEPTION(D, e);
+        throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
+    }
+    catch (SHM::SharedMemoryNotOpen& e) {
+        DEBUG_EXCEPTION(D, e);
+        throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
+    }
+    catch (SHM::SharedMemoryNotAttached& e) {
+        DEBUG_EXCEPTION(D, e);
+        throw(certi::SocketSHMNotOpen("SocketSHMWin32::Open() failed."));
     }
 
 } // End of Open()
