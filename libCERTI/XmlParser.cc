@@ -196,14 +196,13 @@ void XmlParser::parseClass(ObjectClass* parent)
             // Routing space
             char* space = (char*) objClassProp.space;
             if (space) {
-                SpaceHandle h;
                 try {
-                    h = root->getRoutingSpaceHandle(string(space));
+                    SpaceHandle h = root->getRoutingSpaceHandle(string(space));
+                    attr->setSpace(h);
                 }
                 catch (Exception& e) {
                     cerr << "warning: Incorrect space name for attribute" << endl;
                 }
-                attr->setSpace(h);
             }
 
             // Attribute complete, adding to the class
@@ -265,14 +264,13 @@ void XmlParser::parseInteraction(Interaction* parent)
     // Routing space
     char* space = (char*) intClassProp.space;
     if (space) {
-        SpaceHandle h;
         try {
-            h = root->getRoutingSpaceHandle(string(space));
+            SpaceHandle h = root->getRoutingSpaceHandle(string(space));
+            current->setSpace(h);
         }
         catch (Exception& e) {
             cerr << "warning: Incorrect space name for interaction" << endl;
         }
-        current->setSpace(h);
     }
     xmlFree(space);
 

@@ -91,7 +91,7 @@ void XmlParser2010::parseNTOS(HLAntos_t* ntos_p)
 
 #else // !HAVE_XML
 
-void XmlParser2010::parseNTOS(HLAntos_t* ntos_p)
+void XmlParser2010::parseNTOS(HLAntos_t* /*ntos_p*/)
 {
 }
 

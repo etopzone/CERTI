@@ -59,7 +59,7 @@ std::string XmlParser2000::getName()
 
 #else // !HAVE_XML
 
-void XmlParser2000::parseNTOS(HLAntos_t* ntos_p)
+void XmlParser2000::parseNTOS(HLAntos_t* /*ntos_p*/)
 {
 }
 

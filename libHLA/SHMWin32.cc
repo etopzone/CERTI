@@ -40,8 +40,6 @@ SHMWin32::~SHMWin32()
 // ************************************************
 void SHMWin32::Open() throw(SharedMemoryNotOpen)
 {
-    int ret;
-
     _hMapFile = CreateFileMapping(INVALID_HANDLE_VALUE, // use paging file
                                   NULL, // default security
                                   PAGE_READWRITE, // read/write access
@@ -64,7 +62,6 @@ void SHMWin32::Open() throw(SharedMemoryNotOpen)
 // ************************************************
 void SHMWin32::Attach() throw(SharedMemoryNotAttached)
 {
-    BOOL retcode;
 
     _pBuf = (LPTSTR) MapViewOfFile(_hMapFile,
                                    FILE_MAP_ALL_ACCESS, // read/write permission
@@ -73,7 +70,7 @@ void SHMWin32::Attach() throw(SharedMemoryNotAttached)
                                    (SIZE_T)(GetSize()));
 
     if (_pBuf == NULL) {
-        retcode = UnmapViewOfFile((PVOID) _pBuf);
+        BOOL retcode = UnmapViewOfFile((PVOID) _pBuf);
         CloseHandle(_hMapFile);
         throw(SharedMemoryNotAttached("MapViewOfFile() failed."));
     }
