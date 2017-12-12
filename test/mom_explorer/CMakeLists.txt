@@ -15,6 +15,8 @@ endif (WIN32)
 set(mom_explorer_SRCS
   main.cc
   momfederateambassador.cc
+  cli.cc
+  momcli.cpp
   )
 
 if(COMPILE_WITH_CXX11)

@@ -32,14 +32,15 @@
 #include <RTI/RTI1516.h>
 #include <RTI/RTI1516fedTime.h>
 
+#include "momcli.h"
 #include "momfederateambassador.h"
 
 #include "make_unique.hh"
 
 #ifdef _WIN32
 #include <windows.h>
-#define    sleep(a)              Sleep(a * 1000)
-#define    usleep(a)             Sleep(a / 1000)
+#define sleep(a) Sleep(a * 1000)
+#define usleep(a) Sleep(a / 1000)
 #endif
 
 using namespace std;
@@ -81,33 +82,22 @@ int main(int argc, char** argv)
 
         fed_ambassador->publishAndsubscribeInteractions();
 
-        cout << "# " << endl;
-
         if (mode == L"auto") {
             while (true) {
                 ambassador->evokeCallback(0.1);
-//                 sleep(1);
+                //                 sleep(1);
             }
         }
         else {
+            MomCli c(*ambassador, federation_name);
+            
+            c.execute();
+            
+            /*
             string request;
             while (getline(cin, request)) {
                 std::cerr << request << std::endl;
                 try {
-                    if (request == "t") {
-                        wcout << "=>evokeCallback(0.1)" << endl;
-                        ambassador->evokeCallback(0.1);
-                    }
-                    else if (request == "resign") {
-                        cout << "=>resignFederationExecution(NO_ACTION)" << endl;
-                        ambassador->resignFederationExecution(NO_ACTION);
-                    }
-                    else if (request == "destroy") {
-                        wcout << "=>destroyFederationExecution <" << federation_name << ">" << endl;
-                        ambassador->destroyFederationExecution(federation_name);
-
-                        return EXIT_SUCCESS;
-                    }
                     else if (request == "etr") {
                         wcout << "=>enableTimeRegulation" << endl;
                         ambassador->enableTimeRegulation(RTI1516fedTimeInterval(1.0));
@@ -127,7 +117,7 @@ int main(int argc, char** argv)
                     else if (request == "req") {
                         wcout << "=>request" << endl;
                         std::string tag;
-                        
+
                         wcout << "\tRequest ? " << endl;
                         getline(cin, request);
                         if (request == "publications") {
@@ -152,7 +142,9 @@ int main(int argc, char** argv)
                                 ambassador->getInteractionClassHandle(
                                     L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"),
                                 {{ambassador->getParameterHandle(
-                                      ambassador->getInteractionClassHandle(L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"), L"HLAsyncPointName"),
+                                      ambassador->getInteractionClassHandle(
+                                          L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus"),
+                                      L"HLAsyncPointName"),
                                   {request.c_str(), request.size()}}},
                                 {tag.c_str(), tag.size()});
                         }
@@ -171,7 +163,7 @@ int main(int argc, char** argv)
 
                     return EXIT_FAILURE;
                 }
-            }
+            }*/
         }
     }
     catch (rti1516e::Exception& e) {
