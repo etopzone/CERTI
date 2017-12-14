@@ -233,7 +233,7 @@ public:
 
 private:
     struct FederateUpdateSettings {
-        std::chrono::seconds updateRate{1};
+        std::chrono::seconds updateRate{0};
         std::chrono::time_point<std::chrono::system_clock> lastUpdate{};
     };
 

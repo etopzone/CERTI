@@ -1631,7 +1631,8 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
         std::map<FederateHandle, int> interactions;
         for (const auto& rep : responses) {
             for (const auto& socket : rep.sockets()) {
-                if (rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
+                if (socket && 
+                    rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
                     ++interactions[my_server->getFederateHandle(socket)];
                 }
             }
