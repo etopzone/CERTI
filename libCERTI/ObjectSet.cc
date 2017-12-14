@@ -89,7 +89,7 @@ ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) con
             return i->second->getHandle();
     }
 
-    throw ObjectNotKnown(stringize() << "No object instance with name <" << the_name);
+    throw ObjectNotKnown("No object instance with name <" + the_name + ">");
 }
 
 // ----------------------------------------------------------------------------
@@ -317,7 +317,7 @@ Object* ObjectSet::getObject(ObjectHandle the_object) const
     if (i != end())
         return i->second;
 
-    throw ObjectNotKnown(stringize() << "Object <" << the_object << ">not found in map set.");
+    throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in map set.");
 }
 
 // ----------------------------------------------------------------------------
@@ -377,7 +377,7 @@ FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, Ob
 
     if (i == end()) {
         // Object not found !
-        throw ObjectNotKnown("Object not found in ObjectSet map.");
+        throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in ObjectSet map.");
     }
 
     // Object found, return the owner

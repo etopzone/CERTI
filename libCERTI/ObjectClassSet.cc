@@ -175,10 +175,7 @@ ObjectClass* ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) cons
             return (i->second);
     }
 
-    std::stringstream msg;
-    msg << "ObjectHandle <" << theObjectHandle << "> not found in any object class.";
-    D.Out(pdExcept, msg.str().c_str());
-    throw ObjectNotKnown(msg.str());
+    throw ObjectNotKnown("ObjectHandle <" + std::to_string(theObjectHandle) + "> not found in any object class.");
 }
 
 ObjectClassHandle ObjectClassSet::getObjectClassHandle(const std::string& class_name) const
