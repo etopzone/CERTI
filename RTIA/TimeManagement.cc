@@ -120,7 +120,7 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
     }
 }
 
-void TimeManagement::sendNullPrimeMessage(FederationTime /*logical_time*/)
+void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
 {
     NM_Message_Null_Prime msg;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
@@ -144,6 +144,8 @@ void TimeManagement::sendNullPrimeMessage(FederationTime /*logical_time*/)
                   lastNullMessageDate.getTime(),
                   lastNullPrimeMessageDate.getTime());
     }
+#else
+    (void)logical_time; // unused
 #endif
 }
 
