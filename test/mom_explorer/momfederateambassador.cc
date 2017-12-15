@@ -191,17 +191,6 @@ std::wostream& operator<<(std::wostream& os, const std::set<T>& v)
     return os;
 }
 
-template <class K, class V>
-std::wostream& operator<<(std::wostream& os, const std::map<K, V>& v)
-{
-    os << "m{ ";
-    for (const auto& element : v) {
-        os << element.first << " = " << element.second << ", ";
-    }
-    os << "} ";
-    return os;
-}
-
 std::wostream& operator<<(std::wostream& os, const FederationExecutionInformation& v)
 {
     return os << "FEI [name: " << v.federationExecutionName << ", time: " << v.logicalTimeImplementationName << " ] ";
@@ -209,23 +198,6 @@ std::wostream& operator<<(std::wostream& os, const FederationExecutionInformatio
 
 std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
 {
-    // before: VLD [size: 4, data: [ 02 00 00 00 ]]
-    // after : (8) 0x02.00.00.00 01.00.00.00
-#if 0
-    os << "VLD [";
-
-    if (v.size() == 0) {
-        os << "empty";
-    }
-    else {
-        os << "size: " << v.size() << ", data: [ ";
-        for (auto i(0u); i < v.size(); ++i) {
-            os << static_cast<const uint8_t*>(v.data())[i] << " ";
-        }
-    }
-    os << "]";
-    return os;
-#else
     os << "{" << v.size() << "}";
 
     if (v.size() != 0) {
@@ -249,7 +221,6 @@ std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
         os.fill(prev);
     }
     return os;
-#endif
 }
 
 std::wostream& operator<<(std::wostream& os, const SupplementalReflectInfo& v)
@@ -601,7 +572,7 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theReflectInfo << ">" << std::endl;
 
     for (const auto& pair : theAttributeValues) {
@@ -621,7 +592,7 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theTime.toString() << ", " << receivedOrder << ", " << theReflectInfo << ">" << std::endl;
 }
 
@@ -636,7 +607,7 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReflectInfo << ">"
                << std::endl;
 }
@@ -649,7 +620,7 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theReceiveInfo << ">" << std::endl;
 }
 
@@ -663,7 +634,7 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theTime.toString() << ", " << receivedOrder << ", " << theReceiveInfo << ">" << std::endl;
 }
 
@@ -678,7 +649,7 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
                << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReceiveInfo << ">"
                << std::endl;
 }
@@ -895,6 +866,29 @@ void MOMFederateAmbassador::timeAdvanceGrant(LogicalTime const& theTime) throw(F
 void MOMFederateAmbassador::requestRetraction(MessageRetractionHandle theHandle) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << theHandle << ">" << std::endl;
+}
+    
+std::wstring MOMFederateAmbassador::show(const AttributeHandleValueMap& map, const rti1516e::ObjectInstanceHandle object_instance)
+{
+    std::wstringstream os;
+    auto object_class = my_ambassador.getKnownObjectClassHandle(object_instance);
+    os << "m{ ";
+    for (const auto& element : map) {
+        os << my_ambassador.getAttributeName(object_class, element.first) << " = " << element.second << ", ";
+    }
+    os << "} ";
+    return os.str();
+}
+
+std::wstring MOMFederateAmbassador::show(const ParameterHandleValueMap& map, const rti1516e::InteractionClassHandle interaction_class)
+{
+    std::wstringstream os;
+    os << "m{ ";
+    for (const auto& element : map) {
+        os << my_ambassador.getParameterName(interaction_class, element.first) << " = " << element.second << ", ";
+    }
+    os << "} ";
+    return os.str();
 }
 
 ObjectClassHandle MOMFederateAmbassador::objectClassHandle(const std::wstring& object_class_name)

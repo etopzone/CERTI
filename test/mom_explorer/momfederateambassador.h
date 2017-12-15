@@ -330,6 +330,9 @@ private:
 
     const std::wstring& my_federation_name;
     const std::wstring& my_federate_name;
+    
+    std::wstring show(const AttributeHandleValueMap& map, const ObjectInstanceHandle object_instance);
+    std::wstring show(const ParameterHandleValueMap& map, const InteractionClassHandle interaction_class);
 
     ObjectClassHandle objectClassHandle(const std::wstring& object_class_name);
 
