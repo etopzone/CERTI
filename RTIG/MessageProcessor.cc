@@ -956,7 +956,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
     my_auditServer << "IntID = " << request.message()->getInteractionClass()
                    << ", date = " << request.message()->getDate().getTime();
     if (request.message()->isDated()) {
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
             .broadcastInteraction(request.message()->getFederate(),
                                   request.message()->getInteractionClass(),
                                   request.message()->getParameters(),
@@ -966,7 +966,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
                                   request.message()->getLabel());
     }
     else {
-        my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+        responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
             .broadcastInteraction(request.message()->getFederate(),
                                   request.message()->getInteractionClass(),
                                   request.message()->getParameters(),
@@ -983,8 +983,15 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
     rep->setFederate(request.message()->getFederate());
     rep->setInteractionClass(request.message()->getInteractionClass());
     // Don't forget label and tag
-    rep->setLabel(request.message()->getLabel());
-    rep->setTag(request.message()->getTag());
+    if(request.message()->isDated()) {
+        rep->setDate(request.message()->getDate());
+    }
+    if(request.message()->isLabelled()) {
+        rep->setLabel(request.message()->getLabel());
+    }
+    if(request.message()->isTagged()) {
+        rep->setTag(request.message()->getTag());
+    }
 
     responses.emplace_back(request.sockets().front(), std::move(rep));
 

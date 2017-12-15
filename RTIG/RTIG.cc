@@ -304,7 +304,17 @@ Socket* RTIG::processIncomingMessage(Socket* link)
         else {
             auto responses = my_processor.processEvent(std::move(msg));
 
+            Debug(D, pdDebug) << responses.size() << " responses" << std::endl;
             for (auto& response : responses) {
+                Debug(D, pdDebug) << "Send back " << response.message()->getMessageName() << " to " << response.sockets().size() << " federates" << std::endl;
+                for (const auto& socket: response.sockets()) {
+                    if(socket) {
+                        Debug(D, pdDebug) << "to " << socket->returnSocket() << std::endl;
+                    }
+                    else {
+                        Debug(D, pdDebug) << "to nullptr" << std::endl;
+                    }
+                }
                 response.message()->send(response.sockets(), my_NM_msgBufSend); // send answer to RTIA
             }
         }

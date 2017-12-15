@@ -107,12 +107,8 @@ static PrettyDebug D("MOM", __FILE__);
 Responses Mom::processInteraction(const InteractionClassHandle interaction_class_handle,
                                   const std::vector<ParameterHandle>& parameter_handles,
                                   const std::vector<ParameterValue_t>& parameter_values,
-                                  const RegionHandle region_handle)
+                                  const RegionHandle /*region_handle*/)
 {
-    Debug(D, pdGendoc) << interaction_class_handle << endl;
-    Debug(D, pdGendoc) << parameter_handles.size() << endl;
-    Debug(D, pdGendoc) << region_handle << endl;
-
     std::map<ParameterHandle, ParameterValue_t> parameters;
     for (auto i(0u); i < parameter_handles.size(); ++i) {
         parameters[parameter_handles[i]] = parameter_values[i];

@@ -459,12 +459,14 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
                                       FederationTime lookahead,
                                       bool time_manager_state,
                                       FederationTime galt,
-                                      FederationTime lits, bool anonymous)
+                                      FederationTime lits,
+                                      bool anonymous)
 {
     Responses responses;
-    
-    std::cout << "UR t" << time.getTime() << " l" << lookahead.getTime() << " g" << galt.getTime() << " l" << lits.getTime() << std::endl;
-    
+
+    std::cout << "UR t" << time.getTime() << " l" << lookahead.getTime() << " g" << galt.getTime() << " l"
+              << lits.getTime() << std::endl;
+
     // if it is an anonymous update (from NULL PRIME message), no need to check federate.
     if (!anonymous) {
         // It may throw FederateNotExecutionMember
@@ -478,12 +480,13 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
         Debug(D, pdDebug) << "Federation " << my_handle << ": Federate " << federate_handle << "'s new time is "
                           << time.getTime() << endl;
         my_regulators.update(federate_handle, time);
-        
-        if(my_mom) {
+
+        if (my_mom) {
             responses = my_mom->updateLogicalTime(federate_handle, time);
             auto resp = my_mom->updateLookahead(federate_handle, lookahead);
             responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-            auto resp2 = my_mom->updateTimeManagerState(federate_handle, time_manager_state ? Mom::TimeState::TimeAdvancing : Mom::TimeState::TimeGranted);
+            auto resp2 = my_mom->updateTimeManagerState(
+                federate_handle, time_manager_state ? Mom::TimeState::TimeAdvancing : Mom::TimeState::TimeGranted);
             responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
             auto resp3 = my_mom->updateGALT(federate_handle, galt);
             responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
@@ -501,12 +504,13 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
         msg->setFederate(federate_handle);
     }
     msg->setDate(time);
-    
+
     auto resp = respondToAll(std::move(msg), federate_handle);
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-    
-    Debug(DNULL, pdDebug) << "Send NULL MSG (Federate=" << msg->getFederate() << ", Time = " << msg->getDate().getTime() << ")" << std::endl;
-    
+
+    Debug(DNULL, pdDebug) << "Send NULL MSG (Federate=" << msg->getFederate() << ", Time = " << msg->getDate().getTime()
+                          << ")" << std::endl;
+
     return responses;
 }
 
@@ -673,7 +677,7 @@ Responses Federation::unregisterSynchronization(FederateHandle federate_handle, 
 Responses Federation::broadcastSynchronization(FederateHandle federate_handle, const string& label, const string& tag)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization" << endl;
-    
+
     Responses responses;
 
     check(federate_handle);
@@ -694,17 +698,17 @@ Responses Federation::broadcastSynchronization(FederateHandle federate_handle, c
     responses = respondToAll(std::move(msg));
 
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization" << endl;
-    
+
     return responses;
 }
 
 Responses Federation::broadcastSynchronization(FederateHandle federate_handle,
-                                          const string& label,
-                                          const string& tag,
-                                          const vector<FederateHandle>& federate_set)
+                                               const string& label,
+                                               const string& tag,
+                                               const vector<FederateHandle>& federate_set)
 {
     Debug(G, pdGendoc) << "enter Federation::broadcastSynchronization to some federates" << endl;
-    
+
     Responses responses;
 
     check(federate_handle);
@@ -725,7 +729,7 @@ Responses Federation::broadcastSynchronization(FederateHandle federate_handle,
     responses = respondToSome(std::move(msg), federate_set);
 
     Debug(G, pdGendoc) << "exit  Federation::broadcastSynchronization to some federates" << endl;
-    
+
     return responses;
 }
 
@@ -1620,19 +1624,11 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
     Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
                         << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
 
-    auto rep = make_unique<NM_Send_Interaction>();
-    rep->setFederate(federate_handle);
-    rep->setInteractionClass(interaction_class_handle);
-    rep->setTag(tag);
-
-    responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
-
     if (my_mom) {
         std::map<FederateHandle, int> interactions;
         for (const auto& rep : responses) {
             for (const auto& socket : rep.sockets()) {
-                if (socket && 
-                    rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
+                if (socket && rep.message()->getMessageType() == NetworkMessage::Type::RECEIVE_INTERACTION) {
                     ++interactions[my_server->getFederateHandle(socket)];
                 }
             }
@@ -1693,13 +1689,6 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
         Debug(D, pdRequest) << " Param " << parameter_handles[i] << " Value "
                             << string(&(parameter_values[i][0]), parameter_values[i].size()) << endl;
     }
-
-    auto rep = make_unique<NM_Send_Interaction>();
-    rep->setFederate(federate_handle);
-    rep->setInteractionClass(interaction_class_handle);
-    rep->setTag(tag);
-
-    responses.emplace_back(my_server->getSocketLink(federate_handle), std::move(rep));
 
     if (my_mom) {
         std::map<FederateHandle, int> interactions;
@@ -2004,7 +1993,7 @@ std::pair<ObjectHandle, Responses> Federation::registerObjectWithRegion(Federate
 
 Responses Federation::updateAsynchronousDelivery(FederateHandle federate_handle, bool status)
 {
-    if(my_mom) {
+    if (my_mom) {
         return my_mom->updateAsynchronousDelivery(federate_handle, status);
     }
     return {};
