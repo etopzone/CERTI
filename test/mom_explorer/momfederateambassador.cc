@@ -214,17 +214,17 @@ std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
     if (v.size() != 0) {
         auto prev = os.fill('0');
         os << "0" << std::hex;
-        
+
         for (auto i(0u); i < v.size(); ++i) {
-            if(i == 0) {
+            if (i == 0) {
                 os << "x";
             }
-            else if(i %4 == 0) {
+            else if (i % 4 == 0) {
                 os << ":";
             }
             os << std::setw(2) << static_cast<const uint8_t*>(v.data())[i];
         }
-        
+
         os << std::dec;
         os.fill(prev);
     }
@@ -296,15 +296,15 @@ void MOMFederateAmbassador::subscribeObjectClasses()
     std::cout << "=>\tsubscribeObjectClasses" << std::endl;
 
     for (const auto& pair : the_mom_classes) {
-        auto class_handle = objectClassHandle(pair.first);
+        auto class_handle = my_ambassador.getObjectClassHandle(pair.first);
 
-        rti1516e::AttributeHandleSet attributes;
         for (const auto& attr_pair : pair.second) {
-            attributes.insert(attributeHandle(pair.first, attr_pair.first));
+            my_attributes_of_interest[class_handle].insert(
+                my_ambassador.getAttributeHandle(class_handle, attr_pair.first));
         }
 
         std::wcout << "  subscribeObjectClassAttributes for " << pair.first << std::endl;
-        my_ambassador.subscribeObjectClassAttributes(class_handle, attributes);
+        my_ambassador.subscribeObjectClassAttributes(class_handle, my_attributes_of_interest[class_handle]);
     }
 }
 
@@ -545,10 +545,10 @@ void MOMFederateAmbassador::discoverObjectInstance(
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
                << my_ambassador.getObjectClassName(theObjectClass) << ", " << theObjectInstanceName << ">" << std::endl;
 
-    if (theObjectClass == objectClassHandle(L"HLAmanager.HLAfederation")) {
+    if (theObjectClass == my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederation")) {
         my_federation = theObject;
     }
-    else if (theObjectClass == objectClassHandle(L"HLAmanager.HLAfederate")) {
+    else if (theObjectClass == my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederate")) {
         my_federates.push_back(theObject);
     }
     else {
@@ -580,8 +580,8 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theReflectInfo << ">" << std::endl;
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theReflectInfo << ">" << std::endl;
 
     for (const auto& pair : theAttributeValues) {
         my_data[theObject][pair.first] = pair.second;
@@ -600,8 +600,9 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theReflectInfo << ">" << std::endl;
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theTime.toString() << ", " << receivedOrder << ", " << theReflectInfo << ">"
+               << std::endl;
 }
 
 void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObject,
@@ -615,9 +616,9 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReflectInfo << ">"
-               << std::endl;
+               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", "
+               << theReflectInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -628,8 +629,8 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theReceiveInfo << ">" << std::endl;
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theReceiveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -642,8 +643,9 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theReceiveInfo << ">" << std::endl;
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theTime.toString() << ", " << receivedOrder << ", " << theReceiveInfo << ">"
+               << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -657,9 +659,9 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
-               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReceiveInfo << ">"
-               << std::endl;
+               << show(theParameterValues, theInteraction) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+               << theType << ", " << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", "
+               << theReceiveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
@@ -875,68 +877,39 @@ void MOMFederateAmbassador::requestRetraction(MessageRetractionHandle theHandle)
 {
     std::wcout << ">>" << __func__ << " <" << theHandle << ">" << std::endl;
 }
-    
-std::map<std::wstring, VariableLengthData> MOMFederateAmbassador::show(const AttributeHandleValueMap& map, const rti1516e::ObjectInstanceHandle object_instance)
+
+std::map<std::wstring, VariableLengthData>
+MOMFederateAmbassador::show(const AttributeHandleValueMap& map, const rti1516e::ObjectInstanceHandle object_instance)
 {
     std::map<std::wstring, VariableLengthData> result;
     auto object_class = my_ambassador.getKnownObjectClassHandle(object_instance);
-    
-    std::transform(begin(map), end(map), std::inserter(result, begin(result)), [&](const std::pair<AttributeHandle, VariableLengthData>& element) {
-        return std::make_pair(my_ambassador.getAttributeName(object_class, element.first), element.second);
-    });
-    
+
+    std::transform(begin(map),
+                   end(map),
+                   std::inserter(result, begin(result)),
+                   [&](const std::pair<AttributeHandle, VariableLengthData>& element) {
+                       return std::make_pair(my_ambassador.getAttributeName(object_class, element.first),
+                                             element.second);
+                   });
+
     return result;
 }
 
-std::map<std::wstring, VariableLengthData> MOMFederateAmbassador::show(const ParameterHandleValueMap& map, const rti1516e::InteractionClassHandle interaction_class)
+std::map<std::wstring, VariableLengthData>
+MOMFederateAmbassador::show(const ParameterHandleValueMap& map,
+                            const rti1516e::InteractionClassHandle interaction_class)
 {
     std::map<std::wstring, VariableLengthData> result;
-    
-    std::transform(begin(map), end(map), std::inserter(result, begin(result)), [&](const std::pair<ParameterHandle, VariableLengthData>& element) {
-        return std::make_pair(my_ambassador.getParameterName(interaction_class, element.first), element.second);
-    });
-    
+
+    std::transform(begin(map),
+                   end(map),
+                   std::inserter(result, begin(result)),
+                   [&](const std::pair<ParameterHandle, VariableLengthData>& element) {
+                       return std::make_pair(my_ambassador.getParameterName(interaction_class, element.first),
+                                             element.second);
+                   });
+
     return result;
-}
-
-ObjectClassHandle MOMFederateAmbassador::objectClassHandle(const std::wstring& object_class_name)
-{
-    try {
-        return my_object_class_cache.at(object_class_name);
-    }
-    catch (std::out_of_range& e) {
-        std::wcout << "->\tgetObjectClassHandle for " << object_class_name << std::endl;
-        auto handle = my_ambassador.getObjectClassHandle(object_class_name);
-        my_object_class_cache.insert(std::make_pair(object_class_name, handle));
-        return handle;
-    }
-}
-
-AttributeHandle MOMFederateAmbassador::attributeHandle(const std::wstring& object_name,
-                                                       const std::wstring& attribute_name)
-{
-    try {
-        return my_attribute_cache.at(std::make_pair(object_name, attribute_name));
-    }
-    catch (std::out_of_range& e) {
-        std::wcout << "->\tgetAttributeHandle for " << attribute_name << std::endl;
-        auto object_class = objectClassHandle(object_name);
-        auto handle = my_ambassador.getAttributeHandle(object_class, attribute_name);
-        my_attribute_cache.insert(std::make_pair(std::make_pair(object_name, attribute_name), handle));
-        my_attributes_of_interest[object_class].insert(handle);
-        return handle;
-    }
-}
-
-std::wstring MOMFederateAmbassador::attributeName(const std::wstring& object_class_name,
-                                                  const rti1516e::AttributeHandle handle)
-{
-    for (const auto& pair : my_attribute_cache) {
-        if (pair.second == handle && pair.first.first == object_class_name) {
-            return pair.first.second;
-        }
-    }
-    return L"Unknown";
 }
 
 void MOMFederateAmbassador::displayData()
@@ -945,7 +918,8 @@ void MOMFederateAmbassador::displayData()
 
     std::wcout << "+ Federation" << std::endl;
     for (const auto& pair : my_data[my_federation]) {
-        auto attribute_name = attributeName(L"HLAmanager.HLAfederation", pair.first);
+        auto attribute_name = my_ambassador.getAttributeName(
+            my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederation"), pair.first);
         std::wcout << " - " << attribute_name << ": "
                    << decode(L"HLAmanager.HLAfederation", attribute_name, pair.second) << std::endl;
     }
@@ -954,7 +928,8 @@ void MOMFederateAmbassador::displayData()
     for (const auto& fed : my_federates) {
         std::wcout << "+ Federate" << std::endl;
         for (const auto& pair : my_data[fed]) {
-            auto attribute_name = attributeName(L"HLAmanager.HLAfederate", pair.first);
+            auto attribute_name = my_ambassador.getAttributeName(
+                my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederate"), pair.first);
             std::wcout << " - " << attribute_name << ": "
                        << decode(L"HLAmanager.HLAfederate", attribute_name, pair.second) << std::endl;
         }

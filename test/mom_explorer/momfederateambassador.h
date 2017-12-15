@@ -330,21 +330,14 @@ private:
 
     const std::wstring& my_federation_name;
     const std::wstring& my_federate_name;
-    
-    std::map<std::wstring, VariableLengthData> show(const AttributeHandleValueMap& map, const ObjectInstanceHandle object_instance);
-    std::map<std::wstring, VariableLengthData> show(const ParameterHandleValueMap& map, const InteractionClassHandle interaction_class);
 
-    ObjectClassHandle objectClassHandle(const std::wstring& object_class_name);
-
-    AttributeHandle attributeHandle(const std::wstring& object_name,
-                                    const std::wstring& attribute_name);
-
-    std::wstring attributeName(const std::wstring& object_class_name, const AttributeHandle handle);
+    std::map<std::wstring, VariableLengthData> show(const AttributeHandleValueMap& map,
+                                                    const ObjectInstanceHandle object_instance);
+    std::map<std::wstring, VariableLengthData> show(const ParameterHandleValueMap& map,
+                                                    const InteractionClassHandle interaction_class);
 
     void displayData();
 
-    std::map<std::wstring, ObjectClassHandle> my_object_class_cache;
-    std::map<std::pair<std::wstring, std::wstring>, AttributeHandle> my_attribute_cache;
     std::map<ObjectClassHandle, AttributeHandleSet> my_attributes_of_interest;
 
     std::map<ObjectInstanceHandle, AttributeHandleValueMap> my_data;
