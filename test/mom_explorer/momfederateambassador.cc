@@ -191,6 +191,17 @@ std::wostream& operator<<(std::wostream& os, const std::set<T>& v)
     return os;
 }
 
+template <class K, class V>
+std::wostream& operator<<(std::wostream& os, const std::map<K, V>& v)
+{
+    os << "m{ ";
+    for (const auto& element : v) {
+        os << element.first << " = " << element.second << ", ";
+    }
+    os << "} ";
+    return os;
+}
+
 std::wostream& operator<<(std::wostream& os, const FederationExecutionInformation& v)
 {
     return os << "FEI [name: " << v.federationExecutionName << ", time: " << v.logicalTimeImplementationName << " ] ";
@@ -209,10 +220,7 @@ std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
                 os << "x";
             }
             else if(i %4 == 0) {
-                os << " ";
-            }
-            else {
-                os << ".";
+                os << ":";
             }
             os << std::setw(2) << static_cast<const uint8_t*>(v.data())[i];
         }
@@ -868,27 +876,27 @@ void MOMFederateAmbassador::requestRetraction(MessageRetractionHandle theHandle)
     std::wcout << ">>" << __func__ << " <" << theHandle << ">" << std::endl;
 }
     
-std::wstring MOMFederateAmbassador::show(const AttributeHandleValueMap& map, const rti1516e::ObjectInstanceHandle object_instance)
+std::map<std::wstring, VariableLengthData> MOMFederateAmbassador::show(const AttributeHandleValueMap& map, const rti1516e::ObjectInstanceHandle object_instance)
 {
-    std::wstringstream os;
+    std::map<std::wstring, VariableLengthData> result;
     auto object_class = my_ambassador.getKnownObjectClassHandle(object_instance);
-    os << "m{ ";
-    for (const auto& element : map) {
-        os << my_ambassador.getAttributeName(object_class, element.first) << " = " << element.second << ", ";
-    }
-    os << "} ";
-    return os.str();
+    
+    std::transform(begin(map), end(map), std::inserter(result, begin(result)), [&](const std::pair<AttributeHandle, VariableLengthData>& element) {
+        return std::make_pair(my_ambassador.getAttributeName(object_class, element.first), element.second);
+    });
+    
+    return result;
 }
 
-std::wstring MOMFederateAmbassador::show(const ParameterHandleValueMap& map, const rti1516e::InteractionClassHandle interaction_class)
+std::map<std::wstring, VariableLengthData> MOMFederateAmbassador::show(const ParameterHandleValueMap& map, const rti1516e::InteractionClassHandle interaction_class)
 {
-    std::wstringstream os;
-    os << "m{ ";
-    for (const auto& element : map) {
-        os << my_ambassador.getParameterName(interaction_class, element.first) << " = " << element.second << ", ";
-    }
-    os << "} ";
-    return os.str();
+    std::map<std::wstring, VariableLengthData> result;
+    
+    std::transform(begin(map), end(map), std::inserter(result, begin(result)), [&](const std::pair<ParameterHandle, VariableLengthData>& element) {
+        return std::make_pair(my_ambassador.getParameterName(interaction_class, element.first), element.second);
+    });
+    
+    return result;
 }
 
 ObjectClassHandle MOMFederateAmbassador::objectClassHandle(const std::wstring& object_class_name)
