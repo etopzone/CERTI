@@ -730,7 +730,7 @@ void MomCli::command_federation_request_synchronization_points()
 {
     std::wcout << "=>HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints\n";
 
-    sendInteraction(L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints", {});
+    sendInteraction(L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints", std::map<std::wstring, rti1516e::VariableLengthData>{});
 }
 
 void MomCli::command_federation_request_synchronization_point_status()
@@ -757,7 +757,7 @@ void MomCli::command_federation_request_MIM_data()
 {
     std::wcout << "=>HLAmanager.HLAfederation.HLArequest.HLArequestMIMData\n";
 
-    sendInteraction(L"HLAmanager.HLAfederation.HLArequest.HLArequestMIMData", {});
+    sendInteraction(L"HLAmanager.HLAfederation.HLArequest.HLArequestMIMData", std::map<std::wstring, rti1516e::VariableLengthData>{});
 }
 
 std::vector<int> MomCli::requestVectorArguments(const std::string& name)
