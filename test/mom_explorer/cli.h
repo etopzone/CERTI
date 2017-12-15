@@ -16,16 +16,16 @@ public:
     static std::vector<std::string> generateAliases(const std::string& command);
     
 protected:
-    void registerCommand(const std::string& identifier, std::function<void(void)> callback);
+    void registerCommand(const std::string& identifier, std::function<void()> callback);
     
-    void registerAliasedCommand(std::vector<std::string> identifiers, std::function<void(void)> callback);
-    void registerSimpleCommand(const std::string& identifier, std::function<void(void)> callback);
+    void registerAliasedCommand(std::vector<std::string> identifiers, std::function<void()> callback);
+    void registerSimpleCommand(const std::string& identifier, std::function<void()> callback);
     void registerAlias(const std::string& identifier, const std::string& alias);
     
 private:
     void help() const;
     
-    std::map<std::string, std::function<void(void)>> my_commands;
+    std::map<std::string, std::function<void()>> my_commands;
     std::map<std::string, std::string> my_aliases;
 };
 

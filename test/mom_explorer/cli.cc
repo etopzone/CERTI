@@ -27,12 +27,13 @@ void cli::execute() const
 {
     std::string input;
 
-    std::cout << nl << "# " << std::flush;
+    std::cout << std::endl << "# " << std::flush;
 
     while (getline(std::cin, input)) {
         auto command = my_commands.find(input);
 
         if (command == end(my_commands)) {
+            // no command, trying an alias
             auto alias = my_aliases.find(input);
             if (alias != end(my_aliases)) {
                 command = my_commands.find(alias->second);
@@ -40,14 +41,21 @@ void cli::execute() const
         }
 
         if (command == end(my_commands)) {
+            // no command nor alias
             std::cout << "**Unknown command <" << input << ">" << nl << tab
                       << "type command <help> for a list of available commands";
         }
         else {
-            command->second();
+            try {
+                command->second();
+            }
+            catch(...) {
+                std::cerr << "**Caught exception while executing command <" << input << ">" << std::endl;
+                auto e = std::current_exception();
+            }
         }
 
-        std::cout << nl << "# " << std::flush;
+        std::cout << std::endl << "# " << std::flush;
     }
 }
 
@@ -64,7 +72,6 @@ std::vector<std::string> cli::generateAliases(const std::string& command)
     std::vector<std::string> result;
 
     result.push_back(command);
-    std::cout << result.back() << nl;
 
     auto spacePos = command.find(' ');
     if (spacePos != std::string::npos) {
@@ -92,14 +99,13 @@ std::vector<std::string> cli::generateAliases(const std::string& command)
     return result;
 }
 
-void cli::registerCommand(const std::string& identifier, std::function<void(void)> callback)
+void cli::registerCommand(const std::string& identifier, std::function<void()> callback)
 {
     registerAliasedCommand(generateAliases(identifier), callback);
 }
 
-void cli::registerAliasedCommand(const std::vector<std::string> identifiers, std::function<void(void)> callback)
+void cli::registerAliasedCommand(const std::vector<std::string> identifiers, std::function<void()> callback)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     auto identifier = identifiers.front();
 
     registerSimpleCommand(identifier, callback);
@@ -118,9 +124,8 @@ void cli::registerAliasedCommand(const std::vector<std::string> identifiers, std
     }
 }
 
-void cli::registerSimpleCommand(const std::string& identifier, std::function<void(void)> callback)
+void cli::registerSimpleCommand(const std::string& identifier, std::function<void()> callback)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (my_commands.find(identifier) != end(my_commands)) {
         throw std::logic_error("Cannot register identifier <" + identifier + "> twice");
     }
@@ -130,7 +135,6 @@ void cli::registerSimpleCommand(const std::string& identifier, std::function<voi
 
 void cli::registerAlias(const std::string& identifier, const std::string& alias)
 {
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
     if (my_commands.find(identifier) == end(my_commands)) {
         throw std::logic_error("Cannot register alias to unknown identifier <" + identifier + ">");
     }

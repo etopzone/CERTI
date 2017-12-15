@@ -1,8 +1,9 @@
 #include "momfederateambassador.h"
 
-#include <algorithm>
-
 #include <cstring>
+
+#include <algorithm>
+#include <iomanip>
 
 namespace {
 
@@ -74,15 +75,15 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     auto type = the_mom_classes[object][attribute];
 
     std::wstring ret;
-    
-    if(data.size() == 8 && strncmp(static_cast<const char*>(data.data()), "\4\0\0\0TODO", 8) == 0) {
+
+    if (data.size() == 8 && strncmp(static_cast<const char*>(data.data()), "\4\0\0\0TODO", 8) == 0) {
         return L"Not yet implemented on server side.";
     }
-    
-    if(data.size() == 0) {
+
+    if (data.size() == 0) {
         return L"{empty}";
     }
-    
+
 #if 0
     std::cout << "DECODE DATA:";
     for(auto i=0u; i<data.size(); ++i) {
@@ -132,7 +133,7 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     } break;
     default: {
         ret = L"To be decoded:";
-        for(auto i=0u; i<data.size(); ++i) {
+        for (auto i = 0u; i < data.size(); ++i) {
             auto byte = static_cast<const uint8_t*>(data.data())[i];
             ret += L" ";
             auto value = std::to_string(static_cast<int>(byte));
@@ -195,7 +196,7 @@ std::wostream& operator<<(std::wostream& os, const std::map<K, V>& v)
 {
     os << "m{ ";
     for (const auto& element : v) {
-        os << element.first << " = " << element << ", ";
+        os << element.first << " = " << element.second << ", ";
     }
     os << "} ";
     return os;
@@ -208,6 +209,9 @@ std::wostream& operator<<(std::wostream& os, const FederationExecutionInformatio
 
 std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
 {
+    // before: VLD [size: 4, data: [ 02 00 00 00 ]]
+    // after : (8) 0x02.00.00.00 01.00.00.00
+#if 0
     os << "VLD [";
 
     if (v.size() == 0) {
@@ -218,10 +222,34 @@ std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
         for (auto i(0u); i < v.size(); ++i) {
             os << static_cast<const uint8_t*>(v.data())[i] << " ";
         }
-        os << "]";
     }
     os << "]";
     return os;
+#else
+    os << "{" << v.size() << "}";
+
+    if (v.size() != 0) {
+        auto prev = os.fill('0');
+        os << "0" << std::hex;
+        
+        for (auto i(0u); i < v.size(); ++i) {
+            if(i == 0) {
+                os << "x";
+            }
+            else if(i %4 == 0) {
+                os << " ";
+            }
+            else {
+                os << ".";
+            }
+            os << std::setw(2) << static_cast<const uint8_t*>(v.data())[i];
+        }
+        
+        os << std::dec;
+        os.fill(prev);
+    }
+    return os;
+#endif
 }
 
 std::wostream& operator<<(std::wostream& os, const SupplementalReflectInfo& v)
@@ -305,20 +333,83 @@ void MOMFederateAmbassador::publishAndsubscribeInteractions()
 {
     std::cout << "=>\tpublishAndsubscribeInteractions" << std::endl;
 
-    /*for (const auto& pair : the_mom_classes) {
-        auto class_handle = objectClassHandle(pair.first);
+    for (const auto& interaction : {L"HLAmanager.HLAfederate.HLAadjust.HLAsetTiming",
+                                    L"HLAmanager.HLAfederate.HLAadjust.HLAmodifyAttributeState",
+                                    L"HLAmanager.HLAfederate.HLAadjust.HLAsetSwitches",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestSubscriptions",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesThatCanBeDeleted",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesUpdated",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstancesReflected",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestUpdatesSent",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsSent",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestReflectionsReceived",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestInteractionsReceived",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestObjectInstanceInformation",
+                                    L"HLAmanager.HLAfederate.HLArequest.HLArequestFOMmoduleData",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAresignFederationExecution",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAsynchronizationPointAchieved",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAfederateSaveBegun",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAfederateSaveComplete",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAfederateRestoreComplete",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLApublishObjectClassAttributes",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAunpublishObjectClassAttributes",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLApublishInteractionClass",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAunpublishInteractionClass",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAsubscribeObjectClassAttributes",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAunsubscribeObjectClassAttributes",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAsubscribeInteractionClass",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAunsubscribeInteractionClass",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAdeleteObjectInstance",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAlocalDeleteObjectInstance",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLArequestAttributeTransportationTypeChange",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLArequestInteractionTransportationTypeChange",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAunconditionalAttributeOwnershipDivestiture",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAenableTimeRegulation",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAdisableTimeRegulation",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAenableTimeConstrained",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAdisableTimeConstrained",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequest",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAtimeAdvanceRequestAvailable",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequest",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAnextMessageRequestAvailable",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAflushQueueRequest",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAenableAsynchronousDelivery",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAdisableAsynchronousDelivery",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAmodifyLookahead",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAchangeAttributeOrderType",
+                                    L"HLAmanager.HLAfederate.HLAservice.HLAchangeInteractionOrderType",
+                                    L"HLAmanager.HLAfederation.HLAadjust.HLAsetSwitches",
+                                    L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPoints",
+                                    L"HLAmanager.HLAfederation.HLArequest.HLArequestSynchronizationPointStatus",
+                                    L"HLAmanager.HLAfederation.HLArequest.HLArequestFOMmoduleData",
+                                    L"HLAmanager.HLAfederation.HLArequest.HLArequestMIMData"}) {
+        my_ambassador.publishInteractionClass(my_ambassador.getInteractionClassHandle(interaction));
+    }
 
-        rti1516e::AttributeHandleSet attributes;
-        for (const auto& attr_pair : pair.second) {
-            attributes.insert(attributeHandle(pair.first, attr_pair.first));
-        }
-
-        std::wcout << "  subscribeObjectClassAttributes for " << pair.first << std::endl;
-        my_ambassador.subscribeObjectClassAttributes(class_handle, attributes);
-    }*/
-    my_ambassador.publishInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications"));
-    my_ambassador.subscribeInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication"));
-    my_ambassador.subscribeInteractionClass(my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication"));
+    for (const auto& interaction : {L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassPublication",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectClassSubscription",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionPublication",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionSubscription",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesThatCanBeDeleted",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesUpdated",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstancesReflected",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportUpdatesSent",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportReflectionsReceived",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsSent",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportInteractionsReceived",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportObjectInstanceInformation",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportException",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportServiceInvocation",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportMOMexception",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportFederateLost",
+                                    L"HLAmanager.HLAfederate.HLAreport.HLAreportFOMmoduleData",
+                                    L"HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPoints",
+                                    L"HLAmanager.HLAfederation.HLAreport.HLAreportSynchronizationPointStatus",
+                                    L"HLAmanager.HLAfederation.HLAreport.HLAreportFOMmoduleData",
+                                    L"HLAmanager.HLAfederation.HLAreport.HLAreportMIMData"}) {
+        my_ambassador.subscribeInteractionClass(my_ambassador.getInteractionClassHandle(interaction));
+    }
 }
 
 void MOMFederateAmbassador::connectionLost(std::wstring const& faultDescription) throw(FederateInternalError)
@@ -425,22 +516,22 @@ void MOMFederateAmbassador::federationRestoreStatusResponse(
 
 void MOMFederateAmbassador::startRegistrationForObjectClass(ObjectClassHandle theClass) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theClass << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectClassName(theClass) << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::stopRegistrationForObjectClass(ObjectClassHandle theClass) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theClass << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectClassName(theClass) << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::turnInteractionsOn(InteractionClassHandle theHandle) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theHandle << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theHandle) << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::turnInteractionsOff(InteractionClassHandle theHandle) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theHandle << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theHandle) << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::objectInstanceNameReservationSucceeded(std::wstring const& theObjectInstanceName) throw(
@@ -472,8 +563,8 @@ void MOMFederateAmbassador::discoverObjectInstance(
     ObjectClassHandle theObjectClass,
     std::wstring const& theObjectInstanceName) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theObjectClass << ", " << theObjectInstanceName
-               << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << my_ambassador.getObjectClassName(theObjectClass) << ", " << theObjectInstanceName << ">" << std::endl;
 
     if (theObjectClass == objectClassHandle(L"HLAmanager.HLAfederation")) {
         my_federation = theObject;
@@ -497,8 +588,9 @@ void MOMFederateAmbassador::discoverObjectInstance(ObjectInstanceHandle theObjec
                                                    std::wstring const& theObjectInstanceName,
                                                    FederateHandle producingFederate) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theObjectClass << ", " << theObjectInstanceName
-               << ", " << producingFederate << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << my_ambassador.getObjectClassName(theObjectClass) << ", " << theObjectInstanceName << ", "
+               << my_ambassador.getFederateName(producingFederate) << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObject,
@@ -508,8 +600,9 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    TransportationType theType,
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributeValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theReflectInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theReflectInfo << ">" << std::endl;
 
     for (const auto& pair : theAttributeValues) {
         my_data[theObject][pair.first] = pair.second;
@@ -527,9 +620,9 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    OrderType receivedOrder,
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributeValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theTime.toString() << ", " << receivedOrder << ", "
-               << theReflectInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theTime.toString() << ", " << receivedOrder << ", " << theReflectInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObject,
@@ -542,9 +635,10 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    MessageRetractionHandle theHandle,
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributeValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theTime.toString() << ", " << receivedOrder << ", "
-               << theHandle << ", " << theReflectInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theAttributeValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReflectInfo << ">"
+               << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -554,8 +648,9 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                TransportationType theType,
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theInteraction << ", " << theParameterValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theReceiveInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
+               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theReceiveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -567,9 +662,9 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                OrderType receivedOrder,
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theInteraction << ", " << theParameterValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theTime.toString() << ", " << receivedOrder << ", "
-               << theReceiveInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
+               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theTime.toString() << ", " << receivedOrder << ", " << theReceiveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInteraction,
@@ -582,9 +677,10 @@ void MOMFederateAmbassador::receiveInteraction(InteractionClassHandle theInterac
                                                MessageRetractionHandle theHandle,
                                                SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theInteraction << ", " << theParameterValues << ", " << theUserSuppliedTag
-               << ", " << sentOrder << ", " << theType << ", " << theTime.toString() << ", " << receivedOrder << ", "
-               << theHandle << ", " << theReceiveInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
+               << theParameterValues << ", " << theUserSuppliedTag << ", " << sentOrder << ", " << theType << ", "
+               << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theReceiveInfo << ">"
+               << std::endl;
 }
 
 void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
@@ -592,16 +688,16 @@ void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
                                                  OrderType sentOrder,
                                                  SupplementalRemoveInfo theRemoveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
-               << theRemoveInfo << ">" << std::endl;
-               
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theUserSuppliedTag << ", " << sentOrder << ", " << theRemoveInfo << ">" << std::endl;
+
     my_data.erase(theObject);
-    
+
     auto it = std::find(begin(my_federates), end(my_federates), theObject);
-    if(it != std::end(my_federates)) {
+    if (it != std::end(my_federates)) {
         my_federates.erase(it);
     }
-    
+
     displayData();
 }
 
@@ -612,8 +708,9 @@ void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
                                                  OrderType receivedOrder,
                                                  SupplementalRemoveInfo theRemoveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theRemoveInfo << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theUserSuppliedTag << ", " << sentOrder << ", " << theTime.toString() << ", " << receivedOrder << ", "
+               << theRemoveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
@@ -624,21 +721,23 @@ void MOMFederateAmbassador::removeObjectInstance(ObjectInstanceHandle theObject,
                                                  MessageRetractionHandle theHandle,
                                                  SupplementalRemoveInfo theRemoveInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
-               << theTime.toString() << ", " << receivedOrder << ", " << theHandle << ", " << theRemoveInfo << ">"
-               << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << theUserSuppliedTag << ", " << sentOrder << ", " << theTime.toString() << ", " << receivedOrder << ", "
+               << theHandle << ", " << theRemoveInfo << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributesInScope(ObjectInstanceHandle theObject,
                                               AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributesOutOfScope(ObjectInstanceHandle theObject,
                                                  AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::provideAttributeValueUpdate(
@@ -646,14 +745,15 @@ void MOMFederateAmbassador::provideAttributeValueUpdate(
     AttributeHandleSet const& theAttributes,
     VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ", " << theUserSuppliedTag << ">"
-               << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ", " << theUserSuppliedTag << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::turnUpdatesOnForObjectInstance(
     ObjectInstanceHandle theObject, AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::turnUpdatesOnForObjectInstance(
@@ -661,14 +761,15 @@ void MOMFederateAmbassador::turnUpdatesOnForObjectInstance(
     AttributeHandleSet const& theAttributes,
     std::wstring const& updateRateDesignator) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ", " << updateRateDesignator << ">"
-               << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ", " << updateRateDesignator << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::turnUpdatesOffForObjectInstance(
     ObjectInstanceHandle theObject, AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::confirmAttributeTransportationTypeChange(
@@ -676,8 +777,8 @@ void MOMFederateAmbassador::confirmAttributeTransportationTypeChange(
     AttributeHandleSet theAttributes,
     TransportationType theTransportation) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ", " << theTransportation << ">"
-               << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ", " << theTransportation << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::reportAttributeTransportationType(
@@ -685,14 +786,15 @@ void MOMFederateAmbassador::reportAttributeTransportationType(
     AttributeHandle theAttribute,
     TransportationType theTransportation) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttribute << ", " << theTransportation << ">"
-               << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttribute
+               << ", " << theTransportation << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::confirmInteractionTransportationTypeChange(
     InteractionClassHandle theInteraction, TransportationType theTransportation) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theInteraction << ", " << theTransportation << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getInteractionClassName(theInteraction) << ", "
+               << theTransportation << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::reportInteractionTransportationType(
@@ -700,8 +802,9 @@ void MOMFederateAmbassador::reportInteractionTransportationType(
     InteractionClassHandle theInteraction,
     TransportationType theTransportation) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << federateHandle << ", " << theInteraction << ", " << theTransportation
-               << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getFederateName(federateHandle) << ", "
+               << my_ambassador.getInteractionClassName(theInteraction) << ", " << theTransportation << ">"
+               << std::endl;
 }
 
 void MOMFederateAmbassador::requestAttributeOwnershipAssumption(
@@ -709,14 +812,15 @@ void MOMFederateAmbassador::requestAttributeOwnershipAssumption(
     AttributeHandleSet const& offeredAttributes,
     VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << offeredAttributes << ", " << theUserSuppliedTag
-               << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << offeredAttributes << ", " << theUserSuppliedTag << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::requestDivestitureConfirmation(
     ObjectInstanceHandle theObject, AttributeHandleSet const& releasedAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << releasedAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << releasedAttributes << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributeOwnershipAcquisitionNotification(
@@ -724,14 +828,15 @@ void MOMFederateAmbassador::attributeOwnershipAcquisitionNotification(
     AttributeHandleSet const& securedAttributes,
     VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << securedAttributes << ", " << theUserSuppliedTag
-               << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << securedAttributes << ", " << theUserSuppliedTag << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributeOwnershipUnavailable(
     ObjectInstanceHandle theObject, AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::requestAttributeOwnershipRelease(
@@ -739,33 +844,37 @@ void MOMFederateAmbassador::requestAttributeOwnershipRelease(
     AttributeHandleSet const& candidateAttributes,
     VariableLengthData const& theUserSuppliedTag) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << candidateAttributes << ", " << theUserSuppliedTag
-               << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+               << candidateAttributes << ", " << theUserSuppliedTag << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::confirmAttributeOwnershipAcquisitionCancellation(
     ObjectInstanceHandle theObject, AttributeHandleSet const& theAttributes) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttributes << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttributes
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::informAttributeOwnership(ObjectInstanceHandle theObject,
                                                      AttributeHandle theAttribute,
                                                      FederateHandle theOwner) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttribute << ", " << theOwner << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttribute
+               << ", " << theOwner << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributeIsNotOwned(ObjectInstanceHandle theObject,
                                                 AttributeHandle theAttribute) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttribute << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttribute
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::attributeIsOwnedByRTI(ObjectInstanceHandle theObject,
                                                   AttributeHandle theAttribute) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << theObject << ", " << theAttribute << ">" << std::endl;
+    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", " << theAttribute
+               << ">" << std::endl;
 }
 
 void MOMFederateAmbassador::timeRegulationEnabled(LogicalTime const& theFederateTime) throw(FederateInternalError)

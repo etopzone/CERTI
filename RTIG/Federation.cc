@@ -1621,8 +1621,13 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                                                                    time,
                                                                    region,
                                                                    tag);
-    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
-                        << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
+    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction <"
+                        << my_root_object->Interactions->getInteractionClassName(interaction_class_handle)
+                        << "> from Federate <" << federate_handle << "> nb params " << parameter_handles.size() << endl;
+    for (size_t i{0u}; i < parameter_handles.size(); i++) {
+        Debug(D, pdRequest) << "<" << my_root_object->Interactions->getParameterName(parameter_handles[i], interaction_class_handle) << "> = <"
+                            << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
+    }
 
     if (my_mom) {
         std::map<FederateHandle, int> interactions;
@@ -1683,11 +1688,12 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                                                                    parameter_handles.size(),
                                                                    region,
                                                                    tag);
-    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction " << interaction_class_handle
-                        << " from Federate " << federate_handle << " nb params " << parameter_handles.size() << endl;
+    Debug(D, pdRequest) << "Federation " << my_handle << ": Broadcasted Interaction <"
+                        << my_root_object->Interactions->getInteractionClassName(interaction_class_handle)
+                        << "> from Federate <" << federate_handle << "> nb params " << parameter_handles.size() << endl;
     for (size_t i{0u}; i < parameter_handles.size(); i++) {
-        Debug(D, pdRequest) << " Param " << parameter_handles[i] << " Value "
-                            << string(&(parameter_values[i][0]), parameter_values[i].size()) << endl;
+        Debug(D, pdRequest) << "<" << my_root_object->Interactions->getParameterName(parameter_handles[i], interaction_class_handle) << "> = <"
+                            << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
     }
 
     if (my_mom) {
