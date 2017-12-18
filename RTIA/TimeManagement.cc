@@ -124,12 +124,21 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
 {
     NM_Message_Null_Prime msg;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
-    /*
+	/*
+     * If the time stamp of the last Tx event is bigger than current time and
+     * smaller than the requested advance time then it has to be the next
+     * time advance timestamp
+     */
+	if ((minTxMessageDate > _heure_courante) && (minTxMessageDate < logical_time))
+	{
+		logical_time = minTxMessageDate;
+	}
+	/*
      * We cannot send null prime in the past of
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > lastNullMessageDate) && (logical_time > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
         msg.setDate(logical_time);
@@ -601,6 +610,24 @@ FederationTime TimeManagement::requestMinNextEventTime()
     D.Out(pdRegister, "Minimum Next Event Time : %f.", dateMNET.getTime());
 
     return dateMNET;
+}
+
+void TimeManagement::updateMinTxMessageDate(FederationTime TxMessageDate)
+{
+	// Note that we always consider a valid time!
+	// if current time is bigger than last time
+	// it means that time advance has advanced
+	if (_heure_courante > lastCurrentTimeTxMessage)
+	{
+		minTxMessageDate = TxMessageDate;
+		lastCurrentTimeTxMessage = _heure_courante;
+	}
+	else if (lastCurrentTimeTxMessage == _heure_courante)
+	{
+		if (TxMessageDate < minTxMessageDate)
+			minTxMessageDate = TxMessageDate;
+	}
+
 }
 
 void TimeManagement::setLookahead(FederationTimeDelta lookahead, Exception::Type& e)
