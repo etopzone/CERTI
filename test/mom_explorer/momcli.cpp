@@ -466,13 +466,13 @@ void MomCli::command_federate_service_un_subscribe_object_class_attributes()
 
 void MomCli::command_federate_service_subscribe_interaction_class()
 {
-    std::wcout << "=>HLAmanager.HLAfederate.HLArequest.HLArequestPublications\n";
+    std::wcout << "=>HLAmanager.HLAfederate.HLArequest.HLAsubscribeInteractionClass\n";
 
     int federate_handle = std::stoi(requestArgument("HLAfederate"));
     int interaction_class = std::stoi(requestArgument("HLAinteractionClass"));
     bool active = std::stoi(requestArgument("HLAactive"));
 
-    sendInteraction(L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications",
+    sendInteraction(L"HLAmanager.HLAfederate.HLArequest.HLAsubscribeInteractionClass",
                     {{L"HLAfederate", {&federate_handle, 4}},
                      {L"HLAinteractionClass", {&interaction_class, 4}},
                      {L"HLAactive", {&active, 4}}});
