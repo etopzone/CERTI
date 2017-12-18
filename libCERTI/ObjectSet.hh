@@ -69,7 +69,7 @@ public:
 
     void deleteObjectInstance(FederateHandle the_federate, ObjectHandle the_object, const std::string& the_tag);
 
-    FederateHandle requestObjectOwner(FederateHandle the_federate, ObjectHandle the_object);
+    FederateHandle requestObjectOwner(FederateHandle the_federate, ObjectHandle the_object) const;
 
     void killFederate(FederateHandle the_federate);
 
@@ -106,8 +106,7 @@ public:
 
     void cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                        ObjectHandle the_object,
-                                                       const std::vector<AttributeHandle>& the_attributes,
-                                                       uint16_t the_size);
+                                                       const std::vector<AttributeHandle>& the_attributes);
 
     AttributeHandleSet* attributeOwnershipReleaseResponse(FederateHandle the_federate,
                                                           ObjectHandle the_object,
@@ -123,23 +122,18 @@ public:
 
     Object* getObjectByName(const std::string& the_object_name) const;
 
-    void getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles);
+    void getAllObjectInstancesFromFederate(FederateHandle the_federate, std::vector<ObjectHandle>& handles) const;
 
 protected:
     void sendToFederate(NetworkMessage* msg, FederateHandle the_federate) const;
 
-    SecurityServer* server;
+    SecurityServer* server {nullptr};
 
-    typedef std::map<ObjectHandle, Object*, std::less<ObjectHandle>> Handle2ObjectMap_t;
-    typedef std::map<std::string, Object*, std::less<std::string>> Name2ObjectMap_t;
-
-    typedef Handle2ObjectMap_t::const_iterator Handle2ObjectMap_const_iterator;
-    typedef Name2ObjectMap_t::const_iterator Name2ObjectMap_const_iterator;
-
-    Handle2ObjectMap_t OFromHandle;
-    Name2ObjectMap_t OFromName;
+    std::map<ObjectHandle, Object*> my_objects_per_handle {};
+    std::map<std::string, Object*> my_objects_per_name {};
+    
     /* The message buffer used to send Network messages */
-    MessageBuffer NM_msgBufSend;
+    MessageBuffer NM_msgBufSend {};
 };
 
 } // namespace certi

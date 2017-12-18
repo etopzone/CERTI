@@ -1827,7 +1827,7 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
 
     // It may throw *NotDefined
     my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(
-        federate_handle, id, attributes, attributes.size());
+        federate_handle, id, attributes);
 
     Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << endl;
 }

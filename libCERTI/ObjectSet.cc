@@ -31,11 +31,6 @@
 // Standard
 #include <iostream>
 
-using std::pair;
-using std::cout;
-using std::endl;
-using std::string;
-
 namespace certi {
 
 static PrettyDebug D("OBJECTSET", "(ObjectSet) - ");
@@ -47,18 +42,15 @@ ObjectSet::ObjectSet(SecurityServer* the_server) : server(the_server)
 
 ObjectSet::~ObjectSet()
 {
-    for (auto i = OFromHandle.begin(); i != OFromHandle.end(); i++) {
+    for (auto i = begin(my_objects_per_handle); i != end(my_objects_per_handle); ++i) {
         delete i->second;
     }
-
-    OFromHandle.clear();
-    OFromName.clear();
 }
 
 void ObjectSet::display() const
 {
-    std::cout << "Object set: " << OFromHandle.size() << std::endl;
-    for (const auto& pair : OFromHandle) {
+    std::cout << "Object set: " << my_objects_per_handle.size() << std::endl;
+    for (const auto& pair : my_objects_per_handle) {
         std::cout << "****" << std::endl;
         std::cout << "Object #" << pair.first << std::endl;
         pair.second->display();
@@ -68,10 +60,10 @@ void ObjectSet::display() const
 
 ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
 {
-    auto FoundObject = OFromName.find(the_name);
+    auto it = my_objects_per_name.find(the_name);
 
-    if (FoundObject != OFromName.end()) {
-        return FoundObject->second->getHandle();
+    if (it != my_objects_per_name.end()) {
+        return it->second->getHandle();
     }
 
     throw ObjectNotKnown("No object instance with name <" + the_name + ">");
@@ -79,9 +71,7 @@ ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) con
 
 const std::string& ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
 {
-    Object* object = getObject(the_object);
-
-    return object->getName();
+    return getObject(the_object)->getName();
 }
 
 ObjectClassHandle ObjectSet::getObjectClass(ObjectHandle the_object) const
@@ -104,15 +94,15 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
                                           ObjectHandle the_object,
                                           const std::string& the_name)
 {
-    if (OFromHandle.find(the_object) != OFromHandle.end()) {
+    if (my_objects_per_handle.find(the_object) != end(my_objects_per_handle)) {
         throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
     }
 
-    if (OFromName.find(the_name) != OFromName.end()) {
+    if (my_objects_per_name.find(the_name) != end(my_objects_per_name)) {
         throw ObjectAlreadyRegistered("Object name already defined.");
     }
 
-    Object* object = new Object(the_federate);
+    auto object = new Object(the_federate);
     object->setHandle(the_object);
     object->setClass(the_class);
 
@@ -120,46 +110,47 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
         object->setName(the_name);
     }
     else {
-        object->setName(stringize() << "HLAobject_" << the_object);
+        object->setName("HLAobject_" + std::to_string(the_object));
     }
 
-    OFromHandle[the_object] = object;
-    OFromName[the_name] = object;
+    my_objects_per_handle[the_object] = object;
+    my_objects_per_name[the_name] = object;
 
     return object;
 }
 
-void ObjectSet::deleteObjectInstance(FederateHandle /*the_federate*/, ObjectHandle the_object, const std::string& /*the_tag*/)
+void ObjectSet::deleteObjectInstance(FederateHandle /*the_federate*/,
+                                     ObjectHandle the_object,
+                                     const std::string& /*the_tag*/)
 {
-    Object* object = getObject(the_object);
-    OFromHandle.erase(object->getHandle());
-    OFromName.erase(object->getName());
+    auto object = getObject(the_object);
+    my_objects_per_handle.erase(object->getHandle());
+    my_objects_per_name.erase(object->getName());
 
     delete object; // Remove the Object instance.
 }
 
-FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object)
+FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object) const
 {
     G.Out(pdGendoc, "enter ObjectSet::requestObjectOwner");
-    auto FoundObject = OFromHandle.find(the_object);
+    auto it = my_objects_per_handle.find(the_object);
 
-    if (FoundObject == OFromHandle.end()) {
+    if (it == end(my_objects_per_handle)) {
         throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in ObjectSet map.");
     }
 
     // Object found, return the owner
     G.Out(pdGendoc, "exit  ObjectSet::requestObjectOwner");
-    return (FoundObject->second->getOwner());
+    return it->second->getOwner();
 }
 
 void ObjectSet::killFederate(FederateHandle the_federate)
 {
-    auto i = OFromHandle.begin();
-    while (i != OFromHandle.end()) {
-        if ((i->second)->getOwner() == the_federate) {
-            OFromName.erase(i->second->getName());
-            OFromHandle.erase(i->first);
-            i = OFromHandle.begin();
+    auto i = begin(my_objects_per_handle);
+    while (i != end(my_objects_per_handle)) {
+        if (i->second->getOwner() == the_federate) {
+            deleteObjectInstance(the_federate, i->first, "");
+            i = begin(my_objects_per_handle);
         }
         else {
             // It is safe to run this multiple times
@@ -173,56 +164,51 @@ bool ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
                                            ObjectHandle the_object,
                                            AttributeHandle the_attribute) const
 {
-    D.Out(pdDebug,
-          "isAttributeOwnedByFederate called for attribute %u, "
-          "objet %u",
-          the_attribute,
-          the_object);
-
-    Object* object = getObject(the_object);
-
-    if (server == 0) {
+    if (!server) {
         throw RTIinternalError("isAttributeOwnedByFederate not called by RTIG");
     }
 
-    return object->isAttributeOwnedByFederate(the_federate, the_attribute);
+    Debug(D, pdDebug) << "isAttributeOwnedByFederate called for attribute " << the_attribute << ", objet " << the_object
+                      << std::endl;
+
+    return getObject(the_object)->isAttributeOwnedByFederate(the_federate, the_attribute);
 }
 
 void ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
                                         ObjectHandle the_object,
                                         AttributeHandle the_attribute) const
 {
-    Object* object = getObject(the_object);
+    if (!server) {
+        D.Out(pdDebug, "Should only be called by RTIG");
+        return;
+    }
 
-    D.Out(pdDebug, "query attribute ownership for attribute %u and object %u", the_attribute, the_object);
+    Debug(D, pdDebug) << "query attribute ownership for attribute " << the_attribute << " and object " << the_object
+                      << std::endl;
 
-    if (server) {
-        ObjectAttribute* oa;
-        oa = object->getAttribute(the_attribute);
+    auto object = getObject(the_object);
 
-        NetworkMessage* answer;
-        if (oa->getOwner()) {
-            NM_Inform_Attribute_Ownership* IAO = new NM_Inform_Attribute_Ownership();
-            IAO->setObject(the_object);
-            IAO->setAttribute(the_attribute);
-            answer = IAO;
-        }
-        else {
-            NM_Attribute_Is_Not_Owned* AINO = new NM_Attribute_Is_Not_Owned();
-            AINO->setObject(the_object);
-            AINO->setAttribute(the_attribute);
-            answer = AINO;
-        }
+    ObjectAttribute* oa = object->getAttribute(the_attribute);
 
-        answer->setFederation(server->federation().get());
-        answer->setException(Exception::Type::NO_EXCEPTION);
-        answer->setFederate(oa->getOwner());
-
-        sendToFederate(answer, the_federate);
+    NetworkMessage* answer;
+    if (oa->getOwner()) {
+        NM_Inform_Attribute_Ownership* IAO = new NM_Inform_Attribute_Ownership();
+        IAO->setObject(the_object);
+        IAO->setAttribute(the_attribute);
+        answer = IAO;
     }
     else {
-        D.Out(pdDebug, "Should only be called by RTIG");
+        NM_Attribute_Is_Not_Owned* AINO = new NM_Attribute_Is_Not_Owned();
+        AINO->setObject(the_object);
+        AINO->setAttribute(the_attribute);
+        answer = AINO;
     }
+
+    answer->setFederation(server->federation().get());
+    answer->setException(Exception::Type::NO_EXCEPTION);
+    answer->setFederate(oa->getOwner());
+
+    sendToFederate(answer, the_federate);
 }
 
 void ObjectSet::negotiatedAttributeOwnershipDivestiture(
@@ -249,40 +235,38 @@ void ObjectSet::attributeOwnershipAcquisition(
 
 void ObjectSet::cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                               ObjectHandle the_object,
-                                                              const std::vector<AttributeHandle>& the_attributes,
-                                                              uint16_t the_size)
+                                                              const std::vector<AttributeHandle>& the_attributes)
 {
-    Object* object = getObject(the_object);
+    if (!server) {
+        Debug(D, pdExcept) << "CancelNegotiatedAttributeOwnershipDivestiture should not be called on the RTIA."
+                           << std::endl;
+        throw RTIinternalError("CancelNegotiatedAttributeOwnershipDivestiture called on the RTIA.");
+    }
 
-    ObjectAttribute* oa;
-    for (int i = 0; i < the_size; ++i) {
-        oa = object->getAttribute(the_attributes[i]);
+    auto object = getObject(the_object);
+
+    for (const auto attribute_handle : the_attributes) {
+        auto oa = object->getAttribute(attribute_handle);
 
         // Does federate owns every attributes.
-        if (oa->getOwner() != the_federate)
+        if (oa->getOwner() != the_federate) {
             throw AttributeNotOwned("");
+        }
         // Does federate called NegotiatedAttributeOwnershipDivestiture
-        if (!oa->beingDivested())
+        if (!oa->beingDivested()) {
             throw AttributeDivestitureWasNotRequested("");
-    }
-
-    if (server != NULL) {
-        for (int i = 0; i < the_size; ++i) {
-            oa = object->getAttribute(the_attributes[i]);
-            oa->setDivesting(false);
         }
     }
-    else {
-        D.Out(pdExcept,
-              "CancelNegotiatedAttributeOwnershipDivestiture should "
-              "not be called on the RTIA.");
-        throw RTIinternalError("CancelNegotiatedAttributeOwnershipDivestiture "
-                               "called on the RTIA.");
+
+    for (const auto attribute_handle : the_attributes) {
+        object->getAttribute(attribute_handle)->setDivesting(false);
     }
 }
 
-AttributeHandleSet*
-ObjectSet::attributeOwnershipReleaseResponse(FederateHandle, ObjectHandle, std::vector<AttributeHandle>&, uint16_t)
+AttributeHandleSet* ObjectSet::attributeOwnershipReleaseResponse(FederateHandle /*the_federate*/,
+                                                                 ObjectHandle /*the_object*/,
+                                                                 std::vector<AttributeHandle>& /*the_attributes*/,
+                                                                 uint16_t /*the_size*/)
 {
     // Object *object = getObject(the_object);
 
@@ -290,47 +274,51 @@ ObjectSet::attributeOwnershipReleaseResponse(FederateHandle, ObjectHandle, std::
 }
 
 // ----------------------------------------------------------------------------
-void ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
-                                                    ObjectHandle,
-                                                    std::vector<AttributeHandle>&,
-                                                    uint16_t)
+void ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle /*the_federate*/,
+                                                    ObjectHandle /*the_object*/,
+                                                    std::vector<AttributeHandle>& /*the_attributes*/,
+                                                    uint16_t /*the_size*/)
 {
     // Object *object = getObject(the_object);
 }
 
 Object* ObjectSet::getObject(ObjectHandle the_object) const
 {
-    auto FoundObject = OFromHandle.find(the_object);
+    auto it = my_objects_per_handle.find(the_object);
 
-    if (FoundObject != OFromHandle.end())
-        return FoundObject->second;
+    if (it != end(my_objects_per_handle)) {
+        return it->second;
+    }
 
     throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in map set.");
 }
 
 Object* ObjectSet::getObjectByName(const std::string& the_object_name) const
 {
-    auto FoundObject = OFromName.find(the_object_name);
+    auto it = my_objects_per_name.find(the_object_name);
 
-    if (FoundObject != OFromName.end())
-        return FoundObject->second;
+    if (it != end(my_objects_per_name)) {
+        return it->second;
+    }
 
-    return NULL;
+    return nullptr;
 }
 
 void ObjectSet::getAllObjectInstancesFromFederate(FederateHandle the_federate,
-                                                  std::vector<ObjectHandle>& ownedObjectInstances)
+                                                  std::vector<ObjectHandle>& ownedObjectInstances) const
 {
     ownedObjectInstances.clear();
-    for (auto i = OFromHandle.begin(); i != OFromHandle.end(); ++i)
-        if (i->second != 0 && i->second->getOwner() == the_federate)
-            ownedObjectInstances.push_back(i->first);
+    for (const auto& kv : my_objects_per_handle) {
+        if (kv.second && kv.second->getOwner() == the_federate) {
+            ownedObjectInstances.push_back(kv.first);
+        }
+    }
 }
 
 void ObjectSet::sendToFederate(NetworkMessage* msg, FederateHandle the_federate) const
 {
     // Send the message 'msg' to the Federate which Handle is theFederate.
-    Socket* socket = NULL;
+    Socket* socket = nullptr;
     try {
 #ifdef HLA_USES_UDP
         socket = server->getSocketLink(the_federate, BEST_EFFORT);
@@ -340,10 +328,10 @@ void ObjectSet::sendToFederate(NetworkMessage* msg, FederateHandle the_federate)
         msg->send(socket, const_cast<MessageBuffer&>(NM_msgBufSend));
     }
     catch (RTIinternalError& e) {
-        D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
+        Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting." << std::endl;
     }
     catch (NetworkError& e) {
-        D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+        Debug(D, pdExcept) << "Network error while broadcasting, ignoring." << std::endl;
     }
     // BUG: If except = 0, could use Multicast.
 }
