@@ -112,6 +112,13 @@ public:
 
     /// Return the min of LBTS and the time stamp of the next TSO message
     FederationTime requestMinNextEventTime();
+    
+    /**
+     * update min timestamp value of TSO messages transmitted per federate 
+     * @param[in] timestamp of the new tx event message to be transmitted.
+     */
+    void updateMinTxMessageDate(FederationTime TxMessageDate);
+    
     FederationTime requestLBTS()
     {
         return _LBTS;
@@ -225,7 +232,11 @@ private:
 
     /// Federate State
     FederationTime lastNullMessageDate;
+    
+    /// Federate State for Null Message Prim Algorithm
     FederationTime lastNullPrimeMessageDate;
+    FederationTime minTxMessageDate;
+    FederationTime lastCurrentTimeTxMessage;
 
     /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
     TypeAvancee _avancee_en_cours;

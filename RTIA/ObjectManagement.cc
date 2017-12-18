@@ -147,6 +147,11 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
             static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getMessageType(), req.getFederate())));
         e = rep->getException();
         evtrHandle = rep->getEvent();
+		#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL        
+        // update the time of the min tx event date
+        // this is used per NULL MESSAGE PRIM algorithm
+		tm->updateMinTxMessageDate(theTime);
+		#endif
     }
     else {
         std::stringstream errorMsg;
@@ -315,6 +320,11 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
             comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
         e = rep->getException();
         evtrHandle = rep->eventRetraction;
+        #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL 
+        // update the time of the min tx event date
+        // this is used per NULL MESSAGE PRIM algorithm
+		tm->updateMinTxMessageDate(theTime);
+		#endif
     }
     else {
         e = Exception::Type::InvalidFederationTime;
