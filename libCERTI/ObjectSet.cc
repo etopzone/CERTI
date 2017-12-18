@@ -49,18 +49,17 @@ ObjectSet::ObjectSet(SecurityServer* the_server) : server(the_server)
 // ----------------------------------------------------------------------------
 ObjectSet::~ObjectSet()
 {
-    std::map<ObjectHandle, Object*>::iterator i;
-
-    for (i = begin(); i != end(); ++i) {
+    for (auto i = OFromHandle.begin(); i != OFromHandle.end(); i++) {
         delete i->second;
     }
-    erase(begin(), end());
+    OFromHandle.clear();
+    OFromName.clear();
 }
 
 void ObjectSet::display() const
 {
-    std::cout << "Object set: " << size() << std::endl;
-    for (const auto& pair : *this) {
+    std::cout << "Object set: " << OFromHandle.size() << std::endl;
+    for (const auto& pair : OFromHandle) {
         std::cout << "****" << std::endl;
         std::cout << "Object #" << pair.first << std::endl;
         pair.second->display();
@@ -83,10 +82,10 @@ void ObjectSet::changeAttributeOrderType(ObjectHandle, AttributeHandle*, uint16_
 // ----------------------------------------------------------------------------
 ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
 {
-    std::map<ObjectHandle, Object*>::const_iterator i;
-    for (i = begin(); i != end(); ++i) {
-        if (i->second->getName() == the_name)
-            return i->second->getHandle();
+    auto FoundObject = OFromName.find(the_name);
+
+    if (FoundObject != OFromName.end()) {
+        return FoundObject->second->getHandle();
     }
 
     throw ObjectNotKnown("No object instance with name <" + the_name + ">");
@@ -112,19 +111,12 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
                                           ObjectHandle the_object,
                                           const std::string& the_name)
 {
-    const_iterator i;
-
-    i = find(the_object);
-
-    if (i != end()) {
+    if (OFromHandle.find(the_object) != OFromHandle.end()) {
         throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
     }
 
-    if (the_name.size() > 0) {
-        for (i = begin(); i != end(); ++i) {
-            if (i->second->getName() == the_name)
-                throw ObjectAlreadyRegistered("Object name already defined.");
-        }
+    if (OFromName.find(the_name) != OFromName.end()) {
+        throw ObjectAlreadyRegistered("Object name already defined.");
     }
 
     Object* object = new Object(the_federate);
@@ -138,8 +130,8 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
         object->setName(stringize() << "HLAobject_" << the_object);
     }
 
-    pair<ObjectHandle, Object*> tmp(the_object, object);
-    insert(tmp);
+    OFromHandle[the_object] = object;
+    OFromName[the_name] = object;
 
     return object;
 }
@@ -148,24 +140,25 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
 void ObjectSet::deleteObjectInstance(FederateHandle, ObjectHandle the_object, const std::string& /*the_tag*/)
 {
     Object* object = getObject(the_object);
+    OFromHandle.erase(object->getHandle());
+    OFromName.erase(object->getName());
 
     delete object; // Remove the Object instance.
-
-    std::map<ObjectHandle, Object*>::erase(the_object);
 }
 
 // ----------------------------------------------------------------------------
 void ObjectSet::killFederate(FederateHandle the_federate)
 {
-    std::map<ObjectHandle, Object*>::iterator i = begin();
-    while (i != end()) {
+    auto i = OFromHandle.begin();
+    while (i != OFromHandle.end()) {
         if ((i->second)->getOwner() == the_federate) {
-            std::map<ObjectHandle, Object*>::erase(i);
-            i = begin();
+            OFromName.erase(i->second->getName());
+            OFromHandle.erase(i->first);
+            i = OFromHandle.begin();
         }
         else {
             // It is safe to run this multiple times
-            (i->second)->killFederate(the_federate);
+            i->second->killFederate(the_federate);
             ++i;
         }
     }
@@ -311,11 +304,10 @@ void ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
 // ----------------------------------------------------------------------------
 Object* ObjectSet::getObject(ObjectHandle the_object) const
 {
-    std::map<ObjectHandle, Object*>::const_iterator i;
-    i = find(the_object);
+    auto FoundObject = OFromHandle.find(the_object);
 
-    if (i != end())
-        return i->second;
+    if (FoundObject != OFromHandle.end())
+        return FoundObject->second;
 
     throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in map set.");
 }
@@ -323,14 +315,12 @@ Object* ObjectSet::getObject(ObjectHandle the_object) const
 // ----------------------------------------------------------------------------
 Object* ObjectSet::getObjectByName(const std::string& the_object_name) const
 {
-    std::map<ObjectHandle, Object*>::const_iterator i;
-    for (i = begin(); i != end(); ++i) {
-        if (i->second != 0 && i->second->getName() == the_object_name) {
-            return i->second;
-        }
-    }
+    auto FoundObject = OFromName.find(the_object_name);
 
-    return 0;
+    if (FoundObject != OFromName.end())
+        return FoundObject->second;
+
+    return NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -338,12 +328,9 @@ void ObjectSet::getAllObjectInstancesFromFederate(FederateHandle the_federate,
                                                   std::vector<ObjectHandle>& ownedObjectInstances)
 {
     ownedObjectInstances.clear();
-    std::map<ObjectHandle, Object*>::const_iterator i;
-    for (i = begin(); i != end(); ++i) {
-        if (i->second != 0 && i->second->getOwner() == the_federate) {
+    for (auto i = OFromHandle.begin(); i != OFromHandle.end(); ++i)
+        if (i->second != 0 && i->second->getOwner() == the_federate)
             ownedObjectInstances.push_back(i->first);
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -372,17 +359,15 @@ void ObjectSet::sendToFederate(NetworkMessage* msg, FederateHandle the_federate)
 FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object)
 {
     G.Out(pdGendoc, "enter ObjectSet::requestObjectOwner");
-    const_iterator i;
-    i = find(the_object);
+    auto FoundObject = OFromHandle.find(the_object);
 
-    if (i == end()) {
-        // Object not found !
+    if (FoundObject == OFromHandle.end()) {
         throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in ObjectSet map.");
     }
 
     // Object found, return the owner
     G.Out(pdGendoc, "exit  ObjectSet::requestObjectOwner");
-    return (i->second->getOwner());
+    return (FoundObject->second->getOwner());
 }
 } // namespace certi
 

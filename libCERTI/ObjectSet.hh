@@ -27,9 +27,9 @@
 // Project
 class Object;
 #include "GAV.hh"
-#include <libHLA/MessageBuffer.hh>
 #include "SecurityServer.hh"
 #include <include/certi.hh>
+#include <libHLA/MessageBuffer.hh>
 
 // Standard
 #include <map>
@@ -37,7 +37,7 @@ class Object;
 
 namespace certi {
 
-class CERTI_EXPORT ObjectSet : private std::map<ObjectHandle, Object*> {
+class CERTI_EXPORT ObjectSet {
 public:
     // Public Methods.
     ObjectSet(SecurityServer* the_server);
@@ -129,13 +129,10 @@ protected:
 
     typedef std::map<ObjectHandle, Object*, std::less<ObjectHandle>> Handle2ObjectMap_t;
     typedef std::map<std::string, Object*, std::less<std::string>> Name2ObjectMap_t;
-    typedef Handle2ObjectMap_t::const_iterator handledO_const_iterator;
-    typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
-    /*
-	 * FIXME Erk --> those map are unused which is just a shame
-	 * this looks like unfinished work. ObjectSet should not inherit
-	 * from map<...> but include (and use) the two following maps
-	 */
+
+    typedef Handle2ObjectMap_t::const_iterator Handle2ObjectMap_const_iterator; 
+    typedef Name2ObjectMap_t::const_iterator Name2ObjectMap_const_iterator;
+
     Handle2ObjectMap_t OFromHandle;
     Name2ObjectMap_t OFromName;
     /* The message buffer used to send Network messages */
