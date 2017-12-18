@@ -41,17 +41,16 @@ namespace certi {
 static PrettyDebug D("OBJECTSET", "(ObjectSet) - ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-// ----------------------------------------------------------------------------
 ObjectSet::ObjectSet(SecurityServer* the_server) : server(the_server)
 {
 }
 
-// ----------------------------------------------------------------------------
 ObjectSet::~ObjectSet()
 {
     for (auto i = OFromHandle.begin(); i != OFromHandle.end(); i++) {
         delete i->second;
     }
+
     OFromHandle.clear();
     OFromName.clear();
 }
@@ -67,19 +66,6 @@ void ObjectSet::display() const
     }
 }
 
-// ----------------------------------------------------------------------------
-void ObjectSet::changeAttributeTransportationType(ObjectHandle, AttributeHandle*, uint16_t, TransportType)
-{
-    // Object *object = getObject(the_object);
-}
-
-// ----------------------------------------------------------------------------
-void ObjectSet::changeAttributeOrderType(ObjectHandle, AttributeHandle*, uint16_t, TransportType)
-{
-    // Object *object = getObject(the_object);
-}
-
-// ----------------------------------------------------------------------------
 ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
 {
     auto FoundObject = OFromName.find(the_name);
@@ -91,7 +77,6 @@ ObjectHandle ObjectSet::getObjectInstanceHandle(const std::string& the_name) con
     throw ObjectNotKnown("No object instance with name <" + the_name + ">");
 }
 
-// ----------------------------------------------------------------------------
 const std::string& ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
 {
     Object* object = getObject(the_object);
@@ -99,13 +84,21 @@ const std::string& ObjectSet::getObjectInstanceName(ObjectHandle the_object) con
     return object->getName();
 }
 
-// ----------------------------------------------------------------------------
 ObjectClassHandle ObjectSet::getObjectClass(ObjectHandle the_object) const
 {
     return getObject(the_object)->getClass();
 }
 
-// ----------------------------------------------------------------------------
+void ObjectSet::changeAttributeTransportationType(ObjectHandle, AttributeHandle*, uint16_t, TransportType)
+{
+    // Object *object = getObject(the_object);
+}
+
+void ObjectSet::changeAttributeOrderType(ObjectHandle, AttributeHandle*, uint16_t, TransportType)
+{
+    // Object *object = getObject(the_object);
+}
+
 Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
                                           ObjectClassHandle the_class,
                                           ObjectHandle the_object,
@@ -136,8 +129,7 @@ Object* ObjectSet::registerObjectInstance(FederateHandle the_federate,
     return object;
 }
 
-// ----------------------------------------------------------------------------
-void ObjectSet::deleteObjectInstance(FederateHandle, ObjectHandle the_object, const std::string& /*the_tag*/)
+void ObjectSet::deleteObjectInstance(FederateHandle /*the_federate*/, ObjectHandle the_object, const std::string& /*the_tag*/)
 {
     Object* object = getObject(the_object);
     OFromHandle.erase(object->getHandle());
@@ -146,7 +138,20 @@ void ObjectSet::deleteObjectInstance(FederateHandle, ObjectHandle the_object, co
     delete object; // Remove the Object instance.
 }
 
-// ----------------------------------------------------------------------------
+FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object)
+{
+    G.Out(pdGendoc, "enter ObjectSet::requestObjectOwner");
+    auto FoundObject = OFromHandle.find(the_object);
+
+    if (FoundObject == OFromHandle.end()) {
+        throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in ObjectSet map.");
+    }
+
+    // Object found, return the owner
+    G.Out(pdGendoc, "exit  ObjectSet::requestObjectOwner");
+    return (FoundObject->second->getOwner());
+}
+
 void ObjectSet::killFederate(FederateHandle the_federate)
 {
     auto i = OFromHandle.begin();
@@ -162,9 +167,8 @@ void ObjectSet::killFederate(FederateHandle the_federate)
             ++i;
         }
     }
-} /* end of killFederate */
+}
 
-// ----------------------------------------------------------------------------
 bool ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
                                            ObjectHandle the_object,
                                            AttributeHandle the_attribute) const
@@ -184,7 +188,6 @@ bool ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
     return object->isAttributeOwnedByFederate(the_federate, the_attribute);
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
                                         ObjectHandle the_object,
                                         AttributeHandle the_attribute) const
@@ -222,33 +225,28 @@ void ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
     }
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::negotiatedAttributeOwnershipDivestiture(
     FederateHandle, ObjectHandle, AttributeHandle*, uint16_t, const std::string&)
 {
     // Object *object = getObject(the_object);
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::attributeOwnershipAcquisitionIfAvailable(FederateHandle, ObjectHandle, AttributeHandle*, uint16_t)
 {
     // Object *object = getObject(the_object);
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::unconditionalAttributeOwnershipDivestiture(FederateHandle, ObjectHandle, AttributeHandle*, uint16_t)
 {
     // Object *object = getObject(the_object);
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::attributeOwnershipAcquisition(
     FederateHandle, ObjectHandle, AttributeHandle*, uint16_t, const std::string&)
 {
     // Object *object = getObject(the_object);
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                               ObjectHandle the_object,
                                                               const std::vector<AttributeHandle>& the_attributes,
@@ -283,7 +281,6 @@ void ObjectSet::cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the
     }
 }
 
-// ----------------------------------------------------------------------------
 AttributeHandleSet*
 ObjectSet::attributeOwnershipReleaseResponse(FederateHandle, ObjectHandle, std::vector<AttributeHandle>&, uint16_t)
 {
@@ -301,7 +298,6 @@ void ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
     // Object *object = getObject(the_object);
 }
 
-// ----------------------------------------------------------------------------
 Object* ObjectSet::getObject(ObjectHandle the_object) const
 {
     auto FoundObject = OFromHandle.find(the_object);
@@ -312,7 +308,6 @@ Object* ObjectSet::getObject(ObjectHandle the_object) const
     throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in map set.");
 }
 
-// ----------------------------------------------------------------------------
 Object* ObjectSet::getObjectByName(const std::string& the_object_name) const
 {
     auto FoundObject = OFromName.find(the_object_name);
@@ -323,7 +318,6 @@ Object* ObjectSet::getObjectByName(const std::string& the_object_name) const
     return NULL;
 }
 
-// ----------------------------------------------------------------------------
 void ObjectSet::getAllObjectInstancesFromFederate(FederateHandle the_federate,
                                                   std::vector<ObjectHandle>& ownedObjectInstances)
 {
@@ -333,8 +327,6 @@ void ObjectSet::getAllObjectInstancesFromFederate(FederateHandle the_federate,
             ownedObjectInstances.push_back(i->first);
 }
 
-// ----------------------------------------------------------------------------
-//! sendToFederate.
 void ObjectSet::sendToFederate(NetworkMessage* msg, FederateHandle the_federate) const
 {
     // Send the message 'msg' to the Federate which Handle is theFederate.
@@ -355,20 +347,4 @@ void ObjectSet::sendToFederate(NetworkMessage* msg, FederateHandle the_federate)
     }
     // BUG: If except = 0, could use Multicast.
 }
-// ----------------------------------------------------------------------------
-FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object)
-{
-    G.Out(pdGendoc, "enter ObjectSet::requestObjectOwner");
-    auto FoundObject = OFromHandle.find(the_object);
-
-    if (FoundObject == OFromHandle.end()) {
-        throw ObjectNotKnown("Object <" + std::to_string(the_object) + "> not found in ObjectSet map.");
-    }
-
-    // Object found, return the owner
-    G.Out(pdGendoc, "exit  ObjectSet::requestObjectOwner");
-    return (FoundObject->second->getOwner());
 }
-} // namespace certi
-
-// $Id: ObjectSet.cc,v 3.34 2010/11/15 13:15:46 erk Exp $

@@ -46,7 +46,7 @@ public:
     //! Print the Root Object tree to the standard output.
     void display() const;
 
-    ObjectHandle getObjectInstanceHandle(const std::string&) const;
+    ObjectHandle getObjectInstanceHandle(const std::string& the_name) const;
 
     const std::string& getObjectInstanceName(ObjectHandle the_object) const;
 
@@ -62,13 +62,16 @@ public:
                                   uint16_t the_size,
                                   TransportType the_type);
 
-    Object* registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle, const std::string&);
+    Object* registerObjectInstance(FederateHandle the_federate,
+                                   ObjectClassHandle the_class,
+                                   ObjectHandle the_object,
+                                   const std::string& the_name);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& tag);
+    void deleteObjectInstance(FederateHandle the_federate, ObjectHandle the_object, const std::string& the_tag);
 
     FederateHandle requestObjectOwner(FederateHandle the_federate, ObjectHandle the_object);
 
-    void killFederate(FederateHandle);
+    void killFederate(FederateHandle the_federate);
 
     // Ownership Management.
 
@@ -103,7 +106,7 @@ public:
 
     void cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                        ObjectHandle the_object,
-                                                       const std::vector<AttributeHandle>&,
+                                                       const std::vector<AttributeHandle>& the_attributes,
                                                        uint16_t the_size);
 
     AttributeHandleSet* attributeOwnershipReleaseResponse(FederateHandle the_federate,
@@ -130,7 +133,7 @@ protected:
     typedef std::map<ObjectHandle, Object*, std::less<ObjectHandle>> Handle2ObjectMap_t;
     typedef std::map<std::string, Object*, std::less<std::string>> Name2ObjectMap_t;
 
-    typedef Handle2ObjectMap_t::const_iterator Handle2ObjectMap_const_iterator; 
+    typedef Handle2ObjectMap_t::const_iterator Handle2ObjectMap_const_iterator;
     typedef Name2ObjectMap_t::const_iterator Name2ObjectMap_const_iterator;
 
     Handle2ObjectMap_t OFromHandle;
