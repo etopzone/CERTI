@@ -60,7 +60,12 @@ int main()
     int i = 1; // Count for while
     shared_struct Data_Read; // Data read in the Socket
     shared_struct Data_Write; // Data write in the Socket
+#ifdef _WIN32
     std::string Shm_Sem_Type = "Win32";
+#else
+	std::string Shm_Sem_Type = "SysV";
+#endif
+    
 
 #ifdef SIDE_SC
     SocketSHM::SHM_SIDE_t Socket_Side = SocketSHM::SHM_SC; // which side am I?

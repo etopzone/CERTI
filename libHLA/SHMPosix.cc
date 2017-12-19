@@ -56,7 +56,7 @@ void SHMPosix::Open()
 
     } // End of if IsCreator()
     else {
-        _Id = shm_open(_Name.c_str(), O_RDONLY, S_IRWXU | S_IRWXG);
+        _Id = shm_open(_Name.c_str(), O_RDWR, S_IRWXU | S_IRWXG);
         if (_Id < 0) {
             perror("Error with shm_open() in SHMPosix::Open()");
             exit(1);
@@ -88,7 +88,7 @@ void SHMPosix::Attach()
     } // End of IsServer
     else {
         /* requesting the shared segment for write    --  mmap() */
-        _Shm = mmap(NULL, _Size, PROT_READ, MAP_SHARED, _Id, 0);
+        _Shm = mmap(NULL, _Size, PROT_READ | PROT_WRITE, MAP_SHARED, _Id, 0);
         if (_Shm == NULL) {
             perror("Error with mmap() in SHMPosix::Attach() ");
             exit(1);
