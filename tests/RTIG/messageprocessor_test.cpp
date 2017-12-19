@@ -54,8 +54,9 @@ TEST_F(MessageProcessorTest, Process_NM_Create_Federation_Execution)
     EXPECT_CALL(socket, send(_, _)).Times(0);
 
     auto message = make_unique<::certi::NM_Create_Federation_Execution>();
-    message->setFederationName(federation_name);
-    message->setFEDid(federation_file.path());
+    message->setFederationExecutionName(federation_name);
+    message->setFomModuleDesignatorsSize(1);
+    message->setFomModuleDesignators(federation_file.path(), 0);
 
     auto first_generator_value = handle_generator.provide();
 
