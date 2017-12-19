@@ -136,7 +136,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 /*FIXME*/        
 /*FIXME*/        // RTIA needs FEDid into the answer (rep Message) to federate
 /*FIXME*/        CFEr->setFomModuleDesignatorsSize(CFEq->getFomModuleDesignatorsSize());
-/*FIXME*/        auto i{0};
+/*FIXME*/        auto i = 0;
 /*FIXME*/        for(const auto& module: CFEq->getFomModuleDesignators()) {
 /*FIXME*/            CFEr->setFomModuleDesignators(module, i++);
 /*FIXME*/        }
