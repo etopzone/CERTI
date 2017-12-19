@@ -176,7 +176,7 @@ unsigned int Communications::getPort()
     return socketUDP->getPort();
 }
 
-void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout)
+void Communications::readMessage(Communications::ReadResult& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout)
 {
     const int tcp_fd(socketTCP->returnSocket());
     const int udp_fd(socketUDP->returnSocket());
@@ -213,25 +213,25 @@ void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** 
         // One message is in waiting buffer.
         *msg_reseau = waitingList.front();
         waitingList.pop_front();
-        n = 1;
+        n = ReadResult::FromNetwork;
     }
     else if (msg_reseau && socketTCP->isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
         *msg_reseau = NM_Factory::receive(socketTCP);
-        n = 1;
+        n = ReadResult::FromNetwork;
     }
     else if (msg_reseau && socketUDP->isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
         *msg_reseau = NM_Factory::receive(socketUDP);
-        n = 1;
+        n = ReadResult::FromNetwork;
     }
     else if (msg && socketUN->isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
         *msg = M_Factory::receive(socketUN);
-        n = 2;
+        n = ReadResult::FromFederate;
     }
     else {
 // waitingList is empty and no data in TCP buffer.
@@ -260,28 +260,28 @@ void Communications::readMessage(int& n, NetworkMessage** msg_reseau, Message** 
         if (_est_init_mc && FD_ISSET(_socket_mc, &fdset)) {
             // Read a message coming from the multicast link.
             receiveMC(*msg_reseau);
-            n = 1;
+            n = ReadResult::FromNetwork;
         }
 #endif
 
         if (FD_ISSET(socketTCP->returnSocket(), &fdset)) {
             // Read a message coming from the TCP link with RTIG.
             *msg_reseau = NM_Factory::receive(socketTCP);
-            n = 1;
+            n = ReadResult::FromNetwork;
         }
         else if (FD_ISSET(socketUDP->returnSocket(), &fdset)) {
             // Read a message coming from the UDP link with RTIG.
             *msg_reseau = NM_Factory::receive(socketUDP);
-            n = 1;
+            n = ReadResult::FromNetwork;
         }
         else if (FD_ISSET(socketUN->returnSocket(), &fdset)) {
             // Read a message coming from the federate.
             *msg = M_Factory::receive(socketUN);
-            n = 2;
+            n = ReadResult::FromFederate;
         }
         else {
             // select() timeout occured
-            n = 3;
+            n = ReadResult::Timeout;
         }
     }
 }

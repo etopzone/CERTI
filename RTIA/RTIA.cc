@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.36 2011/07/11 11:17:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -62,8 +61,6 @@ RTIA::~RTIA()
     delete my_clock;
 } /* end of ~RTIA() */
 
-// ----------------------------------------------------------------------------
-// displayStatistics
 void RTIA::displayStatistics()
 {
     if (stat.display()) {
@@ -71,12 +68,9 @@ void RTIA::displayStatistics()
     }
 }
 
-// ----------------------------------------------------------------------------
 void RTIA::execute()
 {
-    Message* msgFromFederate;
-    NetworkMessage* msgFromRTIG;
-    int n;
+    enum class RespType { Invalid, FromNetwork, FromFederate, Timeout };
 
     while (fm.getConnectionState() != FederationManagement::ConnectionState::Ended) {
         /* 
@@ -84,15 +78,17 @@ void RTIA::execute()
          *   Network Message will come from a virtual constructor call
          *   Message will come from a "simple" constructor call
          */
-        msgFromFederate = NULL;
-        msgFromRTIG = NULL;
+        Message* msgFromFederate{nullptr};
+        NetworkMessage* msgFromRTIG{nullptr};
+        Communications::ReadResult result{Communications::ReadResult::Invalid};
+
         try {
             switch (tm._tick_state) {
             case TimeManagement::NO_TICK:
                 /* tick() is not active:
                  *   block until RTIA or federate message comes
                  */
-                comm.readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
+                comm.readMessage(result, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
             case TimeManagement::TICK_BLOCKING:
@@ -104,10 +100,11 @@ void RTIA::execute()
                     timev.tv_sec = int(tm._tick_timeout);
                     timev.tv_usec = int((tm._tick_timeout - timev.tv_sec) * 1000000.0);
 
-                    comm.readMessage(n, &msgFromRTIG, &msgFromFederate, &timev);
+                    comm.readMessage(result, &msgFromRTIG, &msgFromFederate, &timev);
                 }
-                else
-                    comm.readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
+                else {
+                    comm.readMessage(result, &msgFromRTIG, &msgFromFederate, NULL);
+                }
                 break;
 
             case TimeManagement::TICK_CALLBACK:
@@ -116,7 +113,7 @@ void RTIA::execute()
                  *   block until federate message comes
                  *   RTIA messages are queued in a system queue
                  */
-                comm.readMessage(n, NULL, &msgFromFederate, NULL);
+                comm.readMessage(result, NULL, &msgFromFederate, NULL);
                 break;
 
             default:
@@ -125,26 +122,26 @@ void RTIA::execute()
 
             /* timev is undefined after select() */
         }
-        catch (NetworkSignal&) {
+        catch (NetworkSignal& e) {
             fm.setConnectionState(FederationManagement::ConnectionState::Ended);
-            n = 0;
+            result = Communications::ReadResult::Invalid;
             delete msgFromFederate;
             delete msgFromRTIG;
         }
 
-        switch (n) {
-        case 0:
+        switch (result) {
+        case Communications::ReadResult::Invalid:
             break;
-        case 1:
+        case Communications::ReadResult::FromNetwork:
             processNetworkMessage(msgFromRTIG);
             if (tm._tick_state == TimeManagement::TICK_BLOCKING) {
                 processOngoingTick();
             }
             break;
-        case 2:
+        case Communications::ReadResult::FromFederate:
             processFederateRequest(msgFromFederate);
             break;
-        case 3: // timeout
+        case Communications::ReadResult::Timeout:
             if (tm._tick_state == TimeManagement::TICK_BLOCKING) {
                 // stop the ongoing tick() operation
                 tm._tick_state = TimeManagement::TICK_RETURN;
@@ -155,8 +152,6 @@ void RTIA::execute()
             assert(false);
         }
     }
-} /* end of execute() */
 }
-} // namespace certi/rtia
-
-// $Id: RTIA.cc,v 3.36 2011/07/11 11:17:24 erk Exp $
+}
+}

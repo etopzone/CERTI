@@ -45,6 +45,9 @@ namespace rtia {
  */
 class Communications {
 public:
+    
+    enum class ReadResult { Invalid, FromNetwork, FromFederate, Timeout };
+    
     Communications(int RTIA_port, int RTIA_fd);
     ~Communications();
 
@@ -76,7 +79,7 @@ public:
      * @param[out] msg pointer to pointer to message
      * @param[out] timeout time to wait
      */
-    void readMessage(int& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout);
+    void readMessage(Communications::ReadResult& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout);
 
     void requestFederateService(Message* req);
     unsigned long getAddress();
