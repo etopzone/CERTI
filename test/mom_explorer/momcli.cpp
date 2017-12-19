@@ -105,14 +105,14 @@ MomCli::MomCli(rti1516e::RTIambassador& amb, const std::wstring& federation_name
                     std::bind(&MomCli::command_federate_service_change_attribute_order_type, this));
     registerCommand("federate service change interaction order type",
                     std::bind(&MomCli::command_federate_service_change_interaction_order_type, this));
-    registerCommand("federation adjust set switches", std::bind(&MomCli::command_federation_adjust_set_switches, this));
-    registerCommand("federation request synchronization points",
+    registerCommand("Federation adjust set switches", std::bind(&MomCli::command_federation_adjust_set_switches, this));
+    registerCommand("Federation request synchronization points",
                     std::bind(&MomCli::command_federation_request_synchronization_points, this));
-    registerCommand("federation request synchronization point status",
+    registerCommand("Federation request synchronization point status",
                     std::bind(&MomCli::command_federation_request_synchronization_point_status, this));
-    registerCommand("federation request FOM module data",
+    registerCommand("Federation request FOM module data",
                     std::bind(&MomCli::command_federation_request_FOM_module_data, this));
-    registerCommand("federation request MIM data", std::bind(&MomCli::command_federation_request_MIM_data, this));
+    registerCommand("Federation request MIM data", std::bind(&MomCli::command_federation_request_MIM_data, this));
 }
 
 void MomCli::command_tick()
