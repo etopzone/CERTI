@@ -61,7 +61,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
                   "NULL message received (Federate=%d, Time = %f)",
                   request->getFederate(),
                   request->getDate().getTime());
-        tm->update(request->getFederate(), request->getDate());
+        tm.update(request->getFederate(), request->getDate());
         delete request;
         break;
     }
@@ -71,9 +71,9 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
         if (static_cast<NM_Set_Time_Regulating*>(request)->isRegulatorOn())
-            tm->insert(request->getFederate(), request->getDate());
+            tm.insert(request->getFederate(), request->getDate());
         else
-            tm->remove(request->getFederate());
+            tm.remove(request->getFederate());
         delete request;
         break;
     }
@@ -83,24 +83,24 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
               "Receiving Message from RTIG, type NetworkMessage::CONFIRM_"
               "SYNCHRONIZATION_POINT_REGISTRATION.");
 
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
         D.Out(pdTrace,
               "Receiving Message from RTIG, type NetworkMessage::ANNOUCE_"
               "SYNCHRONIZATION_POINT.");
 
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
         D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::FEDERATION_SYNCHRONIZED.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::DISCOVER_OBJECT: {
         NM_Discover_Object* DO = static_cast<NM_Discover_Object*>(request);
         D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::DISCOVER_OBJECT.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         /* FIXME
           	 *
           	 * discoverObject tries to auto-registrate a discovered object instance,
@@ -114,8 +114,8 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         try {
             // Adding discovered object in federate internal object list.
             // We MUST update RootObject here
-            auto responses = rootObject->registerObjectInstance(
-                fm->getFederateHandle(), DO->getObjectClass(), DO->getObject(), DO->getLabel());
+            auto responses = my_root_object.registerObjectInstance(
+                fm.getFederateHandle(), DO->getObjectClass(), DO->getObject(), DO->getLabel());
             std::cout << "==========================" << std::endl;
             std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
             for (auto& rep : responses) {
@@ -157,12 +157,12 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
             updateOrder = TIMESTAMP;
             // FIXME we may inspect rootObject for an unknown object which has
             // (not yet) been discovered...because DiscoverObject is a RO message
-            ObjectClassHandle och = rootObject->objects->getObjectClass(RAV->getObject());
+            ObjectClassHandle och = my_root_object.objects->getObjectClass(RAV->getObject());
             //std::cerr << "FOUND och = " <<och << "  for object " << RAV->getObject() <<std::endl;
             for (uint32_t i = 0; i < RAV->getAttributesSize(); ++i) {
                 // FIXME we need an object **CLASS** handle and not an **OBJECT* handle
                 //if (rootObject->ObjectClasses->getObjectFromHandle(RAV->getObject())
-                if (rootObject->ObjectClasses->getObjectFromHandle(och)->getAttribute(RAV->getAttributes(i))->order
+                if (my_root_object.ObjectClasses->getObjectFromHandle(och)->getAttribute(RAV->getAttributes(i))->order
                     != TIMESTAMP) {
                     updateOrder = RECEIVE;
                     break;
@@ -171,13 +171,13 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         }
 
         // Decide which queue will be used
-        if (updateOrder == TIMESTAMP && tm->requestContraintState()) {
+        if (updateOrder == TIMESTAMP && tm.requestContraintState()) {
             // Update is TSO
-            queues->insertTsoMessage(request);
+            queues.insertTsoMessage(request);
         }
         else {
             // Update is RO
-            queues->insertFifoMessage(request);
+            queues.insertFifoMessage(request);
         }
 
         break;
@@ -196,17 +196,17 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         }
         else {
             // Retrieve order type
-            interactionOrder = rootObject->Interactions->getObjectFromHandle(RI->getInteractionClass())->order;
+            interactionOrder = my_root_object.Interactions->getObjectFromHandle(RI->getInteractionClass())->order;
         }
 
         // Decide which queue will be used
-        if (interactionOrder == TIMESTAMP && tm->requestContraintState()) {
+        if (interactionOrder == TIMESTAMP && tm.requestContraintState()) {
             // Interaction is TSO
-            queues->insertTsoMessage(request);
+            queues.insertTsoMessage(request);
         }
         else {
             // Interaction is RO
-            queues->insertFifoMessage(request);
+            queues.insertFifoMessage(request);
         }
 
         break;
@@ -216,13 +216,13 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace, "Receving Message from RTIG, \
 	  		  type NetworkMessage::REMOVE_OBJECT.");
 
-        if (tm->requestContraintState() && request->isDated()) {
+        if (tm.requestContraintState() && request->isDated()) {
             // Verify that received TSO timestamp is >= current
             // time + lookahead
-            queues->insertTsoMessage(request);
+            queues.insertTsoMessage(request);
         }
         else {
-            queues->insertFifoMessage(request);
+            queues.insertFifoMessage(request);
         }
 
         break;
@@ -232,13 +232,13 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED: {
         D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::ATTRIBUTE_IS_NOT_OWNED.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -246,7 +246,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -254,7 +254,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -262,7 +262,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -270,7 +270,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -278,7 +278,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -286,7 +286,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receving Message from RTIG, "
               "type NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
     }
 
@@ -294,7 +294,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type InitiateFederateSave.");
-        queues->insertBeginCommand(request);
+        queues.insertBeginCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_SAVED:
@@ -302,7 +302,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type Federation(Not)Saved.");
-        queues->insertBeginCommand(request);
+        queues.insertBeginCommand(request);
         break;
 
     case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
@@ -310,7 +310,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
               "Receiving Message from RTIG, "
               " type RequestFederationRestoreSucceeded.");
         G.Out(pdGendoc, "processNetworkMessage for REQUEST_FEDERATION_RESTORE_SUCCEEDED");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
@@ -318,14 +318,14 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
               "Receiving Message from RTIG, "
               " type RequestFederationRestoreFailed.");
         G.Out(pdGendoc, "processNetworkMessage for REQUEST_FEDERATION_RESTORE_FAILED");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type FederationRestoreBegun.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
@@ -333,7 +333,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
               "Receiving Message from RTIG, "
               " type InitiateFederateRestore.");
         G.Out(pdGendoc, "processNetworkMessage for INITIATE_FEDERATE_RESTORE");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_RESTORED:
@@ -341,27 +341,27 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type Federation(Not)Restored.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type ProvideAttributeValueUpdate.");
-        queues->insertFifoMessage(request);
+        queues.insertFifoMessage(request);
         break;
 
     case NetworkMessage::Type::TIME_REGULATION_ENABLED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type TimeRegulationEnabled.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type TimeConstrainedEnabled.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
@@ -387,26 +387,26 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type StartRegForObjClass.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type reserveObjectInstanceNameSucceeded.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, "
               " type reserveObjectInstanceNameFaild.");
-        queues->insertLastCommand(request);
+        queues.insertLastCommand(request);
         break;
         
     case NetworkMessage::Type::TIME_ADVANCE_REQUEST: {
         D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequest.");
         
         Exception::Type e;
-        tm->timeAdvanceRequest(request->getDate(), e);
+        tm.timeAdvanceRequest(request->getDate(), e);
         if(e != Exception::Type::NO_EXCEPTION) {
             D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
         }
@@ -417,7 +417,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequestAvailable.");
         
         Exception::Type e;
-        tm->timeAdvanceRequestAvailable(request->getDate(), e);
+        tm.timeAdvanceRequestAvailable(request->getDate(), e);
         if(e != Exception::Type::NO_EXCEPTION) {
             D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
         }
@@ -428,7 +428,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequest.");
         
         Exception::Type e;
-        tm->nextEventRequest(request->getDate(), e);
+        tm.nextEventRequest(request->getDate(), e);
         if(e != Exception::Type::NO_EXCEPTION) {
             D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
         }
@@ -439,7 +439,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequestAvailable.");
         
         Exception::Type e;
-        tm->nextEventRequestAvailable(request->getDate(), e);
+        tm.nextEventRequestAvailable(request->getDate(), e);
         if(e != Exception::Type::NO_EXCEPTION) {
             D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
         }

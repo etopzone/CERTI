@@ -53,8 +53,16 @@ public:
         Ended /// State after CLOSE_CONNEXION; no further messages allowed.
     };
     
-    FederationManagement(Communications*);
+    FederationManagement(Communications* cm);
     ~FederationManagement();
+    
+    void setTm(TimeManagement* time_management);
+    
+    FederationHandle getFederationHandle() const;
+    FederateHandle getFederateHandle() const;
+
+    ConnectionState getConnectionState() const;
+    void setConnectionState(const ConnectionState state);
 
     void checkFederationSaving(void) throw(SaveInProgress);
     void checkFederationRestoring(void) throw(RestoreInProgress);
@@ -108,20 +116,11 @@ public:
     void federationRestoreBegun(void);
     void initiateFederateRestore(const std::string& label, FederateHandle handle);
     void federationRestoredStatus(bool status);
-    
-    void setTm(TimeManagement* time_management);
-    
-    FederationHandle getFederationHandle() const;
-    FederateHandle getFederateHandle() const;
-
-    ConnectionState getConnectionState() const;
-    void setConnectionState(const ConnectionState state);
 
 private:
     Communications* comm;
-
-    // Attributes
     TimeManagement* my_tm {nullptr};
+
     FederationHandle my_federation_handle {0};
     FederateHandle my_federate_handle {0};
 

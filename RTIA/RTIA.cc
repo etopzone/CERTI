@@ -35,27 +35,19 @@ namespace rtia {
 static PrettyDebug D("RTIA", "(RTIA) ");
 
 RTIA::RTIA(int RTIA_port, int RTIA_fd)
+    : comm{RTIA_port, RTIA_fd}
+    , fm{&comm}
+    , om{&comm, &fm, &my_root_object}
+    , owm{&comm, &fm}
+    , dm{&comm, &fm, &my_root_object}
+    , tm{&comm, &queues, &fm, &dm, &om, &owm}
+    , ddm{&my_root_object, &fm, &comm}
 {
-    clock = libhla::clock::Clock::getBestClock();
-
-    // No SocketServer is passed to the RootObject (RTIA use case)
-    // socket server are passed to RootObject iff we are in RTIG.
-    rootObject = new RootObject(NULL);
-
-    comm = new Communications(RTIA_port, RTIA_fd);
-    queues = new Queues;
-    fm = new FederationManagement(comm);
-    om = new ObjectManagement(comm, fm, rootObject);
-    owm = new OwnershipManagement(comm, fm);
-    dm = new DeclarationManagement(comm, fm, rootObject);
-    tm = new TimeManagement(comm, queues, fm, dm, om, owm);
-    ddm = new DataDistribution(rootObject, fm, comm);
-
-    fm->setTm(tm);
-    queues->fm = fm;
-    queues->dm = dm;
-    om->tm = tm;
-} /* end of RTIA(int RTIA_port, int RTIA_fd) */
+    fm.setTm(&tm);
+    queues.fm = &fm;
+    queues.dm = &dm;
+    om.tm = &tm;
+}
 
 RTIA::~RTIA()
 {
@@ -64,19 +56,10 @@ RTIA::~RTIA()
      * this is may be a design issue
      * see  https://savannah.nongnu.org/patch/?6937
      */
-    fm->resignFederationExecutionForTermination();
+    fm.resignFederationExecutionForTermination();
 
     /* delete objects in reverse order just like generated destructor would have done */
-    delete ddm;
-    delete tm;
-    delete dm;
-    delete owm;
-    delete om;
-    delete fm;
-    delete queues;
-    delete comm;
-    delete rootObject;
-    delete clock;
+    delete my_clock;
 } /* end of ~RTIA() */
 
 // ----------------------------------------------------------------------------
@@ -95,7 +78,7 @@ void RTIA::execute()
     NetworkMessage* msgFromRTIG;
     int n;
 
-    while (fm->getConnectionState() != FederationManagement::ConnectionState::Ended) {
+    while (fm.getConnectionState() != FederationManagement::ConnectionState::Ended) {
         /* 
          * readMessage call will allocate EITHER a Network Message or a Message 
          *   Network Message will come from a virtual constructor call
@@ -104,27 +87,27 @@ void RTIA::execute()
         msgFromFederate = NULL;
         msgFromRTIG = NULL;
         try {
-            switch (tm->_tick_state) {
+            switch (tm._tick_state) {
             case TimeManagement::NO_TICK:
                 /* tick() is not active:
                  *   block until RTIA or federate message comes
                  */
-                comm->readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
+                comm.readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
             case TimeManagement::TICK_BLOCKING:
                 /* blocking tick() waits for an event to come:
                  *   block until RTIA or federate message comes, or timeout expires
                  */
-                if (tm->_tick_timeout != std::numeric_limits<double>::infinity() && tm->_tick_timeout < LONG_MAX) {
+                if (tm._tick_timeout != std::numeric_limits<double>::infinity() && tm._tick_timeout < LONG_MAX) {
                     struct timeval timev;
-                    timev.tv_sec = int(tm->_tick_timeout);
-                    timev.tv_usec = int((tm->_tick_timeout - timev.tv_sec) * 1000000.0);
+                    timev.tv_sec = int(tm._tick_timeout);
+                    timev.tv_usec = int((tm._tick_timeout - timev.tv_sec) * 1000000.0);
 
-                    comm->readMessage(n, &msgFromRTIG, &msgFromFederate, &timev);
+                    comm.readMessage(n, &msgFromRTIG, &msgFromFederate, &timev);
                 }
                 else
-                    comm->readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
+                    comm.readMessage(n, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
             case TimeManagement::TICK_CALLBACK:
@@ -133,7 +116,7 @@ void RTIA::execute()
                  *   block until federate message comes
                  *   RTIA messages are queued in a system queue
                  */
-                comm->readMessage(n, NULL, &msgFromFederate, NULL);
+                comm.readMessage(n, NULL, &msgFromFederate, NULL);
                 break;
 
             default:
@@ -143,7 +126,7 @@ void RTIA::execute()
             /* timev is undefined after select() */
         }
         catch (NetworkSignal&) {
-            fm->setConnectionState(FederationManagement::ConnectionState::Ended);
+            fm.setConnectionState(FederationManagement::ConnectionState::Ended);
             n = 0;
             delete msgFromFederate;
             delete msgFromRTIG;
@@ -154,7 +137,7 @@ void RTIA::execute()
             break;
         case 1:
             processNetworkMessage(msgFromRTIG);
-            if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {
+            if (tm._tick_state == TimeManagement::TICK_BLOCKING) {
                 processOngoingTick();
             }
             break;
@@ -162,9 +145,9 @@ void RTIA::execute()
             processFederateRequest(msgFromFederate);
             break;
         case 3: // timeout
-            if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {
+            if (tm._tick_state == TimeManagement::TICK_BLOCKING) {
                 // stop the ongoing tick() operation
-                tm->_tick_state = TimeManagement::TICK_RETURN;
+                tm._tick_state = TimeManagement::TICK_RETURN;
                 processOngoingTick();
             }
             break;

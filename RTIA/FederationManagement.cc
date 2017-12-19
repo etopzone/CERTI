@@ -40,7 +40,7 @@ namespace rtia {
 static PrettyDebug D("RTIA_FM", "(RTIA FM) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-FederationManagement::FederationManagement(Communications* GC) : comm{GC}
+FederationManagement::FederationManagement(Communications* cm) : comm{cm}
 {
 }
 
@@ -65,6 +65,31 @@ FederationManagement::~FederationManagement()
     //}
 
     Debug(G, pdGendoc) << "exit  ~FederationManagement" << std::endl;
+}
+    
+void FederationManagement::setTm(TimeManagement* time_management)
+{
+    my_tm = time_management;
+}
+
+FederationHandle FederationManagement::getFederationHandle() const
+{
+    return my_federation_handle;
+}
+
+FederateHandle FederationManagement::getFederateHandle() const
+{
+    return my_federate_handle;
+}
+
+FederationManagement::ConnectionState FederationManagement::getConnectionState() const
+{
+    return my_connection_state;
+}
+
+void FederationManagement::setConnectionState(const ConnectionState state)
+{
+    my_connection_state = state;
 }
 
 void FederationManagement::createFederationExecution(const std::string& federation_execution_name,
@@ -670,11 +695,6 @@ void FederationManagement::federationRestoredStatus(bool status)
     comm->requestFederateService(req);
     delete req;
 }
-    
-void FederationManagement::setTm(TimeManagement* time_management)
-{
-    my_tm = time_management;
-}
 
 void FederationManagement::checkFederationSaving() throw(SaveInProgress)
 {
@@ -688,26 +708,6 @@ void FederationManagement::checkFederationRestoring() throw(RestoreInProgress)
     if (my_is_restoring) {
         throw RestoreInProgress("Federation is in restoring state");
     }
-}
-
-FederationHandle FederationManagement::getFederationHandle() const
-{
-    return my_federation_handle;
-}
-
-FederateHandle FederationManagement::getFederateHandle() const
-{
-    return my_federate_handle;
-}
-
-FederationManagement::ConnectionState FederationManagement::getConnectionState() const
-{
-    return my_connection_state;
-}
-
-void FederationManagement::setConnectionState(const ConnectionState state)
-{
-    my_connection_state = state;
 }
 }
 } // namespace certi/rtia

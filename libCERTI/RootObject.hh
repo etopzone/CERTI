@@ -58,30 +58,27 @@ class NM_Join_Federation_Execution;
  */
 class CERTI_EXPORT RootObject {
 public:
-    /**
-	 * RootObject constructor.
-	 * @param[in] security_server the SocketServer proxy which is used to
-	 *            retrieve the socket link between RTIG and RTIA.
-	 *            This may be NULL on the RTIA.
-	 */
-    RootObject(SecurityServer* security_server);
+    /** RootObject constructor.
+     * @param[in] security_server the SocketServer proxy which is used to
+     *            retrieve the socket link between RTIG and RTIA.
+     *            This may be NULL on the RTIA.
+     */
+    RootObject(SecurityServer* security_server = nullptr);
 
-    /**
-     * RootObject destructor.
+    /** RootObject destructor.
      * Will delete all object or interaction classes.
      */
     ~RootObject();
 
-    //! Print the Root Object tree to the standard output.
+    /// Print the Root Object tree to the standard output.
     void display() const;
 
-    /**
-	 * Return the security LevelID corresponding to a security level name.
+    /** Return the security LevelID corresponding to a security level name.
      * @param[in] levelName the security level name
      * @return the LevelID of the level whose name is levelName if
      *                     a security server exists
      *         PublicLevelID if no security server exists.
-	 */
+     */
     SecurityLevelID getSecurityLevelID(const std::string& levelName);
 
     void registerFederate(const std::string& the_federate, SecurityLevelID the_level_id);
@@ -171,8 +168,8 @@ public:
     ObjectSet* objects;
 
     /**
-	 * The set of reserved names.
-	 */
+     * The set of reserved names.
+     */
     NameReservationSet* reservedNames;
 
     /**

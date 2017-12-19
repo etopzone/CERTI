@@ -210,7 +210,7 @@ void RTI1516ambassador::connect(
     case rti1516e::HLA_IMMEDIATE:
         throw rti1516e::UnsupportedCallbackModel(L"CONNECT callback model HLA_IMMEDIATE not implemented [yet].");
     default:
-        throw rti1516e::UnsupportedCallbackModel(L"CONNECT unsupported callback model " + std::to_wstring(static_cast<int>(theCallbackModel)));
+        throw rti1516e::UnsupportedCallbackModel(L"CONNECT unsupported callback model");
     }
 }
 
