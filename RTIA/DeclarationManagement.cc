@@ -56,7 +56,7 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     // Local update
     try {
-        rootObject->ObjectClasses->publish(fm->my_federate_handle, theClassHandle, attribArray, true);
+        rootObject->ObjectClasses->publish(fm->getFederateHandle(), theClassHandle, attribArray, true);
     }
     catch (Exception* e) {
         G.Out(pdGendoc, "exit  DeclarationManagement::publishObjectClass on exception");
@@ -68,8 +68,8 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     NM_Publish_Object_Class req;
     req.setObjectClass(theClassHandle);
     req.setAttributesSize(attribArray.size());
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     for (uint32_t i = 0; i < attribArray.size(); i++)
         req.setAttributes(attribArray[i], i);
@@ -94,7 +94,7 @@ void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandl
 
     // Local update
     try {
-        rootObject->ObjectClasses->publish(fm->my_federate_handle, theClassHandle, attribArrayVector, false);
+        rootObject->ObjectClasses->publish(fm->getFederateHandle(), theClassHandle, attribArrayVector, false);
     }
     catch (Exception* e) {
         D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
@@ -104,8 +104,8 @@ void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandl
     // RTIG update
     NM_Unpublish_Object_Class req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObjectClass(theClassHandle);
 
     // Send request to RTIG
@@ -124,7 +124,7 @@ void DeclarationManagement::publishInteractionClass(InteractionClassHandle theIn
 
     // Local publish
     try {
-        rootObject->Interactions->publish(fm->my_federate_handle, theInteractionHandle, true);
+        rootObject->Interactions->publish(fm->getFederateHandle(), theInteractionHandle, true);
     }
     catch (Exception* e) {
         D.Out(pdExcept, "Exception catched in publishInteractionClass.");
@@ -134,8 +134,8 @@ void DeclarationManagement::publishInteractionClass(InteractionClassHandle theIn
     // RTIG (may be non-local) request
     NM_Publish_Interaction_Class req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setInteractionClass(theInteractionHandle);
 
     comm->sendMessage(&req);
@@ -152,7 +152,7 @@ void DeclarationManagement::unpublishInteractionClass(InteractionClassHandle the
     // Partie Locale
 
     try {
-        rootObject->Interactions->publish(fm->my_federate_handle, theInteractionHandle, false);
+        rootObject->Interactions->publish(fm->getFederateHandle(), theInteractionHandle, false);
     }
     catch (Exception* e) {
         D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
@@ -162,8 +162,8 @@ void DeclarationManagement::unpublishInteractionClass(InteractionClassHandle the
     // Partie RTIG
     NM_Unpublish_Interaction_Class req;
     req.setInteractionClass(theInteractionHandle);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -185,8 +185,8 @@ void DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle theC
 
     // Partie RTIG
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObjectClass(theClassHandle);
     req.setAttributesSize(attribArraySize);
 
@@ -216,8 +216,8 @@ void DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle th
 
     // Partie RTIG
     req.setObjectClass(theClassHandle);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -239,7 +239,7 @@ void DeclarationManagement::subscribeInteractionClass(InteractionClassHandle the
     // Ca ne va pas marcher avec les niveaux de securite !!!!
 
     try {
-        rootObject->Interactions->subscribe(fm->my_federate_handle, theClassHandle, 0, true);
+        rootObject->Interactions->subscribe(fm->getFederateHandle(), theClassHandle, 0, true);
     }
     catch (Exception* e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
@@ -248,8 +248,8 @@ void DeclarationManagement::subscribeInteractionClass(InteractionClassHandle the
 
     // Partie RTIG
     req.setInteractionClass(theClassHandle);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -271,7 +271,7 @@ void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle t
     // Ca ne va pas marcher avec les niveaux de securite !!!!
 
     try {
-        rootObject->Interactions->subscribe(fm->my_federate_handle, theClassHandle, 0, false);
+        rootObject->Interactions->subscribe(fm->getFederateHandle(), theClassHandle, 0, false);
     }
     catch (Exception* e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
@@ -280,8 +280,8 @@ void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle t
 
     // Partie RTIG
     req.setInteractionClass(theClassHandle);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -299,8 +299,8 @@ void DeclarationManagement::setClassRelevanceAdvisorySwitch(bool state, Exceptio
 
     e = Exception::Type::NO_EXCEPTION;
 
-    msg.setFederation(fm->my_federation_handle);
-    msg.setFederate(fm->my_federate_handle);
+    msg.setFederation(fm->getFederationHandle().get());
+    msg.setFederate(fm->getFederateHandle());
 
     if (state) {
         msg.classRelevanceAdvisorySwitchOn();
@@ -357,8 +357,8 @@ void DeclarationManagement::setInteractionRelevanceAdvisorySwitch(bool state, Ex
 
     e = Exception::Type::NO_EXCEPTION;
 
-    msg.setFederation(fm->my_federation_handle);
-    msg.setFederate(fm->my_federate_handle);
+    msg.setFederation(fm->getFederationHandle().get());
+    msg.setFederate(fm->getFederateHandle());
 
     if (state) {
         msg.interactionRelevanceAdvisorySwitchOn();

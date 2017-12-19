@@ -44,14 +44,14 @@ RTIA::RTIA(int RTIA_port, int RTIA_fd)
 
     comm = new Communications(RTIA_port, RTIA_fd);
     queues = new Queues;
-    fm = new FederationManagement(comm, &stat);
+    fm = new FederationManagement(comm);
     om = new ObjectManagement(comm, fm, rootObject);
     owm = new OwnershipManagement(comm, fm);
     dm = new DeclarationManagement(comm, fm, rootObject);
     tm = new TimeManagement(comm, queues, fm, dm, om, owm);
     ddm = new DataDistribution(rootObject, fm, comm);
 
-    fm->my_tm = tm;
+    fm->setTm(tm);
     queues->fm = fm;
     queues->dm = dm;
     om->tm = tm;

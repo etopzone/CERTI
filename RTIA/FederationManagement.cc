@@ -40,7 +40,7 @@ namespace rtia {
 static PrettyDebug D("RTIA_FM", "(RTIA FM) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-FederationManagement::FederationManagement(Communications* GC, Statistics* newStat) : comm{GC}, stat{newStat}
+FederationManagement::FederationManagement(Communications* GC) : comm{GC}
 {
 }
 
@@ -109,7 +109,7 @@ void FederationManagement::createFederationExecution(const std::string& federati
 
     if (response->getException() == Exception::Type::NO_EXCEPTION) {
         my_federation_name = federation_execution_name;
-        my_federation_handle = response->getFederation();
+        my_federation_handle = FederationHandle(response->getFederation());
         Debug(D, pdInit) << "federation created" << std::endl;
 
         Debug(G, pdGendoc) << "exit FederationManagement::createFederationExecution" << std::endl;
@@ -145,7 +145,7 @@ void FederationManagement::destroyFederationExecution(const std::string& theName
     //    e = e_FederationExecutionDoesNotExist ;
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        requete.setFederation(my_federation_handle);
+        requete.setFederation(my_federation_handle.get());
         requete.setFederate(my_federate_handle);
         requete.setFederationName(theName);
 
@@ -158,7 +158,7 @@ void FederationManagement::destroyFederationExecution(const std::string& theName
 
         if (reponse->getException() == Exception::Type::NO_EXCEPTION) {
             my_federation_name = "";
-            my_federation_handle = 0;
+            my_federation_handle = FederationHandle(0);
         }
         else {
             // There is an exception so destroy may be not done on RTIG
@@ -217,7 +217,7 @@ FederateHandle FederationManagement::joinFederationExecution(const std::string& 
 
         my_federation_name = federation_execution_name;
         my_federate_name = federate_name;
-        my_federation_handle = joinResponse.getFederation();
+        my_federation_handle = FederationHandle(joinResponse.getFederation());
         my_federate_handle = joinResponse.getFederate();
         my_tm->setFederate(my_federate_handle);
 #ifdef FEDERATION_USES_MULTICAST
@@ -264,7 +264,7 @@ void FederationManagement::resignFederationExecution(ResignAction, Exception::Ty
         if (my_tm->requestRegulateurState())
             my_tm->setTimeRegulating(false, 0, 0, exception);
 
-        msg.setFederation(my_federation_handle);
+        msg.setFederation(my_federation_handle.get());
         msg.setFederate(my_federate_handle);
 
         Debug(G, pdGendoc) << "      resignFederationExecution ===> send NMessage RFE to RTIG" << std::endl;
@@ -275,7 +275,7 @@ void FederationManagement::resignFederationExecution(ResignAction, Exception::Ty
             comm->waitMessage(NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION, my_federate_handle));
 
         my_is_member_of_a_federation = false;
-        my_federation_handle = 0;
+        my_federation_handle = FederationHandle(0);
         my_federate_handle = 0;
         Debug(G, pdGendoc) << "exit  FederationManagement::resignFederationExecution" << std::endl;
     }
@@ -313,7 +313,7 @@ void FederationManagement::registerSynchronization(const std::string& label, con
 
     if (e == Exception::Type::NO_EXCEPTION) {
         NM_Register_Federation_Synchronization_Point req;
-        req.setFederation(my_federation_handle);
+        req.setFederation(my_federation_handle.get());
         req.setFederate(my_federate_handle);
         req.setLabel(label);
         req.setTag(tag);
@@ -349,7 +349,7 @@ void FederationManagement::registerSynchronization(const std::string& label,
 
     if (e == Exception::Type::NO_EXCEPTION) {
         NM_Register_Federation_Synchronization_Point req;
-        req.setFederation(my_federation_handle);
+        req.setFederation(my_federation_handle.get());
         req.setFederate(my_federate_handle);
         req.setLabel(label);
         req.setTag(tag);
@@ -386,7 +386,7 @@ void FederationManagement::unregisterSynchronization(const std::string& label, E
     if (e == Exception::Type::NO_EXCEPTION) {
         NM_Synchronization_Point_Achieved req;
 
-        req.setFederation(my_federation_handle);
+        req.setFederation(my_federation_handle.get());
         req.setFederate(my_federate_handle);
         req.setLabel(label);
 
@@ -458,7 +458,7 @@ void FederationManagement::requestFederationSave(const std::string& label,
 
     req.setDate(the_time);
     req.setLabel(label);
-    req.setFederation(my_federation_handle);
+    req.setFederation(my_federation_handle.get());
     req.setFederate(my_federate_handle);
 
     Debug(G, pdGendoc) << "      requestFederationSave====>send Message R_F_S to RTIG" << std::endl;
@@ -479,7 +479,7 @@ void FederationManagement::requestFederationSave(const std::string& label, Excep
     NM_Request_Federation_Save req;
 
     req.setLabel(label);
-    req.setFederation(my_federation_handle);
+    req.setFederation(my_federation_handle.get());
     req.setFederate(my_federate_handle);
     Debug(G, pdGendoc) << "      requestFederationSave====>send Message R_F_S to RTIG" << std::endl;
 
@@ -499,7 +499,7 @@ void FederationManagement::federateSaveBegun(Exception::Type&)
     NM_Federate_Save_Begun req;
 
     req.setFederate(my_federate_handle);
-    req.setFederation(my_federation_handle);
+    req.setFederation(my_federation_handle.get());
 
     Debug(G, pdGendoc) << "      federateSaveBegun ====>send Message F_S_B to RTIG" << std::endl;
 
@@ -520,7 +520,7 @@ void FederationManagement::federateSaveStatus(bool status, Exception::Type&)
                                                                   : NetworkMessage::Type::FEDERATE_SAVE_NOT_COMPLETE));
 
     req->setFederate(my_federate_handle);
-    req->setFederation(my_federation_handle);
+    req->setFederation(my_federation_handle.get());
 
     if (status) {
         Debug(G, pdGendoc) << "      federateSaveStatus ====>send Message F_S_C to RTIG" << std::endl;
@@ -576,7 +576,7 @@ void FederationManagement::requestFederationRestore(const std::string& label, Ex
 
     req.setLabel(label);
     req.setFederate(my_federate_handle);
-    req.setFederation(my_federation_handle);
+    req.setFederation(my_federation_handle.get());
 
     Debug(G, pdGendoc) << "     requestFederationRestore  ====>send Message R_F_R to RTIG" << std::endl;
 
@@ -598,7 +598,7 @@ void FederationManagement::federateRestoreStatus(bool status, Exception::Type&)
                                                                ? NetworkMessage::Type::FEDERATE_RESTORE_COMPLETE
                                                                : NetworkMessage::Type::FEDERATE_RESTORE_NOT_COMPLETE));
     req->setFederate(my_federate_handle);
-    req->setFederation(my_federation_handle);
+    req->setFederation(my_federation_handle.get());
     comm->sendMessage(req.get());
 }
 
@@ -670,6 +670,11 @@ void FederationManagement::federationRestoredStatus(bool status)
     comm->requestFederateService(req);
     delete req;
 }
+    
+void FederationManagement::setTm(TimeManagement* time_management)
+{
+    my_tm = time_management;
+}
 
 void FederationManagement::checkFederationSaving() throw(SaveInProgress)
 {
@@ -683,6 +688,16 @@ void FederationManagement::checkFederationRestoring() throw(RestoreInProgress)
     if (my_is_restoring) {
         throw RestoreInProgress("Federation is in restoring state");
     }
+}
+
+FederationHandle FederationManagement::getFederationHandle() const
+{
+    return my_federation_handle;
+}
+
+FederateHandle FederationManagement::getFederateHandle() const
+{
+    return my_federate_handle;
 }
 
 FederationManagement::ConnectionState FederationManagement::getConnectionState() const

@@ -115,7 +115,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
             // Adding discovered object in federate internal object list.
             // We MUST update RootObject here
             auto responses = rootObject->registerObjectInstance(
-                fm->my_federate_handle, DO->getObjectClass(), DO->getObject(), DO->getLabel());
+                fm->getFederateHandle(), DO->getObjectClass(), DO->getObject(), DO->getLabel());
             std::cout << "==========================" << std::endl;
             std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
             for (auto& rep : responses) {

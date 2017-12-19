@@ -93,8 +93,8 @@ long DataDistribution::createRegion(SpaceHandle space,
     Debug(D, pdDebug) << "Start creating region in space " << space << "..." << endl;
     NM_DDM_Create_Region req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setSpace(space);
     req.setNbExtents(nb_extents);
 
@@ -126,8 +126,8 @@ void DataDistribution::modifyRegion(RegionHandle handle, const std::vector<Exten
     // Request to RTIG
     NM_DDM_Modify_Region req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setRegion(handle);
     req.setExtents(extents);
 
@@ -151,8 +151,8 @@ void DataDistribution::deleteRegion(long handle, Exception::Type& e) throw(Regio
     // Request to RTIG
     NM_DDM_Delete_Region req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setRegion(handle);
 
     comm->sendMessage(&req);
@@ -184,8 +184,8 @@ void DataDistribution::associateRegion(ObjectHandle object,
 
     NM_DDM_Associate_Region req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(object);
     req.setRegion(region);
 
@@ -214,8 +214,8 @@ ObjectHandle DataDistribution::registerObject(ObjectClassHandle class_handle,
 
     NM_DDM_Register_Object req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObjectClass(class_handle);
     req.setTag(name);
     req.setAttributesSize(nb);
@@ -231,7 +231,7 @@ ObjectHandle DataDistribution::registerObject(ObjectClassHandle class_handle,
 
     if (e == Exception::Type::NO_EXCEPTION) {
         auto responses
-            = rootObject->registerObjectInstance(fm->my_federate_handle, class_handle, rep->getObject(), rep->getLabel());
+            = rootObject->registerObjectInstance(fm->getFederateHandle(), class_handle, rep->getObject(), rep->getLabel());
         std::cout << "==========================" << std::endl;
         std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
         for (auto& rep : responses) {
@@ -265,8 +265,8 @@ void DataDistribution::unassociateRegion(ObjectHandle object,
 
     NM_DDM_Unassociate_Region req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(object);
     req.setRegion(region);
 
@@ -288,8 +288,8 @@ void DataDistribution::subscribe(ObjectClassHandle obj_class,
 
     NM_DDM_Subscribe_Attributes req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObjectClass(obj_class);
     req.setRegion(region);
     req.setAttributesSize(nb);
@@ -313,8 +313,8 @@ void DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 
     NM_DDM_Unsubscribe_Attributes req;
 
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObjectClass(obj_class);
     req.setRegion(region);
 
@@ -336,8 +336,8 @@ void DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
 
     req.setInteractionClass(int_class);
     req.setRegion(region);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(
@@ -357,8 +357,8 @@ void DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
     req.setInteractionClass(int_class);
     req.setRegion(region);
-    req.setFederation(fm->my_federation_handle);
-    req.setFederate(fm->my_federate_handle);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     comm->sendMessage(&req);
     std::unique_ptr<NetworkMessage> rep(

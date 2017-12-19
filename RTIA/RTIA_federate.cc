@@ -671,8 +671,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 
             NM_Enable_Asynchronous_Delivery req;
 
-            req.setFederation(fm->my_federation_handle);
-            req.setFederate(fm->my_federate_handle);
+            req.setFederation(fm->getFederationHandle().get());
+            req.setFederate(fm->getFederateHandle());
             comm->sendMessage(&req);
         }
         else {
@@ -689,8 +689,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 
             NM_Disable_Asynchronous_Delivery req;
 
-            req.setFederation(fm->my_federation_handle);
-            req.setFederate(fm->my_federate_handle);
+            req.setFederation(fm->getFederationHandle().get());
+            req.setFederate(fm->getFederateHandle());
             comm->sendMessage(&req);
         }
         else {
