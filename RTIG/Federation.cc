@@ -2466,7 +2466,7 @@ Responses Federation::respondToSome(std::unique_ptr<NetworkMessage> message,
     std::vector<Socket*> sockets;
     for (const auto& fed : recipients) {
 #ifdef HLA_USES_UDP
-        sockets.push_back(server->getSocketLink(fed, BEST_EFFORT));
+        sockets.push_back(my_server->getSocketLink(fed, BEST_EFFORT));
 #else
         sockets.push_back(my_server->getSocketLink(fed));
 #endif
