@@ -45,7 +45,7 @@ struct RTI1516ambassador::Private {
     void leave(const char* msg);
 
 #ifdef _WIN32
-    HANDLE handle_RTIA{-1};
+    HANDLE handle_RTIA{static_cast<HANDLE>(-1)};
 #else
     /// pid associated with rtia fork (private).
     pid_t pid_RTIA{-1};

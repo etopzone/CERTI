@@ -58,9 +58,9 @@ rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinterna
     PrettyDebug::setFederateName("LibRTI::UnjoinedFederate");
     std::wstringstream msg;
 
-    p_ambassador->p = std::make_unique<certi::RTI1516ambassador::Private>();
+    p_ambassador->p = std::unique_ptr<certi::RTI1516ambassador::Private>(new certi::RTI1516ambassador::Private);
 
-    p_ambassador->p->socket_un = std::make_unique<certi::SocketUN>(certi::stIgnoreSignal);
+    p_ambassador->p->socket_un = std::unique_ptr<certi::SocketUN>(new certi::SocketUN(certi::stIgnoreSignal));
 
     std::vector<std::string> rtiaList;
     

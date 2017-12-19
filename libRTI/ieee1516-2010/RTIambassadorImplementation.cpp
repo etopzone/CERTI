@@ -277,7 +277,7 @@ void RTI1516ambassador::createFederationExecutionWithMIM(
     req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
 
     req.setFomModuleDesignatorsSize(fomModules.size());
-    auto i{0};
+    auto i = 0;
     for (const auto& module : fomModules) {
         req.setFomModuleDesignators({begin(module), end(module)}, i++);
     }
