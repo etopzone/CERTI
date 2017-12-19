@@ -51,7 +51,7 @@ RTIA::RTIA(int RTIA_port, int RTIA_fd)
     tm = new TimeManagement(comm, queues, fm, dm, om, owm);
     ddm = new DataDistribution(rootObject, fm, comm);
 
-    fm->tm = tm;
+    fm->my_tm = tm;
     queues->fm = fm;
     queues->dm = dm;
     om->tm = tm;
@@ -95,7 +95,7 @@ void RTIA::execute()
     NetworkMessage* msgFromRTIG;
     int n;
 
-    while (fm->_connection_state != FederationManagement::CONNECTION_FIN) {
+    while (fm->getConnectionState() != FederationManagement::ConnectionState::Ended) {
         /* 
          * readMessage call will allocate EITHER a Network Message or a Message 
          *   Network Message will come from a virtual constructor call
@@ -143,7 +143,7 @@ void RTIA::execute()
             /* timev is undefined after select() */
         }
         catch (NetworkSignal&) {
-            fm->_connection_state = FederationManagement::CONNECTION_FIN;
+            fm->setConnectionState(FederationManagement::ConnectionState::Ended);
             n = 0;
             delete msgFromFederate;
             delete msgFromRTIG;

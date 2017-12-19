@@ -172,8 +172,9 @@ message NM_Message_Null : merge NetworkMessage {
 
 // Create the federation execution
 message NM_Create_Federation_Execution : merge NetworkMessage {
-	required string federationName // the federation name
-	required string FEDid          // the Federation ID which is in fact a filename
+	required string federationExecutionName // the federation name
+	repeated string fomModuleDesignators    // the Federation ID which is in fact a filename
+	optional string mimDesignator
 }
 
 // Destroy the federation execution
@@ -187,11 +188,13 @@ message NM_Join_Federation_Execution : merge NetworkMessage {
 	required uint32  multicastAddress
 	required uint32  bestEffortAddress
 	required uint32  bestEffortPeer
-	required string  federationName // the federation name
-	required string  federateName   // the federate name (should be unique within a federation)
-    repeated NM_FOM_Routing_Space routingSpaces
-    repeated NM_FOM_Object_Class objectClasses
-    repeated NM_FOM_Interaction_Class interactionClasses
+	required string  federationExecutionName // the federation name
+	optional string  federateName            // the federate name (should be unique within a federation)
+	required string  federateType
+	repeated string  additionalFomModules
+	repeated NM_FOM_Routing_Space routingSpaces
+	repeated NM_FOM_Object_Class objectClasses
+	repeated NM_FOM_Interaction_Class interactionClasses
 }
 
 // Resign from federation

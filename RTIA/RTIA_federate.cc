@@ -111,38 +111,39 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     switch (request->getMessageType()) {
     case Message::CLOSE_CONNEXION:
         D.Out(pdTrace, "Receiving Message from Federate, type CloseConnexion.");
-        fm->_connection_state = FederationManagement::CONNECTION_FIN;
+        fm->setConnectionState(FederationManagement::ConnectionState::Ended);
         // the this->comm can now be used only to sent the CLOSE_CONNEXION response
         break;
 
-/*FIXME*/    case Message::CREATE_FEDERATION_EXECUTION: {
-/*FIXME*/        M_Create_Federation_Execution *CFEq, *CFEr;
-/*FIXME*/        
-/*FIXME*/        CFEr = static_cast<M_Create_Federation_Execution*>(answer);
-/*FIXME*/        CFEq = static_cast<M_Create_Federation_Execution*>(request);
-/*FIXME*/        
-/*FIXME*/        D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
-/*FIXME*/        
-/*FIXME*/        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
-/*FIXME*/        fm->createFederationExecution(CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(0), e);
-/*FIXME*/        
-/*FIXME*/        if (e == Exception::Type::RTIinternalError) {
-/*FIXME*/            answer->setException(e, "Federate is yet a creator or a member !");
-/*FIXME*/        }
-/*FIXME*/        
-/*FIXME*/        D.Out(pdTrace,
-/*FIXME*/              "Receiving Message from Federate, "
-/*FIXME*/              "type CreateFederation done.");
-/*FIXME*/        
-/*FIXME*/        // RTIA needs FEDid into the answer (rep Message) to federate
-/*FIXME*/        CFEr->setFomModuleDesignatorsSize(CFEq->getFomModuleDesignatorsSize());
-/*FIXME*/        auto i = 0;
-/*FIXME*/        for(const auto& module: CFEq->getFomModuleDesignators()) {
-/*FIXME*/            CFEr->setFomModuleDesignators(module, i++);
-/*FIXME*/        }
-/*FIXME*/        // RTIA needs federation name into the answer (rep Message) to federate
-/*FIXME*/        CFEr->setFederationExecutionName(CFEq->getFederationExecutionName());
-/*FIXME*/    } break;
+    case Message::CREATE_FEDERATION_EXECUTION: {
+        M_Create_Federation_Execution *CFEq, *CFEr;
+
+        CFEr = static_cast<M_Create_Federation_Execution*>(answer);
+        CFEq = static_cast<M_Create_Federation_Execution*>(request);
+
+        D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
+
+        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
+        fm->createFederationExecution(
+            CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(), CFEq->getMimDesignator(), e);
+
+        if (e == Exception::Type::RTIinternalError) {
+            answer->setException(e, "Federate is yet a creator or a member !");
+        }
+
+        D.Out(pdTrace,
+              "Receiving Message from Federate, "
+              "type CreateFederation done.");
+
+        // RTIA needs FEDid into the answer (rep Message) to federate
+        CFEr->setFomModuleDesignatorsSize(CFEq->getFomModuleDesignatorsSize());
+        auto i = 0;
+        for (const auto& module : CFEq->getFomModuleDesignators()) {
+            CFEr->setFomModuleDesignators(module, i++);
+        }
+        // RTIA needs federation name into the answer (rep Message) to federate
+        CFEr->setFederationExecutionName(CFEq->getFederationExecutionName());
+    } break;
 
     case Message::DESTROY_FEDERATION_EXECUTION: {
         M_Destroy_Federation_Execution *DFEq, *DFEr;
@@ -158,47 +159,51 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         DFEr->setFederationName(DFEq->getFederationName());
     } break;
 
-/*FIXME*/    case Message::JOIN_FEDERATION_EXECUTION: {
-/*FIXME*/        M_Join_Federation_Execution *JFEq, *JFEr;
-/*FIXME*/
-/*FIXME*/        JFEr = static_cast<M_Join_Federation_Execution*>(answer);
-/*FIXME*/        JFEq = static_cast<M_Join_Federation_Execution*>(request);
-/*FIXME*/
-/*FIXME*/        D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
-/*FIXME*/
-/*FIXME*/        JFEr->setFederate(
-/*FIXME*/            fm->joinFederationExecution(JFEq->getFederateName(), JFEq->getFederationExecutionName(), rootObject, e));
-/*FIXME*/
-/*FIXME*/        if (e == Exception::Type::NO_EXCEPTION) {
-/*FIXME*/            // Set federation name for the answer message (rep)
-/*FIXME*/            JFEr->setFederationExecutionName(JFEq->getFederationExecutionName());
-/*FIXME*/            JFEr->setFederateName(JFEq->getFederateName());
-/*FIXME*/
-/*FIXME*/            /// Set RTIA PrettyDebug federate name
-/*FIXME*/            PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
-/*FIXME*/        }
-/*FIXME*/        else {
-/*FIXME*/            // JOIN FAILED
-/*FIXME*/            switch (e) {
-/*FIXME*/            case Exception::Type::FederateAlreadyExecutionMember:
-/*FIXME*/                throw FederateAlreadyExecutionMember("4.9.5.b : Federate name already in use.");
-/*FIXME*/                break;
-/*FIXME*/            case Exception::Type::FederationExecutionDoesNotExist:
-/*FIXME*/                throw FederationExecutionDoesNotExist("4.9.5.c : The specified federation execution does not exist.");
-/*FIXME*/                break;
-/*FIXME*/            case Exception::Type::SaveInProgress:
-/*FIXME*/                throw SaveInProgress("4.9.5.g : Federate save in progress.");
-/*FIXME*/                break;
-/*FIXME*/            case Exception::Type::RestoreInProgress:
-/*FIXME*/                throw RestoreInProgress("4.9.5.h : Federate restore in progress.");
-/*FIXME*/                break;
-/*FIXME*/            case Exception::Type::RTIinternalError:
-/*FIXME*/            default:
-/*FIXME*/                throw RTIinternalError("4.9.5.k : RTI internal error.");
-/*FIXME*/                break;
-/*FIXME*/            }
-/*FIXME*/        }
-/*FIXME*/    } break;
+    case Message::JOIN_FEDERATION_EXECUTION: {
+        M_Join_Federation_Execution *JFEq, *JFEr;
+
+        JFEr = static_cast<M_Join_Federation_Execution*>(answer);
+        JFEq = static_cast<M_Join_Federation_Execution*>(request);
+
+        D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
+
+        JFEr->setFederate(fm->joinFederationExecution(JFEq->getFederateName(),
+                                                      JFEq->getFederateType(),
+                                                      JFEq->getFederationExecutionName(),
+                                                      JFEq->getAdditionalFomModules(),
+                                                      rootObject,
+                                                      e));
+
+        if (e == Exception::Type::NO_EXCEPTION) {
+            // Set federation name for the answer message (rep)
+            JFEr->setFederationExecutionName(JFEq->getFederationExecutionName());
+            JFEr->setFederateName(JFEq->getFederateName());
+
+            /// Set RTIA PrettyDebug federate name
+            PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
+        }
+        else {
+            // JOIN FAILED
+            switch (e) {
+            case Exception::Type::FederateAlreadyExecutionMember:
+                throw FederateAlreadyExecutionMember("4.9.5.b : Federate name already in use.");
+                break;
+            case Exception::Type::FederationExecutionDoesNotExist:
+                throw FederationExecutionDoesNotExist("4.9.5.c : The specified federation execution does not exist.");
+                break;
+            case Exception::Type::SaveInProgress:
+                throw SaveInProgress("4.9.5.g : Federate save in progress.");
+                break;
+            case Exception::Type::RestoreInProgress:
+                throw RestoreInProgress("4.9.5.h : Federate restore in progress.");
+                break;
+            case Exception::Type::RTIinternalError:
+            default:
+                throw RTIinternalError("4.9.5.k : RTI internal error.");
+                break;
+            }
+        }
+    } break;
     case Message::RESIGN_FEDERATION_EXECUTION: {
         M_Resign_Federation_Execution* RFEq;
         RFEq = static_cast<M_Resign_Federation_Execution*>(request);
@@ -666,8 +671,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 
             NM_Enable_Asynchronous_Delivery req;
 
-            req.setFederation(fm->_numero_federation);
-            req.setFederate(fm->federate);
+            req.setFederation(fm->my_federation_handle);
+            req.setFederate(fm->my_federate_handle);
             comm->sendMessage(&req);
         }
         else {
@@ -684,8 +689,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 
             NM_Disable_Asynchronous_Delivery req;
 
-            req.setFederation(fm->_numero_federation);
-            req.setFederate(fm->federate);
+            req.setFederation(fm->my_federation_handle);
+            req.setFederate(fm->my_federate_handle);
             comm->sendMessage(&req);
         }
         else {
@@ -1235,7 +1240,7 @@ void RTIA::initFederateProcessing(Message* request, Message* answer)
             OCr->setVersionMajor(CERTI_Message::versionMajor);
             OCr->setVersionMinor(minorEffective);
 
-            fm->_connection_state = FederationManagement::CONNECTION_READY;
+            fm->setConnectionState(FederationManagement::ConnectionState::Ready);
         }
         else {
             answer->setException(Exception::Type::RTIinternalError,
@@ -1266,12 +1271,12 @@ void RTIA::processFederateRequest(Message* request)
     G.Out(pdGendoc, "enter RTIA::processFederateRequest");
 
     try {
-        switch (fm->_connection_state) {
-        case FederationManagement::CONNECTION_PRELUDE:
+        switch (fm->getConnectionState()) {
+        case FederationManagement::ConnectionState::Prelude:
             initFederateProcessing(request, rep.get());
             break;
 
-        case FederationManagement::CONNECTION_READY: {
+        case FederationManagement::ConnectionState::Ready: {
             Exception::Type exc;
             chooseFederateProcessing(request, rep.get(), exc);
             if (exc != Exception::Type::RTIinternalError && exc != Exception::Type::NO_EXCEPTION) {
@@ -1280,7 +1285,7 @@ void RTIA::processFederateRequest(Message* request)
             break;
         }
 
-        case FederationManagement::CONNECTION_FIN:
+        case FederationManagement::ConnectionState::Ended:
         default:
             rep->setException(Exception::Type::RTIinternalError, "RTIA connection already closed.");
             break;

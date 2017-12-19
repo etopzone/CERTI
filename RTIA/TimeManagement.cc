@@ -99,8 +99,8 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
     logical_time += _lookahead_courant;
 
     if (logical_time > lastNullMessageDate) {
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->my_federation_handle);
+        msg.setFederate(fm->my_federate_handle);
         msg.setDate(logical_time);
 
         msg.setLookahead(_lookahead_courant);
@@ -673,8 +673,8 @@ void TimeManagement::setTimeConstrained(bool etat, Exception::Type& e)
     if (e == Exception::Type::NO_EXCEPTION) {
         _is_constrained = etat;
 
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->my_federation_handle);
+        msg.setFederate(fm->my_federate_handle);
         if (etat) {
             msg.constrainedOn();
         }
@@ -718,8 +718,8 @@ void TimeManagement::setTimeRegulating(bool etat,
     if (e == Exception::Type::NO_EXCEPTION) {
         _is_regulating = etat;
 
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->my_federation_handle);
+        msg.setFederate(fm->my_federate_handle);
         if (etat) {
             msg.regulatorOn();
             D.Out(pdDebug, "REGULATOR ON");

@@ -130,8 +130,9 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
 
     my_auditServer.setLevel(AuditLine::Level(9));
 
-    const auto& federation = request.message()->getFederationName();
-    const auto& FEDid = request.message()->getFEDid();
+    const auto& federation = request.message()->getFederationExecutionName();
+    const auto& fom_modules = request.message()->getFomModuleDesignators(); // TODO BUG FIXME HANDLE MODULES !!!!!!
+    const auto& mim_designator = request.message()->getMimDesignator(); // TODO BUG FIXME HANDLE MIM !!!!!!
 
     my_auditServer << "Federation Name : " << federation;
     auto handle = FederationHandle(my_federationHandleGenerator.provide());
@@ -156,7 +157,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 #else
-    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, FEDid);
+    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules.front());
 #endif
     my_auditServer << " created";
 
@@ -175,8 +176,10 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 
     my_auditServer.setLevel(AuditLine::Level(9));
 
-    const auto& federation = request.message()->getFederationName();
+    const auto& federation = request.message()->getFederationExecutionName();
     const auto& federate = request.message()->getFederateName();
+    const auto& federate_type = request.message()->getFederateType(); // TODO
+    const auto& additional_modules = request.message()->getAdditionalFomModules(); // TODO
 
     unsigned int peer = request.message()->getBestEffortPeer();
     unsigned long address = request.message()->getBestEffortAddress();
@@ -217,7 +220,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
                    << int(request.sockets().front()->returnSocket());
 
     // Prepare answer about JoinFederationExecution
-    rep->setFederationName(federation);
+    rep->setFederationExecutionName(federation);
     rep->setFederate(federate_handle);
     rep->setFederation(federation_handle.get());
     rep->setNumberOfRegulators(regulators_count);

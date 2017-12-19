@@ -126,8 +126,9 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
     auto rep = make_unique<NM_Create_Federation_Execution>();
 
     rep->setFederation(handle.get());
-    rep->setFEDid(FEDid);
-    rep->setFederationName(name);
+    rep->setFomModuleDesignatorsSize(1);
+    rep->setFomModuleDesignators(FEDid, 0);
+    rep->setFederationExecutionName(name);
 
     return rep;
 }
