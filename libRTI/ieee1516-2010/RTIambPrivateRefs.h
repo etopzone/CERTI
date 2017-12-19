@@ -63,3 +63,4 @@ struct RTI1516ambassador::Private {
     MessageBuffer msgBufSend, msgBufReceive;
 };
 }
+
