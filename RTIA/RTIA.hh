@@ -39,8 +39,7 @@ namespace certi {
 
 namespace rtia {
 
-/**
- * The RTI Ambassador class.
+/** The RTI Ambassador class.
  * This class is the Federate to RTI proxy class which is used
  * to communication to/from the RTI.
  * In current CERTI implementation RTIA is a seperate process
@@ -51,20 +50,15 @@ namespace rtia {
  */
 class RTIA {
 public:
-    /**
-	 * RTIA constructor.
-	 * @param[in] RTIA_port the TCP port used
-	 * @param[in] RTIA_fd the file descriptor
-	 */
+    /** RTIA constructor.
+     * @param[in] RTIA_port the TCP port used
+     * @param[in] RTIA_fd the file descriptor
+     */
     RTIA(int RTIA_port, int RTIA_fd);
 
-    /**
-     * RTIA destructor.
-     */
     ~RTIA();
 
-    /**
-     * The RTIA reactive [endless] main loop.
+    /** The RTIA reactive [endless] main loop.
      * Messages allocated for reading data exchange between RTIA and federate/RTIG
      * are freed by 'processFederateRequest' or 'processNetworkMessage'.
      */
@@ -72,44 +66,26 @@ public:
     void displayStatistics();
 
 private:
-    RootObject* rootObject;
-
-    FederationManagement* fm;
-    TimeManagement* tm;
-    Communications* comm;
-    Queues* queues;
-    ObjectManagement* om;
-    OwnershipManagement* owm;
-    DeclarationManagement* dm;
-    DataDistribution* ddm;
-    libhla::clock::Clock* clock;
-    Statistics stat;
-
     void saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, RestoreInProgress);
 
-    /**
-     * Process one message from RTIG (i.e. a NetworkMessage).
-     */
+    /// Process one message from RTIG (i.e. a NetworkMessage).
     void processNetworkMessage(NetworkMessage* request);
 
-    /**
-     * Process a service request coming from the Federate (i.e. a Message).
+    /** Process a service request coming from the Federate (i.e. a Message).
      * An answer in sent inside the call.
      * @param[in,out] request the message request coming from the federate
      *                the message is destroyed before return
      */
     void processFederateRequest(Message* request);
 
-    /**
-     * The method called by processFederateRequest in order to
+    /** The method called by processFederateRequest in order to
      * process requests in the FederationManagement::CONNECTION_PRELUDE state.
      * @param[in] request the federate request message
      * @param[out] answer answer message to be sent back to the federate
      */
     void initFederateProcessing(Message* request, Message* answer);
 
-    /**
-     * The method called by processFederateRequest in order to
+    /** The method called by processFederateRequest in order to
      * effectively process the request and build the appropriate
      * answer.
      * @param[in] request the federate request message
@@ -118,10 +94,21 @@ private:
      */
     void chooseFederateProcessing(Message* request, Message* answer, Exception::Type& e);
 
-    /**
-     * RTIA processes the TICK_REQUEST.
-     */
+    /// RTIA processes the TICK_REQUEST.
     void processOngoingTick();
+
+    RootObject my_root_object{};
+    libhla::clock::Clock* my_clock{libhla::clock::Clock::getBestClock()};
+    Statistics stat;
+    Queues queues{};
+
+    Communications comm;
+    FederationManagement fm;
+    ObjectManagement om;
+    OwnershipManagement owm;
+    DeclarationManagement dm;
+    TimeManagement tm;
+    DataDistribution ddm;
 };
 }
 } // namespace certi

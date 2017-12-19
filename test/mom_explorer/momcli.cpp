@@ -105,14 +105,14 @@ MomCli::MomCli(rti1516e::RTIambassador& amb, const std::wstring& federation_name
                     std::bind(&MomCli::command_federate_service_change_attribute_order_type, this));
     registerCommand("federate service change interaction order type",
                     std::bind(&MomCli::command_federate_service_change_interaction_order_type, this));
-    registerCommand("federation adjust set switches", std::bind(&MomCli::command_federation_adjust_set_switches, this));
-    registerCommand("federation request synchronization points",
+    registerCommand("Federation adjust set switches", std::bind(&MomCli::command_federation_adjust_set_switches, this));
+    registerCommand("Federation request synchronization points",
                     std::bind(&MomCli::command_federation_request_synchronization_points, this));
-    registerCommand("federation request synchronization point status",
+    registerCommand("Federation request synchronization point status",
                     std::bind(&MomCli::command_federation_request_synchronization_point_status, this));
-    registerCommand("federation request FOM module data",
+    registerCommand("Federation request FOM module data",
                     std::bind(&MomCli::command_federation_request_FOM_module_data, this));
-    registerCommand("federation request MIM data", std::bind(&MomCli::command_federation_request_MIM_data, this));
+    registerCommand("Federation request MIM data", std::bind(&MomCli::command_federation_request_MIM_data, this));
 }
 
 void MomCli::command_tick()
@@ -466,13 +466,13 @@ void MomCli::command_federate_service_un_subscribe_object_class_attributes()
 
 void MomCli::command_federate_service_subscribe_interaction_class()
 {
-    std::wcout << "=>HLAmanager.HLAfederate.HLArequest.HLArequestPublications\n";
+    std::wcout << "=>HLAmanager.HLAfederate.HLArequest.HLAsubscribeInteractionClass\n";
 
     int federate_handle = std::stoi(requestArgument("HLAfederate"));
     int interaction_class = std::stoi(requestArgument("HLAinteractionClass"));
     bool active = std::stoi(requestArgument("HLAactive"));
 
-    sendInteraction(L"HLAmanager.HLAfederate.HLArequest.HLArequestPublications",
+    sendInteraction(L"HLAmanager.HLAfederate.HLArequest.HLAsubscribeInteractionClass",
                     {{L"HLAfederate", {&federate_handle, 4}},
                      {L"HLAinteractionClass", {&interaction_class, 4}},
                      {L"HLAactive", {&active, 4}}});

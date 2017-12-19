@@ -1,4 +1,4 @@
-// Generated on 2017 December Mon, 04 at 16:22:03 by the CERTI message generator
+// Generated on 2017 December Tue, 19 at 16:17:00 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -320,18 +320,29 @@ public:
     virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
     // Attributes accessors and mutators
-    const std::string& getFederationName() const;
-    void setFederationName(const std::string& newFederationName);
+    const std::string& getFederationExecutionName() const;
+    void setFederationExecutionName(const std::string& newFederationExecutionName);
     
-    const std::string& getFEDid() const;
-    void setFEDid(const std::string& newFEDid);
+    uint32_t getFomModuleDesignatorsSize() const;
+    void setFomModuleDesignatorsSize(uint32_t num);
+    const std::vector<std::string>& getFomModuleDesignators() const;
+    const std::string& getFomModuleDesignators(uint32_t rank) const;
+    std::string& getFomModuleDesignators(uint32_t rank);
+    void setFomModuleDesignators(const std::string& newFomModuleDesignators, uint32_t rank);
+    void removeFomModuleDesignators(uint32_t rank);
+    
+    const std::string& getMimDesignator() const;
+    void setMimDesignator(const std::string& newMimDesignator);
+    bool hasMimDesignator() const;
     
     using Super = NetworkMessage;
     friend std::ostream& operator<<(std::ostream& os, const NM_Create_Federation_Execution& msg);
 
 protected:
-    std::string federationName;// the federation name
-    std::string FEDid;// the Federation ID which is in fact a filename
+    std::string federationExecutionName;// the federation name
+    std::vector<std::string> fomModuleDesignators;// the Federation ID which is in fact a filename
+    std::string mimDesignator;
+    bool _hasMimDesignator {false};
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Create_Federation_Execution& msg);
@@ -380,11 +391,23 @@ public:
     const uint32_t& getBestEffortPeer() const;
     void setBestEffortPeer(const uint32_t& newBestEffortPeer);
     
-    const std::string& getFederationName() const;
-    void setFederationName(const std::string& newFederationName);
+    const std::string& getFederationExecutionName() const;
+    void setFederationExecutionName(const std::string& newFederationExecutionName);
     
     const std::string& getFederateName() const;
     void setFederateName(const std::string& newFederateName);
+    bool hasFederateName() const;
+    
+    const std::string& getFederateType() const;
+    void setFederateType(const std::string& newFederateType);
+    
+    uint32_t getAdditionalFomModulesSize() const;
+    void setAdditionalFomModulesSize(uint32_t num);
+    const std::vector<std::string>& getAdditionalFomModules() const;
+    const std::string& getAdditionalFomModules(uint32_t rank) const;
+    std::string& getAdditionalFomModules(uint32_t rank);
+    void setAdditionalFomModules(const std::string& newAdditionalFomModules, uint32_t rank);
+    void removeAdditionalFomModules(uint32_t rank);
     
     uint32_t getRoutingSpacesSize() const;
     void setRoutingSpacesSize(uint32_t num);
@@ -418,8 +441,11 @@ protected:
     uint32_t multicastAddress;
     uint32_t bestEffortAddress;
     uint32_t bestEffortPeer;
-    std::string federationName;// the federation name
+    std::string federationExecutionName;// the federation name
     std::string federateName;// the federate name (should be unique within a federation)
+    bool _hasFederateName {false};
+    std::string federateType;
+    std::vector<std::string> additionalFomModules;
     std::vector<NM_FOM_Routing_Space> routingSpaces;
     std::vector<NM_FOM_Object_Class> objectClasses;
     std::vector<NM_FOM_Interaction_Class> interactionClasses;

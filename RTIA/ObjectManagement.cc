@@ -72,8 +72,8 @@ void ObjectManagement::reserveObjectName(const std::string& newObjName, Exceptio
         e = Exception::Type::IllegalName;
     }
     else {
-        req.setFederation(fm->_numero_federation);
-        req.setFederate(fm->federate);
+        req.setFederation(fm->getFederationHandle().get());
+        req.setFederate(fm->getFederateHandle());
 
         req.setObjectName(newObjName);
 
@@ -87,8 +87,8 @@ ObjectHandle ObjectManagement::registerObject(
 {
     NM_Register_Object req;
 
-    req.setFederate(fm->federate);
-    req.setFederation(fm->_numero_federation);
+    req.setFederate(fm->getFederateHandle());
+    req.setFederation(fm->getFederationHandle().get());
     req.setObjectClass(the_class);
     req.setLabel(theObjectName);
 
@@ -100,7 +100,7 @@ ObjectHandle ObjectManagement::registerObject(
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        auto responses = rootObject->registerObjectInstance(fm->federate, the_class, rep->getObject(), rep->getLabel());
+        auto responses = rootObject->registerObjectInstance(fm->getFederateHandle(), the_class, rep->getObject(), rep->getLabel());
         std::cout << "==========================" << std::endl;
         std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
         for (auto& rep : responses) {
@@ -128,8 +128,8 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
     if (tm->testValidTime(theTime)) {
         // Building request (req NetworkMessage)
         NM_Update_Attribute_Values req;
-        req.setFederation(fm->_numero_federation);
-        req.setFederate(fm->federate);
+        req.setFederation(fm->getFederationHandle().get());
+        req.setFederate(fm->getFederateHandle());
         req.setObject(theObjectHandle);
         // set Date for UAV with time
         req.setDate(theTime);
@@ -147,6 +147,11 @@ EventRetractionHandle ObjectManagement::updateAttributeValues(ObjectHandle theOb
             static_cast<NM_Update_Attribute_Values*>(comm->waitMessage(req.getMessageType(), req.getFederate())));
         e = rep->getException();
         evtrHandle = rep->getEvent();
+		#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL        
+        // update the time of the min tx event date
+        // this is used per NULL MESSAGE PRIM algorithm
+		tm->updateMinTxMessageDate(theTime);
+		#endif
     }
     else {
         std::stringstream errorMsg;
@@ -175,8 +180,8 @@ void ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 
     G.Out(pdGendoc, "enter ObjectManagement::updateAttributeValues without time");
     // Building request (req NetworkMessage)
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObjectHandle);
     // Do no set Date if without time
     req.setAttributesSize(attribArraySize);
@@ -289,7 +294,7 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
     if (tm->testValidTime(theTime)) {
         G.Out(pdGendoc, "ObjectManagement::sendInteraction with time");
         // Local test to know if interaction is correct.
-        rootObject->Interactions->isReady(fm->federate, theInteraction, paramArray, paramArraySize);
+        rootObject->Interactions->isReady(fm->getFederateHandle(), theInteraction, paramArray, paramArraySize);
 
         // Building network message (req) to RTIG.
         NM_Send_Interaction req;
@@ -297,8 +302,8 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
         // true for UAV with time
         req.setDate(theTime);
         req.setRegion(region);
-        req.setFederation(fm->_numero_federation);
-        req.setFederate(fm->federate);
+        req.setFederation(fm->getFederationHandle().get());
+        req.setFederate(fm->getFederateHandle());
         req.setParametersSize(paramArraySize);
         req.setValuesSize(paramArraySize);
 
@@ -315,6 +320,11 @@ EventRetractionHandle ObjectManagement::sendInteraction(InteractionClassHandle t
             comm->waitMessage(NetworkMessage::Type::SEND_INTERACTION, req.getFederate()));
         e = rep->getException();
         evtrHandle = rep->eventRetraction;
+        #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL 
+        // update the time of the min tx event date
+        // this is used per NULL MESSAGE PRIM algorithm
+		tm->updateMinTxMessageDate(theTime);
+		#endif
     }
     else {
         e = Exception::Type::InvalidFederationTime;
@@ -335,13 +345,13 @@ void ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     NM_Send_Interaction req;
     G.Out(pdGendoc, "ObjectManagement::sendInteraction without time");
     // Local test to know if interaction is correct.
-    rootObject->Interactions->isReady(fm->federate, theInteraction, paramArray, paramArraySize);
+    rootObject->Interactions->isReady(fm->getFederateHandle(), theInteraction, paramArray, paramArraySize);
 
     // Building network message (req) to RTIG.
     req.setInteractionClass(theInteraction);
     req.setRegion(region);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setParametersSize(paramArraySize);
     req.setValuesSize(paramArraySize);
 
@@ -415,8 +425,8 @@ EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandl
 
     req.setObject(theObjectHandle);
     req.setDate(theTime);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     req.setLabel(theTag);
     comm->sendMessage(&req);
@@ -425,7 +435,7 @@ EventRetractionHandle ObjectManagement::deleteObject(ObjectHandle theObjectHandl
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        auto responses = rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        auto responses = rootObject->deleteObjectInstance(fm->getFederateHandle(), theObjectHandle, theTag);
         std::cout << "==========================" << std::endl;
         std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
         for (auto& rep : responses) {
@@ -442,8 +452,8 @@ void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::str
     NM_Delete_Object req;
 
     req.setObject(theObjectHandle);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
 
     req.setLabel(theTag);
     comm->sendMessage(&req);
@@ -452,7 +462,7 @@ void ObjectManagement::deleteObject(ObjectHandle theObjectHandle, const std::str
     e = rep->getException();
 
     if (e == Exception::Type::NO_EXCEPTION) {
-        auto responses = rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+        auto responses = rootObject->deleteObjectInstance(fm->getFederateHandle(), theObjectHandle, theTag);
         std::cout << "==========================" << std::endl;
         std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
         for (auto& rep : responses) {
@@ -466,7 +476,7 @@ void ObjectManagement::deleteAllObjects(Exception::Type& e)
 {
     std::vector<ObjectHandle> ownedObjectInstances;
 
-    rootObject->getAllObjectInstancesFromFederate(fm->federate, ownedObjectInstances);
+    rootObject->getAllObjectInstancesFromFederate(fm->getFederateHandle(), ownedObjectInstances);
 
     for (std::vector<ObjectHandle>::iterator it = ownedObjectInstances.begin(); it != ownedObjectInstances.end();
          ++it) {
@@ -533,8 +543,8 @@ EventRetractionHandle ObjectManagement::changeAttributeTransportType(ObjectHandl
     uint32_t i;
 
     req.setObject(theObjectHandle);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setTransport(theType);
     req.setAttributesSize(attribArraySize);
 
@@ -561,8 +571,8 @@ EventRetractionHandle ObjectManagement::changeAttributeOrderType(ObjectHandle th
     uint32_t i;
 
     req.setObject(theObjectHandle);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setOrder(theType);
     req.setAttributesSize(attribArraySize);
 
@@ -585,8 +595,8 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id, Tran
     NM_Change_Interaction_Transport_Type req;
 
     req.setInteractionClass(id);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setTransport(theType);
 
     comm->sendMessage(&req);
@@ -603,8 +613,8 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id, OrderTyp
     NM_Change_Interaction_Order_Type req;
 
     req.setInteractionClass(id);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setOrder(theType);
 
     comm->sendMessage(&req);
@@ -627,8 +637,8 @@ void ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     G.Out(pdGendoc, "enter ObjectManagement::requestObjectAttributeValueUpdate");
 
     req.setObject(handle);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; i++) {
@@ -653,8 +663,8 @@ void ObjectManagement::requestClassAttributeValueUpdate(ObjectClassHandle theCla
     G.Out(pdGendoc, "enter ObjectManagement::requestClassAttributeValueUpdate");
 
     req.setObjectClass(theClass);
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; ++i) {
@@ -823,8 +833,8 @@ void ObjectManagement::setAttributeScopeAdvisorySwitch(bool state, Exception::Ty
 
     e = Exception::Type::NO_EXCEPTION;
 
-    msg.setFederation(fm->_numero_federation);
-    msg.setFederate(fm->federate);
+    msg.setFederation(fm->getFederationHandle().get());
+    msg.setFederate(fm->getFederateHandle());
 
     if (state) {
         msg.attributeScopeAdvisorySwitchOn();
@@ -886,8 +896,8 @@ void ObjectManagement::setAttributeRelevanceAdvisorySwitch(bool state, Exception
 
     e = Exception::Type::NO_EXCEPTION;
 
-    msg.setFederation(fm->_numero_federation);
-    msg.setFederate(fm->federate);
+    msg.setFederation(fm->getFederationHandle().get());
+    msg.setFederate(fm->getFederateHandle());
 
     if (state) {
         msg.attributeRelevanceAdvisorySwitchOn();

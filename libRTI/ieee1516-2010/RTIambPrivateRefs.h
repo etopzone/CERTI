@@ -22,41 +22,44 @@
 // $Id: RTIambPrivateRefs.h,v 1.2 2014/03/07 18:00:49 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <RTI/certiRTI1516.h>
+#include "RTIambassadorImplementation.h"
+
+#include <RTI/Typedefs.h>
+
 #include "Message.hh"
-#include "RootObject.hh"
 #include "MessageBuffer.hh"
+#include "RootObject.hh"
+#include <RTI/certiRTI1516.h>
 
-using namespace certi ;
+namespace certi {
 
-class RTI1516ambPrivateRefs
-{
-public:
-	RTI1516ambPrivateRefs();
-    ~RTI1516ambPrivateRefs();
-
-    void processException(Message *);
-    void executeService(Message *requete, Message *reponse);
+struct RTI1516ambassador::Private {
+    /** Process exception from received message.
+     * When a message is received from RTIA, it can contains an exception.
+     * This exception is processed by this module and a new exception is thrown.
+     */
+    void processException(Message* msg);
+    void executeService(Message* requete, Message* reponse);
     void sendTickRequestStop();
-    void callFederateAmbassador(Message *msg) throw (rti1516e::RTIinternalError);
-    void leave(const char *msg) throw (rti1516e::RTIinternalError);
+    void callFederateAmbassador(Message* msg);
+    void leave(const char* msg);
 
 #ifdef _WIN32
-	  HANDLE	handle_RTIA;
+    HANDLE handle_RTIA;
 #else
-    pid_t pid_RTIA ; //!< pid associated with rtia fork (private).
+    /// pid associated with rtia fork (private).
+    pid_t pid_RTIA{-1};
 #endif
 
-    //! Federate Ambassador reference for module calls.
-    rti1516e::FederateAmbassador *fed_amb ;
+    /// Federate Ambassador reference for module calls.
+    rti1516e::FederateAmbassador* fed_amb{nullptr};
 
-    //! used to prevent reentrant calls (see tick() and executeService()).
-    bool is_reentrant ;
+    /// used to prevent reentrant calls (see tick() and executeService()).
+    bool is_reentrant{false};
 
-    RootObject *_theRootObj ;
+    RootObject* root_object{nullptr};
 
-    SocketUN *socketUn ;
-    MessageBuffer msgBufSend,msgBufReceive ;
+    std::unique_ptr<SocketUN> socket_un{nullptr};
+    MessageBuffer msgBufSend, msgBufReceive;
 };
-
-// $Id: RTIambPrivateRefs.h,v 1.2 2014/03/07 18:00:49 erk Exp $
+}

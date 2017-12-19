@@ -43,25 +43,48 @@ class TimeManagement;
 
 class FederationManagement {
 public:
-    FederationManagement(Communications*, Statistics*);
+
+    /** State of the connection towards the federate. The state is changed
+     * through the OPEN_CONNEXION and CLOSE_CONNEXION messages.
+     */
+    enum class ConnectionState {
+        Prelude, /// Initial state before OPEN_CONNEXION; no other message allowed.
+        Ready, /// Communication is active.
+        Ended /// State after CLOSE_CONNEXION; no further messages allowed.
+    };
+    
+    FederationManagement(Communications* cm);
     ~FederationManagement();
+    
+    void setTm(TimeManagement* time_management);
+    
+    FederationHandle getFederationHandle() const;
+    FederateHandle getFederateHandle() const;
+
+    ConnectionState getConnectionState() const;
+    void setConnectionState(const ConnectionState state);
 
     void checkFederationSaving(void) throw(SaveInProgress);
     void checkFederationRestoring(void) throw(RestoreInProgress);
 
     // -- Create/Destroy --
-    void createFederationExecution(const std::string& theName, const std::string& fedId, Exception::Type& e) throw(
-        FederationExecutionAlreadyExists, CouldNotOpenFED, ErrorReadingFED, RTIinternalError);
+    void createFederationExecution(const std::string& federation_execution_name,
+                                   const std::vector<std::string> fom_module_designators,
+                                   const std::string& mim_designator,
+                                   Exception::Type& e);
+    
     void destroyFederationExecution(const std::string& theName, Exception::Type& e);
 
     // -- Join/Resign --
-    FederateHandle joinFederationExecution(const std::string& Federate,
-                                           const std::string& Federation,
+    FederateHandle joinFederationExecution(const std::string& federate_name,
+                                           const std::string& federate_type,
+                                           const std::string& federation_execution_name,
+                                           const std::vector<std::string> additional_fom_modules,
                                            RootObject* rootObject,
                                            Exception::Type& e);
 
     void resignFederationExecution(ResignAction action, Exception::Type& e);
-    
+
     /// Resigns if we are still member, call this before we throw away all the rtia members
     void resignFederationExecutionForTermination();
 
@@ -94,38 +117,24 @@ public:
     void initiateFederateRestore(const std::string& label, FederateHandle handle);
     void federationRestoredStatus(bool status);
 
-    // Attributes
-    TimeManagement* tm;
-    Handle _numero_federation;
-    FederateHandle federate;
-
-    /** State of the connection towards the federate. The state is changed
-     * through the OPEN_CONNEXION and CLOSE_CONNEXION messages.
-     */
-    typedef enum ConnectionState {
-        /// Initial state before OPEN_CONNEXION; no other message allowed.
-        CONNECTION_PRELUDE,
-        /// Communication is active.
-        CONNECTION_READY,
-        /// State after CLOSE_CONNEXION; no further messages allowed.
-        CONNECTION_FIN
-    } ConnectionState_t;
-
-    ConnectionState_t _connection_state;
-
 private:
     Communications* comm;
-    Statistics* stat;
+    TimeManagement* my_tm {nullptr};
 
-    bool _est_membre_federation;
+    FederationHandle my_federation_handle {0};
+    FederateHandle my_federate_handle {0};
 
-    bool savingState;
-    bool restoringState;
+    bool my_is_member_of_a_federation {false};
 
-    std::set<std::string> _synchronizationLabels; //!< Labels being synchronized.
+    bool my_is_saving {false};
+    bool my_is_restoring {false};
 
-    std::string _nom_federation;
-    std::string _nom_federe;
+    std::set<std::string> my_synchronization_labels {}; /// Labels being synchronized.
+
+    std::string my_federation_name {""};
+    std::string my_federate_name {""};
+    
+    ConnectionState my_connection_state {ConnectionState::Prelude};
 };
 }
 } // namespace certi/rtia

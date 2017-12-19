@@ -99,8 +99,8 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
     logical_time += _lookahead_courant;
 
     if (logical_time > lastNullMessageDate) {
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->getFederationHandle().get());
+        msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
 
         msg.setLookahead(_lookahead_courant);
@@ -124,12 +124,21 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
 {
     NM_Message_Null_Prime msg;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
-    /*
+	/*
+     * If the time stamp of the last Tx event is bigger than current time and
+     * smaller than the requested advance time then it has to be the next
+     * time advance timestamp
+     */
+	if ((minTxMessageDate > _heure_courante) && (minTxMessageDate < logical_time))
+	{
+		logical_time = minTxMessageDate;
+	}
+	/*
      * We cannot send null prime in the past of
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > lastNullMessageDate) && (logical_time > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->_numero_federation);
         msg.setFederate(fm->federate);
         msg.setDate(logical_time);
@@ -603,6 +612,24 @@ FederationTime TimeManagement::requestMinNextEventTime()
     return dateMNET;
 }
 
+void TimeManagement::updateMinTxMessageDate(FederationTime TxMessageDate)
+{
+	// Note that we always consider a valid time!
+	// if current time is bigger than last time
+	// it means that time advance has advanced
+	if (_heure_courante > lastCurrentTimeTxMessage)
+	{
+		minTxMessageDate = TxMessageDate;
+		lastCurrentTimeTxMessage = _heure_courante;
+	}
+	else if (lastCurrentTimeTxMessage == _heure_courante)
+	{
+		if (TxMessageDate < minTxMessageDate)
+			minTxMessageDate = TxMessageDate;
+	}
+
+}
+
 void TimeManagement::setLookahead(FederationTimeDelta lookahead, Exception::Type& e)
 {
     e = Exception::Type::NO_EXCEPTION;
@@ -646,8 +673,8 @@ void TimeManagement::setTimeConstrained(bool etat, Exception::Type& e)
     if (e == Exception::Type::NO_EXCEPTION) {
         _is_constrained = etat;
 
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->getFederationHandle().get());
+        msg.setFederate(fm->getFederateHandle());
         if (etat) {
             msg.constrainedOn();
         }
@@ -691,8 +718,8 @@ void TimeManagement::setTimeRegulating(bool etat,
     if (e == Exception::Type::NO_EXCEPTION) {
         _is_regulating = etat;
 
-        msg.setFederation(fm->_numero_federation);
-        msg.setFederate(fm->federate);
+        msg.setFederation(fm->getFederationHandle().get());
+        msg.setFederate(fm->getFederateHandle());
         if (etat) {
             msg.regulatorOn();
             D.Out(pdDebug, "REGULATOR ON");

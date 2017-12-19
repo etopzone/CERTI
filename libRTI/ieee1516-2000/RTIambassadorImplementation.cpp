@@ -226,31 +226,19 @@ void RTI1516ambassador::createFederationExecution(
                                                                  rti1516::CouldNotCreateLogicalTimeFactory,
                                                                  rti1516::RTIinternalError)
 {
-    /* TODO */
     certi::M_Create_Federation_Execution req, rep;
 
     G.Out(pdGendoc, "enter RTI1516ambassador::createFederationExecution");
-    std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
-    req.setFederationName(federationExecutionNameAsString);
+    req.setFederationExecutionName({federationExecutionName.begin(), federationExecutionName.end()});
 
-    std::string fullPathNameToTheFDDfileAsString(fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end());
-    req.setFEDid(fullPathNameToTheFDDfileAsString);
+    req.setFomModuleDesignatorsSize(1);
+    req.setFomModuleDesignators({fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end()}, 0);
 
-    /*#ifdef _WIN32
-		if(!stricmp(FED,executionName)) {
-		#else
-		if(!strcasecmp(FED,exeName)) {
-		#endif
-		}*/
     G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
 
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc, "exit RTI1516ambassador::createFederationExecution");
-
-    // TODO What to do with the 'logicalTimeImplementationName'? Can't find it's use in SISO-STD-004.1-2004
-    // Only exists in C++ interface.
-    // Ignored for now.
 }
 
 // 4.3
@@ -289,18 +277,23 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
     if (federateType.length() <= 0) {
         throw rti1516::RTIinternalError(L"Incorrect or empty federate name");
     }
-    std::string federateTypeAsString(federateType.begin(), federateType.end());
 
-    if (federationExecutionName.length() <= 0)
+    if (federationExecutionName.length() <= 0) {
         throw rti1516::RTIinternalError(L"Incorrect or empty federation name");
+    }
+    
+    std::string federateTypeAsString(federateType.begin(), federateType.end());
+    
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
 
     privateRefs->fed_amb = &federateAmbassador;
 
     req.setFederateName(federateTypeAsString);
-    req.setFederationName(federationExecutionNameAsString);
+    req.setFederationExecutionName(federationExecutionNameAsString);
+    
     G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
+    
     G.Out(pdGendoc, "exit  RTI1516ambassador::joinFederationExecution");
     PrettyDebug::setFederateName("LibRTI::" + std::string(federateTypeAsString));
 

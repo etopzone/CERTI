@@ -52,12 +52,12 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject, AttributeH
 
     D.Out(pdDebug, "IS_ATTRIBUTE_OWNED_BY_FEDERATE, attribute %u of object %u", theAttribute, theObject);
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
-    D.Out(pdDebug, "Federate %u ", fm->federate);
+    D.Out(pdDebug, "Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -83,12 +83,12 @@ void OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
 
     D.Out(pdDebug, "QUERY_ATTRIBUTE_OWNERSHIP, attribute %u from object %u", theAttribute, theObject);
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
-    D.Out(pdDebug, "Federate %u ", fm->federate);
+    D.Out(pdDebug, "Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -108,8 +108,8 @@ void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle t
 {
     NM_Negotiated_Attribute_Ownership_Divestiture req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
@@ -118,7 +118,7 @@ void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle t
 
     req.setLabel(theTag);
 
-    D.Out(pdDebug, "NEGOTIATED_DIVESTITURE Federate %u ", fm->federate);
+    D.Out(pdDebug, "NEGOTIATED_DIVESTITURE Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -135,15 +135,15 @@ void OwnershipManagement::cancelnegotiatedAttributeOwnershipDivestiture(ObjectHa
 {
     NM_Cancel_Negotiated_Attribute_Ownership_Divestiture req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "CANCEL_NEGOTIATED_DIVESTITURE Federate %u ", fm->federate);
+    D.Out(pdDebug, "CANCEL_NEGOTIATED_DIVESTITURE Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -160,15 +160,15 @@ void OwnershipManagement::attributeOwnershipAcquisitionIfAvailable(ObjectHandle 
 {
     NM_Attribute_Ownership_Acquisition_If_Available req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "AcquisitionIfAvailable Federate %u ", fm->federate);
+    D.Out(pdDebug, "AcquisitionIfAvailable Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -185,15 +185,15 @@ void OwnershipManagement::unconditionalAttributeOwnershipDivestiture(ObjectHandl
 {
     NM_Unconditional_Attribute_Ownership_Divestiture req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "UNCONDITIONAL_DIVESTITURE Federate %u ", fm->federate);
+    D.Out(pdDebug, "UNCONDITIONAL_DIVESTITURE Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -211,8 +211,8 @@ void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
 {
     NM_Attribute_Ownership_Acquisition req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
@@ -221,7 +221,7 @@ void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.setLabel(theTag);
 
-    D.Out(pdDebug, "OWNERSHIP_ACQUISITION Federate %u ", fm->federate);
+    D.Out(pdDebug, "OWNERSHIP_ACQUISITION Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
@@ -239,8 +239,8 @@ OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 {
     NM_Attribute_Ownership_Release_Response req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
@@ -278,15 +278,15 @@ void OwnershipManagement::cancelattributeOwnershipAcquisition(ObjectHandle theOb
 {
     NM_Cancel_Attribute_Ownership_Acquisition req;
 
-    req.setFederation(fm->_numero_federation);
-    req.setFederate(fm->federate);
+    req.setFederation(fm->getFederationHandle().get());
+    req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "CANCEL_ACQUISITION Federate %u ", fm->federate);
+    D.Out(pdDebug, "CANCEL_ACQUISITION Federate %u ", fm->getFederateHandle());
 
     comm->sendMessage(&req);
 
