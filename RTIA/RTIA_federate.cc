@@ -99,10 +99,8 @@ void RTIA::saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, Restor
 //! Choose federate processing.
 void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception::Type& e)
 {
-    G.Out(pdGendoc,
-          "enter RTIA::chooseFederateProcessing for msg <%s> (type=%d)",
-          request->getMessageName(),
-          request->getMessageType());
+    Debug(G, pdGendoc) << "enter RTIA::chooseFederateProcessing for msg <" << request->getMessageName()
+                       << "> (type=" << request->getMessageType() << ")" << std::endl;
 
     // Verify not in saving or restoring state.
     // May throw SaveInProgress or RestoreInProgress
@@ -117,24 +115,34 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         // the this->comm can now be used only to sent the CLOSE_CONNEXION response
         break;
 
-    case Message::CREATE_FEDERATION_EXECUTION: {
-        M_Create_Federation_Execution *CFEq, *CFEr;
-        CFEr = static_cast<M_Create_Federation_Execution*>(answer);
-        CFEq = static_cast<M_Create_Federation_Execution*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
-        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
-        fm->createFederationExecution(CFEq->getFederationName(), CFEq->getFEDid(), e);
-        if (e == Exception::Type::RTIinternalError) {
-            answer->setException(e, "Federate is yet a creator or a member !");
-        }
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type CreateFederation done.");
-        // RTIA needs FEDid into the answer (rep Message) to federate
-        CFEr->setFEDid(CFEq->getFEDid());
-        // RTIA needs federation name into the answer (rep Message) to federate
-        CFEr->setFederationName(CFEq->getFederationName());
-    } break;
+/*FIXME*/    case Message::CREATE_FEDERATION_EXECUTION: {
+/*FIXME*/        M_Create_Federation_Execution *CFEq, *CFEr;
+/*FIXME*/        
+/*FIXME*/        CFEr = static_cast<M_Create_Federation_Execution*>(answer);
+/*FIXME*/        CFEq = static_cast<M_Create_Federation_Execution*>(request);
+/*FIXME*/        
+/*FIXME*/        D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
+/*FIXME*/        
+/*FIXME*/        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
+/*FIXME*/        fm->createFederationExecution(CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(0), e);
+/*FIXME*/        
+/*FIXME*/        if (e == Exception::Type::RTIinternalError) {
+/*FIXME*/            answer->setException(e, "Federate is yet a creator or a member !");
+/*FIXME*/        }
+/*FIXME*/        
+/*FIXME*/        D.Out(pdTrace,
+/*FIXME*/              "Receiving Message from Federate, "
+/*FIXME*/              "type CreateFederation done.");
+/*FIXME*/        
+/*FIXME*/        // RTIA needs FEDid into the answer (rep Message) to federate
+/*FIXME*/        CFEr->setFomModuleDesignatorsSize(CFEq->getFomModuleDesignatorsSize());
+/*FIXME*/        auto i{0};
+/*FIXME*/        for(const auto& module: CFEq->getFomModuleDesignators()) {
+/*FIXME*/            CFEr->setFomModuleDesignators(module, i++);
+/*FIXME*/        }
+/*FIXME*/        // RTIA needs federation name into the answer (rep Message) to federate
+/*FIXME*/        CFEr->setFederationExecutionName(CFEq->getFederationExecutionName());
+/*FIXME*/    } break;
 
     case Message::DESTROY_FEDERATION_EXECUTION: {
         M_Destroy_Federation_Execution *DFEq, *DFEr;
@@ -150,42 +158,47 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         DFEr->setFederationName(DFEq->getFederationName());
     } break;
 
-    case Message::JOIN_FEDERATION_EXECUTION: {
-        M_Join_Federation_Execution *JFEq, *JFEr;
-        JFEr = static_cast<M_Join_Federation_Execution*>(answer);
-        JFEq = static_cast<M_Join_Federation_Execution*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
-        JFEr->setFederate(
-            fm->joinFederationExecution(JFEq->getFederateName(), JFEq->getFederationName(), rootObject, e));
-        if (e == Exception::Type::NO_EXCEPTION) {
-            /// Set RTIA PrettyDebug federate name
-            PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
-            // Set federation name for the answer message (rep)
-            JFEr->setFederationName(JFEq->getFederationName());
-            JFEr->setFederateName(JFEq->getFederateName());
-        }
-        else {
-            // JOIN FAILED
-            switch (e) {
-            case Exception::Type::FederateAlreadyExecutionMember:
-                throw FederateAlreadyExecutionMember("Federate yet joined or same name");
-                break;
-            case Exception::Type::FederationExecutionDoesNotExist:
-                throw FederationExecutionDoesNotExist("Federation does not exist [yet]");
-                break;
-            case Exception::Type::SaveInProgress:
-                throw SaveInProgress("Save in progress");
-                break;
-            case Exception::Type::RestoreInProgress:
-                throw RestoreInProgress("Restore in progress");
-                break;
-            case Exception::Type::RTIinternalError:
-            default:
-                throw RTIinternalError("Internal error");
-                break;
-            }
-        }
-    } break;
+/*FIXME*/    case Message::JOIN_FEDERATION_EXECUTION: {
+/*FIXME*/        M_Join_Federation_Execution *JFEq, *JFEr;
+/*FIXME*/
+/*FIXME*/        JFEr = static_cast<M_Join_Federation_Execution*>(answer);
+/*FIXME*/        JFEq = static_cast<M_Join_Federation_Execution*>(request);
+/*FIXME*/
+/*FIXME*/        D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
+/*FIXME*/
+/*FIXME*/        JFEr->setFederate(
+/*FIXME*/            fm->joinFederationExecution(JFEq->getFederateName(), JFEq->getFederationExecutionName(), rootObject, e));
+/*FIXME*/
+/*FIXME*/        if (e == Exception::Type::NO_EXCEPTION) {
+/*FIXME*/            // Set federation name for the answer message (rep)
+/*FIXME*/            JFEr->setFederationExecutionName(JFEq->getFederationExecutionName());
+/*FIXME*/            JFEr->setFederateName(JFEq->getFederateName());
+/*FIXME*/
+/*FIXME*/            /// Set RTIA PrettyDebug federate name
+/*FIXME*/            PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
+/*FIXME*/        }
+/*FIXME*/        else {
+/*FIXME*/            // JOIN FAILED
+/*FIXME*/            switch (e) {
+/*FIXME*/            case Exception::Type::FederateAlreadyExecutionMember:
+/*FIXME*/                throw FederateAlreadyExecutionMember("4.9.5.b : Federate name already in use.");
+/*FIXME*/                break;
+/*FIXME*/            case Exception::Type::FederationExecutionDoesNotExist:
+/*FIXME*/                throw FederationExecutionDoesNotExist("4.9.5.c : The specified federation execution does not exist.");
+/*FIXME*/                break;
+/*FIXME*/            case Exception::Type::SaveInProgress:
+/*FIXME*/                throw SaveInProgress("4.9.5.g : Federate save in progress.");
+/*FIXME*/                break;
+/*FIXME*/            case Exception::Type::RestoreInProgress:
+/*FIXME*/                throw RestoreInProgress("4.9.5.h : Federate restore in progress.");
+/*FIXME*/                break;
+/*FIXME*/            case Exception::Type::RTIinternalError:
+/*FIXME*/            default:
+/*FIXME*/                throw RTIinternalError("4.9.5.k : RTI internal error.");
+/*FIXME*/                break;
+/*FIXME*/            }
+/*FIXME*/        }
+/*FIXME*/    } break;
     case Message::RESIGN_FEDERATION_EXECUTION: {
         M_Resign_Federation_Execution* RFEq;
         RFEq = static_cast<M_Resign_Federation_Execution*>(request);
@@ -650,9 +663,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
               "type EnableAsynchronousDelivery.");
         if (!tm->_asynchronous_delivery) {
             tm->_asynchronous_delivery = true;
-            
+
             NM_Enable_Asynchronous_Delivery req;
-        
+
             req.setFederation(fm->_numero_federation);
             req.setFederate(fm->federate);
             comm->sendMessage(&req);
@@ -668,9 +681,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
               "type DisableAsynchronousDelivery.");
         if (tm->_asynchronous_delivery) {
             tm->_asynchronous_delivery = false;
-            
+
             NM_Disable_Asynchronous_Delivery req;
-            
+
             req.setFederation(fm->_numero_federation);
             req.setFederate(fm->federate);
             comm->sendMessage(&req);

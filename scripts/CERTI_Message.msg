@@ -175,8 +175,10 @@ message M_Close_Connexion : merge Message {
 }
 
 message M_Create_Federation_Execution : merge Message {
-	required string federationName // the federation name
-	required string FEDid          // the Federation ID which is in fact a filename
+	required string federationExecutionName // the federation name
+	repeated string fomModuleDesignators    // the set of FOM module designators (at least one)
+	optional string mimDesignator
+	optional string logicalTimeRepresentation
 }
 
 message M_Destroy_Federation_Execution : merge Message {
@@ -185,8 +187,10 @@ message M_Destroy_Federation_Execution : merge Message {
 
 message M_Join_Federation_Execution : merge Message {
 	required FederateHandle federate
-	required string federationName
-	required string federateName
+	optional string federateName
+	required string federateType
+	required string federationExecutionName
+	repeated string additionalFomModules
 }
 
 message M_Resign_Federation_Execution : merge Message {

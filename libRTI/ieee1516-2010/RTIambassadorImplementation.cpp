@@ -54,6 +54,19 @@ struct Deletor {
 };
 
 /* Helper functions */
+
+template <typename T>
+void RTI1516ambassador::assignAHSAndExecuteService(const rti1516e::AttributeHandleSet& AHS, T& req, T& rep)
+{
+    req.setAttributesSize(AHS.size());
+    uint32_t i = 0;
+    for (rti1516e::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); ++it, ++i) {
+        certi::AttributeHandle certiHandle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
+        req.setAttributes(certiHandle, i);
+    }
+    privateRefs->executeService(&req, &rep);
+}
+
 template <typename T>
 void RTI1516ambassador::assignPHVMAndExecuteService(const rti1516e::ParameterHandleValueMap& PHVM, T& req, T& rep)
 {
@@ -86,18 +99,6 @@ void RTI1516ambassador::assignAHVMAndExecuteService(const rti1516e::AttributeHan
     privateRefs->executeService(&req, &rep);
 }
 
-template <typename T>
-void RTI1516ambassador::assignAHSAndExecuteService(const rti1516e::AttributeHandleSet& AHS, T& req, T& rep)
-{
-    req.setAttributesSize(AHS.size());
-    uint32_t i = 0;
-    for (rti1516e::AttributeHandleSet::const_iterator it = AHS.begin(); it != AHS.end(); ++it, ++i) {
-        certi::AttributeHandle certiHandle = rti1516e::AttributeHandleFriend::toCertiHandle(*it);
-        req.setAttributes(certiHandle, i);
-    }
-    privateRefs->executeService(&req, &rep);
-}
-
 std::string varLengthDataAsString(rti1516e::VariableLengthData varLengthData)
 {
     std::string retVal((char*) varLengthData.data(), varLengthData.size());
@@ -108,21 +109,24 @@ certi::TransportType toCertiTransportationType(rti1516e::TransportationType theT
 {
     return (theType == rti1516e::RELIABLE) ? certi::RELIABLE : certi::BEST_EFFORT;
 }
+
 rti1516e::TransportationType toRTI1516TransportationType(certi::TransportType theType)
 {
     return (theType == certi::RELIABLE) ? rti1516e::RELIABLE : rti1516e::BEST_EFFORT;
 }
+
 certi::OrderType toCertiOrderType(rti1516e::OrderType theType)
 {
     return (theType == rti1516e::RECEIVE) ? certi::RECEIVE : certi::TIMESTAMP;
 }
+
 rti1516e::OrderType toRTI1516OrderType(certi::OrderType theType)
 {
     return (theType == certi::RECEIVE) ? rti1516e::RECEIVE : rti1516e::TIMESTAMP;
 }
 /* end of Helper functions */
 
-RTI1516ambassador::RTI1516ambassador() throw() : privateRefs(0)
+RTI1516ambassador::RTI1516ambassador() noexcept
 {
 }
 
@@ -137,12 +141,6 @@ RTI1516ambassador::~RTI1516ambassador()
     delete privateRefs;
 }
 
-// ----------------------------------------------------------------------------
-//! Generic callback evocation (CERTI extension).
-/*! Blocks up to "minimum" seconds until a callback delivery and then evokes a
- *  single callback.
- *  @return true if additional callbacks pending, false otherwise
- */
 bool RTI1516ambassador::__tick_kernel(bool multiple, TickTime minimum, TickTime maximum) throw(
     rti1516e::SpecifiedSaveLabelDoesNotExist, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
@@ -239,64 +237,73 @@ void RTI1516ambassador::disconnect() throw(rti1516e::FederateIsExecutionMember,
 // 4.5
 void RTI1516ambassador::createFederationExecution(
     std::wstring const& federationExecutionName,
-    std::wstring const& fullPathNameToTheFDDfile,
-    std::wstring const& /*LogicalTimeImplementationName*/) throw(rti1516e::FederationExecutionAlreadyExists,
-                                                                 rti1516e::CouldNotOpenFDD,
-                                                                 rti1516e::ErrorReadingFDD,
-                                                                 rti1516e::CouldNotCreateLogicalTimeFactory,
-                                                                 rti1516e::NotConnected,
-                                                                 rti1516e::RTIinternalError)
+    std::wstring const& fomModule,
+    std::wstring const& logicalTimeImplementationName) throw(rti1516e::FederationExecutionAlreadyExists,
+                                                             rti1516e::CouldNotOpenFDD,
+                                                             rti1516e::ErrorReadingFDD,
+                                                             rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
 {
-    certi::M_Create_Federation_Execution req, rep;
-
-    G.Out(pdGendoc, "enter RTI1516ambassador::createFederationExecution");
-    std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
-    req.setFederationName(federationExecutionNameAsString);
-
-    std::string fullPathNameToTheFDDfileAsString(fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end());
-    req.setFEDid(fullPathNameToTheFDDfileAsString);
-
-    G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
-
-    privateRefs->executeService(&req, &rep);
-
-    G.Out(pdGendoc, "exit RTI1516ambassador::createFederationExecution");
-
-    // TODO What to do with the 'logicalTimeImplementationName'? Can't find it's use in SISO-STD-004.1-2004
-    // Only exists in C++ interface.
-    // Ignored for now.
+    createFederationExecutionWithMIM(federationExecutionName, {fomModule}, L"", logicalTimeImplementationName);
 }
 
 void RTI1516ambassador::createFederationExecution(
-    std::wstring const& /*federationExecutionName*/,
-    std::vector<std::wstring> const& /*fomModules*/,
-    std::wstring const& /*logicalTimeImplementationName*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
-                                                                 rti1516e::InconsistentFDD,
-                                                                 rti1516e::ErrorReadingFDD,
-                                                                 rti1516e::CouldNotOpenFDD,
-                                                                 rti1516e::FederationExecutionAlreadyExists,
-                                                                 rti1516e::NotConnected,
-                                                                 rti1516e::RTIinternalError)
+    std::wstring const& federationExecutionName,
+    std::vector<std::wstring> const& fomModules,
+    std::wstring const& logicalTimeImplementationName) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                             rti1516e::InconsistentFDD,
+                                                             rti1516e::ErrorReadingFDD,
+                                                             rti1516e::CouldNotOpenFDD,
+                                                             rti1516e::FederationExecutionAlreadyExists,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
 {
-    throw rti1516e::RTIinternalError(L"Create with FOM Module Not Implemented");
+    createFederationExecutionWithMIM(federationExecutionName, fomModules, L"", logicalTimeImplementationName);
 }
 
 void RTI1516ambassador::createFederationExecutionWithMIM(
-    std::wstring const& /*federationExecutionName*/,
-    std::vector<std::wstring> const& /*fomModules*/,
-    std::wstring const& /*mimModule*/,
-    std::wstring const& /*logicalTimeImplementationName*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
-                                                                 rti1516e::InconsistentFDD,
-                                                                 rti1516e::ErrorReadingFDD,
-                                                                 rti1516e::CouldNotOpenFDD,
-                                                                 rti1516e::DesignatorIsHLAstandardMIM,
-                                                                 rti1516e::ErrorReadingMIM,
-                                                                 rti1516e::CouldNotOpenMIM,
-                                                                 rti1516e::FederationExecutionAlreadyExists,
-                                                                 rti1516e::NotConnected,
-                                                                 rti1516e::RTIinternalError)
+    std::wstring const& federationExecutionName,
+    std::vector<std::wstring> const& fomModules,
+    std::wstring const& mimModule,
+    std::wstring const& logicalTimeImplementationName) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                             rti1516e::InconsistentFDD,
+                                                             rti1516e::ErrorReadingFDD,
+                                                             rti1516e::CouldNotOpenFDD,
+                                                             rti1516e::DesignatorIsHLAstandardMIM,
+                                                             rti1516e::ErrorReadingMIM,
+                                                             rti1516e::CouldNotOpenMIM,
+                                                             rti1516e::FederationExecutionAlreadyExists,
+                                                             rti1516e::NotConnected,
+                                                             rti1516e::RTIinternalError)
 {
-    throw rti1516e::RTIinternalError(L"Create with FOM Module and MIM Module tNot Implemented");
+    G.Out(pdGendoc, "enter RTI1516ambassador::createFederationExecution");
+
+    // Exceptions
+    if (mimModule == L"HLAstandardMIM") {
+        throw rti1516e::DesignatorIsHLAstandardMIM(L"4.5.5.d : MIM designator shall not be HLAstandardMIM.");
+    }
+
+    certi::M_Create_Federation_Execution req, rep;
+
+    req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
+
+    req.setFomModuleDesignatorsSize(fomModules.size());
+    auto i{0};
+    for (const auto& module : fomModules) {
+        req.setFomModuleDesignators({begin(module), end(module)}, i++);
+    }
+
+    if (!mimModule.empty()) {
+        req.setMimDesignator({begin(mimModule), end(mimModule)});
+    }
+
+    req.setLogicalTimeRepresentation({begin(logicalTimeImplementationName), end(logicalTimeImplementationName)});
+
+    G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
+    privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc, "exit RTI1516ambassador::createFederationExecution");
 }
 
 // 4.3
@@ -342,50 +349,64 @@ rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
                                                                  rti1516e::RTIinternalError)
 {
     // RTI shall provide a default federate name if none is provided
-    return this->joinFederationExecution(L"defaultName", federateType, federationExecutionName, additionalFomModules);
+    // TODO move default name to RTIG to ensure unicity
+    return joinFederationExecution(L"defaultName", federateType, federationExecutionName, additionalFomModules);
 }
 
 rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
-    std::wstring const& /*federateName*/,
+    std::wstring const& federateName,
     std::wstring const& federateType,
     std::wstring const& federationExecutionName,
-    std::vector<std::wstring> const& /*additionalFomModules*/) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
-                                                                     rti1516e::FederationExecutionDoesNotExist,
-                                                                     rti1516e::InconsistentFDD,
-                                                                     rti1516e::ErrorReadingFDD,
-                                                                     rti1516e::CouldNotOpenFDD,
-                                                                     rti1516e::SaveInProgress,
-                                                                     rti1516e::RestoreInProgress,
-                                                                     rti1516e::FederateAlreadyExecutionMember,
-                                                                     rti1516e::NotConnected,
-                                                                     rti1516e::CallNotAllowedFromWithinCallback,
-                                                                     rti1516e::RTIinternalError)
+    std::vector<std::wstring> const& additionalFomModules) throw(rti1516e::CouldNotCreateLogicalTimeFactory,
+                                                                 rti1516e::FederationExecutionDoesNotExist,
+                                                                 rti1516e::InconsistentFDD,
+                                                                 rti1516e::ErrorReadingFDD,
+                                                                 rti1516e::CouldNotOpenFDD,
+                                                                 rti1516e::SaveInProgress,
+                                                                 rti1516e::RestoreInProgress,
+                                                                 rti1516e::FederateAlreadyExecutionMember,
+                                                                 rti1516e::NotConnected,
+                                                                 rti1516e::CallNotAllowedFromWithinCallback,
+                                                                 rti1516e::RTIinternalError)
 {
-    M_Join_Federation_Execution req, rep;
-
     G.Out(pdGendoc, "enter RTI1516ambassador::joinFederationExecution");
 
-    if (federateType.length() <= 0) {
+    // Exceptions
+    if (federateName.empty()) {
         throw rti1516e::RTIinternalError(L"Incorrect or empty federate type");
     }
-    std::string federateTypeAsString(federateType.begin(), federateType.end());
 
-    if (federationExecutionName.length() <= 0)
+    if (federateType.empty()) {
+        throw rti1516e::RTIinternalError(L"Incorrect or empty federate type");
+    }
+
+    if (federationExecutionName.empty()) {
         throw rti1516e::RTIinternalError(L"Incorrect or empty federation name");
-    std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
+    }
 
-    req.setFederateName(federateTypeAsString);
-    req.setFederationName(federationExecutionNameAsString);
+    M_Join_Federation_Execution req, rep;
+
+    // federate handle is only used in response
+
+    req.setFederateName({begin(federateType), end(federateType)});
+
+    req.setFederateType({begin(federateType), end(federateType)});
+
+    req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
+
+    req.setAdditionalFomModulesSize(additionalFomModules.size());
+    auto i{0};
+    for (const auto& module : additionalFomModules) {
+        req.setAdditionalFomModules({begin(module), end(module)}, i++);
+    }
+
     G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
+
+    PrettyDebug::setFederateName("LibRTI::" + std::string{begin(federateType), end(federateType)});
+
     G.Out(pdGendoc, "exit  RTI1516ambassador::joinFederationExecution");
-    PrettyDebug::setFederateName("LibRTI::" + std::string(federateTypeAsString));
-
-    certi::FederateHandle certiFederateHandle = rep.getFederate();
-    rti1516e::FederateHandle rti1516FederateHandle
-        = rti1516e::FederateHandleFriend::createRTI1516Handle(certiFederateHandle);
-
-    return rti1516FederateHandle;
+    return rti1516e::FederateHandleFriend::createRTI1516Handle(rep.getFederate());
 }
 
 // 4.5

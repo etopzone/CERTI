@@ -532,19 +532,15 @@ void
                                                                          RTI::CouldNotOpenFED,
                                                                          RTI::FederationExecutionAlreadyExists)
 {
-    M_Create_Federation_Execution req, rep;
-
     G.Out(pdGendoc, "enter RTIambassador::createFederationExecution");
 
-    req.setFederationName(executionName);
-    req.setFEDid(FED);
+    M_Create_Federation_Execution req, rep;
 
-    /*#ifdef _WIN32
-	if(!stricmp(FED,executionName)) {
-#else
-	if(!strcasecmp(FED,exeName)) {
-#endif
-}*/
+    req.setFederationExecutionName(executionName);
+    
+    req.setFomModuleDesignatorsSize(1);
+    req.setFomModuleDesignators(FED, 0);
+
     G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
 
     privateRefs->executeService(&req, &rep);
@@ -597,18 +593,24 @@ RTI::RTIambassador::joinFederationExecution(const char* yourName,
 
     G.Out(pdGendoc, "enter RTIambassador::joinFederationExecution");
 
-    if (yourName == NULL || strlen(yourName) == 0)
+    if (yourName == NULL || strlen(yourName) == 0) {
         throw RTI::RTIinternalError("Incorrect or empty federate name");
-    if (executionName == NULL || strlen(executionName) == 0)
+    }
+    
+    if (executionName == NULL || strlen(executionName) == 0) {
         throw RTI::RTIinternalError("Incorrect or empty federation name");
+    }
 
     privateRefs->fed_amb = (FederateAmbassador*) fedamb;
 
     req.setFederateName(yourName);
-    req.setFederationName(executionName);
+    req.setFederationExecutionName(executionName);
+    
     G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
+    
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc, "exit  RTIambassador::joinFederationExecution");
+    
     PrettyDebug::setFederateName("LibRTI::" + std::string(yourName));
     return rep.getFederate();
 }

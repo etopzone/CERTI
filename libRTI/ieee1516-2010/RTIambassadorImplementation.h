@@ -39,7 +39,7 @@ class RTI_EXPORT RTI1516ambassador : rti1516e::RTIambassador
     throw (rti1516e::RTIinternalError);
 
 private:
-    RTI1516ambPrivateRefs* privateRefs ;
+    RTI1516ambPrivateRefs* privateRefs {nullptr};
 
     // Helper functions
     template<typename T> void
@@ -49,13 +49,20 @@ private:
     template<typename T> void
     assignAHVMAndExecuteService(const rti1516e::AttributeHandleValueMap &AHVM, T &req, T &rep);
     // Helper function for CallBacks
+    
+    
+    /** Generic callback evocation (CERTI extension).
+    *  Blocks up to "minimum" seconds until a callback delivery and then evokes a
+    *  single callback.
+    *  @return true if additional callbacks pending, false otherwise
+    */
     bool __tick_kernel(bool, TickTime, TickTime)
     throw (rti1516e::SpecifiedSaveLabelDoesNotExist,
            rti1516e::NotConnected,
            rti1516e::RTIinternalError);
 
 protected:
-    RTI1516ambassador() throw ();
+    RTI1516ambassador() noexcept;
 
 public:
     virtual
@@ -83,7 +90,7 @@ public:
     // 4.5
     virtual void createFederationExecution
     (std::wstring const & federationExecutionName,
-            std::wstring const & fullPathNameToTheFDDfile,
+            std::wstring const & fomModule,
             std::wstring const & logicalTimeImplementationName = L"")
     throw (rti1516e::FederationExecutionAlreadyExists,
            rti1516e::CouldNotOpenFDD,

@@ -1,4 +1,4 @@
-// Generated on 2017 December Mon, 04 at 16:22:04 by the CERTI message generator
+// Generated on 2017 December Tue, 19 at 12:31:10 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "M_Classes.hh"
@@ -148,8 +148,20 @@ void M_Create_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
     // Call parent class
     Super::serialize(msgBuffer);
     // Specific serialization code
-    msgBuffer.write_string(federationName);
-    msgBuffer.write_string(FEDid);
+    msgBuffer.write_string(federationExecutionName);
+    uint32_t fomModuleDesignatorsSize = fomModuleDesignators.size();
+    msgBuffer.write_uint32(fomModuleDesignatorsSize);
+    for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
+        msgBuffer.write_string(fomModuleDesignators[i]);
+    }
+    msgBuffer.write_bool(_hasMimDesignator);
+    if (_hasMimDesignator) {
+        msgBuffer.write_string(mimDesignator);
+    }
+    msgBuffer.write_bool(_hasLogicalTimeRepresentation);
+    if (_hasLogicalTimeRepresentation) {
+        msgBuffer.write_string(logicalTimeRepresentation);
+    }
 }
 
 void M_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -157,28 +169,97 @@ void M_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer
     // Call parent class
     Super::deserialize(msgBuffer);
     // Specific deserialization code
-    msgBuffer.read_string(federationName);
-    msgBuffer.read_string(FEDid);
+    msgBuffer.read_string(federationExecutionName);
+    uint32_t fomModuleDesignatorsSize = msgBuffer.read_uint32();
+    fomModuleDesignators.resize(fomModuleDesignatorsSize);
+    for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
+        msgBuffer.read_string(fomModuleDesignators[i]);
+    }
+    _hasMimDesignator = msgBuffer.read_bool();
+    if (_hasMimDesignator) {
+        msgBuffer.read_string(mimDesignator);
+    }
+    _hasLogicalTimeRepresentation = msgBuffer.read_bool();
+    if (_hasLogicalTimeRepresentation) {
+        msgBuffer.read_string(logicalTimeRepresentation);
+    }
 }
 
-const std::string& M_Create_Federation_Execution::getFederationName() const
+const std::string& M_Create_Federation_Execution::getFederationExecutionName() const
 {
-    return federationName;
+    return federationExecutionName;
 }
 
-void M_Create_Federation_Execution::setFederationName(const std::string& newFederationName)
+void M_Create_Federation_Execution::setFederationExecutionName(const std::string& newFederationExecutionName)
 {
-    federationName = newFederationName;
+    federationExecutionName = newFederationExecutionName;
 }
 
-const std::string& M_Create_Federation_Execution::getFEDid() const
+uint32_t M_Create_Federation_Execution::getFomModuleDesignatorsSize() const
 {
-    return FEDid;
+    return fomModuleDesignators.size();
 }
 
-void M_Create_Federation_Execution::setFEDid(const std::string& newFEDid)
+void M_Create_Federation_Execution::setFomModuleDesignatorsSize(uint32_t num)
 {
-    FEDid = newFEDid;
+    fomModuleDesignators.resize(num);
+}
+
+const std::vector<std::string>& M_Create_Federation_Execution::getFomModuleDesignators() const
+{
+    return fomModuleDesignators;
+}
+
+const std::string& M_Create_Federation_Execution::getFomModuleDesignators(uint32_t rank) const
+{
+    return fomModuleDesignators[rank];
+}
+
+std::string& M_Create_Federation_Execution::getFomModuleDesignators(uint32_t rank)
+{
+    return fomModuleDesignators[rank];
+}
+
+void M_Create_Federation_Execution::setFomModuleDesignators(const std::string& newFomModuleDesignators, uint32_t rank)
+{
+    fomModuleDesignators[rank] = newFomModuleDesignators;
+}
+
+void M_Create_Federation_Execution::removeFomModuleDesignators(uint32_t rank)
+{
+    fomModuleDesignators.erase(fomModuleDesignators.begin() + rank);
+}
+
+const std::string& M_Create_Federation_Execution::getMimDesignator() const
+{
+    return mimDesignator;
+}
+
+void M_Create_Federation_Execution::setMimDesignator(const std::string& newMimDesignator)
+{
+    _hasMimDesignator = true;
+    mimDesignator = newMimDesignator;
+}
+
+bool M_Create_Federation_Execution::hasMimDesignator() const
+{
+    return _hasMimDesignator;
+}
+
+const std::string& M_Create_Federation_Execution::getLogicalTimeRepresentation() const
+{
+    return logicalTimeRepresentation;
+}
+
+void M_Create_Federation_Execution::setLogicalTimeRepresentation(const std::string& newLogicalTimeRepresentation)
+{
+    _hasLogicalTimeRepresentation = true;
+    logicalTimeRepresentation = newLogicalTimeRepresentation;
+}
+
+bool M_Create_Federation_Execution::hasLogicalTimeRepresentation() const
+{
+    return _hasLogicalTimeRepresentation;
 }
 
 std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg)
@@ -188,8 +269,14 @@ std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& 
     os << static_cast<const M_Create_Federation_Execution::Super&>(msg); // show parent class
     
     // Specific display
-    os << "  federationName = " << msg.federationName << std::endl;
-    os << "  FEDid = " << msg.FEDid << std::endl;
+    os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
+    os << "  fomModuleDesignators [] =" << std::endl;
+    for (const auto& element : msg.fomModuleDesignators) {
+        os << element;
+    }
+    os << std::endl;
+    os << "  (opt) mimDesignator =" << msg.mimDesignator << std::endl;
+    os << "  (opt) logicalTimeRepresentation =" << msg.logicalTimeRepresentation << std::endl;
     
     os << "[M_Create_Federation_Execution - End]" << std::endl;
     return os;
@@ -252,8 +339,17 @@ void M_Join_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
     Super::serialize(msgBuffer);
     // Specific serialization code
     msgBuffer.write_uint32(federate);
-    msgBuffer.write_string(federationName);
-    msgBuffer.write_string(federateName);
+    msgBuffer.write_bool(_hasFederateName);
+    if (_hasFederateName) {
+        msgBuffer.write_string(federateName);
+    }
+    msgBuffer.write_string(federateType);
+    msgBuffer.write_string(federationExecutionName);
+    uint32_t additionalFomModulesSize = additionalFomModules.size();
+    msgBuffer.write_uint32(additionalFomModulesSize);
+    for (uint32_t i = 0; i < additionalFomModulesSize; ++i) {
+        msgBuffer.write_string(additionalFomModules[i]);
+    }
 }
 
 void M_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -262,8 +358,17 @@ void M_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
     Super::deserialize(msgBuffer);
     // Specific deserialization code
     federate = static_cast<FederateHandle>(msgBuffer.read_uint32());
-    msgBuffer.read_string(federationName);
-    msgBuffer.read_string(federateName);
+    _hasFederateName = msgBuffer.read_bool();
+    if (_hasFederateName) {
+        msgBuffer.read_string(federateName);
+    }
+    msgBuffer.read_string(federateType);
+    msgBuffer.read_string(federationExecutionName);
+    uint32_t additionalFomModulesSize = msgBuffer.read_uint32();
+    additionalFomModules.resize(additionalFomModulesSize);
+    for (uint32_t i = 0; i < additionalFomModulesSize; ++i) {
+        msgBuffer.read_string(additionalFomModules[i]);
+    }
 }
 
 const FederateHandle& M_Join_Federation_Execution::getFederate() const
@@ -276,16 +381,6 @@ void M_Join_Federation_Execution::setFederate(const FederateHandle& newFederate)
     federate = newFederate;
 }
 
-const std::string& M_Join_Federation_Execution::getFederationName() const
-{
-    return federationName;
-}
-
-void M_Join_Federation_Execution::setFederationName(const std::string& newFederationName)
-{
-    federationName = newFederationName;
-}
-
 const std::string& M_Join_Federation_Execution::getFederateName() const
 {
     return federateName;
@@ -293,7 +388,68 @@ const std::string& M_Join_Federation_Execution::getFederateName() const
 
 void M_Join_Federation_Execution::setFederateName(const std::string& newFederateName)
 {
+    _hasFederateName = true;
     federateName = newFederateName;
+}
+
+bool M_Join_Federation_Execution::hasFederateName() const
+{
+    return _hasFederateName;
+}
+
+const std::string& M_Join_Federation_Execution::getFederateType() const
+{
+    return federateType;
+}
+
+void M_Join_Federation_Execution::setFederateType(const std::string& newFederateType)
+{
+    federateType = newFederateType;
+}
+
+const std::string& M_Join_Federation_Execution::getFederationExecutionName() const
+{
+    return federationExecutionName;
+}
+
+void M_Join_Federation_Execution::setFederationExecutionName(const std::string& newFederationExecutionName)
+{
+    federationExecutionName = newFederationExecutionName;
+}
+
+uint32_t M_Join_Federation_Execution::getAdditionalFomModulesSize() const
+{
+    return additionalFomModules.size();
+}
+
+void M_Join_Federation_Execution::setAdditionalFomModulesSize(uint32_t num)
+{
+    additionalFomModules.resize(num);
+}
+
+const std::vector<std::string>& M_Join_Federation_Execution::getAdditionalFomModules() const
+{
+    return additionalFomModules;
+}
+
+const std::string& M_Join_Federation_Execution::getAdditionalFomModules(uint32_t rank) const
+{
+    return additionalFomModules[rank];
+}
+
+std::string& M_Join_Federation_Execution::getAdditionalFomModules(uint32_t rank)
+{
+    return additionalFomModules[rank];
+}
+
+void M_Join_Federation_Execution::setAdditionalFomModules(const std::string& newAdditionalFomModules, uint32_t rank)
+{
+    additionalFomModules[rank] = newAdditionalFomModules;
+}
+
+void M_Join_Federation_Execution::removeAdditionalFomModules(uint32_t rank)
+{
+    additionalFomModules.erase(additionalFomModules.begin() + rank);
 }
 
 std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg)
@@ -304,8 +460,14 @@ std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& ms
     
     // Specific display
     os << "  federate = " << msg.federate << std::endl;
-    os << "  federationName = " << msg.federationName << std::endl;
-    os << "  federateName = " << msg.federateName << std::endl;
+    os << "  (opt) federateName =" << msg.federateName << std::endl;
+    os << "  federateType = " << msg.federateType << std::endl;
+    os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
+    os << "  additionalFomModules [] =" << std::endl;
+    for (const auto& element : msg.additionalFomModules) {
+        os << element;
+    }
+    os << std::endl;
     
     os << "[M_Join_Federation_Execution - End]" << std::endl;
     return os;
