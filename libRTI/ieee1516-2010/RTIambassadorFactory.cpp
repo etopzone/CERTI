@@ -60,20 +60,24 @@ rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinterna
 
     p_ambassador->p = std::unique_ptr<certi::RTI1516ambassador::Private>(new certi::RTI1516ambassador::Private);
 
+#ifdef _WIN32
+    p_ambassador->p->handle_RTIA = (HANDLE) -1;
+#endif
+
     p_ambassador->p->socket_un = std::unique_ptr<certi::SocketUN>(new certi::SocketUN(certi::stIgnoreSignal));
 
     std::vector<std::string> rtiaList;
-    
+
     const char* env = getenv("CERTI_RTIA");
     if (env && strlen(env)) {
         rtiaList.push_back(std::string(env));
     }
-    
+
     env = getenv("CERTI_HOME");
     if (env && strlen(env)) {
         rtiaList.push_back(std::string(env) + "/bin/rtia");
     }
-    
+
     rtiaList.push_back(PACKAGE_INSTALL_PREFIX "/bin/rtia");
     rtiaList.push_back("rtia");
 
