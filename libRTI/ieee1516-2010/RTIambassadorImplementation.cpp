@@ -383,7 +383,7 @@ rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
     req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
 
     req.setAdditionalFomModulesSize(additionalFomModules.size());
-    auto i{0};
+    auto i = 0;
     for (const auto& module : additionalFomModules) {
         req.setAdditionalFomModules({begin(module), end(module)}, i++);
     }
