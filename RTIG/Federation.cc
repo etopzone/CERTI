@@ -116,7 +116,7 @@ Federation::Federation(const string& federation_name,
                        const std::string& mim_module,
                        const int verboseLevel)
 #endif
-    : my_handle(federation_handle), my_name(federation_name), my_fom_modules(fom_modules), my_mim_module{mim_module}
+    : my_handle(federation_handle), my_name(federation_name)
 {
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -148,13 +148,14 @@ Federation::Federation(const string& federation_name,
         cout << "New federation: " << my_name << endl;
     }
     
-    if(my_mim_module.empty()) {
-        my_mim_module = "HLAstandardMIM";
+    if(mim_module.empty()) {
+        openFomModules({"HLAstandardMIM.xml"}, true);
+    }
+    else {
+        openFomModules({mim_module}, true);
     }
     
-    openMimModule();
-
-    openFomModules(verboseLevel);
+    openFomModules(fom_modules);
 
     my_min_NERx.setZero();
 

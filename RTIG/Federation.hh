@@ -469,9 +469,7 @@ public:
 private:
     friend class Mom;
 
-    void openMimModule();
-
-    void openFomModules(const int verboseLevel);
+    void openFomModules(std::vector<std::string> modules, const bool is_mim = true);
 
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
