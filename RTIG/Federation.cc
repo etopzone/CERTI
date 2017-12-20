@@ -135,13 +135,14 @@ Federation::Federation(const string& federation_name,
         throw RTIinternalError("Null init parameter in Federation creation.");
     }
 
-    Debug(D, pdInit) << "New Federation created with Handle " << my_handle << ", now reading FOM." << endl;
 
     // Initialize the Security Server.
     my_server = make_unique<SecurityServer>(socket_server, audit_server, my_handle);
 
     // Read FOM File to initialize Root Object.
     my_root_object = make_unique<RootObject>(my_server.get());
+    
+    Debug(D, pdInit) << "New Federation <" << my_name << "> created with Handle <" << my_handle << ">, now reading FOM." << endl;
 
     if (verboseLevel > 0) {
         cout << "New federation: " << my_name << endl;

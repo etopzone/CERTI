@@ -137,7 +137,7 @@ std::string filepathOf(const std::string& module)
     std::string filename = module;
     bool filefound = false;
 
-    Debug(D, pdDebug) << "Looking for FOM file <" << module << "> ... " << std::endl;
+    Debug(D, pdDebug) << "Looking for FOM file <" << filename << "> ... " << std::endl;
 
     STAT_STRUCT file_stat;
     filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
@@ -224,33 +224,157 @@ FileType checkFileType(const std::string& filepath)
     }
 }
 
+RootObject parseModule(const std::string& filepath, const FileType type)
+{
+    RootObject result{RootObject::TemporaryRootObject()};
+
+    std::ifstream fedFile(filepath);
+
+    if (fedFile.is_open()) {
+        fedFile.close();
+        if (type == FileType::Fed) {
+            // parse FED file and show the parse on stdout if verboseLevel>=2
+            int err = fedparser::build(filepath.c_str(), &result, true);
+            if (err != 0) {
+                throw ErrorReadingFED("fed parser found error in FED file");
+            }
+        }
+        else if (type == FileType::Xml) {
+#ifdef HAVE_XML
+            std::unique_ptr<XmlParser> parser;
+            if (XmlParser::exists()) {
+                switch (XmlParser::version(filepath)) {
+                case XmlParser::XML_IEEE1516_2000:
+                case XmlParser::XML_LEGACY:
+                    parser = make_unique<XmlParser2000>(&result);
+                    break;
+                case XmlParser::XML_IEEE1516_2010:
+                    parser = make_unique<XmlParser2010>(&result);
+                    break;
+                }
+
+                parser->parse(filepath);
+            }
+            else
+#endif
+            {
+                std::cerr << "CERTI was Compiled without XML support" << std::endl;
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
+                throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
+            }
+        }
+    }
+
+    return result;
+}
+
 void Federation::openMimModule()
 {
+    Debug(D, pdDebug) << "INITIAL ROOT OBJECT (must be empty)" << std::endl;
+    my_root_object->display();
+    
     try {
-        // Find file
-        auto module_path = filepathOf(my_mim_module);
+        Debug(D, pdDebug) << "Open mim module <" << my_mim_module << ">" << std::endl;
+        
+        // MIM can be provided without .xml extension
+        Debug(D, pdDebug) << "  Find file" << std::endl;
+        auto module_path = filepathOf(my_mim_module + ".xml");
 
-        // Check file type
-        checkFileType(module_path);
+        Debug(D, pdDebug) << "  Check file type" << std::endl;
+        auto file_type = checkFileType(module_path);
+
+        Debug(D, pdDebug) << "  Parse file" << std::endl;
+        RootObject temporary_root_object = parseModule(module_path, file_type);
+        
+        Debug(D, pdDebug) << "  Module root object" << std::endl;
+        temporary_root_object.display();
+
+        Debug(D, pdDebug) << "  Check consistency" << std::endl;
+        //         temporary_root_object.canBeAddedTo(my_root_object);
+        auto is_compliant = Mom::isAvailableInRootObjectAndCompliant(temporary_root_object);
+        if(!is_compliant) {
+            throw ErrorReadingFED("4.5.5.e : Invalid MIM.");
+        }
+
+        Debug(D, pdDebug) << "  Add to current root object" << std::endl;
+        //         temporary_root_object.insertInto(*my_root_object);
+
+        Debug(D, pdDebug) << "  Update path to mim module" << std::endl;
+        my_mim_module = module_path;
     }
-    catch (Exception& e) {
+    /*catch (CouldNotOpenFED& e) {
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
         throw CouldNotOpenFED("4.5.5.f : Could not locate MIM indicated by supplied designator.");
     }
-
-    try {
-        // Parse file
-
-        // Check consistency
-
-        // Add to current root object
-    }
-    catch (Exception& e) {
+    catch (ErrorReadingFED& e) {
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
         throw ErrorReadingFED("4.5.5.e : Invalid MIM.");
+    }*/
+    catch (Exception& e) {
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
+        throw;
     }
+    
+    Debug(D, pdDebug) << "ROOT OBJECT with module" << std::endl;
+    my_root_object->display();
 }
 
 void Federation::openFomModules(const int verboseLevel)
 {
+    Debug(D, pdDebug) << "ROOT OBJECT" << std::endl;
+    my_root_object->display();
+    
+    try {
+        Debug(D, pdDebug) << "Open mim module <" << my_mim_module << ">" << std::endl;
+        
+        Debug(D, pdDebug) << "  Find file" << std::endl;
+        auto module_path = filepathOf(my_mim_module);
+
+        Debug(D, pdDebug) << "  Check file type" << std::endl;
+        auto file_type = checkFileType(module_path);
+
+        Debug(D, pdDebug) << "  Parse file" << std::endl;
+        RootObject temporary_root_object = parseModule(module_path, file_type);
+        
+        Debug(D, pdDebug) << "TEMPORARY ROOT OBJECT" << std::endl;
+        temporary_root_object.display();
+
+        Debug(D, pdDebug) << "  Check consistency" << std::endl;
+        //         temporary_root_object.canBeAddedTo(my_root_object);
+        auto is_compliant = Mom::isAvailableInRootObjectAndCompliant(temporary_root_object);
+        if(!is_compliant) {
+            throw ErrorReadingFED("4.5.5.e : Invalid MIM.");
+        }
+
+        Debug(D, pdDebug) << "  Add to current root object" << std::endl;
+        //         temporary_root_object.insertInto(*my_root_object);
+
+        Debug(D, pdDebug) << "  Update path to mim module" << std::endl;
+        my_mim_module = module_path;
+        
+        Debug(D, pdDebug) << "  MIM module successfully loaded from <" << my_mim_module << ">" << std::endl;
+    }
+    /*catch (CouldNotOpenFED& e) {
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
+        throw CouldNotOpenFED("4.5.5.f : Could not locate MIM indicated by supplied designator.");
+    }
+    catch (ErrorReadingFED& e) {
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
+        throw ErrorReadingFED("4.5.5.e : Invalid MIM.");
+    }*/
+    catch (Exception& e) {
+        Debug(D, pdDebug) << "ROOT OBJECT" << std::endl;
+        my_root_object->display();
+        
+        Debug(D, pdExcept) << "Caught exception " << e.name() << " : " << e.reason() << std::endl;
+        throw;
+    }
+    
+    Debug(D, pdDebug) << "ROOT OBJECT" << std::endl;
+    my_root_object->display();
+    
+    
+#if 0
     std::string filename = my_fom_modules.front();
     bool filefound = false;
 
@@ -427,6 +551,7 @@ void Federation::openFomModules(const int verboseLevel)
             }
         }
     }
+#endif
 }
 
 bool Federation::saveXmlData()

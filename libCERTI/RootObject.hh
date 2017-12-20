@@ -64,6 +64,15 @@ public:
      *            This may be NULL on the RTIA.
      */
     RootObject(SecurityServer* security_server = nullptr);
+    
+    struct TemporaryRootObject{};
+    RootObject(TemporaryRootObject);
+    
+    struct TestsOnly{};
+    RootObject(TestsOnly flag);
+    
+    struct Coucou{};
+    RootObject(Coucou flag);
 
     /** RootObject destructor.
      * Will delete all object or interaction classes.
@@ -72,6 +81,12 @@ public:
 
     /// Print the Root Object tree to the standard output.
     void display() const;
+    
+    /// Check if we can add a module (this) into a global root object (parameter)
+    bool canBeAddedTo(const RootObject& main_root);
+    
+    /// Insert every objects from this object into another one (parameter) 
+    void insertInto(RootObject& main_root);
 
     /** Return the security LevelID corresponding to a security level name.
      * @param[in] levelName the security level name
@@ -151,6 +166,29 @@ public:
     void addInteractionClass(Interaction* currentIC, Interaction* parentIC);
 
     /**
+     * Serialize the federate object model into a message buffer.
+     */
+    void convertToSerializedFOM(NM_Join_Federation_Execution& message);
+
+    /**
+     * Deserialize the federate object model from a message buffer.
+     */
+    void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
+
+private:
+    std::vector<RoutingSpace> spaces;
+    /**
+     * The associated socket server.
+     */
+    SecurityServer* server;
+
+    // Regions
+    std::list<RTIRegion*> regions;
+    HandleManager<RegionHandle> regionHandles;
+    
+public: // FIXME encapsulation
+
+    /**
      * The set of object classes.
      * This is created when parsing the FOM.
      */
@@ -171,27 +209,6 @@ public:
      * The set of reserved names.
      */
     NameReservationSet* reservedNames;
-
-    /**
-     * Serialize the federate object model into a message buffer.
-     */
-    void convertToSerializedFOM(NM_Join_Federation_Execution& message);
-
-    /**
-     * Deserialize the federate object model from a message buffer.
-     */
-    void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
-
-private:
-    std::vector<RoutingSpace> spaces;
-    /**
-     * The associated socket server.
-     */
-    SecurityServer* server;
-
-    // Regions
-    std::list<RTIRegion*> regions;
-    HandleManager<RegionHandle> regionHandles;
 };
 
 } // namespace certi

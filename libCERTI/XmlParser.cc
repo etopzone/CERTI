@@ -110,7 +110,7 @@ RootObject* XmlParser::parse(string pathToXmlFile)
             cur = cur->xmlChildrenNode;
             while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, NODE_OBJECT_CLASS))) {
-                    this->parseClass(0);
+                    parseClass(nullptr);
                 }
                 cur = cur->next;
             }
@@ -122,7 +122,7 @@ RootObject* XmlParser::parse(string pathToXmlFile)
             cur = cur->xmlChildrenNode;
             while (cur != NULL) {
                 if ((!xmlStrcmp(cur->name, NODE_INTERACTION_CLASS))) {
-                    this->parseInteraction(0);
+                    parseInteraction(nullptr);
                 }
                 cur = cur->next;
             }

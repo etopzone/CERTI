@@ -49,14 +49,24 @@ namespace certi {
 static PrettyDebug D("ROOTOBJECT", "(RootObject) ");
 static PrettyDebug G("GENDOC", __FILE__);
 
-RootObject::RootObject(SecurityServer* security_server) : server(security_server), regionHandles(1)
+RootObject::RootObject(SecurityServer* security_server) 
+: server(security_server)
+, regionHandles(1)
+, ObjectClasses {new ObjectClassSet(server, true)}
+, Interactions {new InteractionSet(server, true)}
+, objects {new ObjectSet(server)}
+, reservedNames {new NameReservationSet()}
 {
-    /* this object class set is the root one */
-    ObjectClasses = new ObjectClassSet(server, true);
-    /* this interaction class set is the root one */
-    Interactions = new InteractionSet(server, true);
-    objects = new ObjectSet(server);
-    reservedNames = new NameReservationSet();
+}
+
+RootObject::RootObject(TemporaryRootObject)
+: server(nullptr)
+, regionHandles(1)
+, ObjectClasses {new ObjectClassSet(nullptr, false)}
+, Interactions {new InteractionSet(nullptr, false)}
+, objects {new ObjectSet(nullptr)}
+, reservedNames {new NameReservationSet()}
+{
 }
 
 RootObject::~RootObject()
@@ -83,7 +93,7 @@ void RootObject::display() const
         std::cout << *Interactions;
     }
     else {
-        std::cout << "Is is NULL!!" << std::endl;
+        std::cout << "Interactions is NULL!!" << std::endl;
     }
 
     if (!spaces.empty()) {
@@ -97,6 +107,97 @@ void RootObject::display() const
 
     std::cout << std::endl << "Root Object Tree ENDS." << std::endl;
     std::cout << "------------------------" << std::endl;
+}
+
+bool RootObject::canBeAddedTo(const RootObject& main_root)
+{
+    // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
+    
+    // object class
+    for(const auto& object_class: *ObjectClasses) {
+        try {
+            auto handle = main_root.ObjectClasses->getObjectClassHandle(object_class.first);
+            
+            // TODO
+            return false;
+        }
+        catch(NameNotFound& e) {
+            // ok, continue
+        }
+    }
+    
+    // interaction class
+    for(const auto& interaction_class: *Interactions) {
+        try {
+            auto handle = main_root.Interactions->getInteractionClassHandle(interaction_class.first);
+            
+            // TODO
+            return false;
+        }
+        catch(NameNotFound& e) {
+            // ok, continue
+        }
+    }
+    
+    // dimension
+    // TODO
+    
+    // transportation type
+    // TODO
+    
+    // update rate
+    // TODO
+    
+    // switches
+    // TODO
+    
+    return true;
+}
+    
+void RootObject::insertInto(RootObject& main_root)
+{
+    // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
+    
+    // object class
+    auto object_handles = main_root.ObjectClasses->handles();
+    auto currentHandle = *(std::max_element(begin(object_handles), end(object_handles))) + 1;
+    
+    
+    for(auto& object_class: *ObjectClasses) {
+        try {
+            auto handle = main_root.ObjectClasses->getObjectClassHandle(object_class.first);
+            
+            // TODO merge
+        }
+        catch(NameNotFound& e) {
+            // TODO insert, beware of parentship...
+        }
+    }
+    
+    // interaction class
+    for(auto& interaction_class: *Interactions) {
+        try {
+            auto handle = main_root.Interactions->getInteractionClassHandle(interaction_class.first);
+            
+            // TODO merge
+        }
+        catch(NameNotFound& e) {
+            // TODO insert, beware of parentship...
+            
+        }
+    }
+    
+    // dimension
+    // TODO
+    
+    // transportation type
+    // TODO
+    
+    // update rate
+    // TODO
+    
+    // switches
+    // TODO
 }
 
 SecurityLevelID RootObject::getSecurityLevelID(const std::string& levelName)
