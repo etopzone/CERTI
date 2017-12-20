@@ -31,8 +31,6 @@
 namespace certi {
 namespace rtia {
 
-static PrettyDebug D("RTIA", "(RTIA) ");
-
 RTIA::RTIA(int RTIA_port, int RTIA_fd)
     : comm{RTIA_port, RTIA_fd}
     , fm{&comm}
@@ -73,10 +71,9 @@ void RTIA::execute()
     enum class RespType { Invalid, FromNetwork, FromFederate, Timeout };
 
     while (fm.getConnectionState() != FederationManagement::ConnectionState::Ended) {
-        /* 
-         * readMessage call will allocate EITHER a Network Message or a Message 
-         *   Network Message will come from a virtual constructor call
-         *   Message will come from a "simple" constructor call
+        /* readMessage call will allocate EITHER a Network Message or a Message
+         * Network Message will come from a virtual constructor call
+         * Message will come from a "simple" constructor call
          */
         Message* msgFromFederate{nullptr};
         NetworkMessage* msgFromRTIG{nullptr};
@@ -85,16 +82,12 @@ void RTIA::execute()
         try {
             switch (tm._tick_state) {
             case TimeManagement::NO_TICK:
-                /* tick() is not active:
-                 *   block until RTIA or federate message comes
-                 */
+                // tick() is not active: block until RTIA or federate message comes
                 comm.readMessage(result, &msgFromRTIG, &msgFromFederate, NULL);
                 break;
 
             case TimeManagement::TICK_BLOCKING:
-                /* blocking tick() waits for an event to come:
-                 *   block until RTIA or federate message comes, or timeout expires
-                 */
+                // blocking tick() waits for an event to come: block until RTIA or federate message comes, or timeout expires
                 if (tm._tick_timeout != std::numeric_limits<double>::infinity() && tm._tick_timeout < LONG_MAX) {
                     struct timeval timev;
                     timev.tv_sec = int(tm._tick_timeout);
@@ -109,10 +102,7 @@ void RTIA::execute()
 
             case TimeManagement::TICK_CALLBACK:
             case TimeManagement::TICK_RETURN:
-                /* tick() waits until a federate callback finishes:
-                 *   block until federate message comes
-                 *   RTIA messages are queued in a system queue
-                 */
+                // tick() waits until a federate callback finishes: block until federate message comes RTIA messages are queued in a system queue
                 comm.readMessage(result, NULL, &msgFromFederate, NULL);
                 break;
 
@@ -120,7 +110,7 @@ void RTIA::execute()
                 assert(false);
             }
 
-            /* timev is undefined after select() */
+            // timev is undefined after select()
         }
         catch (NetworkSignal& e) {
             fm.setConnectionState(FederationManagement::ConnectionState::Ended);
