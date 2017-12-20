@@ -140,22 +140,8 @@ void RTIG::execute()
         if ((result == -1) && (WSAGetLastError() == WSAEINTR)) {
             break;
         }
-#else
-        FD_ZERO(&fd);
-        FD_SET(my_tcpSocketServer.returnSocket(), &fd);
-
-        int fd_max = my_socketServer.addToFDSet(&fd);
-        fd_max = std::max(my_tcpSocketServer.returnSocket(), fd_max);
-
-        // Wait for an incoming message.
-        result = select(fd_max + 1, &fd, nullptr, nullptr, nullptr);
-
-        if ((result == -1) && (errno == EINTR)) {
-            break;
-        }
-#endif
-
-        link = my_socketServer.getActiveSocket(&fd);
+        
+		link = my_socketServer.getActiveSocket(&fd);
 
         // Is it a message from an already opened connection?
         if (link) {
@@ -187,6 +173,107 @@ void RTIG::execute()
             Debug(D, pdCom) << "New client" << std::endl;
             openConnection();
         }
+#else
+
+#ifdef CERTI_RTIG_USE_SELECT
+        FD_ZERO(&fd);
+        FD_SET(my_tcpSocketServer.returnSocket(), &fd);
+
+        int fd_max = my_socketServer.addToFDSet(&fd);
+        fd_max = std::max(my_tcpSocketServer.returnSocket(), fd_max);
+
+        // Wait for an incoming message.
+        result = select(fd_max + 1, &fd, nullptr, nullptr, nullptr);
+
+        if ((result == -1) && (errno == EINTR)) {
+            break;
+        }
+		link = my_socketServer.getActiveSocket(&fd);
+
+        // Is it a message from an already opened connection?
+        if (link) {
+            Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
+
+            try {
+                do {
+                    link = processIncomingMessage(link);
+                    if (!link) {
+                        break;
+                    }
+                } while (link->isDataReady());
+            }
+            catch (NetworkError& e) {
+                if (!e.reason().empty()) {
+                    Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
+                }
+                else {
+                    Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
+                }
+                std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
+                closeConnection(link, true);
+                link = nullptr;
+            }
+        }
+
+        // Or on the server socket ?
+        if (FD_ISSET(my_tcpSocketServer.returnSocket(), &fd)) {
+            Debug(D, pdCom) << "New client" << std::endl;
+            openConnection();
+        }
+#endif
+#ifdef CERTI_RTIG_USE_POLL
+        std::vector<struct pollfd> SocketVector;
+        my_socketServer.constructPollList();
+        struct pollfd tcp_server;
+        tcp_server.fd = my_tcpSocketServer.returnSocket();
+        tcp_server.events = POLLIN;
+        my_socketServer.addElementPollList(tcp_server);
+        SocketVector = my_socketServer.getSocketVector();
+        // blocking call (SHOULD IT BE THIS WAY ??)
+        result = ::poll(&SocketVector[0], SocketVector.size(), -1);
+        if ((result == -1) && (errno == EINTR)) {
+            break;
+        }
+        for (std::vector<struct pollfd>::iterator it = SocketVector.begin() ; it != SocketVector.end(); ++it)
+		{
+			short revents = it->revents;
+			if (revents == POLLIN)
+			{
+				link = my_socketServer.getSocketFromFileDescriptor(it->fd);
+				if (link) {
+					Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
+
+					try {
+						do {
+							link = processIncomingMessage(link);
+							if (!link) {
+								break;
+							}
+						} while (link->isDataReady());
+					}
+					catch (NetworkError& e) {
+						if (!e.reason().empty()) {
+							Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
+						}
+						else {
+							Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
+						}
+						std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
+						closeConnection(link, true);
+						link = nullptr;
+					}
+				}
+				if (my_tcpSocketServer.returnSocket() == it->fd) {
+					Debug(D, pdCom) << "New client" << std::endl;
+					openConnection();
+				}
+			}
+		}
+        my_socketServer.resetSocketVector();
+
+#endif
+
+#endif // #if _WIN32
     }
 }
 

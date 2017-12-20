@@ -32,6 +32,10 @@
 #include "SocketUDP.hh"
 #include <include/certi.hh>
 
+#ifdef CERTI_RTIG_USE_POLL
+#include <poll.h>
+#endif
+
 #include <list>
 
 namespace certi {
@@ -119,6 +123,23 @@ public:
      * in the fd_set. It can be called several times to get all active sockets.
      */
     Socket* getActiveSocket(fd_set* select_fdset) const;
+    
+#ifdef CERTI_RTIG_USE_POLL    
+    void constructPollList();
+    void addElementPollList(struct pollfd pfd)
+    {
+		_SocketVector.push_back(pfd);
+	}
+    std::vector<struct pollfd> getSocketVector()
+    {
+		return _SocketVector;
+	}
+	void resetSocketVector()
+    {
+		_SocketVector.resize(0);
+	}
+	Socket* getSocketFromFileDescriptor(int fd);
+#endif
 
     // ------------------------------------------
     // -- Message Broadcasting related Methods --
@@ -152,6 +173,11 @@ private:
     // -- Private Methods --
     // ---------------------
     SocketTuple* getWithSocket(long socket_descriptor) const;
+    
+    #ifdef CERTI_RTIG_USE_POLL
+    // use with poll
+	std::vector<struct pollfd> _SocketVector;
+	#endif
 };
 
 } // namespace certi

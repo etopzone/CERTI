@@ -266,4 +266,34 @@ void SocketServer::setReferences(long socket,
     tuple->Federate = federate_reference;
     tuple->BestEffortLink->attach(ServerSocketUDP->returnSocket(), address, port);
 }
+
+#ifdef CERTI_RTIG_USE_POLL
+void SocketServer::constructPollList()
+{
+	struct pollfd pfd;
+	std::memset(&pfd, 0, sizeof(pfd));
+    list<SocketTuple*>::iterator i;
+    for (i = begin(); i != end(); ++i) {
+        if ((*i)->ReliableLink != NULL) {
+            int fd = (*i)->ReliableLink->returnSocket();
+            pfd.fd = fd;
+            pfd.events = POLLIN;
+            _SocketVector.push_back(pfd);
+            //std::cout << "constructPollList called !!! socket " << pfd.fd << std::endl;
+        }
+    }
+}
+
+Socket* SocketServer::getSocketFromFileDescriptor(int fd)
+{
+    list<SocketTuple*>::const_iterator i;
+    for (i = begin(); i != end(); ++i) {
+        if (((*i)->ReliableLink != NULL) && ((*i)->ReliableLink->returnSocket()== fd))
+            return (*i)->ReliableLink;
+    }
+
+    return NULL;
+}
+#endif
+
 }
