@@ -464,8 +464,8 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
 {
     Responses responses;
 
-    std::cout << "UR t" << time.getTime() << " l" << lookahead.getTime() << " g" << galt.getTime() << " l"
-              << lits.getTime() << std::endl;
+    //std::cout << "UR t" << time.getTime() << " l" << lookahead.getTime() << " g" << galt.getTime() << " l"
+    //          << lits.getTime() << std::endl;
 
     // if it is an anonymous update (from NULL PRIME message), no need to check federate.
     if (!anonymous) {
