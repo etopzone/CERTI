@@ -62,16 +62,6 @@
 
 #include <include/make_unique.hh>
 
-using std::pair;
-using std::ifstream;
-using std::ios;
-using std::cout;
-using std::endl;
-using std::string;
-using std::list;
-using std::cerr;
-using std::vector;
-
 // Definitions
 #ifdef HAVE_XML
 // #include <libxml/xmlmemory.h>
@@ -85,6 +75,14 @@ using std::vector;
 
 #if defined(_WIN32) && !defined(__MINGW32__)
 #define strcasecmp stricmp
+#endif
+
+#if defined(_WIN32)
+#define STAT_FUNCTION _stat
+#define STAT_STRUCT struct _stat
+#else
+#define STAT_FUNCTION stat
+#define STAT_STRUCT struct stat
 #endif
 
 namespace certi {
@@ -117,44 +115,148 @@ static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
  */
 
 // Path splitting functions
-vector<string>& split(const string& s, char delim, vector<string>& elems)
+std::vector<std::string> split(const std::string& s, char delim)
 {
+    std::vector<std::string> tokens;
+
     std::stringstream ss(s);
-    string item;
+    std::string item;
     while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
+        tokens.push_back(item);
     }
-    return elems;
+    return tokens;
 }
 
-vector<string> split(const string& s, char delim)
+/** Finds a module from its full path.
+ * Throws exceptions if module cannot be found
+ * We should try to open FOM file from different predefined places:
+ * --> see doxygen doc at the top of this file.
+ */
+std::string filepathOf(const std::string& module)
 {
-    vector<string> elems;
-    return split(s, delim, elems);
+    std::string filename = module;
+    bool filefound = false;
+
+    Debug(D, pdDebug) << "Looking for FOM file <" << module << "> ... " << std::endl;
+
+    STAT_STRUCT file_stat;
+    filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+
+    /* This is the main path handling loop */
+    if (!filefound) {
+        std::vector<std::string> fom_paths;
+
+#ifdef WIN32
+        char temp[260];
+        GetCurrentDirectory(260, temp);
+        fom_paths.push_back(std::string(temp) + "\\share\\federations\\");
+#endif
+
+        /* add paths from CERTI_FOM_PATH */
+        if (getenv("CERTI_FOM_PATH")) {
+            std::string path = getenv("CERTI_FOM_PATH");
+            std::vector<std::string> certi_fom_paths = split(path, ':');
+            fom_paths.insert(end(fom_paths), begin(certi_fom_paths), end(certi_fom_paths));
+        }
+
+        /* add path CERTI_HOME/share/federations/ */
+        if (getenv("CERTI_HOME")) {
+#ifdef WIN32
+            fom_paths.push_back(std::string(getenv("CERTI_HOME")) + "\\share\\federations\\");
+#else
+            fom_paths.push_back(std::string(getenv("CERTI_HOME")) + "/share/federations/");
+#endif
+        }
+
+#ifdef WIN32
+        fom_paths.push_back(PACKAGE_INSTALL_PREFIX "\\share\\federations\\");
+#else
+        fom_paths.push_back(PACKAGE_INSTALL_PREFIX "/share/federations/");
+        fom_paths.push_back("/usr/local/share/federations/");
+#endif
+
+        /* try to open FED using fom_paths prefixes */
+        for (const std::string& path : fom_paths) {
+            filename = path + module;
+            filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+            if (filefound) {
+                break;
+            }
+        }
+    }
+
+    if (filefound) {
+        // Try to open to verify if file exists
+        std::ifstream try_to_open(filename);
+        if (try_to_open.is_open()) {
+            std::cout << "... opened." << std::endl;
+            try_to_open.close();
+            return filename;
+        }
+    }
+
+    std::cout << "... failed : ";
+    throw CouldNotOpenFED("Module not found");
 }
 
-void Federation::openMimModule(const int verboseLevel)
+enum class FileType { Fed, Xml };
+
+FileType checkFileType(const std::string& filepath)
 {
-    // Find file
+    // hope there is a . before fed or xml
+    if (filepath.at(filepath.size() - 4) != '.') {
+        throw CouldNotOpenFED("Incorrect extension (character '.' is missing)");
+    }
 
-    // Parse file
+    std::string extension = filepath.substr(filepath.size() - 3);
 
-    // Check consistency
+    Debug(D, pdTrace) << "filename is: " << filepath << " (extension is <" << extension << ">)" << std::endl;
+    if (extension == "fed") {
+        Debug(D, pdTrace) << "Trying to use .fed file" << std::endl;
+        return FileType::Fed;
+    }
+    else if (extension == "xml") {
+        Debug(D, pdTrace) << "Trying to use .xml file" << std::endl;
+        return FileType::Xml;
+    }
+    else {
+        throw CouldNotOpenFED("Incorrect extension (not .fed nor .xml)");
+    }
+}
 
-    // Add to current root object
+void Federation::openMimModule()
+{
+    try {
+        // Find file
+        auto module_path = filepathOf(my_mim_module);
+
+        // Check file type
+        checkFileType(module_path);
+    }
+    catch (Exception& e) {
+        throw CouldNotOpenFED("4.5.5.f : Could not locate MIM indicated by supplied designator.");
+    }
+
+    try {
+        // Parse file
+
+        // Check consistency
+
+        // Add to current root object
+    }
+    catch (Exception& e) {
+        throw ErrorReadingFED("4.5.5.e : Invalid MIM.");
+    }
 }
 
 void Federation::openFomModules(const int verboseLevel)
 {
-    // We should try to open FOM file from different
-    // predefined places:
-    // --> see doxygen doc at the top of this file.
-    string filename = my_fom_modules.front();
+    std::string filename = my_fom_modules.front();
     bool filefound = false;
 
     if (verboseLevel > 0) {
-        cout << "Looking for FOM file <" << filename << "> ... " << endl;
-        cout << "   Trying... " << filename;
+        std::cout << "Looking for FOM file <" << filename << "> ... " << std::endl;
+        std::cout << "   Trying... " << filename;
     }
 
     STAT_STRUCT file_stat;
@@ -162,25 +264,25 @@ void Federation::openFomModules(const int verboseLevel)
 
     /* This is the main path handling loop */
     if (!filefound) {
-        vector<string> fom_paths;
+        std::vector<std::string> fom_paths;
 #ifdef WIN32
         char temp[260];
         GetCurrentDirectory(260, temp);
-        fom_paths.insert(fom_paths.end(), string(temp) + "\\share\\federations\\");
+        fom_paths.insert(fom_paths.end(), std::string(temp) + "\\share\\federations\\");
 #endif
 
         /* add paths from CERTI_FOM_PATH */
         if (getenv("CERTI_FOM_PATH")) {
-            string path = getenv("CERTI_FOM_PATH");
-            vector<string> certi_fom_paths = split(path, ':');
+            std::string path = getenv("CERTI_FOM_PATH");
+            std::vector<std::string> certi_fom_paths = split(path, ':');
             fom_paths.insert(fom_paths.end(), certi_fom_paths.begin(), certi_fom_paths.end());
         }
 
         if (getenv("CERTI_HOME")) {
 #ifdef WIN32
-            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "\\share\\federations\\");
+            fom_paths.insert(fom_paths.end(), std::string(getenv("CERTI_HOME")) + "\\share\\federations\\");
 #else
-            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "/share/federations/");
+            fom_paths.insert(fom_paths.end(), std::string(getenv("CERTI_HOME")) + "/share/federations/");
 #endif
         }
 
@@ -192,13 +294,13 @@ void Federation::openFomModules(const int verboseLevel)
 #endif
 
         /* try to open FED using fom_paths prefixes */
-        for (const string& path : fom_paths) {
+        for (const std::string& path : fom_paths) {
             if (verboseLevel > 0) {
-                cout << " --> cannot access." << endl;
+                std::cout << " --> cannot access." << std::endl;
             }
             filename = path + my_fom_modules.front();
             if (verboseLevel > 0) {
-                cout << "   Now trying... " << filename;
+                std::cout << "   Now trying... " << filename;
             }
             filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
             if (filefound) {
@@ -209,10 +311,10 @@ void Federation::openFomModules(const int verboseLevel)
 
     if (!filefound) {
         if (verboseLevel > 0) {
-            cout << " --> cannot access." << endl;
+            std::cout << " --> cannot access." << std::endl;
         }
-        cerr << "Next step will fail, abort now" << endl;
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        std::cerr << "Next step will fail, abort now" << std::endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("RTIG cannot find FED file.");
     }
 
@@ -220,17 +322,17 @@ void Federation::openFomModules(const int verboseLevel)
     my_fom_modules.front() = filename;
 
     // Try to open to verify if file exists
-    ifstream fedTry(my_fom_modules.front());
+    std::ifstream fedTry(my_fom_modules.front());
     if (!fedTry.is_open()) {
         if (verboseLevel > 0) {
-            cout << "... failed : ";
+            std::cout << "... failed : ";
         }
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
     }
     else {
         if (verboseLevel > 0) {
-            cout << "... opened." << endl;
+            std::cout << "... opened." << std::endl;
         }
         fedTry.close();
     }
@@ -240,28 +342,28 @@ void Federation::openFomModules(const int verboseLevel)
 
     // hope there is a . before fed or xml
     if (filename.at(filename.size() - 4) != '.') {
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED(
             "Incorrect FED file name, cannot find extension (character '.' is missing [or not in reverse 4th place])");
     }
 
-    string extension = filename.substr(filename.size() - 3);
+    std::string extension = filename.substr(filename.size() - 3);
 
-    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << endl;
+    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << std::endl;
     if (extension == "fed") {
         is_a_fed = true;
-        Debug(D, pdTrace) << "Trying to use .fed file" << endl;
+        Debug(D, pdTrace) << "Trying to use .fed file" << std::endl;
     }
     else if (extension == "xml") {
         is_an_xml = true;
-        Debug(D, pdTrace) << "Trying to use .xml file" << endl;
+        Debug(D, pdTrace) << "Trying to use .xml file" << std::endl;
     }
     else {
-        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
         throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
     }
 
-    ifstream fedFile(filename);
+    std::ifstream fedFile(filename);
 
     if (fedFile.is_open()) {
         fedFile.close();
@@ -269,7 +371,7 @@ void Federation::openFomModules(const int verboseLevel)
             // parse FED file and show the parse on stdout if verboseLevel>=2
             int err = fedparser::build(filename.c_str(), my_root_object.get(), (verboseLevel >= 2));
             if (err != 0) {
-                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << endl;
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << std::endl;
                 throw ErrorReadingFED("fed parser found error in FED file");
             }
 
@@ -290,8 +392,9 @@ void Federation::openFomModules(const int verboseLevel)
                 MTimeBuffer[strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
                 my_server->audit << "(Last modified " << MTimeBuffer << ")";
             }
-            else
+            else {
                 my_server->audit << "(could not retrieve last modif time, errno " << errno << ").";
+            }
         }
         else if (is_an_xml) {
 #ifdef HAVE_XML
@@ -318,8 +421,8 @@ void Federation::openFomModules(const int verboseLevel)
             else
 #endif
             {
-                cerr << "CERTI was Compiled without XML support" << endl;
-                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+                std::cerr << "CERTI was Compiled without XML support" << std::endl;
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << std::endl;
                 throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
             }
         }
@@ -364,7 +467,7 @@ bool Federation::saveXmlData()
 
     xmlSetDocCompressMode(doc, 9);
 
-    string filename = my_name + "_" + my_save_label + ".xcs";
+    std::string filename = my_name + "_" + my_save_label + ".xcs";
     xmlSaveFile(filename.c_str(), doc);
 
     // TODO: tests
@@ -373,7 +476,7 @@ bool Federation::saveXmlData()
 #endif // HAVE_XML
 }
 
-bool Federation::restoreXmlData(string docFilename)
+bool Federation::restoreXmlData(std::string docFilename)
 {
 #ifndef HAVE_XML
     (void) docFilename;
@@ -384,7 +487,7 @@ bool Federation::restoreXmlData(string docFilename)
 
     // Did libXML manage to parse the file ?
     if (doc == 0) {
-        cerr << "XML restore file not parsed successfully" << endl;
+        std::cerr << "XML restore file not parsed successfully" << std::endl;
         xmlFreeDoc(doc);
         return false;
     }
@@ -392,25 +495,25 @@ bool Federation::restoreXmlData(string docFilename)
 
     cur = xmlDocGetRootElement(doc);
     if (cur == 0) {
-        cerr << "XML file is empty" << endl;
+        std::cerr << "XML file is empty" << std::endl;
         xmlFreeDoc(doc);
         return false;
     }
 
     // Is this root element an ROOT_NODE ?
     if (xmlStrcmp(cur->name, ROOT_NODE)) {
-        cerr << "Wrong XML file: not the expected root node" << endl;
+        std::cerr << "Wrong XML file: not the expected root node" << std::endl;
         return false;
     }
 
     cur = cur->xmlChildrenNode;
     if (xmlStrcmp(cur->name, NODE_FEDERATION)) {
-        cerr << "Wrong XML file structure" << endl;
+        std::cerr << "Wrong XML file structure" << std::endl;
         return false;
     }
 
     if (strcmp(my_name.c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name")) != 0) {
-        cerr << "Wrong federation name" << endl;
+        std::cerr << "Wrong federation name" << std::endl;
     }
 
     cur = cur->xmlChildrenNode;
@@ -428,7 +531,7 @@ bool Federation::restoreXmlData(string docFilename)
                         kv.second->setConstrained(status);
                     }
                     catch (RTIinternalError& e) {
-                        Debug(D, pdDebug) << "Federate was already constrained, no issue" << endl;
+                        Debug(D, pdDebug) << "Federate was already constrained, no issue" << std::endl;
                     }
 
                     // Set federate regulating status
@@ -438,14 +541,14 @@ bool Federation::restoreXmlData(string docFilename)
                         kv.second->setRegulator(status);
                     }
                     catch (RTIinternalError& e) {
-                        Debug(D, pdDebug) << "Federate was already regulator, no issue" << endl;
+                        Debug(D, pdDebug) << "Federate was already regulator, no issue" << std::endl;
                     }
 
                     try {
                         kv.second->setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
                     }
                     catch (RTIinternalError& e) {
-                        Debug(D, pdDebug) << "Federate handle was already set, no issue" << endl;
+                        Debug(D, pdDebug) << "Federate handle was already set, no issue" << std::endl;
                     }
                     break;
                 }

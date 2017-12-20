@@ -21,8 +21,6 @@
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
 #if defined(_WIN32)
-    #define	STAT_FUNCTION         _stat
-    #define	STAT_STRUCT           struct _stat
     #ifdef _MSC_VER
         // MSVC Pragma
         // Visual C++ does not support declarations using exceptions specification
@@ -75,8 +73,6 @@
     #define ANY_DLL_LOCAL
 #else
     #include <inttypes.h>
-    #define  STAT_FUNCTION		stat
-    #define  STAT_STRUCT		struct stat
     #ifdef __x86_64__
        #define  CERTI_INT64_CONSTANT(val)  (val##L)
        #define  CERTI_INT64_FORMAT         "l"

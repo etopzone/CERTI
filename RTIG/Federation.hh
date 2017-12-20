@@ -469,7 +469,7 @@ public:
 private:
     friend class Mom;
 
-    void openMimModule(const int verboseLevel);
+    void openMimModule();
 
     void openFomModules(const int verboseLevel);
 

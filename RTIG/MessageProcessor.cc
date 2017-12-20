@@ -131,8 +131,8 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     my_auditServer.setLevel(AuditLine::Level(9));
 
     const auto& federation = request.message()->getFederationExecutionName();
-    const auto& fom_modules = request.message()->getFomModuleDesignators(); // TODO BUG FIXME HANDLE MODULES !!!!!!
-    const auto& mim_designator = request.message()->getMimDesignator(); // TODO BUG FIXME HANDLE MIM !!!!!!
+    const auto& fom_modules = request.message()->getFomModuleDesignators();
+    const auto& mim_designator = request.message()->getMimDesignator();
 
     my_auditServer << "Federation Name : " << federation;
     auto handle = FederationHandle(my_federationHandleGenerator.provide());
@@ -178,7 +178,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 
     const auto& federation = request.message()->getFederationExecutionName();
     const auto& federate = request.message()->getFederateName();
-    const auto& federate_type = request.message()->getFederateType(); // TODO
+    const auto& federate_type = request.message()->getFederateType();
     const auto& additional_modules = request.message()->getAdditionalFomModules(); // TODO
 
     unsigned int peer = request.message()->getBestEffortPeer();

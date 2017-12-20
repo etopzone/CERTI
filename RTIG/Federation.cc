@@ -151,7 +151,7 @@ Federation::Federation(const string& federation_name,
         my_mim_module = "HLAstandardMIM";
     }
     
-    openMimModule(verboseLevel);
+    openMimModule();
 
     openFomModules(verboseLevel);
 
