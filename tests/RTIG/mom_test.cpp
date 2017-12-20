@@ -28,7 +28,7 @@ protected:
     ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
     
-    Federation f{"MOM", federation_handle, s, a, "Test.xml", 0};
+    Federation f{"MOM", federation_handle, s, a, {"Test.xml"}, "", 0};
 
     ::certi::ObjectClassHandle federateOCH{
         f.getRootObject().ObjectClasses->getHandleFromName("HLAmanager.HLAfederate")};

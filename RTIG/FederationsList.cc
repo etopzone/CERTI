@@ -74,13 +74,16 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
                                                                                   const FederationHandle handle,
                                                                                   SocketServer& socket_server,
                                                                                   AuditFile& audit,
+                                                                                  const std::vector<std::string> fom_modules,
+                                                                                  const std::string& mim_module,
                                                                                   SocketMC* multicastSocket)
 #else
 std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
                                                                                   const FederationHandle handle,
                                                                                   SocketServer& socket_server,
                                                                                   AuditFile& audit,
-                                                                                  const std::string& FEDid)
+                                                                                  const std::vector<std::string> fom_modules,
+                                                                                  const std::string& mim_module)
 #endif
 {
     Debug(G, pdGendoc) << "enter FederationsList::createFederation" << std::endl;
@@ -103,9 +106,9 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
     try {
         auto federation
 #ifdef FEDERATION_USES_MULTICAST
-            = make_unique<Federation>(name, handle, socket_server, audit, multicastSocket, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, fom_modules, mim_module, multicastSocket, my_verbose_level);
 #else
-            = make_unique<Federation>(name, handle, socket_server, audit, FEDid, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, fom_modules, mim_module, my_verbose_level);
 #endif
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
@@ -126,8 +129,12 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
     auto rep = make_unique<NM_Create_Federation_Execution>();
 
     rep->setFederation(handle.get());
-    rep->setFomModuleDesignatorsSize(1);
-    rep->setFomModuleDesignators(FEDid, 0);
+    rep->setFomModuleDesignatorsSize(fom_modules.size());
+    auto i = 0;
+    for(const auto& module: fom_modules) {
+        rep->setFomModuleDesignators(module, i++);
+    }
+    rep->setMimDesignator(mim_module);
     rep->setFederationExecutionName(name);
 
     return rep;

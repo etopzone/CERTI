@@ -110,7 +110,7 @@ protected:
     
     TemporaryFedFile tmp{"Sample.fed"};
 
-    Federation f{"name", federation_handle, s, a, "Sample.fed", quiet};
+    Federation f{"name", federation_handle, s, a, {"Sample.fed"}, "", quiet};
 };
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -122,24 +122,24 @@ TEST_F(FederationTest, CtorMulticastThrowsOnNullMC)
 
 TEST_F(FederationTest, CtorThrowsOnNullHandle)
 {
-    ASSERT_THROW(Federation("name", invalid_handle, s, a, "Test.fed", quiet), ::certi::RTIinternalError);
+    ASSERT_THROW(Federation("name", invalid_handle, s, a, {"Test.fed"}, "", quiet), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, CtorThrowsOnEmptyName)
 {
-    ASSERT_THROW(Federation("", federation_handle, s, a, "Test.fed", quiet), ::certi::RTIinternalError);
+    ASSERT_THROW(Federation("", federation_handle, s, a, {"Test.fed"}, "", quiet), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, CtorFailIfUnableToFindFed)
 {
-    ASSERT_THROW(Federation("", federation_handle, s, a, "", quiet), ::certi::RTIinternalError);
+    ASSERT_THROW(Federation("", federation_handle, s, a, {""}, "", quiet), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, CtorFindsFedInSameFolder)
 {
     TemporaryFedFile tmp{"SampleLocal.fed"};
 
-    ASSERT_NO_THROW(Federation("local", federation_handle, s, a, "SampleLocal.fed", quiet));
+    ASSERT_NO_THROW(Federation("local", federation_handle, s, a, {"SampleLocal.fed"}, "", quiet));
 }
 
 TEST_F(FederationTest, CtorFindsFedInCertiFomPath)
@@ -148,7 +148,7 @@ TEST_F(FederationTest, CtorFindsFedInCertiFomPath)
 
     TemporaryFedFile tmp{env.path() + "SampleFomPath.fed"};
 
-    ASSERT_NO_THROW(Federation("fom_path", federation_handle, s, a, "SampleFomPath.fed", quiet));
+    ASSERT_NO_THROW(Federation("fom_path", federation_handle, s, a, {"SampleFomPath.fed"}, "", quiet));
 }
 
 TEST_F(FederationTest, CtorFindsFedInCertiHome)
@@ -157,7 +157,7 @@ TEST_F(FederationTest, CtorFindsFedInCertiHome)
 
     TemporaryFedFile tmp{"SampleCertiHome.fed"};
 
-    ASSERT_NO_THROW(Federation("certi_home", federation_handle, s, a, "SampleCertiHome.fed", quiet));
+    ASSERT_NO_THROW(Federation("certi_home", federation_handle, s, a, {"SampleCertiHome.fed"}, "", quiet));
 }
 
 TEST_F(FederationTest, CtorFindsFedInPackageInstallPrefix)
@@ -170,19 +170,19 @@ TEST_F(FederationTest, CtorFindsFedInPackageInstallPrefix)
 #endif
                          "SampleInstallPrefix.fed"};
 
-    ASSERT_NO_THROW(Federation("install_prefix", federation_handle, s, a, "SampleInstallPrefix.fed", quiet));
+    ASSERT_NO_THROW(Federation("install_prefix", federation_handle, s, a, {"SampleInstallPrefix.fed"}, "", quiet));
 }
 
 TEST_F(FederationTest, CtorFailsIfFileIsUnopenable)
 {
-    ASSERT_THROW(Federation("unopenable", federation_handle, s, a, "/root/", quiet), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(Federation("unopenable", federation_handle, s, a, {"/root/"}, "", quiet), ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationTest, CtorFailsIfNoExtension)
 {
     TemporaryFedFile tmp{"SampleWithoutDotfed"};
 
-    ASSERT_THROW(Federation("no_dot_fed", federation_handle, s, a, "SampleWithoutDotfed", quiet),
+    ASSERT_THROW(Federation("no_dot_fed", federation_handle, s, a, {"SampleWithoutDotfed"}, "", quiet),
                  ::certi::CouldNotOpenFED);
 }
 
@@ -190,7 +190,7 @@ TEST_F(FederationTest, CtorFailsIfWrongExtension)
 {
     TemporaryFedFile tmp{"SampleWithout.fde"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.fde", quiet),
+    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, {"SampleWithout.fde"}, "", quiet),
                  ::certi::CouldNotOpenFED);
 }
 
@@ -199,7 +199,7 @@ TEST_F(FederationTest, CtorFailsIfXmlFedWithoutXmlSupport)
 {
     TemporaryFedFile tmp{"SampleWithout.xml"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, "SampleWithout.xml", quiet),
+    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, {"SampleWithout.xml"}, "", quiet),
                  ::certi::CouldNotOpenFED);
 }
 #endif
@@ -210,12 +210,12 @@ TEST_F(FederationTest, VerboseLevelChangesOutput)
     std::streambuf* original_cout_rdbuf = std::cout.rdbuf();
     std::cout.rdbuf(oss.rdbuf());
 
-    Federation f{"name", federation_handle, s, a, "Sample.fed", quiet};
+    Federation f{"name", federation_handle, s, a, {"Sample.fed"}, "", quiet};
 
     std::ostringstream oss2;
     std::cout.rdbuf(oss2.rdbuf());
 
-    Federation f2{"name", federation_handle, s, a, "Sample.fed", verbose};
+    Federation f2{"name", federation_handle, s, a, {"Sample.fed"}, "", verbose};
 
     std::cout.rdbuf(original_cout_rdbuf); // restore
 
@@ -237,7 +237,7 @@ TEST_F(FederationTest, GetName)
 
 TEST_F(FederationTest, GetFedId)
 {
-    ASSERT_EQ("Sample.fed", f.getFEDid());
+    ASSERT_EQ("Sample.fed", f.getFomModules().front());
 }
 
 TEST_F(FederationTest, GetMinNERx)

@@ -152,12 +152,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
 
     // inserer la nouvelle federation dans la liste des federations
-    auto rep = my_federations->createFederation(federation, handle, my_socketServer, my_auditServer, com_mc);
+    auto rep = my_federations->createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, com_mc);
 
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 #else
-    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules.front());
+    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator);
 #endif
     my_auditServer << " created";
 

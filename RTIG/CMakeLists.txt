@@ -27,7 +27,7 @@ endif(MSVC)
 
 set(rtig_SRCS
   Federate.cc Federate.hh
-  Federation.cc Federation.hh
+  Federation.cc Federation_fom.cc Federation.hh
   FederationsList.cc FederationsList.hh
   main.cc
   

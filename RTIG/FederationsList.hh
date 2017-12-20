@@ -70,6 +70,8 @@ public:
                                                                      const FederationHandle handle,
                                                                      SocketServer& socket_server,
                                                                      AuditFile& audit,
+                                                                     const std::vector<std::string> fom_modules,
+                                                                     const std::string& mim_module,
                                                                      SocketMC* multicastSocket);
 #else
     /** createFederation (with FEDERATION_USES_MULTICAST not defined)
@@ -81,7 +83,8 @@ public:
                                                                      const FederationHandle handle,
                                                                      SocketServer& socket_server,
                                                                      AuditFile& audit,
-                                                                     const std::string& FEDid);
+                                                                     const std::vector<std::string> fom_modules,
+                                                                     const std::string& mim_module);
 #endif
 
     /** Return the Handle of the Federation named "name" if it is found in the

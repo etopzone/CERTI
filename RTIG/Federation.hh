@@ -82,6 +82,8 @@ public:
                const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
+               const std::vector<std::string> fom_modules,
+               const std::string& mim_module,
                SocketMC* mc_link,
                const int verboseLevel);
 #else
@@ -99,7 +101,8 @@ public:
                const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
-               const std::string& FEDid_name,
+               const std::vector<std::string> fom_modules,
+               const std::string& mim_module,
                const int verboseLevel);
 #endif
 
@@ -111,8 +114,11 @@ public:
     /// Returns the federation name given in 'Create Federation Execution'.
     std::string getName() const;
 
-    /// Returns the FEDid name given in 'Create Federation Execution'.
-    std::string getFEDid() const;
+    /// Returns the current list of fom module used in this federation
+    std::vector<std::string> getFomModules() const;
+    
+    /// Return the current mim module used
+    std::string getMimModule() const;
 
     /// Returns the number of federates in federation.
     int getNbFederates() const;
@@ -467,7 +473,9 @@ public:
 private:
     friend class Mom;
 
-    void openFomFile(const int verboseLevel);
+    void openMimModule(const int verboseLevel);
+
+    void openFomModules(const int verboseLevel);
 
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
@@ -479,7 +487,9 @@ private:
 
     FederationHandle my_handle;
     std::string my_name;
-    std::string my_FED_id;
+    
+    std::vector<std::string> my_fom_modules;
+    std::string my_mim_module;
 
     bool my_auto_provide{false};
 

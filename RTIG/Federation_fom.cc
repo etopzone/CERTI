@@ -1,0 +1,481 @@
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002-2005  ONERA
+//
+// This file is part of CERTI
+//
+// CERTI is free software ; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation ; either version 2 of the License, or
+// (at your option) any later version.
+//
+// CERTI is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// ----------------------------------------------------------------------------
+
+#include "Federation.hh"
+#include <config.h>
+
+// #include "NM_Classes.hh"
+#include <algorithm>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+// #include <ext/alloc_traits.h>
+#include <iostream>
+#include <list>
+#include <memory>
+#include <set>
+#include <sys/stat.h>
+#include <time.h>
+#include <utility>
+
+#include <libCERTI/AuditFile.hh>
+#include <libCERTI/Interaction.hh>
+#include <libCERTI/InteractionSet.hh>
+#include <libCERTI/LBTS.hh>
+#include <libCERTI/MessageEvent.hh>
+#include <libCERTI/NM_Classes.hh>
+#include <libCERTI/NetworkMessage.hh>
+#include <libCERTI/Object.hh>
+#include <libCERTI/ObjectAttribute.hh>
+#include <libCERTI/ObjectClass.hh>
+#include <libCERTI/ObjectClassAttribute.hh>
+#include <libCERTI/ObjectClassSet.hh>
+#include <libCERTI/ObjectSet.hh>
+#include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/RootObject.hh>
+#include <libCERTI/SecurityServer.hh>
+#include <libCERTI/SocketTCP.hh>
+#include <libCERTI/XmlParser.hh>
+#include <libCERTI/XmlParser2000.hh>
+#include <libCERTI/XmlParser2010.hh>
+#include <libCERTI/fed.hh>
+
+#include <include/make_unique.hh>
+
+using std::pair;
+using std::ifstream;
+using std::ios;
+using std::cout;
+using std::endl;
+using std::string;
+using std::list;
+using std::cerr;
+using std::vector;
+
+// Definitions
+#ifdef HAVE_XML
+// #include <libxml/xmlmemory.h>
+#include "libxml/xmlstring.h"
+#include <libxml/parser.h>
+// #include <libxml/tree.h>
+#define ROOT_NODE (const xmlChar*) "rtigSaveData"
+#define NODE_FEDERATION (const xmlChar*) "federation"
+#define NODE_FEDERATE (const xmlChar*) "federate"
+#endif // HAVE_XML
+
+#if defined(_WIN32) && !defined(__MINGW32__)
+#define strcasecmp stricmp
+#endif
+
+namespace certi {
+
+class RTIRegion;
+class Socket;
+
+namespace rtig {
+
+static PrettyDebug D("FEDERATION", __FILE__);
+static PrettyDebug G("GENDOC", __FILE__);
+static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
+
+/** \defgroup certi_FOM_FileSearch CERTI FOM file search algorithm
+ * When a federate calls the CreateFederationExcution API
+ * RTIG tries to open FOM file from different predefined places,
+ * using various environment variables:
+ *
+ * -# Bare filename considered as a path provided through <code> FEDid_name </code>
+ * -# Use CERTI federation object model search PATH
+ *    <code>getenv(CERTI_FOM_PATH) + FEDid_name</code>.
+ *    <br><code>CERTI_FOM_PATH</code> environment variable may contains a list of path
+ *    separated with ':'.
+ * -# Using the <code> CERTI_HOME </code> environment variable
+ *    <code>getenv(CERTI_HOME)+"/share/federations/"+ FEDid_name</code>
+ * -# installation place plus <code>FEDid_name</code>
+ *    <br><code>PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name</code>
+ * -# on Unix <code>"/usr/local/share/federation/" + FEDid_name</code>
+ *    for backward compatibility reason.
+ */
+
+// Path splitting functions
+vector<string>& split(const string& s, char delim, vector<string>& elems)
+{
+    std::stringstream ss(s);
+    string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+vector<string> split(const string& s, char delim)
+{
+    vector<string> elems;
+    return split(s, delim, elems);
+}
+
+void Federation::openMimModule(const int verboseLevel)
+{
+    // Find file
+
+    // Parse file
+
+    // Check consistency
+
+    // Add to current root object
+}
+
+void Federation::openFomModules(const int verboseLevel)
+{
+    // We should try to open FOM file from different
+    // predefined places:
+    // --> see doxygen doc at the top of this file.
+    string filename = my_fom_modules.front();
+    bool filefound = false;
+
+    if (verboseLevel > 0) {
+        cout << "Looking for FOM file <" << filename << "> ... " << endl;
+        cout << "   Trying... " << filename;
+    }
+
+    STAT_STRUCT file_stat;
+    filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+
+    /* This is the main path handling loop */
+    if (!filefound) {
+        vector<string> fom_paths;
+#ifdef WIN32
+        char temp[260];
+        GetCurrentDirectory(260, temp);
+        fom_paths.insert(fom_paths.end(), string(temp) + "\\share\\federations\\");
+#endif
+
+        /* add paths from CERTI_FOM_PATH */
+        if (getenv("CERTI_FOM_PATH")) {
+            string path = getenv("CERTI_FOM_PATH");
+            vector<string> certi_fom_paths = split(path, ':');
+            fom_paths.insert(fom_paths.end(), certi_fom_paths.begin(), certi_fom_paths.end());
+        }
+
+        if (getenv("CERTI_HOME")) {
+#ifdef WIN32
+            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "\\share\\federations\\");
+#else
+            fom_paths.insert(fom_paths.end(), string(getenv("CERTI_HOME")) + "/share/federations/");
+#endif
+        }
+
+#ifdef WIN32
+        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "\\share\\federations\\");
+#else
+        fom_paths.insert(fom_paths.end(), PACKAGE_INSTALL_PREFIX "/share/federations/");
+        fom_paths.insert(fom_paths.end(), "/usr/local/share/federations/");
+#endif
+
+        /* try to open FED using fom_paths prefixes */
+        for (const string& path : fom_paths) {
+            if (verboseLevel > 0) {
+                cout << " --> cannot access." << endl;
+            }
+            filename = path + my_fom_modules.front();
+            if (verboseLevel > 0) {
+                cout << "   Now trying... " << filename;
+            }
+            filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
+            if (filefound) {
+                break;
+            }
+        }
+    }
+
+    if (!filefound) {
+        if (verboseLevel > 0) {
+            cout << " --> cannot access." << endl;
+        }
+        cerr << "Next step will fail, abort now" << endl;
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("RTIG cannot find FED file.");
+    }
+
+    // now really assign FEDid
+    my_fom_modules.front() = filename;
+
+    // Try to open to verify if file exists
+    ifstream fedTry(my_fom_modules.front());
+    if (!fedTry.is_open()) {
+        if (verboseLevel > 0) {
+            cout << "... failed : ";
+        }
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("RTIG have found but cannot open FED file");
+    }
+    else {
+        if (verboseLevel > 0) {
+            cout << "... opened." << endl;
+        }
+        fedTry.close();
+    }
+
+    bool is_a_fed = false;
+    bool is_an_xml = false;
+
+    // hope there is a . before fed or xml
+    if (filename.at(filename.size() - 4) != '.') {
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED(
+            "Incorrect FED file name, cannot find extension (character '.' is missing [or not in reverse 4th place])");
+    }
+
+    string extension = filename.substr(filename.size() - 3);
+
+    Debug(D, pdTrace) << "filename is: " << filename << " (extension is <" << extension << ">)" << endl;
+    if (extension == "fed") {
+        is_a_fed = true;
+        Debug(D, pdTrace) << "Trying to use .fed file" << endl;
+    }
+    else if (extension == "xml") {
+        is_an_xml = true;
+        Debug(D, pdTrace) << "Trying to use .xml file" << endl;
+    }
+    else {
+        Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+        throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
+    }
+
+    ifstream fedFile(filename);
+
+    if (fedFile.is_open()) {
+        fedFile.close();
+        if (is_a_fed) {
+            // parse FED file and show the parse on stdout if verboseLevel>=2
+            int err = fedparser::build(filename.c_str(), my_root_object.get(), (verboseLevel >= 2));
+            if (err != 0) {
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception ErrorReadingFED" << endl;
+                throw ErrorReadingFED("fed parser found error in FED file");
+            }
+
+            // Retrieve the FED file last modification time(for Audit)
+            STAT_STRUCT StatBuffer;
+#if defined(_WIN32) && _MSC_VER >= 1400
+            char MTimeBuffer[26];
+#else
+            char* MTimeBuffer;
+#endif
+
+            if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
+#if defined(_WIN32) && _MSC_VER >= 1400
+                ctime_s(&MTimeBuffer[0], 26, &StatBuffer.st_mtime);
+#else
+                MTimeBuffer = ctime(&StatBuffer.st_mtime);
+#endif
+                MTimeBuffer[strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
+                my_server->audit << "(Last modified " << MTimeBuffer << ")";
+            }
+            else
+                my_server->audit << "(could not retrieve last modif time, errno " << errno << ").";
+        }
+        else if (is_an_xml) {
+#ifdef HAVE_XML
+            std::unique_ptr<XmlParser> parser;
+            if (XmlParser::exists()) {
+                switch (XmlParser::version(filename)) {
+                case XmlParser::XML_IEEE1516_2000:
+                case XmlParser::XML_LEGACY:
+                    parser = make_unique<XmlParser2000>(my_root_object.get());
+                    break;
+                case XmlParser::XML_IEEE1516_2010:
+                    parser = make_unique<XmlParser2010>(my_root_object.get());
+                    break;
+                }
+                my_server->audit << ", XML File : " << filename;
+
+                try {
+                    parser->parse(filename);
+                }
+                catch (Exception* e) {
+                    throw;
+                }
+            }
+            else
+#endif
+            {
+                cerr << "CERTI was Compiled without XML support" << endl;
+                Debug(G, pdGendoc) << "exit Federation::Federation on exception CouldNotOpenFED" << endl;
+                throw CouldNotOpenFED("Could not parse XML file. (CERTI Compiled without XML lib.)");
+            }
+        }
+    }
+}
+
+bool Federation::saveXmlData()
+{
+#ifndef HAVE_XML
+    return false;
+#else
+    xmlDocPtr doc = xmlNewDoc((const xmlChar*) "1.0");
+    doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
+
+    xmlNodePtr federation;
+    federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
+
+    xmlSetProp(federation, (const xmlChar*) "name", (const xmlChar*) my_name.c_str());
+
+    char t[10];
+    sprintf(t, "%u", my_handle.get());
+    xmlSetProp(federation, (const xmlChar*) "handle", (const xmlChar*) t);
+
+    xmlNodePtr federateXmlNode;
+
+    //     for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+    for (const auto& kv : my_federates) {
+        federateXmlNode = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
+
+        xmlSetProp(federateXmlNode, (const xmlChar*) "name", (const xmlChar*) kv.second->getName().c_str());
+
+        sprintf(t, "%u", kv.second->getHandle());
+        xmlSetProp(federateXmlNode, (const xmlChar*) "handle", (const xmlChar*) t);
+
+        xmlSetProp(federateXmlNode,
+                   (const xmlChar*) "constrained",
+                   (const xmlChar*) ((kv.second->isConstrained()) ? "true" : "false"));
+        xmlSetProp(federateXmlNode,
+                   (const xmlChar*) "regulator",
+                   (const xmlChar*) ((kv.second->isRegulator()) ? "true" : "false"));
+    }
+
+    xmlSetDocCompressMode(doc, 9);
+
+    string filename = my_name + "_" + my_save_label + ".xcs";
+    xmlSaveFile(filename.c_str(), doc);
+
+    // TODO: tests
+
+    return true;
+#endif // HAVE_XML
+}
+
+bool Federation::restoreXmlData(string docFilename)
+{
+#ifndef HAVE_XML
+    (void) docFilename;
+    return false;
+#else
+
+    xmlDocPtr doc = xmlParseFile(docFilename.c_str());
+
+    // Did libXML manage to parse the file ?
+    if (doc == 0) {
+        cerr << "XML restore file not parsed successfully" << endl;
+        xmlFreeDoc(doc);
+        return false;
+    }
+    xmlNodePtr cur;
+
+    cur = xmlDocGetRootElement(doc);
+    if (cur == 0) {
+        cerr << "XML file is empty" << endl;
+        xmlFreeDoc(doc);
+        return false;
+    }
+
+    // Is this root element an ROOT_NODE ?
+    if (xmlStrcmp(cur->name, ROOT_NODE)) {
+        cerr << "Wrong XML file: not the expected root node" << endl;
+        return false;
+    }
+
+    cur = cur->xmlChildrenNode;
+    if (xmlStrcmp(cur->name, NODE_FEDERATION)) {
+        cerr << "Wrong XML file structure" << endl;
+        return false;
+    }
+
+    if (strcmp(my_name.c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name")) != 0) {
+        cerr << "Wrong federation name" << endl;
+    }
+
+    cur = cur->xmlChildrenNode;
+
+    bool status = false;
+    while (cur != NULL) {
+        if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
+            //             for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
+            for (const auto& kv : my_federates) {
+                if (!strcmp(kv.second->getName().c_str(), XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
+                    // Set federate constrained status
+                    status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "constrained"));
+
+                    try {
+                        kv.second->setConstrained(status);
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate was already constrained, no issue" << endl;
+                    }
+
+                    // Set federate regulating status
+                    status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "regulator"));
+
+                    try {
+                        kv.second->setRegulator(status);
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate was already regulator, no issue" << endl;
+                    }
+
+                    try {
+                        kv.second->setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "handle"), 0, 10));
+                    }
+                    catch (RTIinternalError& e) {
+                        Debug(D, pdDebug) << "Federate handle was already set, no issue" << endl;
+                    }
+                    break;
+                }
+            }
+        }
+        cur = cur->next;
+    }
+
+    return status;
+#endif // HAVE_XML
+}
+
+Responses Federation::respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except)
+{
+    Responses responses;
+
+    std::vector<Socket*> sockets;
+    for (const auto& pair : my_federates) {
+        if (pair.first != except) {
+#ifdef HLA_USES_UDP
+            sockets.push_back(my_server->getSocketLink(pair.first, BEST_EFFORT));
+#else
+            sockets.push_back(my_server->getSocketLink(pair.first));
+#endif
+        }
+    }
+
+    responses.emplace_back(sockets, std::move(message));
+
+    return responses;
+}
+}
+}

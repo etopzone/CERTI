@@ -35,20 +35,20 @@ protected:
 
 TEST_F(FederationsListTest, createFederationThrowsOnEmptyName)
 {
-    ASSERT_THROW(f.createFederation("", federation_handle, s, a, ""), ::certi::RTIinternalError);
+    ASSERT_THROW(f.createFederation("", federation_handle, s, a, {""}, ""), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationsListTest, createFederationRethrows)
 {
-    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, ""), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, ""), ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationsListTest, createFederationDoesNotWorkTwice)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, "FedList.fed");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
-    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, ""), ::certi::FederationExecutionAlreadyExists);
+    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, ""), ::certi::FederationExecutionAlreadyExists);
 }
 
 TEST_F(FederationsListTest, getFederationHandleThrowsOnUknFederation)
@@ -59,7 +59,7 @@ TEST_F(FederationsListTest, getFederationHandleThrowsOnUknFederation)
 TEST_F(FederationsListTest, getFederationHandleReturnsHandleFromCreate)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, "FedList.fed");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
     ASSERT_EQ(federation_handle, f.getFederationHandle("fed"));
 }
@@ -72,7 +72,7 @@ TEST_F(FederationsListTest, destroyFederationThrowsOnUknFederation)
 TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, "FedList.fed");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
     certi::NM_Join_Federation_Execution message{};
     f.addFederate(federation_handle, "federate", nullptr, message);
@@ -83,7 +83,7 @@ TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
 TEST_F(FederationsListTest, DestroyFederationRemovesFederation)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, "FedList.fed");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
     f.destroyFederation(federation_handle);
 
@@ -96,7 +96,7 @@ TEST_F(FederationsListTest, infoThrowsOnUknFederation)
     bool isSyncing{false};
 
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, "FedList.fed");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
     f.info(federation_handle, nbFeds, nbRegs, isSyncing);
 

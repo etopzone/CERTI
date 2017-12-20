@@ -68,17 +68,17 @@ Responses Mom::registerFederation()
     // Static
     attribute = my_attribute_cache["HLAMIMDesignator"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("HLAstandardMIM");
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getMimModule());
 
     // Conditional
     attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFEDid());
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return all values
 
     // Conditional
     attribute = my_attribute_cache["HLAcurrentFDD"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFEDid());
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return good values
 
     // Static
     attribute = my_attribute_cache["HLAtimeImplementationName"];
