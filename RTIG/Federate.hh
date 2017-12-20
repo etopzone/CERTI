@@ -39,13 +39,15 @@ public:
      * 
      * handle must be valid
      */
-    Federate(const std::string& name, const FederateHandle handle);
+    Federate(const std::string& name, const std::string& type, const FederateHandle handle);
 
     FederateHandle getHandle() const noexcept;
 
     void setHandle(const FederateHandle h);
 
     std::string getName() const noexcept;
+
+    std::string getType() const noexcept;
 
     bool isConstrained() const noexcept;
 
@@ -154,6 +156,7 @@ public:
 private:
     FederateHandle my_handle; /// Federate ID.
     std::string my_name; /// Federate name.
+    std::string my_type;
 
     /** Used only on the RTIA, because on RTIG there is a
      *  upper level list of regulator Federates (in Federation).

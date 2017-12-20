@@ -72,11 +72,6 @@ public:
 	 * Allocates memory the Name's storage, and read its FED file to store the
 	 * result in RootObj.
 	 *   (with FEDERATION_USES_MULTICAST defined).
-	 *  @param federation_name
-	 *  @param federation_handle
-	 *  @param socket_server
-	 *  @param audit_server
-	 *  @param mc_link
 	 */
     Federation(const std::string& federation_name,
                const FederationHandle federation_handle,
@@ -95,7 +90,8 @@ public:
      * @param federation_handle Handle of the federation
      * @param socket_server Socket server from RTIG
      * @param audit_server Audit server from RTIG
-     * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
+     * @param fom_modules list of paths to fom modules (may be a .fed or a .xml file)
+     * @param mim_module path to mim module, or empty for default mim module
      */
     Federation(const std::string& federation_name,
                const FederationHandle federation_handle,
@@ -158,7 +154,7 @@ public:
      * Also send Null messages from all others federates to initialize its LBTS, and
      * finally a RequestPause message if the Federation is already paused.
      */
-    std::pair<FederateHandle, Responses> add(const std::string& federate_name, SocketTCP* tcp_link);
+    std::pair<FederateHandle, Responses> add(const std::string& federate_name, const std::string& federate_type, SocketTCP* tcp_link);
 
     /** Remove a federate.
      * 

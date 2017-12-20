@@ -251,7 +251,7 @@ bool Federation::check(FederateHandle federate_handle) const
     return true;
 }
 
-std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, const string& federate_type, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -266,7 +266,7 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
     auto result
-        = my_federates.insert(std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_handle)));
+        = my_federates.insert(std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, federate_handle)));
 
     Federate& federate = *result.first->second;
 

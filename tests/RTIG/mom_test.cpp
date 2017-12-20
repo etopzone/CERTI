@@ -16,6 +16,8 @@ static const ::certi::FederationHandle invalid_handle{0};
 
 static const ::certi::FederationHandle federation_handle{1};
 
+static const std::string fed_type{"fed_type"};
+
 // static const ::certi::FederateHandle ukn_federate{42};
 }
 
@@ -84,10 +86,10 @@ TEST_F(MomTest, 11_2_a_1_The_RTI_shall_publish_and_register_one_instance_of_mana
 {
     ASSERT_EQ(0u, federateOC->getClassInstances().size());
 
-    f.add("fed", nullptr);
+    f.add("fed", fed_type, nullptr);
     ASSERT_EQ(1u, federateOC->getClassInstances().size());
 
-    f.add("fed2", nullptr);
+    f.add("fed2", fed_type, nullptr);
     ASSERT_EQ(2u, federateOC->getClassInstances().size());
 }
 

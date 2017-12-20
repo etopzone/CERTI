@@ -22,6 +22,8 @@ namespace {
 static const ::certi::FederationHandle ukn_federation{42};
 static const ::certi::Handle ukn_handle{1337};
 
+static const std::string fed_type{"fed_type"};
+
 static const ::certi::FederationHandle federation_handle{1};
 }
 
@@ -75,7 +77,7 @@ TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
     f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
 
     certi::NM_Join_Federation_Execution message{};
-    f.addFederate(federation_handle, "federate", nullptr, message);
+    f.addFederate(federation_handle, "federate", fed_type, nullptr, message);
 
     ASSERT_THROW(f.destroyFederation(federation_handle), ::certi::FederatesCurrentlyJoined);
 }
@@ -113,7 +115,7 @@ TEST_F(FederationsListTest, killFederateDoesNotThrowsOnUknFederation)
 TEST_F(FederationsListTest, addFederateThrowsOnUknFederation)
 {
     certi::NM_Join_Federation_Execution message{};
-    ASSERT_THROW(f.addFederate(ukn_federation, "", nullptr, message), ::certi::FederationExecutionDoesNotExist);
+    ASSERT_THROW(f.addFederate(ukn_federation, "", fed_type, nullptr, message), ::certi::FederationExecutionDoesNotExist);
 }
 
 TEST_F(FederationsListTest, VerboseLevelGettersAndSetters)

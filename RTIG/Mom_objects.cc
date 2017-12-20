@@ -145,7 +145,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Static
     attribute = my_attribute_cache["HLAfederateType"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("NOT-COMPLIANT"); // FIXME not compliant
+    my_attribute_values_cache[federate_object][attribute] = encodeString(federate.getType());
 
     // Static
     attribute = my_attribute_cache["HLAfederateHost"];

@@ -9,13 +9,13 @@ using certi::RTIinternalError;
 
 TEST(FederateTest, ConstructorThrowsOnNullHandle)
 {
-    ASSERT_THROW(Federate("", 0), RTIinternalError);
+    ASSERT_THROW(Federate("", "", 0), RTIinternalError);
 }
 
 // FIXME Possible bug here !!
 // TEST(FederateTest, SetHandleAcceptsNullHandle)
 // {
-//     Federate f("test", 1);
+//     Federate f("test", "", 1);
 //     
 //     ASSERT_EQ(1, f.getHandle());
 //     
@@ -26,7 +26,7 @@ TEST(FederateTest, ConstructorThrowsOnNullHandle)
 
 TEST(FederateTest, BasicSyncLabelManipulation)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
 
     const std::string label{"firstLabel"};
 
@@ -43,7 +43,7 @@ TEST(FederateTest, BasicSyncLabelManipulation)
 
 TEST(FederateTest, CannotAddSameLabelTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     const std::string label{"firstLabel"};
     
@@ -54,14 +54,14 @@ TEST(FederateTest, CannotAddSameLabelTwice)
 
 TEST(FederateTest, CannotRemoveUnknownLabel)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_THROW(f.removeSynchronizationLabel("label"), RTIinternalError);
 }
 
 TEST(FederateTest, HandleGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_EQ(1u, f.getHandle());
     
@@ -76,7 +76,7 @@ TEST(FederateTest, HandleGetterSetter)
 
 TEST(FederateTest, CannotSetNullHandle)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_THROW(f.setHandle(0), RTIinternalError);
     
@@ -85,14 +85,14 @@ TEST(FederateTest, CannotSetNullHandle)
 
 TEST(FederateTest, NameGetter)
 {
-    Federate f("name", 1);
+    Federate f("name", "", 1);
     
     ASSERT_EQ("name", f.getName());
 }
 
 TEST(FederateTest, ConstrainedGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isConstrained());
     
@@ -107,7 +107,7 @@ TEST(FederateTest, ConstrainedGetterSetter)
 
 TEST(FederateTest, CannotSetConstrainedTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setConstrained(true);
     
@@ -120,7 +120,7 @@ TEST(FederateTest, CannotSetConstrainedTwice)
 
 TEST(FederateTest, RegulatorGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isRegulator());
     
@@ -135,7 +135,7 @@ TEST(FederateTest, RegulatorGetterSetter)
 
 TEST(FederateTest, CannotSetRegulatorTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setRegulator(true);
     
@@ -148,7 +148,7 @@ TEST(FederateTest, CannotSetRegulatorTwice)
 
 TEST(FederateTest, UsingNERxGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isUsingNERx());
     
@@ -163,7 +163,7 @@ TEST(FederateTest, UsingNERxGetterSetter)
 
 TEST(FederateTest, LastNERxValueGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ::certi::FederationTime baseValue{};
     
@@ -182,7 +182,7 @@ TEST(FederateTest, LastNERxValueGetterSetter)
 
 TEST(FederateTest, CRASGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_TRUE(f.isClassRelevanceAdvisorySwitch());
     
@@ -197,7 +197,7 @@ TEST(FederateTest, CRASGetterSetter)
 
 TEST(FederateTest, CannotSetCRASTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setClassRelevanceAdvisorySwitch(false);
     
@@ -210,7 +210,7 @@ TEST(FederateTest, CannotSetCRASTwice)
 
 TEST(FederateTest, IRASGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_TRUE(f.isInteractionRelevanceAdvisorySwitch());
     
@@ -225,7 +225,7 @@ TEST(FederateTest, IRASGetterSetter)
 
 TEST(FederateTest, CannotSetIRASTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setInteractionRelevanceAdvisorySwitch(false);
     
@@ -238,7 +238,7 @@ TEST(FederateTest, CannotSetIRASTwice)
 
 TEST(FederateTest, ARASGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isAttributeRelevanceAdvisorySwitch());
     
@@ -253,7 +253,7 @@ TEST(FederateTest, ARASGetterSetter)
 
 TEST(FederateTest, CannotSetARASTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setAttributeRelevanceAdvisorySwitch(true);
     
@@ -266,7 +266,7 @@ TEST(FederateTest, CannotSetARASTwice)
 
 TEST(FederateTest, ASASGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isAttributeScopeAdvisorySwitch());
     
@@ -281,7 +281,7 @@ TEST(FederateTest, ASASGetterSetter)
 
 TEST(FederateTest, CannotSetASASTwice)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     f.setAttributeScopeAdvisorySwitch(true);
     
@@ -294,7 +294,7 @@ TEST(FederateTest, CannotSetASASTwice)
 
 TEST(FederateTest, SavingGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isSaving());
     
@@ -309,7 +309,7 @@ TEST(FederateTest, SavingGetterSetter)
 
 TEST(FederateTest, RestoringGetterSetter)
 {
-    Federate f("test", 1);
+    Federate f("test", "", 1);
     
     ASSERT_FALSE(f.isRestoring());
     

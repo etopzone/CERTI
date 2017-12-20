@@ -115,6 +115,7 @@ public:
      */
     std::pair<FederateHandle, Responses> addFederate(const FederationHandle handle,
                                                      const std::string& federateName,
+                                                     const std::string& federateType,
                                                      SocketTCP* federateTcpLink,
                                                      NM_Join_Federation_Execution& objectModelData);
 
