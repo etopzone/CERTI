@@ -138,7 +138,7 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) && (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->getFederationHandle().get());
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);

@@ -32,11 +32,19 @@
 #include "SocketUDP.hh"
 #include <include/certi.hh>
 
+#include <list>
 #ifdef CERTI_RTIG_USE_POLL
 #include <poll.h>
 #endif
 
-#include <list>
+#ifdef CERTI_RTIG_USE_EPOLL
+#include <sys/epoll.h>
+#include <fcntl.h>
+// it might be equal to Number of federate (??)
+#define MAX_CONNECTIONS     5
+#endif
+
+
 
 namespace certi {
 
@@ -141,6 +149,25 @@ public:
 	Socket* getSocketFromFileDescriptor(int fd);
 #endif
 
+#ifdef CERTI_RTIG_USE_EPOLL   
+	void constructEpollList();	
+	void createEpollFd()
+    {
+		_Epollfd = epoll_create( 0xCAFE );
+	}
+	void addElementEpoll(int fd)
+    {
+		struct epoll_event ev;
+		ev.data.fd = fd;
+		ev.events = EPOLLIN;
+		epoll_ctl(_Epollfd, EPOLL_CTL_ADD, fd, &ev);
+	}
+	int getEpollDescriptor()
+	{
+		return _Epollfd;
+	}
+	Socket* getSocketFromFileDescriptor(int fd);
+#endif
     // ------------------------------------------
     // -- Message Broadcasting related Methods --
     // ------------------------------------------
@@ -177,6 +204,11 @@ private:
     #ifdef CERTI_RTIG_USE_POLL
     // use with poll
 	std::vector<struct pollfd> _SocketVector;
+	#endif
+	
+	#ifdef CERTI_RTIG_USE_EPOLL
+    // use with epoll
+	int _Epollfd;
 	#endif
 };
 

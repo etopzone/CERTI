@@ -243,6 +243,9 @@ void SocketServer::open()
 
     SocketTuple* newTuple = new SocketTuple(newLink);
 
+#ifdef CERTI_RTIG_USE_EPOLL    
+    addElementEpoll(newTuple->ReliableLink->returnSocket());
+#endif
     if (newTuple == NULL)
         throw RTIinternalError("Could not allocate new tuple.");
 
@@ -296,4 +299,31 @@ Socket* SocketServer::getSocketFromFileDescriptor(int fd)
 }
 #endif
 
+#ifdef CERTI_RTIG_USE_EPOLL
+void SocketServer::constructEpollList()
+{
+	struct epoll_event ev;
+    list<SocketTuple*>::iterator i;
+    for (i = begin(); i != end(); ++i) {
+        if ((*i)->ReliableLink != NULL) {
+            int fd = (*i)->ReliableLink->returnSocket();
+            ev.data.fd = fd;
+            ev.events = EPOLLIN;
+            epoll_ctl(_Epollfd, EPOLL_CTL_ADD, fd, &ev);
+			// We should handle error here ...
+			// errExit("epoll_ctl");
+        }
+    }
+}
+Socket* SocketServer::getSocketFromFileDescriptor(int fd)
+{
+    list<SocketTuple*>::const_iterator i;
+    for (i = begin(); i != end(); ++i) {
+        if (((*i)->ReliableLink != NULL) && ((*i)->ReliableLink->returnSocket()== fd))
+            return (*i)->ReliableLink;
+    }
+
+    return NULL;
+}
+#endif
 }

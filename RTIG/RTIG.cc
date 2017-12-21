@@ -102,6 +102,14 @@ void RTIG::execute()
     fd_set fd;
     Socket* link{nullptr};
     int result{0};
+    
+#ifdef CERTI_RTIG_USE_EPOLL    
+int Epollfd;
+my_socketServer.createEpollFd();
+int fdtcp = my_tcpSocketServer.returnSocket();
+my_socketServer.addElementEpoll(fdtcp);
+Epollfd = my_socketServer.getEpollDescriptor();
+#endif
 
     while (!terminate) {
 #if _WIN32
@@ -270,6 +278,48 @@ void RTIG::execute()
 			}
 		}
         my_socketServer.resetSocketVector();
+#endif
+#ifdef CERTI_RTIG_USE_EPOLL
+		struct epoll_event pevents[ 200 ];
+		result = epoll_wait( Epollfd, pevents, 200, -1 );
+		if ((result == -1) && (errno == EINTR)) 
+		{
+				break;
+		}
+		for ( int i = 0; i < result; i++ )
+		{
+			if (pevents[i].events == EPOLLIN)
+			{
+				link = my_socketServer.getSocketFromFileDescriptor(pevents[i].data.fd);
+				 if (link) {
+						Debug(D, pdCom) << "Incoming message on socket " << link->returnSocket() << std::endl;
+
+						try {
+							do {
+								link = processIncomingMessage(link);
+								if (!link) {
+									break;
+								}
+							} while (link->isDataReady());
+						}
+						catch (NetworkError& e) {
+							if (!e.reason().empty()) {
+								Debug(D, pdExcept) << "Catching Network Error, reason: " << e.reason() << std::endl;
+							}
+							else {
+								Debug(D, pdExcept) << "Catching Network Error, unknown reason" << std::endl;
+							}
+							std::cout << "RTIG dropping client connection " << link->returnSocket() << '.' << std::endl;
+							closeConnection(link, true);
+							link = nullptr;
+						}
+					}
+					if (my_tcpSocketServer.returnSocket() == pevents[i].data.fd) {
+						Debug(D, pdCom) << "New client" << std::endl;
+						openConnection();
+					}
+			}		
+		}
 
 #endif
 
