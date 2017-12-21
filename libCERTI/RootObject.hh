@@ -68,12 +68,6 @@ public:
     struct TemporaryRootObject{};
     RootObject(TemporaryRootObject);
     
-    struct TestsOnly{};
-    RootObject(TestsOnly flag);
-    
-    struct Coucou{};
-    RootObject(Coucou flag);
-
     /** RootObject destructor.
      * Will delete all object or interaction classes.
      */
@@ -84,9 +78,6 @@ public:
     
     /// Check if we can add a module (this) into a global root object (parameter)
     bool canBeAddedTo(const RootObject& main_root);
-    
-    /// Insert every objects from this object into another one (parameter) 
-    void insertInto(RootObject& main_root);
 
     /** Return the security LevelID corresponding to a security level name.
      * @param[in] levelName the security level name

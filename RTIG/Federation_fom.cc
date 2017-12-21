@@ -224,10 +224,8 @@ FileType checkFileType(const std::string& filepath)
     }
 }
 
-RootObject parseModule(const std::string& filepath, const FileType type)
+void parseModuleInto(const std::string& filepath, const FileType type, RootObject& result)
 {
-    RootObject result{RootObject::TemporaryRootObject()};
-
     std::ifstream fedFile(filepath);
 
     if (fedFile.is_open()) {
@@ -264,8 +262,6 @@ RootObject parseModule(const std::string& filepath, const FileType type)
             }
         }
     }
-
-    return result;
 }
 
 #if 0
@@ -337,7 +333,8 @@ void Federation::openFomModules(std::vector<std::string> modules, const bool is_
             auto file_type = checkFileType(module_path);
 
             Debug(D, pdDebug) << "  Parse file" << std::endl;
-            RootObject temporary_root_object = parseModule(module_path, file_type);
+            auto temporary_root_object = RootObject{RootObject::TemporaryRootObject()};
+            parseModuleInto(module_path, file_type, temporary_root_object);
 
             Debug(D, pdDebug) << "TEMPORARY ROOT OBJECT" << std::endl;
             temporary_root_object.display();
@@ -357,7 +354,7 @@ void Federation::openFomModules(std::vector<std::string> modules, const bool is_
             }
 
             Debug(D, pdDebug) << "  Add to current root object" << std::endl;
-            temporary_root_object.insertInto(*my_root_object);
+            parseModuleInto(module_path, file_type, *my_root_object);
 
             Debug(D, pdDebug) << "  Update path to module" << std::endl;
             if(is_mim) {

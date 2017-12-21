@@ -154,52 +154,6 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
     return true;
 }
     
-void RootObject::insertInto(RootObject& main_root)
-{
-    // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
-    
-    // object class
-    auto object_handles = main_root.ObjectClasses->handles();
-    auto currentHandle = *(std::max_element(begin(object_handles), end(object_handles))) + 1;
-    
-    
-    for(auto& object_class: *ObjectClasses) {
-        try {
-            auto handle = main_root.ObjectClasses->getObjectClassHandle(object_class.first);
-            
-            // TODO merge
-        }
-        catch(NameNotFound& e) {
-            // TODO insert, beware of parentship...
-        }
-    }
-    
-    // interaction class
-    for(auto& interaction_class: *Interactions) {
-        try {
-            auto handle = main_root.Interactions->getInteractionClassHandle(interaction_class.first);
-            
-            // TODO merge
-        }
-        catch(NameNotFound& e) {
-            // TODO insert, beware of parentship...
-            
-        }
-    }
-    
-    // dimension
-    // TODO
-    
-    // transportation type
-    // TODO
-    
-    // update rate
-    // TODO
-    
-    // switches
-    // TODO
-}
-
 SecurityLevelID RootObject::getSecurityLevelID(const std::string& levelName)
 {
     return server ? server->getLevelIDWithName(levelName) : PublicLevelID;
