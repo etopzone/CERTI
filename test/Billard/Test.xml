@@ -5,7 +5,7 @@
             <attribute name="PositionX" transportation="HLAreliable" order="TimeStamp" />
             <attribute name="PositionY" transportation="HLAreliable" order="TimeStamp" />
             <objectClass name="Boule">
-                <attribute name="Color" /> transportation="HLAreliable" order="TimeStamp" />
+                <attribute name="Color" transportation="HLAreliable" order="TimeStamp" />
             </objectClass>
         </objectClass>
         <objectClass name="HLAobjectRoot" sharing="Neither">

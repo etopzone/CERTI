@@ -63,10 +63,7 @@ public:
      *            retrieve the socket link between RTIG and RTIA.
      *            This may be NULL on the RTIA.
      */
-    RootObject(SecurityServer* security_server = nullptr);
-    
-    struct TemporaryRootObject{};
-    RootObject(TemporaryRootObject);
+    RootObject(SecurityServer* security_server = nullptr, const bool temporary = false);
     
     /** RootObject destructor.
      * Will delete all object or interaction classes.
@@ -75,6 +72,9 @@ public:
 
     /// Print the Root Object tree to the standard output.
     void display() const;
+
+    /// Print the Root Object tree to the standard output.
+    void displaySmall() const;
     
     /// Check if we can add a module (this) into a global root object (parameter)
     bool canBeAddedTo(const RootObject& main_root);
@@ -100,9 +100,9 @@ public:
 
     RoutingSpace& getRoutingSpace(SpaceHandle);
 
-    SpaceHandle getRoutingSpaceHandle(const std::string&);
+    SpaceHandle getRoutingSpaceHandle(const std::string&) const;
 
-    const std::string& getRoutingSpaceName(SpaceHandle);
+    const std::string& getRoutingSpaceName(SpaceHandle) const;
 
     void addRegion(RTIRegion*);
 
@@ -165,6 +165,12 @@ public:
      * Deserialize the federate object model from a message buffer.
      */
     void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
+    
+    int getFreeObjectClassHandle();
+    int getFreeInteractionClassHandle();
+    int getFreeDimensionHandle();
+    int getFreeParameterHandle();
+    int getFreeSpaceHandle();
 
 private:
     std::vector<RoutingSpace> spaces;
@@ -200,6 +206,12 @@ public: // FIXME encapsulation
      * The set of reserved names.
      */
     NameReservationSet* reservedNames;
+    
+    int freeObjectClassHandle {0};
+    int freeInteractionClassHandle {0};
+    int freeDimensionHandle {0};
+    int freeParameterHandle {0};
+    int freeSpaceHandle {0};
 };
 
 } // namespace certi

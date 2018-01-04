@@ -46,26 +46,16 @@ using std::list;
 
 namespace certi {
 
-static PrettyDebug D("ROOTOBJECT", "(RootObject) ");
+static PrettyDebug D("ROOTOBJECT", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 
-RootObject::RootObject(SecurityServer* security_server) 
-: server(security_server)
-, regionHandles(1)
-, ObjectClasses {new ObjectClassSet(server, true)}
-, Interactions {new InteractionSet(server, true)}
-, objects {new ObjectSet(server)}
-, reservedNames {new NameReservationSet()}
-{
-}
-
-RootObject::RootObject(TemporaryRootObject)
-: server(nullptr)
-, regionHandles(1)
-, ObjectClasses {new ObjectClassSet(nullptr, false)}
-, Interactions {new InteractionSet(nullptr, false)}
-, objects {new ObjectSet(nullptr)}
-, reservedNames {new NameReservationSet()}
+RootObject::RootObject(SecurityServer* security_server, const bool temporary)
+    : server(security_server)
+    , regionHandles(1)
+    , ObjectClasses{new ObjectClassSet(server, !temporary)}
+    , Interactions{new InteractionSet(server, !temporary)}
+    , objects{new ObjectSet(server)}
+    , reservedNames{new NameReservationSet()}
 {
 }
 
@@ -109,51 +99,221 @@ void RootObject::display() const
     std::cout << "------------------------" << std::endl;
 }
 
+void RootObject::displaySmall() const
+{
+    std::cout << std::endl << "Root Object Tree BEGINS:" << std::endl;
+    std::cout << "------------------------" << std::endl;
+
+    for (const auto& kv : *ObjectClasses) {
+        std::cout << " (" << kv.second->getHandle() << ") " << kv.second->getName() << " (parent "
+                  << kv.second->getSuperclass() << ")" << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    for (const auto& kv : *Interactions) {
+        std::cout << " (" << kv.second->getHandle() << ") " << kv.second->getName() << " (parent "
+                  << kv.second->getSuperclass() << ")" << std::endl;
+    }
+
+    std::cout << std::endl << "Root Object Tree ENDS." << std::endl;
+    std::cout << "------------------------" << std::endl;
+}
+
 bool RootObject::canBeAddedTo(const RootObject& main_root)
 {
     // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
     
+    Debug(D, pdDebug) << "ME" << std::endl;
+    displaySmall();
+    
+    Debug(D, pdDebug) << "MAIN" << std::endl;
+    main_root.displaySmall();
+
     // object class
-    for(const auto& object_class: *ObjectClasses) {
+    for (const auto& object_class : *ObjectClasses) {
         try {
+            // if it already exists
             auto handle = main_root.ObjectClasses->getObjectClassHandle(object_class.first);
-            
-            // TODO
-            return false;
+
+            auto existing_object = main_root.ObjectClasses->getObjectFromHandle(handle);
+
+            // parents
+            if(existing_object->getSuperclass() == 0 && object_class.second->getSuperclass() == 0) {
+                // no parent on both side, okay
+            }
+            else if (main_root.ObjectClasses->getObjectClassName(existing_object->getSuperclass())
+                != ObjectClasses->getObjectClassName(object_class.second->getSuperclass())) {
+                Debug(D, pdError) << "Parents for <" << existing_object->getName() << "> differs" << std::endl;
+                return false;
+            }
+
+            // scaffolding?
+
+            // set of class attributes
+            auto existing_attributes = existing_object->getHandleClassAttributeMap();
+            auto new_attributes = object_class.second->getHandleClassAttributeMap();
+
+            //  number
+            if (existing_attributes.size() != new_attributes.size()) {
+                Debug(D, pdError) << "Attribute sets differ in size" << std::endl;
+                return false;
+            }
+            //  names
+            std::vector<std::string> names;
+            std::transform(
+                begin(existing_attributes),
+                end(existing_attributes),
+                std::back_inserter(names),
+                [](const decltype(existing_attributes)::value_type& element) { return element.second->getName(); });
+            for (const auto& kv : new_attributes) {
+                auto find_it = std::find(begin(names), end(names), kv.second->getName());
+                if (find_it == end(names)) {
+                    Debug(D, pdError) << "New attribute defined" << std::endl;
+                    return false;
+                }
+                else {
+                    names.erase(find_it);
+                }
+            }
+            if (!names.empty()) {
+                Debug(D, pdError) << "Old attribute not defined" << std::endl;
+                return false;
+            }
+
+            for (const auto& kv : existing_attributes) {
+                auto new_attribute = new_attributes.at(object_class.second->getAttributeHandle(kv.second->getName()));
+
+                //  available dimensions
+                if (kv.second->getSpace() == 0 && new_attribute->getSpace() == 0) {
+                    // no space, it's okay
+                }
+                else if (getRoutingSpaceName(kv.second->getSpace())
+                    != main_root.getRoutingSpaceName(new_attribute->getSpace())) {
+                    Debug(D, pdError) << "Dimensions differ" << std::endl;
+                    return false;
+                }
+
+                //  transportation
+                if (kv.second->transport != new_attribute->transport) {
+                    Debug(D, pdError) << "Transport differ" << std::endl;
+                    return false;
+                }
+
+                //  order
+                if (kv.second->order != new_attribute->order) {
+                    Debug(D, pdError) << "Order differ" << std::endl;
+                    return false;
+                }
+            }
         }
-        catch(NameNotFound& e) {
-            // ok, continue
+        catch (NameNotFound& e) {
+            // ok, does not exist yet, continue
         }
     }
-    
+
     // interaction class
-    for(const auto& interaction_class: *Interactions) {
+    for (const auto& interaction_class : *Interactions) {
         try {
             auto handle = main_root.Interactions->getInteractionClassHandle(interaction_class.first);
-            
-            // TODO
-            return false;
+
+            auto existing_interaction = main_root.Interactions->getObjectFromHandle(handle);
+
+            // parents
+            if(existing_interaction->getSuperclass() == 0 && interaction_class.second->getSuperclass() == 0) {
+                // no parent on both side, okay
+            }
+            else if (main_root.Interactions->getInteractionClassName(existing_interaction->getSuperclass())
+                != Interactions->getInteractionClassName(interaction_class.second->getSuperclass())) {
+                Debug(D, pdError) << "Parents for <" << existing_interaction->getName() << "> differs" << std::endl;
+                return false;
+            }
+
+            // scaffolding?
+
+            // set of parameters
+            auto existing_parameters = existing_interaction->getHandleParameterMap();
+            auto new_parameters = interaction_class.second->getHandleParameterMap();
+
+            //  number
+            if (existing_parameters.size() != new_parameters.size()) {
+                Debug(D, pdError) << "Parameter sets differ in size" << std::endl;
+                return false;
+            }
+            //  names
+            std::vector<std::string> names;
+            std::transform(
+                begin(existing_parameters),
+                end(existing_parameters),
+                std::back_inserter(names),
+                [](const decltype(existing_parameters)::value_type& element) { return element.second->getName(); });
+            for (const auto& kv : new_parameters) {
+                auto find_it = std::find(begin(names), end(names), kv.second->getName());
+                if (find_it == end(names)) {
+                    Debug(D, pdError) << "New parameter defined" << std::endl;
+                    return false;
+                }
+                else {
+                    names.erase(find_it);
+                }
+            }
+            if (!names.empty()) {
+                Debug(D, pdError) << "Old parameter not defined" << std::endl;
+                return false;
+            }
+
+            for (const auto& kv : existing_parameters) {
+                auto new_param = new_parameters.at(interaction_class.second->getParameterHandle(kv.second->getName()));
+
+                //  available dimensions
+#if 0
+                if (kv.second->getSpace() == 0 && new_param->getSpace() == 0) {
+                    // no space, it's okay
+                }
+                else if (getRoutingSpaceName(kv.second->getSpace())
+                    != main_root.getRoutingSpaceName(new_param->getSpace())) {
+                    Debug(D, pdError) << "Dimensions differ" << std::endl;
+                    return false;
+                }
+#endif
+
+                //  transportation
+#if 0
+                if (kv.second->transport != new_param->transport) {
+                    Debug(D, pdError) << "Transport differ" << std::endl;
+                    return false;
+                }
+#endif
+
+                //  order
+#if 0
+                if (kv.second->order != new_param->order) {
+                    Debug(D, pdError) << "Order differ" << std::endl;
+                    return false;
+                }
+#endif
+            }
         }
-        catch(NameNotFound& e) {
+        catch (NameNotFound& e) {
             // ok, continue
         }
     }
-    
+
     // dimension
     // TODO
-    
+
     // transportation type
     // TODO
-    
+
     // update rate
     // TODO
-    
+
     // switches
     // TODO
-    
+
     return true;
 }
-    
+
 SecurityLevelID RootObject::getSecurityLevelID(const std::string& levelName)
 {
     return server ? server->getLevelIDWithName(levelName) : PublicLevelID;
@@ -172,7 +332,7 @@ void RootObject::addRoutingSpace(const RoutingSpace& rs)
     spaces.back().setHandle(spaces.size());
 }
 
-SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs)
+SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs) const
 {
     auto it = std::find_if(begin(spaces), end(spaces), NameComparator<RoutingSpace>(rs));
 
@@ -182,7 +342,7 @@ SpaceHandle RootObject::getRoutingSpaceHandle(const std::string& rs)
     return it->getHandle();
 }
 
-const std::string& RootObject::getRoutingSpaceName(SpaceHandle handle)
+const std::string& RootObject::getRoutingSpaceName(SpaceHandle handle) const
 {
     if (handle <= 0 || (size_t) handle > spaces.size()) {
         throw SpaceNotDefined("");
@@ -590,6 +750,31 @@ void RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& me
             current->addParameter(parameter);
         }
     }
+}
+
+int RootObject::getFreeObjectClassHandle()
+{
+    return ++freeObjectClassHandle;
+}
+
+int RootObject::getFreeInteractionClassHandle()
+{
+    return ++freeInteractionClassHandle;
+}
+
+int RootObject::getFreeDimensionHandle()
+{
+    return ++freeDimensionHandle;
+}
+
+int RootObject::getFreeParameterHandle()
+{
+    return ++freeParameterHandle;
+}
+
+int RootObject::getFreeSpaceHandle()
+{
+    return ++freeSpaceHandle;
 }
 
 } // namespace certi

@@ -81,7 +81,7 @@ public:
     /** Build a parser.
      * @param root the root object of the FOM.
      */
-    XmlParser(RootObject* root);
+    XmlParser(RootObject* root, const bool is_parsing_module = false);
 
     /** Destructor. */
     virtual ~XmlParser();
@@ -187,12 +187,6 @@ protected:
      */
     virtual std::string getName() = 0;
 
-    int freeObjectClassHandle;
-    int freeInteractionClassHandle;
-    int freeAttributeHandle;
-    int freeParameterHandle;
-    int freeSpaceHandle;
-
     std::string filename;
     RootObject* root;
 
@@ -200,6 +194,8 @@ protected:
     xmlDocPtr doc;
     xmlNodePtr cur;
 #endif
+    
+    bool my_is_parsing_module;
 };
 
 } // namespace certi

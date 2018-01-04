@@ -35,7 +35,7 @@ namespace certi {
 
 static PrettyDebug D("XMLPARSER", "(XmlParser) ");
 
-XmlParser2000::XmlParser2000(RootObject* r) : XmlParser(r)
+XmlParser2000::XmlParser2000(RootObject* r, const bool is_parsing_modules) : XmlParser(r, is_parsing_modules)
 {
 }
 
