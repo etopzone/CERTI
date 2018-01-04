@@ -167,7 +167,7 @@ public:
     std::set<HandleType> handles()
     {
         std::set<HandleType> ret;
-        for(const auto& pair: fromHandle) {
+        for (const auto& pair : fromHandle) {
             ret.insert(pair.first);
         }
         return ret;
@@ -177,7 +177,7 @@ public:
     std::set<std::string> names()
     {
         std::set<std::string> ret;
-        for(const auto& pair: fromName) {
+        for (const auto& pair : fromName) {
             ret.insert(pair.first);
         }
         return ret;
@@ -234,7 +234,6 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet()
 template <typename ObjectType>
 void TreeNamedAndHandledSet<ObjectType>::add(ObjectType* child, ObjectType* parent)
 {
-
     // build hierarchical name if a parent is given
     if (parent) {
         std::string parentName = parent->getName();
@@ -254,11 +253,11 @@ void TreeNamedAndHandledSet<ObjectType>::add(ObjectType* child, ObjectType* pare
     // i.e. we may not add an object class of the SAME name to the object class set
     auto findit = fromName.find(child->getName());
     if (findit != fromName.end()) {
-        std::stringstream msg;
-        msg << "Name collision another object class named <" << child->getName() << "> with handle <"
-            << findit->second->getHandle()
-            << "> was found when trying to add identically named object class with handle <" << child->getHandle();
-        throw RTIinternalError(msg.str());
+        throw RTIinternalError("Name collision another object class named <" + child->getName() + "> with handle <"
+                               + std::to_string(findit->second->getHandle())
+                               + "> was found when trying to add identically named object class with handle <"
+                               + std::to_string(child->getHandle())
+                               + ">");
     }
     // store ref to new object in Object from Handle Map
     fromHandle[child->getHandle()] = child;
@@ -343,7 +342,7 @@ template <typename ObjectType>
 std::ostream& operator<<(std::ostream& os, const TreeNamedAndHandledSet<ObjectType>& set)
 {
     os << set.getSetName() << " : " << set.size() << std::endl;
-    for(const auto& element: set) {
+    for (const auto& element : set) {
         // FIXME currently the display method of ObjectClass
         // and Interaction is not <iostream> oriented.
         // will update that later

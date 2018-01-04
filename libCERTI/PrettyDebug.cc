@@ -42,52 +42,18 @@
 #include <unistd.h>
 #endif
 
-std::ostream PrettyDebug::_defaultOutputStream(std::cerr.rdbuf());
-std::string PrettyDebug::_federateName;
-std::filebuf* PrettyDebug::fb = NULL;
+std::ostream PrettyDebug::the_default_output_stream(std::cerr.rdbuf());
+std::string PrettyDebug::the_federate_name = "";
+std::filebuf* PrettyDebug::the_file_buffer = nullptr;
 
-void PrettyDebug::initStreams()
-{
-    if (!fb) {
-        const char* value = getenv("CERTI_DEBUG_FILE");
-        if (value) {
-            std::ostringstream filename;
-            int pid
-#ifdef _WIN32
-                = _getpid();
-#else
-                = (int) getpid();
-#endif
-            filename << value << "-" << pid;
-            fb = new std::filebuf();
-            fb->open(filename.str().c_str(), std::ios_base::out | std::ios_base::trunc);
-        }
-    }
-    /* replace buffer stream if we have one */
-    if (fb) {
-        _defaultOutputStream.rdbuf(fb);
-    }
-}
-
-// ----------------------------------------------------------------------------
-/** Constructor. Initialize the debug process according to the value
- *  of the 'name' environment variable.  The 'header' message is put
- *  in front of all printed debug messages. It can be a module name or
- *  whatever you need. */
-PrettyDebug::PrettyDebug(const char* name, const char* header)
+PrettyDebug::PrettyDebug(const std::string& name, const std::string& header)
+: my_name{name}, my_header{header}
 {
     PrettyDebug::initStreams();
 
-    if (header)
-        _header = header;
-
-    for (unsigned i = pdUnused; i < unsigned(pdLast); ++i) {
-        _streams[i] = 0;
-    }
-
     // note that if we do not have a name, we cannot enable any debug message ...
-    if (name) {
-        const char* value = getenv(name);
+    if (!my_name.empty()) {
+        const char* value = getenv(my_name.c_str());
         if (value) {
             // Compare each char of Value to content of the pgDebugKeys
             // string, to enable matching debug levels.
@@ -96,63 +62,61 @@ PrettyDebug::PrettyDebug(const char* name, const char* header)
             for (unsigned i = 0; i < valueLen; ++i) {
                 const char* pos = strchr(debugKeys, value[i]);
                 if (pos) {
-                    _streams[pos - debugKeys] = &_defaultOutputStream;
+                    my_streams[pos - debugKeys] = &the_default_output_stream;
                 }
             }
         }
     }
 }
 
-// ----------------------------------------------------------------------------
-/** Destructor. */
-PrettyDebug::~PrettyDebug()
-{
-}
-
-// ----------------------------------------------------------------------------
-/** Enable the echoing of the given debug level with the default
- *  ostream or modify the ostream if the debug level was already
- *  enabled. */
 void PrettyDebug::enableDebugLevel(pdDebugLevel level)
 {
     enableDebugLevel(level, std::cerr);
 }
 
-// ----------------------------------------------------------------------------
-/** Enable the echoing of the given debug level with the provided
- *  ostream or modify the ostream if the debug level was already
- *  enabled.  @attention: only the address of the given ostream is
- *  stored, it is not copied so the ostream MUST exist until the
- *  destruction of the PrettyDebug or until the level is disabled */
 void PrettyDebug::enableDebugLevel(pdDebugLevel level, std::ostream& stream)
 {
-    if (unsigned(pdLast) <= unsigned(level))
+    if (unsigned(pdLast) <= unsigned(level)) {
         return;
-    _streams[level] = &stream;
+    }
+    
+    my_streams[level] = &stream;
 }
 
-// ----------------------------------------------------------------------------
-/** Disable the echoing of the given debug level. */
 void PrettyDebug::disableDebugLevel(pdDebugLevel level)
 {
-    if (unsigned(pdLast) <= unsigned(level))
+    if (unsigned(pdLast) <= unsigned(level)) {
         return;
-    _streams[level] = 0;
+    }
+    
+    my_streams[level] = nullptr;
 }
 
-#ifndef NDEBUG
-// ----------------------------------------------------------------------------
-/** If level is enabled, Message is sent to the DebugServer, preceded
-   with the Header specified in the Constructor.  If the NDEBUG
-   constant is defined, the Out method has beed declared inline, and
-   its body set to {} (see PrettyDebug.hh).
-*/
+std::ostream* PrettyDebug::getStream(pdDebugLevel level, const int line)
+{
+    // make sure this is an unsigned value to so just one check is sufficient
+    if (unsigned(pdLast) <= unsigned(level)) {
+        return nullptr;
+    }
+    if (!my_streams[level]) {
+        return nullptr;
+    }
+    return getStreamPrintHeader(level, line);
+}
+
+void PrettyDebug::setFederateName(const std::string& federate_name)
+{
+    the_federate_name = federate_name;
+}
+
 void PrettyDebug::Out(pdDebugLevel level, const char* format, ...)
 {
+#ifndef NDEBUG
     // Fast return if streams are not enabled for this level.
-    std::ostream* stream = getStreamPrintHeader(level);
-    if (!stream)
+    std::ostream* stream = getStreamPrintHeader(level, 0);
+    if (!stream) {
         return;
+    }
 
     if (!format) {
         *stream << "Pretty Debug received an empty Message.\n";
@@ -167,21 +131,17 @@ void PrettyDebug::Out(pdDebugLevel level, const char* format, ...)
 
         *stream << buffer << '\n';
     }
-}
 #endif
+}
 
-// ----------------------------------------------------------------------------
-/** If level is enabled, print the debug header for this level and return
-    a std::ostream pointer to print debug messates to. If the given level is not
-    active returns a null pointer.
-*/
-std::ostream* PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
+std::ostream* PrettyDebug::getStreamPrintHeader(pdDebugLevel level, const int line)
 {
     // Print a standard message header and return the stream where the rest should go.
 
-    std::ostream* stream = _streams[level];
-    if (!stream)
-        return 0;
+    std::ostream* stream = my_streams[level];
+    if (!stream) {
+        return nullptr;
+    }
 
     *stream << "HLALOG - ";
 
@@ -196,9 +156,30 @@ std::ostream* PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
     *stream << tv.tv_sec << '.' << std::setw(6) << std::right << std::setfill('0') << tv.tv_usec;
 #endif
 
-    *stream << ' ' << _federateName << " - " << _header << "> ";
+    *stream << ' ' << the_federate_name << " - " << my_header << ":" << line << " > ";
 
     return stream;
 }
 
-// $Id: PrettyDebug.cc,v 4.13 2013/09/24 14:27:50 erk Exp $
+void PrettyDebug::initStreams()
+{
+    if (!the_file_buffer) {
+        const char* value = getenv("CERTI_DEBUG_FILE");
+        if (value) {
+            std::ostringstream filename;
+            int pid
+#ifdef _WIN32
+                = _getpid();
+#else
+                = (int) getpid();
+#endif
+            filename << value << "-" << pid;
+            the_file_buffer = new std::filebuf();
+            the_file_buffer->open(filename.str().c_str(), std::ios_base::out | std::ios_base::trunc);
+        }
+    }
+    /* replace buffer stream if we have one */
+    if (the_file_buffer) {
+        the_default_output_stream.rdbuf(the_file_buffer);
+    }
+}

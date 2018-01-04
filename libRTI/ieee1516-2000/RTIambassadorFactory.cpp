@@ -62,7 +62,7 @@ throw (BadInitializationParameter,
 
     std::unique_ptr< rti1516::RTIambassador > ap_ambassador(p_ambassador);
 
-    G1516.Out(pdGendoc,"enter RTIambassador::RTIambassador");
+    Debug(G1516, pdGendoc) << "enter RTIambassador::RTIambassador" << std::endl;
     PrettyDebug::setFederateName( "LibRTI::UnjoinedFederate" );
     std::wstringstream msg;
 
@@ -85,13 +85,13 @@ throw (BadInitializationParameter,
 #if defined(RTIA_USE_TCP)
     int port = p_ambassador->privateRefs->socketUn->listenUN();
     if (port == -1) {
-        D1516.Out( pdError, "Cannot listen to RTIA connection. Abort." );
+        Debug(G1516, pdError) << "Cannot listen to RTIA connection. Abort." << std::endl;
         throw rti1516::RTIinternalError(L"Cannot listen to RTIA connection" );
     }
 #else
     int pipeFd = p_ambassador->privateRefs->socketUn->socketpair();
     if (pipeFd == -1) {
-        D1516.Out( pdError, "Cannot get socketpair to RTIA connection. Abort." );
+        Debug(G1516, pdError) << "Cannot get socketpair to RTIA connection. Abort." << std::endl;
         throw rti1516::RTIinternalError( L"Cannot get socketpair to RTIA connection" );
     }
 #endif
@@ -122,7 +122,7 @@ throw (BadInitializationParameter,
             0,
             TRUE, // Inheritable
             DUPLICATE_SAME_ACCESS)) {
-        D1516.Out( pdError, "Cannot duplicate socket for RTIA connection. Abort." );
+        Debug(G1516, pdError) << "Cannot duplicate socket for RTIA connection. Abort." << std::endl;
         throw rti1516::RTIinternalError( L"Cannot duplicate socket for RTIA connection. Abort." );
     }
 #endif
@@ -153,10 +153,8 @@ throw (BadInitializationParameter,
         }
     }
     if (!success) {
-        msg << "CreateProcess - GetLastError()=<"
-                << GetLastError() <<"> "
-                << "Cannot connect to RTIA.exe";
-        throw rti1516::RTIinternalError(msg.str());
+        throw rti1516::RTIinternalError("CreateProcess - GetLastError()=<"
+                + GetLastError() + "> Cannot connect to RTIA.exe");
     }
 
     p_ambassador->privateRefs->handle_RTIA = pi.hProcess;
