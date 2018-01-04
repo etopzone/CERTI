@@ -197,7 +197,7 @@ struct basic_stringize
   }
 
   // note: must not return reference
-  operator const std::basic_string<C>() const
+  [[deprecated("Use std::to_string instead")]] operator const std::basic_string<C>() const
   {
     return m_s.str();
   }

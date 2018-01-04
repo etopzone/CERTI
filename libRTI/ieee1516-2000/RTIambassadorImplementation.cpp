@@ -130,7 +130,7 @@ RTI1516ambassador::~RTI1516ambassador()
 {
     certi::M_Close_Connexion req, rep;
 
-    G.Out(pdGendoc, "        ====>executeService CLOSE_CONNEXION");
+    Debug(G, pdGendoc) << "        ====>executeService CLOSE_CONNEXION" << std::endl;
     privateRefs->executeService(&req, &rep);
     // after the response is received, the privateRefs->socketUn must not be used
 
@@ -228,17 +228,17 @@ void RTI1516ambassador::createFederationExecution(
 {
     certi::M_Create_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::createFederationExecution");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::createFederationExecution" << std::endl;
     req.setFederationExecutionName({federationExecutionName.begin(), federationExecutionName.end()});
 
     req.setFomModuleDesignatorsSize(1);
     req.setFomModuleDesignators({fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end()}, 0);
 
-    G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "             ====>executeService CREATE_FEDERATION_EXECUTION" << std::endl;
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::createFederationExecution");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::createFederationExecution" << std::endl;
 }
 
 // 4.3
@@ -247,16 +247,16 @@ void RTI1516ambassador::destroyFederationExecution(std::wstring const& federatio
 {
     M_Destroy_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::destroyFederationExecution");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::destroyFederationExecution" << std::endl;
 
     std::string federationExecutionNameAsString(federationExecutionName.begin(), federationExecutionName.end());
     req.setFederationName(federationExecutionNameAsString);
 
-    G.Out(pdGendoc, "        ====>executeService DESTROY_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "        ====>executeService DESTROY_FEDERATION_EXECUTION" << std::endl;
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::destroyFederationExecution");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::destroyFederationExecution" << std::endl;
 }
 
 // 4.4
@@ -272,7 +272,7 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
 {
     M_Join_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::joinFederationExecution");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::joinFederationExecution" << std::endl;
 
     if (federateType.length() <= 0) {
         throw rti1516::RTIinternalError(L"Incorrect or empty federate name");
@@ -291,10 +291,10 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
     req.setFederateName(federateTypeAsString);
     req.setFederationExecutionName(federationExecutionNameAsString);
     
-    G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "        ====>executeService JOIN_FEDERATION_EXECUTION" << std::endl;
     privateRefs->executeService(&req, &rep);
     
-    G.Out(pdGendoc, "exit  RTI1516ambassador::joinFederationExecution");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::joinFederationExecution" << std::endl;
     PrettyDebug::setFederateName("LibRTI::" + std::string(federateTypeAsString));
 
     certi::FederateHandle certiFederateHandle = rep.getFederate();
@@ -313,12 +313,12 @@ void RTI1516ambassador::resignFederationExecution(rti1516::ResignAction /*resign
 {
     M_Resign_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::resignFederationExecution");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::resignFederationExecution" << std::endl;
     //req.setResignAction(static_cast<certi::ResignAction>(resignAction));
     req.setResignAction(certi::DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES);
-    G.Out(pdGendoc, "        ====>executeService RESIGN_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "        ====>executeService RESIGN_FEDERATION_EXECUTION" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit RTI1516ambassador::resignFederationExecution");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::resignFederationExecution" << std::endl;
 }
 
 // 4.6
@@ -331,7 +331,7 @@ void RTI1516ambassador::registerFederationSynchronizationPoint(
 {
     M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::registerFederationSynchronizationPoint for all federates" << std::endl;
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
     // no federate set
@@ -340,10 +340,10 @@ void RTI1516ambassador::registerFederationSynchronizationPoint(
         throw rti1516::RTIinternalError(L"Calling registerFederationSynchronizationPoint with Tag NULL");
     }
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
-    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    Debug(G, pdGendoc) << "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::registerFederationSynchronizationPoint for all federates");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::registerFederationSynchronizationPoint for all federates" << std::endl;
 }
 
 void RTI1516ambassador::registerFederationSynchronizationPoint(
@@ -356,7 +356,7 @@ void RTI1516ambassador::registerFederationSynchronizationPoint(
 {
     M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::registerFederationSynchronizationPoint for some federates" << std::endl;
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
@@ -375,10 +375,10 @@ void RTI1516ambassador::registerFederationSynchronizationPoint(
         req.setFederateSet(rti1516::FederateHandleFriend::toCertiHandle(*it), i);
     }
 
-    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    Debug(G, pdGendoc) << "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::registerFederationSynchronizationPoint for some federates");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::registerFederationSynchronizationPoint for some federates" << std::endl;
 }
 
 // 4.9
@@ -391,15 +391,15 @@ void RTI1516ambassador::synchronizationPointAchieved(std::wstring const& label) 
 {
     M_Synchronization_Point_Achieved req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::synchronizationPointAchieved");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::synchronizationPointAchieved" << std::endl;
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
 
-    G.Out(pdGendoc, "        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED");
+    Debug(G, pdGendoc) << "        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTI1516ambassador::synchronizationPointAchieved");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::synchronizationPointAchieved" << std::endl;
 }
 
 // 4.11
@@ -410,14 +410,14 @@ void RTI1516ambassador::requestFederationSave(std::wstring const& label) throw(r
 {
     M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationSave without time");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::requestFederationSave without time" << std::endl;
 
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_SAVE");
+    Debug(G, pdGendoc) << "      ====>executeService REQUEST_FEDERATION_SAVE" << std::endl;
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::requestFederationSave without time");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::requestFederationSave without time" << std::endl;
 }
 
 void RTI1516ambassador::requestFederationSave(std::wstring const& label, rti1516::LogicalTime const& theTime) throw(
@@ -431,7 +431,7 @@ void RTI1516ambassador::requestFederationSave(std::wstring const& label, rti1516
 {
     M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationSave with time");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::requestFederationSave with time" << std::endl;
 
     certi::FederationTime certiFedTime(certi_cast<RTI1516fedTime>()(theTime).getFedTime());
     req.setDate(certiFedTime);
@@ -439,10 +439,10 @@ void RTI1516ambassador::requestFederationSave(std::wstring const& label, rti1516
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
 
-    G.Out(pdGendoc, "        ====>executeService REQUEST_FEDERATION_SAVE");
+    Debug(G, pdGendoc) << "        ====>executeService REQUEST_FEDERATION_SAVE" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::requestFederationSave with time");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::requestFederationSave with time" << std::endl;
 }
 
 // 4.13
@@ -453,12 +453,12 @@ void RTI1516ambassador::federateSaveBegun() throw(rti1516::SaveNotInitiated,
 {
     M_Federate_Save_Begun req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveBegun");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::federateSaveBegun" << std::endl;
 
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_BEGUN");
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_BEGUN" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveBegun");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::federateSaveBegun" << std::endl;
 }
 
 // 4.14
@@ -469,10 +469,10 @@ void RTI1516ambassador::federateSaveComplete() throw(rti1516::FederateHasNotBegu
 {
     M_Federate_Save_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::federateSaveComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveComplete");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::federateSaveComplete" << std::endl;
 }
 
 void RTI1516ambassador::federateSaveNotComplete() throw(rti1516::FederateHasNotBegunSave,
@@ -482,11 +482,11 @@ void RTI1516ambassador::federateSaveNotComplete() throw(rti1516::FederateHasNotB
 {
     M_Federate_Save_Not_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::federateSaveNotComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_NOT_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::federateSaveNotComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_NOT_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTI1516ambassador::federateSaveNotComplete");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::federateSaveNotComplete" << std::endl;
 }
 
 // 4.16
@@ -506,12 +506,12 @@ void RTI1516ambassador::requestFederationRestore(std::wstring const& label) thro
 {
     M_Request_Federation_Restore req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::requestFederationRestore");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::requestFederationRestore" << std::endl;
     std::string labelString(label.begin(), label.end());
     req.setLabel(labelString);
-    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_RESTORE");
+    Debug(G, pdGendoc) << "      ====>executeService REQUEST_FEDERATION_RESTORE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::requestFederationRestore");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::requestFederationRestore" << std::endl;
 }
 
 // 4.22
@@ -522,11 +522,11 @@ void RTI1516ambassador::federateRestoreComplete() throw(rti1516::RestoreNotReque
 {
     M_Federate_Restore_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::federateRestoreComplete");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::federateRestoreComplete" << std::endl;
 
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_COMPLETE");
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_RESTORE_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::federateRestoreComplete");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::federateRestoreComplete" << std::endl;
 }
 
 void RTI1516ambassador::federateRestoreNotComplete() throw(rti1516::RestoreNotRequested,
@@ -536,11 +536,11 @@ void RTI1516ambassador::federateRestoreNotComplete() throw(rti1516::RestoreNotRe
 {
     M_Federate_Restore_Not_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::federateRestoreNotComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::federateRestoreNotComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE" << std::endl;
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::federateRestoreNotComplete");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::federateRestoreNotComplete" << std::endl;
 }
 
 // 4.24
@@ -567,7 +567,7 @@ void RTI1516ambassador::publishObjectClassAttributes(
                                                             rti1516::RTIinternalError)
 {
     M_Publish_Object_Class req, rep;
-    G.Out(pdGendoc, "enter RTI1516ambassador::publishObjectClass");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::publishObjectClass" << std::endl;
 
     const certi::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
@@ -577,9 +577,9 @@ void RTI1516ambassador::publishObjectClassAttributes(
     for (rti1516::AttributeHandleSet::const_iterator it = attributeList.begin(); it != attributeList.end(); ++it, ++i) {
         req.setAttributes(rti1516::AttributeHandleFriend::toCertiHandle(*it), i);
     }
-    G.Out(pdGendoc, "      ====>executeService PUBLISH_OBJECT_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService PUBLISH_OBJECT_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::publishObjectClass");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::publishObjectClass" << std::endl;
 }
 
 // 5.3
@@ -592,13 +592,13 @@ void RTI1516ambassador::unpublishObjectClass(rti1516::ObjectClassHandle theClass
     rti1516::RTIinternalError)
 {
     M_Unpublish_Object_Class req, rep;
-    G.Out(pdGendoc, "enter RTI1516ambassador::unpublishObjectClass");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::unpublishObjectClass" << std::endl;
 
     const certi::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
-    G.Out(pdGendoc, "      ====>executeService UNPUBLISH_OBJECT_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService UNPUBLISH_OBJECT_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::unpublishObjectClass");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::unpublishObjectClass" << std::endl;
 }
 
 void RTI1516ambassador::unpublishObjectClassAttributes(
@@ -627,7 +627,7 @@ void RTI1516ambassador::publishInteractionClass(rti1516::InteractionClassHandle 
     const certi::InteractionClassHandle classHandle
         = rti1516::InteractionClassHandleFriend::toCertiHandle(theInteraction);
     req.setInteractionClass(classHandle);
-    G.Out(pdGendoc, "      ====>executeService PUBLISH_INTERACTION_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService PUBLISH_INTERACTION_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
 }
 
@@ -658,7 +658,7 @@ void RTI1516ambassador::subscribeObjectClassAttributes(rti1516::ObjectClassHandl
                                                                           rti1516::RTIinternalError)
 {
     M_Subscribe_Object_Class_Attributes req, rep;
-    G.Out(pdGendoc, "enter RTI1516ambassador::subscribeObjectClassAttributes");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::subscribeObjectClassAttributes" << std::endl;
 
     const certi::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::toCertiHandle(theClass);
     req.setObjectClass(objectClassHandle);
@@ -671,7 +671,7 @@ void RTI1516ambassador::subscribeObjectClassAttributes(rti1516::ObjectClassHandl
     req.setActive(active);
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::subscribeObjectClassAttributes");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::subscribeObjectClassAttributes" << std::endl;
 }
 
 // 5.7
@@ -803,7 +803,7 @@ void RTI1516ambassador::updateAttributeValues(
                                                                  rti1516::RestoreInProgress,
                                                                  rti1516::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTI1516ambassador::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::updateAttributeValues without time" << std::endl;
     M_Update_Attribute_Values req, rep;
 
     req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
@@ -815,7 +815,7 @@ void RTI1516ambassador::updateAttributeValues(
 
     assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-    G.Out(pdGendoc, "exit  RTI1516ambassador::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::updateAttributeValues without time" << std::endl;
 }
 
 rti1516::MessageRetractionHandle
@@ -831,7 +831,7 @@ RTI1516ambassador::updateAttributeValues(rti1516::ObjectInstanceHandle theObject
                                                                                     rti1516::RestoreInProgress,
                                                                                     rti1516::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTI1516ambassador::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::updateAttributeValues with time" << std::endl;
     M_Update_Attribute_Values req, rep;
 
     req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
@@ -847,7 +847,7 @@ RTI1516ambassador::updateAttributeValues(rti1516::ObjectInstanceHandle theObject
 
     assignAHVMAndExecuteService(theAttributeValues, req, rep);
 
-    G.Out(pdGendoc, "return  RTI1516ambassador::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "return  RTI1516ambassador::updateAttributeValues with time" << std::endl;
     certi::FederateHandle certiHandle = rep.getEventRetraction().getSendingFederate();
     uint64_t serialNum = rep.getEventRetraction().getSN();
     return rti1516::MessageRetractionHandleFriend::createRTI1516Handle(certiHandle, serialNum);
@@ -1046,7 +1046,7 @@ void RTI1516ambassador::requestAttributeValueUpdate(
 {
     M_Request_Object_Attribute_Value_Update req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::requestObjectAttributeValueUpdate");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::requestObjectAttributeValueUpdate" << std::endl;
     req.setObject(rti1516::ObjectInstanceHandleFriend::toCertiHandle(theObject));
 
     size_t attr_num = theAttributes.size();
@@ -1058,7 +1058,7 @@ void RTI1516ambassador::requestAttributeValueUpdate(
     req.setTag(varLengthDataAsString(theUserSuppliedTag));
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI1516ambassador::requestObjectAttributeValueUpdate");
+    Debug(G, pdGendoc) << "exit  RTI1516ambassador::requestObjectAttributeValueUpdate" << std::endl;
 }
 
 void RTI1516ambassador::requestAttributeValueUpdate(
@@ -1072,12 +1072,12 @@ void RTI1516ambassador::requestAttributeValueUpdate(
                                                                  rti1516::RTIinternalError)
 {
     M_Request_Class_Attribute_Value_Update req, rep;
-    G.Out(pdGendoc, "enter RTI1516ambassador::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::requestClassAttributeValueUpdate" << std::endl;
     req.setObjectClass(rti1516::ObjectClassHandleFriend::toCertiHandle(theClass));
 
     assignAHSAndExecuteService(theAttributes, req, rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::requestClassAttributeValueUpdate" << std::endl;
 }
 
 ///////////////////////////////////
@@ -1921,13 +1921,13 @@ rti1516::ObjectClassHandle RTI1516ambassador::getObjectClassHandle(std::wstring 
 {
     M_Get_Object_Class_Handle req, rep;
 
-    G.Out(pdGendoc, "enter RTI1516ambassador::getObjectClassHandle");
+    Debug(G, pdGendoc) << "enter RTI1516ambassador::getObjectClassHandle" << std::endl;
 
     std::string nameAsString(theName.begin(), theName.end());
     req.setClassName(nameAsString);
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTI1516ambassador::getObjectClassHandle");
+    Debug(G, pdGendoc) << "exit RTI1516ambassador::getObjectClassHandle" << std::endl;
     rti1516::ObjectClassHandle rti1516Handle
         = rti1516::ObjectClassHandleFriend::createRTI1516Handle(rep.getObjectClass());
 
@@ -1964,7 +1964,7 @@ RTI1516ambassador::getAttributeHandle(rti1516::ObjectClassHandle whichClass,
                                                                                   rti1516::FederateNotExecutionMember,
                                                                                   rti1516::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTI::RTI1516ambassador::getAttributeHandle");
+    Debug(G, pdGendoc) << "enter RTI::RTI1516ambassador::getAttributeHandle" << std::endl;
     M_Get_Attribute_Handle req, rep;
 
     std::string nameAsString(theAttributeName.begin(), theAttributeName.end());
@@ -1983,7 +1983,7 @@ RTI1516ambassador::getAttributeHandle(rti1516::ObjectClassHandle whichClass,
         }
     }
 
-    G.Out(pdGendoc, "exit  RTI::RTI1516ambassador::getAttributeHandle");
+    Debug(G, pdGendoc) << "exit  RTI::RTI1516ambassador::getAttributeHandle" << std::endl;
     return rti1516::AttributeHandleFriend::createRTI1516Handle(rep.getAttribute());
 }
 

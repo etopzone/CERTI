@@ -152,12 +152,14 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
 
     // inserer la nouvelle federation dans la liste des federations
-    auto rep = my_federations->createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, com_mc);
+    auto rep = my_federations->createFederation(
+        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, com_mc);
 
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 #else
-    auto rep = my_federations.createFederation(federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator);
+    auto rep = my_federations.createFederation(
+        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator);
 #endif
     my_auditServer << " created";
 
@@ -960,23 +962,23 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
                    << ", date = " << request.message()->getDate().getTime();
     if (request.message()->isDated()) {
         responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .broadcastInteraction(request.message()->getFederate(),
-                                  request.message()->getInteractionClass(),
-                                  request.message()->getParameters(),
-                                  request.message()->getValues(),
-                                  request.message()->getDate(),
-                                  request.message()->getRegion(),
-                                  request.message()->getLabel());
+                        .broadcastInteraction(request.message()->getFederate(),
+                                              request.message()->getInteractionClass(),
+                                              request.message()->getParameters(),
+                                              request.message()->getValues(),
+                                              request.message()->getDate(),
+                                              request.message()->getRegion(),
+                                              request.message()->getLabel());
     }
     else {
         responses = my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
-            .broadcastInteraction(request.message()->getFederate(),
-                                  request.message()->getInteractionClass(),
-                                  request.message()->getParameters(),
-                                  request.message()->getValues(),
-                                  request.message()->getParametersSize(),
-                                  request.message()->getRegion(),
-                                  request.message()->getLabel());
+                        .broadcastInteraction(request.message()->getFederate(),
+                                              request.message()->getInteractionClass(),
+                                              request.message()->getParameters(),
+                                              request.message()->getValues(),
+                                              request.message()->getParametersSize(),
+                                              request.message()->getRegion(),
+                                              request.message()->getLabel());
     }
 
     Debug(D, pdDebug) << "Interaction " << request.message()->getInteractionClass() << " parameters update completed"
@@ -986,13 +988,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Send_Interaction>&& request)
     rep->setFederate(request.message()->getFederate());
     rep->setInteractionClass(request.message()->getInteractionClass());
     // Don't forget label and tag
-    if(request.message()->isDated()) {
+    if (request.message()->isDated()) {
         rep->setDate(request.message()->getDate());
     }
-    if(request.message()->isLabelled()) {
+    if (request.message()->isLabelled()) {
         rep->setLabel(request.message()->getLabel());
     }
-    if(request.message()->isTagged()) {
+    if (request.message()->isTagged()) {
         rep->setTag(request.message()->getTag());
     }
 

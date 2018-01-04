@@ -135,26 +135,26 @@ Federation::Federation(const string& federation_name,
         throw RTIinternalError("Null init parameter in Federation creation.");
     }
 
-
     // Initialize the Security Server.
     my_server = make_unique<SecurityServer>(socket_server, audit_server, my_handle);
 
     // Read FOM File to initialize Root Object.
     my_root_object = make_unique<RootObject>(my_server.get());
-    
-    Debug(D, pdInit) << "New Federation <" << my_name << "> created with Handle <" << my_handle << ">, now reading FOM." << endl;
+
+    Debug(D, pdInit) << "New Federation <" << my_name << "> created with Handle <" << my_handle << ">, now reading FOM."
+                     << endl;
 
     if (verboseLevel > 0) {
         cout << "New federation: " << my_name << endl;
     }
-    
-    if(mim_module.empty()) {
+
+    if (mim_module.empty()) {
         openFomModules({"HLAstandardMIM.xml"}, true);
     }
     else {
         openFomModules({mim_module}, true);
     }
-    
+
     openFomModules(fom_modules);
 
     my_min_NERx.setZero();
@@ -192,7 +192,7 @@ vector<string> Federation::getFomModules() const
 {
     return my_fom_modules;
 }
-    
+
 string Federation::getMimModule() const
 {
     return my_mim_module;
@@ -245,15 +245,17 @@ bool Federation::check(FederateHandle federate_handle) const
     }
 
     if (my_federates.count(federate_handle) == 0) {
-        throw FederateNotExecutionMember(
-            certi::stringize() << "Federate Handle <" << federate_handle << "> not found in federation <" << my_handle
-                               << ">");
+        throw FederateNotExecutionMember("Federate Handle <" + std::to_string(federate_handle)
+                                         + "> not found in federation <"
+                                         + std::to_string(my_handle.get())
+                                         + ">");
     }
 
     return true;
 }
 
-std::pair<FederateHandle, Responses> Federation::add(const string& federate_name, const string& federate_type, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses>
+Federation::add(const string& federate_name, const string& federate_type, SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -267,8 +269,8 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
     Responses responses;
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
-    auto result
-        = my_federates.insert(std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, federate_handle)));
+    auto result = my_federates.insert(
+        std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, federate_handle)));
 
     Federate& federate = *result.first->second;
 
@@ -1622,8 +1624,10 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                         << my_root_object->Interactions->getInteractionClassName(interaction_class_handle)
                         << "> from Federate <" << federate_handle << "> nb params " << parameter_handles.size() << endl;
     for (size_t i{0u}; i < parameter_handles.size(); i++) {
-        Debug(D, pdRequest) << "<" << my_root_object->Interactions->getParameterName(parameter_handles[i], interaction_class_handle) << "> = <"
-                            << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
+        Debug(D, pdRequest) << "<"
+                            << my_root_object->Interactions->getParameterName(parameter_handles[i],
+                                                                              interaction_class_handle)
+                            << "> = <" << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
     }
 
     if (my_mom) {
@@ -1689,8 +1693,10 @@ Responses Federation::broadcastInteraction(FederateHandle federate_handle,
                         << my_root_object->Interactions->getInteractionClassName(interaction_class_handle)
                         << "> from Federate <" << federate_handle << "> nb params " << parameter_handles.size() << endl;
     for (size_t i{0u}; i < parameter_handles.size(); i++) {
-        Debug(D, pdRequest) << "<" << my_root_object->Interactions->getParameterName(parameter_handles[i], interaction_class_handle) << "> = <"
-                            << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
+        Debug(D, pdRequest) << "<"
+                            << my_root_object->Interactions->getParameterName(parameter_handles[i],
+                                                                              interaction_class_handle)
+                            << "> = <" << string(&(parameter_values[i][0]), parameter_values[i].size()) << ">" << endl;
     }
 
     if (my_mom) {
@@ -1823,8 +1829,7 @@ void Federation::cancelDivestiture(FederateHandle federate_handle,
     check(federate_handle);
 
     // It may throw *NotDefined
-    my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(
-        federate_handle, id, attributes);
+    my_root_object->objects->cancelNegotiatedAttributeOwnershipDivestiture(federate_handle, id, attributes);
 
     Debug(D, pdDebug) << "CancelDivestiture sur Objet " << id << endl;
 }
@@ -2098,7 +2103,7 @@ Federate& Federation::getFederate(const string& federate_name)
         });
 
     if (it == end(my_federates)) {
-        throw FederateNotExecutionMember(certi::stringize() << "Federate <" << federate_name << "> not found.");
+        throw FederateNotExecutionMember("Federate <" + federate_name + "> not found.");
     }
 
     return *it->second;

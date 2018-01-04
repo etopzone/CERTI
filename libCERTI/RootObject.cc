@@ -123,10 +123,10 @@ void RootObject::displaySmall() const
 bool RootObject::canBeAddedTo(const RootObject& main_root)
 {
     // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
-    
+
     Debug(D, pdDebug) << "ME" << std::endl;
     displaySmall();
-    
+
     Debug(D, pdDebug) << "MAIN" << std::endl;
     main_root.displaySmall();
 
@@ -139,11 +139,11 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
             auto existing_object = main_root.ObjectClasses->getObjectFromHandle(handle);
 
             // parents
-            if(existing_object->getSuperclass() == 0 && object_class.second->getSuperclass() == 0) {
+            if (existing_object->getSuperclass() == 0 && object_class.second->getSuperclass() == 0) {
                 // no parent on both side, okay
             }
             else if (main_root.ObjectClasses->getObjectClassName(existing_object->getSuperclass())
-                != ObjectClasses->getObjectClassName(object_class.second->getSuperclass())) {
+                     != ObjectClasses->getObjectClassName(object_class.second->getSuperclass())) {
                 Debug(D, pdError) << "Parents for <" << existing_object->getName() << "> differs" << std::endl;
                 return false;
             }
@@ -189,7 +189,7 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
                     // no space, it's okay
                 }
                 else if (getRoutingSpaceName(kv.second->getSpace())
-                    != main_root.getRoutingSpaceName(new_attribute->getSpace())) {
+                         != main_root.getRoutingSpaceName(new_attribute->getSpace())) {
                     Debug(D, pdError) << "Dimensions differ" << std::endl;
                     return false;
                 }
@@ -220,11 +220,11 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
             auto existing_interaction = main_root.Interactions->getObjectFromHandle(handle);
 
             // parents
-            if(existing_interaction->getSuperclass() == 0 && interaction_class.second->getSuperclass() == 0) {
+            if (existing_interaction->getSuperclass() == 0 && interaction_class.second->getSuperclass() == 0) {
                 // no parent on both side, okay
             }
             else if (main_root.Interactions->getInteractionClassName(existing_interaction->getSuperclass())
-                != Interactions->getInteractionClassName(interaction_class.second->getSuperclass())) {
+                     != Interactions->getInteractionClassName(interaction_class.second->getSuperclass())) {
                 Debug(D, pdError) << "Parents for <" << existing_interaction->getName() << "> differs" << std::endl;
                 return false;
             }
@@ -262,11 +262,11 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
                 return false;
             }
 
+#if 0
             for (const auto& kv : existing_parameters) {
                 auto new_param = new_parameters.at(interaction_class.second->getParameterHandle(kv.second->getName()));
 
-                //  available dimensions
-#if 0
+//  available dimensions
                 if (kv.second->getSpace() == 0 && new_param->getSpace() == 0) {
                     // no space, it's okay
                 }
@@ -275,24 +275,20 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
                     Debug(D, pdError) << "Dimensions differ" << std::endl;
                     return false;
                 }
-#endif
 
-                //  transportation
-#if 0
+//  transportation
                 if (kv.second->transport != new_param->transport) {
                     Debug(D, pdError) << "Transport differ" << std::endl;
                     return false;
                 }
-#endif
 
-                //  order
-#if 0
+//  order
                 if (kv.second->order != new_param->order) {
                     Debug(D, pdError) << "Order differ" << std::endl;
                     return false;
                 }
-#endif
             }
+#endif
         }
         catch (NameNotFound& e) {
             // ok, continue

@@ -22,11 +22,11 @@
 // ----------------------------------------------------------------------------
 
 #include <RTI/RTIambassadorFactory.h>
-#include <memory>
-#include <iostream>
-#include <cstdlib>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <memory>
 #ifndef _WIN32
 #include <csignal>
 #include <unistd.h>
@@ -43,34 +43,31 @@ rti1516::RTIambassadorFactory::RTIambassadorFactory()
 {
 }
 
-rti1516::RTIambassadorFactory::~RTIambassadorFactory()
-throw ()
+rti1516::RTIambassadorFactory::~RTIambassadorFactory() throw()
 {
 }
 
 namespace {
 static PrettyDebug D1516("LIBRTI1516", __FILE__);
-static PrettyDebug G1516("GENDOC1516",__FILE__) ;
+static PrettyDebug G1516("GENDOC1516", __FILE__);
 }
 
-std::unique_ptr< rti1516::RTIambassador >
-rti1516::RTIambassadorFactory::createRTIambassador(std::vector< std::wstring > & /*args*/)
-throw (BadInitializationParameter,
-        RTIinternalError)
-        {
+std::unique_ptr<rti1516::RTIambassador> rti1516::RTIambassadorFactory::createRTIambassador(
+    std::vector<std::wstring>& /*args*/) throw(BadInitializationParameter, RTIinternalError)
+{
     certi::RTI1516ambassador* p_ambassador(new certi::RTI1516ambassador());
 
-    std::unique_ptr< rti1516::RTIambassador > ap_ambassador(p_ambassador);
+    std::unique_ptr<rti1516::RTIambassador> ap_ambassador(p_ambassador);
 
     Debug(G1516, pdGendoc) << "enter RTIambassador::RTIambassador" << std::endl;
-    PrettyDebug::setFederateName( "LibRTI::UnjoinedFederate" );
+    PrettyDebug::setFederateName("LibRTI::UnjoinedFederate");
     std::wstringstream msg;
 
     p_ambassador->privateRefs = new RTI1516ambPrivateRefs();
 
     p_ambassador->privateRefs->socketUn = new SocketUN(stIgnoreSignal);
 
-    p_ambassador->privateRefs->is_reentrant = false ;
+    p_ambassador->privateRefs->is_reentrant = false;
 
     std::vector<std::string> rtiaList;
     const char* env = getenv("CERTI_RTIA");
@@ -86,13 +83,13 @@ throw (BadInitializationParameter,
     int port = p_ambassador->privateRefs->socketUn->listenUN();
     if (port == -1) {
         Debug(G1516, pdError) << "Cannot listen to RTIA connection. Abort." << std::endl;
-        throw rti1516::RTIinternalError(L"Cannot listen to RTIA connection" );
+        throw rti1516::RTIinternalError(L"Cannot listen to RTIA connection");
     }
 #else
     int pipeFd = p_ambassador->privateRefs->socketUn->socketpair();
     if (pipeFd == -1) {
         Debug(G1516, pdError) << "Cannot get socketpair to RTIA connection. Abort." << std::endl;
-        throw rti1516::RTIinternalError( L"Cannot get socketpair to RTIA connection" );
+        throw rti1516::RTIinternalError(L"Cannot get socketpair to RTIA connection");
     }
 #endif
 
@@ -100,9 +97,9 @@ throw (BadInitializationParameter,
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
 
-    ZeroMemory( &si, sizeof(si) );
+    ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
-    ZeroMemory( &pi, sizeof(pi) );
+    ZeroMemory(&pi, sizeof(pi));
 
 #ifndef RTIA_CONSOLE_SHOW
     /*
@@ -116,14 +113,14 @@ throw (BadInitializationParameter,
 #if !defined(RTIA_USE_TCP)
     SOCKET newPipeFd;
     if (!DuplicateHandle(GetCurrentProcess(),
-            (HANDLE)pipeFd,
-            GetCurrentProcess(),
-            (HANDLE*)&newPipeFd,
-            0,
-            TRUE, // Inheritable
-            DUPLICATE_SAME_ACCESS)) {
+                         (HANDLE) pipeFd,
+                         GetCurrentProcess(),
+                         (HANDLE*) &newPipeFd,
+                         0,
+                         TRUE, // Inheritable
+                         DUPLICATE_SAME_ACCESS)) {
         Debug(G1516, pdError) << "Cannot duplicate socket for RTIA connection. Abort." << std::endl;
-        throw rti1516::RTIinternalError( L"Cannot duplicate socket for RTIA connection. Abort." );
+        throw rti1516::RTIinternalError(L"Cannot duplicate socket for RTIA connection. Abort.");
     }
 #endif
 
@@ -137,24 +134,24 @@ throw (BadInitializationParameter,
 #endif
 
         // Start the child process.
-        if (CreateProcess( NULL, // No module name (use command line).
-                (char*)stream.str().c_str(),	// Command line.
-                NULL,					// Process handle not inheritable.
-                NULL,					// Thread handle not inheritable.
-                TRUE,					// Set handle inheritance to TRUE.
-                0,   					// No creation flags.
-                NULL,					// Use parent's environment block.
-                NULL,					// Use parent's starting directory.
-                &si,					// Pointer to STARTUPINFO structure.
-                &pi ))					// Pointer to PROCESS_INFORMATION structure.
+        if (CreateProcess(NULL, // No module name (use command line).
+                          (char*) stream.str().c_str(), // Command line.
+                          NULL, // Process handle not inheritable.
+                          NULL, // Thread handle not inheritable.
+                          TRUE, // Set handle inheritance to TRUE.
+                          0, // No creation flags.
+                          NULL, // Use parent's environment block.
+                          NULL, // Use parent's starting directory.
+                          &si, // Pointer to STARTUPINFO structure.
+                          &pi)) // Pointer to PROCESS_INFORMATION structure.
         {
             success = true;
             break;
         }
     }
     if (!success) {
-        throw rti1516::RTIinternalError("CreateProcess - GetLastError()=<"
-                + GetLastError() + "> Cannot connect to RTIA.exe");
+        throw rti1516::RTIinternalError("CreateProcess - GetLastError()=<" + GetLastError()
+                                        + "> Cannot connect to RTIA.exe");
     }
 
     p_ambassador->privateRefs->handle_RTIA = pi.hProcess;
@@ -173,7 +170,7 @@ throw (BadInitializationParameter,
     sigaddset(&nset, SIGINT);
     sigprocmask(SIG_BLOCK, &nset, &oset);
 
-    switch((p_ambassador->privateRefs->pid_RTIA = fork())) {
+    switch ((p_ambassador->privateRefs->pid_RTIA = fork())) {
     case -1: // fork failed.
         perror("fork");
         // unbock the above blocked signals
@@ -181,8 +178,8 @@ throw (BadInitializationParameter,
 #if !defined(RTIA_USE_TCP)
         close(pipeFd);
 #endif
-        throw rti1516::RTIinternalError(wstringize() << "fork failed in RTIambassador constructor");
-        break ;
+        throw rti1516::RTIinternalError(L"fork failed in RTIambassador constructor");
+        break;
 
     case 0: // child process (RTIA).
         // close all open filedescriptors except the pipe one
@@ -193,8 +190,7 @@ throw (BadInitializationParameter,
 #endif
             close(fd);
         }
-        for (unsigned i = 0; i < rtiaList.size(); ++i)
-        {
+        for (unsigned i = 0; i < rtiaList.size(); ++i) {
             std::stringstream stream;
 #if defined(RTIA_USE_TCP)
             stream << port;
@@ -206,10 +202,8 @@ throw (BadInitializationParameter,
         }
         // unbock the above blocked signals
         sigprocmask(SIG_SETMASK, &oset, NULL);
-        msg << "Could not launch RTIA process (execlp): "
-                << strerror(errno)
-                << std::endl
-                << "Maybe RTIA is not in search PATH environment.";
+        msg << "Could not launch RTIA process (execlp): " << strerror(errno) << std::endl
+            << "Maybe RTIA is not in search PATH environment.";
         throw rti1516::RTIinternalError(msg.str().c_str());
 
     default: // father process (Federe).
@@ -218,31 +212,31 @@ throw (BadInitializationParameter,
 #if !defined(RTIA_USE_TCP)
         close(pipeFd);
 #endif
-        break ;
+        break;
     }
 #endif
 
 #if defined(RTIA_USE_TCP)
-    if (p_ambassador->privateRefs->socketUn->acceptUN(10*1000) == -1) {
+    if (p_ambassador->privateRefs->socketUn->acceptUN(10 * 1000) == -1) {
 #ifdef _WIN32
         TerminateProcess(p_ambassador->privateRefs->handle_RTIA, 0);
 #else
-        kill(p_ambassador->privateRefs->pid_RTIA, SIGINT );
+        kill(p_ambassador->privateRefs->pid_RTIA, SIGINT);
 #endif
-        throw rti1516::RTIinternalError( wstringize() << "Cannot connect to RTIA" );
+        throw rti1516::RTIinternalError(wstringize() << "Cannot connect to RTIA");
     }
 #endif
 
-    certi::M_Open_Connexion req, rep ;
+    certi::M_Open_Connexion req, rep;
     req.setVersionMajor(CERTI_Message::versionMajor);
     req.setVersionMinor(CERTI_Message::versionMinor);
 
-    G1516.Out(pdGendoc,"        ====>executeService OPEN_CONNEXION");
+    Debug(G1516, pdGendoc) << "        ====>executeService OPEN_CONNEXION" << std::endl;
     p_ambassador->privateRefs->executeService(&req, &rep);
 
-    G1516.Out(pdGendoc,"exit  RTIambassador::RTIambassador");
+    Debug(G1516, pdGendoc) << "exit  RTIambassador::RTIambassador" << std::endl;
 
     return ap_ambassador;
-        }
+}
 
 //} // end namespace rti1516

@@ -132,7 +132,7 @@ void ObjectSet::deleteObjectInstance(FederateHandle /*the_federate*/,
 
 FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, ObjectHandle the_object) const
 {
-    G.Out(pdGendoc, "enter ObjectSet::requestObjectOwner");
+    Debug(G, pdGendoc) << "enter ObjectSet::requestObjectOwner" << std::endl;
     auto it = my_objects_per_handle.find(the_object);
 
     if (it == end(my_objects_per_handle)) {
@@ -140,7 +140,7 @@ FederateHandle ObjectSet::requestObjectOwner(FederateHandle /*the_federate*/, Ob
     }
 
     // Object found, return the owner
-    G.Out(pdGendoc, "exit  ObjectSet::requestObjectOwner");
+    Debug(G, pdGendoc) << "exit  ObjectSet::requestObjectOwner" << std::endl;
     return it->second->getOwner();
 }
 
@@ -179,7 +179,7 @@ void ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
                                         AttributeHandle the_attribute) const
 {
     if (!server) {
-        D.Out(pdDebug, "Should only be called by RTIG");
+        Debug(D, pdDebug) << "Should only be called by RTIG" << std::endl;
         return;
     }
 

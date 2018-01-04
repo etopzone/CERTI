@@ -50,7 +50,7 @@ InteractionSet::~InteractionSet()
 
 void InteractionSet::addClass(Interaction* newClass, Interaction* parentClass)
 {
-    D.Out(pdInit, "Adding new interaction class %d, ", newClass->getHandle());
+    Debug(D, pdInit) << "Adding new interaction class " << newClass->getHandle() << std::endl;
     /* link to server */
     newClass->server = server;
     add(newClass, parentClass);
@@ -67,7 +67,7 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                                const RTIRegion* region,
                                                const std::string& the_tag)
 {
-    G.Out(pdGendoc, "enter InteractionSet::broadcastInteraction with time");
+    Debug(G, pdGendoc) << "enter InteractionSet::broadcastInteraction with time" << std::endl;
 
     Responses responses;
 
@@ -83,7 +83,8 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         while (theInteraction->getSuperclass() != 0) {
             theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
             auto resp = theInteraction->broadcastInteractionMessage(ibList, region);
-            responses.insert(std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
+            responses.insert(
+                std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
         }
         delete ibList;
     }
@@ -91,7 +92,7 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         // BroadcastInteraction should not be called on the RTIA(see IsReady)
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
     }
-    G.Out(pdGendoc, "exit InteractionSet::broadcastInteraction with time");
+    Debug(G, pdGendoc) << "exit InteractionSet::broadcastInteraction with time" << std::endl;
 
     return responses;
 
@@ -107,7 +108,7 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                                const RTIRegion* region,
                                                const std::string& the_tag)
 {
-    G.Out(pdGendoc, "enter InteractionSet::broadcastInteraction without time");
+    Debug(G, pdGendoc) << "enter InteractionSet::broadcastInteraction without time" << std::endl;
 
     Responses responses;
 
@@ -124,7 +125,8 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         while (theInteraction->getSuperclass() != 0) {
             theInteraction = getObjectFromHandle(theInteraction->getSuperclass());
             auto resp = theInteraction->broadcastInteractionMessage(ibList, region);
-            responses.insert(std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
+            responses.insert(
+                std::end(responses), make_move_iterator(std::begin(resp)), make_move_iterator(std::end(resp)));
         }
         delete ibList;
     }
@@ -132,7 +134,7 @@ Responses InteractionSet::broadcastInteraction(FederateHandle federate_handle,
         // BroadcastInteraction should not be called on the RTIA(see IsReady)
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
     }
-    G.Out(pdGendoc, "exit InteractionSet::broadcastInteraction without time");
+    Debug(G, pdGendoc) << "exit InteractionSet::broadcastInteraction without time" << std::endl;
 
     return responses;
 } /* end of broadcastInteraction (WITHOUT time) */

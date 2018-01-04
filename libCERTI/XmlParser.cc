@@ -270,8 +270,8 @@ void XmlParser::parseInteraction(Interaction* parent)
         cerr << "warning: No order provided, defaulting to TSO" << endl;
     }
 
-    Interaction* current
-        = new Interaction(reinterpret_cast<char*>(intClassProp.name), root->getFreeInteractionClassHandle(), transport, order);
+    Interaction* current = new Interaction(
+        reinterpret_cast<char*>(intClassProp.name), root->getFreeInteractionClassHandle(), transport, order);
 
     // Routing space
     char* space = (char*) intClassProp.space;
@@ -370,7 +370,7 @@ XmlParser::HLAXmlStdVersion_t XmlParser::version(std::string pathToXmlFile)
     if (doc == 0) {
         cerr << "XML file not parsed successfully" << endl;
         xmlFreeDoc(doc);
-        throw CouldNotOpenFED(stringize() << "Could not open File:" << pathToXmlFile);
+        throw CouldNotOpenFED("Could not open File:" + pathToXmlFile);
     }
 
     // Is there a root element ?
@@ -378,13 +378,13 @@ XmlParser::HLAXmlStdVersion_t XmlParser::version(std::string pathToXmlFile)
     if (cur == 0) {
         cerr << "XML file is empty" << endl;
         xmlFreeDoc(doc);
-        throw CouldNotOpenFED(stringize() << "XML file:" << pathToXmlFile << "is empty");
+        throw CouldNotOpenFED("XML file:" + pathToXmlFile + "is empty");
     }
 
     // Is this root element an objectModel ?
     if (xmlStrcmp(cur->name, (const xmlChar*) NODE_OBJECT_MODEL)) {
         cerr << "Wrong XML file: not the expected root node" << endl;
-        throw CouldNotOpenFED(stringize() << "XML File:" << pathToXmlFile << " has an invalid root node");
+        throw CouldNotOpenFED("XML File:" + pathToXmlFile + " has an invalid root node");
     }
     Debug(D, pdTrace) << "XML file looks ok, starting main loop" << std::endl;
 

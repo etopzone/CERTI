@@ -62,9 +62,9 @@ void Object::display() const
     else {
         cout << ", (No name)." << endl;
     }
-    
+
     cout << " Attributes: " << _attributeMap.size() << endl;
-    for(const auto& pair: _attributeMap) {
+    for (const auto& pair : _attributeMap) {
         cout << "Attribute #" << pair.first << endl;
         pair.second->display();
     }
@@ -85,9 +85,8 @@ ObjectAttribute* Object::getAttribute(AttributeHandle attributeHandle) const
 {
     AttributeMap::const_iterator i = _attributeMap.find(attributeHandle);
     if (i == _attributeMap.end()) {
-        throw AttributeNotDefined(stringize() << "Object::getAttribute(AttributeHandle) Unknown attribute handle <"
-                                              << attributeHandle
-                                              << ">");
+        throw AttributeNotDefined(
+            "Object::getAttribute(AttributeHandle) Unknown attribute handle <" + std::to_string(attributeHandle) + ">");
     }
     return i->second;
 }

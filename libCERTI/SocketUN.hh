@@ -87,8 +87,6 @@ private:
     Socket::ByteCount_t SentBytesCount;
     Socket::ByteCount_t RcvdBytesCount;
 
-    PrettyDebug* pD;
-
 #ifdef SOCKUN_BUFFER_LENGTH
     // This class can use a buffer to reduce the number of systems
     // calls when reading a lot of small amouts of data. Each time a

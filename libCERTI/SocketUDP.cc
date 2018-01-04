@@ -58,7 +58,7 @@ void SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int po
 
     _est_init_udp = true;
 
-    D.Out(pdDebug, "Attaching the federate to his address and to his peer...");
+    Debug(D, pdDebug) << "Attaching the federate to his address and to his peer..." << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -94,10 +94,9 @@ void SocketUDP::createConnection(const char* /*server_name*/, unsigned int /*por
     gethostname(localhost, 4096);
 
     if ((hp_local = gethostbyname(localhost)) == NULL) {
-        throw NetworkError(stringize() << "gethostbyname gave NULL answer for hostname <" << localhost
-                                       << "> with error <"
-                                       << strerror(errno)
-                                       << ">");
+        throw NetworkError("gethostbyname gave NULL answer for hostname <" + std::string(localhost) + "> with error <"
+                           + strerror(errno)
+                           + ">");
     }
 
     memcpy((char*) &sock_local.sin_addr, (char*) hp_local->h_addr, hp_local->h_length);
@@ -107,11 +106,11 @@ void SocketUDP::createConnection(const char* /*server_name*/, unsigned int /*por
     sock_local.sin_port = 0;
 
     if (!open()) {
-        throw NetworkError(stringize() << "Cannot Open Socket open gave error < " << strerror(errno) << ">");
+        throw NetworkError("Cannot Open Socket open gave error < " + std::string(strerror(errno)) + ">");
     }
 
     if (!bind()) {
-        throw NetworkError(stringize() << "Cannot Bind Socket bind gave error < " << strerror(errno) << ">");
+        throw NetworkError("Cannot Bind Socket bind gave error < " + std::string(strerror(errno)) + ">");
     }
 
     // recuperation du port lie au socket _socket_udp
@@ -200,7 +199,7 @@ SocketUDP::~SocketUDP()
 // ----------------------------------------------------------------------------
 void SocketUDP::send(const unsigned char* Message, size_t Size)
 {
-    D.Out(pdDebug, "Beginning to send UDP message... Size = %ld", Size);
+    Debug(D, pdDebug) << "Beginning to send UDP message... Size = " << Size << std::endl;
     assert(_est_init_udp);
 
     int sent = sendto(_socket_udp, (char*) Message, Size, 0, (struct sockaddr*) &sock_distant, sizeof(sock_distant));
@@ -208,7 +207,7 @@ void SocketUDP::send(const unsigned char* Message, size_t Size)
         perror("Sendto");
         throw NetworkError("cannot sendto");
     };
-    D.Out(pdDebug, "Sent UDP message.");
+    Debug(D, pdDebug) << "Sent UDP message." << std::endl;
     SentBytesCount += sent;
 }
 
@@ -216,10 +215,10 @@ void SocketUDP::send(const unsigned char* Message, size_t Size)
 void SocketUDP::close()
 {
     if (_est_init_udp) {
-        D.Out(pdDebug, "Closing UDP object...");
+        Debug(D, pdDebug) << "Closing UDP object..." << std::endl;
         _est_init_udp = false;
         if (PhysicalLink) {
-            D.Out(pdDebug, "Closing physical UDP link...");
+            Debug(D, pdDebug) << "Closing physical UDP link..." << std::endl;
 #ifdef _WIN32 //netDot
             ::closesocket(_socket_udp);
 #else
@@ -232,14 +231,14 @@ void SocketUDP::close()
 // ----------------------------------------------------------------------------
 unsigned long SocketUDP::getAddr() const
 {
-    D.Out(pdDebug, "Hostname is %ul...", sock_local.sin_addr.s_addr);
+    Debug(D, pdDebug) << "Hostname is " << sock_local.sin_addr.s_addr << std::endl;
     return (sock_local.sin_addr.s_addr);
 }
 
 // ----------------------------------------------------------------------------
 unsigned int SocketUDP::getPort() const
 {
-    D.Out(pdDebug, "UDP port is %ud...", sock_local.sin_port);
+    Debug(D, pdDebug) << "UDP port is " << sock_local.sin_port << std::endl;
     return sock_local.sin_port;
 }
 
@@ -276,7 +275,7 @@ void SocketUDP::receive(void* Message, unsigned long Size)
 
     assert(_est_init_udp);
 
-    D.Out(pdDebug, "Beginning to receive UDP message...");
+    Debug(D, pdDebug) << "Beginning to receive UDP message..." << std::endl;
     if (BufferSize == 0) {
         CR = recvfrom(_socket_udp, Buffer, BUFFER_MAXSIZE, 0, (struct sockaddr*) &sock_source, &taille);
         //HPUX:(struct sockaddr *)&sock_source, (int*) &taille);
@@ -304,7 +303,7 @@ void SocketUDP::receive(void* Message, unsigned long Size)
 // ----------------------------------------------------------------------------
 unsigned long SocketUDP::returnAdress() const
 {
-    D.Out(pdDebug, "Retourner Adresse Machine locale...");
+    Debug(D, pdDebug) << "Retourner Adresse Machine locale..." << std::endl;
     return getAddr();
 }
 
@@ -315,14 +314,14 @@ SOCKET SocketUDP::returnSocket()
 int SocketUDP::returnSocket()
 #endif
 {
-    D.Out(pdDebug, "Retourner Socket UDP...");
+    Debug(D, pdDebug) << "Retourner Socket UDP..." << std::endl;
     return _socket_udp;
 }
 
 // ----------------------------------------------------------------------------
 void SocketUDP::setPort(unsigned int port)
 {
-    D.Out(pdDebug, "Affectation du Port UDP...");
+    Debug(D, pdDebug) << "Affectation du Port UDP..." << std::endl;
     sock_local.sin_port = port;
 }
 

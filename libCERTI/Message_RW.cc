@@ -51,7 +51,7 @@ std::ostream& Message::show(std::ostream& out)
 std::string Message::to_string(const Message::Type& msg_type)
 {
     switch (msg_type) {
-//         CASE(Message::NOT_USED)
+        //         CASE(Message::NOT_USED)
         CASE(Message::OPEN_CONNEXION)
         CASE(Message::CLOSE_CONNEXION)
         CASE(Message::CREATE_FEDERATION_EXECUTION)
@@ -199,9 +199,9 @@ std::string Message::to_string(const Message::Type& msg_type)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED)
-//         CASE(Message::LAST)
-        default:
-            return "Unknown NetworkMessage::Type";
+    //         CASE(Message::LAST)
+    default:
+        return "Unknown NetworkMessage::Type";
     }
 }
 
@@ -212,11 +212,11 @@ std::ostream& operator<<(std::ostream& os, const Message& msg)
 
 void Message::serialize(MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter Message::serialize");
+    Debug(G, pdGendoc) << "enter Message::serialize" << std::endl;
     if ((type == NOT_USED) || (type == LAST)) {
         throw RTIinternalError("Invalid network type (not a valid type);");
     }
-    D.Out(pdDebug, "Serialize <%s>", getMessageName());
+    Debug(D, pdDebug) << "Serialize <" << getMessageName() << ">" << std::endl;
     //show(std::cerr);
     /* type of message */
     msgBuffer.write_int32(type);
@@ -227,12 +227,12 @@ void Message::serialize(MessageBuffer& msgBuffer)
     else {
         BasicMessage::serialize(msgBuffer);
     }
-    G.Out(pdGendoc, "exit Message::serialize");
+    Debug(G, pdGendoc) << "exit Message::serialize" << std::endl;
 } /* end of serialize */
 
 void Message::deserialize(MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter Message::deserialize");
+    Debug(G, pdGendoc) << "enter Message::deserialize" << std::endl;
     /* We serialize the common Message part
 	 * ALL Messages will contain the following
 	 */
@@ -246,12 +246,12 @@ void Message::deserialize(MessageBuffer& msgBuffer)
     else {
         BasicMessage::deserialize(msgBuffer);
     }
-    G.Out(pdGendoc, "exit Message::deserialize");
+    Debug(G, pdGendoc) << "exit Message::deserialize" << std::endl;
 } /* end of deserialize */
 
 void Message::send(SocketUN* socket, MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter Message::send");
+    Debug(G, pdGendoc) << "enter Message::send" << std::endl;
     /* 0- reset send buffer */
     msgBuffer.reset();
     /* 1- serialize the message
@@ -261,29 +261,30 @@ void Message::send(SocketUN* socket, MessageBuffer& msgBuffer)
     serialize(msgBuffer);
     /* 2- update message buffer 'reserved bytes' header */
     msgBuffer.updateReservedBytes();
-    D.Out(pdDebug, "Sending <%s> whose buffer has <%u> bytes", getMessageName(), msgBuffer.size());
+    Debug(D, pdDebug) << "Sending <" << getMessageName() << "> whose buffer has <" << msgBuffer.size() << "> bytes"
+                      << std::endl;
     //msgBuf.show(msgBuffer(0),5);
     /* 3- effectively send the raw message to socket */
     socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
-    G.Out(pdGendoc, "exit  Message::send");
+    Debug(G, pdGendoc) << "exit  Message::send" << std::endl;
 } /* end of send */
 
 void Message::receive(SocketUN* socket, MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter Message::receive");
+    Debug(G, pdGendoc) << "enter Message::receive" << std::endl;
     /* 0- Reset receive buffer */
     /* FIXME this reset may not be necessary since we do
 	 * raw-receive + assume-size
 	 */
     msgBuffer.reset();
     /* 1- Read 'reserved bytes' header from socket */
-    D.Out(pdDebug, "(recv) Reading %d 'reserved' bytes", msgBuffer.reservedBytes);
+    Debug(D, pdDebug) << "(recv) Reading " << msgBuffer.reservedBytes << " 'reserved' bytes" << std::endl;
     socket->receive(static_cast<const unsigned char*>(msgBuffer(0)), msgBuffer.reservedBytes);
     //msgBuffer.show(msgBuffer(0),5);fflush(stdout);
     /* 2- update (assume) complete message size from reserved bytes */
     msgBuffer.assumeSizeFromReservedBytes();
-    D.Out(
-        pdDebug, "Got a MsgBuffer of size %d bytes (including %d reserved)", msgBuffer.size(), msgBuffer.reservedBytes);
+    Debug(D, pdDebug) << "Got a MsgBuffer of size " << msgBuffer.size() << " bytes (including "
+                      << msgBuffer.reservedBytes << " reserved)" << std::endl;
     /* 3- receive the rest of the message */
     socket->receive(static_cast<const unsigned char*>(msgBuffer(msgBuffer.reservedBytes)),
                     msgBuffer.size() - msgBuffer.reservedBytes);
@@ -292,7 +293,7 @@ void Message::receive(SocketUN* socket, MessageBuffer& msgBuffer)
 	 * which may specialized in a daughter class
 	 */
     deserialize(msgBuffer);
-    G.Out(pdGendoc, "exit  Message::receive");
+    Debug(G, pdGendoc) << "exit  Message::receive" << std::endl;
 } /* end of receive */
 
 /*
