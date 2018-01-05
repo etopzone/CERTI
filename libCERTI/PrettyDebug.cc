@@ -46,8 +46,7 @@ std::ostream PrettyDebug::the_default_output_stream(std::cerr.rdbuf());
 std::string PrettyDebug::the_federate_name = "";
 std::filebuf* PrettyDebug::the_file_buffer = nullptr;
 
-PrettyDebug::PrettyDebug(const std::string& name, const std::string& header)
-: my_name{name}, my_header{header}
+PrettyDebug::PrettyDebug(const std::string& name, const std::string& header) : my_name{name}, my_header{header}
 {
     PrettyDebug::initStreams();
 
@@ -79,7 +78,7 @@ void PrettyDebug::enableDebugLevel(pdDebugLevel level, std::ostream& stream)
     if (unsigned(pdLast) <= unsigned(level)) {
         return;
     }
-    
+
     my_streams[level] = &stream;
 }
 
@@ -88,7 +87,7 @@ void PrettyDebug::disableDebugLevel(pdDebugLevel level)
     if (unsigned(pdLast) <= unsigned(level)) {
         return;
     }
-    
+
     my_streams[level] = nullptr;
 }
 

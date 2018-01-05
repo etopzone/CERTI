@@ -24,10 +24,6 @@
 #ifndef PRETTYDEBUG_HH
 #define PRETTYDEBUG_HH
 
-#ifdef NO_PRETTYDEBUG ///< Deprecated, use NDEBUG
-#define NDEBUG
-#endif
-
 #include <fstream>
 #include <iosfwd>
 #include <string>
@@ -124,12 +120,17 @@ public:
 
     /** If level is enabled, Message is sent to the DebugServer, preceded
      * with the Header specified in the Constructor.  If the NDEBUG
-     * constant is defined, the Out method has beed declared inline, and
-     * its body set to {}
+     * constant is defined, the Out method does not do anything
      */
     [[deprecated("Use Debug(X, level) instead of X.Out(level)")]] void Out(pdDebugLevel level, const char* format, ...);
 
 private:
+    static void initStreams();
+
+    static std::ostream the_default_output_stream;
+    static std::string the_federate_name;
+    static std::filebuf* the_file_buffer;
+
     /** Print the message header for the given level and return the apropriate stream
      * If level is enabled, print the debug header for this level and return
      * a std::ostream pointer to print debug messates to. If the given level is not
@@ -140,11 +141,6 @@ private:
     std::string my_name{""};
     std::string my_header{""};
     std::ostream* my_streams[pdLast]{nullptr};
-
-    static void initStreams();
-    static std::ostream the_default_output_stream;
-    static std::string the_federate_name;
-    static std::filebuf* the_file_buffer;
 };
 
 #endif // PRETTYDEBUG_HH
