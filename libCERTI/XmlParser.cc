@@ -479,7 +479,7 @@ XmlParser::HLAXmlStdVersion_t XmlParser::version(std::string pathToXmlFile)
 
 namespace certi {
 
-XmlParser::XmlParser(RootObject*)
+XmlParser::XmlParser(RootObject*, const bool)
 {
 }
 
