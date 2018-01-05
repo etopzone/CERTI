@@ -745,7 +745,7 @@ install(FILES
         DESTINATION share/scripts)
         
 install(FILES
-        HLAstandardMIM.xml 
+        scripts/HLAstandardMIM.xml 
         DESTINATION share/federations)
   
 # And the exported set
