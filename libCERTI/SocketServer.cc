@@ -64,10 +64,10 @@ void SocketServer::checkMessage(long socket_number, NetworkMessage* message) con
     }
     catch (Exception& e) {
         // BUG: Should put a line in the Audit.
-        throw SecurityError(stringize() << "Message for federation <" << message->getFederation()
-                                        << "> has a unknown origin federate <"
-                                        << message->getFederate()
-                                        << ">.");
+        throw SecurityError("Message for federation <" + std::to_string(message->getFederation())
+                            + "> has a unknown origin federate <"
+                            + std::to_string(message->getFederate())
+                            + ">.");
     }
 
     if (socket->returnSocket() != socket_number) {
@@ -199,15 +199,16 @@ SocketTuple* SocketServer::getWithReferences(FederationHandle the_federation, Fe
             return (*i);
     }
 
-    throw FederateNotExecutionMember(certi::stringize() << "Federate handle " << the_federate
-                                                        << " is not a member of Federation "
-                                                        << the_federation);
+    throw FederateNotExecutionMember("Federate handle " + std::to_string(the_federate)
+                                     + " is not a member of Federation "
+                                     + std::to_string(the_federation.get()));
 }
-    
+
 FederateHandle SocketServer::getFederateFromSocket(FederationHandle the_federation, Socket* socket) const
 {
-    for(const auto& tuple: *this) {
-        if((tuple->Federation == the_federation) && (tuple->BestEffortLink == socket || tuple->ReliableLink == socket)) {
+    for (const auto& tuple : *this) {
+        if ((tuple->Federation == the_federation)
+            && (tuple->BestEffortLink == socket || tuple->ReliableLink == socket)) {
             return tuple->Federate;
         }
     }

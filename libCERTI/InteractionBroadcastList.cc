@@ -48,14 +48,14 @@ void InteractionBroadcastList::addFederate(FederateHandle federate)
 
 InteractionBroadcastList::InteractionBroadcastList(NM_Receive_Interaction message) : my_message{message}
 {
-    G.Out(pdGendoc, "enter InteractionBroadcastList::InteractionBroadcastList");
+    Debug(G, pdGendoc) << "enter InteractionBroadcastList::InteractionBroadcastList" << std::endl;
 
     // Add reference of the sender(so it does not receive its own message).
     if (my_message.getFederate() != 0) {
         my_lines[my_message.getFederate()] = State::Sent;
     }
 
-    G.Out(pdGendoc, "exit InteractionBroadcastList::InteractionBroadcastList");
+    Debug(G, pdGendoc) << "exit InteractionBroadcastList::InteractionBroadcastList" << std::endl;
 }
 
 Responses InteractionBroadcastList::preparePendingMessage(SecurityServer& server)
@@ -78,7 +78,7 @@ Responses InteractionBroadcastList::preparePendingMessage(SecurityServer& server
 #endif
             }
             catch (Exception& e) {
-                D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
+                Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting." << std::endl;
             }
 
             // 2. Mark federate as having received the message.

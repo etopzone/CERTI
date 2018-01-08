@@ -96,7 +96,8 @@ void LBTS::insert(FederateHandle num_fed, FederationTime time)
 // ----------------------------------------------------------------------------
 void LBTS::update(FederateHandle federateHandle, FederationTime time)
 {
-    D.Out(pdDebug, "LBTS.update: Updating federate %d (time=%f).", federateHandle, time.getTime());
+    Debug(D, pdDebug) << "LBTS.update: Updating federate " << federateHandle << " at time " << time.getTime()
+                      << std::endl;
     ClockSet::iterator it;
     ClockSet::iterator itend = clocks.end();
 
@@ -108,7 +109,7 @@ void LBTS::update(FederateHandle federateHandle, FederationTime time)
     if (federateHandle != 0) {
         it = clocks.find(federateHandle);
         if (it == clocks.end()) {
-            throw RTIinternalError(stringize() << "LBTS: Federate <" << federateHandle << "> not found.");
+            throw RTIinternalError("LBTS: Federate <" + std::to_string(federateHandle) + "> not found.");
         }
         else {
             itend = it;
@@ -121,14 +122,13 @@ void LBTS::update(FederateHandle federateHandle, FederationTime time)
 
     do {
         // Coherence test.
-        if (it->second > time)
-            D.Out(pdDebug, "LBTS.update: federate-%u, new time lower than oldest one.", federateHandle);
+        if (it->second > time) {
+            Debug(D, pdDebug) << "LBTS.update: federate " << federateHandle << ", new time lower than oldest one."
+                              << std::endl;
+        }
         else {
-            D.Out(pdDebug,
-                  "LBTS.update: federate-%u, time %f --> %f (old-->new)",
-                  it->first,
-                  it->second.getTime(),
-                  time.getTime());
+            Debug(D, pdDebug) << "LBTS.update: federate " << it->first << ", time " << it->second.getTime() << " --> "
+                              << time.getTime() << std::endl;
             it->second = time;
         }
         if (it != itend)
@@ -144,8 +144,9 @@ void LBTS::remove(FederateHandle num_fed)
 {
     ClockSet::iterator it = clocks.find(num_fed);
 
-    if (it == clocks.end())
-        throw RTIinternalError(stringize() << "LBTS: Federate <" << num_fed << "not found.");
+    if (it == clocks.end()) {
+        throw RTIinternalError("LBTS: Federate <" + std::to_string(num_fed) + "not found.");
+    }
 
     clocks.erase(it);
     compute();

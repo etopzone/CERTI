@@ -69,7 +69,7 @@ AttributeHandle ObjectClass::addAttribute(ObjectClassAttribute* theAttribute, bo
 
     _handleClassAttributeMap[attributeHandle] = theAttribute;
 
-    D.Out(pdProtocol, "ObjectClass %u has a new attribute %u.", handle, attributeHandle);
+    Debug(D, pdProtocol) << "ObjectClass " << handle << " has a new attribute " << attributeHandle << std::endl;
 
     return attributeHandle;
 }
@@ -85,11 +85,8 @@ void ObjectClass::addInheritedClassAttributes(ObjectClass* the_child)
         ObjectClassAttribute* childAttribute = new ObjectClassAttribute(*a->second);
         assert(childAttribute != NULL);
 
-        D.Out(pdProtocol,
-              "ObjectClass %u adding new attribute %d to child class %u.",
-              handle,
-              a->second->getHandle(),
-              the_child->getHandle());
+        Debug(D, pdProtocol) << "ObjectClass " << handle << " adding new attribute " << a->second->getHandle()
+                             << " to child class " << the_child->getHandle() << std::endl;
 
         the_child->addAttribute(childAttribute, true);
     }
@@ -102,11 +99,11 @@ void ObjectClass::addInheritedClassAttributes(ObjectClass* the_child)
 */
 Responses ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, const Object* source)
 {
-    G.Out(pdGendoc, "enter ObjectClass::broadcastClassMessage");
+    Debug(G, pdGendoc) << "enter ObjectClass::broadcastClassMessage" << std::endl;
     // 1. Set ObjectHandle to local class Handle.
     ocbList->upcastTo(handle);
 
-    G.Out(pdGendoc, "      ObjectClass::broadcastClassMessage handle=%d", handle);
+    Debug(G, pdGendoc) << "      ObjectClass::broadcastClassMessage handle " << handle << std::endl;
     // 2. Update message attribute list by removing child's attributes.
     if ((ocbList->getMsg().getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES)
         || (ocbList->getMsg().getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
@@ -169,7 +166,7 @@ Responses ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, 
     }
     // 4. Send pending messages.
     auto ret = ocbList->preparePendingMessage(*server);
-    G.Out(pdGendoc, "exit  ObjectClass::broadcastClassMessage");
+    Debug(G, pdGendoc) << "exit  ObjectClass::broadcastClassMessage" << std::endl;
     return ret;
 }
 
@@ -188,10 +185,10 @@ void ObjectClass::sendToFederate(NetworkMessage* msg, FederateHandle theFederate
         msg->send(socket, NM_msgBufSend);
     }
     catch (RTIinternalError& e) {
-        D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
+        Debug(D, pdExcept) << "Reference to a killed Federate while broadcasting" << std::endl;
     }
     catch (NetworkError& e) {
-        D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+        Debug(D, pdExcept) << "Network error while broadcasting, ignoring" << std::endl;
     }
     // BUG: If except = 0, could use Multicast.
 }
@@ -218,13 +215,13 @@ void ObjectClass::sendToOwners(CDiffusion& diffusionList,
             int index = 0;
             for (int j = i; j < nbAttributes; j++) {
                 if (diffusionList[j].federate == toFederate) {
-                    D.Out(pdDebug, "handle : %u", diffusionList[j].attribute);
+                    Debug(D, pdDebug) << "handle : " << diffusionList[j].attribute << std::endl;
                     diffusionList[j].federate = 0;
                     answer.setAttributes(diffusionList[j].attribute, index);
                     index++;
                 }
             }
-            D.Out(pdDebug, "Envoi message type %s ", answer.getMessageName());
+            Debug(D, pdDebug) << "Envoi message type " << answer.getMessageName() << std::endl;
             answer.setAttributesSize(index);
             sendToFederate(&answer, toFederate);
         }
@@ -237,11 +234,12 @@ void ObjectClass::sendToOwners(CDiffusion& diffusionList,
 */
 void ObjectClass::checkFederateAccess(FederateHandle the_federate, const std::string& reason)
 {
-    D.Out(pdInit, "Beginning of CheckFederateAccess for the federate %d", the_federate);
+    Debug(D, pdInit) << "Beginning of CheckFederateAccess for the federate " << the_federate << std::endl;
 
     // BUG: Should at least but a line in Audit
-    if (server == NULL)
+    if (server == NULL) {
         return;
+    }
 
     bool result = server->canFederateAccessData(the_federate, securityLevelId);
 
@@ -272,7 +270,7 @@ ObjectClass::~ObjectClass()
 {
     // Deleting instances
     if (!_handleObjectMap.empty()) {
-        D.Out(pdError, "ObjectClass %d : Instances remaining while exiting...", handle);
+        Debug(D, pdError) << "ObjectClass " << handle << " : Instances remaining while exiting..." << std::endl;
     }
 
     // Deleting Class Attributes
@@ -303,7 +301,8 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::deleteInstance(Fede
 
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
-        D.Out(pdExcept, "Delete Object %d: Federate %d not owner.", object->getHandle(), the_federate);
+        Debug(D, pdExcept) << "Delete Object " << object->getHandle() << ": Federate " << the_federate << " not owner."
+                           << std::endl;
         throw DeletePrivilegeNotHeld("");
     }
 
@@ -316,7 +315,8 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::deleteInstance(Fede
     // 3. Prepare and broadcast message.
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << object->getHandle() << " deleted in class " << handle
+                             << ", now broadcasting..." << std::endl;
 
         auto answer = make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
@@ -333,7 +333,8 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::deleteInstance(Fede
         ret = broadcastClassMessage(ocbList);
     }
     else {
-        D.Out(pdRegister, "Object %u deleted in class %u, no broadcast to do.", object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << object->getHandle() << " deleted in class " << handle
+                             << ", no broadcast to do." << std::endl;
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -355,7 +356,8 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
     Responses ret;
     // Is the Federate really the Object Owner?(Checked only on RTIG)
     if ((server != 0) && (object->getOwner() != the_federate)) {
-        D.Out(pdExcept, "Delete Object %d: Federate %d not owner.", object->getHandle(), the_federate);
+        Debug(D, pdExcept) << "Delete Object " << object->getHandle() << ": Federate " << the_federate << " not owner."
+                           << std::endl;
         throw DeletePrivilegeNotHeld("");
     }
 
@@ -368,7 +370,8 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
     // 3. Prepare and broadcast message.
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        D.Out(pdRegister, "Object %u deleted in class %u, now broadcasting...", object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << object->getHandle() << " deleted in class " << handle
+                             << ", now broadcasting..." << std::endl;
 
         auto answer = make_unique<NM_Remove_Object>();
         answer->setFederation(server->federation().get());
@@ -383,7 +386,8 @@ ObjectClass::deleteInstance(FederateHandle the_federate, Object* object, const s
         ret = broadcastClassMessage(ocbList);
     }
     else {
-        D.Out(pdRegister, "Object %u deleted in class %u, no broadcast to do.", object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << object->getHandle() << " deleted in class " << handle
+                             << ", no broadcast to do." << std::endl;
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -426,19 +430,19 @@ void ObjectClass::display() const
 //! getAttributeHandle.
 AttributeHandle ObjectClass::getAttributeHandle(const std::string& the_name) const
 {
-    G.Out(pdGendoc, "enter ObjectClass::getAttributeHandle");
+    Debug(G, pdGendoc) << "enter ObjectClass::getAttributeHandle" << std::endl;
 
     for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin();
          i != _handleClassAttributeMap.end();
          ++i) {
         if (the_name == i->second->getName()) {
-            G.Out(pdGendoc, "exit  ObjectClass::getAttributeHandle");
+            Debug(G, pdGendoc) << "exit  ObjectClass::getAttributeHandle" << std::endl;
             return i->second->getHandle();
         }
     }
 
-    D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.", handle, the_name.c_str());
-    G.Out(pdGendoc, "exit  ObjectClass::getAttributeHandle on NameNotFound");
+    Debug(D, pdExcept) << "ObjectClass " << handle << ": Attribute \"" << the_name << "\" not defined." << std::endl;
+    Debug(G, pdGendoc) << "exit  ObjectClass::getAttributeHandle on NameNotFound" << std::endl;
     throw NameNotFound(the_name);
 }
 
@@ -461,12 +465,12 @@ ObjectClassAttribute* ObjectClass::getAttribute(AttributeHandle the_handle) cons
         return i->second;
     }
 
-    D.Out(pdExcept, "ObjectClass %d: Attribute %d not defined.", handle, the_handle);
+    Debug(D, pdExcept) << "ObjectClass " << handle << ": Attribute " << the_handle << " not defined." << std::endl;
 
-    throw AttributeNotDefined(stringize() << "ObjectClass::getAttribute(AttributeHandle) Attribute <" << the_handle
-                                          << "> unknown for ObjectClass <"
-                                          << getName()
-                                          << ">.");
+    throw AttributeNotDefined("ObjectClass::getAttribute(AttributeHandle) Attribute <" + std::to_string(the_handle)
+                              + "> unknown for ObjectClass <"
+                              + getName()
+                              + ">.");
 }
 
 // ----------------------------------------------------------------------------
@@ -480,7 +484,7 @@ bool ObjectClass::hasAttribute(AttributeHandle attributeHandle) const
 //! Return true if the Federate is publishing any attribute of this class.
 bool ObjectClass::isFederatePublisher(FederateHandle the_federate) const
 {
-    D.Out(pdRegister, "_handleClassAttributeMap.size() = %d.", _handleClassAttributeMap.size());
+    Debug(D, pdRegister) << "_handleClassAttributeMap.size() = " << _handleClassAttributeMap.size() << std::endl;
 
     for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin();
          i != _handleClassAttributeMap.end();
@@ -523,7 +527,7 @@ bool ObjectClass::isInstanceInClass(ObjectHandle objectHandle)
 //! killFederate.
 std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::killFederate(FederateHandle the_federate) noexcept
 {
-    D.Out(pdRegister, "Object Class %d: Killing Federate %d.", handle, the_federate);
+    Debug(D, pdRegister) << "Object Class " << handle << ": Killing Federate " << the_federate << std::endl;
 
     std::vector<AttributeHandle> liste_vide;
     try {
@@ -554,7 +558,7 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::killFederate(Federa
         }
     }
 
-    D.Out(pdRegister, "Object Class %d:Federate %d killed.", handle, the_federate);
+    Debug(D, pdRegister) << "Object Class " << handle << ":Federate " << the_federate << " killed" << std::endl;
 
     // Return NULL if the Federate did not own any instance.
     return {nullptr, Responses()};
@@ -566,7 +570,7 @@ void ObjectClass::publish(FederateHandle theFederateHandle,
                           const std::vector<AttributeHandle>& theAttributeList,
                           bool PubOrUnpub)
 {
-    D.Out(pdInit, "Beginning of Publish for the federate %d", theFederateHandle);
+    Debug(D, pdInit) << "Beginning of Publish for the federate " << theFederateHandle << std::endl;
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (std::vector<AttributeHandle>::const_iterator it = theAttributeList.begin(); it != theAttributeList.end();
@@ -578,7 +582,8 @@ void ObjectClass::publish(FederateHandle theFederateHandle,
     checkFederateAccess(theFederateHandle, "Publish");
 
     // Reset all previous publish information.
-    D.Out(pdInit, "ObjectClass %d: Reset publish info of Federate %d.", handle, theFederateHandle);
+    Debug(D, pdInit) << "ObjectClass " << handle << ": Reset publish info of Federate " << theFederateHandle
+                     << std::endl;
 
     for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end();
          ++i) {
@@ -591,7 +596,8 @@ void ObjectClass::publish(FederateHandle theFederateHandle,
     ObjectClassAttribute* attribute;
     for (std::vector<AttributeHandle>::const_iterator it = theAttributeList.begin(); it != theAttributeList.end();
          ++it) {
-        D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.", handle, theFederateHandle, *it);
+        Debug(D, pdInit) << "ObjectClass " << handle << ": Federate " << theFederateHandle << " publishes attribute "
+                         << *it << std::endl;
         attribute = getAttribute(*it);
         if (PubOrUnpub) {
             attribute->publish(theFederateHandle);
@@ -614,13 +620,13 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
     Responses ret;
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
-        D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
+        Debug(D, pdExcept) << "exception : ObjectAlreadyRegistered." << std::endl;
         throw ObjectAlreadyRegistered(the_object->getName());
     }
 
     // This condition is only to be checked on the RTIG
     if ((server != NULL) && (!isFederatePublisher(the_federate))) {
-        D.Out(pdExcept, "exception : ObjectClassNotPublished.");
+        Debug(D, pdExcept) << "exception : ObjectClassNotPublished." << std::endl;
         throw ObjectClassNotPublished("");
     }
 
@@ -648,7 +654,8 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList* ocbList = NULL;
     if (server != NULL) {
-        D.Out(pdRegister, "Object %u registered in class %u, now broadcasting...", the_object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << the_object->getHandle() << " registered in class " << handle
+                             << ", now broadcasting..." << std::endl;
 
         auto answer = make_unique<NM_Discover_Object>();
         answer->setFederation(server->federation().get());
@@ -664,7 +671,8 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate, Object* the_obj
         ret = broadcastClassMessage(ocbList);
     }
     else {
-        D.Out(pdRegister, "Object %u registered in class %u, no broadcast to do.", the_object->getHandle(), handle);
+        Debug(D, pdRegister) << "Object " << the_object->getHandle() << " registered in class " << handle
+                             << ", no broadcast to do." << std::endl;
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -692,12 +700,8 @@ bool ObjectClass::sendDiscoverMessages(FederateHandle federate, ObjectClassHandl
     for (HandleObjectMap::const_iterator i = _handleObjectMap.begin(); i != _handleObjectMap.end(); ++i) {
         if (i->second->getOwner() != federate) {
             NM_Discover_Object message;
-            D.Out(pdInit,
-                  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-                  federate,
-                  i->second->getHandle(),
-                  handle,
-                  message.getLabel().c_str());
+            Debug(D, pdInit) << "Sending DiscoverObj to Federate " << federate << " for Object "
+                             << i->second->getHandle() << " in class " << handle << std::endl;
 
             message.setFederation(server->federation().get());
             message.setFederate(federate);
@@ -714,10 +718,10 @@ bool ObjectClass::sendDiscoverMessages(FederateHandle federate, ObjectClassHandl
                 message.send(socket, NM_msgBufSend);
             }
             catch (RTIinternalError& e) {
-                D.Out(pdExcept, "Reference to a killed Federate while sending DO msg.");
+                Debug(D, pdExcept) << "Reference to a killed Federate while sending DO msg." << std::endl;
             }
             catch (NetworkError& e) {
-                D.Out(pdExcept, "Network error while sending DO msg, ignoring.");
+                Debug(D, pdExcept) << "Network error while sending DO msg, ignoring." << std::endl;
             }
         }
     }
@@ -728,8 +732,9 @@ bool ObjectClass::sendDiscoverMessages(FederateHandle federate, ObjectClassHandl
 // A class' LevelID can only be increased.
 void ObjectClass::setSecurityLevelId(SecurityLevelID levelID)
 {
-    if (!server->dominates(levelID, securityLevelId))
+    if (!server->dominates(levelID, securityLevelId)) {
         throw SecurityError("Attempt to lower object class level.");
+    }
 
     securityLevelId = levelID;
 }
@@ -788,9 +793,9 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     for (int i = 0; i < the_size; i++) {
         oa = object->getAttribute(the_attributes[i]);
         if (oa->getOwner() != the_federate)
-            throw AttributeNotOwned(stringize() << "Federate <" << the_federate << "> is not owner of attribute <"
-                                                << oa->getHandle()
-                                                << ">");
+            throw AttributeNotOwned("Federate <" + std::to_string(the_federate) + "> is not owner of attribute <"
+                                    + std::to_string(oa->getHandle())
+                                    + ">");
     }
 
     // Prepare and Broadcast message for this class
@@ -814,12 +819,13 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         ocbList = new ObjectClassBroadcastList(std::move(answer), _handleClassAttributeMap.size());
 
-        D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
+        Debug(D, pdProtocol) << "Object " << object->getHandle() << " updated in class " << handle
+                             << ", now broadcasting..." << std::endl;
 
         ret = broadcastClassMessage(ocbList, object);
     }
     else {
-        D.Out(pdExcept, "UpdateAttributeValues should not be called on the RTIA.");
+        Debug(D, pdExcept) << "UpdateAttributeValues should not be called on the RTIA." << std::endl;
         throw RTIinternalError("UpdateAttributeValues called on the RTIA.");
     }
 
@@ -872,12 +878,13 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         ocbList = new ObjectClassBroadcastList(std::move(answer), _handleClassAttributeMap.size());
 
-        D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
+        Debug(D, pdProtocol) << "Object " << object->getHandle() << " updated in class " << handle
+                             << ", now broadcasting..." << std::endl;
 
         ret = broadcastClassMessage(ocbList, object);
     }
     else {
-        D.Out(pdExcept, "UpdateAttributeValues should not be called on the RTIA.");
+        Debug(D, pdExcept) << "UpdateAttributeValues should not be called on the RTIA." << std::endl;
         throw RTIinternalError("UpdateAttributeValues called on the RTIA.");
     }
 
@@ -903,7 +910,7 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
 
     // Does federate owns every attributes.
     // Does federate has called NegotiatedAttributeOwnershipDivestiture.
-    D.Out(pdDebug, "NegotiatedDivestiture requested by : %u", theFederateHandle);
+    Debug(D, pdDebug) << "NegotiatedDivestiture requested by " << theFederateHandle << std::endl;
 
     ObjectAttribute* oa;
     ObjectClassAttribute* oca;
@@ -911,13 +918,15 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
         oca = getAttribute(theAttributeList[i]);
         oa = object->getAttribute(theAttributeList[i]);
 
-        D.Out(pdDebug, "Attribute Name : %s", oca->getName().c_str());
-        D.Out(pdDebug, "Attribute Handle : %u", oa->getHandle());
-        D.Out(pdDebug, "Attribute Owner : %u", oa->getOwner());
-        if (oa->getOwner() != theFederateHandle)
+        Debug(D, pdDebug) << "Attribute Name : " << oca->getName() << std::endl;
+        Debug(D, pdDebug) << "Attribute Handle : " << oa->getHandle() << std::endl;
+        Debug(D, pdDebug) << "Attribute Owner : " << oa->getOwner() << std::endl;
+        if (oa->getOwner() != theFederateHandle) {
             throw AttributeNotOwned("");
-        if (oa->beingDivested())
+        }
+        if (oa->beingDivested()) {
             throw AttributeAlreadyBeingDivested("");
+        }
     }
 
     int acquisition_count = 0;
@@ -995,16 +1004,14 @@ ObjectClass::negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateH
 
             List = new ObjectClassBroadcastList(std::move(answerAssumption), _handleClassAttributeMap.size());
 
-            D.Out(pdProtocol, "Object %u divestiture in class %u, now broadcasting...", object->getHandle(), handle);
+            Debug(D, pdProtocol) << "Object " << object->getHandle() << " divestiture in class " << handle
+                                 << ", now broadcasting..." << std::endl;
             ret = broadcastClassMessage(List);
         }
     }
     else {
-        D.Out(pdExcept,
-              "NegotiatedAttributeOwnershipDivestiture should not "
-              "be called on the RTIA.");
-        throw RTIinternalError("NegotiatedAttributeOwnershipDivestiture "
-                               "called on the RTIA.");
+        Debug(D, pdExcept) << "NegotiatedAttributeOwnershipDivestiture should not be called on the RTIA." << std::endl;
+        throw RTIinternalError("NegotiatedAttributeOwnershipDivestiture called on the RTIA.");
     }
 
     // Return the BroadcastList in case it had to be passed to the parent class.
@@ -1025,7 +1032,7 @@ void ObjectClass::attributeOwnershipAcquisitionIfAvailable(FederateHandle the_fe
     if (server) {
         // Federate must publish the class.
         if (!isFederatePublisher(the_federate)) {
-            D.Out(pdExcept, "exception : ObjectClassNotPublished.");
+            Debug(D, pdExcept) << "exception : ObjectClassNotPublished." << std::endl;
             throw ObjectClassNotPublished("");
         }
 
@@ -1109,7 +1116,7 @@ void ObjectClass::attributeOwnershipAcquisitionIfAvailable(FederateHandle the_fe
         else
             delete Answer_notification;
 
-        D.Out(pdDebug, "Debut traitement : send divestiture notification message");
+        Debug(D, pdDebug) << "Start: send divestiture notification message" << std::endl;
 
         if (compteur_divestiture != 0) {
             NM_Attribute_Ownership_Divestiture_Notification AODN;
@@ -1124,11 +1131,8 @@ void ObjectClass::attributeOwnershipAcquisitionIfAvailable(FederateHandle the_fe
             delete Answer_unavailable;
     }
     else {
-        D.Out(pdExcept,
-              "AttributeOwnershipAcquisitionIfAvailable should not "
-              "be called on the RTIA.");
-        throw RTIinternalError("AttributeOwnershipAcquisitionIfAvailable "
-                               "called on the RTIA.");
+        Debug(D, pdExcept) << "AttributeOwnershipAcquisitionIfAvailable should not be called on the RTIA." << std::endl;
+        throw RTIinternalError("AttributeOwnershipAcquisitionIfAvailable called on the RTIA.");
     }
 }
 
@@ -1151,11 +1155,11 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::unconditionalAttrib
     for (unsigned i = 0; i < theAttributeList.size(); i++) {
         oa = object->getAttribute(theAttributeList[i]);
         if (oa->getOwner() != theFederateHandle)
-            throw AttributeNotOwned(stringize() << "federate <" << theFederateHandle << "> not owner of attribute <"
-                                                << oa->getHandle()
-                                                << ">, it is=<"
-                                                << oa->getOwner()
-                                                << ">.");
+            throw AttributeNotOwned("federate <" + std::to_string(theFederateHandle) + "> not owner of attribute <"
+                                    + std::to_string(oa->getHandle())
+                                    + ">, it is=<"
+                                    + std::to_string(oa->getOwner())
+                                    + ">.");
     }
 
     int assumption_count = 0;
@@ -1210,7 +1214,8 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::unconditionalAttrib
 
             List = new ObjectClassBroadcastList(std::move(answerAssumption), _handleClassAttributeMap.size());
 
-            D.Out(pdProtocol, "Object %u updated in class %u, now broadcasting...", object->getHandle(), handle);
+            Debug(D, pdProtocol) << "Object " << object->getHandle() << " updated in class " << handle
+                                 << ", now broadcasting..." << std::endl;
 
             ret = broadcastClassMessage(List);
         }
@@ -1221,11 +1226,9 @@ std::pair<ObjectClassBroadcastList*, Responses> ObjectClass::unconditionalAttrib
         }
     }
     else {
-        D.Out(pdExcept,
-              "UnconditionalAttributeOwnershipDivestiture should "
-              "not be called on the RTIA.");
-        throw RTIinternalError("UnconditionalAttributeOwnershipDivestiture "
-                               "called on the RTIA.");
+        Debug(D, pdExcept) << "UnconditionalAttributeOwnershipDivestiture should not be called on the RTIA."
+                           << std::endl;
+        throw RTIinternalError("UnconditionalAttributeOwnershipDivestiture called on the RTIA.");
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -1260,7 +1263,7 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
     if (server != NULL) {
         // The federate have to publish the class
         if (!isFederatePublisher(theFederateHandle)) {
-            D.Out(pdExcept, "exception : ObjectClassNotPublished.");
+            Debug(D, pdExcept) << "exception : ObjectClassNotPublished." << std::endl;
             throw ObjectClassNotPublished("");
         }
         NM_Attribute_Ownership_Acquisition_Notification* AnswerNotification
@@ -1327,11 +1330,8 @@ void ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle
         }
     }
     else {
-        D.Out(pdExcept,
-              "AttributeOwnershipAcquisition should not be called "
-              "on the RTIA.");
-        throw RTIinternalError("AttributeOwnershipAcquisition called "
-                               "on the RTIA");
+        Debug(D, pdExcept) << "AttributeOwnershipAcquisition should not be called on the RTIA." << std::endl;
+        throw RTIinternalError("AttributeOwnershipAcquisition called on the RTIA");
     }
 }
 
@@ -1387,10 +1387,12 @@ AttributeHandleSet* ObjectClass::attributeOwnershipReleaseResponse(FederateHandl
             diffusionAcquisition.push_back(DiffusionPair(newOwner, oa->getHandle()));
             theAttribute->add(oa->getHandle());
 
-            D.Out(pdDebug, "Acquisition handle %u compteur %u", the_attributes[i], compteur_acquisition);
+            Debug(D, pdDebug) << "Acquisition handle " << the_attributes[i] << " counter " << compteur_acquisition
+                              << std::endl;
 
-            if (oca->isNamed("privilegeToDelete"))
+            if (oca->isNamed("privilegeToDelete")) {
                 object->setOwner(newOwner);
+            }
         }
 
         if (!diffusionAcquisition.empty()) {
@@ -1399,11 +1401,8 @@ AttributeHandleSet* ObjectClass::attributeOwnershipReleaseResponse(FederateHandl
         }
     }
     else {
-        D.Out(pdExcept,
-              "NegotiatedAttributeOwnershipDivestiture should not "
-              "be called on the RTIA.");
-        throw RTIinternalError("NegotiatedAttributeOwnershipDivestiture called"
-                               " on the RTIA.");
+        Debug(D, pdExcept) << "NegotiatedAttributeOwnershipDivestiture should not be called on the RTIA." << std::endl;
+        throw RTIinternalError("NegotiatedAttributeOwnershipDivestiture called on the RTIA.");
     }
     return (theAttribute);
 }
@@ -1421,7 +1420,8 @@ void ObjectClass::cancelAttributeOwnershipAcquisition(FederateHandle federate_ha
         getAttribute(attribute_list[index]);
 
     for (unsigned i = 0; i < attribute_list.size(); i++)
-        D.Out(pdDebug, "CancelAcquisition Object %u Attribute %u ", object->getHandle(), attribute_list[i]);
+        Debug(D, pdDebug) << "CancelAcquisition Object " << object->getHandle() << " Attribute " << attribute_list[i]
+                          << std::endl;
 
     if (server != NULL) {
         //rem _handleClassAttributeMap.size()=attributeState.size()
@@ -1429,13 +1429,15 @@ void ObjectClass::cancelAttributeOwnershipAcquisition(FederateHandle federate_ha
         for (unsigned i = 0; i < attribute_list.size(); i++) {
             ObjectAttribute* oa = object->getAttribute(attribute_list[i]);
 
-            D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i], oa->getOwner());
+            Debug(D, pdDebug) << "Attribute " << attribute_list[i] << " Owner " << oa->getOwner() << std::endl;
             // Does federate is already owning some attributes ?
-            if (oa->getOwner() == federate_handle)
+            if (oa->getOwner() == federate_handle) {
                 throw AttributeAlreadyOwned("");
+            }
             // Does federate is already doing an acquisition ?
-            if (!oa->isCandidate(federate_handle))
+            if (!oa->isCandidate(federate_handle)) {
                 throw AttributeAcquisitionWasNotRequested("");
+            }
         }
 
         NM_Confirm_Attribute_Ownership_Acquisition_Cancellation* answer_confirmation
@@ -1454,12 +1456,9 @@ void ObjectClass::cancelAttributeOwnershipAcquisition(FederateHandle federate_ha
 
             // We remove federate from candidates.
             oa->removeCandidate(federate_handle);
-            D.Out(pdDebug,
-                  "Adding federate %u to attribute %u object %u",
-                  federate_handle,
-                  attribute_list[i],
-                  object->getHandle());
-            compteur_confirmation++;
+            Debug(D, pdDebug) << "Adding federate " << federate_handle << " to attribute " << attribute_list[i]
+                              << " object " << object->getHandle() << std::endl;
+            ++compteur_confirmation;
         }
 
         if (compteur_confirmation != 0) {
@@ -1470,11 +1469,8 @@ void ObjectClass::cancelAttributeOwnershipAcquisition(FederateHandle federate_ha
             delete answer_confirmation;
     }
     else {
-        D.Out(pdExcept,
-              "CancelAttributeOwnershipAcquisition should not "
-              "be called on the RTIA.");
-        throw RTIinternalError("CancelAttributeOwnershipAcquisition called "
-                               "on the RTIA.");
+        Debug(D, pdExcept) << "CancelAttributeOwnershipAcquisition should not be called on the RTIA." << std::endl;
+        throw RTIinternalError("CancelAttributeOwnershipAcquisition called on the RTIA.");
     }
 }
 

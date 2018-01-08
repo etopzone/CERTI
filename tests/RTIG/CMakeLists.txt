@@ -14,6 +14,7 @@ set(rtig_SRCS
     ${CERTI_SOURCE_DIR}/RTIG/Federate.cc
     
     ${CERTI_SOURCE_DIR}/RTIG/Federation.hh
+    ${CERTI_SOURCE_DIR}/RTIG/Federation_fom.cc
     ${CERTI_SOURCE_DIR}/RTIG/Federation.cc
     
     ${CERTI_SOURCE_DIR}/RTIG/FederationsList.hh

@@ -118,7 +118,7 @@ void SocketHTTPProxy::createConnection(const char* server_name, unsigned int por
         // skip http://
         const char* protoend = strchr(http_proxy, ':');
         if (protoend == NULL || protoend[1] != '/' || protoend[2] != '/' || protoend[3] == '\0') {
-            D.Out(pdDebug, "Invalid HTTP proxy URL.");
+            Debug(D, pdDebug) << "Invalid HTTP proxy URL." << std::endl;
             throw NetworkError("Invalid HTTP proxy URL.");
         }
 
@@ -133,12 +133,13 @@ void SocketHTTPProxy::createConnection(const char* server_name, unsigned int por
             proxy_port = 3128;
         }
 
-        D.Out(pdTrace, "Connect to '%s:%d' via 'http://%s:%d'.", server_name, port, proxy_address.c_str(), proxy_port);
+        Debug(D, pdTrace) << "Connect to '" << server_name << ":" << port << "' via 'http://" << proxy_address << ":"
+                          << proxy_port << "'" << std::endl;
         SocketTCP::createConnection(proxy_address.c_str(), proxy_port);
         sendHTTPConnect(server_name, port);
     }
     else {
-        D.Out(pdTrace, "Connect to '%s:%d'.", server_name, port);
+        Debug(D, pdTrace) << "Connect to '" << server_name << ":" << port << "'" << std::endl;
         SocketTCP::createConnection(server_name, port);
     }
 }
@@ -152,8 +153,8 @@ int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
             << "Host: " << addr << ":" << port << "\x0D\x0A"
             << "\x0D\x0A";
 
-    D.Out(pdTrace, "HTTP proxy connection request\n%s<", request.str().c_str());
-    // send the HTTP reuqest
+    Debug(D, pdTrace) << "HTTP proxy connection request\n<" << request.str() << ">" << std::endl;
+    // send the HTTP request
     send((const unsigned char*) request.str().c_str(), request.str().length());
 
     size_t received;
@@ -164,19 +165,19 @@ int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
     timeoutTCP(5, 0);
     // receive the HTTP response line
     received = receiveLine(response, maxLineLength);
-    D.Out(pdTrace, "<HTTP PROXY> %s", response);
+    Debug(D, pdTrace) << "<HTTP PROXY> " << response << std::endl;
 
     char* sCode;
     // the response line must be "HTTP/<version> <code> <reason>"
     if (received < 5 || strncmp(response, "HTTP/", 5) != 0 || (sCode = strchr(response, ' ')) == NULL) {
-        D.Out(pdDebug, "Unexpected HTTP response.");
+        Debug(D, pdDebug) << "Unexpected HTTP response." << std::endl;
         throw NetworkError("Unexpected HTTP response.");
     }
 
     int iCode = atoi(sCode);
     // the response code must be 2xx
     if (iCode < 200 || iCode >= 300) {
-        throw NetworkError(stringize() << "Proxy connection refused: " << response);
+        throw NetworkError("Proxy connection refused: " + std::string(response));
     }
 
     // receive the rest of the HTTP response
@@ -185,7 +186,7 @@ int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
         timeoutTCP(5, 0);
         // receive the HTTP header
         received = receiveLine(response, maxLineLength);
-        D.Out(pdTrace, "<HTTP PROXY> %s", response);
+        Debug(D, pdTrace) << "<HTTP PROXY> " << response << std::endl;
     } while (received > 0);
 
     return 1;
@@ -198,20 +199,21 @@ size_t SocketHTTPProxy::receiveLine(char* buffer, size_t max_size)
     while (nReceived < max_size - 1) {
         int result = ::recv(SocketTCP::returnSocket(), buffer + nReceived, 1, 0);
         if (result < 0) {
-            D.Out(pdExcept, "Error while receiving on TCP socket.");
+            Debug(D, pdExcept) << "Error while receiving on TCP socket." << std::endl;
 #ifdef _WIN32
-            if (WSAGetLastError() == WSAEINTR)
+            if (WSAGetLastError() == WSAEINTR) {
 #else
-            if (errno == EINTR)
+            if (errno == EINTR) {
 #endif
                 throw NetworkSignal("");
+            }
             else {
                 perror("TCP Socket(RecevoirTCP) ");
                 throw NetworkError("Error while receiving TCP message.");
             }
         }
         else if (result == 0) {
-            D.Out(pdExcept, "TCP connection has been closed by peer.");
+            Debug(D, pdExcept) << "TCP connection has been closed by peer." << std::endl;
             throw NetworkError("Connection closed by client.");
         }
 

@@ -63,7 +63,7 @@ namespace rti1516e
       virtual ~HLAopaqueData();
 
       // Return a new copy of the DataElement
-      virtual std::unique_ptr<DataElement> clone () const;
+      virtual std::auto_ptr<DataElement> clone () const;
 
       // Return the encoding of this element in a VariableLengthData
       virtual VariableLengthData encode () const

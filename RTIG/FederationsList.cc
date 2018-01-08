@@ -74,13 +74,18 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
                                                                                   const FederationHandle handle,
                                                                                   SocketServer& socket_server,
                                                                                   AuditFile& audit,
+                                                                                  const std::vector<std::string> fom_modules,
+                                                                                  const std::string& mim_module,
+                                                                                  const RtiVersion rti_version,
                                                                                   SocketMC* multicastSocket)
 #else
 std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederation(const std::string& name,
                                                                                   const FederationHandle handle,
                                                                                   SocketServer& socket_server,
                                                                                   AuditFile& audit,
-                                                                                  const std::string& FEDid)
+                                                                                  const std::vector<std::string> fom_modules,
+                                                                                  const std::string& mim_module,
+                                                                                  const RtiVersion rti_version)
 #endif
 {
     Debug(G, pdGendoc) << "enter FederationsList::createFederation" << std::endl;
@@ -103,9 +108,9 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
     try {
         auto federation
 #ifdef FEDERATION_USES_MULTICAST
-            = make_unique<Federation>(name, handle, socket_server, audit, multicastSocket, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, fom_modules, mim_module, rti_version, multicastSocket, my_verbose_level);
 #else
-            = make_unique<Federation>(name, handle, socket_server, audit, FEDid, my_verbose_level);
+            = make_unique<Federation>(name, handle, socket_server, audit, fom_modules, mim_module, rti_version, my_verbose_level);
 #endif
         Debug(D, pdDebug) << "new Federation created" << std::endl;
 
@@ -126,8 +131,12 @@ std::unique_ptr<NM_Create_Federation_Execution> FederationsList::createFederatio
     auto rep = make_unique<NM_Create_Federation_Execution>();
 
     rep->setFederation(handle.get());
-    rep->setFomModuleDesignatorsSize(1);
-    rep->setFomModuleDesignators(FEDid, 0);
+    rep->setFomModuleDesignatorsSize(fom_modules.size());
+    auto i = 0;
+    for(const auto& module: fom_modules) {
+        rep->setFomModuleDesignators(module, i++);
+    }
+    rep->setMimDesignator(mim_module);
     rep->setFederationExecutionName(name);
 
     return rep;
@@ -196,6 +205,9 @@ void FederationsList::info(const FederationHandle handle,
 
 std::pair<FederateHandle, Responses> FederationsList::addFederate(const FederationHandle handle,
                                                                   const std::string& federateName,
+                                                                  const std::string& federateType,
+                                                                  std::vector<std::string> additional_fom_modules,
+                                                                  const RtiVersion rti_version,
                                                                   SocketTCP* federateTcpLink,
                                                                   NM_Join_Federation_Execution& objectModelData)
 {
@@ -207,7 +219,7 @@ std::pair<FederateHandle, Responses> FederationsList::addFederate(const Federati
 
     // It may raise a bunch of exceptions
     // adding the federate and return its handle
-    auto handleAndResponses = federation.add(federateName, federateTcpLink);
+    auto handleAndResponses = federation.add(federateName, federateType, additional_fom_modules, rti_version, federateTcpLink);
 
     federation.getFOM(objectModelData);
 

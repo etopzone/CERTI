@@ -181,10 +181,7 @@ int SocketTCP::accept(SocketTCP* server)
 
     _socket_tcp = ::accept(server->_socket_tcp, (sockaddr*) &_sockIn, &l);
     if (_socket_tcp < 0) {
-        throw NetworkError(stringize() << "SocketTCP: Accept Failed"
-                                       << "<"
-                                       << strerror(errno)
-                                       << ">");
+        throw NetworkError("SocketTCP: Accept Failed <" + std::string(strerror(errno)) + ">");
     }
 
     // Set the TCP_NODELAY option(Server Side)
@@ -242,10 +239,9 @@ void SocketTCP::createConnection(const char* server_name, unsigned int port)
     // this may perform DNS query
     struct hostent* hptr = gethostbyname(server_name);
     if (NULL == hptr) {
-        throw NetworkError(stringize() << "gethostbyname gave NULL answer for hostname <" << server_name
-                                       << "> with error <"
-                                       << strerror(errno)
-                                       << ">");
+        throw NetworkError("gethostbyname gave NULL answer for hostname <" + std::string(server_name) + "> with error <"
+                           + std::string(strerror(errno))
+                           + ">");
     }
 
     in_addr_t addr = 0;
@@ -259,15 +255,15 @@ void SocketTCP::createTCPClient(in_port_t port, in_addr_t addr)
 {
     assert(!_est_init_tcp);
     if (!open()) {
-        throw NetworkError(stringize() << "Cannot open port <" << port << "> on addr <" << addr2string(addr)
-                                       << "> : error ="
-                                       << strerror(errno));
+        throw NetworkError("Cannot open port <" + std::to_string(port) + "> on addr <" + addr2string(addr)
+                           + "> : error ="
+                           + strerror(errno));
     }
 
     if (!connect(port, addr)) {
-        throw NetworkError(stringize() << "Cannot connect port <" << port << "> on addr <" << addr2string(addr)
-                                       << "> : error ="
-                                       << strerror(errno));
+        throw NetworkError("Cannot connect port <" + std::to_string(port) + "> on addr <" + addr2string(addr)
+                           + "> : error ="
+                           + strerror(errno));
     }
 
     _est_init_tcp = true;
@@ -279,21 +275,21 @@ void SocketTCP::createServer(in_port_t port, in_addr_t addr)
     assert(!_est_init_tcp);
 
     if (!open()) {
-        throw NetworkError(stringize() << "Cannot open port <" << port << "> on addr <" << addr2string(addr)
-                                       << "> : error ="
-                                       << strerror(errno));
+        throw NetworkError("Cannot open port <" + std::to_string(port) + "> on addr <" + addr2string(addr)
+                           + "> : error ="
+                           + strerror(errno));
     }
 
     if (!bind(port, addr)) {
-        throw NetworkError(stringize() << "Cannot bind port <" << port << "> on addr <" << addr2string(addr)
-                                       << "> : error ="
-                                       << strerror(errno));
+        throw NetworkError("Cannot bind port <" + std::to_string(port) + "> on addr <" + addr2string(addr)
+                           + "> : error ="
+                           + strerror(errno));
     }
 
     if (!listen(MAX_BACKLOG)) {
-        throw NetworkError(stringize() << "Cannot listen port <" << port << "> on addr <" << addr2string(addr)
-                                       << "> : error ="
-                                       << strerror(errno));
+        throw NetworkError("Cannot listen port <" + std::to_string(port) + "> on addr <" + addr2string(addr)
+                           + "> : error ="
+                           + strerror(errno));
     }
 
     _est_init_tcp = true;
@@ -307,7 +303,7 @@ void SocketTCP::send(const unsigned char* buffer, size_t size)
 
     assert(_est_init_tcp);
 
-    D.Out(pdDebug, "Beginning to send TCP message...");
+    Debug(D, pdDebug) << "Beginning to send TCP message..." << std::endl;
 
     while (total_sent < expected_size) {
 #ifdef _WIN32
@@ -317,14 +313,15 @@ void SocketTCP::send(const unsigned char* buffer, size_t size)
 #endif
 
         if (sent < 0) {
-            D.Out(pdExcept, "Error while sending on TCP socket.");
+            Debug(D, pdExcept) << "Error while sending on TCP socket." << std::endl;
 
 #ifdef _WIN32
-            if (WSAGetLastError() == WSAEINTR)
+            if (WSAGetLastError() == WSAEINTR) {
 #else
-            if (errno == EINTR)
+            if (errno == EINTR) {
 #endif
                 throw NetworkSignal("");
+            }
             else {
                 perror("TCP Socket(EmettreTCP) ");
                 throw NetworkError("Error while sending TCP message.");
@@ -332,12 +329,12 @@ void SocketTCP::send(const unsigned char* buffer, size_t size)
         }
 
         if (sent == 0) {
-            D.Out(pdExcept, "No data could be sent, connection closed?.");
+            Debug(D, pdExcept) << "No data could be sent, connection closed?." << std::endl;
             throw NetworkError("Could not send any data on TCP socket.");
         }
 
         total_sent += sent;
-        D.Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, expected_size);
+        Debug(D, pdTrace) << "Sent " << total_sent << " bytes out of " << expected_size << std::endl;
     }
 
     SentBytesCount += total_sent;
@@ -419,7 +416,7 @@ void SocketTCP::receive(void* buffer, unsigned long size)
     unsigned long RBLength = 0;
 #endif
 
-    D.Out(pdDebug, "Beginning to receive TCP message...(Size  %ld)", size);
+    Debug(D, pdDebug) << "Beginning to receive TCP message of size " << size << std::endl;
 
     while (RBLength < size) {
 #ifdef SOCKTCP_BUFFER_LENGTH
@@ -429,13 +426,14 @@ void SocketTCP::receive(void* buffer, unsigned long size)
 #endif
 
         if (nReceived < 0) {
-            D.Out(pdExcept, "Error while receiving on TCP socket.");
+            Debug(D, pdExcept) << "Error while receiving on TCP socket." << std::endl;
 #ifdef _WIN32
-            if (WSAGetLastError() == WSAEINTR)
+            if (WSAGetLastError() == WSAEINTR) {
 #else
-            if (errno == EINTR)
+            if (errno == EINTR) {
 #endif
                 throw NetworkSignal("");
+            }
             else {
                 perror("TCP Socket(RecevoirTCP) ");
                 throw NetworkError("Error while receiving TCP message.");
@@ -443,14 +441,14 @@ void SocketTCP::receive(void* buffer, unsigned long size)
         }
 
         if (nReceived == 0) {
-            D.Out(pdExcept, "TCP connection has been closed by peer.");
+            Debug(D, pdExcept) << "TCP connection has been closed by peer." << std::endl;
             throw NetworkError("Connection closed by client.");
         }
 
         RBLength += nReceived;
         RcvdBytesCount += nReceived;
     }
-    D.Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, size);
+    Debug(D, pdTrace) << "Received " << RBLength << " bytes out of " << size << std::endl;
 
 #ifdef SOCKTCP_BUFFER_LENGTH
     memcpy(buffer, (void*) ReadBuffer, size);
@@ -503,16 +501,19 @@ int SocketTCP::timeoutTCP(int sec, int usec)
 
     if (nb < 0) {
 #ifdef _WIN32
-        if (WSAGetLastError() == WSAEINTR)
+        if (WSAGetLastError() == WSAEINTR) {
 #else
-        if (errno == EINTR)
+        if (errno == EINTR) {
 #endif
             throw NetworkSignal("TCP::TimeOut signal interrupt.");
-        else
+        }
+        else {
             throw NetworkError("Select gave negative return value");
+        }
     }
-    else
+    else {
         return nb > 0;
+    }
 }
 
 } // namespace

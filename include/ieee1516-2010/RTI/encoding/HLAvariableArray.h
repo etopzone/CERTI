@@ -42,7 +42,7 @@ namespace rti1516e
       virtual ~HLAvariableArray ();
 
       // Return a new copy of the DataElement
-      virtual std::unique_ptr<DataElement> clone () const;
+      virtual std::auto_ptr<DataElement> clone () const;
 
       // Encode this element into a new VariableLengthData
       virtual VariableLengthData encode () const

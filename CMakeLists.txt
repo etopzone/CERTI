@@ -761,6 +761,11 @@ install(FILES
         ${PROJECT_BINARY_DIR}/CERTIConfig.cmake
         ${PROJECT_BINARY_DIR}/CERTIConfigVersion.cmake
         DESTINATION share/scripts)
+        
+install(FILES
+        scripts/HLAstandardMIM.xml 
+        DESTINATION share/federations)
+  
 # And the exported set
 install(EXPORT CERTIDepends DESTINATION share/scripts)
 

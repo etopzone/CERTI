@@ -21,8 +21,6 @@
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
 #if defined(_WIN32)
-    #define	STAT_FUNCTION         _stat
-    #define	STAT_STRUCT           struct _stat
     #ifdef _MSC_VER
         // MSVC Pragma
         // Visual C++ does not support declarations using exceptions specification
@@ -75,8 +73,6 @@
     #define ANY_DLL_LOCAL
 #else
     #include <inttypes.h>
-    #define  STAT_FUNCTION		stat
-    #define  STAT_STRUCT		struct stat
     #ifdef __x86_64__
        #define  CERTI_INT64_CONSTANT(val)  (val##L)
        #define  CERTI_INT64_FORMAT         "l"
@@ -154,6 +150,7 @@ typedef uint32_t ExtentIndex;
 
 typedef uint32_t OrderType;
 typedef uint32_t TransportType;
+typedef uint8_t RtiVersion;
 
 typedef double TickTime;
 
@@ -177,11 +174,17 @@ enum ObjectRemovalReason {
 // Constants (former HLA constants)
 const TransportType RELIABLE = 1 ;
 const TransportType BEST_EFFORT = 2 ;
+
 const OrderType RECEIVE = 1 ;
 const OrderType TIMESTAMP = 2 ;
 
+const RtiVersion HLA_1_3 = 1;
+const RtiVersion IEEE_1516_2000 = 2;
+const RtiVersion IEEE_1516_2010 = 3;
+
 // Constants
 const int MAX_BACKLOG = 256 ;
+
 
 /**
  * Helper class to simplify string construction. Implemented as
@@ -201,7 +204,7 @@ struct basic_stringize
   }
 
   // note: must not return reference
-  operator const std::basic_string<C>() const
+  [[deprecated("Use std::to_string instead")]] operator const std::basic_string<C>() const
   {
     return m_s.str();
   }

@@ -52,7 +52,7 @@ public:
 	 * Build a parser.
 	 * @param root the root object of the FOM.
 	 */
-    XmlParser2010(RootObject* root);
+    XmlParser2010(RootObject* root, const bool is_parsing_modules = false);
 
     virtual ~XmlParser2010();
 

@@ -390,6 +390,19 @@ AttributeValue_t Mom::encodeUInt32(const uint32_t data)
     return encodeMB();
 }
 
+AttributeValue_t Mom::encodeVersion(const RtiVersion version)
+{
+    switch(version) {
+        case IEEE_1516_2000:
+            return encodeString("ieee 1516-2000");
+        case IEEE_1516_2010:
+            return encodeString("ieee 1516-2010");
+        case HLA_1_3:
+        default:
+            return encodeString("hla 1.3");
+    }
+}
+
 AttributeValue_t Mom::encodeTime(const FederationTime& time)
 {
     mb.reset();

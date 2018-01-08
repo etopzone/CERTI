@@ -32,14 +32,14 @@ static PrettyDebug G("GENDOC", __FILE__);
 // ----------------------------------------------------------------------------
 void NetworkMessage::serialize(MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter NetworkMessage::serialize");
+    Debug(G, pdGendoc) << "enter NetworkMessage::serialize" << std::endl;
     /* We serialize the common Network messages part
 	 * ALL Network Message will contain the following
 	 */
     if ((type == Type::NOT_USED) || (type == Type::LAST)) {
         throw RTIinternalError("Invalid network type (not a valid type);");
     }
-    D.Out(pdDebug, "Serialize <%s>", getMessageName());
+    Debug(D, pdDebug) << "Serialize <" << getMessageName() << ">" << std::endl;
     /* type of message */
     msgBuffer.write_int32(static_cast<std::underlying_type<Type>::type>(type));
     msgBuffer.write_uint32(federate);
@@ -51,12 +51,12 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer)
     else {
         BasicMessage::serialize(msgBuffer);
     }
-    G.Out(pdGendoc, "exit NetworkMessage::serialize");
+    Debug(G, pdGendoc) << "exit NetworkMessage::serialize" << std::endl;
 } /* end of serialize */
 
 void NetworkMessage::deserialize(MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter NetworkMessage::deserialize");
+    Debug(G, pdGendoc) << "enter NetworkMessage::deserialize" << std::endl;
     /* We serialize the common Network message part
 	 * ALL Network Messages will contain the following
 	 */
@@ -72,12 +72,12 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer)
     else {
         BasicMessage::deserialize(msgBuffer);
     }
-    G.Out(pdGendoc, "exit NetworkMessage::deserialize");
+    Debug(G, pdGendoc) << "exit NetworkMessage::deserialize" << std::endl;
 } /* end of deserialize */
 
 void NetworkMessage::send(Socket* socket, MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter NetworkMessage::send");
+    Debug(G, pdGendoc) << "enter NetworkMessage::send" << std::endl;
     /* 0- reset send buffer */
     msgBuffer.reset();
     /* 1- serialize the message
@@ -87,7 +87,8 @@ void NetworkMessage::send(Socket* socket, MessageBuffer& msgBuffer)
     serialize(msgBuffer);
     /* 2- update message buffer 'reserved bytes' header */
     msgBuffer.updateReservedBytes();
-    D.Out(pdDebug, "Sending <%s> whose buffer has <%u> bytes", getMessageName(), msgBuffer.size());
+    Debug(D, pdDebug) << "Sending <" << getMessageName() << "> whose buffer has <" << msgBuffer.size() << "> bytes"
+                      << std::endl;
     //msgBuffer.show(msgBuf(0),5);
     /* 3- effectively send the raw message to socket */
 
@@ -95,14 +96,14 @@ void NetworkMessage::send(Socket* socket, MessageBuffer& msgBuffer)
         socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
     }
     else { // socket pointer was null - not sending
-        D.Out(pdDebug, "Not sending -- socket is deleted.");
+        Debug(D, pdDebug) << "Not sending -- socket is deleted." << std::endl;
     }
-    G.Out(pdGendoc, "exit  NetworkMessage::send");
+    Debug(G, pdGendoc) << "exit  NetworkMessage::send" << std::endl;
 } /* end of send */
 
 void NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter NetworkMessage::send");
+    Debug(G, pdGendoc) << "enter NetworkMessage::send" << std::endl;
     /* 0- reset send buffer */
     msgBuffer.reset();
     /* 1- serialize the message
@@ -112,7 +113,8 @@ void NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer
     serialize(msgBuffer);
     /* 2- update message buffer 'reserved bytes' header */
     msgBuffer.updateReservedBytes();
-    D.Out(pdDebug, "Sending <%s> whose buffer has <%u> bytes", getMessageName(), msgBuffer.size());
+    Debug(D, pdDebug) << "Sending <" << getMessageName() << "> whose buffer has <" << msgBuffer.size() << "> bytes"
+                      << std::endl;
     //msgBuffer.show(msgBuf(0),5);
     /* 3- effectively send the raw message to socket */
 
@@ -121,12 +123,12 @@ void NetworkMessage::send(std::vector<Socket*> sockets, MessageBuffer& msgBuffer
             socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
         }
     }
-    G.Out(pdGendoc, "exit  NetworkMessage::send");
+    Debug(G, pdGendoc) << "exit  NetworkMessage::send" << std::endl;
 } /* end of send */
 
 void NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer)
 {
-    G.Out(pdGendoc, "enter NetworkMessage::receive");
+    Debug(G, pdGendoc) << "enter NetworkMessage::receive" << std::endl;
     /* 0- Reset receive buffer */
     /* FIXME this reset may not be necessary since we do
 	 * raw-receive + assume-size
@@ -138,7 +140,8 @@ void NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer)
     //msgBuffer.show(msgBuf(0),5);fflush(stdout);
     /* 2- update (assume) complete message size from reserved bytes */
     msgBuffer.assumeSizeFromReservedBytes();
-    D.Out(pdDebug, "Got a MsgBuf of size %d bytes (including %d reserved)", msgBuffer.size(), msgBuffer.reservedBytes);
+    Debug(D, pdDebug) << "Got a MsgBuf of size " << msgBuffer.size() << " bytes (including " << msgBuffer.reservedBytes
+                      << " reserved)" << std::endl;
     /* 3- receive the rest of the message */
     socket->receive(msgBuffer(msgBuffer.reservedBytes), msgBuffer.size() - msgBuffer.reservedBytes);
     /* 4- deserialize the message
@@ -146,7 +149,7 @@ void NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer)
 	 * which may specialized in a daughter class
 	 */
     deserialize(msgBuffer);
-    G.Out(pdGendoc, "exit  NetworkMessage::receive");
+    Debug(G, pdGendoc) << "exit  NetworkMessage::receive" << std::endl;
 } /* end of receive */
 
 } // namespace certi

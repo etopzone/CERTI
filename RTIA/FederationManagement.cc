@@ -95,6 +95,7 @@ void FederationManagement::setConnectionState(const ConnectionState state)
 void FederationManagement::createFederationExecution(const std::string& federation_execution_name,
                                                      const std::vector<std::string> fom_module_designators,
                                                      const std::string& mim_designator,
+                                                     const RtiVersion rti_version,
                                                      Exception::Type& e)
 {
     NM_Create_Federation_Execution request;
@@ -120,6 +121,8 @@ void FederationManagement::createFederationExecution(const std::string& federati
     if (!mim_designator.empty()) {
         request.setMimDesignator(mim_designator);
     }
+    
+    request.setRtiVersion(rti_version);
 
     Debug(G, pdGendoc) << "createFederationExecution====>   send Message to RTIG" << std::endl;
 
@@ -198,6 +201,7 @@ FederateHandle FederationManagement::joinFederationExecution(const std::string& 
                                                              const std::string& federate_type,
                                                              const std::string& federation_execution_name,
                                                              const std::vector<std::string> additional_fom_modules,
+                                                             const RtiVersion rti_version,
                                                              RootObject* rootObject,
                                                              Exception::Type& e)
 {
@@ -220,6 +224,8 @@ FederateHandle FederationManagement::joinFederationExecution(const std::string& 
     request.setFederationExecutionName(federation_execution_name);
     request.setFederateName(federate_name);
     request.setFederateType(federate_type);
+    
+    request.setRtiVersion(rti_version);
 
     request.setAdditionalFomModulesSize(additional_fom_modules.size());
     auto i = 0;

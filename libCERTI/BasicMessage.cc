@@ -81,7 +81,7 @@ void BasicMessage::serialize(MessageBuffer& msgBuffer)
     /* We serialize the common Basic messages part
 	 * ALL Basic Message will contain the following
 	 */
-    D.Out(pdDebug, "Serialize <%s>", "BasicMessage");
+    Debug(D, pdDebug) << "Serialize <BasicMessage>" << std::endl;
     /*
 	 * "builtin" Optional part
 	 * The subclass may chose in the constructor the variable part.
@@ -91,7 +91,7 @@ void BasicMessage::serialize(MessageBuffer& msgBuffer)
     msgBuffer.write_bool(_isDated);
     if (_isDated) {
         msgBuffer.write_double(date.getTime());
-        D.Out(pdDebug, "Sent Message date is  <%f>", date.getTime());
+        Debug(D, pdDebug) << "Sent Message date: " << date.getTime() << std::endl;
     }
     msgBuffer.write_bool(_isLabelled);
     if (_isLabelled) {
@@ -108,9 +108,7 @@ void BasicMessage::deserialize(MessageBuffer& msgBuffer)
     /* We serialize the common Basic message part
 	 * ALL Basic Messages will contain the following
 	 */
-    Debug(D, pdDebug) << "Deserialize <"
-                      << "BasicMessage"
-                      << ">" << endl;
+    Debug(D, pdDebug) << "Deserialize <BasicMessage>" << endl;
     /* deserialize common part */
     /*
 	 * "builtin" Optional part
@@ -121,7 +119,7 @@ void BasicMessage::deserialize(MessageBuffer& msgBuffer)
     _isDated = msgBuffer.read_bool();
     if (_isDated) {
         date = msgBuffer.read_double();
-        D.Out(pdDebug, "Received Message date is  <%f>", date.getTime());
+        Debug(D, pdDebug) << "Received Message date: " << date.getTime() << std::endl;
     }
     _isLabelled = msgBuffer.read_bool();
     if (_isLabelled) {

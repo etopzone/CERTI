@@ -102,10 +102,9 @@ public:
         struct hostent* hptr = gethostbyname(hostName.c_str());
         // FIXME we should probably use getaddrinfo instead
         if (NULL == hptr) {
-            throw NetworkError(stringize() << "gethostbyname gave NULL answer for hostname <" << hostName
-                                           << "> with error <"
-                                           << strerror(errno)
-                                           << ">");
+            throw NetworkError("gethostbyname gave NULL answer for hostname <" + hostName + "> with error <"
+                               + std::string(strerror(errno))
+                               + ">");
         }
         memcpy((void*) &addr, (void*) hptr->h_addr, hptr->h_length);
         ;
@@ -121,10 +120,7 @@ public:
          * we should use getnameinfo and getaddrinfo
          */
         if (0 != gethostname(name, 1024)) {
-            throw NetworkError(stringize() << "gethostname FAILED"
-                                           << " with error <"
-                                           << strerror(errno)
-                                           << ">");
+            throw NetworkError("gethostname FAILED with error <" + std::string(strerror(errno)) + ">");
         }
         Socket::host2addr(name, addr);
     }

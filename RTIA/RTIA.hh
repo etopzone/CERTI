@@ -109,6 +109,8 @@ private:
     DeclarationManagement dm;
     TimeManagement tm;
     DataDistribution ddm;
+    
+    std::string rti_version;
 };
 }
 } // namespace certi

@@ -167,7 +167,7 @@ void BillardStaticDDM::publishAndSubscribe()
     rtiamb.publishObjectClass(BouleClassID, *attributes);
     rtiamb.publishInteractionClass(BingClassID);
 
-    D.Out(pdInit, "Local Objects and Interactions published.");
+    Debug(D, pdInit) << "Local Objects and Interactions published." << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -251,7 +251,7 @@ void BillardDynamicDDM::publishAndSubscribe()
     rtiamb.publishObjectClass(BouleClassID, *attributes);
     rtiamb.publishInteractionClass(BingClassID);
 
-    D.Out(pdInit, "Local Objects and Interactions published.");
+    Debug(D, pdInit) << "Local Objects and Interactions published." << std::endl;
 }
 
 // ----------------------------------------------------------------------------

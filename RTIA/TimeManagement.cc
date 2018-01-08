@@ -45,16 +45,16 @@ void TimeManagement::advance(bool& msg_restant, Exception::Type& e)
     switch (_avancee_en_cours) {
     case TAR:
     case TARA:
-        D.Out(pdTrace, "Call to TimeAdvance.");
+        Debug(D, pdTrace) << "Call to TimeAdvance." << std::endl;
         timeAdvance(msg_restant, e);
         break;
     case NER:
     case NERA:
-        D.Out(pdTrace, "Call to NextEventAdvance.");
+        Debug(D, pdTrace) << "Call to NextEventAdvance." << std::endl;
         nextEventAdvance(msg_restant, e);
         break;
     default:
-        D.Out(pdTrace, "Unexpected case in advance: %d.", _avancee_en_cours);
+        Debug(D, pdTrace) << "Unexpected case in advance: " << _avancee_en_cours << std::endl;
         // No exception is raised, ca
         // peut etre un cas ou on a
         // rien a faire, par exemple en
@@ -110,13 +110,11 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
 
         comm->sendMessage(&msg);
         lastNullMessageDate = logical_time;
-        DNULL.Out(pdDebug, "NULL message sent (Time = %f).", logical_time.getTime());
+        Debug(DNULL, pdDebug) << "NULL message sent, Time = " << logical_time.getTime() << std::endl;
     }
     else {
-        DNULL.Out(pdExcept,
-                  "NULL message not sent (Time = %f, Last = %f).",
-                  logical_time.getTime(),
-                  lastNullMessageDate.getTime());
+        Debug(DNULL, pdExcept) << "NULL message not sent, Time = " << logical_time.getTime()
+                               << ", Last = " << lastNullMessageDate.getTime() << std::endl;
     }
 }
 
@@ -124,44 +122,42 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
 {
     NM_Message_Null_Prime msg;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
-	/*
+    /*
      * If the time stamp of the last Tx event is bigger than current time and
      * smaller than the requested advance time then it has to be the next
      * time advance timestamp
      */
-	if ((minTxMessageDate > _heure_courante) && (minTxMessageDate < logical_time))
-	{
-		logical_time = minTxMessageDate;
-	}
-	/*
+    if ((minTxMessageDate > _heure_courante) && (minTxMessageDate < logical_time)) {
+        logical_time = minTxMessageDate;
+    }
+    /*
      * We cannot send null prime in the past of
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > lastNullMessageDate) && (logical_time > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->getFederationHandle().get());
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
         comm->sendMessage(&msg);
         lastNullPrimeMessageDate = logical_time;
-        DNULL.Out(pdDebug, "NULL PRIME message sent (Time = %f).", logical_time.getTime());
+        Debug(DNULL, pdDebug) << "NULL PRIME message sent, Time = " << logical_time.getTime() << std::endl;
     }
     else {
-        DNULL.Out(pdExcept,
-                  "NULL PRIME message not sent (Time = %f, Last NULL= %f, Last NULL PRIME = %f).",
-                  logical_time.getTime(),
-                  lastNullMessageDate.getTime(),
-                  lastNullPrimeMessageDate.getTime());
+        Debug(DNULL, pdExcept) << "NULL PRIME message not sent, Time = " << logical_time.getTime()
+                               << ", Last NULL= " << lastNullMessageDate.getTime()
+                               << ", Last NULL PRIME = " << lastNullPrimeMessageDate.getTime() << std::endl;
     }
 #else
-    (void)logical_time; // unused
+    (void) logical_time; // unused
 #endif
 }
 
 bool TimeManagement::executeFederateService(NetworkMessage& msg)
 {
-    G.Out(pdGendoc, "enter TimeManagement::executeFederateService for type %d", msg.getMessageType());
-    D.Out(pdRequest, "Execute federate service: Type %d.", msg.getMessageType());
+    Debug(G, pdGendoc) << "enter TimeManagement::executeFederateService for type "
+                       << static_cast<int>(msg.getMessageType()) << std::endl;
+    Debug(D, pdRequest) << "Execute federate service: Type " << static_cast<int>(msg.getMessageType()) << std::endl;
 
     _tick_state = TICK_NEXT; // indicate the callback was processed
 
@@ -188,9 +184,7 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
             }
         }
         catch (RTIinternalError& e) {
-            Debug(D, pdError) << "RTIA:RTIinternalError in synchronizationPointRegistration"
-                                 "Succeeded."
-                              << std::endl;
+            Debug(D, pdError) << "RTIA:RTIinternalError in synchronizationPointRegistrationSucceeded." << std::endl;
             throw;
         }
         break;
@@ -288,7 +282,7 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
 
     case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP: {
         NM_Inform_Attribute_Ownership& IAO = static_cast<NM_Inform_Attribute_Ownership&>(msg);
-        D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.getFederate());
+        Debug(D, pdInit) << "m_REFLECT_ATTRIBUTE_VALUES Owner " << msg.getFederate() << std::endl;
 
         owm->informAttributeOwnership(IAO.getObject(), IAO.getAttribute(), msg.getFederate(), msg.getRefException());
     } break;
@@ -398,11 +392,11 @@ bool TimeManagement::executeFederateService(NetworkMessage& msg)
     } break;
 
     default:
-        D.Out(pdExcept, "Unknown message type in executeFederateService.");
-        throw RTIinternalError(stringize() << "Unknown message <" << msg.getMessageName()
-                                           << "> in executeFederateService.");
+        Debug(D, pdExcept) << "Unknown message type in executeFederateService." << std::endl;
+        throw RTIinternalError("Unknown message <" + std::string(msg.getMessageName())
+                               + "> in executeFederateService.");
     }
-    G.Out(pdGendoc, "exit  TimeManagement::executeFederateService");
+    Debug(G, pdGendoc) << "exit  TimeManagement::executeFederateService" << std::endl;
     return true;
 }
 
@@ -419,7 +413,7 @@ void TimeManagement::flushQueueRequest(FederationTime heure_logique, Exception::
 
     if (e == Exception::Type::NO_EXCEPTION) {
         // BUG: Not implemented.
-        D.Out(pdExcept, "flushQueueRequest not implemented.");
+        Debug(D, pdExcept) << "flushQueueRequest not implemented." << std::endl;
         throw RTIinternalError("flushQueueRequest not implemented.");
     }
 }
@@ -432,7 +426,7 @@ void TimeManagement::nextEventAdvance(bool& msg_restant, Exception::Type& e)
     bool msg_donne;
     NetworkMessage* msg;
 
-    G.Out(pdGendoc, " enter TimeManagement::nextEventAdvance");
+    Debug(G, pdGendoc) << " enter TimeManagement::nextEventAdvance" << std::endl;
     msg_restant = false;
 
     if (_is_constrained) {
@@ -507,7 +501,7 @@ void TimeManagement::nextEventAdvance(bool& msg_restant, Exception::Type& e)
 
         _avancee_en_cours = PAS_D_AVANCEE;
     }
-    G.Out(pdGendoc, " exit  TimeManagement::nextEventAdvance");
+    Debug(G, pdGendoc) << " exit  TimeManagement::nextEventAdvance" << std::endl;
 }
 
 void TimeManagement::nextEventRequest(FederationTime logical_time, Exception::Type& e)
@@ -536,19 +530,17 @@ void TimeManagement::nextEventRequest(FederationTime logical_time, Exception::Ty
         if (_lookahead_courant == 0.0) {
             _lookahead_courant = epsilon2;
             _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK;
-            D.Out(pdDebug, "NER: with ZERO LK, lk=%f", _lookahead_courant.getTime());
+            Debug(D, pdDebug) << "NER: with ZERO LK, lk=" << _lookahead_courant.getTime() << std::endl;
         }
 
         _avancee_en_cours = NER;
         date_avancee = logical_time;
         sendNullPrimeMessage(logical_time);
-        D.Out(pdTrace,
-              "NextEventRequest accepted (lk=%f,date_avance=%f.)",
-              _lookahead_courant.getTime(),
-              date_avancee.getTime());
+        Debug(D, pdTrace) << "NextEventRequest accepted, lk=" << _lookahead_courant.getTime()
+                          << ", date_avance=" << date_avancee.getTime() << std::endl;
     }
     else {
-        D.Out(pdExcept, "NextEventRequest refused (exception = %d).", e);
+        Debug(D, pdExcept) << "NextEventRequest refused, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 
@@ -577,10 +569,10 @@ void TimeManagement::nextEventRequestAvailable(FederationTime heure_logique, Exc
         _avancee_en_cours = NERA;
         date_avancee = heure_logique;
         sendNullPrimeMessage(heure_logique);
-        D.Out(pdTrace, "NextEventRequestAvailable accepted.");
+        Debug(D, pdTrace) << "NextEventRequestAvailable accepted." << std::endl;
     }
     else {
-        D.Out(pdExcept, "NextEventRequestAvailable refused (exception = %d).", e);
+        Debug(D, pdExcept) << "NextEventRequestAvailable refused, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 
@@ -607,27 +599,24 @@ FederationTime TimeManagement::requestMinNextEventTime()
     else
         dateMNET = (_LBTS <= dateTSO ? _LBTS : dateTSO);
 
-    D.Out(pdRegister, "Minimum Next Event Time : %f.", dateMNET.getTime());
+    Debug(D, pdRegister) << "Minimum Next Event Time : " << dateMNET.getTime() << std::endl;
 
     return dateMNET;
 }
 
 void TimeManagement::updateMinTxMessageDate(FederationTime TxMessageDate)
 {
-	// Note that we always consider a valid time!
-	// if current time is bigger than last time
-	// it means that time advance has advanced
-	if (_heure_courante > lastCurrentTimeTxMessage)
-	{
-		minTxMessageDate = TxMessageDate;
-		lastCurrentTimeTxMessage = _heure_courante;
-	}
-	else if (lastCurrentTimeTxMessage == _heure_courante)
-	{
-		if (TxMessageDate < minTxMessageDate)
-			minTxMessageDate = TxMessageDate;
-	}
-
+    // Note that we always consider a valid time!
+    // if current time is bigger than last time
+    // it means that time advance has advanced
+    if (_heure_courante > lastCurrentTimeTxMessage) {
+        minTxMessageDate = TxMessageDate;
+        lastCurrentTimeTxMessage = _heure_courante;
+    }
+    else if (lastCurrentTimeTxMessage == _heure_courante) {
+        if (TxMessageDate < minTxMessageDate)
+            minTxMessageDate = TxMessageDate;
+    }
 }
 
 void TimeManagement::setLookahead(FederationTimeDelta lookahead, Exception::Type& e)
@@ -652,7 +641,7 @@ void TimeManagement::setLookahead(FederationTimeDelta lookahead, Exception::Type
         if (_is_regulating)
             sendNullMessage(_heure_courante);
 
-        D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant.getTime());
+        Debug(D, pdRegister) << "New Lookahead : " << _lookahead_courant.getTime() << std::endl;
     }
 }
 
@@ -684,10 +673,10 @@ void TimeManagement::setTimeConstrained(bool etat, Exception::Type& e)
 
         comm->sendMessage(&msg);
 
-        D.Out(pdRegister, "Demande de modif de TimeConstrained envoyee(etat=%d, ", etat);
+        Debug(D, pdRegister) << "Demande de modif de TimeConstrained envoyee, etat=" << etat << std::endl;
     }
     else {
-        D.Out(pdExcept, "SetTimeConstrained refuse(exception = %d).", e);
+        Debug(D, pdExcept) << "SetTimeConstrained refuse, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 
@@ -706,12 +695,12 @@ void TimeManagement::setTimeRegulating(bool etat,
 
     if (_is_regulating == etat) {
         e = Exception::Type::RTIinternalError;
-        D.Out(pdRegister, "erreur e_RTIinternalError : federe deja regulateur");
+        Debug(D, pdRegister) << "erreur e_RTIinternalError : federe deja regulateur" << std::endl;
     }
 
     if (_avancee_en_cours != PAS_D_AVANCEE) {
         e = Exception::Type::RTIinternalError;
-        D.Out(pdRegister, "erreur e_RTIinternalError avancee_en_cours");
+        Debug(D, pdRegister) << "erreur e_RTIinternalError avancee_en_cours" << std::endl;
     }
 
     // Si aucune erreur, prevenir le RTIG et devenir regulateur.
@@ -722,24 +711,24 @@ void TimeManagement::setTimeRegulating(bool etat,
         msg.setFederate(fm->getFederateHandle());
         if (etat) {
             msg.regulatorOn();
-            D.Out(pdDebug, "REGULATOR ON");
+            Debug(D, pdDebug) << "REGULATOR ON" << std::endl;
         }
         else {
             msg.regulatorOff();
-            D.Out(pdDebug, "REGULATOR OFF");
+            Debug(D, pdDebug) << "REGULATOR OFF" << std::endl;
         }
         // Modifier lookahead courant
         _lookahead_courant = the_lookahead;
-        D.Out(pdDebug, "New lookahead = %f", _lookahead_courant.getTime());
+        Debug(D, pdDebug) << "New lookahead = " << _lookahead_courant.getTime() << std::endl;
         // faudrait peut etre remplacer heure courante par le temps en parametre
         msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
 
-        D.Out(pdRegister, "Demande de modif de TimeRegulating emise(etat=%d).", etat);
+        Debug(D, pdRegister) << "Demande de modif de TimeRegulating emise, etat=" << etat << std::endl;
     }
     else {
-        D.Out(pdExcept, "SetTimeRegulating refuse(exception = %d).", e);
+        Debug(D, pdExcept) << "SetTimeRegulating refuse, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 
@@ -747,7 +736,7 @@ void TimeManagement::timeRegulationEnabled(FederationTime logical_time, Exceptio
 {
     M_Time_Regulation_Enabled req;
 
-    D.Out(pdDebug, "Sending TIME_REGULATION_ENABLED to Federate");
+    Debug(D, pdDebug) << "Sending TIME_REGULATION_ENABLED to Federate" << std::endl;
     req.setDate(logical_time);
     comm->requestFederateService(&req);
 }
@@ -756,7 +745,7 @@ void TimeManagement::timeConstrainedEnabled(FederationTime logical_time, Excepti
 {
     M_Time_Constrained_Enabled req;
 
-    D.Out(pdDebug, "Sending TIME_CONSTRAINED_ENABLED to Federate");
+    Debug(D, pdDebug) << "Sending TIME_CONSTRAINED_ENABLED to Federate" << std::endl;
     req.setDate(logical_time);
     comm->requestFederateService(&req);
 }
@@ -793,7 +782,7 @@ bool TimeManagement::tick(Exception::Type& e)
     // When oneMsgToHandle==true, then msg_restant becomes true if there is more message to handle
     bool moreMsgToHandle = false;
 
-    G.Out(pdGendoc, " enter TimeManagement::tick");
+    Debug(G, pdGendoc) << " enter TimeManagement::tick" << std::endl;
     // Note: While msg_donne = false, msg_restant doesn't matter.
 
     // 1st try, give a command message. (requestPause, etc.)
@@ -802,27 +791,21 @@ bool TimeManagement::tick(Exception::Type& e)
     // 2nd try, give a FIFO message. (discoverObject, etc.)
     if (!oneMsgToHandle) {
         if (_asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE) || (!_is_constrained)) {
-            D.Out(pdDebug,
-                  "FIFO message to be delivered async_deliver=%d, _avancee=%d, constrained=%d",
-                  _asynchronous_delivery,
-                  _avancee_en_cours,
-                  _is_constrained);
+            Debug(D, pdDebug) << "FIFO message to be delivered async_deliver=" << _asynchronous_delivery
+                              << ", _avancee=" << _avancee_en_cours << ", constrained=" << _is_constrained << std::endl;
             // to exclude the case not asynchronous_delivery and
             // not time advancing for a constrained federate
             msg = queues->giveFifoMessage(oneMsgToHandle, moreMsgToHandle);
         }
         else {
-            D.Out(pdDebug,
-                  "FIFO message skipped async_deliver=%d, _avancee=%d, constrained=%d",
-                  _asynchronous_delivery,
-                  _avancee_en_cours,
-                  _is_constrained);
+            Debug(D, pdDebug) << "FIFO message skipped async_deliver=" << _asynchronous_delivery
+                              << ", _avancee=" << _avancee_en_cours << ", constrained=" << _is_constrained << std::endl;
         }
     }
 
     // If message exists, send it to the federate.
     if (oneMsgToHandle) {
-        D.Out(pdDebug, "TickRequest being processed, Message to send.");
+        Debug(D, pdDebug) << "TickRequest being processed, Message to send." << std::endl;
         try {
             executeFederateService(*msg);
         }
@@ -834,7 +817,7 @@ bool TimeManagement::tick(Exception::Type& e)
     // No message: we try to send TSO messages.
     // Messages to be sent depends on asked advance type.
     else {
-        D.Out(pdDebug, "TickRequest being processed, advance called.");
+        Debug(D, pdDebug) << "TickRequest being processed, advance called." << std::endl;
         try {
             advance(moreMsgToHandle, e);
         }
@@ -846,7 +829,7 @@ bool TimeManagement::tick(Exception::Type& e)
 
     delete msg;
 
-    G.Out(pdGendoc, " exit  TimeManagement::tick");
+    Debug(G, pdGendoc) << " exit  TimeManagement::tick" << std::endl;
     return moreMsgToHandle;
 }
 
@@ -855,39 +838,40 @@ void TimeManagement::timeAdvance(bool& msg_restant, Exception::Type& e)
     bool msg_donne;
     FederationTime min;
     NetworkMessage* msg;
-    G.Out(pdGendoc, " enter TimeManagement::timeAdvance");
+    Debug(G, pdGendoc) << " enter TimeManagement::timeAdvance" << std::endl;
     msg_restant = false;
 
     if (_is_constrained) {
         // give a TSO message.
-        if (_LBTS.isPositiveInfinity())
-            D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee.getTime());
-        else
-            D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee.getTime(), _LBTS.getTime());
+        if (_LBTS.isPositiveInfinity()) {
+            Debug(D, pdDebug) << "Logical time : " << date_avancee.getTime() << ", LBTS : infini." << std::endl;
+        }
+        else {
+            Debug(D, pdDebug) << "Logical time : " << date_avancee.getTime() << ", LBTS : " << _LBTS.getTime()
+                              << std::endl;
+        }
         min = (_LBTS < date_avancee) ? (_LBTS) : (date_avancee);
         msg = queues->giveTsoMessage(min, msg_donne, msg_restant);
 
         // otherwise
         if (!msg_donne) {
             // if LBTS allows to give a timeAdvanceGrant.
-            if (_LBTS.isPositiveInfinity())
-                D.Out(pdDebug,
-                      "Logical time : %f, LBTS : infini, lookahead : %f.",
-                      date_avancee.getTime(),
-                      _lookahead_courant.getTime());
-            else
-                D.Out(pdDebug,
-                      "Logical time : %15.12f, LBTS : %15.12f, lookahead : %f.",
-                      date_avancee.getTime(),
-                      _LBTS.getTime(),
-                      _lookahead_courant.getTime());
+            if (_LBTS.isPositiveInfinity()) {
+                Debug(D, pdDebug) << "Logical time : " << date_avancee.getTime()
+                                  << ", LBTS : infini, lookahead : " << _lookahead_courant.getTime() << std::endl;
+            }
+            else {
+                Debug(D, pdDebug) << "Logical time : " << date_avancee.getTime() << ", LBTS : " << _LBTS.getTime()
+                                  << ", lookahead : " << _lookahead_courant.getTime() << std::endl;
+            }
 
             if ((date_avancee < _LBTS) || ((date_avancee == _LBTS) && (_avancee_en_cours == TARA))) {
                 // send a timeAdvanceGrant to federate.
                 timeAdvanceGrant(date_avancee, e);
 
-                if (e != Exception::Type::NO_EXCEPTION)
+                if (e != Exception::Type::NO_EXCEPTION) {
                     return;
+                }
 
                 _avancee_en_cours = PAS_D_AVANCEE;
             }
@@ -905,7 +889,7 @@ void TimeManagement::timeAdvance(bool& msg_restant, Exception::Type& e)
             return;
         _avancee_en_cours = PAS_D_AVANCEE;
     }
-    G.Out(pdGendoc, " exit  TimeManagement::timeAdvance");
+    Debug(G, pdGendoc) << " exit  TimeManagement::timeAdvance" << std::endl;
 }
 
 void TimeManagement::timeAdvanceGrant(FederationTime logical_time, Exception::Type& /*e*/)
@@ -914,10 +898,11 @@ void TimeManagement::timeAdvanceGrant(FederationTime logical_time, Exception::Ty
 
     req.setDate(logical_time);
 
-    D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).", req.getDate().getTime());
+    Debug(D, pdRegister) << "timeAdvanceGrant sent to federate, time = " << req.getDate().getTime() << std::endl;
 
-    if (_lookahead_courant == epsilon2)
+    if (_lookahead_courant == epsilon2) {
         _lookahead_courant = 0.0;
+    }
 
     _tick_state = TICK_NEXT; // indicate the callback was processed
 
@@ -936,11 +921,13 @@ void TimeManagement::timeAdvanceRequest(FederationTime logical_time, Exception::
 
     // Verifications
 
-    if (_avancee_en_cours != PAS_D_AVANCEE)
+    if (_avancee_en_cours != PAS_D_AVANCEE) {
         e = Exception::Type::TimeAdvanceAlreadyInProgress;
+    }
 
-    if (logical_time < _heure_courante)
+    if (logical_time < _heure_courante) {
         e = Exception::Type::FederationTimeAlreadyPassed;
+    }
 
     //    This is check may be overkill because
     //    if we consider that advancing in time is NOT a timestamped event
@@ -967,10 +954,10 @@ void TimeManagement::timeAdvanceRequest(FederationTime logical_time, Exception::
         _avancee_en_cours = TAR;
         date_avancee = logical_time;
 
-        D.Out(pdTrace, "timeAdvanceRequest accepted (asked time=%f).", date_avancee.getTime());
+        Debug(D, pdTrace) << "timeAdvanceRequest accepted, asked time=" << date_avancee.getTime() << std::endl;
     }
     else {
-        D.Out(pdExcept, "timeAdvanceRequest refused (exception = %d).", e);
+        Debug(D, pdExcept) << "timeAdvanceRequest refused, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 
@@ -982,11 +969,13 @@ void TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time, Ex
 
     // Verifications
 
-    if (_avancee_en_cours != PAS_D_AVANCEE)
+    if (_avancee_en_cours != PAS_D_AVANCEE) {
         e = Exception::Type::TimeAdvanceAlreadyInProgress;
+    }
 
-    if (logical_time < _heure_courante)
+    if (logical_time < _heure_courante) {
         e = Exception::Type::FederationTimeAlreadyPassed;
+    }
 
     //    This is check may be overkill because
     //    if we consider that advancing in time is NOT a timestamped event
@@ -1004,10 +993,10 @@ void TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time, Ex
         _avancee_en_cours = TARA;
         date_avancee = logical_time;
 
-        D.Out(pdTrace, "timeAdvanceRequestAvailable accepted (asked time=%f).", date_avancee.getTime());
+        Debug(D, pdTrace) << "timeAdvanceRequestAvailable accepted, asked time=" << date_avancee.getTime() << std::endl;
     }
     else {
-        D.Out(pdExcept, "timeAdvanceRequestAvailable refused (exception = %d).", e);
+        Debug(D, pdExcept) << "timeAdvanceRequestAvailable refused, exception = " << static_cast<int>(e) << std::endl;
     }
 }
 }

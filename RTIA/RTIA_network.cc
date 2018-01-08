@@ -48,19 +48,16 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
 {
     NetworkMessage::Type msgType = request->getMessageType();
 
-    G.Out(pdGendoc, "enter RTIA::processNetworkMessage");
+    Debug(G, pdGendoc) << "enter RTIA::processNetworkMessage" << std::endl;
 
     switch (msgType) {
     case NetworkMessage::Type::MESSAGE_NULL: {
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
-              request->getDate().getTime());
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL "
+                          << request->getDate().getTime() << std::endl;
 
         //request->show(std::cout);
-        DNULL.Out(pdDebug,
-                  "NULL message received (Federate=%d, Time = %f)",
-                  request->getFederate(),
-                  request->getDate().getTime());
+        Debug(DNULL, pdDebug) << "NULL message received (Federate=" << request->getFederate()
+                              << ", Time = " << request->getDate().getTime() << ")" << std::endl;
         tm.update(request->getFederate(), request->getDate());
         delete request;
         break;
@@ -68,7 +65,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
 
     case NetworkMessage::Type::SET_TIME_REGULATING: {
         // Another federate is becoming regulating.
-        D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING." << std::endl;
 
         if (static_cast<NM_Set_Time_Regulating*>(request)->isRegulatorOn())
             tm.insert(request->getFederate(), request->getDate());
@@ -79,27 +76,27 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     }
 
     case NetworkMessage::Type::CONFIRM_SYNCHRONIZATION_POINT_REGISTRATION:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, type NetworkMessage::CONFIRM_"
-              "SYNCHRONIZATION_POINT_REGISTRATION.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::CONFIRM_"
+                             "SYNCHRONIZATION_POINT_REGISTRATION."
+                          << std::endl;
 
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, type NetworkMessage::ANNOUCE_"
-              "SYNCHRONIZATION_POINT.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::ANNOUCE_"
+                             "SYNCHRONIZATION_POINT."
+                          << std::endl;
 
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::FEDERATION_SYNCHRONIZED:
-        D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::FEDERATION_SYNCHRONIZED.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::FEDERATION_SYNCHRONIZED." << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::DISCOVER_OBJECT: {
         NM_Discover_Object* DO = static_cast<NM_Discover_Object*>(request);
-        D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::DISCOVER_OBJECT.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, type NetworkMessage::DISCOVER_OBJECT." << std::endl;
         queues.insertFifoMessage(request);
         /* FIXME
           	 *
@@ -133,9 +130,9 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         OrderType updateOrder;
 
         //RAV->show(std::cerr);
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES."
+                          << std::endl;
 
         // It is important to note that several attributes may be updated at
         // the same time. Each attribute has its own order type, region, etc.
@@ -187,7 +184,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         NM_Receive_Interaction* RI = static_cast<NM_Receive_Interaction*>(request);
         OrderType interactionOrder;
 
-        D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION." << std::endl;
 
         // Here we have to consider RAV without time
         if (!request->isDated()) {
@@ -213,8 +210,9 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     }
 
     case NetworkMessage::Type::REMOVE_OBJECT: {
-        D.Out(pdTrace, "Receving Message from RTIG, \
-	  		  type NetworkMessage::REMOVE_OBJECT.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, \
+	  		  type NetworkMessage::REMOVE_OBJECT."
+                          << std::endl;
 
         if (tm.requestContraintState() && request->isDated()) {
             // Verify that received TSO timestamp is >= current
@@ -229,225 +227,225 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     }
 
     case NetworkMessage::Type::INFORM_ATTRIBUTE_OWNERSHIP: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::ATTRIBUTE_IS_NOT_OWNED: {
-        D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::ATTRIBUTE_IS_NOT_OWNED.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, type NetworkMessage::ATTRIBUTE_IS_NOT_OWNED." << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-        D.Out(pdTrace,
-              "Receving Message from RTIG, "
-              "type NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION.");
+        Debug(D, pdTrace) << "Receving Message from RTIG, "
+                             "type NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
     }
 
     case NetworkMessage::Type::INITIATE_FEDERATE_SAVE:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type InitiateFederateSave.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type InitiateFederateSave."
+                          << std::endl;
         queues.insertBeginCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_SAVED:
     case NetworkMessage::Type::FEDERATION_NOT_SAVED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type Federation(Not)Saved.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type Federation(Not)Saved."
+                          << std::endl;
         queues.insertBeginCommand(request);
         break;
 
     case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type RequestFederationRestoreSucceeded.");
-        G.Out(pdGendoc, "processNetworkMessage for REQUEST_FEDERATION_RESTORE_SUCCEEDED");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type RequestFederationRestoreSucceeded."
+                          << std::endl;
+        Debug(G, pdGendoc) << "processNetworkMessage for REQUEST_FEDERATION_RESTORE_SUCCEEDED" << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::REQUEST_FEDERATION_RESTORE_FAILED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type RequestFederationRestoreFailed.");
-        G.Out(pdGendoc, "processNetworkMessage for REQUEST_FEDERATION_RESTORE_FAILED");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type RequestFederationRestoreFailed."
+                          << std::endl;
+        Debug(G, pdGendoc) << "processNetworkMessage for REQUEST_FEDERATION_RESTORE_FAILED" << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_RESTORE_BEGUN:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type FederationRestoreBegun.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type FederationRestoreBegun."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::INITIATE_FEDERATE_RESTORE:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type InitiateFederateRestore.");
-        G.Out(pdGendoc, "processNetworkMessage for INITIATE_FEDERATE_RESTORE");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type InitiateFederateRestore."
+                          << std::endl;
+        Debug(G, pdGendoc) << "processNetworkMessage for INITIATE_FEDERATE_RESTORE" << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::FEDERATION_RESTORED:
     case NetworkMessage::Type::FEDERATION_NOT_RESTORED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type Federation(Not)Restored.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type Federation(Not)Restored."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
 
     case NetworkMessage::Type::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type ProvideAttributeValueUpdate.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type ProvideAttributeValueUpdate."
+                          << std::endl;
         queues.insertFifoMessage(request);
         break;
 
     case NetworkMessage::Type::TIME_REGULATION_ENABLED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type TimeRegulationEnabled.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type TimeRegulationEnabled."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::TIME_CONSTRAINED_ENABLED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type TimeConstrainedEnabled.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type TimeConstrainedEnabled."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type setCRAS.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type setCRAS."
+                          << std::endl;
         break;
     case NetworkMessage::Type::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type setIRAS.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type setIRAS."
+                          << std::endl;
         break;
     case NetworkMessage::Type::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type setARAS.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type setARAS."
+                          << std::endl;
         break;
     case NetworkMessage::Type::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type setASAS.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type setASAS."
+                          << std::endl;
         break;
     case NetworkMessage::Type::START_REGISTRATION_FOR_OBJECT_CLASS:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type StartRegForObjClass.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type StartRegForObjClass."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type reserveObjectInstanceNameSucceeded.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type reserveObjectInstanceNameSucceeded."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
     case NetworkMessage::Type::RESERVE_OBJECT_INSTANCE_NAME_FAILED:
-        D.Out(pdTrace,
-              "Receiving Message from RTIG, "
-              " type reserveObjectInstanceNameFaild.");
+        Debug(D, pdTrace) << "Receiving Message from RTIG, "
+                             " type reserveObjectInstanceNameFaild."
+                          << std::endl;
         queues.insertLastCommand(request);
         break;
-        
+
     case NetworkMessage::Type::TIME_ADVANCE_REQUEST: {
-        D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequest.");
-        
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type TimeAdvanceRequest." << std::endl;
+
         Exception::Type e;
         tm.timeAdvanceRequest(request->getDate(), e);
-        if(e != Exception::Type::NO_EXCEPTION) {
-            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        if (e != Exception::Type::NO_EXCEPTION) {
+            Debug(D, pdTrace) << "TAR threw, but it was forced by a MOM interaction. Discard." << std::endl;
         }
         break;
     }
-        
+
     case NetworkMessage::Type::TIME_ADVANCE_REQUEST_AVAILABLE: {
-        D.Out(pdTrace, "Receiving Message from RTIG, type TimeAdvanceRequestAvailable.");
-        
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type TimeAdvanceRequestAvailable." << std::endl;
+
         Exception::Type e;
         tm.timeAdvanceRequestAvailable(request->getDate(), e);
-        if(e != Exception::Type::NO_EXCEPTION) {
-            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        if (e != Exception::Type::NO_EXCEPTION) {
+            Debug(D, pdTrace) << "TAR threw, but it was forced by a MOM interaction. Discard." << std::endl;
         }
         break;
     }
-        
+
     case NetworkMessage::Type::NEXT_MESSAGE_REQUEST: {
-        D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequest.");
-        
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NestEventRequest." << std::endl;
+
         Exception::Type e;
         tm.nextEventRequest(request->getDate(), e);
-        if(e != Exception::Type::NO_EXCEPTION) {
-            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        if (e != Exception::Type::NO_EXCEPTION) {
+            Debug(D, pdTrace) << "TAR threw, but it was forced by a MOM interaction. Discard." << std::endl;
         }
         break;
     }
-        
+
     case NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE: {
-        D.Out(pdTrace, "Receiving Message from RTIG, type NestEventRequestAvailable.");
-        
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NestEventRequestAvailable." << std::endl;
+
         Exception::Type e;
         tm.nextEventRequestAvailable(request->getDate(), e);
-        if(e != Exception::Type::NO_EXCEPTION) {
-            D.Out(pdTrace, "TAR threw, but it was forced by a MOM interaction. Discard.");
+        if (e != Exception::Type::NO_EXCEPTION) {
+            Debug(D, pdTrace) << "TAR threw, but it was forced by a MOM interaction. Discard." << std::endl;
         }
         break;
     }
 
     default: {
-        D.Out(pdTrace, "Receving Message from RTIG, unknown type %d.", msgType);
+        Debug(D, pdTrace) << "Receving Message from RTIG, unknown type " << static_cast<int>(msgType) << std::endl;
         delete request;
         throw RTIinternalError("Unknown Message type <"
                                + std::to_string(static_cast<std::underlying_type<NetworkMessage::Type>::type>(msgType))
@@ -456,7 +454,7 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     }
 
     stat.rtiService(msgType);
-    G.Out(pdGendoc, "exit  RTIA::processNetworkMessage");
+    Debug(G, pdGendoc) << "exit  RTIA::processNetworkMessage" << std::endl;
 }
 }
 } // namespace certi/rtia

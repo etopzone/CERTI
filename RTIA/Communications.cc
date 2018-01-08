@@ -56,22 +56,23 @@ NetworkMessage* Communications::waitMessage(NetworkMessage::Type type_msg, Feder
 
     NetworkMessage* msg = NULL;
 
-    D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);
+    Debug(D, pdProtocol) << "Waiting for Message of Type " << static_cast<int>(type_msg) << std::endl;
 
     // Does a new message of the expected type has arrived ?
-    if (searchMessage(type_msg, numeroFedere, &msg))
+    if (searchMessage(type_msg, numeroFedere, &msg)) {
         return msg;
+    }
 
     // Otherwise, wait for a message with same type than expected and with
     // same federate number.
     msg = NM_Factory::receive(socketTCP);
 
-    D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
+    Debug(D, pdProtocol) << "TCP Message of Type " << static_cast<int>(type_msg) << "has arrived." << std::endl;
 
     while ((msg->getMessageType() != type_msg) || ((numeroFedere != 0) && (msg->getFederate() != numeroFedere))) {
         waitingList.push_back(msg);
         msg = NM_Factory::receive(socketTCP);
-        D.Out(pdProtocol, "Message of Type %d has arrived.", type_msg);
+        Debug(D, pdProtocol) << "Message of Type " << static_cast<int>(type_msg) << " has arrived." << std::endl;
     }
 
     assert(msg != NULL);
@@ -140,7 +141,7 @@ Communications::Communications(int RTIA_port, int RTIA_fd)
 Communications::~Communications()
 {
     // Advertise RTIG that TCP link is being closed.
-    G.Out(pdGendoc, "enter Communications::~Communications");
+    Debug(G, pdGendoc) << "enter Communications::~Communications" << std::endl;
 
     NM_Close_Connexion closeMsg;
     closeMsg.send(socketTCP, NM_msgBufSend);
@@ -153,7 +154,7 @@ Communications::~Communications()
     delete socketTCP;
     delete socketUDP;
 
-    G.Out(pdGendoc, "exit  Communications::~Communications");
+    Debug(G, pdGendoc) << "exit  Communications::~Communications" << std::endl;
 }
 
 void Communications::requestFederateService(Message* req)
@@ -161,7 +162,8 @@ void Communications::requestFederateService(Message* req)
     // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
     //               "type %d",req->type);
     assert(req != NULL);
-    D.Out(pdRequest, "Sending Request to Federate, Name %s, Type %d.", req->getMessageName(), req->getMessageType());
+    Debug(D, pdRequest) << "Sending Request to Federate, Name " << req->getMessageName() << ", Type "
+                        << req->getMessageType() << std::endl;
     req->send(socketUN, msgBufSend);
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
@@ -176,7 +178,10 @@ unsigned int Communications::getPort()
     return socketUDP->getPort();
 }
 
-void Communications::readMessage(Communications::ReadResult& n, NetworkMessage** msg_reseau, Message** msg, struct timeval* timeout)
+void Communications::readMessage(Communications::ReadResult& n,
+                                 NetworkMessage** msg_reseau,
+                                 Message** msg,
+                                 struct timeval* timeout)
 {
     const int tcp_fd(socketTCP->returnSocket());
     const int udp_fd(socketUDP->returnSocket());
@@ -290,14 +295,15 @@ bool Communications::searchMessage(NetworkMessage::Type type_msg, FederateHandle
 {
     list<NetworkMessage*>::iterator i;
     for (i = waitingList.begin(); i != waitingList.end(); ++i) {
-        D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
+        Debug(D, pdProtocol) << "Rechercher message de type " << static_cast<int>(type_msg) << std::endl;
 
         if ((*i)->getMessageType() == type_msg) {
             // if numeroFedere != 0, verify that federateNumbers are similar
             if (((*i)->getFederate() == numeroFedere) || (numeroFedere == 0)) {
                 *msg = *i;
                 waitingList.erase(i);
-                D.Out(pdProtocol, "Message of Type %d was already here.", type_msg);
+                Debug(D, pdProtocol) << "Message of Type " << static_cast<int>(type_msg) << " was already here"
+                                     << std::endl;
                 return true;
             }
         }

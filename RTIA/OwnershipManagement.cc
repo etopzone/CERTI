@@ -50,14 +50,15 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject, AttributeH
 {
     NM_Is_Attribute_Owned_By_Federate req;
 
-    D.Out(pdDebug, "IS_ATTRIBUTE_OWNED_BY_FEDERATE, attribute %u of object %u", theAttribute, theObject);
+    Debug(D, pdDebug) << "IS_ATTRIBUTE_OWNED_BY_FEDERATE, attribute " << theAttribute << " of object " << theObject
+                      << std::endl;
 
     req.setFederation(fm->getFederationHandle().get());
     req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
-    D.Out(pdDebug, "Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -81,14 +82,15 @@ void OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
 {
     NM_Query_Attribute_Ownership req;
 
-    D.Out(pdDebug, "QUERY_ATTRIBUTE_OWNERSHIP, attribute %u from object %u", theAttribute, theObject);
+    Debug(D, pdDebug) << "QUERY_ATTRIBUTE_OWNERSHIP, attribute " << theAttribute << "from object " << theObject
+                      << std::endl;
 
     req.setFederation(fm->getFederationHandle().get());
     req.setFederate(fm->getFederateHandle());
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
-    D.Out(pdDebug, "Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -118,7 +120,7 @@ void OwnershipManagement::negotiatedAttributeOwnershipDivestiture(ObjectHandle t
 
     req.setLabel(theTag);
 
-    D.Out(pdDebug, "NEGOTIATED_DIVESTITURE Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "NEGOTIATED_DIVESTITURE Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -143,7 +145,7 @@ void OwnershipManagement::cancelnegotiatedAttributeOwnershipDivestiture(ObjectHa
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "CANCEL_NEGOTIATED_DIVESTITURE Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "CANCEL_NEGOTIATED_DIVESTITURE Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -168,7 +170,7 @@ void OwnershipManagement::attributeOwnershipAcquisitionIfAvailable(ObjectHandle 
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "AcquisitionIfAvailable Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "AcquisitionIfAvailable Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -193,7 +195,7 @@ void OwnershipManagement::unconditionalAttributeOwnershipDivestiture(ObjectHandl
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "UNCONDITIONAL_DIVESTITURE Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "UNCONDITIONAL_DIVESTITURE Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -221,7 +223,7 @@ void OwnershipManagement::attributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.setLabel(theTag);
 
-    D.Out(pdDebug, "OWNERSHIP_ACQUISITION Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "OWNERSHIP_ACQUISITION Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 
@@ -244,7 +246,8 @@ OwnershipManagement::attributeOwnershipRealeaseResponse(ObjectHandle theObject,
     req.setObject(theObject);
     req.setAttributesSize(attribArraySize);
 
-    D.Out(pdDebug, "RELEASE_RESPONSE Object %u handleArraySize %u", theObject, req.getAttributesSize());
+    Debug(D, pdDebug) << "RELEASE_RESPONSE Object " << theObject << " handleArraySize " << req.getAttributesSize()
+                      << std::endl;
 
     for (uint32_t i = 0; i < attribArraySize; i++) {
         req.setAttributes(attribArray[i], i);
@@ -286,7 +289,7 @@ void OwnershipManagement::cancelattributeOwnershipAcquisition(ObjectHandle theOb
     for (uint32_t i = 0; i < attribArraySize; i++)
         req.setAttributes(attribArray[i], i);
 
-    D.Out(pdDebug, "CANCEL_ACQUISITION Federate %u ", fm->getFederateHandle());
+    Debug(D, pdDebug) << "CANCEL_ACQUISITION Federate " << fm->getFederateHandle() << std::endl;
 
     comm->sendMessage(&req);
 

@@ -1,4 +1,4 @@
-// Generated on 2017 December Tue, 19 at 16:17:00 by the CERTI message generator
+// Generated on 2018 January Mon, 08 at 15:15:03 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -671,6 +671,7 @@ void NM_Create_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
     Super::serialize(msgBuffer);
     // Specific serialization code
     msgBuffer.write_string(federationExecutionName);
+    msgBuffer.write_uint8(rtiVersion);
     uint32_t fomModuleDesignatorsSize = fomModuleDesignators.size();
     msgBuffer.write_uint32(fomModuleDesignatorsSize);
     for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
@@ -688,6 +689,7 @@ void NM_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffe
     Super::deserialize(msgBuffer);
     // Specific deserialization code
     msgBuffer.read_string(federationExecutionName);
+    rtiVersion = static_cast<RtiVersion>(msgBuffer.read_uint8());
     uint32_t fomModuleDesignatorsSize = msgBuffer.read_uint32();
     fomModuleDesignators.resize(fomModuleDesignatorsSize);
     for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
@@ -707,6 +709,16 @@ const std::string& NM_Create_Federation_Execution::getFederationExecutionName() 
 void NM_Create_Federation_Execution::setFederationExecutionName(const std::string& newFederationExecutionName)
 {
     federationExecutionName = newFederationExecutionName;
+}
+
+const RtiVersion& NM_Create_Federation_Execution::getRtiVersion() const
+{
+    return rtiVersion;
+}
+
+void NM_Create_Federation_Execution::setRtiVersion(const RtiVersion& newRtiVersion)
+{
+    rtiVersion = newRtiVersion;
 }
 
 uint32_t NM_Create_Federation_Execution::getFomModuleDesignatorsSize() const
@@ -768,6 +780,7 @@ std::ostream& operator<<(std::ostream& os, const NM_Create_Federation_Execution&
     
     // Specific display
     os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
+    os << "  rtiVersion = " << msg.rtiVersion << std::endl;
     os << "  fomModuleDesignators [] =" << std::endl;
     for (const auto& element : msg.fomModuleDesignators) {
         os << element;
@@ -844,6 +857,7 @@ void NM_Join_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
     if (_hasFederateName) {
         msgBuffer.write_string(federateName);
     }
+    msgBuffer.write_uint8(rtiVersion);
     msgBuffer.write_string(federateType);
     uint32_t additionalFomModulesSize = additionalFomModules.size();
     msgBuffer.write_uint32(additionalFomModulesSize);
@@ -881,6 +895,7 @@ void NM_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
     if (_hasFederateName) {
         msgBuffer.read_string(federateName);
     }
+    rtiVersion = static_cast<RtiVersion>(msgBuffer.read_uint8());
     msgBuffer.read_string(federateType);
     uint32_t additionalFomModulesSize = msgBuffer.read_uint32();
     additionalFomModules.resize(additionalFomModulesSize);
@@ -968,6 +983,16 @@ void NM_Join_Federation_Execution::setFederateName(const std::string& newFederat
 bool NM_Join_Federation_Execution::hasFederateName() const
 {
     return _hasFederateName;
+}
+
+const RtiVersion& NM_Join_Federation_Execution::getRtiVersion() const
+{
+    return rtiVersion;
+}
+
+void NM_Join_Federation_Execution::setRtiVersion(const RtiVersion& newRtiVersion)
+{
+    rtiVersion = newRtiVersion;
 }
 
 const std::string& NM_Join_Federation_Execution::getFederateType() const
@@ -1133,6 +1158,7 @@ std::ostream& operator<<(std::ostream& os, const NM_Join_Federation_Execution& m
     os << "  bestEffortPeer = " << msg.bestEffortPeer << std::endl;
     os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
     os << "  (opt) federateName =" << msg.federateName << std::endl;
+    os << "  rtiVersion = " << msg.rtiVersion << std::endl;
     os << "  federateType = " << msg.federateType << std::endl;
     os << "  additionalFomModules [] =" << std::endl;
     for (const auto& element : msg.additionalFomModules) {

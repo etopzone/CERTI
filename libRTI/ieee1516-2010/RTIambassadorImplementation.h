@@ -1448,7 +1448,7 @@ public:
     disableCallbacks() throw(rti1516e::SaveInProgress, rti1516e::RestoreInProgress, rti1516e::RTIinternalError);
 
     // Return instance of time factory being used by the federation
-    virtual std::unique_ptr<rti1516e::LogicalTimeFactory> getTimeFactory() const
+    virtual std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory() const
         throw(rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError);
 
     virtual rti1516e::FederateHandle decodeFederateHandle(rti1516e::VariableLengthData const& encodedValue) const
@@ -1513,7 +1513,7 @@ protected:
 
 private:
     struct Private;
-    std::unique_ptr<Private> p{nullptr};
+    std::auto_ptr<Private> p{nullptr};
 
     // Helper functions
     template <typename T>
@@ -1532,7 +1532,7 @@ private:
     bool __tick_kernel(bool multiple, TickTime minimum, TickTime maximum) throw(
         rti1516e::SpecifiedSaveLabelDoesNotExist, rti1516e::NotConnected, rti1516e::RTIinternalError);
 
-    friend std::unique_ptr<rti1516e::RTIambassador>
+    friend std::auto_ptr<rti1516e::RTIambassador>
     rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinternalError);
 };
 }

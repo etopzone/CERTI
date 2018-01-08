@@ -51,7 +51,7 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                                const std::vector<AttributeHandle>& attribArray,
                                                Exception::Type& e)
 {
-    G.Out(pdGendoc, "enter DeclarationManagement::publishObjectClass");
+    Debug(G, pdGendoc) << "enter DeclarationManagement::publishObjectClass" << std::endl;
     e = Exception::Type::NO_EXCEPTION;
 
     // Local update
@@ -59,8 +59,8 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
         rootObject->ObjectClasses->publish(fm->getFederateHandle(), theClassHandle, attribArray, true);
     }
     catch (Exception* e) {
-        G.Out(pdGendoc, "exit  DeclarationManagement::publishObjectClass on exception");
-        D.Out(pdExcept, "Exception catched in PublishObjectClass.");
+        Debug(G, pdGendoc) << "exit  DeclarationManagement::publishObjectClass on exception" << std::endl;
+        Debug(D, pdExcept) << "Exception catched in PublishObjectClass." << std::endl;
         throw;
     }
 
@@ -82,7 +82,7 @@ void DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
         comm->waitMessage(NetworkMessage::Type::PUBLISH_OBJECT_CLASS, req.getFederate()));
 
     e = rep->getException();
-    G.Out(pdGendoc, "exit  DeclarationManagement::publishObjectClass");
+    Debug(G, pdGendoc) << "exit  DeclarationManagement::publishObjectClass" << std::endl;
 }
 
 void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle, Exception::Type& e)
@@ -97,7 +97,7 @@ void DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandl
         rootObject->ObjectClasses->publish(fm->getFederateHandle(), theClassHandle, attribArrayVector, false);
     }
     catch (Exception* e) {
-        D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
+        Debug(D, pdExcept) << "Exception catched in UnpublishObjectClass." << std::endl;
         throw;
     }
 
@@ -127,7 +127,7 @@ void DeclarationManagement::publishInteractionClass(InteractionClassHandle theIn
         rootObject->Interactions->publish(fm->getFederateHandle(), theInteractionHandle, true);
     }
     catch (Exception* e) {
-        D.Out(pdExcept, "Exception catched in publishInteractionClass.");
+        Debug(D, pdExcept) << "Exception catched in publishInteractionClass." << std::endl;
         throw;
     }
 
@@ -155,7 +155,7 @@ void DeclarationManagement::unpublishInteractionClass(InteractionClassHandle the
         rootObject->Interactions->publish(fm->getFederateHandle(), theInteractionHandle, false);
     }
     catch (Exception* e) {
-        D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
+        Debug(D, pdExcept) << "Exception catched in UnpublishInteractionClass." << std::endl;
         throw;
     }
 
@@ -180,7 +180,7 @@ void DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle theC
 {
     NM_Subscribe_Object_Class req;
 
-    G.Out(pdGendoc, "enter DeclarationManagement::subscribeObjectClassAttribute");
+    Debug(G, pdGendoc) << "enter DeclarationManagement::subscribeObjectClassAttribute" << std::endl;
     // Pas de partie locale pour les abonnements
 
     // Partie RTIG
@@ -194,16 +194,16 @@ void DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle theC
         req.setAttributes(attribArray[i], i);
 
     // Send the message to RTIG
-    G.Out(pdGendoc, "                              =====> send S_O_C to RTIG");
+    Debug(G, pdGendoc) << "                              =====> send S_O_C to RTIG" << std::endl;
     comm->sendMessage(&req);
 
     // Wait for the RTIG answer
     std::unique_ptr<NetworkMessage> rep(
         comm->waitMessage(NetworkMessage::Type::SUBSCRIBE_OBJECT_CLASS, req.getFederate()));
-    G.Out(pdGendoc, "                              =====> received S_O_C from RTIG");
+    Debug(G, pdGendoc) << "                              =====> received S_O_C from RTIG" << std::endl;
 
     e = rep->getException();
-    G.Out(pdGendoc, "exit  DeclarationManagement::subscribeObjectClassAttribute");
+    Debug(G, pdGendoc) << "exit  DeclarationManagement::subscribeObjectClassAttribute" << std::endl;
 }
 
 void DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle, Exception::Type& e)
@@ -242,7 +242,7 @@ void DeclarationManagement::subscribeInteractionClass(InteractionClassHandle the
         rootObject->Interactions->subscribe(fm->getFederateHandle(), theClassHandle, 0, true);
     }
     catch (Exception* e) {
-        D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
+        Debug(D, pdExcept) << "Exception catched in subscribeInteractionClass." << std::endl;
         throw;
     }
 
@@ -274,7 +274,7 @@ void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle t
         rootObject->Interactions->subscribe(fm->getFederateHandle(), theClassHandle, 0, false);
     }
     catch (Exception* e) {
-        D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
+        Debug(D, pdExcept) << "Exception catched in subscribeInteractionClass." << std::endl;
         throw;
     }
 
@@ -293,7 +293,7 @@ void DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle t
 
 void DeclarationManagement::setClassRelevanceAdvisorySwitch(bool state, Exception::Type& e)
 {
-    G.Out(pdGendoc, "enter DeclarationManagement::setClassRelevanceAdvisorySwitch");
+    Debug(G, pdGendoc) << "enter DeclarationManagement::setClassRelevanceAdvisorySwitch" << std::endl;
 
     NM_Set_Class_Relevance_Advisory_Switch msg;
 
@@ -311,12 +311,12 @@ void DeclarationManagement::setClassRelevanceAdvisorySwitch(bool state, Exceptio
 
     comm->sendMessage(&msg);
 
-    G.Out(pdGendoc, "exit DeclarationManagement::setClassRelevanceAdvisorySwitch");
+    Debug(G, pdGendoc) << "exit DeclarationManagement::setClassRelevanceAdvisorySwitch" << std::endl;
 }
 
 void DeclarationManagement::startRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& /*e*/)
 {
-    G.Out(pdGendoc, "enter DeclarationManagement::startRegistrationForObjectClass");
+    Debug(G, pdGendoc) << "enter DeclarationManagement::startRegistrationForObjectClass" << std::endl;
 
     M_Start_Registration_For_Object_Class req;
 
@@ -324,7 +324,7 @@ void DeclarationManagement::startRegistrationForObjectClass(ObjectClassHandle th
 
     comm->requestFederateService(&req);
 
-    G.Out(pdGendoc, "exit  DeclarationManagement::startRegistrationForObjectClass");
+    Debug(G, pdGendoc) << "exit  DeclarationManagement::startRegistrationForObjectClass" << std::endl;
 }
 
 void DeclarationManagement::stopRegistrationForObjectClass(ObjectClassHandle the_class, Exception::Type& e)
@@ -340,9 +340,8 @@ void DeclarationManagement::stopRegistrationForObjectClass(ObjectClassHandle the
     std::unique_ptr<Message> rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
-        D.Out(pdExcept,
-              "Unknown response type when waiting for "
-              "START_REGISTRATION_FOR_OBJECT_CLASS.");
+        Debug(D, pdExcept) << "Unknown response type when waiting for START_REGISTRATION_FOR_OBJECT_CLASS."
+                           << std::endl;
         throw RTIinternalError("");
     }
 
@@ -351,7 +350,7 @@ void DeclarationManagement::stopRegistrationForObjectClass(ObjectClassHandle the
 
 void DeclarationManagement::setInteractionRelevanceAdvisorySwitch(bool state, Exception::Type& e)
 {
-    G.Out(pdGendoc, "enter DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
+    Debug(G, pdGendoc) << "enter DeclarationManagement::setInteractionRelevanceAdvisorySwitch" << std::endl;
 
     NM_Set_Interaction_Relevance_Advisory_Switch msg;
 
@@ -369,7 +368,7 @@ void DeclarationManagement::setInteractionRelevanceAdvisorySwitch(bool state, Ex
 
     comm->sendMessage(&msg);
 
-    G.Out(pdGendoc, "exit DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
+    Debug(G, pdGendoc) << "exit DeclarationManagement::setInteractionRelevanceAdvisorySwitch" << std::endl;
 }
 
 void DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction, Exception::Type& e)
@@ -380,7 +379,7 @@ void DeclarationManagement::turnInteractionsOn(InteractionClassHandle interactio
     std::unique_ptr<Message> rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
-        D.Out(pdExcept, "Unknown response type, expecting TURN_INTERACTIONS_ON.");
+        Debug(D, pdExcept) << "Unknown response type, expecting TURN_INTERACTIONS_ON." << std::endl;
         throw RTIinternalError("");
     }
 
@@ -395,7 +394,7 @@ void DeclarationManagement::turnInteractionsOff(InteractionClassHandle interacti
     std::unique_ptr<Message> rep(comm->receiveUN());
 
     if (rep->getMessageType() != req.getMessageType()) {
-        D.Out(pdExcept, "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
+        Debug(D, pdExcept) << "Unknown response type, expecting TURN_INTERACTIONS_OFF." << std::endl;
         throw RTIinternalError("");
     }
 

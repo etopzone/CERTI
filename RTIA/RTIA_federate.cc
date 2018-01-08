@@ -46,7 +46,7 @@ static PrettyDebug G("GENDOC", __FILE__);
 //! Verify that federate is not in saving or restoring state.
 void RTIA::saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, RestoreInProgress)
 {
-    G.Out(pdGendoc, "enter RTIA::saveAndRestoreStatus");
+    Debug(G, pdGendoc) << "enter RTIA::saveAndRestoreStatus" << std::endl;
     //D.Mes(pdMessage, 'N', type);
 
     switch (type) {
@@ -92,7 +92,7 @@ void RTIA::saveAndRestoreStatus(Message::Type type) throw(SaveInProgress, Restor
         fm.checkFederationRestoring();
         break;
     }
-    G.Out(pdGendoc, "exit  RTIA::saveAndRestoreStatus");
+    Debug(G, pdGendoc) << "exit  RTIA::saveAndRestoreStatus" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
 
     switch (request->getMessageType()) {
     case Message::CLOSE_CONNEXION:
-        D.Out(pdTrace, "Receiving Message from Federate, type CloseConnexion.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type CloseConnexion." << std::endl;
         fm.setConnectionState(FederationManagement::ConnectionState::Ended);
         // the this->comm can now be used only to sent the CLOSE_CONNEXION response
         break;
@@ -121,19 +121,19 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         CFEr = static_cast<M_Create_Federation_Execution*>(answer);
         CFEq = static_cast<M_Create_Federation_Execution*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
-
+        Debug(D, pdTrace) << "Receiving Message from Federate, type CreateFederation." << std::endl;
+        
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
         fm.createFederationExecution(
-            CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(), CFEq->getMimDesignator(), e);
+            CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(), CFEq->getMimDesignator(), CFEq->getRtiVersion(), e);
 
         if (e == Exception::Type::RTIinternalError) {
             answer->setException(e, "Federate is yet a creator or a member !");
         }
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type CreateFederation done.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type CreateFederation done."
+                          << std::endl;
 
         // RTIA needs FEDid into the answer (rep Message) to federate
         CFEr->setFomModuleDesignatorsSize(CFEq->getFomModuleDesignatorsSize());
@@ -149,7 +149,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Destroy_Federation_Execution *DFEq, *DFEr;
         DFEr = static_cast<M_Destroy_Federation_Execution*>(answer);
         DFEq = static_cast<M_Destroy_Federation_Execution*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type DestroyFederation.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type DestroyFederation." << std::endl;
 
         fm.destroyFederationExecution(DFEq->getFederationName(), e);
         if (e == Exception::Type::RTIinternalError) {
@@ -165,14 +165,15 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         JFEr = static_cast<M_Join_Federation_Execution*>(answer);
         JFEq = static_cast<M_Join_Federation_Execution*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type JoinFederation." << std::endl;
 
         JFEr->setFederate(fm.joinFederationExecution(JFEq->getFederateName(),
-                                                      JFEq->getFederateType(),
-                                                      JFEq->getFederationExecutionName(),
-                                                      JFEq->getAdditionalFomModules(),
-                                                      &my_root_object,
-                                                      e));
+                                                     JFEq->getFederateType(),
+                                                     JFEq->getFederationExecutionName(),
+                                                     JFEq->getAdditionalFomModules(),
+                                                     JFEq->getRtiVersion(),
+                                                     &my_root_object,
+                                                     e));
 
         if (e == Exception::Type::NO_EXCEPTION) {
             // Set federation name for the answer message (rep)
@@ -207,7 +208,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::RESIGN_FEDERATION_EXECUTION: {
         M_Resign_Federation_Execution* RFEq;
         RFEq = static_cast<M_Resign_Federation_Execution*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type ResignFederation.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type ResignFederation." << std::endl;
 
         switch (RFEq->getResignAction()) {
         case RELEASE_ATTRIBUTES:
@@ -231,16 +232,17 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT: {
         M_Register_Federation_Synchronization_Point* RFSPq;
         RFSPq = static_cast<M_Register_Federation_Synchronization_Point*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type RegisterFederationSynchronizationPoint.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type RegisterFederationSynchronizationPoint."
+                          << std::endl;
 
         // Check whether if the with federates set size is strictly positive,
         // which means with federate set.
         if (RFSPq->getFederateSetSize() > 0) {
             fm.registerSynchronization(request->getLabel(),
-                                        request->getTag(),
-                                        static_cast<unsigned short>(RFSPq->getFederateSetSize()),
-                                        RFSPq->getFederateSet(),
-                                        e);
+                                       request->getTag(),
+                                       static_cast<unsigned short>(RFSPq->getFederateSetSize()),
+                                       RFSPq->getFederateSet(),
+                                       e);
         }
         else {
             fm.registerSynchronization(request->getLabel(), request->getTag(), e);
@@ -248,54 +250,54 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     } break;
 
     case Message::SYNCHRONIZATION_POINT_ACHIEVED:
-        D.Out(pdTrace, "Receiving Message from Federate, type SynchronizationPointAchieved.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SynchronizationPointAchieved." << std::endl;
         fm.unregisterSynchronization(request->getLabel(), e);
         break;
 
     case Message::REQUEST_FEDERATION_SAVE:
         if (request->isDated()) {
-            D.Out(pdTrace,
-                  "Receiving Message from Federate, type"
-                  " RequestFederationSave with time.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type"
+                                 " RequestFederationSave with time."
+                              << std::endl;
             fm.requestFederationSave(request->getLabel(), request->getDate(), e);
             answer->setDate(request->getDate());
         }
         else {
-            D.Out(pdTrace,
-                  "Receiving Message from Federate, type"
-                  " RequestFederationSave without time.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type"
+                                 " RequestFederationSave without time."
+                              << std::endl;
             fm.requestFederationSave(request->getLabel(), e);
         }
         break;
 
     case Message::FEDERATE_SAVE_BEGUN:
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type"
-              " FederateSaveBegun.");
-        G.Out(pdGendoc, "chooseFederateProcessing FEDERATE_SAVE_BEGUN");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type"
+                             " FederateSaveBegun."
+                          << std::endl;
+        Debug(G, pdGendoc) << "chooseFederateProcessing FEDERATE_SAVE_BEGUN" << std::endl;
         fm.federateSaveBegun(e);
         break;
 
     case Message::FEDERATE_SAVE_COMPLETE:
     case Message::FEDERATE_SAVE_NOT_COMPLETE: {
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type"
-              " FederateSave(Not)Complete.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type"
+                             " FederateSave(Not)Complete."
+                          << std::endl;
         bool result = request->getMessageType() == Message::FEDERATE_SAVE_COMPLETE;
         if (result) {
-            G.Out(pdGendoc, "chooseFederateProcessing FEDERATE_SAVE_COMPLETE");
+            Debug(G, pdGendoc) << "chooseFederateProcessing FEDERATE_SAVE_COMPLETE" << std::endl;
         }
         else {
-            G.Out(pdGendoc, "chooseFederateProcessing FEDERATE_SAVE_NOT_COMPLETE");
+            Debug(G, pdGendoc) << "chooseFederateProcessing FEDERATE_SAVE_NOT_COMPLETE" << std::endl;
         }
         fm.federateSaveStatus(result, e);
     } break;
 
     case Message::REQUEST_FEDERATION_RESTORE: {
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type"
-              " RequestFederationRestore.");
-        G.Out(pdGendoc, "chooseFederateProcessing REQUEST_FEDERATION_RESTORE");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type"
+                             " RequestFederationRestore."
+                          << std::endl;
+        Debug(G, pdGendoc) << "chooseFederateProcessing REQUEST_FEDERATION_RESTORE" << std::endl;
 
         fm.requestFederationRestore(request->getLabel(), e);
     } break;
@@ -310,7 +312,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::PUBLISH_OBJECT_CLASS: {
         M_Publish_Object_Class* POCq;
         POCq = static_cast<M_Publish_Object_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type PublishObjectClass.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type PublishObjectClass." << std::endl;
 
         dm.publishObjectClass(POCq->getObjectClass(), POCq->getAttributes(), e);
     } break;
@@ -318,14 +320,14 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::UNPUBLISH_OBJECT_CLASS: {
         M_Unpublish_Object_Class* UOCq;
         UOCq = static_cast<M_Unpublish_Object_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type UnpublishObjectClass.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type UnpublishObjectClass." << std::endl;
         dm.unpublishObjectClass(UOCq->getObjectClass(), e);
     } break;
 
     case Message::PUBLISH_INTERACTION_CLASS: {
         M_Publish_Interaction_Class* PICq;
         PICq = static_cast<M_Publish_Interaction_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type PublishInteractionClass.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type PublishInteractionClass." << std::endl;
 
         dm.publishInteractionClass(PICq->getInteractionClass(), e);
     } break;
@@ -333,9 +335,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::UNPUBLISH_INTERACTION_CLASS: {
         M_Unpublish_Interaction_Class* UICq;
         UICq = static_cast<M_Unpublish_Interaction_Class*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type UnpublishInteractionClass");
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type UnpublishInteractionClass"
+                          << std::endl;
 
         dm.unpublishInteractionClass(UICq->getInteractionClass(), e);
     } break;
@@ -343,7 +345,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: {
         M_Subscribe_Object_Class_Attributes* SOCAq;
         SOCAq = static_cast<M_Subscribe_Object_Class_Attributes*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type SubscribeObjectClass.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SubscribeObjectClass." << std::endl;
         dm.subscribeObjectClassAttribute(
             SOCAq->getObjectClass(), SOCAq->getAttributes(), SOCAq->getAttributesSize(), e);
     } break;
@@ -351,7 +353,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::UNSUBSCRIBE_OBJECT_CLASS: {
         M_Unsubscribe_Object_Class* UsOCq;
         UsOCq = static_cast<M_Unsubscribe_Object_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type UnsubscribeObjectClass.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type UnsubscribeObjectClass." << std::endl;
 
         // FIXME BUG: Why attributes are not transmitted ?
         dm.unsubscribeObjectClassAttribute(UsOCq->getObjectClass(), e);
@@ -360,7 +362,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::SUBSCRIBE_INTERACTION_CLASS: {
         M_Subscribe_Interaction_Class* SICq;
         SICq = static_cast<M_Subscribe_Interaction_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type SubscribeInteraction.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SubscribeInteraction." << std::endl;
 
         dm.subscribeInteractionClass(SICq->getInteractionClass(), e);
     } break;
@@ -368,7 +370,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::UNSUBSCRIBE_INTERACTION_CLASS: {
         M_Unsubscribe_Interaction_Class* UsICq;
         UsICq = static_cast<M_Unsubscribe_Interaction_Class*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type UnsubscribeInteraction.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type UnsubscribeInteraction." << std::endl;
 
         dm.unsubscribeInteractionClass(UsICq->getInteractionClass(), e);
     } break;
@@ -390,7 +392,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         FederationTime date = tm.requestFederateTime();
         FederationTime heure = date + tm.requestLookahead();
 
-        D.Out(pdTrace, "Receiving Message from Federate, type RegisterObject.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type RegisterObject." << std::endl;
 
         ROIr->setObject(om.registerObject(ROIq->getObjectClass(), ROIq->getObjectName(), date, heure, e));
         break;
@@ -402,31 +404,31 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         UAVq = static_cast<M_Update_Attribute_Values*>(request);
         UAVr = static_cast<M_Update_Attribute_Values*>(answer);
         if (request->isDated()) {
-            D.Out(pdTrace,
-                  "Receiving Message from Federate, type "
-                  "UpdateAttribValues with TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type "
+                                 "UpdateAttribValues with TIMESTAMP."
+                              << std::endl;
             event.setSN(om.updateAttributeValues(UAVq->getObject(),
-                                                  UAVq->getAttributes(),
-                                                  UAVq->getValues(),
-                                                  UAVq->getAttributesSize(),
-                                                  UAVq->getDate(),
-                                                  UAVq->getTag(),
-                                                  e));
+                                                 UAVq->getAttributes(),
+                                                 UAVq->getValues(),
+                                                 UAVq->getAttributesSize(),
+                                                 UAVq->getDate(),
+                                                 UAVq->getTag(),
+                                                 e));
             //FIXME event.setSendingFederate()
             UAVr->setEventRetraction(event);
             // answer should contains the date too
             UAVr->setDate(UAVq->getDate());
         }
         else {
-            D.Out(pdTrace,
-                  "Receiving Message from Federate, type "
-                  "UpdateAttribValues without TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type "
+                                 "UpdateAttribValues without TIMESTAMP."
+                              << std::endl;
             om.updateAttributeValues(UAVq->getObject(),
-                                      UAVq->getAttributes(),
-                                      UAVq->getValues(),
-                                      UAVq->getAttributesSize(),
-                                      UAVq->getTag(),
-                                      e);
+                                     UAVq->getAttributes(),
+                                     UAVq->getValues(),
+                                     UAVq->getAttributesSize(),
+                                     UAVq->getTag(),
+                                     e);
         }
     } break;
 
@@ -435,29 +437,30 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         EventRetraction event;
         SIq = static_cast<M_Send_Interaction*>(request);
         SIr = static_cast<M_Send_Interaction*>(answer);
-        G.Out(pdGendoc, "S_I into RTIA::chooseFederateProcessing");
+        Debug(G, pdGendoc) << "S_I into RTIA::chooseFederateProcessing" << std::endl;
 
         if (SIq->isDated()) {
-            D.Out(pdTrace, "Receiving Message from Federate, type SendInteraction with TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type SendInteraction with TIMESTAMP." << std::endl;
             event.setSN(om.sendInteraction(SIq->getInteractionClass(),
-                                            SIq->getParameters(),
-                                            SIq->getValues(),
-                                            SIq->getParametersSize(),
-                                            SIq->getDate(),
-                                            SIq->getTag(),
-                                            SIq->getRegion(),
-                                            e));
+                                           SIq->getParameters(),
+                                           SIq->getValues(),
+                                           SIq->getParametersSize(),
+                                           SIq->getDate(),
+                                           SIq->getTag(),
+                                           SIq->getRegion(),
+                                           e));
             SIr->setEventRetraction(event);
         }
         else {
-            D.Out(pdTrace, "Receiving Message from Federate, type SendInteraction without TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type SendInteraction without TIMESTAMP."
+                              << std::endl;
             om.sendInteraction(SIq->getInteractionClass(),
-                                SIq->getParameters(),
-                                SIq->getValues(),
-                                SIq->getParametersSize(),
-                                SIq->getTag(),
-                                SIq->getRegion(),
-                                e);
+                               SIq->getParameters(),
+                               SIq->getValues(),
+                               SIq->getParametersSize(),
+                               SIq->getTag(),
+                               SIq->getRegion(),
+                               e);
         }
     } break;
 
@@ -466,18 +469,18 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         EventRetraction event;
         DOIq = static_cast<M_Delete_Object_Instance*>(request);
         DOIr = static_cast<M_Delete_Object_Instance*>(answer);
-        G.Out(pdGendoc, "D_O_I into RTIA::chooseFederateProcessing");
+        Debug(G, pdGendoc) << "D_O_I into RTIA::chooseFederateProcessing" << std::endl;
 
         if (DOIq->isDated()) {
-            D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance with \
-            TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type DeleteObjectInstance with \
+            TIMESTAMP." << std::endl;
             event.setSN(om.deleteObject(DOIq->getObject(), DOIq->getDate(), DOIq->getTag(), e));
             // FIXME event.setSendingFederate();
             DOIr->setEventRetraction(event);
         }
         else {
-            D.Out(pdTrace, "Receiving Message from Federate, type DeleteObjectInstance without \
-            TIMESTAMP.");
+            Debug(D, pdTrace) << "Receiving Message from Federate, type DeleteObjectInstance without \
+            TIMESTAMP." << std::endl;
             om.deleteObject(DOIq->getObject(), DOIq->getTag(), e);
         }
     } break;
@@ -485,7 +488,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: {
         M_Change_Attribute_Transportation_Type* CATTq;
         CATTq = static_cast<M_Change_Attribute_Transportation_Type*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type ChangeAttribTransport.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type ChangeAttribTransport." << std::endl;
 
         om.changeAttributeTransportType(
             CATTq->getObject(), CATTq->getAttributes(), CATTq->getAttributesSize(), CATTq->getTransportationType(), e);
@@ -495,7 +498,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Change_Attribute_Order_Type* CAOTq;
         CAOTq = static_cast<M_Change_Attribute_Order_Type*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type ChangeAttribOrder.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type ChangeAttribOrder." << std::endl;
 
         om.changeAttributeOrderType(
             CAOTq->getObject(), CAOTq->getAttributes(), CAOTq->getAttributesSize(), CAOTq->getOrder(), e);
@@ -505,7 +508,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Change_Interaction_Transportation_Type* CITTq;
         CITTq = static_cast<M_Change_Interaction_Transportation_Type*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type ChangeInterTransport.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type ChangeInterTransport." << std::endl;
 
         om.changeInteractionTransportType(CITTq->getInteractionClass(), CITTq->getTransportationType(), e);
     } break;
@@ -514,7 +517,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Change_Interaction_Order_Type* CIOTq;
         CIOTq = static_cast<M_Change_Interaction_Order_Type*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type ChangeInterOrder.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type ChangeInterOrder." << std::endl;
 
         om.changeInteractionOrderType(CIOTq->getInteractionClass(), CIOTq->getOrder(), e);
     } break;
@@ -523,9 +526,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Request_Object_Attribute_Value_Update* ROAVUq;
         ROAVUq = static_cast<M_Request_Object_Attribute_Value_Update*>(request);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type "
-              "RequestAttributeValueUpadate.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type "
+                             "RequestAttributeValueUpadate."
+                          << std::endl;
         om.requestObjectAttributeValueUpdate(
             ROAVUq->getObject(), ROAVUq->getAttributes(), ROAVUq->getAttributesSize(), e);
     } break;
@@ -534,9 +537,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Request_Class_Attribute_Value_Update* RCAVUq;
         RCAVUq = static_cast<M_Request_Class_Attribute_Value_Update*>(request);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type "
-              "RequestClassAttributeValueUpadate.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type "
+                             "RequestClassAttributeValueUpadate."
+                          << std::endl;
         om.requestClassAttributeValueUpdate(
             RCAVUq->getObjectClass(), RCAVUq->getAttributes(), RCAVUq->getAttributesSize(), e);
     } break;
@@ -550,10 +553,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Unconditional_Attribute_Ownership_Divestiture* UAODq;
         UAODq = static_cast<M_Unconditional_Attribute_Ownership_Divestiture*>(request);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type unconditionalAttributeOwnershipDivestiture.");
-        D.Out(pdTrace, "Object %u number of attributes %u ", UAODq->getObject(), UAODq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type unconditionalAttributeOwnershipDivestiture."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << UAODq->getObject() << " number of attributes " << UAODq->getAttributesSize()
+                          << std::endl;
         owm.unconditionalAttributeOwnershipDivestiture(
             UAODq->getObject(), UAODq->getAttributes(), UAODq->getAttributesSize(), e);
     } break;
@@ -561,10 +565,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE: {
         M_Negotiated_Attribute_Ownership_Divestiture* NAODq;
         NAODq = static_cast<M_Negotiated_Attribute_Ownership_Divestiture*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type negotiatedAttributeOwnershipDivestiture.");
-        D.Out(pdTrace, "Object %u ; %u nb Attribute ", NAODq->getObject(), NAODq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type negotiatedAttributeOwnershipDivestiture."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << NAODq->getObject() << " ; nb Attribute " << NAODq->getAttributesSize()
+                          << std::endl;
         owm.negotiatedAttributeOwnershipDivestiture(
             NAODq->getObject(), NAODq->getAttributes(), NAODq->getAttributesSize(), request->getTag(), e);
     } break;
@@ -573,10 +578,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Attribute_Ownership_Acquisition* AOAq;
         AOAq = static_cast<M_Attribute_Ownership_Acquisition*>(request);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type attributeOwnershipAcquisition.");
-        D.Out(pdTrace, "Object %u ; Nb d'Attributs ", AOAq->getObject(), AOAq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type attributeOwnershipAcquisition."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << AOAq->getObject() << " ; Nb d'Attributs " << AOAq->getAttributesSize()
+                          << std::endl;
         owm.attributeOwnershipAcquisition(
             AOAq->getObject(), AOAq->getAttributes(), AOAq->getAttributesSize(), request->getTag(), e);
     } break;
@@ -586,10 +592,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         AORRq = static_cast<M_Attribute_Ownership_Release_Response*>(request);
         AORRr = static_cast<M_Attribute_Ownership_Release_Response*>(answer);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type attributeOwnershipRealeaseResponse.");
-        D.Out(pdTrace, "Object %u nb Attribute %u ", AORRq->getObject(), AORRq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type attributeOwnershipRealeaseResponse."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << AORRq->getObject() << " nb Attribute " << AORRq->getAttributesSize()
+                          << std::endl;
 
         AttributeHandleSet* theAttributes = owm.attributeOwnershipRealeaseResponse(
             AORRq->getObject(), AORRq->getAttributes(), AORRq->getAttributesSize(), e);
@@ -605,10 +612,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE: {
         M_Cancel_Negotiated_Attribute_Ownership_Divestiture* CNAODq;
         CNAODq = static_cast<M_Cancel_Negotiated_Attribute_Ownership_Divestiture*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type cancelNegociatedAttributeOwnershipDivestiture.");
-        D.Out(pdTrace, "Object %u nb Attribute %u ", CNAODq->getObject(), CNAODq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type cancelNegociatedAttributeOwnershipDivestiture."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << CNAODq->getObject() << " nb Attribute " << CNAODq->getAttributesSize()
+                          << std::endl;
         owm.cancelnegotiatedAttributeOwnershipDivestiture(
             CNAODq->getObject(), CNAODq->getAttributes(), CNAODq->getAttributesSize(), e);
     } break;
@@ -616,10 +624,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION: {
         M_Cancel_Attribute_Ownership_Acquisition* CAOAq;
         CAOAq = static_cast<M_Cancel_Attribute_Ownership_Acquisition*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type cancelAttributeOwnershipAcquisition.");
-        D.Out(pdTrace, "Object %u nb Attribute %u ", CAOAq->getObject(), CAOAq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type cancelAttributeOwnershipAcquisition."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << CAOAq->getObject() << " nb Attribute " << CAOAq->getAttributesSize()
+                          << std::endl;
         owm.cancelattributeOwnershipAcquisition(
             CAOAq->getObject(), CAOAq->getAttributes(), CAOAq->getAttributesSize(), e);
     } break;
@@ -628,10 +637,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Attribute_Ownership_Acquisition_If_Available* AOQIAq;
         AOQIAq = static_cast<M_Attribute_Ownership_Acquisition_If_Available*>(request);
 
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type attributeOwnershipAcquisitionIfAvailable.");
-        D.Out(pdTrace, "Object %u nb Attribute %u ", AOQIAq->getObject(), AOQIAq->getAttributesSize());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type attributeOwnershipAcquisitionIfAvailable."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << AOQIAq->getObject() << " nb Attribute " << AOQIAq->getAttributesSize()
+                          << std::endl;
         owm.attributeOwnershipAcquisitionIfAvailable(
             AOQIAq->getObject(), AOQIAq->getAttributes(), AOQIAq->getAttributesSize(), e);
     } break;
@@ -639,33 +649,33 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
     case Message::QUERY_ATTRIBUTE_OWNERSHIP: {
         M_Query_Attribute_Ownership* QAOq;
         QAOq = static_cast<M_Query_Attribute_Ownership*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type queryAttributeOwnership.");
-        D.Out(pdTrace, "Object %u Attribute %u ", QAOq->getObject(), QAOq->getAttribute());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type queryAttributeOwnership."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << QAOq->getObject() << " Attribute " << QAOq->getAttribute() << std::endl;
         owm.queryAttributeOwnership(QAOq->getObject(), QAOq->getAttribute(), e);
     } break;
 
     case Message::IS_ATTRIBUTE_OWNED_BY_FEDERATE: {
         M_Is_Attribute_Owned_By_Federate* IAWBFq;
         IAWBFq = static_cast<M_Is_Attribute_Owned_By_Federate*>(request);
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type isAttributeOwnedByFederate.");
-        D.Out(pdTrace, "Object %u Attribute %u ", IAWBFq->getObject(), IAWBFq->getAttribute());
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type isAttributeOwnedByFederate."
+                          << std::endl;
+        Debug(D, pdTrace) << "Object " << IAWBFq->getObject() << " Attribute " << IAWBFq->getAttribute() << std::endl;
         answer->setTag(owm.attributeOwnedByFederate(IAWBFq->getObject(), IAWBFq->getAttribute(), e));
     } break;
 
     case Message::QUERY_LBTS:
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestLBTS.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type RequestLBTS." << std::endl;
 
         answer->setDate(tm.requestLBTS());
         break;
 
     case Message::ENABLE_ASYNCHRONOUS_DELIVERY:
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type EnableAsynchronousDelivery.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type EnableAsynchronousDelivery."
+                          << std::endl;
         if (!tm._asynchronous_delivery) {
             tm._asynchronous_delivery = true;
 
@@ -681,9 +691,9 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         break;
 
     case Message::DISABLE_ASYNCHRONOUS_DELIVERY:
-        D.Out(pdTrace,
-              "Receiving Message from Federate, "
-              "type DisableAsynchronousDelivery.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type DisableAsynchronousDelivery."
+                          << std::endl;
         if (tm._asynchronous_delivery) {
             tm._asynchronous_delivery = false;
 
@@ -699,13 +709,13 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         break;
 
     case Message::QUERY_FEDERATE_TIME:
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestFederateTime.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type RequestFederateTime." << std::endl;
 
         answer->setDate(tm.requestFederateTime());
         break;
 
     case Message::QUERY_MIN_NEXT_EVENT_TIME:
-        D.Out(pdTrace, "Receiving Message from Federate, type QueryMinNextEventTime.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type QueryMinNextEventTime." << std::endl;
 
         answer->setDate(tm.requestMinNextEventTime());
         break;
@@ -714,7 +724,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Modify_Lookahead *MLr, *MLq;
         MLr = static_cast<M_Modify_Lookahead*>(answer);
         MLq = static_cast<M_Modify_Lookahead*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type SetLookAhead.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetLookAhead." << std::endl;
 
         tm.setLookahead(MLq->getLookahead(), e);
         MLr->setLookahead(MLq->getLookahead());
@@ -726,31 +736,31 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         // The query part is not necessary.
         //M_Query_Lookahead *QLq;
         //QLq = static_cast<M_Query_Lookahead*>(req);
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestLookAhead.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type RequestLookAhead." << std::endl;
 
         QLr->setLookahead(tm.requestLookahead().getTime());
     } break;
 
     case Message::TIME_ADVANCE_REQUEST:
-        D.Out(pdTrace, "Receiving Message from Federate, type TimeAdvanceRequest.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type TimeAdvanceRequest." << std::endl;
 
         tm.timeAdvanceRequest(request->getDate(), e);
         break;
 
     case Message::TIME_ADVANCE_REQUEST_AVAILABLE:
-        D.Out(pdTrace, "Receiving Message from Federate, type TimeAdvanceRequestAvailable.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type TimeAdvanceRequestAvailable." << std::endl;
 
         tm.timeAdvanceRequestAvailable(request->getDate(), e);
         break;
 
     case Message::NEXT_EVENT_REQUEST:
-        D.Out(pdTrace, "Receiving Message from Federate, type NestEventRequest.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type NestEventRequest." << std::endl;
 
         tm.nextEventRequest(request->getDate(), e);
         break;
 
     case Message::NEXT_EVENT_REQUEST_AVAILABLE:
-        D.Out(pdTrace, "Receiving Message from Federate, type NestEventRequestAvailable.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type NestEventRequestAvailable." << std::endl;
 
         tm.nextEventRequestAvailable(request->getDate(), e);
         break;
@@ -765,7 +775,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Object_Class_Handle *GOCHq, *GOCHr;
         GOCHq = static_cast<M_Get_Object_Class_Handle*>(request);
         GOCHr = static_cast<M_Get_Object_Class_Handle*>(answer);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetObjectClassHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetObjectClassHandle." << std::endl;
         try {
             GOCHr->setObjectClass(om.getObjectClassHandle(GOCHq->getClassName()));
             GOCHr->setClassName(GOCHq->getClassName());
@@ -779,7 +789,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Object_Class_Name *GOCNq, *GOCNr;
         GOCNq = static_cast<M_Get_Object_Class_Name*>(request);
         GOCNr = static_cast<M_Get_Object_Class_Name*>(answer);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetObjectClassName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetObjectClassName." << std::endl;
 
         try {
             GOCNr->setClassName(om.getObjectClassName(GOCNq->getObjectClass()));
@@ -796,7 +806,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Object_Instance_Handle *GOIHq, *GOIHr;
         GOIHq = static_cast<M_Get_Object_Instance_Handle*>(request);
         GOIHr = static_cast<M_Get_Object_Instance_Handle*>(answer);
-        D.Out(pdTrace, "Receiving Message from Federate, type getObjectInstanceHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type getObjectInstanceHandle." << std::endl;
         GOIHr->setObject(om.getObjectInstanceHandle(GOIHq->getObjectInstanceName()));
         GOIHr->setObjectInstanceName(GOIHq->getObjectInstanceName());
     } break;
@@ -806,7 +816,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         GOINq = static_cast<M_Get_Object_Instance_Name*>(request);
         GOINr = static_cast<M_Get_Object_Instance_Name*>(answer);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type getObjectInstanceName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type getObjectInstanceName." << std::endl;
         GOINr->setObjectInstanceName(om.getObjectInstanceName(GOINq->getObject()));
         GOINr->setObject(GOINq->getObject());
     } break;
@@ -817,7 +827,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Attribute_Handle *GAHq, *GAHr;
         GAHq = static_cast<M_Get_Attribute_Handle*>(request);
         GAHr = static_cast<M_Get_Attribute_Handle*>(answer);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetAttributeHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetAttributeHandle." << std::endl;
         try {
             GAHr->setAttribute(om.getAttributeHandle(GAHq->getAttributeName(), GAHq->getObjectClass()));
             GAHr->setAttributeName(GAHq->getAttributeName());
@@ -832,7 +842,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Attribute_Name *GANq, *GANr;
         GANq = static_cast<M_Get_Attribute_Name*>(request);
         GANr = static_cast<M_Get_Attribute_Name*>(answer);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetAttributeName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetAttributeName." << std::endl;
 
         GANr->setAttributeName(om.getAttributeName(GANq->getAttribute(), GANq->getObjectClass()));
     } break;
@@ -842,7 +852,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         GICHr = static_cast<M_Get_Interaction_Class_Handle*>(answer);
         GICHq = static_cast<M_Get_Interaction_Class_Handle*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type GetInteractionHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetInteractionHandle." << std::endl;
 
         GICHr->setInteractionClass(om.getInteractionClassHandle(GICHq->getClassName()));
         GICHr->setClassName(GICHq->getClassName());
@@ -853,7 +863,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         GICNr = static_cast<M_Get_Interaction_Class_Name*>(answer);
         GICNq = static_cast<M_Get_Interaction_Class_Name*>(request);
 
-        D.Out(pdTrace, "Receiving Message from Federate, type GetInteractionName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetInteractionName." << std::endl;
 
         GICNr->setClassName(om.getInteractionClassName(GICNq->getInteractionClass()));
         GICNr->setInteractionClass(GICNq->getInteractionClass());
@@ -863,7 +873,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Parameter_Handle *GPHq, *GPHr;
         GPHr = static_cast<M_Get_Parameter_Handle*>(answer);
         GPHq = static_cast<M_Get_Parameter_Handle*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetParameterHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetParameterHandle." << std::endl;
 
         GPHr->setParameter(om.getParameterHandle(GPHq->getParameterName(), GPHq->getInteractionClass()));
         GPHr->setParameterName(GPHq->getParameterName());
@@ -874,7 +884,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Parameter_Name *GPNq, *GPNr;
         GPNr = static_cast<M_Get_Parameter_Name*>(answer);
         GPNq = static_cast<M_Get_Parameter_Name*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetParameterName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetParameterName." << std::endl;
 
         GPNr->setParameterName(om.getParameterName(GPNq->getParameter(), GPNq->getInteractionClass()));
         GPNr->setParameter(GPNq->getParameter());
@@ -885,7 +895,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Space_Handle *GSHq, *GSHr;
         GSHr = static_cast<M_Get_Space_Handle*>(answer);
         GSHq = static_cast<M_Get_Space_Handle*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetSpaceHandle.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetSpaceHandle." << std::endl;
         GSHr->setSpace(ddm.getRoutingSpaceHandle(GSHq->getSpaceName()));
     } break;
 
@@ -893,7 +903,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Space_Name *GSNq, *GSNr;
         GSNr = static_cast<M_Get_Space_Name*>(answer);
         GSNq = static_cast<M_Get_Space_Name*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetSpaceName.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetSpaceName." << std::endl;
         GSNr->setSpaceName(ddm.getRoutingSpaceName(GSNq->getSpace()));
     } break;
 
@@ -901,7 +911,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Dimension_Handle *GDHq, *GDHr;
         GDHr = static_cast<M_Get_Dimension_Handle*>(answer);
         GDHq = static_cast<M_Get_Dimension_Handle*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetDimensionHandle");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetDimensionHandle" << std::endl;
         GDHr->setDimension(ddm.getDimensionHandle(string(GDHq->getDimensionName()), GDHq->getSpace()));
     } break;
 
@@ -909,7 +919,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Dimension_Name *GDNq, *GDNr;
         GDNr = static_cast<M_Get_Dimension_Name*>(answer);
         GDNq = static_cast<M_Get_Dimension_Name*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetDimensionName");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetDimensionName" << std::endl;
         GDNr->setDimensionName(ddm.getDimensionName(GDNq->getDimension(), GDNq->getSpace()));
     } break;
 
@@ -917,7 +927,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Attribute_Space_Handle *GASHq, *GASHr;
         GASHr = static_cast<M_Get_Attribute_Space_Handle*>(answer);
         GASHq = static_cast<M_Get_Attribute_Space_Handle*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate, type GetAttributeSpaceHandle");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type GetAttributeSpaceHandle" << std::endl;
         GASHr->setSpace(ddm.getAttributeSpace(GASHq->getAttribute(), GASHq->getObjectClass()));
     } break;
 
@@ -925,7 +935,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         M_Get_Interaction_Space_Handle *GISHq, *GISHr;
         GISHr = static_cast<M_Get_Interaction_Space_Handle*>(answer);
         GISHq = static_cast<M_Get_Interaction_Space_Handle*>(request);
-        D.Out(pdTrace, "Receiving Message from Federate: GetInteractionSpaceHandle");
+        Debug(D, pdTrace) << "Receiving Message from Federate: GetInteractionSpaceHandle" << std::endl;
         GISHr->setSpace(ddm.getInteractionSpace(GISHq->getInteractionClass()));
     } break;
 
@@ -1007,11 +1017,11 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         DDMROr = static_cast<M_Ddm_Register_Object*>(answer);
         Debug(D, pdTrace) << "Receiving Message from Federate: Register with Region" << std::endl;
         DDMROr->setObject(ddm.registerObject(DDMROq->getObjectClass(),
-                                              DDMROq->getObjectInstanceName(),
-                                              DDMROq->getAttributes(),
-                                              DDMROq->getAttributesSize(),
-                                              DDMROq->getRegions(),
-                                              e));
+                                             DDMROq->getObjectInstanceName(),
+                                             DDMROq->getAttributes(),
+                                             DDMROq->getAttributesSize(),
+                                             DDMROq->getRegions(),
+                                             e));
     } break;
 
     case Message::DDM_UNASSOCIATE_REGION: {
@@ -1073,9 +1083,8 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         TRq = static_cast<M_Tick_Request*>(request);
         // called when tick() is invoked
         if (tm._tick_state != TimeManagement::NO_TICK) {
-            throw RTIinternalError(stringize() << "TICK_REQUEST cannot be called recursively (state="
-                                               << static_cast<int>(tm._tick_state)
-                                               << ")");
+            throw RTIinternalError("TICK_REQUEST cannot be called recursively (state=" + std::to_string(tm._tick_state)
+                                   + ")");
         }
 
         tm._tick_multiple = TRq->getMultiple();
@@ -1110,54 +1119,54 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         break;
 
     case Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type EnableClassRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type EnableClassRelevanceAdvisorySwitch." << std::endl;
         dm.setClassRelevanceAdvisorySwitch(true, e);
         break;
 
     case Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type DisableClassRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type DisableClassRelevanceAdvisorySwitch." << std::endl;
         dm.setClassRelevanceAdvisorySwitch(false, e);
         break;
 
     case Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch."
+                          << std::endl;
         dm.setInteractionRelevanceAdvisorySwitch(true, e);
         break;
 
     case Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch."
+                          << std::endl;
         dm.setInteractionRelevanceAdvisorySwitch(false, e);
         break;
 
     case Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch." << std::endl;
         om.setAttributeRelevanceAdvisorySwitch(true, e);
         break;
 
     case Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch." << std::endl;
         om.setAttributeRelevanceAdvisorySwitch(false, e);
         break;
 
     case Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch." << std::endl;
         om.setAttributeScopeAdvisorySwitch(true, e);
         break;
 
     case Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
-        D.Out(pdTrace, "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
+        Debug(D, pdTrace) << "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch." << std::endl;
         om.setAttributeScopeAdvisorySwitch(false, e);
         break;
 
     default:
-        D.Out(pdExcept,
-              "Receiving Message from Federate, Unknown Type %s/%d.",
-              request->getMessageName(),
-              request->getMessageType());
+        Debug(D, pdExcept) << "Receiving Message from Federate, Unknown Type " << request->getMessageName() << "/"
+                           << request->getMessageType() << std::endl;
         throw RTIinternalError("");
     }
     stat.federateService(request->getMessageType());
-    G.Out(pdGendoc, "exit  chooseFederateProcessing");
+    Debug(G, pdGendoc) << "exit  chooseFederateProcessing" << std::endl;
 } /* end of RTIA::chooseFederateProcessing */
 
 void RTIA::processOngoingTick()
@@ -1244,15 +1253,13 @@ void RTIA::initFederateProcessing(Message* request, Message* answer)
         }
         else {
             answer->setException(Exception::Type::RTIinternalError,
-                                 stringize() << "RTIA protocol version mismatch"
-                                             << "; federate "
-                                             << OCq->getVersionMajor()
-                                             << "."
-                                             << OCq->getVersionMinor()
-                                             << ", RTIA "
-                                             << CERTI_Message::versionMajor
-                                             << "."
-                                             << CERTI_Message::versionMinor);
+                                 "RTIA protocol version mismatch; federate " + std::to_string(OCq->getVersionMajor())
+                                     + "."
+                                     + std::to_string(OCq->getVersionMinor())
+                                     + ", RTIA "
+                                     + std::to_string(CERTI_Message::versionMajor)
+                                     + "."
+                                     + std::to_string(CERTI_Message::versionMinor));
         }
     }
     else {
@@ -1268,7 +1275,7 @@ void RTIA::processFederateRequest(Message* request)
 	 * appropriate answer message.                */
     std::unique_ptr<Message> rep(M_Factory::create(request->getMessageType()));
 
-    G.Out(pdGendoc, "enter RTIA::processFederateRequest");
+    Debug(G, pdGendoc) << "enter RTIA::processFederateRequest" << std::endl;
 
     try {
         switch (fm.getConnectionState()) {
@@ -1632,9 +1639,9 @@ void RTIA::processFederateRequest(Message* request)
         // generic federate service acknowledgment
         // the TICK_REQUEST confirmation is generated in processOngoingTick()
         comm.sendUN(rep.get());
-        D.Out(pdDebug, "Reply send to Unix socket.");
+        Debug(D, pdDebug) << "Reply send to Unix socket." << std::endl;
     }
-    G.Out(pdGendoc, "exit  RTIA::processFederateRequest");
+    Debug(G, pdGendoc) << "exit  RTIA::processFederateRequest" << std::endl;
 } /* end of RTIA::processFederateRequest(Message *req) */
 
 } // namespace rtia

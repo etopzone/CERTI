@@ -69,7 +69,7 @@ SecureTCPSocket::~SecureTCPSocket()
 // ----------------------------------------------------------------------------
 void SecureTCPSocket::send(const unsigned char* buffer, size_t size)
 {
-    D.Out(pdTrace, "SSocket: Sending.");
+    Debug(D, pdTrace) << "SSocket: Sending." << std::endl;
 
 #ifdef HLA_USES_GSSAPI
     // If the GSSAPI session is not Initialized, start the HandShake.
@@ -88,7 +88,7 @@ void SecureTCPSocket::send(const unsigned char* buffer, size_t size)
 void SecureTCPSocket::getMessage()
 {
     if (DecryptedMessageReady) {
-        D.Out(pdExcept, "Decrypted message already exists.");
+        Debug(D, pdExcept) << "Decrypted message already exists." << std::endl;
         return;
     }
 
@@ -152,7 +152,7 @@ const char* SecureTCPSocket::getPeerName()
 // ----------------------------------------------------------------------------
 void SecureTCPSocket::receive(void* Buffer, unsigned long Size)
 {
-    D.Out(pdTrace, "SSocket: Receiving.");
+    Debug(D, pdTrace) << "SSocket: Receiving." << std::endl;
 
 #ifdef HLA_USES_GSSAPI
 

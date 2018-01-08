@@ -72,16 +72,14 @@ public:
 	 * Allocates memory the Name's storage, and read its FED file to store the
 	 * result in RootObj.
 	 *   (with FEDERATION_USES_MULTICAST defined).
-	 *  @param federation_name
-	 *  @param federation_handle
-	 *  @param socket_server
-	 *  @param audit_server
-	 *  @param mc_link
 	 */
     Federation(const std::string& federation_name,
                const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
+               const std::vector<std::string> fom_modules,
+               const std::string& mim_module,
+               const RtiVersion rti_version, 
                SocketMC* mc_link,
                const int verboseLevel);
 #else
@@ -93,13 +91,16 @@ public:
      * @param federation_handle Handle of the federation
      * @param socket_server Socket server from RTIG
      * @param audit_server Audit server from RTIG
-     * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
+     * @param fom_modules list of paths to fom modules (may be a .fed or a .xml file)
+     * @param mim_module path to mim module, or empty for default mim module
      */
     Federation(const std::string& federation_name,
                const FederationHandle federation_handle,
                SocketServer& socket_server,
                AuditFile& audit_server,
-               const std::string& FEDid_name,
+               const std::vector<std::string> fom_modules,
+               const std::string& mim_module,
+               const RtiVersion rti_version,
                const int verboseLevel);
 #endif
 
@@ -111,8 +112,13 @@ public:
     /// Returns the federation name given in 'Create Federation Execution'.
     std::string getName() const;
 
-    /// Returns the FEDid name given in 'Create Federation Execution'.
-    std::string getFEDid() const;
+    /// Returns the current list of fom module used in this federation
+    std::vector<std::string> getFomModules() const;
+
+    /// Return the current mim module used
+    std::string getMimModule() const;
+    
+    RtiVersion getRtiVersion() const;
 
     /// Returns the number of federates in federation.
     int getNbFederates() const;
@@ -152,7 +158,11 @@ public:
      * Also send Null messages from all others federates to initialize its LBTS, and
      * finally a RequestPause message if the Federation is already paused.
      */
-    std::pair<FederateHandle, Responses> add(const std::string& federate_name, SocketTCP* tcp_link);
+    std::pair<FederateHandle, Responses> add(const std::string& federate_name,
+                                             const std::string& federate_type,
+                                             std::vector<std::string> additional_fom_modules,
+                                             const RtiVersion rti_version,
+                                             SocketTCP* tcp_link);
 
     /** Remove a federate.
      * 
@@ -214,13 +224,14 @@ public:
     Responses unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
-    Responses broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
+    Responses
+    broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
     Responses broadcastSynchronization(FederateHandle federate_handle,
-                                  const std::string& label,
-                                  const std::string& tag,
-                                  const std::vector<FederateHandle>& federates);
+                                       const std::string& label,
+                                       const std::string& tag,
+                                       const std::vector<FederateHandle>& federates);
 
     // Save Management.
 
@@ -430,7 +441,7 @@ public:
                                                                 const std::string& name,
                                                                 RegionHandle region_handle,
                                                                 const std::vector<AttributeHandle>& attributes);
-    
+
     Responses updateAsynchronousDelivery(FederateHandle federate_handle, bool status);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
@@ -467,7 +478,7 @@ public:
 private:
     friend class Mom;
 
-    void openFomFile(const int verboseLevel);
+    void openFomModules(std::vector<std::string> modules, const bool is_mim = false);
 
     bool saveXmlData();
     bool restoreXmlData(std::string docFilename);
@@ -479,7 +490,9 @@ private:
 
     FederationHandle my_handle;
     std::string my_name;
-    std::string my_FED_id;
+
+    std::vector<std::string> my_fom_modules;
+    std::string my_mim_module;
 
     bool my_auto_provide{false};
 
@@ -518,6 +531,8 @@ private:
     bool my_save_status{true}; /// True if saving was correctly done, false otherwise.
     bool my_restore_status{true}; /// True if restoring was correctly done.
     std::string my_save_label{""}; /// The label associated with the save request.
+    
+    RtiVersion my_rti_version;
 };
 }
 } // namespace certi/rtig

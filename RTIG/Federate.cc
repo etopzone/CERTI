@@ -28,7 +28,11 @@ static PrettyDebug G("GENDOC", __FILE__);
 namespace certi {
 namespace rtig {
 
-Federate::Federate(const std::string& name, const FederateHandle handle) : my_handle{handle}, my_name{name}
+Federate::Federate(const std::string& name,
+                   const std::string& type,
+                   const RtiVersion rti_version,
+                   const FederateHandle handle)
+    : my_handle{handle}, my_name{name}, my_type{type}, my_rti_version{rti_version}
 {
     if (my_handle == 0) {
         throw RTIinternalError("Bad initialization parameter for Federate.");
@@ -55,6 +59,16 @@ void Federate::setHandle(const FederateHandle h)
 std::string Federate::getName() const noexcept
 {
     return my_name;
+}
+
+std::string Federate::getType() const noexcept
+{
+    return my_type;
+}
+    
+RtiVersion Federate::getRtiVersion() const noexcept
+{
+    return my_rti_version;
 }
 
 bool Federate::isConstrained() const noexcept

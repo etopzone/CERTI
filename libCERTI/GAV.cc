@@ -242,8 +242,8 @@ void AttributeHandleSet::remove(AttributeHandle h) // not guaranteed safe while 
     if (isMember(h) == true)
         _set.remove(h);
     else
-        throw AttributeNotDefined(stringize() << "AttributeHandleSet::remove(AttributeHandle) Attribute <" << h
-                                              << "> not member of the set");
+        throw AttributeNotDefined("AttributeHandleSet::remove(AttributeHandle) Attribute <" + std::to_string(h)
+                                  + "> not member of the set");
 }
 
 // ----------------------------------------------------------------------------
@@ -303,8 +303,8 @@ void FederateHandleSet::remove(FederateHandle h)
     if (isMember(h) == true)
         _set.remove(h);
     else
-        throw AttributeNotDefined(stringize() << "FederateHandleSet::remove(FederateHandle) Federate <" << h
-                                              << "> not member of the set");
+        throw AttributeNotDefined("FederateHandleSet::remove(FederateHandle) Federate <" + std::to_string(h)
+                                  + "> not member of the set");
 }
 
 // ----------------------------------------------------------------------------

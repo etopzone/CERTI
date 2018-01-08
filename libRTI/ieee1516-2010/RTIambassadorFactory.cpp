@@ -49,7 +49,7 @@ static PrettyDebug D1516("LIBRTI1516e", __FILE__);
 static PrettyDebug G1516("GENDOC1516e", __FILE__);
 }
 
-std::unique_ptr<rti1516e::RTIambassador>
+std::auto_ptr<rti1516e::RTIambassador>
 rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinternalError)
 {
     certi::RTI1516ambassador* p_ambassador(new certi::RTI1516ambassador());
@@ -58,13 +58,13 @@ rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinterna
     PrettyDebug::setFederateName("LibRTI::UnjoinedFederate");
     std::wstringstream msg;
 
-    p_ambassador->p = std::unique_ptr<certi::RTI1516ambassador::Private>(new certi::RTI1516ambassador::Private);
+    p_ambassador->p = std::auto_ptr<certi::RTI1516ambassador::Private>(new certi::RTI1516ambassador::Private);
 
 #ifdef _WIN32
     p_ambassador->p->handle_RTIA = (HANDLE) -1;
 #endif
 
-    p_ambassador->p->socket_un = std::unique_ptr<certi::SocketUN>(new certi::SocketUN(certi::stIgnoreSignal));
+    p_ambassador->p->socket_un = std::auto_ptr<certi::SocketUN>(new certi::SocketUN(certi::stIgnoreSignal));
 
     std::vector<std::string> rtiaList;
 
@@ -236,7 +236,7 @@ rti1516e::RTIambassadorFactory::createRTIambassador() throw(rti1516e::RTIinterna
 
     Debug(G1516, pdGendoc) << "exit  RTIambassador::RTIambassador" << std::endl;
 
-    return std::unique_ptr<rti1516e::RTIambassador>(p_ambassador);
+    return std::auto_ptr<rti1516e::RTIambassador>(p_ambassador);
 }
 
 //} // end namespace rti1516

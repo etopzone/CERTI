@@ -63,22 +63,22 @@ Responses Mom::registerFederation()
     // Static
     attribute = my_attribute_cache["HLARTIversion"]; // FIXME attribute duplicated between federate and federation 
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("1516-2010");
+    my_attribute_values_cache[my_federation_object][attribute] = encodeVersion(my_federation.getRtiVersion());
 
     // Static
     attribute = my_attribute_cache["HLAMIMDesignator"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("HLAstandardMIM");
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getMimModule());
 
     // Conditional
     attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFEDid());
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return all values
 
     // Conditional
     attribute = my_attribute_cache["HLAcurrentFDD"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFEDid());
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return good values
 
     // Static
     attribute = my_attribute_cache["HLAtimeImplementationName"];
@@ -145,7 +145,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Static
     attribute = my_attribute_cache["HLAfederateType"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("NOT-COMPLIANT"); // FIXME not compliant
+    my_attribute_values_cache[federate_object][attribute] = encodeString(federate.getType());
 
     // Static
     attribute = my_attribute_cache["HLAfederateHost"];
@@ -156,7 +156,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Static
     attribute = my_attribute_cache["HLARTIversion"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("1516-2010");
+    my_attribute_values_cache[federate_object][attribute] = encodeVersion(federate.getRtiVersion());
 
     // Static
     attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];

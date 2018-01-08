@@ -157,7 +157,7 @@ void assignPHVPSToRequest(const std::vector<std::pair<RTI::ParameterHandle, Para
 
 RTI::RTIambassador::RTIambassador() throw(RTI::MemoryExhausted, RTI::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTIambassador::RTIambassador");
+    Debug(G, pdGendoc) << "enter RTIambassador::RTIambassador" << std::endl;
     PrettyDebug::setFederateName("LibRTI::UnjoinedFederate");
     std::stringstream msg;
 
@@ -180,13 +180,13 @@ RTI::RTIambassador::RTIambassador() throw(RTI::MemoryExhausted, RTI::RTIinternal
 #if defined(RTIA_USE_TCP)
     int port = privateRefs->socketUn->listenUN();
     if (port == -1) {
-        D.Out(pdError, "Cannot listen to RTIA connection. Abort.");
+        Debug(D, pdError) << "Cannot listen to RTIA connection. Abort." << std::endl;
         throw RTI::RTIinternalError("Cannot listen to RTIA connection");
     }
 #else
     int pipeFd = privateRefs->socketUn->socketpair();
     if (pipeFd == -1) {
-        D.Out(pdError, "Cannot get socketpair to RTIA connection. Abort.");
+        Debug(D, pdError) << "Cannot get socketpair to RTIA connection. Abort." << std::endl;
         throw RTI::RTIinternalError("Cannot get socketpair to RTIA connection");
     }
 #endif
@@ -217,7 +217,7 @@ RTI::RTIambassador::RTIambassador() throw(RTI::MemoryExhausted, RTI::RTIinternal
                          0,
                          TRUE, // Inheritable
                          DUPLICATE_SAME_ACCESS)) {
-        D.Out(pdError, "Cannot duplicate socket for RTIA connection. Abort.");
+        Debug(D, pdError) << "Cannot duplicate socket for RTIA connection. Abort." << std::endl;
         throw RTI::RTIinternalError("Cannot duplicate socket for RTIA connection. Abort.");
     }
 #endif
@@ -330,10 +330,10 @@ RTI::RTIambassador::RTIambassador() throw(RTI::MemoryExhausted, RTI::RTIinternal
     req.setVersionMajor(CERTI_Message::versionMajor);
     req.setVersionMinor(CERTI_Message::versionMinor);
 
-    G.Out(pdGendoc, "        ====>executeService OPEN_CONNEXION");
+    Debug(G, pdGendoc) << "        ====>executeService OPEN_CONNEXION" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTIambassador::RTIambassador");
+    Debug(G, pdGendoc) << "exit  RTIambassador::RTIambassador" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -344,7 +344,7 @@ RTI::RTIambassador::~RTIambassador() throw(RTI::RTIinternalError)
 {
     M_Close_Connexion req, rep;
 
-    G.Out(pdGendoc, "        ====>executeService CLOSE_CONNEXION");
+    Debug(G, pdGendoc) << "        ====>executeService CLOSE_CONNEXION" << std::endl;
     privateRefs->executeService(&req, &rep);
     // after the response is received, the privateRefs->socketUn must not be used
 
@@ -532,20 +532,22 @@ void
                                                                          RTI::CouldNotOpenFED,
                                                                          RTI::FederationExecutionAlreadyExists)
 {
-    G.Out(pdGendoc, "enter RTIambassador::createFederationExecution");
+    Debug(G, pdGendoc) << "enter RTIambassador::createFederationExecution" << std::endl;
 
     M_Create_Federation_Execution req, rep;
 
     req.setFederationExecutionName(executionName);
-    
+
     req.setFomModuleDesignatorsSize(1);
     req.setFomModuleDesignators(FED, 0);
+    
+    req.setRtiVersion(HLA_1_3);
 
-    G.Out(pdGendoc, "             ====>executeService CREATE_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "             ====>executeService CREATE_FEDERATION_EXECUTION" << std::endl;
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::createFederationExecution");
+    Debug(G, pdGendoc) << "exit RTIambassador::createFederationExecution" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -564,15 +566,15 @@ void RTI::RTIambassador::destroyFederationExecution(const char* executionName) t
 {
     M_Destroy_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::destroyFederationExecution");
+    Debug(G, pdGendoc) << "enter RTIambassador::destroyFederationExecution" << std::endl;
 
     req.setFederationName(executionName);
 
-    G.Out(pdGendoc, "        ====>executeService DESTROY_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "        ====>executeService DESTROY_FEDERATION_EXECUTION" << std::endl;
 
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::destroyFederationExecution");
+    Debug(G, pdGendoc) << "exit RTIambassador::destroyFederationExecution" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -591,12 +593,12 @@ RTI::RTIambassador::joinFederationExecution(const char* yourName,
 {
     M_Join_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::joinFederationExecution");
+    Debug(G, pdGendoc) << "enter RTIambassador::joinFederationExecution" << std::endl;
 
     if (yourName == NULL || strlen(yourName) == 0) {
         throw RTI::RTIinternalError("Incorrect or empty federate name");
     }
-    
+
     if (executionName == NULL || strlen(executionName) == 0) {
         throw RTI::RTIinternalError("Incorrect or empty federation name");
     }
@@ -606,11 +608,13 @@ RTI::RTIambassador::joinFederationExecution(const char* yourName,
     req.setFederateName(yourName);
     req.setFederationExecutionName(executionName);
     
-    G.Out(pdGendoc, "        ====>executeService JOIN_FEDERATION_EXECUTION");
-    
+    req.setRtiVersion(HLA_1_3);
+
+    Debug(G, pdGendoc) << "        ====>executeService JOIN_FEDERATION_EXECUTION" << std::endl;
+
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::joinFederationExecution");
-    
+    Debug(G, pdGendoc) << "exit  RTIambassador::joinFederationExecution" << std::endl;
+
     PrettyDebug::setFederateName("LibRTI::" + std::string(yourName));
     return rep.getFederate();
 }
@@ -625,14 +629,14 @@ void RTI::RTIambassador::resignFederationExecution(ResignAction theAction) throw
 {
     M_Resign_Federation_Execution req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::resignFederationExecution");
+    Debug(G, pdGendoc) << "enter RTIambassador::resignFederationExecution" << std::endl;
 
     req.setResignAction(static_cast<certi::ResignAction>(theAction));
 
-    G.Out(pdGendoc, "        ====>executeService RESIGN_FEDERATION_EXECUTION");
+    Debug(G, pdGendoc) << "        ====>executeService RESIGN_FEDERATION_EXECUTION" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::resignFederationExecution");
+    Debug(G, pdGendoc) << "exit RTIambassador::resignFederationExecution" << std::endl;
 }
 
 void RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label, const char* the_tag) throw(
@@ -644,7 +648,7 @@ void RTI::RTIambassador::registerFederationSynchronizationPoint(const char* labe
 {
     M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::registerFederationSynchronizationPoint for all federates");
+    Debug(G, pdGendoc) << "enter RTIambassador::registerFederationSynchronizationPoint for all federates" << std::endl;
 
     req.setLabel(label);
     // no federate set
@@ -653,10 +657,10 @@ void RTI::RTIambassador::registerFederationSynchronizationPoint(const char* labe
         throw RTI::RTIinternalError("Calling registerFederationSynchronizationPoint with Tag NULL");
     }
     req.setTag(the_tag);
-    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    Debug(G, pdGendoc) << "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::registerFederationSynchronizationPoint for all federates");
+    Debug(G, pdGendoc) << "exit RTIambassador::registerFederationSynchronizationPoint for all federates" << std::endl;
 
 } /* end of RTI::RTIambassador::registerFederationSynchronizationPoint */
 
@@ -669,7 +673,7 @@ void RTI::RTIambassador::registerFederationSynchronizationPoint(
 {
     M_Register_Federation_Synchronization_Point req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::registerFederationSynchronizationPoint for some federates");
+    Debug(G, pdGendoc) << "enter RTIambassador::registerFederationSynchronizationPoint for some federates" << std::endl;
 
     req.setLabel(label);
     if (theTag == NULL) {
@@ -685,10 +689,10 @@ void RTI::RTIambassador::registerFederationSynchronizationPoint(
         req.setFederateSet(set_of_fed.getHandle(i), i);
     }
 
-    G.Out(pdGendoc, "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
+    Debug(G, pdGendoc) << "        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::registerFederationSynchronizationPoint for some federates");
+    Debug(G, pdGendoc) << "exit RTIambassador::registerFederationSynchronizationPoint for some federates" << std::endl;
 
 } /* end of RTI::RTIambassador::registerFederationSynchronizationPoint */
 
@@ -704,13 +708,13 @@ void RTI::RTIambassador::synchronizationPointAchieved(const char* label) throw(
 {
     M_Synchronization_Point_Achieved req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::synchronizationPointAchieved");
+    Debug(G, pdGendoc) << "enter RTIambassador::synchronizationPointAchieved" << std::endl;
 
     req.setLabel(label);
-    G.Out(pdGendoc, "        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED");
+    Debug(G, pdGendoc) << "        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTIambassador::synchronizationPointAchieved");
+    Debug(G, pdGendoc) << "exit  RTIambassador::synchronizationPointAchieved" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -726,15 +730,15 @@ void RTI::RTIambassador::requestFederationSave(const char* label,
 {
     M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::requestFederationSave with time");
+    Debug(G, pdGendoc) << "enter RTIambassador::requestFederationSave with time" << std::endl;
 
     req.setDate(certi_cast<RTIfedTime>()(theTime).getTime());
     req.setLabel(label);
 
-    G.Out(pdGendoc, "        ====>executeService REQUEST_FEDERATION_SAVE");
+    Debug(G, pdGendoc) << "        ====>executeService REQUEST_FEDERATION_SAVE" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::requestFederationSave with time");
+    Debug(G, pdGendoc) << "exit RTIambassador::requestFederationSave with time" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -747,13 +751,13 @@ void RTI::RTIambassador::requestFederationSave(const char* label) throw(RTI::Fed
 {
     M_Request_Federation_Save req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::requestFederationSave without time");
+    Debug(G, pdGendoc) << "enter RTIambassador::requestFederationSave without time" << std::endl;
 
     req.setLabel(label);
-    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_SAVE");
+    Debug(G, pdGendoc) << "      ====>executeService REQUEST_FEDERATION_SAVE" << std::endl;
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::requestFederationSave without time");
+    Debug(G, pdGendoc) << "exit  RTIambassador::requestFederationSave without time" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -766,12 +770,12 @@ void RTI::RTIambassador::federateSaveBegun() throw(RTI::SaveNotInitiated,
 {
     M_Federate_Save_Begun req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::federateSaveBegun");
+    Debug(G, pdGendoc) << "enter RTIambassador::federateSaveBegun" << std::endl;
 
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_BEGUN");
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_BEGUN" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTIambassador::federateSaveBegun");
+    Debug(G, pdGendoc) << "exit  RTIambassador::federateSaveBegun" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -784,10 +788,10 @@ void RTI::RTIambassador::federateSaveComplete() throw(RTI::SaveNotInitiated,
 {
     M_Federate_Save_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::federateSaveComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTIambassador::federateSaveComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::federateSaveComplete");
+    Debug(G, pdGendoc) << "exit  RTIambassador::federateSaveComplete" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -800,11 +804,11 @@ void RTI::RTIambassador::federateSaveNotComplete() throw(RTI::SaveNotInitiated,
 {
     M_Federate_Save_Not_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::federateSaveNotComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_SAVE_NOT_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTIambassador::federateSaveNotComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_SAVE_NOT_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit  RTIambassador::federateSaveNotComplete");
+    Debug(G, pdGendoc) << "exit  RTIambassador::federateSaveNotComplete" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -817,11 +821,11 @@ void RTI::RTIambassador::requestFederationRestore(const char* label) throw(RTI::
 {
     M_Request_Federation_Restore req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::requestFederationRestore");
+    Debug(G, pdGendoc) << "enter RTIambassador::requestFederationRestore" << std::endl;
     req.setLabel(label);
-    G.Out(pdGendoc, "      ====>executeService REQUEST_FEDERATION_RESTORE");
+    Debug(G, pdGendoc) << "      ====>executeService REQUEST_FEDERATION_RESTORE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::requestFederationRestore");
+    Debug(G, pdGendoc) << "exit  RTIambassador::requestFederationRestore" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -834,11 +838,11 @@ void RTI::RTIambassador::federateRestoreComplete() throw(RTI::RTIinternalError,
 {
     M_Federate_Restore_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::federateRestoreComplete");
+    Debug(G, pdGendoc) << "enter RTIambassador::federateRestoreComplete" << std::endl;
 
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_COMPLETE");
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_RESTORE_COMPLETE" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::federateRestoreComplete");
+    Debug(G, pdGendoc) << "exit  RTIambassador::federateRestoreComplete" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -851,11 +855,11 @@ void RTI::RTIambassador::federateRestoreNotComplete() throw(RTI::RTIinternalErro
 {
     M_Federate_Restore_Not_Complete req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::federateRestoreNotComplete");
-    G.Out(pdGendoc, "      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE");
+    Debug(G, pdGendoc) << "enter RTIambassador::federateRestoreNotComplete" << std::endl;
+    Debug(G, pdGendoc) << "      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE" << std::endl;
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::federateRestoreNotComplete");
+    Debug(G, pdGendoc) << "exit  RTIambassador::federateRestoreNotComplete" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -872,16 +876,16 @@ void RTI::RTIambassador::publishObjectClass(ObjectClassHandle theClass, const At
 {
     M_Publish_Object_Class req, rep;
     const std::vector<unsigned long>& AHSI = certi_cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles();
-    G.Out(pdGendoc, "enter RTIambassador::publishObjectClass");
+    Debug(G, pdGendoc) << "enter RTIambassador::publishObjectClass" << std::endl;
 
     req.setObjectClass(theClass);
     req.setAttributesSize(AHSI.size());
     for (uint32_t i = 0; i < AHSI.size(); ++i) {
         req.setAttributes(AHSI[i], i);
     }
-    G.Out(pdGendoc, "      ====>executeService PUBLISH_OBJECT_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService PUBLISH_OBJECT_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::publishObjectClass");
+    Debug(G, pdGendoc) << "exit  RTIambassador::publishObjectClass" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -897,11 +901,11 @@ void RTI::RTIambassador::unpublishObjectClass(ObjectClassHandle theClass) throw(
 {
     M_Unpublish_Object_Class req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::unpublishObjectClass");
+    Debug(G, pdGendoc) << "enter RTIambassador::unpublishObjectClass" << std::endl;
     req.setObjectClass(theClass);
-    G.Out(pdGendoc, "      ====>executeService UNPUBLISH_OBJECT_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService UNPUBLISH_OBJECT_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::unpublishObjectClass");
+    Debug(G, pdGendoc) << "exit  RTIambassador::unpublishObjectClass" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -917,7 +921,7 @@ void RTI::RTIambassador::publishInteractionClass(InteractionClassHandle theInter
     M_Publish_Interaction_Class req, rep;
 
     req.setInteractionClass(theInteraction);
-    G.Out(pdGendoc, "      ====>executeService PUBLISH_INTERACTION_CLASS");
+    Debug(G, pdGendoc) << "      ====>executeService PUBLISH_INTERACTION_CLASS" << std::endl;
     privateRefs->executeService(&req, &rep);
 }
 
@@ -951,7 +955,7 @@ void RTI::RTIambassador::subscribeObjectClassAttributes(ObjectClassHandle theCla
                                                                                    RTI::ObjectClassNotDefined)
 {
     M_Subscribe_Object_Class_Attributes req, rep;
-    G.Out(pdGendoc, "enter RTIambassador::subscribeObjectClassAttributes");
+    Debug(G, pdGendoc) << "enter RTIambassador::subscribeObjectClassAttributes" << std::endl;
     const std::vector<unsigned long>& AHSI = certi_cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles();
 
     req.setObjectClass(theClass);
@@ -962,7 +966,7 @@ void RTI::RTIambassador::subscribeObjectClassAttributes(ObjectClassHandle theCla
     req.setActive(active);
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::subscribeObjectClassAttributes");
+    Debug(G, pdGendoc) << "exit  RTIambassador::subscribeObjectClassAttributes" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1069,7 +1073,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle theObject,
                                                                     RTI::RestoreInProgress,
                                                                     RTI::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTIambassador::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "enter RTIambassador::updateAttributeValues with time" << std::endl;
     M_Update_Attribute_Values req, rep;
     RTI::EventRetractionHandle_s eventRetraction;
     const std::vector<AttributeHandleValuePair_t>& AHVPS
@@ -1091,7 +1095,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle theObject,
     }
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "return  RTIambassador::updateAttributeValues with time");
+    Debug(G, pdGendoc) << "return  RTIambassador::updateAttributeValues with time" << std::endl;
     eventRetraction.sendingFederate = rep.getEventRetraction().getSendingFederate();
     eventRetraction.theSerialNumber = rep.getEventRetraction().getSN();
     return eventRetraction;
@@ -1109,7 +1113,7 @@ void RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
                                                                          RTI::AttributeNotDefined,
                                                                          RTI::ObjectNotKnown)
 {
-    G.Out(pdGendoc, "enter RTIambassador::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "enter RTIambassador::updateAttributeValues without time" << std::endl;
     M_Update_Attribute_Values req, rep;
     const std::vector<AttributeHandleValuePair_t>& AHVPS
         = certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs();
@@ -1129,7 +1133,7 @@ void RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
         req.setValues(AHVPS[i].second, i);
     }
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::updateAttributeValues without time");
+    Debug(G, pdGendoc) << "exit  RTIambassador::updateAttributeValues without time" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1330,12 +1334,12 @@ void RTI::RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObjec
 {
     M_Request_Object_Attribute_Value_Update req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::requestObjectAttributeValueUpdate");
+    Debug(G, pdGendoc) << "enter RTIambassador::requestObjectAttributeValueUpdate" << std::endl;
     req.setObject(theObject);
     assignAHVToRequest(certi_cast<AttributeHandleSetImp>()(ahs).getAttributeHandles(), req);
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::requestObjectAttributeValueUpdate");
+    Debug(G, pdGendoc) << "exit  RTIambassador::requestObjectAttributeValueUpdate" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1350,7 +1354,7 @@ void RTI::RTIambassador::requestClassAttributeValueUpdate(
 {
     M_Request_Class_Attribute_Value_Update req, rep;
     const std::vector<AttributeHandle>& AHSv = certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles();
-    G.Out(pdGendoc, "enter RTIambassador::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "enter RTIambassador::requestClassAttributeValueUpdate" << std::endl;
     req.setObjectClass(theClass);
     req.setAttributesSize(attrs.size());
     for (uint32_t i = 0; i < attrs.size(); ++i) {
@@ -1358,7 +1362,7 @@ void RTI::RTIambassador::requestClassAttributeValueUpdate(
     }
 
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTIambassador::requestClassAttributeValueUpdate");
+    Debug(G, pdGendoc) << "exit  RTIambassador::requestClassAttributeValueUpdate" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -2339,12 +2343,12 @@ RTI::ObjectClassHandle RTI::RTIambassador::getObjectClassHandle(const char* theN
 {
     M_Get_Object_Class_Handle req, rep;
 
-    G.Out(pdGendoc, "enter RTIambassador::getObjectClassHandle");
+    Debug(G, pdGendoc) << "enter RTIambassador::getObjectClassHandle" << std::endl;
 
     req.setClassName(theName);
     privateRefs->executeService(&req, &rep);
 
-    G.Out(pdGendoc, "exit RTIambassador::getObjectClassHandle");
+    Debug(G, pdGendoc) << "exit RTIambassador::getObjectClassHandle" << std::endl;
 
     return rep.getObjectClass();
 }
@@ -2380,13 +2384,13 @@ RTI::RTIambassador::getAttributeHandle(const char* theName,
                                                                            RTI::ConcurrentAccessAttempted,
                                                                            RTI::RTIinternalError)
 {
-    G.Out(pdGendoc, "enter RTI::RTIambassador::getAttributeHandle");
+    Debug(G, pdGendoc) << "enter RTI::RTIambassador::getAttributeHandle" << std::endl;
     M_Get_Attribute_Handle req, rep;
 
     req.setAttributeName(theName);
     req.setObjectClass(whichClass);
     privateRefs->executeService(&req, &rep);
-    G.Out(pdGendoc, "exit  RTI::RTIambassador::getAttributeHandle");
+    Debug(G, pdGendoc) << "exit  RTI::RTIambassador::getAttributeHandle" << std::endl;
     return rep.getAttribute();
 }
 

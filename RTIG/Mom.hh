@@ -273,6 +273,7 @@ private:
     AttributeValue_t encodeString(const std::string& str);
     AttributeValue_t encodeBoolean(const bool data);
     AttributeValue_t encodeUInt32(const uint32_t data);
+    AttributeValue_t encodeVersion(const RtiVersion version);
     AttributeValue_t encodeTime(const FederationTime& time);
     AttributeValue_t encodeIp(const unsigned long ip);
     AttributeValue_t encodeFederateHandleList();

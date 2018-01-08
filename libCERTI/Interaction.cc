@@ -59,7 +59,7 @@ Interaction::~Interaction()
     }
 
     if (!publishers.empty()) {
-        D.Out(pdError, "Interaction %d: publishers list not empty at termination.", handle);
+        Debug(D, pdError) << "Interaction " << handle << ": publishers list not empty at termination." << std::endl;
     }
 
     // Deleting subclasses
@@ -116,11 +116,8 @@ void Interaction::addInheritedClassParameter(Interaction* the_child)
         Parameter* child = new Parameter(*i->second);
         assert(child != NULL);
 
-        D.Out(pdProtocol,
-              "ObjectClass %u adding new parameter %d to child class %u.",
-              handle,
-              i->second->getHandle(),
-              the_child->handle);
+        Debug(D, pdProtocol) << "ObjectClass " << handle << " adding new parameter " << i->second->getHandle()
+                             << " to child class " << the_child->handle << std::endl;
 
         the_child->addParameter(child, true);
     }
@@ -134,7 +131,7 @@ void Interaction::addInheritedClassParameter(Interaction* the_child)
  */
 Responses Interaction::broadcastInteractionMessage(InteractionBroadcastList* ibList, const RTIRegion* region)
 {
-    G.Out(pdGendoc, "enter Interaction::broadcastInteractionMessage");
+    Debug(G, pdGendoc) << "enter Interaction::broadcastInteractionMessage" << std::endl;
 
     // 1. Set InteractionHandle to local class Handle.
     ibList->getMessage().setInteractionClass(handle);
@@ -154,10 +151,10 @@ Responses Interaction::broadcastInteractionMessage(InteractionBroadcastList* ibL
     addFederatesIfOverlap(*ibList, region);
 
     // 4. Send pending messages.
-    D.Out(pdDebug, "Calling SendPendingMessage...");
+    Debug(D, pdDebug) << "Calling SendPendingMessage..." << std::endl;
     auto ret = ibList->preparePendingMessage(*server);
 
-    G.Out(pdGendoc, "exit Interaction::broadcastInteractionMessage");
+    Debug(G, pdGendoc) << "exit Interaction::broadcastInteractionMessage" << std::endl;
 
     return ret;
 } /* end of broadcastInteractionMessage */
@@ -174,7 +171,7 @@ void Interaction::changeTransportationType(TransportType new_type, FederateHandl
 
     transport = new_type;
 
-    D.Out(pdInit, "Interaction %d: New Transport type is %d.", handle, transport);
+    Debug(D, pdInit) << "Interaction " << handle << ": New Transport type is " << transport << std::endl;
 } /* end of changeTransportationType */
 
 // ----------------------------------------------------------------------------
@@ -187,7 +184,7 @@ void Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle
     if ((new_order != RECEIVE) && (new_order != TIMESTAMP))
         throw InvalidOrderingHandle("");
 
-    D.Out(pdInit, "Interaction %d: New Order type is %d.", handle, order);
+    Debug(D, pdInit) << "Interaction " << handle << ": New Order type is " << order << std::endl;
 } /* end of changeOrderType */
 
 // ----------------------------------------------------------------------------
@@ -253,7 +250,7 @@ Parameter* Interaction::getParameterByHandle(ParameterHandle the_handle) const
         return i->second;
     }
 
-    throw InteractionParameterNotDefined(certi::stringize() << "for handle " << the_handle);
+    throw InteractionParameterNotDefined("for handle " + std::to_string(the_handle));
 } /* end of getParameterByHandle */
 
 // ----------------------------------------------------------------------------
@@ -332,11 +329,14 @@ void Interaction::publish(FederateHandle the_handle)
     checkFederateAccess(the_handle, (char*) "Publish");
 
     if (!isPublishing(the_handle)) {
-        D.Out(pdInit, "Interaction %d: Added Federate %d to publishers list.", handle, the_handle);
+        Debug(D, pdInit) << "Interaction " << handle << ": Added Federate " << the_handle << " to publishers list."
+                         << std::endl;
         publishers.insert(the_handle);
     }
-    else
-        D.Out(pdError, "Interaction %d: Inconsistent publish request from Federate %d.", handle, the_handle);
+    else {
+        Debug(D, pdError) << "Interaction " << handle << ": Inconsistent publish request from Federate " << the_handle
+                          << std::endl;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -344,7 +344,8 @@ void Interaction::publish(FederateHandle the_handle)
 void Interaction::unpublish(FederateHandle the_handle)
 {
     if (isPublishing(the_handle)) {
-        D.Out(pdTerm, "Interaction %d: Removed Federate %d from publishers list.", handle, the_handle);
+        Debug(D, pdTerm) << "Interaction " << handle << ": Removed Federate " << the_handle << " from publishers list."
+                         << std::endl;
         deletePublisher(the_handle);
     }
     else {
@@ -366,7 +367,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
                              const RTIRegion* region,
                              const std::string& the_tag)
 {
-    G.Out(pdGendoc, "enter Interaction::sendInteraction with time");
+    Debug(G, pdGendoc) << "enter Interaction::sendInteraction with time" << std::endl;
 
     Responses responses;
     InteractionBroadcastList* ibList;
@@ -393,7 +394,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
             answer.setValues(value_list[i], i);
         }
 
-        D.Out(pdProtocol, "Preparing broadcast list.");
+        Debug(D, pdProtocol) << "Preparing broadcast list." << std::endl;
         ibList = new InteractionBroadcastList(answer);
 
         responses = broadcastInteractionMessage(ibList, region);
@@ -402,7 +403,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         // SendInteraction should not be called on the RTIA.
         throw RTIinternalError("SendInteraction called by RTIA.");
 
-    G.Out(pdGendoc, "exit Interaction::sendInteraction with time");
+    Debug(G, pdGendoc) << "exit Interaction::sendInteraction with time" << std::endl;
 
     // Return the BroadcastList in case it had to be passed to the
     // parent class.
@@ -422,7 +423,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
                              const RTIRegion* region,
                              const std::string& the_tag)
 {
-    G.Out(pdGendoc, "enter Interaction::sendInteraction without time");
+    Debug(G, pdGendoc) << "enter Interaction::sendInteraction without time" << std::endl;
 
     Responses responses;
     InteractionBroadcastList* ibList;
@@ -448,16 +449,17 @@ Interaction::sendInteraction(FederateHandle federate_handle,
             answer.setValues(value_list[i], i);
         }
 
-        D.Out(pdProtocol, "Preparing broadcast list.");
+        Debug(D, pdProtocol) << "Preparing broadcast list." << std::endl;
         ibList = new InteractionBroadcastList(answer);
 
         responses = broadcastInteractionMessage(ibList, region);
     }
-    else
+    else {
         // SendInteraction should not be called on the RTIA.
         throw RTIinternalError("SendInteraction called by RTIA.");
+    }
 
-    G.Out(pdGendoc, "exit Interaction::sendInteraction without time");
+    Debug(G, pdGendoc) << "exit Interaction::sendInteraction without time" << std::endl;
 
     // Return the BroadcastList in case it had to be passed to the
     // parent class.

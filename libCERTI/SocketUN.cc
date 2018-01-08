@@ -41,6 +41,7 @@ extern "C" int socketpair_win32(SOCKET socks[2], int make_overlapped);
 #endif
 
 namespace certi {
+static PrettyDebug D("SOCKUN", "SocketUN");
 static PrettyDebug G("GENDOC", __FILE__);
 
 #ifndef _WIN32
@@ -61,7 +62,7 @@ int SocketUN::listenUN()
 
     if ((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
         return -1;
-    pD->Out(pdInit, "Server: Created IPV4 socket.");
+    Debug(D, pdInit) << "Server: Created IPV4 socket." << std::endl;
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -73,21 +74,21 @@ int SocketUN::listenUN()
         _socket_un = -1;
         return -1;
     }
-    pD->Out(pdInit, "Server: Bound to anonymous IPV4 address.");
+    Debug(D, pdInit) << "Server: Bound to anonymous IPV4 address." << std::endl;
 
     if (getsockname(_socket_un, (struct sockaddr*) &addr, &addrlen) == -1) {
         closesocket(_socket_un);
         _socket_un = -1;
         return -1;
     }
-    pD->Out(pdInit, "Server: Got server port address %d.", ntohs(addr.sin_port));
+    Debug(D, pdInit) << "Server: Got server port address " << ntohs(addr.sin_port) << std::endl;
 
     if (listen(_socket_un, 1) == -1) {
         closesocket(_socket_un);
         _socket_un = -1;
         return -1;
     }
-    pD->Out(pdInit, "Server: Now listening.");
+    Debug(D, pdInit) << "Server: Now listening." << std::endl;
 
     return ntohs(addr.sin_port);
 }
@@ -96,18 +97,21 @@ int SocketUN::listenUN()
 //! Called by client to connect.
 int SocketUN::connectUN(int port)
 {
-    if ((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    if ((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         return -1;
-    pD->Out(pdInit, "Client: Created IPV4 socket.");
+    }
+    Debug(D, pdInit) << "Client: Created IPV4 socket." << std::endl;
 
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     addr.sin_port = htons(port);
-    if (connect(_socket_un, (const struct sockaddr*) &addr, sizeof(addr)) == -1)
+    if (connect(_socket_un, (const struct sockaddr*) &addr, sizeof(addr)) == -1) {
         return -1;
-    pD->Out(pdInit, "Client: Connected to IPV4 address at port %d.", port);
+    }
+
+    Debug(D, pdInit) << "Client: Connected to IPV4 address at port " << port << std::endl;
 
     return 0;
 }
@@ -124,21 +128,21 @@ int SocketUN::acceptUN(unsigned msec)
     timeout.tv_sec = msec / 1000;
     timeout.tv_usec = 1000 * (msec % 1000);
 
-    pD->Out(pdInit, "Server: Waiting for a connection to accept.");
+    Debug(D, pdInit) << "Server: Waiting for a connection to accept." << std::endl;
     if (select(_socket_un + 1, &fdset, NULL, NULL, &timeout) <= 0) {
         closesocket(_socket_un);
         _socket_un = -1;
         return -1;
     }
 
-    pD->Out(pdInit, "Server: Accepting connection.");
+    Debug(D, pdInit) << "Server: Accepting connection." << std::endl;
     SOCKET accepted;
     if ((accepted = accept(_socket_un, NULL, NULL)) == -1) {
         closesocket(_socket_un);
         _socket_un = -1;
         return -1;
     }
-    pD->Out(pdInit, "Server: Accepted IPV4 connection.");
+    Debug(D, pdInit) << "Server: Accepted IPV4 connection." << std::endl;
 
     closesocket(_socket_un);
     _socket_un = accepted;
@@ -183,8 +187,7 @@ SocketUN::SocketUN(SignalHandlerType theType)
     RBLength = 0;
 #endif
 
-    pD = new PrettyDebug("SOCKUN", "SocketUN");
-    pD->Out(pdInit, "UNIX Socket created.");
+    Debug(D, pdInit) << "UNIX Socket created." << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -194,16 +197,14 @@ SocketUN::~SocketUN()
     if (0 <= _socket_un)
         closesocket(_socket_un);
 
-    pD->Out(pdTerm, "SocketUN: Closed all sockets.");
+    Debug(D, pdTerm) << "SocketUN: Closed all sockets." << std::endl;
 
 #ifdef _WIN32
     SocketTCP::winsockShutdown();
 #endif
 
-    pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount);
-    pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount);
-
-    delete pD;
+    Debug(D, pdCom) << "Unix Socket " << _socket_un << ": total = " << SentBytesCount << "b sent" << std::endl;
+    Debug(D, pdCom) << "Unix Socket " << _socket_un << ": total = " << RcvdBytesCount << "b received" << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -219,7 +220,7 @@ void SocketUN::send(const unsigned char* buffer, size_t size)
     // G.Out(pdGendoc,"enter SocketUN::send");
     assert(0 <= _socket_un);
 
-    pD->Out(pdTrace, "Beginning to send UN message...");
+    Debug(D, pdTrace) << "Beginning to send UN message..." << std::endl;
 
     while (total_sent < size) {
 #ifdef _WIN32
@@ -230,11 +231,11 @@ void SocketUN::send(const unsigned char* buffer, size_t size)
 
         if (sent > 0) {
             total_sent += sent;
-            pD->Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, size);
+            Debug(D, pdTrace) << "Sent " << total_sent << " bytes out of " << size << std::endl;
         }
         else {
             if (sent < 0) {
-                pD->Out(pdExcept, "Error while sending on UN socket.");
+                Debug(D, pdExcept) << "Error while sending on UN socket." << std::endl;
 
 #ifdef _WIN32
                 if (WSAGetLastError() == WSAEINTR)
@@ -245,7 +246,7 @@ void SocketUN::send(const unsigned char* buffer, size_t size)
                     if (HandlerType == stSignalInterrupt)
                         throw NetworkSignal("");
                     else
-                        pD->Out(pdExcept, "EmettreUN ignoring signal interruption.");
+                        Debug(D, pdExcept) << "EmettreUN ignoring signal interruption." << std::endl;
                 }
                 else // Other errors
                 {
@@ -255,7 +256,7 @@ void SocketUN::send(const unsigned char* buffer, size_t size)
             }
 
             if (sent == 0) {
-                pD->Out(pdExcept, "No data could be sent, connection closed?.");
+                Debug(D, pdExcept) << "No data could be sent, connection closed?." << std::endl;
                 throw NetworkError("Could not send any data on UN socket.");
             }
         }
@@ -268,7 +269,7 @@ void SocketUN::send(const unsigned char* buffer, size_t size)
 //! error.
 void SocketUN::error(const char* msg)
 {
-    throw NetworkError(stringize() << "SocketUN::error <" << strerror(errno) << "> msg = <" << msg << ">");
+    throw NetworkError("SocketUN::error <" + std::string(strerror(errno)) + "> msg = <" + std::string(msg) + ">");
 }
 
 // ----------------------------------------------------------------------------
@@ -304,7 +305,7 @@ void SocketUN::receive(const unsigned char* buffer, size_t Size)
     unsigned long RBLength = 0;
 #endif
 
-    pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)", Size);
+    Debug(D, pdTrace) << "Beginning to receive U/W message, size " << Size << std::endl;
 
     while (RBLength < Size) {
 #ifdef _WIN32
@@ -322,7 +323,7 @@ void SocketUN::receive(const unsigned char* buffer, size_t Size)
 #endif
 
         if (nReceived < 0) {
-            pD->Out(pdExcept, "Error while receiving on UN socket.");
+            Debug(D, pdExcept) << "Error while receiving on UN socket." << std::endl;
 
 #ifdef _WIN32
             if (WSAGetLastError() == WSAEINTR)
@@ -333,7 +334,7 @@ void SocketUN::receive(const unsigned char* buffer, size_t Size)
                 if (HandlerType == stSignalInterrupt)
                     throw NetworkSignal("");
                 else
-                    pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
+                    Debug(D, pdExcept) << "RecevoirUN ignoring signal interruption." << std::endl;
             }
             else { // Other errors
                 perror("UN Socket(RecevoirUN) : ");
@@ -342,7 +343,7 @@ void SocketUN::receive(const unsigned char* buffer, size_t Size)
         }
 
         if (nReceived == 0) {
-            pD->Out(pdExcept, "UN connection has been closed by peer.");
+            Debug(D, pdExcept) << "UN connection has been closed by peer." << std::endl;
             throw NetworkError("Connection closed by client.");
         }
         else if (nReceived > 0) {
@@ -350,7 +351,7 @@ void SocketUN::receive(const unsigned char* buffer, size_t Size)
             RcvdBytesCount += nReceived;
         }
     }
-    pD->Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
+    Debug(D, pdTrace) << "Received " << RBLength << " bytes out of " << Size << std::endl;
 
 #ifdef SOCKUN_BUFFER_LENGTH
     memcpy(const_cast<unsigned char*>(buffer), ReadBuffer, Size);

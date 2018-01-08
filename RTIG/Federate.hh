@@ -22,8 +22,8 @@
 #define CERTI_RTIG_FEDERATE_HH
 
 #include <string>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <libCERTI/FedTimeD.hh>
 // #include "certi.hh"
@@ -39,13 +39,20 @@ public:
      * 
      * handle must be valid
      */
-    Federate(const std::string& name, const FederateHandle handle);
+    Federate(const std::string& name,
+             const std::string& type,
+             const RtiVersion rti_version,
+             const FederateHandle handle);
 
     FederateHandle getHandle() const noexcept;
 
     void setHandle(const FederateHandle h);
 
     std::string getName() const noexcept;
+
+    std::string getType() const noexcept;
+    
+    RtiVersion getRtiVersion() const noexcept;
 
     bool isConstrained() const noexcept;
 
@@ -154,6 +161,8 @@ public:
 private:
     FederateHandle my_handle; /// Federate ID.
     std::string my_name; /// Federate name.
+    std::string my_type;
+    RtiVersion my_rti_version;
 
     /** Used only on the RTIA, because on RTIG there is a
      *  upper level list of regulator Federates (in Federation).
@@ -187,7 +196,6 @@ private:
 
     bool my_isCurrentlySaving{false};
     bool my_isCurrentlyRestoring{false};
-
 
     /// List of labels to synchronize.
     std::unordered_set<std::string> my_syncLabels{};
