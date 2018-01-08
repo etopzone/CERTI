@@ -150,8 +150,8 @@ std::unique_ptr<rti1516::RTIambassador> rti1516::RTIambassadorFactory::createRTI
         }
     }
     if (!success) {
-        throw rti1516::RTIinternalError("CreateProcess - GetLastError()=<" + std::to_string(GetLastError())
-                                        + "> Cannot connect to RTIA.exe");
+        throw rti1516::RTIinternalError(L"CreateProcess - GetLastError()=<" + std::to_string(GetLastError())
+                                        + L"> Cannot connect to RTIA.exe");
     }
 
     p_ambassador->privateRefs->handle_RTIA = pi.hProcess;
