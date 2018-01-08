@@ -135,7 +135,7 @@ bool RTI1516ambassador::__tick_kernel(bool multiple, TickTime minimum, TickTime 
     rti1516e::SpecifiedSaveLabelDoesNotExist, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     M_Tick_Request vers_RTI;
-    std::unique_ptr<Message> vers_Fed;
+    std::auto_ptr<Message> vers_Fed;
 
     // Request callback(s) from the local RTIA
     vers_RTI.setMultiple(multiple);
@@ -3024,7 +3024,7 @@ void RTI1516ambassador::disableCallbacks() throw(rti1516e::SaveInProgress,
     throw rti1516e::RTIinternalError(L"disableCallbacks Not implemented");
 }
 
-std::unique_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory() const
+std::auto_ptr<rti1516e::LogicalTimeFactory> RTI1516ambassador::getTimeFactory() const
     throw(rti1516e::FederateNotExecutionMember, rti1516e::NotConnected, rti1516e::RTIinternalError)
 {
     /* FIXME this must be fixed ASAP */
