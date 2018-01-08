@@ -199,7 +199,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 
     FederateHandle federate_handle;
     std::tie(federate_handle, responses) = my_federations.addFederate(
-        federation_handle, federate, federate_type, static_cast<SocketTCP*>(request.sockets().front()), *rep);
+        federation_handle, federate, federate_type, additional_modules, static_cast<SocketTCP*>(request.sockets().front()), *rep);
 
     int regulators_count;
     int federates_count;

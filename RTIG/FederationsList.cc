@@ -204,6 +204,7 @@ void FederationsList::info(const FederationHandle handle,
 std::pair<FederateHandle, Responses> FederationsList::addFederate(const FederationHandle handle,
                                                                   const std::string& federateName,
                                                                   const std::string& federateType,
+                                                                  std::vector<std::string> additional_fom_modules,
                                                                   SocketTCP* federateTcpLink,
                                                                   NM_Join_Federation_Execution& objectModelData)
 {
@@ -215,7 +216,7 @@ std::pair<FederateHandle, Responses> FederationsList::addFederate(const Federati
 
     // It may raise a bunch of exceptions
     // adding the federate and return its handle
-    auto handleAndResponses = federation.add(federateName, federateType, federateTcpLink);
+    auto handleAndResponses = federation.add(federateName, federateType, additional_fom_modules, federateTcpLink);
 
     federation.getFOM(objectModelData);
 

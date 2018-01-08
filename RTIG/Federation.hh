@@ -112,7 +112,7 @@ public:
 
     /// Returns the current list of fom module used in this federation
     std::vector<std::string> getFomModules() const;
-    
+
     /// Return the current mim module used
     std::string getMimModule() const;
 
@@ -154,7 +154,10 @@ public:
      * Also send Null messages from all others federates to initialize its LBTS, and
      * finally a RequestPause message if the Federation is already paused.
      */
-    std::pair<FederateHandle, Responses> add(const std::string& federate_name, const std::string& federate_type, SocketTCP* tcp_link);
+    std::pair<FederateHandle, Responses> add(const std::string& federate_name,
+                                             const std::string& federate_type,
+                                             std::vector<std::string> additional_fom_modules,
+                                             SocketTCP* tcp_link);
 
     /** Remove a federate.
      * 
@@ -216,13 +219,14 @@ public:
     Responses unregisterSynchronization(FederateHandle federate_handle, const std::string& label);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point.
-    Responses broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
+    Responses
+    broadcastSynchronization(FederateHandle federate_handle, const std::string& label, const std::string& tag);
 
     /// Broadcast an 'Announce Synchronization Point' when registering a new synchronization point onto a set of federates
     Responses broadcastSynchronization(FederateHandle federate_handle,
-                                  const std::string& label,
-                                  const std::string& tag,
-                                  const std::vector<FederateHandle>& federates);
+                                       const std::string& label,
+                                       const std::string& tag,
+                                       const std::vector<FederateHandle>& federates);
 
     // Save Management.
 
@@ -432,7 +436,7 @@ public:
                                                                 const std::string& name,
                                                                 RegionHandle region_handle,
                                                                 const std::vector<AttributeHandle>& attributes);
-    
+
     Responses updateAsynchronousDelivery(FederateHandle federate_handle, bool status);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
@@ -481,7 +485,7 @@ private:
 
     FederationHandle my_handle;
     std::string my_name;
-    
+
     std::vector<std::string> my_fom_modules;
     std::string my_mim_module;
 

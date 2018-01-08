@@ -254,8 +254,10 @@ bool Federation::check(FederateHandle federate_handle) const
     return true;
 }
 
-std::pair<FederateHandle, Responses>
-Federation::add(const string& federate_name, const string& federate_type, SocketTCP* tcp_link)
+std::pair<FederateHandle, Responses> Federation::add(const string& federate_name,
+                                                     const string& federate_type,
+                                                     std::vector<std::string> additional_fom_modules,
+                                                     SocketTCP* tcp_link)
 {
     try {
         getFederate(federate_name);
@@ -273,6 +275,8 @@ Federation::add(const string& federate_name, const string& federate_type, Socket
         std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, federate_handle)));
 
     Federate& federate = *result.first->second;
+
+    openFomModules(additional_fom_modules);
 
     Debug(D, pdInit) << "Federate " << federate_handle << " joined Federation " << my_handle << endl;
 
