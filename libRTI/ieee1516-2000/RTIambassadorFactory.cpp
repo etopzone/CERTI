@@ -150,7 +150,8 @@ std::unique_ptr<rti1516::RTIambassador> rti1516::RTIambassadorFactory::createRTI
         }
     }
     if (!success) {
-        throw rti1516::RTIinternalError(L"CreateProcess - GetLastError()=<" + std::to_string(GetLastError())
+        auto errorString = std::to_string(GetLastError());
+        throw rti1516::RTIinternalError(L"CreateProcess - GetLastError()=<" + std::wstring(begin(errorString), end(errorString))
                                         + L"> Cannot connect to RTIA.exe");
     }
 
