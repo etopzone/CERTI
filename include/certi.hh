@@ -150,6 +150,7 @@ typedef uint32_t ExtentIndex;
 
 typedef uint32_t OrderType;
 typedef uint32_t TransportType;
+typedef uint8_t RtiVersion;
 
 typedef double TickTime;
 
@@ -173,11 +174,17 @@ enum ObjectRemovalReason {
 // Constants (former HLA constants)
 const TransportType RELIABLE = 1 ;
 const TransportType BEST_EFFORT = 2 ;
+
 const OrderType RECEIVE = 1 ;
 const OrderType TIMESTAMP = 2 ;
 
+const RtiVersion HLA_1_3 = 1;
+const RtiVersion IEEE_1516_2000 = 2;
+const RtiVersion IEEE_1516_2010 = 3;
+
 // Constants
 const int MAX_BACKLOG = 256 ;
+
 
 /**
  * Helper class to simplify string construction. Implemented as

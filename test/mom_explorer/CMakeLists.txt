@@ -1,6 +1,5 @@
 include_directories(BEFORE
   ${CMAKE_SOURCE_DIR}/libCERTI 
-  ${CMAKE_SOURCE_DIR}/test/libgraphc
   ${CMAKE_SOURCE_DIR}/include/
   ${CMAKE_SOURCE_DIR}/include/ieee1516-2010
   ${CMAKE_BINARY_DIR}/include/ieee1516-2010)

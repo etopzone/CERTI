@@ -233,6 +233,8 @@ void RTI1516ambassador::createFederationExecution(
 
     req.setFomModuleDesignatorsSize(1);
     req.setFomModuleDesignators({fullPathNameToTheFDDfile.begin(), fullPathNameToTheFDDfile.end()}, 0);
+    
+    req.setRtiVersion(IEEE_1516_2000);
 
     Debug(G, pdGendoc) << "             ====>executeService CREATE_FEDERATION_EXECUTION" << std::endl;
 
@@ -290,6 +292,8 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
 
     req.setFederateName(federateTypeAsString);
     req.setFederationExecutionName(federationExecutionNameAsString);
+    
+    req.setRtiVersion(IEEE_1516_2000);
     
     Debug(G, pdGendoc) << "        ====>executeService JOIN_FEDERATION_EXECUTION" << std::endl;
     privateRefs->executeService(&req, &rep);

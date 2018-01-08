@@ -540,6 +540,8 @@ void
 
     req.setFomModuleDesignatorsSize(1);
     req.setFomModuleDesignators(FED, 0);
+    
+    req.setRtiVersion(HLA_1_3);
 
     Debug(G, pdGendoc) << "             ====>executeService CREATE_FEDERATION_EXECUTION" << std::endl;
 
@@ -605,6 +607,8 @@ RTI::RTIambassador::joinFederationExecution(const char* yourName,
 
     req.setFederateName(yourName);
     req.setFederationExecutionName(executionName);
+    
+    req.setRtiVersion(HLA_1_3);
 
     Debug(G, pdGendoc) << "        ====>executeService JOIN_FEDERATION_EXECUTION" << std::endl;
 

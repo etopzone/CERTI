@@ -1,4 +1,4 @@
-// Generated on 2017 December Tue, 19 at 16:17:00 by the CERTI message generator
+// Generated on 2018 January Mon, 08 at 15:15:03 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -323,6 +323,9 @@ public:
     const std::string& getFederationExecutionName() const;
     void setFederationExecutionName(const std::string& newFederationExecutionName);
     
+    const RtiVersion& getRtiVersion() const;
+    void setRtiVersion(const RtiVersion& newRtiVersion);
+    
     uint32_t getFomModuleDesignatorsSize() const;
     void setFomModuleDesignatorsSize(uint32_t num);
     const std::vector<std::string>& getFomModuleDesignators() const;
@@ -340,6 +343,7 @@ public:
 
 protected:
     std::string federationExecutionName;// the federation name
+    RtiVersion rtiVersion;// the rti version
     std::vector<std::string> fomModuleDesignators;// the Federation ID which is in fact a filename
     std::string mimDesignator;
     bool _hasMimDesignator {false};
@@ -398,6 +402,9 @@ public:
     void setFederateName(const std::string& newFederateName);
     bool hasFederateName() const;
     
+    const RtiVersion& getRtiVersion() const;
+    void setRtiVersion(const RtiVersion& newRtiVersion);
+    
     const std::string& getFederateType() const;
     void setFederateType(const std::string& newFederateType);
     
@@ -444,6 +451,7 @@ protected:
     std::string federationExecutionName;// the federation name
     std::string federateName;// the federate name (should be unique within a federation)
     bool _hasFederateName {false};
+    RtiVersion rtiVersion;// the rti version
     std::string federateType;
     std::vector<std::string> additionalFomModules;
     std::vector<NM_FOM_Routing_Space> routingSpaces;
@@ -541,7 +549,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const NM_Set_Class_Relevance_Advisory_Switch& msg);
 
 protected:
-    bool classRelevanceAdvisorySwitch;// value of CRA switch 	
+    bool classRelevanceAdvisorySwitch;// value of CRA switch     
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Class_Relevance_Advisory_Switch& msg);
@@ -564,7 +572,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const NM_Set_Interaction_Relevance_Advisory_Switch& msg);
 
 protected:
-    bool interactionRelevanceAdvisorySwitch;// value of IRA switch 	
+    bool interactionRelevanceAdvisorySwitch;// value of IRA switch     
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Interaction_Relevance_Advisory_Switch& msg);
@@ -587,7 +595,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Relevance_Advisory_Switch& msg);
 
 protected:
-    bool attributeRelevanceAdvisorySwitch;// value of ARA switch 	
+    bool attributeRelevanceAdvisorySwitch;// value of ARA switch     
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Relevance_Advisory_Switch& msg);
@@ -610,7 +618,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Scope_Advisory_Switch& msg);
 
 protected:
-    bool attributeScopeAdvisorySwitch;// value of ASA switch 	
+    bool attributeScopeAdvisorySwitch;// value of ASA switch     
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Set_Attribute_Scope_Advisory_Switch& msg);

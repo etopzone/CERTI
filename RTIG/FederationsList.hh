@@ -72,6 +72,7 @@ public:
                                                                      AuditFile& audit,
                                                                      const std::vector<std::string> fom_modules,
                                                                      const std::string& mim_module,
+                                                                     const RtiVersion rti_version,
                                                                      SocketMC* multicastSocket);
 #else
     /** createFederation (with FEDERATION_USES_MULTICAST not defined)
@@ -84,7 +85,8 @@ public:
                                                                      SocketServer& socket_server,
                                                                      AuditFile& audit,
                                                                      const std::vector<std::string> fom_modules,
-                                                                     const std::string& mim_module);
+                                                                     const std::string& mim_module,
+                                                                     const RtiVersion rti_version);
 #endif
 
     /** Return the Handle of the Federation named "name" if it is found in the
@@ -117,6 +119,7 @@ public:
                                                      const std::string& federateName,
                                                      const std::string& federateType,
                                                      std::vector<std::string> additional_fom_modules,
+                                                     const RtiVersion rti_version,
                                                      SocketTCP* federateTcpLink,
                                                      NM_Join_Federation_Execution& objectModelData);
 

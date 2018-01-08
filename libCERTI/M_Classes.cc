@@ -1,4 +1,4 @@
-// Generated on 2017 December Tue, 19 at 16:17:00 by the CERTI message generator
+// Generated on 2018 January Mon, 08 at 15:15:03 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "M_Classes.hh"
@@ -149,6 +149,7 @@ void M_Create_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
     Super::serialize(msgBuffer);
     // Specific serialization code
     msgBuffer.write_string(federationExecutionName);
+    msgBuffer.write_uint8(rtiVersion);
     uint32_t fomModuleDesignatorsSize = fomModuleDesignators.size();
     msgBuffer.write_uint32(fomModuleDesignatorsSize);
     for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
@@ -170,6 +171,7 @@ void M_Create_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer
     Super::deserialize(msgBuffer);
     // Specific deserialization code
     msgBuffer.read_string(federationExecutionName);
+    rtiVersion = static_cast<RtiVersion>(msgBuffer.read_uint8());
     uint32_t fomModuleDesignatorsSize = msgBuffer.read_uint32();
     fomModuleDesignators.resize(fomModuleDesignatorsSize);
     for (uint32_t i = 0; i < fomModuleDesignatorsSize; ++i) {
@@ -193,6 +195,16 @@ const std::string& M_Create_Federation_Execution::getFederationExecutionName() c
 void M_Create_Federation_Execution::setFederationExecutionName(const std::string& newFederationExecutionName)
 {
     federationExecutionName = newFederationExecutionName;
+}
+
+const RtiVersion& M_Create_Federation_Execution::getRtiVersion() const
+{
+    return rtiVersion;
+}
+
+void M_Create_Federation_Execution::setRtiVersion(const RtiVersion& newRtiVersion)
+{
+    rtiVersion = newRtiVersion;
 }
 
 uint32_t M_Create_Federation_Execution::getFomModuleDesignatorsSize() const
@@ -270,6 +282,7 @@ std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& 
     
     // Specific display
     os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
+    os << "  rtiVersion = " << msg.rtiVersion << std::endl;
     os << "  fomModuleDesignators [] =" << std::endl;
     for (const auto& element : msg.fomModuleDesignators) {
         os << element;
@@ -344,6 +357,7 @@ void M_Join_Federation_Execution::serialize(libhla::MessageBuffer& msgBuffer)
         msgBuffer.write_string(federateName);
     }
     msgBuffer.write_string(federateType);
+    msgBuffer.write_uint8(rtiVersion);
     msgBuffer.write_string(federationExecutionName);
     uint32_t additionalFomModulesSize = additionalFomModules.size();
     msgBuffer.write_uint32(additionalFomModulesSize);
@@ -363,6 +377,7 @@ void M_Join_Federation_Execution::deserialize(libhla::MessageBuffer& msgBuffer)
         msgBuffer.read_string(federateName);
     }
     msgBuffer.read_string(federateType);
+    rtiVersion = static_cast<RtiVersion>(msgBuffer.read_uint8());
     msgBuffer.read_string(federationExecutionName);
     uint32_t additionalFomModulesSize = msgBuffer.read_uint32();
     additionalFomModules.resize(additionalFomModulesSize);
@@ -405,6 +420,16 @@ const std::string& M_Join_Federation_Execution::getFederateType() const
 void M_Join_Federation_Execution::setFederateType(const std::string& newFederateType)
 {
     federateType = newFederateType;
+}
+
+const RtiVersion& M_Join_Federation_Execution::getRtiVersion() const
+{
+    return rtiVersion;
+}
+
+void M_Join_Federation_Execution::setRtiVersion(const RtiVersion& newRtiVersion)
+{
+    rtiVersion = newRtiVersion;
 }
 
 const std::string& M_Join_Federation_Execution::getFederationExecutionName() const
@@ -462,6 +487,7 @@ std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& ms
     os << "  federate = " << msg.federate << std::endl;
     os << "  (opt) federateName =" << msg.federateName << std::endl;
     os << "  federateType = " << msg.federateType << std::endl;
+    os << "  rtiVersion = " << msg.rtiVersion << std::endl;
     os << "  federationExecutionName = " << msg.federationExecutionName << std::endl;
     os << "  additionalFomModules [] =" << std::endl;
     for (const auto& element : msg.additionalFomModules) {

@@ -129,10 +129,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-
+    
     const auto& federation = request.message()->getFederationExecutionName();
     const auto& fom_modules = request.message()->getFomModuleDesignators();
     const auto& mim_designator = request.message()->getMimDesignator();
+    const auto& rti_version = request.message()->getRtiVersion();
 
     my_auditServer << "Federation Name : " << federation;
     auto handle = FederationHandle(my_federationHandleGenerator.provide());
@@ -153,13 +154,13 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
 
     // inserer la nouvelle federation dans la liste des federations
     auto rep = my_federations->createFederation(
-        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, com_mc);
+        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, rti_version, com_mc);
 
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 #else
     auto rep = my_federations.createFederation(
-        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator);
+        federation, handle, my_socketServer, my_auditServer, fom_modules, mim_designator, rti_version);
 #endif
     my_auditServer << " created";
 
@@ -177,11 +178,12 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-
+    
     const auto& federation = request.message()->getFederationExecutionName();
     const auto& federate = request.message()->getFederateName();
     const auto& federate_type = request.message()->getFederateType();
-    const auto& additional_modules = request.message()->getAdditionalFomModules(); // TODO
+    const auto& additional_modules = request.message()->getAdditionalFomModules();
+    const auto& rti_version = request.message()->getRtiVersion();
 
     unsigned int peer = request.message()->getBestEffortPeer();
     unsigned long address = request.message()->getBestEffortAddress();
@@ -199,7 +201,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
 
     FederateHandle federate_handle;
     std::tie(federate_handle, responses) = my_federations.addFederate(
-        federation_handle, federate, federate_type, additional_modules, static_cast<SocketTCP*>(request.sockets().front()), *rep);
+        federation_handle, federate, federate_type, additional_modules, rti_version, static_cast<SocketTCP*>(request.sockets().front()), *rep);
 
     int regulators_count;
     int federates_count;

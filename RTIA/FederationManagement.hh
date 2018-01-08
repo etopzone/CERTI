@@ -66,11 +66,15 @@ public:
 
     void checkFederationSaving(void) throw(SaveInProgress);
     void checkFederationRestoring(void) throw(RestoreInProgress);
+    
+    std::string getRtiVersion() const;
+    void setRtiVersion(const std::string& version);
 
     // -- Create/Destroy --
     void createFederationExecution(const std::string& federation_execution_name,
                                    const std::vector<std::string> fom_module_designators,
                                    const std::string& mim_designator,
+                                   const RtiVersion rti_version,
                                    Exception::Type& e);
     
     void destroyFederationExecution(const std::string& theName, Exception::Type& e);
@@ -80,6 +84,7 @@ public:
                                            const std::string& federate_type,
                                            const std::string& federation_execution_name,
                                            const std::vector<std::string> additional_fom_modules,
+                                           const RtiVersion rti_version,
                                            RootObject* rootObject,
                                            Exception::Type& e);
 

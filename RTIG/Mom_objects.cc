@@ -63,7 +63,7 @@ Responses Mom::registerFederation()
     // Static
     attribute = my_attribute_cache["HLARTIversion"]; // FIXME attribute duplicated between federate and federation 
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("1516-2010");
+    my_attribute_values_cache[my_federation_object][attribute] = encodeVersion(my_federation.getRtiVersion());
 
     // Static
     attribute = my_attribute_cache["HLAMIMDesignator"];
@@ -156,7 +156,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Static
     attribute = my_attribute_cache["HLARTIversion"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("1516-2010");
+    my_attribute_values_cache[federate_object][attribute] = encodeVersion(federate.getRtiVersion());
 
     // Static
     attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];

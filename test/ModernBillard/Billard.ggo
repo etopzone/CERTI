@@ -1,0 +1,25 @@
+# This is used by gengetopt to generate Billard command line parser
+# see http://www.gnu.org/software/gengetopt/gengetopt.html#Basic-Usage
+
+package "billard"
+purpose "CERTI Billard test application"
+
+# gengetopt options
+args "-F Billard_cmdline -G"
+
+# Options
+option  "auto"          a       "auto start"            int     no
+option	"coordinated" 	c	"coordinated time"	flag	on
+option  "delay"		d	"delay before 1st step" int	no
+option  "notimestamp"   e       "no timestamp"		flag	off    
+option	"federation"	f	"federation name"	string	yes
+option  "logfile"	l	"file to log events"	string  no
+option 	"name"		n	"federate name"		string	yes
+option  "demo"		o	"select demo (static-ddm, dynamic-ddm)"		string  no
+option  "timer"		t	"timer"			int	no
+option  "verbose"	v	"verbose mode"		flag	off
+option  "xoffset"	x	"X offset (X11)"	int	no
+option 	"yoffset"	y	"Y offset (X11)"	int	no
+option  "initx"		X	"ball initial X value"	int	no
+option  "inity"		Y	"ball initial Y value"	int	no
+option  "filename"      F       "FED filename"          string  yes

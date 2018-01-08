@@ -105,6 +105,7 @@ Federation::Federation(const string& federation_name,
                        AuditFile& audit_server,
                        const std::vector<std::string> fom_modules,
                        const std::string& mim_module,
+                       const RtiVersion rti_version,
                        SocketMC* mc_link,
                        const int theVerboseLevel)
 #else
@@ -114,9 +115,10 @@ Federation::Federation(const string& federation_name,
                        AuditFile& audit_server,
                        const std::vector<std::string> fom_modules,
                        const std::string& mim_module,
+                       const RtiVersion rti_version,
                        const int verboseLevel)
 #endif
-    : my_handle(federation_handle), my_name(federation_name)
+    : my_handle(federation_handle), my_name(federation_name), my_rti_version{rti_version}
 {
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -148,14 +150,19 @@ Federation::Federation(const string& federation_name,
         cout << "New federation: " << my_name << endl;
     }
 
-    if (mim_module.empty()) {
-        openFomModules({"HLAstandardMIM.xml"}, true);
-    }
-    else {
-        openFomModules({mim_module}, true);
-    }
+    if(getRtiVersion() == IEEE_1516_2010) { // mim and modules
+        if (mim_module.empty()) {
+            openFomModules({"HLAstandardMIM.xml"}, true);
+        }
+        else {
+            openFomModules({mim_module}, true);
+        }
 
-    openFomModules(fom_modules);
+        openFomModules(fom_modules);
+    }
+    else { // only one fdd
+        openFomModules({fom_modules.front()});
+    }
 
     my_min_NERx.setZero();
 
@@ -196,6 +203,11 @@ vector<string> Federation::getFomModules() const
 string Federation::getMimModule() const
 {
     return my_mim_module;
+}
+    
+RtiVersion Federation::getRtiVersion() const
+{
+    return my_rti_version;
 }
 
 int Federation::getNbFederates() const
@@ -257,6 +269,7 @@ bool Federation::check(FederateHandle federate_handle) const
 std::pair<FederateHandle, Responses> Federation::add(const string& federate_name,
                                                      const string& federate_type,
                                                      std::vector<std::string> additional_fom_modules,
+                                                     const RtiVersion rti_version,
                                                      SocketTCP* tcp_link)
 {
     try {
@@ -272,7 +285,7 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
 
     FederateHandle federate_handle = my_federate_handle_generator.provide();
     auto result = my_federates.insert(
-        std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, federate_handle)));
+        std::make_pair(federate_handle, make_unique<Federate>(federate_name, federate_type, rti_version, federate_handle)));
 
     Federate& federate = *result.first->second;
 
@@ -2132,7 +2145,7 @@ Responses Federation::respondToSome(std::unique_ptr<NetworkMessage> message,
 Responses Federation::enableMomIfAvailable()
 {
     Debug(G, pdGendoc) << "enter Federation::enableMomIfAvailable" << endl;
-
+    
     Responses responses;
 
     if (Mom::isAvailableInRootObjectAndCompliant(*my_root_object)) {

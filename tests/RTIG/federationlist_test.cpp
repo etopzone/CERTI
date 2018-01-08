@@ -37,20 +37,20 @@ protected:
 
 TEST_F(FederationsListTest, createFederationThrowsOnEmptyName)
 {
-    ASSERT_THROW(f.createFederation("", federation_handle, s, a, {""}, ""), ::certi::RTIinternalError);
+    ASSERT_THROW(f.createFederation("", federation_handle, s, a, {""}, "", ::certi::HLA_1_3), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationsListTest, createFederationRethrows)
 {
-    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, ""), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, "", ::certi::HLA_1_3), ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationsListTest, createFederationDoesNotWorkTwice)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
-    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, ""), ::certi::FederationExecutionAlreadyExists);
+    ASSERT_THROW(f.createFederation("fed", federation_handle, s, a, {""}, "", ::certi::HLA_1_3), ::certi::FederationExecutionAlreadyExists);
 }
 
 TEST_F(FederationsListTest, getFederationHandleThrowsOnUknFederation)
@@ -61,7 +61,7 @@ TEST_F(FederationsListTest, getFederationHandleThrowsOnUknFederation)
 TEST_F(FederationsListTest, getFederationHandleReturnsHandleFromCreate)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
     ASSERT_EQ(federation_handle, f.getFederationHandle("fed"));
 }
@@ -74,10 +74,10 @@ TEST_F(FederationsListTest, destroyFederationThrowsOnUknFederation)
 TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
     certi::NM_Join_Federation_Execution message{};
-    f.addFederate(federation_handle, "federate", fed_type, {}, nullptr, message);
+    f.addFederate(federation_handle, "federate", fed_type, {}, ::certi::HLA_1_3, nullptr, message);
 
     ASSERT_THROW(f.destroyFederation(federation_handle), ::certi::FederatesCurrentlyJoined);
 }
@@ -85,7 +85,7 @@ TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
 TEST_F(FederationsListTest, DestroyFederationRemovesFederation)
 {
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
     f.destroyFederation(federation_handle);
 
@@ -98,7 +98,7 @@ TEST_F(FederationsListTest, infoThrowsOnUknFederation)
     bool isSyncing{false};
 
     TemporaryFedFile tmp{"FedList.fed"};
-    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "");
+    f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
     f.info(federation_handle, nbFeds, nbRegs, isSyncing);
 
@@ -115,7 +115,7 @@ TEST_F(FederationsListTest, killFederateDoesNotThrowsOnUknFederation)
 TEST_F(FederationsListTest, addFederateThrowsOnUknFederation)
 {
     certi::NM_Join_Federation_Execution message{};
-    ASSERT_THROW(f.addFederate(ukn_federation, "", fed_type, {}, nullptr, message), ::certi::FederationExecutionDoesNotExist);
+    ASSERT_THROW(f.addFederate(ukn_federation, "", fed_type, {}, ::certi::HLA_1_3, nullptr, message), ::certi::FederationExecutionDoesNotExist);
 }
 
 TEST_F(FederationsListTest, VerboseLevelGettersAndSetters)

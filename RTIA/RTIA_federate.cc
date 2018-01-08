@@ -122,10 +122,10 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         CFEq = static_cast<M_Create_Federation_Execution*>(request);
 
         Debug(D, pdTrace) << "Receiving Message from Federate, type CreateFederation." << std::endl;
-
+        
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
         fm.createFederationExecution(
-            CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(), CFEq->getMimDesignator(), e);
+            CFEq->getFederationExecutionName(), CFEq->getFomModuleDesignators(), CFEq->getMimDesignator(), CFEq->getRtiVersion(), e);
 
         if (e == Exception::Type::RTIinternalError) {
             answer->setException(e, "Federate is yet a creator or a member !");
@@ -171,6 +171,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
                                                      JFEq->getFederateType(),
                                                      JFEq->getFederationExecutionName(),
                                                      JFEq->getAdditionalFomModules(),
+                                                     JFEq->getRtiVersion(),
                                                      &my_root_object,
                                                      e));
 

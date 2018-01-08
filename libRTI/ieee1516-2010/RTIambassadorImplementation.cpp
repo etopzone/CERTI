@@ -285,6 +285,8 @@ void RTI1516ambassador::createFederationExecutionWithMIM(
     if (!mimModule.empty()) {
         req.setMimDesignator({begin(mimModule), end(mimModule)});
     }
+    
+    req.setRtiVersion(IEEE_1516_2010);
 
     req.setLogicalTimeRepresentation({begin(logicalTimeImplementationName), end(logicalTimeImplementationName)});
 
@@ -379,6 +381,8 @@ rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
     req.setFederateName({begin(federateType), end(federateType)});
 
     req.setFederateType({begin(federateType), end(federateType)});
+    
+    req.setRtiVersion(IEEE_1516_2010);
 
     req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
 
