@@ -287,7 +287,7 @@ void MOMFederateAmbassador::joinFederationExecution()
 {
     std::wcout << "=>\tjoinFederationExecution <" << my_federation_name << ">" << std::endl;
 
-    my_ambassador.joinFederationExecution(my_federate_name, my_federation_name);
+    my_ambassador.joinFederationExecution(my_federate_name, L"mom_explorer", my_federation_name);
     std::cout << "*\tFederation joined" << std::endl;
 }
 
