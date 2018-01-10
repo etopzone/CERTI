@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     std::signal(SIGINT, signalHandler);
 
     if (argc != 3) {
-        cout << "usage: ./mom_explorer federate_name federation_name" << endl;
+        cout << "usage: ./modern_billard federate_name federation_name" << endl;
         return EXIT_FAILURE;
     }
 
@@ -126,6 +126,10 @@ int main(int argc, char** argv)
                 wcout << "steps per second: " << 5.0e11 /  std::chrono::duration_cast<std::chrono::nanoseconds>(now-time_point).count() << endl;
                 time_point = now;
             }
+            
+//             if(step_count == 20) {
+//                 loop_state = false;
+//             }
         }
     }
     catch (rti1516e::Exception& e) {

@@ -4,10 +4,13 @@
 #include <RTI/Handle.h>
 
 #include <cmath>
+#include <cstring>
+
+#include "../libgraphc/graph_c.hh"
 
 struct Board {
-    double width{80};
-    double height{24};
+    double width{500};
+    double height{100};
 };
 
 class Ball {
@@ -54,9 +57,19 @@ public:
         return my_x;
     }
 
+    void setX(const double x)
+    {
+        my_x = x;
+    }
+
     double getY() const
     {
         return my_y;
+    }
+
+    void setY(const double y)
+    {
+        my_y = y;
     }
 
     double getDX() const
@@ -64,9 +77,31 @@ public:
         return my_dx;
     }
 
+    void setDX(const double dx)
+    {
+        my_dx = dx;
+    }
+
     double getDY() const
     {
         return my_dy;
+    }
+
+    void setDY(const double dy)
+    {
+        my_dy = dy;
+    }
+
+    void updateX(const double x)
+    {
+        setDX(x - my_x);
+        setX(x);
+    }
+
+    void updateY(const double y)
+    {
+        setDY(y - my_y);
+        setY(y);
     }
 
     bool checkCollisionWith(const Ball& other)
@@ -77,7 +112,13 @@ public:
 
     void bounceAgainst(const Ball& other)
     {
-        if ((my_dx == other.getX()) && (my_dy == other.getY())) {
+        if(std::memcmp(getHandle().encode().data(),
+            other.getHandle().encode().data(),
+                       getHandle().encode().size()) > 0) {
+            return;
+        }
+        
+        if ((my_dx == other.getDX()) && (my_dy == other.getDY())) {
             my_dx = -my_dx;
             my_dy = -my_dy;
         }
@@ -105,6 +146,28 @@ public:
         my_y += my_dy;
     }
 
+    void display()
+    {
+        cercler disque;
+        point centre;
+
+        centre.X = (int) my_x;
+        centre.Y = (int) my_y;
+        disque = Definecr(centre, (int) my_radius, COUL_UNIE, my_is_active ? (couleur) BLACK : GRAY);
+        Drawcr(disque);
+    }
+
+    void erase()
+    {
+        cercler disque;
+        point centre;
+
+        centre.X = (int) my_x;
+        centre.Y = (int) my_y;
+        disque = Definecr(centre, (int) my_radius, COUL_UNIE, WHITE);
+        Drawcr(disque);
+    }
+
 private:
     handle my_handle{};
 
@@ -118,8 +181,8 @@ private:
     double my_dx{3.0};
     double my_dy{3.0};
 
-//     double my_old_dx{0.0};
-//     double my_old_dy{0.0};
+    //     double my_old_dx{0.0};
+    //     double my_old_dy{0.0};
 };
 
 #endif // BILLARD_BALL_H

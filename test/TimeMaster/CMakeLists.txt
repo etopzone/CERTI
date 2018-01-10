@@ -1,6 +1,5 @@
 include_directories(BEFORE
   ${CMAKE_SOURCE_DIR}/libCERTI 
-  ${CMAKE_SOURCE_DIR}/test/libgraphc
   ${CMAKE_SOURCE_DIR}/include/
   ${CMAKE_SOURCE_DIR}/include/ieee1516-2010
   ${CMAKE_BINARY_DIR}/include/ieee1516-2010)
@@ -12,11 +11,6 @@ endif (WIN32)
 
 ########### next target ###############
 
-set(modern_billard_SRCS
-  main.cc
-  billard.cc
-  )
-
 if(COMPILE_WITH_CXX11)
     if (CMAKE_VERSION VERSION_LESS 3.1.3)
 	include(CheckCXXCompilerFlag)
@@ -27,14 +21,14 @@ if(COMPILE_WITH_CXX11)
             SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y")
 	endif()
     else()
-        set_property(TARGET modern_billard PROPERTY CXX_STANDARD 14)
+        set_property(TARGET time_master PROPERTY CXX_STANDARD 14)
     endif()
 endif()
 
-add_executable(modern_billard ${modern_billard_SRCS})
-target_link_libraries(modern_billard graph RTI1516e FedTime1516e)
+add_executable(time_master main.cc)
+target_link_libraries(time_master RTI1516e FedTime1516e)
 
-install(TARGETS modern_billard
+install(TARGETS time_master
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)

@@ -30,6 +30,10 @@ public:
     void publishAndSubscribe();
 
     void enableTimeRegulation();
+    
+    void timeConstrainedEnabled(const rti1516e::LogicalTime & theFederateTime) throw(FederateInternalError) override;
+    
+    void timeRegulationEnabled(const rti1516e::LogicalTime & theFederateTime) throw(FederateInternalError) override;
 
     void tick();
 
@@ -42,7 +46,7 @@ public:
     void sendCollision(const Ball& other, const rti1516e::LogicalTime& time);
 
     void sendNewPosition(const rti1516e::LogicalTime& time);
-
+    
     void announceSynchronizationPoint(
         const std::wstring& label,
         const rti1516e::VariableLengthData& theUserSuppliedTag) throw(FederateInternalError) override;
@@ -138,6 +142,11 @@ private:
 
     Ball my_ball{};
     std::vector<Ball> my_other_balls{};
+    
+    bool my_is_time_constrained{false};
+    bool my_is_time_regulated{false};
+    
+    bool my_time_granted{false};
 
     RTI1516fedTimeInterval my_time_interval{1.0};
 

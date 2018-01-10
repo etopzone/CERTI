@@ -1,11 +1,15 @@
 #include "billard.hh"
 
-#include "MessageBuffer.hh"
-
 #include <algorithm>
+#include <cstring>
+#include <iomanip>
 #include <iostream>
 
-//#define TRACE
+#include "MessageBuffer.hh"
+
+#include "../libgraphc/graph_c.hh"
+
+// #define TRACE
 
 #ifdef TRACE
 auto* out = &std::wcout;
@@ -20,10 +24,44 @@ decltype(std::wcout)* out = nullptr;
 using std::wcout;
 using std::endl;
 
+std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
+{
+    os << "{" << v.size() << "}";
+
+    if (v.size() != 0) {
+        auto prev = os.fill('0');
+        os << "0" << std::hex;
+
+        for (auto i(0u); i < v.size(); ++i) {
+            if (i == 0) {
+                os << "x";
+            }
+            else if (i % 4 == 0) {
+                os << ":";
+            }
+            os << std::setw(2) << static_cast<const uint8_t*>(v.data())[i];
+        }
+
+        os << std::dec;
+        os.fill(prev);
+    }
+    return os;
+}
+
+std::wostream& operator<<(std::wostream& os, const AttributeHandleValueMap& v)
+{
+    os << "m{ ";
+    for (const auto& element : v) {
+        os << element.first << " = " << element.second << ", ";
+    }
+    os << "} ";
+    return os;
+}
+
 Billard::Billard(RTIambassador& ambassador, const std::wstring& federation_name, const std::wstring& federate_name)
     : my_ambassador(ambassador), my_federation_name(federation_name), my_federate_name(federate_name)
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
     my_ambassador.connect(*this, HLA_EVOKED);
 }
 
@@ -46,11 +84,11 @@ void Billard::enableCollisions()
 
 void Billard::createOrJoin()
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
     try {
         my_ambassador.createFederationExecution(my_federation_name, L"Base.xml");
         has_created = true;
-        wcout << "Created federation\n";
+        debug() << "Created federation\n";
     }
     catch (FederationExecutionAlreadyExists& e) {
     }
@@ -64,12 +102,12 @@ void Billard::createOrJoin()
     }
 
     my_handle = my_ambassador.joinFederationExecution(my_federate_name, L"ModernBillard", my_federation_name, modules);
-    wcout << "Joined federation\n";
+    debug() << "Joined federation\n";
 }
 
 void Billard::pause(const std::wstring& label)
 {
-    wcout << __func__ << ", label:" << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
 
     std::wstring tag{L""};
     my_ambassador.registerFederationSynchronizationPoint(label, {tag.c_str(), tag.size()});
@@ -79,7 +117,7 @@ void Billard::pause(const std::wstring& label)
 
 void Billard::synchronize(const std::wstring& label)
 {
-    wcout << __func__ << ", label:" << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
 
     waitForAnnounce(label);
 
@@ -90,10 +128,10 @@ void Billard::synchronize(const std::wstring& label)
 
 void Billard::publishAndSubscribe()
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
 
     auto ball_handle = my_ambassador.getObjectClassHandle(L"Ball");
-    wcout << "Ball: " << ball_handle << endl;
+    debug() << "Ball: " << ball_handle << endl;
 
     AttributeHandleSet attributes;
     attributes.insert(my_ambassador.getAttributeHandle(ball_handle, L"PositionX"));
@@ -106,22 +144,44 @@ void Billard::publishAndSubscribe()
         auto collision_handle = my_ambassador.getInteractionClassHandle(L"Collision");
         my_ambassador.subscribeInteractionClass(collision_handle);
         my_ambassador.publishInteractionClass(collision_handle);
-        wcout << "Collision: " << collision_handle << endl;
+        debug() << "Collision: " << collision_handle << endl;
     }
 }
 
 void Billard::enableTimeRegulation()
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
     my_ambassador.enableTimeConstrained();
+
+    while (not my_is_time_constrained) {
+        tick();
+    }
+
+    my_ambassador.enableTimeRegulation(my_time_interval);
+
+    while (not my_is_time_regulated) {
+        tick();
+    }
+}
+
+void Billard::timeConstrainedEnabled(const rti1516e::LogicalTime& theFederateTime) throw(FederateInternalError)
+{
+    debug() << __func__ << ", time=" << theFederateTime.toString() << endl;
+    my_is_time_constrained = true;
+}
+
+void Billard::timeRegulationEnabled(const rti1516e::LogicalTime& theFederateTime) throw(FederateInternalError)
+{
+    debug() << __func__ << ", time=" << theFederateTime.toString() << endl;
+    my_is_time_regulated = true;
 }
 
 void Billard::tick()
 {
 #ifdef TRACE
-    static tick_count{0};
+    static unsigned int tick_count{0};
     ++tick_count;
-    wcout << __func__ << tick_count << '\n';
+    debug() << __func__ << tick_count << '\n';
 #endif
 
     my_ambassador.evokeCallback(1.0);
@@ -129,22 +189,35 @@ void Billard::tick()
 
 void Billard::init()
 {
-    wcout << __func__ << endl;
-    my_ball.init(*reinterpret_cast<const int*>(my_handle.encode().data()));
+    debug() << __func__ << endl;
+
+    auto seed = std::stoi(my_handle.toString().substr(std::string("FederateHandle_").size()));
+
+    debug() << "seed: " << seed << endl;
+
+    InitGraphe(400, 25 + (seed - 1) * 120, 500, 100);
+
+    my_ball.init(seed);
 }
 
 void Billard::declare()
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
     auto ball_handle = my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"),
                                                             my_federate_name + L"_Ball");
     my_ball.setHandle(ball_handle);
-    wcout << "\tRegistered ball with handle " << ball_handle << endl;
+    debug() << "Registered my ball with handle " << ball_handle << endl;
 }
 
 void Billard::step()
 {
-    debug() << __func__ << endl;
+#ifdef TRACE
+    static unsigned int step_count{0};
+    ++step_count;
+    debug() << __func__ << step_count << '\n';
+#endif
+
+    my_time_granted = false;
 
     debug() << "time at start is " << my_local_time.toString() << endl;
 
@@ -157,7 +230,12 @@ void Billard::step()
 
     debug() << "request advance to " << time_aux.toString() << endl;
 
+    my_time_granted = false;
     my_ambassador.timeAdvanceRequest(time_aux);
+
+    for (auto& ball : my_other_balls) {
+        ball.setInactive();
+    }
 
     if (has_collision_enabled) {
         for (auto& ball : my_other_balls) {
@@ -168,6 +246,8 @@ void Billard::step()
     waitForTimeAdvanceGrant();
 
     debug() << "after wait for grant, time is " << my_local_time.toString() << endl;
+
+    my_ball.erase();
 
     auto next_step = RTI1516fedTime{my_local_time};
     next_step += my_time_interval;
@@ -181,17 +261,24 @@ void Billard::step()
                     debug() << "Collision between my ball and ball " << ball.getHandle() << endl;
 
                     sendCollision(ball, next_step);
+
+                    my_ball.bounceAgainst(ball);
                 }
             }
+
+            ball.display();
         }
     }
     my_ball.checkCollisionAndBounceWith(my_board);
 
     my_ball.moveWithCurrentInertia();
 
+    my_ball.display();
+
     sendNewPosition(next_step);
 
-    debug() << "New ball position: x=" << my_ball.getX() << ", y=" << my_ball.getY() << std::endl;
+    debug() << "[" << my_local_time.toString() << "] New ball position: x=" << my_ball.getX()
+            << ", y=" << my_ball.getY() << std::endl;
 }
 
 void Billard::sendCollision(const Ball& other, const LogicalTime& time)
@@ -205,12 +292,7 @@ void Billard::sendCollision(const Ball& other, const LogicalTime& time)
 
     ParameterHandleValueMap parameters;
 
-    int handle = *reinterpret_cast<const int*>(other.getHandle().encode().data());
-
-    buffer.reset();
-    buffer.write_int32(handle);
-    buffer.updateReservedBytes();
-    parameters[param_ball_handle] = VariableLengthData(static_cast<char*>(buffer(0)), buffer.size());
+    parameters[param_ball_handle] = other.getHandle().encode();
 
     buffer.reset();
     buffer.write_double(my_ball.getDX());
@@ -244,7 +326,9 @@ void Billard::sendNewPosition(const LogicalTime& time)
     buffer.reset();
     buffer.write_double(my_ball.getY());
     buffer.updateReservedBytes();
-    attributes[attribute_pos_x_handle] = VariableLengthData(static_cast<char*>(buffer(0)), buffer.size());
+    attributes[attribute_pos_y_handle] = VariableLengthData(static_cast<char*>(buffer(0)), buffer.size());
+
+    debug() << "SEND::" << attributes << endl;
 
     std::wstring tag{L""};
     my_ambassador.updateAttributeValues(my_ball.getHandle(), attributes, {tag.c_str(), tag.size()}, time);
@@ -253,13 +337,13 @@ void Billard::sendNewPosition(const LogicalTime& time)
 void Billard::announceSynchronizationPoint(
     const std::wstring& label, const VariableLengthData& /*theUserSuppliedTag*/) throw(FederateInternalError)
 {
-    wcout << __func__ << ", label:" << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
     my_synchronization_points.push_back(label);
 }
 
 void Billard::waitForAnnounce(const std::wstring& label)
 {
-    wcout << __func__ << ", label:" << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
 
     show_sync_points();
 
@@ -273,8 +357,8 @@ void Billard::waitForAnnounce(const std::wstring& label)
 void Billard::federationSynchronized(const std::wstring& label,
                                      const FederateHandleSet& /*failedToSyncSet*/) throw(FederateInternalError)
 {
-    wcout << __func__ << ", label:" << label << endl;
-    wcout << L"Federation synchronized on label " << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
+    debug() << L"Federation synchronized on label " << label << endl;
     auto find_it = std::find(begin(my_synchronization_points), end(my_synchronization_points), label);
     if (find_it == end(my_synchronization_points)) {
         throw FederateInternalError(L"Synchronization point <" + label + L"> achieved but never announced");
@@ -284,7 +368,7 @@ void Billard::federationSynchronized(const std::wstring& label,
 
 void Billard::waitForSynchronization(const std::wstring& label)
 {
-    wcout << __func__ << ", label:" << label << endl;
+    debug() << __func__ << ", label:" << label << endl;
 
     show_sync_points();
 
@@ -298,21 +382,27 @@ void Billard::waitForSynchronization(const std::wstring& label)
 void Billard::timeAdvanceGrant(const LogicalTime& theTime) throw(FederateInternalError)
 {
     my_local_time = theTime;
+    my_time_granted = true;
 }
 
 void Billard::waitForTimeAdvanceGrant()
 {
-    auto last_time = my_local_time;
-    while (last_time == my_local_time) {
+    while (not my_time_granted) {
         tick();
     }
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-                                     rti1516e::ObjectClassHandle /*theObjectClass*/,
+                                     rti1516e::ObjectClassHandle theObjectClass,
                                      const std::wstring& /*theObjectInstanceName*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1, theObject=" << theObject << endl;
+    debug() << __func__ << ", theObject=" << theObject << endl;
+
+    if (theObjectClass == my_ambassador.getObjectClassHandle(L"Ball")) {
+        debug() << "Add other ball, handle=" << theObject << endl;
+        my_other_balls.emplace_back();
+        my_other_balls.back().setHandle(theObject);
+    }
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
@@ -320,11 +410,12 @@ void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
                                      const std::wstring& /*theObjectInstanceName*/,
                                      rti1516e::FederateHandle /*producingFederate*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2, theObject=" << theObject << endl;
+    debug() << "########        " << __func__ << " 2, theObject=" << theObject << endl;
+    getchar();
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const ParameterHandleValueMap& theParameterValues,
                                  const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
                                  rti1516e::OrderType /*sentOrder*/,
                                  rti1516e::TransportationType /*theType*/,
@@ -333,7 +424,47 @@ void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction
                                  rti1516e::MessageRetractionHandle /*theHandle*/,
                                  rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1, theInteraction=" << theInteraction << endl;
+    debug() << __func__ << ", theInteraction=" << theInteraction << endl;
+
+    static const auto collision_handle = my_ambassador.getInteractionClassHandle(L"Collision");
+    static const auto param_ball_handle = my_ambassador.getParameterHandle(collision_handle, L"Ball");
+    static const auto param_dx_handle = my_ambassador.getParameterHandle(collision_handle, L"DX");
+    static const auto param_dy_handle = my_ambassador.getParameterHandle(collision_handle, L"DY");
+
+    if (theInteraction == collision_handle) {
+        debug() << "Collision" << endl;
+
+        try {
+            auto handle = theParameterValues.at(param_ball_handle);
+            if (std::memcmp(handle.data(), my_ball.getHandle().encode().data(), handle.size()) == 0) {
+                libhla::MessageBuffer mb;
+
+                auto param_dx = theParameterValues.at(param_dx_handle);
+
+                mb.resize(param_dx.size());
+                mb.reset();
+                std::memcpy(static_cast<char*>(mb(0)), param_dx.data(), param_dx.size());
+                mb.assumeSizeFromReservedBytes();
+
+                my_ball.setDX(mb.read_double());
+
+                auto param_dy = theParameterValues.at(param_dx_handle);
+
+                mb.resize(param_dy.size());
+                mb.reset();
+                std::memcpy(static_cast<char*>(mb(0)), param_dy.data(), param_dy.size());
+                mb.assumeSizeFromReservedBytes();
+
+                my_ball.setDY(mb.read_double());
+
+                debug() << "[" << my_local_time.toString() << "] New ball position: x=" << my_ball.getX()
+                        << ", y=" << my_ball.getY() << std::endl;
+            }
+        }
+        catch (std::out_of_range& e) {
+            wcout << "The interaction should have all three parameters, skip.\n";
+        }
+    }
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
@@ -345,7 +476,8 @@ void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction
                                  rti1516e::OrderType /*receivedOrder*/,
                                  rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2, theInteraction=" << theInteraction << endl;
+    debug() << "########        " << __func__ << " 2, theInteraction=" << theInteraction << endl;
+    getchar();
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
@@ -355,11 +487,12 @@ void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction
                                  rti1516e::TransportationType /*theType*/,
                                  rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 3, theInteraction=" << theInteraction << endl;
+    debug() << "########        " << __func__ << " 3, theInteraction=" << theInteraction << endl;
+    getchar();
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const AttributeHandleValueMap& theAttributeValues,
                                      const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
                                      rti1516e::OrderType /*sentOrder*/,
                                      rti1516e::TransportationType /*theType*/,
@@ -368,7 +501,48 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
                                      rti1516e::MessageRetractionHandle /*theHandle*/,
                                      rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1, theObject=" << theObject << endl;
+    debug() << __func__ << ", theObject=" << theObject << endl;
+
+    debug() << "RECEIVE::" << theAttributeValues << endl;
+
+    static const auto ball_handle = my_ambassador.getObjectClassHandle(L"Ball");
+    static const auto attribute_pos_x_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionX");
+    static const auto attribute_pos_y_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionY");
+
+    auto find_it = std::find_if(
+        begin(my_other_balls), end(my_other_balls), [&](const Ball& other) { return other.getHandle() == theObject; });
+
+    if (find_it != end(my_other_balls)) {
+        auto& otherBall = *find_it;
+
+        otherBall.erase();
+
+        for (const auto& kv : theAttributeValues) {
+            decltype(&Ball::updateX) fun = nullptr;
+
+            if (kv.first == attribute_pos_x_handle) {
+                fun = &Ball::updateX;
+            }
+            else if (kv.first == attribute_pos_y_handle) {
+                fun = &Ball::updateY;
+            }
+
+            if (fun) {
+                libhla::MessageBuffer mb;
+                mb.resize(kv.second.size());
+                mb.reset();
+                std::memcpy(static_cast<char*>(mb(0)), kv.second.data(), kv.second.size());
+                mb.assumeSizeFromReservedBytes();
+                (otherBall.*fun)(mb.read_double());
+                otherBall.setActive();
+            }
+        }
+
+        otherBall.display();
+
+        debug() << "[" << my_local_time.toString() << "] Other ball position: handle=" << otherBall.getHandle()
+                << ", x=" << otherBall.getX() << ", y=" << otherBall.getY() << std::endl;
+    }
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
@@ -380,7 +554,8 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
                                      rti1516e::OrderType /*receivedOrder*/,
                                      rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2, theObject=" << theObject << endl;
+    debug() << "########        " << __func__ << " 2, theObject=" << theObject << endl;
+    getchar();
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
@@ -390,16 +565,17 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
                                      rti1516e::TransportationType /*theType*/,
                                      rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 3, theObject=" << theObject << endl;
+    debug() << "########        " << __func__ << " 3, theObject=" << theObject << endl;
+    getchar();
 }
 
 void Billard::show_sync_points() const
 {
 #ifdef TRACE
-    wcout << "  Current synchronization points: {\n";
+    debug() << "  Current synchronization points: {\n";
     for (const auto& point : my_synchronization_points) {
-        wcout << "    - " << point << '\n';
+        debug() << "    - " << point << '\n';
     }
-    wcout << "  }" << endl;
+    debug() << "  }" << endl;
 #endif
 }
