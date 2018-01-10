@@ -13,13 +13,15 @@ auto* out = &std::wcout;
 decltype(std::wcout)* out = nullptr;
 #endif
 
-#define debug() if(out) *out
+#define debug()                                                                                                        \
+    if (out)                                                                                                           \
+    *out
 
 using std::wcout;
 using std::endl;
 
 Billard::Billard(RTIambassador& ambassador, const std::wstring& federation_name, const std::wstring& federate_name)
-    : my_ambassador{ambassador}, my_federation_name{federation_name}, my_federate_name{federate_name}
+    : my_ambassador(ambassador), my_federation_name(federation_name), my_federate_name(federate_name)
 {
     wcout << __func__ << endl;
     my_ambassador.connect(*this, HLA_EVOKED);
@@ -134,7 +136,8 @@ void Billard::init()
 void Billard::declare()
 {
     wcout << __func__ << endl;
-    auto ball_handle = my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"), my_federate_name + L"_Ball");
+    auto ball_handle = my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"),
+                                                            my_federate_name + L"_Ball");
     my_ball.setHandle(ball_handle);
     wcout << "\tRegistered ball with handle " << ball_handle << endl;
 }
@@ -187,7 +190,7 @@ void Billard::step()
     my_ball.moveWithCurrentInertia();
 
     sendNewPosition(next_step);
-    
+
     debug() << "New ball position: x=" << my_ball.getX() << ", y=" << my_ball.getY() << std::endl;
 }
 
