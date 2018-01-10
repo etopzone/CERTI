@@ -4,7 +4,7 @@
 #include <RTI/NullFederateAmbassador.h>
 #include <RTI/RTI1516.h>
 
-#include <RTI/certiLogicalTimeFactory.h>
+#include <RTI/RTI1516fedTime.h>
 
 #include <vector>
 
@@ -139,14 +139,10 @@ private:
     Ball my_ball{};
     std::vector<Ball> my_other_balls{};
 
-    //     rti1516e::HLAfloat64TimeFactory my_time_factory{};
-    std::unique_ptr<LogicalTimeFactory> my_time_factory{
-        rti1516e::LogicalTimeFactoryFactory().makeLogicalTimeFactory(L"HLAfloat64Time")};
+    RTI1516fedTimeInterval my_time_interval{1.0};
 
-    std::unique_ptr<rti1516e::LogicalTimeInterval> my_time_interval{my_time_factory->makeEpsilon()};
-
-    std::unique_ptr<rti1516e::LogicalTime> my_local_time{my_time_factory->makeInitial()};
-    std::unique_ptr<rti1516e::LogicalTime> my_last_granted_time{my_time_factory->makeInitial()};
+    RTI1516fedTime my_local_time{0.0};
+//     RTI1516fedTime my_last_granted_time{0.0};
 };
 
 #endif // BILLARD_H

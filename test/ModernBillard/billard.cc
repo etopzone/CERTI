@@ -7,6 +7,14 @@
 
 //#define TRACE
 
+#ifdef TRACE
+auto* out = &std::wcout;
+#else
+decltype(std::wcout)* out = nullptr;
+#endif
+
+#define debug() if(out) *out
+
 using std::wcout;
 using std::endl;
 
@@ -126,26 +134,27 @@ void Billard::init()
 void Billard::declare()
 {
     wcout << __func__ << endl;
-    my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"), my_federate_name + L"_Ball");
+    auto ball_handle = my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"), my_federate_name + L"_Ball");
+    my_ball.setHandle(ball_handle);
+    wcout << "\tRegistered ball with handle " << ball_handle << endl;
 }
 
 void Billard::step()
 {
-    wcout << __func__ << endl;
+    debug() << __func__ << endl;
 
-    wcout << "time at start is " << my_local_time->toString() << endl;
+    debug() << "time at start is " << my_local_time.toString() << endl;
 
-    my_ambassador.queryLogicalTime(*my_local_time);
+    my_ambassador.queryLogicalTime(my_local_time);
 
-    wcout << "after query, time is " << my_local_time->toString() << endl;
+    debug() << "after query, time is " << my_local_time.toString() << endl;
 
-    auto time_aux = my_time_factory->makeInitial();
-    *time_aux = *my_local_time;
-    *time_aux += *my_time_interval;
+    auto time_aux = RTI1516fedTime{my_local_time};
+    time_aux += my_time_interval;
 
-    wcout << "request advance to " << time_aux->toString() << endl;
+    debug() << "request advance to " << time_aux.toString() << endl;
 
-    my_ambassador.timeAdvanceRequest(*time_aux);
+    my_ambassador.timeAdvanceRequest(time_aux);
 
     if (has_collision_enabled) {
         for (auto& ball : my_other_balls) {
@@ -155,11 +164,10 @@ void Billard::step()
 
     waitForTimeAdvanceGrant();
 
-    wcout << "after wait for grant, time is " << my_local_time->toString() << endl;
+    debug() << "after wait for grant, time is " << my_local_time.toString() << endl;
 
-    auto next_step = my_time_factory->makeInitial();
-    *next_step = *my_local_time;
-    *next_step += *my_time_interval;
+    auto next_step = RTI1516fedTime{my_local_time};
+    next_step += my_time_interval;
 
     // erase screen
 
@@ -167,26 +175,20 @@ void Billard::step()
         for (auto& ball : my_other_balls) {
             if (ball.getHandle().isValid() && ball.isActive()) {
                 if (my_ball.checkCollisionWith(ball)) {
-                    wcout << "Collision between my ball and ball " << ball.getHandle() << endl;
+                    debug() << "Collision between my ball and ball " << ball.getHandle() << endl;
 
-                    sendCollision(ball, *next_step);
-#if 0
-            sendInteraction(local.dx, local.dy, next_step, it->ID);
-            // On prend la vitesse de l'autre sauf dans le cas ou
-            // on avait deja la meme. Dans ce cas, on inverse la notre.
-#endif
+                    sendCollision(ball, next_step);
                 }
             }
         }
     }
-
     my_ball.checkCollisionAndBounceWith(my_board);
 
     my_ball.moveWithCurrentInertia();
 
-    sendNewPosition(*next_step);
-
-    wcout << "New ball position: x=" << my_ball.getX() << ", y=" << my_ball.getY() << std::endl;
+    sendNewPosition(next_step);
+    
+    debug() << "New ball position: x=" << my_ball.getX() << ", y=" << my_ball.getY() << std::endl;
 }
 
 void Billard::sendCollision(const Ball& other, const LogicalTime& time)
@@ -292,105 +294,100 @@ void Billard::waitForSynchronization(const std::wstring& label)
 
 void Billard::timeAdvanceGrant(const LogicalTime& theTime) throw(FederateInternalError)
 {
-    wcout << __func__ << ", time:" << theTime.toString() << endl;
-    *my_last_granted_time = theTime;
+    my_local_time = theTime;
 }
 
 void Billard::waitForTimeAdvanceGrant()
 {
-    wcout << __func__ << ", last granted time:" << my_last_granted_time->toString() << endl;
-
-    auto& last_time = my_last_granted_time;
-    while (last_time == my_last_granted_time) {
+    auto last_time = my_local_time;
+    while (last_time == my_local_time) {
         tick();
     }
-
-    wcout << "          last granted time:" << my_last_granted_time->toString() << endl;
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-                                     rti1516e::ObjectClassHandle theObjectClass,
-                                     const std::wstring& theObjectInstanceName) throw(FederateInternalError)
+                                     rti1516e::ObjectClassHandle /*theObjectClass*/,
+                                     const std::wstring& /*theObjectInstanceName*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1" << endl;
+    wcout << "########        " << __func__ << " 1, theObject=" << theObject << endl;
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-                                     rti1516e::ObjectClassHandle theObjectClass,
-                                     const std::wstring& theObjectInstanceName,
-                                     rti1516e::FederateHandle producingFederate) throw(FederateInternalError)
+                                     rti1516e::ObjectClassHandle /*theObjectClass*/,
+                                     const std::wstring& /*theObjectInstanceName*/,
+                                     rti1516e::FederateHandle /*producingFederate*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2" << endl;
+    wcout << "########        " << __func__ << " 2, theObject=" << theObject << endl;
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                                 const ParameterHandleValueMap& theParameterValues,
-                                 const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                 rti1516e::OrderType sentOrder,
-                                 rti1516e::TransportationType theType,
-                                 const rti1516e::LogicalTime& theTime,
-                                 rti1516e::OrderType receivedOrder,
-                                 rti1516e::MessageRetractionHandle theHandle,
-                                 rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 const rti1516e::LogicalTime& /*theTime*/,
+                                 rti1516e::OrderType /*receivedOrder*/,
+                                 rti1516e::MessageRetractionHandle /*theHandle*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1" << endl;
+    wcout << "########        " << __func__ << " 1, theInteraction=" << theInteraction << endl;
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                                 const ParameterHandleValueMap& theParameterValues,
-                                 const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                 rti1516e::OrderType sentOrder,
-                                 rti1516e::TransportationType theType,
-                                 const rti1516e::LogicalTime& theTime,
-                                 rti1516e::OrderType receivedOrder,
-                                 rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 const rti1516e::LogicalTime& /*theTime*/,
+                                 rti1516e::OrderType /*receivedOrder*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2" << endl;
+    wcout << "########        " << __func__ << " 2, theInteraction=" << theInteraction << endl;
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                                 const ParameterHandleValueMap& theParameterValues,
-                                 const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                 rti1516e::OrderType sentOrder,
-                                 rti1516e::TransportationType theType,
-                                 rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 3" << endl;
+    wcout << "########        " << __func__ << " 3, theInteraction=" << theInteraction << endl;
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                     const AttributeHandleValueMap& theAttributeValues,
-                                     const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                     rti1516e::OrderType sentOrder,
-                                     rti1516e::TransportationType theType,
-                                     const rti1516e::LogicalTime& theTime,
-                                     rti1516e::OrderType receivedOrder,
-                                     rti1516e::MessageRetractionHandle theHandle,
-                                     rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     const rti1516e::LogicalTime& /*theTime*/,
+                                     rti1516e::OrderType /*receivedOrder*/,
+                                     rti1516e::MessageRetractionHandle /*theHandle*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 1" << endl;
+    wcout << "########        " << __func__ << " 1, theObject=" << theObject << endl;
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                     const AttributeHandleValueMap& theAttributeValues,
-                                     const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                     rti1516e::OrderType sentOrder,
-                                     rti1516e::TransportationType theType,
-                                     const rti1516e::LogicalTime& theTime,
-                                     rti1516e::OrderType receivedOrder,
-                                     rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     const rti1516e::LogicalTime& /*theTime*/,
+                                     rti1516e::OrderType /*receivedOrder*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 2" << endl;
+    wcout << "########        " << __func__ << " 2, theObject=" << theObject << endl;
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                     const AttributeHandleValueMap& theAttributeValues,
-                                     const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                     rti1516e::OrderType sentOrder,
-                                     rti1516e::TransportationType theType,
-                                     rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
-    wcout << "########        " << __func__ << " 3" << endl;
+    wcout << "########        " << __func__ << " 3, theObject=" << theObject << endl;
 }
 
 void Billard::show_sync_points() const
