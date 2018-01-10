@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<objectModel>
+    <interactions>
+        <interactionClass name="Collision" transportation="HLAreliable" order="TimeStamp">
+            <parameter name="Ball" />
+            <parameter name="DX" />
+            <parameter name="DY" />
+        </interactionClass>
+    </interactions>
+</objectModel>
