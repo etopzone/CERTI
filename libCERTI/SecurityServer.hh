@@ -53,6 +53,8 @@ public:
     AuditFile& audit;
 
     FederationHandle federation() const;
+    
+    SocketServer& getSocketServer() const;
 
     /** Each call to this method is passed to the RTIG's SocketServer, by
      *  including our Federation Handle.

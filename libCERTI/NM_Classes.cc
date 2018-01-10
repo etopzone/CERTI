@@ -1,4 +1,4 @@
-// Generated on 2018 January Mon, 08 at 15:15:03 by the CERTI message generator
+// Generated on 2018 January Wed, 10 at 15:12:16 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -1182,6 +1182,188 @@ std::ostream& operator<<(std::ostream& os, const NM_Join_Federation_Execution& m
     os << std::endl;
     
     os << "[NM_Join_Federation_Execution - End]" << std::endl;
+    return os;
+}
+
+NM_Additional_Fom_Module::NM_Additional_Fom_Module()
+{
+    this->messageName = "NM_Additional_Fom_Module";
+    this->type = NetworkMessage::Type::ADDITIONAL_FOM_MODULE;
+}
+
+void NM_Additional_Fom_Module::serialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::serialize(msgBuffer);
+    // Specific serialization code
+    uint32_t routingSpacesSize = routingSpaces.size();
+    msgBuffer.write_uint32(routingSpacesSize);
+    for (uint32_t i = 0; i < routingSpacesSize; ++i) {
+        routingSpaces[i].serialize(msgBuffer);
+    }
+    uint32_t objectClassesSize = objectClasses.size();
+    msgBuffer.write_uint32(objectClassesSize);
+    for (uint32_t i = 0; i < objectClassesSize; ++i) {
+        objectClasses[i].serialize(msgBuffer);
+    }
+    uint32_t interactionClassesSize = interactionClasses.size();
+    msgBuffer.write_uint32(interactionClassesSize);
+    for (uint32_t i = 0; i < interactionClassesSize; ++i) {
+        interactionClasses[i].serialize(msgBuffer);
+    }
+}
+
+void NM_Additional_Fom_Module::deserialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::deserialize(msgBuffer);
+    // Specific deserialization code
+    uint32_t routingSpacesSize = msgBuffer.read_uint32();
+    routingSpaces.resize(routingSpacesSize);
+    for (uint32_t i = 0; i < routingSpacesSize; ++i) {
+        routingSpaces[i].deserialize(msgBuffer);
+    }
+    uint32_t objectClassesSize = msgBuffer.read_uint32();
+    objectClasses.resize(objectClassesSize);
+    for (uint32_t i = 0; i < objectClassesSize; ++i) {
+        objectClasses[i].deserialize(msgBuffer);
+    }
+    uint32_t interactionClassesSize = msgBuffer.read_uint32();
+    interactionClasses.resize(interactionClassesSize);
+    for (uint32_t i = 0; i < interactionClassesSize; ++i) {
+        interactionClasses[i].deserialize(msgBuffer);
+    }
+}
+
+uint32_t NM_Additional_Fom_Module::getRoutingSpacesSize() const
+{
+    return routingSpaces.size();
+}
+
+void NM_Additional_Fom_Module::setRoutingSpacesSize(uint32_t num)
+{
+    routingSpaces.resize(num);
+}
+
+const std::vector<NM_FOM_Routing_Space>& NM_Additional_Fom_Module::getRoutingSpaces() const
+{
+    return routingSpaces;
+}
+
+const NM_FOM_Routing_Space& NM_Additional_Fom_Module::getRoutingSpaces(uint32_t rank) const
+{
+    return routingSpaces[rank];
+}
+
+NM_FOM_Routing_Space& NM_Additional_Fom_Module::getRoutingSpaces(uint32_t rank)
+{
+    return routingSpaces[rank];
+}
+
+void NM_Additional_Fom_Module::setRoutingSpaces(const NM_FOM_Routing_Space& newRoutingSpaces, uint32_t rank)
+{
+    routingSpaces[rank] = newRoutingSpaces;
+}
+
+void NM_Additional_Fom_Module::removeRoutingSpaces(uint32_t rank)
+{
+    routingSpaces.erase(routingSpaces.begin() + rank);
+}
+
+uint32_t NM_Additional_Fom_Module::getObjectClassesSize() const
+{
+    return objectClasses.size();
+}
+
+void NM_Additional_Fom_Module::setObjectClassesSize(uint32_t num)
+{
+    objectClasses.resize(num);
+}
+
+const std::vector<NM_FOM_Object_Class>& NM_Additional_Fom_Module::getObjectClasses() const
+{
+    return objectClasses;
+}
+
+const NM_FOM_Object_Class& NM_Additional_Fom_Module::getObjectClasses(uint32_t rank) const
+{
+    return objectClasses[rank];
+}
+
+NM_FOM_Object_Class& NM_Additional_Fom_Module::getObjectClasses(uint32_t rank)
+{
+    return objectClasses[rank];
+}
+
+void NM_Additional_Fom_Module::setObjectClasses(const NM_FOM_Object_Class& newObjectClasses, uint32_t rank)
+{
+    objectClasses[rank] = newObjectClasses;
+}
+
+void NM_Additional_Fom_Module::removeObjectClasses(uint32_t rank)
+{
+    objectClasses.erase(objectClasses.begin() + rank);
+}
+
+uint32_t NM_Additional_Fom_Module::getInteractionClassesSize() const
+{
+    return interactionClasses.size();
+}
+
+void NM_Additional_Fom_Module::setInteractionClassesSize(uint32_t num)
+{
+    interactionClasses.resize(num);
+}
+
+const std::vector<NM_FOM_Interaction_Class>& NM_Additional_Fom_Module::getInteractionClasses() const
+{
+    return interactionClasses;
+}
+
+const NM_FOM_Interaction_Class& NM_Additional_Fom_Module::getInteractionClasses(uint32_t rank) const
+{
+    return interactionClasses[rank];
+}
+
+NM_FOM_Interaction_Class& NM_Additional_Fom_Module::getInteractionClasses(uint32_t rank)
+{
+    return interactionClasses[rank];
+}
+
+void NM_Additional_Fom_Module::setInteractionClasses(const NM_FOM_Interaction_Class& newInteractionClasses, uint32_t rank)
+{
+    interactionClasses[rank] = newInteractionClasses;
+}
+
+void NM_Additional_Fom_Module::removeInteractionClasses(uint32_t rank)
+{
+    interactionClasses.erase(interactionClasses.begin() + rank);
+}
+
+std::ostream& operator<<(std::ostream& os, const NM_Additional_Fom_Module& msg)
+{
+    os << "[NM_Additional_Fom_Module - Begin]" << std::endl;
+    
+    os << static_cast<const NM_Additional_Fom_Module::Super&>(msg); // show parent class
+    
+    // Specific display
+    os << "  routingSpaces [] =" << std::endl;
+    for (const auto& element : msg.routingSpaces) {
+        os << element;
+    }
+    os << std::endl;
+    os << "  objectClasses [] =" << std::endl;
+    for (const auto& element : msg.objectClasses) {
+        os << element;
+    }
+    os << std::endl;
+    os << "  interactionClasses [] =" << std::endl;
+    for (const auto& element : msg.interactionClasses) {
+        os << element;
+    }
+    os << std::endl;
+    
+    os << "[NM_Additional_Fom_Module - End]" << std::endl;
     return os;
 }
 
@@ -5336,6 +5518,9 @@ NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSig
             break;
         case NetworkMessage::Type::JOIN_FEDERATION_EXECUTION:
             msg = new NM_Join_Federation_Execution();
+            break;
+        case NetworkMessage::Type::ADDITIONAL_FOM_MODULE:
+            msg = new NM_Additional_Fom_Module();
             break;
         case NetworkMessage::Type::RESIGN_FEDERATION_EXECUTION:
             msg = new NM_Resign_Federation_Execution();

@@ -79,7 +79,7 @@ public:
                AuditFile& audit_server,
                const std::vector<std::string> fom_modules,
                const std::string& mim_module,
-               const RtiVersion rti_version, 
+               const RtiVersion rti_version,
                SocketMC* mc_link,
                const int verboseLevel);
 #else
@@ -117,7 +117,7 @@ public:
 
     /// Return the current mim module used
     std::string getMimModule() const;
-    
+
     RtiVersion getRtiVersion() const;
 
     /// Returns the number of federates in federation.
@@ -162,7 +162,9 @@ public:
                                              const std::string& federate_type,
                                              std::vector<std::string> additional_fom_modules,
                                              const RtiVersion rti_version,
-                                             SocketTCP* tcp_link);
+                                             SocketTCP* tcp_link,
+                                             const uint32_t peer,
+                                             const uint32_t address);
 
     /** Remove a federate.
      * 
@@ -445,6 +447,7 @@ public:
     Responses updateAsynchronousDelivery(FederateHandle federate_handle, bool status);
 
     void getFOM(NM_Join_Federation_Execution& object_model_data);
+    void getFOM(NM_Additional_Fom_Module& object_model_data);
 
     /**
      * Update the last NERx message date for the concerned federate.
@@ -531,7 +534,7 @@ private:
     bool my_save_status{true}; /// True if saving was correctly done, false otherwise.
     bool my_restore_status{true}; /// True if restoring was correctly done.
     std::string my_save_label{""}; /// The label associated with the save request.
-    
+
     RtiVersion my_rti_version;
 };
 }

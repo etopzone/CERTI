@@ -51,6 +51,14 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
     Debug(G, pdGendoc) << "enter RTIA::processNetworkMessage" << std::endl;
 
     switch (msgType) {
+    case NetworkMessage::Type::ADDITIONAL_FOM_MODULE: {
+        Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::ADDITIONAL_FOM_MODULE "
+                          << request->getDate().getTime() << std::endl;
+        my_root_object.rebuildFromSerializedFOM(*static_cast<NM_Additional_Fom_Module*>(request));
+        
+        break;
+    }
+    
     case NetworkMessage::Type::MESSAGE_NULL: {
         Debug(D, pdTrace) << "Receiving Message from RTIG, type NetworkMessage::MESSAGE_NULL "
                           << request->getDate().getTime() << std::endl;

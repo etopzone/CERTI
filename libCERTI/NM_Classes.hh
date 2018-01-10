@@ -1,4 +1,4 @@
-// Generated on 2018 January Mon, 08 at 15:15:03 by the CERTI message generator
+// Generated on 2018 January Wed, 10 at 15:12:16 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -460,6 +460,51 @@ protected:
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Join_Federation_Execution& msg);
+
+
+class CERTI_EXPORT NM_Additional_Fom_Module : public NetworkMessage {
+public:
+    NM_Additional_Fom_Module();
+    virtual ~NM_Additional_Fom_Module() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    uint32_t getRoutingSpacesSize() const;
+    void setRoutingSpacesSize(uint32_t num);
+    const std::vector<NM_FOM_Routing_Space>& getRoutingSpaces() const;
+    const NM_FOM_Routing_Space& getRoutingSpaces(uint32_t rank) const;
+    NM_FOM_Routing_Space& getRoutingSpaces(uint32_t rank);
+    void setRoutingSpaces(const NM_FOM_Routing_Space& newRoutingSpaces, uint32_t rank);
+    void removeRoutingSpaces(uint32_t rank);
+    
+    uint32_t getObjectClassesSize() const;
+    void setObjectClassesSize(uint32_t num);
+    const std::vector<NM_FOM_Object_Class>& getObjectClasses() const;
+    const NM_FOM_Object_Class& getObjectClasses(uint32_t rank) const;
+    NM_FOM_Object_Class& getObjectClasses(uint32_t rank);
+    void setObjectClasses(const NM_FOM_Object_Class& newObjectClasses, uint32_t rank);
+    void removeObjectClasses(uint32_t rank);
+    
+    uint32_t getInteractionClassesSize() const;
+    void setInteractionClassesSize(uint32_t num);
+    const std::vector<NM_FOM_Interaction_Class>& getInteractionClasses() const;
+    const NM_FOM_Interaction_Class& getInteractionClasses(uint32_t rank) const;
+    NM_FOM_Interaction_Class& getInteractionClasses(uint32_t rank);
+    void setInteractionClasses(const NM_FOM_Interaction_Class& newInteractionClasses, uint32_t rank);
+    void removeInteractionClasses(uint32_t rank);
+    
+    using Super = NetworkMessage;
+    friend std::ostream& operator<<(std::ostream& os, const NM_Additional_Fom_Module& msg);
+
+protected:
+    std::vector<NM_FOM_Routing_Space> routingSpaces;
+    std::vector<NM_FOM_Object_Class> objectClasses;
+    std::vector<NM_FOM_Interaction_Class> interactionClasses;
+};
+
+std::ostream& operator<<(std::ostream& os, const NM_Additional_Fom_Module& msg);
 
 // Resign from federation
 class CERTI_EXPORT NM_Resign_Federation_Execution : public NetworkMessage {

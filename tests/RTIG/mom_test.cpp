@@ -86,10 +86,10 @@ TEST_F(MomTest, 11_2_a_1_The_RTI_shall_publish_and_register_one_instance_of_mana
 {
     ASSERT_EQ(0u, federateOC->getClassInstances().size());
 
-    f.add("fed", fed_type, {}, ::certi::IEEE_1516_2010, nullptr);
+    f.add("fed", fed_type, {}, ::certi::IEEE_1516_2010, nullptr, 0, 0);
     ASSERT_EQ(1u, federateOC->getClassInstances().size());
 
-    f.add("fed2", fed_type, {}, ::certi::IEEE_1516_2010, nullptr);
+    f.add("fed2", fed_type, {}, ::certi::IEEE_1516_2010, nullptr, 0, 0);
     ASSERT_EQ(2u, federateOC->getClassInstances().size());
 }
 

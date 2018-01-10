@@ -96,32 +96,9 @@ public:
 
     void destroyFederation(const FederationHandle handle);
 
-#ifdef FEDERATION_USES_MULTICAST
-    void info(const FederationHandle handle,
-              int& out_federatesCount,
-              int& out_regulatorsCount,
-              bool& out_isSyncing,
-              SocketMC*& out_multicastSocket);
-#else
-    void info(const FederationHandle handle, int& out_federatesCount, int& out_regulatorsCount, bool& out_isSyncing);
-#endif
-
     // -------------------------
     // -- Federate Management --
     // -------------------------
-
-    /** Creates a new Federate if its name is unique, and returns its new
-     * Federate Handle. Also sends Null messages from all other federates
-     * to initialize its LBTS, and finally a RequestPause message if the
-     * Federation is already paused.
-     */
-    std::pair<FederateHandle, Responses> addFederate(const FederationHandle handle,
-                                                     const std::string& federateName,
-                                                     const std::string& federateType,
-                                                     std::vector<std::string> additional_fom_modules,
-                                                     const RtiVersion rti_version,
-                                                     SocketTCP* federateTcpLink,
-                                                     NM_Join_Federation_Execution& objectModelData);
 
     /** This Method tries to remove all references to this Federate in the
      * Federation. To be used when a Federate is supposed to have crashed.

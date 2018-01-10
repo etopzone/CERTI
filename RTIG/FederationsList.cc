@@ -176,58 +176,6 @@ void FederationsList::destroyFederation(const FederationHandle handle)
     Debug(G, pdGendoc) << "exit FederationsList::destroyFederation" << std::endl;
 }
 
-#ifdef FEDERATION_USES_MULTICAST
-void FederationsList::info(const FederationHandle handle,
-                           int& out_federatesCount,
-                           int& out_regulatorsCount,
-                           bool& out_isSyncing,
-                           SocketMC*& out_multicastSocket)
-#else
-void FederationsList::info(const FederationHandle handle,
-                           int& out_federatesCount,
-                           int& out_regulatorsCount,
-                           bool& out_isSyncing)
-#endif
-{
-    Debug(G, pdGendoc) << "enter FederationsList::info" << std::endl;
-
-    // It may throw FederationExecutionNotFound
-    auto& federation = searchFederation(handle);
-
-    out_federatesCount = federation.getNbFederates();
-    out_regulatorsCount = federation.getNbRegulators();
-    out_isSyncing = federation.isSynchronizing();
-#ifdef FEDERATION_USES_MULTICAST
-    out_multicastSocket = federation.MCLink;
-#endif
-    Debug(G, pdGendoc) << "exit  FederationsList::info" << std::endl;
-}
-
-std::pair<FederateHandle, Responses> FederationsList::addFederate(const FederationHandle handle,
-                                                                  const std::string& federateName,
-                                                                  const std::string& federateType,
-                                                                  std::vector<std::string> additional_fom_modules,
-                                                                  const RtiVersion rti_version,
-                                                                  SocketTCP* federateTcpLink,
-                                                                  NM_Join_Federation_Execution& objectModelData)
-{
-    Debug(G, pdGendoc) << "enter FederationsList::addFederate" << std::endl;
-
-    // It may throw FederationExecutionDoesNotExist
-    // Return  federation address giving its handle
-    auto& federation = searchFederation(handle);
-
-    // It may raise a bunch of exceptions
-    // adding the federate and return its handle
-    auto handleAndResponses = federation.add(federateName, federateType, additional_fom_modules, rti_version, federateTcpLink);
-
-    federation.getFOM(objectModelData);
-
-    Debug(G, pdGendoc) << "exit FederationsList::addFederate" << std::endl;
-
-    return handleAndResponses;
-}
-
 Responses FederationsList::killFederate(const FederationHandle federation, const FederateHandle federate) noexcept
 {
     try {
