@@ -32,8 +32,6 @@
 #include <RTI/RTI1516.h>
 #include <RTI/RTI1516fedTime.h>
 
-#include "make_unique.hh"
-
 #include "billard.hh"
 
 using namespace std;
@@ -64,69 +62,7 @@ int main(int argc, char** argv)
     wstring federation_name(argv[2], argv[2] + strlen(argv[2]));
 
     try {
-        cout << "  create RTI Ambassador" << endl;
-
-        unique_ptr<rti1516e::RTIambassador> ambassador;
-        ambassador = rti1516e::RTIambassadorFactory().createRTIambassador();
-        cout << "* Ambassador created" << endl
-             << endl;
-
-        Billard billard(*ambassador, federation_name, federate_name);
-
-        billard.createOrJoin();
-
-        if (billard.isCreator()) {
-            billard.register_sync_point(L"Init");
-
-            cout << "Press ENTER when all federates have joined" << endl;
-            getchar();
-        } else {
-            billard.enableCollisions();
-
-            billard.register_sync_point(L"NotAlone");
-            billard.synchronize(L"NotAlone");
-        }
-
-        billard.synchronize(L"Init");
-        billard.waitForSynchronization(L"Init");
-
-        if (billard.isCreator() && billard.hasSynchronizationPending(L"NotAlone")) {
-            billard.enableCollisions();
-
-            billard.synchronize(L"NotAlone");
-            billard.waitForSynchronization(L"NotAlone");
-        }
-
-        billard.publishAndSubscribe();
-
-        billard.enableTimeRegulation();
-
-        billard.tick();
-
-        billard.init();
-
-        billard.declare();
-
-        if (billard.isCreator()) {
-            billard.register_sync_point(L"Start");
-        }
-
-        billard.synchronize(L"Start");
-        billard.waitForSynchronization(L"Start");
-
-        int step_count{ 0 };
-        auto time_point = std::chrono::system_clock::now();
-        for (loop_state = true; loop_state; ++step_count) {
-            billard.step();
-
-            if (step_count % 500 == 0) {
-                auto now = std::chrono::system_clock::now();
-                wcout << "steps per second: " << 5.0e11 / std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_point).count() << endl;
-                time_point = now;
-            }
-        }
-
-        billard.resignAndDelete();
+        Billard billard(federation_name, federate_name, loop_state);
     } catch (rti1516e::Exception& e) {
         wcout << "* Error: " << e.what() << endl;
 

@@ -7,6 +7,7 @@
 #include <RTI/RTI1516fedTime.h>
 
 #include <vector>
+#include <memory>
 
 #include "ball.h"
 
@@ -14,9 +15,9 @@ using namespace rti1516e;
 
 class Billard : public NullFederateAmbassador {
 public:
-    Billard(RTIambassador& ambassador, const std::wstring& federation_name, const std::wstring& federate_name);
+    Billard(const std::wstring& federation_name, const std::wstring& federate_name, bool& loop_state);
 
-    virtual ~Billard() = default;
+    virtual ~Billard();
 
     bool isCreator() const;
     bool hasSynchronizationPending(const std::wstring& label);
@@ -128,7 +129,7 @@ public:
 private:
     void show_sync_points() const;
 
-    RTIambassador& my_ambassador;
+    std::unique_ptr<rti1516e::RTIambassador> my_ambassador{rti1516e::RTIambassadorFactory().createRTIambassador()};
 
     const std::wstring& my_federation_name;
     const std::wstring& my_federate_name;

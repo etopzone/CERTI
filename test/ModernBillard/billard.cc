@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <chrono>
 
 #include "MessageBuffer.hh"
 
@@ -57,14 +58,73 @@ std::wostream& operator<<(std::wostream& os, const AttributeHandleValueMap& v)
     return os;
 }
 
-Billard::Billard(RTIambassador& ambassador, const std::wstring& federation_name, const std::wstring& federate_name)
-    : my_ambassador(ambassador)
-    , my_federation_name(federation_name)
+Billard::Billard(const std::wstring& federation_name, const std::wstring& federate_name, bool& loop_state)
+    : my_federation_name(federation_name)
     , my_federate_name(federate_name)
 {
     debug() << __func__ << endl;
-    my_ambassador.connect(*this, HLA_EVOKED);
+    my_ambassador->connect(*this, HLA_EVOKED);
+    
+    createOrJoin();
+    
+    if (isCreator()) {
+        register_sync_point(L"Init");
+        
+        wcout << "Press ENTER when all federates have joined" << endl;
+        getchar();
+    } else {
+        enableCollisions();
+        
+        register_sync_point(L"NotAlone");
+        synchronize(L"NotAlone");
+    }
+    
+    synchronize(L"Init");
+    waitForSynchronization(L"Init");
+    
+    if (isCreator() && hasSynchronizationPending(L"NotAlone")) {
+        enableCollisions();
+        
+        synchronize(L"NotAlone");
+        waitForSynchronization(L"NotAlone");
+    }
+    
+    publishAndSubscribe();
+    
+    enableTimeRegulation();
+    
+    tick();
+    
+    init();
+    
+    declare();
+    
+    if (isCreator()) {
+        register_sync_point(L"Start");
+    }
+    
+    synchronize(L"Start");
+    waitForSynchronization(L"Start");
+    
+    int step_count{ 0 };
+    auto time_point = std::chrono::system_clock::now();
+    for (loop_state = true; loop_state; ++step_count) {
+        step();
+        
+        if (step_count % 500 == 0) {
+            auto now = std::chrono::system_clock::now();
+            wcout << "steps per second: " << 5.0e11 / std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_point).count() << endl;
+            time_point = now;
+        }
+    }
+    
 }
+
+Billard::~Billard()
+{
+    resignAndDelete();
+}
+
 
 bool Billard::isCreator() const
 {
@@ -87,7 +147,7 @@ void Billard::createOrJoin()
 {
     debug() << __func__ << endl;
     try {
-        my_ambassador.createFederationExecution(my_federation_name, L"Base.xml");
+        my_ambassador->createFederationExecution(my_federation_name, L"Base.xml");
         has_created = true;
         debug() << "Created federation\n";
     } catch (FederationExecutionAlreadyExists& e) {
@@ -100,7 +160,7 @@ void Billard::createOrJoin()
         modules.emplace_back(L"Join.xml");
     }
 
-    my_handle = my_ambassador.joinFederationExecution(my_federate_name, L"ModernBillard", my_federation_name, modules);
+    my_handle = my_ambassador->joinFederationExecution(my_federate_name, L"ModernBillard", my_federation_name, modules);
     debug() << "Joined federation\n";
 }
 
@@ -109,7 +169,7 @@ void Billard::register_sync_point(const std::wstring& label)
     debug() << __func__ << ", label:" << label << endl;
 
     std::wstring tag{ L"" };
-    my_ambassador.registerFederationSynchronizationPoint(label, { tag.c_str(), tag.size() });
+    my_ambassador->registerFederationSynchronizationPoint(label, { tag.c_str(), tag.size() });
 
     show_sync_points();
 }
@@ -120,7 +180,7 @@ void Billard::synchronize(const std::wstring& label)
 
     waitForAnnounce(label);
 
-    my_ambassador.synchronizationPointAchieved(label, true);
+    my_ambassador->synchronizationPointAchieved(label, true);
 
     show_sync_points();
 }
@@ -129,20 +189,20 @@ void Billard::publishAndSubscribe()
 {
     debug() << __func__ << endl;
 
-    auto ball_handle = my_ambassador.getObjectClassHandle(L"Ball");
+    auto ball_handle = my_ambassador->getObjectClassHandle(L"Ball");
     debug() << "Ball: " << ball_handle << endl;
 
     AttributeHandleSet attributes;
-    attributes.insert(my_ambassador.getAttributeHandle(ball_handle, L"PositionX"));
-    attributes.insert(my_ambassador.getAttributeHandle(ball_handle, L"PositionY"));
+    attributes.insert(my_ambassador->getAttributeHandle(ball_handle, L"PositionX"));
+    attributes.insert(my_ambassador->getAttributeHandle(ball_handle, L"PositionY"));
 
-    my_ambassador.subscribeObjectClassAttributes(ball_handle, attributes);
-    my_ambassador.publishObjectClassAttributes(ball_handle, attributes);
+    my_ambassador->subscribeObjectClassAttributes(ball_handle, attributes);
+    my_ambassador->publishObjectClassAttributes(ball_handle, attributes);
 
     if (has_collision_enabled) {
-        auto collision_handle = my_ambassador.getInteractionClassHandle(L"Collision");
-        my_ambassador.subscribeInteractionClass(collision_handle);
-        my_ambassador.publishInteractionClass(collision_handle);
+        auto collision_handle = my_ambassador->getInteractionClassHandle(L"Collision");
+        my_ambassador->subscribeInteractionClass(collision_handle);
+        my_ambassador->publishInteractionClass(collision_handle);
         debug() << "Collision: " << collision_handle << endl;
     }
 }
@@ -150,13 +210,13 @@ void Billard::publishAndSubscribe()
 void Billard::enableTimeRegulation()
 {
     debug() << __func__ << endl;
-    my_ambassador.enableTimeConstrained();
+    my_ambassador->enableTimeConstrained();
 
     while (not my_is_time_constrained) {
         tick();
     }
 
-    my_ambassador.enableTimeRegulation(my_time_interval);
+    my_ambassador->enableTimeRegulation(my_time_interval);
 
     while (not my_is_time_regulated) {
         tick();
@@ -183,7 +243,7 @@ void Billard::tick()
     debug() << __func__ << tick_count << '\n';
 #endif
 
-    my_ambassador.evokeCallback(1.0);
+    my_ambassador->evokeCallback(1.0);
 }
 
 void Billard::init()
@@ -202,7 +262,7 @@ void Billard::init()
 void Billard::declare()
 {
     debug() << __func__ << endl;
-    auto ball_handle = my_ambassador.registerObjectInstance(my_ambassador.getObjectClassHandle(L"Ball"),
+    auto ball_handle = my_ambassador->registerObjectInstance(my_ambassador->getObjectClassHandle(L"Ball"),
         my_federate_name + L"_Ball");
     my_ball.setHandle(ball_handle);
     debug() << "Registered my ball with handle " << ball_handle << endl;
@@ -220,7 +280,7 @@ void Billard::step()
 
     debug() << "time at start is " << my_local_time.toString() << endl;
 
-    my_ambassador.queryLogicalTime(my_local_time);
+    my_ambassador->queryLogicalTime(my_local_time);
 
     debug() << "after query, time is " << my_local_time.toString() << endl;
 
@@ -230,7 +290,7 @@ void Billard::step()
     debug() << "request advance to " << time_aux.toString() << endl;
 
     my_time_granted = false;
-    my_ambassador.timeAdvanceRequest(time_aux);
+    my_ambassador->timeAdvanceRequest(time_aux);
 
     for (auto& ball : my_other_balls) {
         ball.setInactive();
@@ -282,10 +342,10 @@ void Billard::step()
 
 void Billard::resignAndDelete()
 {
-    my_ambassador.resignFederationExecution(CANCEL_THEN_DELETE_THEN_DIVEST);
+    my_ambassador->resignFederationExecution(CANCEL_THEN_DELETE_THEN_DIVEST);
 
     try {
-        my_ambassador.destroyFederationExecution(my_federation_name);
+        my_ambassador->destroyFederationExecution(my_federation_name);
     } catch (FederatesCurrentlyJoined& e) {
         // We are not the last one, die and let the last one destroy the federation
     }
@@ -293,10 +353,10 @@ void Billard::resignAndDelete()
 
 void Billard::sendCollision(const Ball& other, const LogicalTime& time)
 {
-    static const auto collision_handle = my_ambassador.getInteractionClassHandle(L"Collision");
-    static const auto param_ball_handle = my_ambassador.getParameterHandle(collision_handle, L"Ball");
-    static const auto param_dx_handle = my_ambassador.getParameterHandle(collision_handle, L"DX");
-    static const auto param_dy_handle = my_ambassador.getParameterHandle(collision_handle, L"DY");
+    static const auto collision_handle = my_ambassador->getInteractionClassHandle(L"Collision");
+    static const auto param_ball_handle = my_ambassador->getParameterHandle(collision_handle, L"Ball");
+    static const auto param_dx_handle = my_ambassador->getParameterHandle(collision_handle, L"DX");
+    static const auto param_dy_handle = my_ambassador->getParameterHandle(collision_handle, L"DY");
 
     libhla::MessageBuffer buffer;
 
@@ -315,14 +375,14 @@ void Billard::sendCollision(const Ball& other, const LogicalTime& time)
     parameters[param_dy_handle] = VariableLengthData(static_cast<char*>(buffer(0)), buffer.size());
 
     std::wstring tag{ L"" };
-    my_ambassador.sendInteraction(collision_handle, parameters, { tag.c_str(), tag.size() }, time);
+    my_ambassador->sendInteraction(collision_handle, parameters, { tag.c_str(), tag.size() }, time);
 }
 
 void Billard::sendNewPosition(const LogicalTime& time)
 {
-    static const auto ball_handle = my_ambassador.getObjectClassHandle(L"Ball");
-    static const auto attribute_pos_x_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionX");
-    static const auto attribute_pos_y_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionY");
+    static const auto ball_handle = my_ambassador->getObjectClassHandle(L"Ball");
+    static const auto attribute_pos_x_handle = my_ambassador->getAttributeHandle(ball_handle, L"PositionX");
+    static const auto attribute_pos_y_handle = my_ambassador->getAttributeHandle(ball_handle, L"PositionY");
 
     libhla::MessageBuffer buffer;
 
@@ -341,7 +401,7 @@ void Billard::sendNewPosition(const LogicalTime& time)
     debug() << "SEND::" << attributes << endl;
 
     std::wstring tag{ L"" };
-    my_ambassador.updateAttributeValues(my_ball.getHandle(), attributes, { tag.c_str(), tag.size() }, time);
+    my_ambassador->updateAttributeValues(my_ball.getHandle(), attributes, { tag.c_str(), tag.size() }, time);
 }
 
 void Billard::announceSynchronizationPoint(
@@ -408,7 +468,7 @@ void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
 {
     debug() << __func__ << ", theObject=" << theObject << endl;
 
-    if (theObjectClass == my_ambassador.getObjectClassHandle(L"Ball")) {
+    if (theObjectClass == my_ambassador->getObjectClassHandle(L"Ball")) {
         debug() << "Add other ball, handle=" << theObject << endl;
         my_other_balls.emplace_back();
         my_other_balls.back().setHandle(theObject);
@@ -436,10 +496,10 @@ void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction
 {
     debug() << __func__ << ", theInteraction=" << theInteraction << endl;
 
-    static const auto collision_handle = my_ambassador.getInteractionClassHandle(L"Collision");
-    static const auto param_ball_handle = my_ambassador.getParameterHandle(collision_handle, L"Ball");
-    static const auto param_dx_handle = my_ambassador.getParameterHandle(collision_handle, L"DX");
-    static const auto param_dy_handle = my_ambassador.getParameterHandle(collision_handle, L"DY");
+    static const auto collision_handle = my_ambassador->getInteractionClassHandle(L"Collision");
+    static const auto param_ball_handle = my_ambassador->getParameterHandle(collision_handle, L"Ball");
+    static const auto param_dx_handle = my_ambassador->getParameterHandle(collision_handle, L"DX");
+    static const auto param_dy_handle = my_ambassador->getParameterHandle(collision_handle, L"DY");
 
     if (theInteraction == collision_handle) {
         debug() << "Collision" << endl;
@@ -514,9 +574,9 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
 
     debug() << "RECEIVE::" << theAttributeValues << endl;
 
-    static const auto ball_handle = my_ambassador.getObjectClassHandle(L"Ball");
-    static const auto attribute_pos_x_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionX");
-    static const auto attribute_pos_y_handle = my_ambassador.getAttributeHandle(ball_handle, L"PositionY");
+    static const auto ball_handle = my_ambassador->getObjectClassHandle(L"Ball");
+    static const auto attribute_pos_x_handle = my_ambassador->getAttributeHandle(ball_handle, L"PositionX");
+    static const auto attribute_pos_y_handle = my_ambassador->getAttributeHandle(ball_handle, L"PositionY");
 
     auto find_it = std::find_if(
         begin(my_other_balls), end(my_other_balls), [&](const Ball& other) { return other.getHandle() == theObject; });
