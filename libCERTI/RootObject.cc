@@ -872,12 +872,6 @@ void RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& me
 
 void RootObject::rebuildFromSerializedFOM(const NM_Additional_Fom_Module& message)
 {
-    std::cout << "####################################################################\n"
-              << "####################################################################\n"
-              << "################ FOM UPDATED #######################################\n"
-              << "####################################################################\n"
-              << "####################################################################" << std::endl;
-
     // The number of routing space records to read
     uint32_t routingSpaceCount = message.getRoutingSpacesSize();
     for (uint32_t i = 0; i < routingSpaceCount; ++i) {

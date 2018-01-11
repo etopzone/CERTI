@@ -34,6 +34,10 @@ endif()
 add_executable(modern_billard ${modern_billard_SRCS})
 target_link_libraries(modern_billard graph RTI1516e FedTime1516e)
 
+install(FILES
+  Base.xml Create.xml Join.xml 
+  DESTINATION share/federations)
+
 install(TARGETS modern_billard
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

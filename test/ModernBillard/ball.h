@@ -106,7 +106,7 @@ public:
 
     bool checkCollisionWith(const Ball& other)
     {
-        return std::sqrt(std::pow(my_x - my_dx - other.getX(), 2) + std::pow(my_y - my_dy - other.getY(), 2))
+        return std::sqrt(std::pow(my_x + my_dx - other.getX(), 2) + std::pow(my_y + my_dy - other.getY(), 2))
             <= 2 * my_radius;
     }
 

@@ -21,12 +21,12 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <cstring>
 #include <csignal>
+#include <cstring>
 
+#include <chrono>
 #include <iostream>
 #include <memory>
-#include <chrono>
 
 #include <RTI/Enums.h>
 #include <RTI/RTI1516.h>
@@ -36,17 +36,15 @@
 
 #include "billard.hh"
 
-
 using namespace std;
 
-static bool loop_state{false};
+static bool loop_state{ false };
 
 void signalHandler(int /*signal*/)
 {
-    if(loop_state) {
+    if (loop_state) {
         loop_state = false;
-    }
-    else {
+    } else {
         std::exit(0);
     }
 }
@@ -54,7 +52,7 @@ void signalHandler(int /*signal*/)
 int main(int argc, char** argv)
 {
     cout << "== CERTI MODERN BILLARD ==" << endl;
-    
+
     std::signal(SIGINT, signalHandler);
 
     if (argc != 3) {
@@ -70,22 +68,22 @@ int main(int argc, char** argv)
 
         unique_ptr<rti1516e::RTIambassador> ambassador;
         ambassador = rti1516e::RTIambassadorFactory().createRTIambassador();
-        cout << "* Ambassador created" << endl << endl;
+        cout << "* Ambassador created" << endl
+             << endl;
 
         Billard billard(*ambassador, federation_name, federate_name);
 
         billard.createOrJoin();
 
         if (billard.isCreator()) {
-            billard.pause(L"Init");
+            billard.register_sync_point(L"Init");
 
             cout << "Press ENTER when all federates have joined" << endl;
             getchar();
-        }
-        else {
+        } else {
             billard.enableCollisions();
 
-            billard.pause(L"NotAlone");
+            billard.register_sync_point(L"NotAlone");
             billard.synchronize(L"NotAlone");
         }
 
@@ -110,29 +108,26 @@ int main(int argc, char** argv)
         billard.declare();
 
         if (billard.isCreator()) {
-            billard.pause(L"Start");
+            billard.register_sync_point(L"Start");
         }
 
         billard.synchronize(L"Start");
         billard.waitForSynchronization(L"Start");
 
-        int step_count{0};
+        int step_count{ 0 };
         auto time_point = std::chrono::system_clock::now();
         for (loop_state = true; loop_state; ++step_count) {
             billard.step();
-            
-            if(step_count % 500 == 0) {
+
+            if (step_count % 500 == 0) {
                 auto now = std::chrono::system_clock::now();
-                wcout << "steps per second: " << 5.0e11 /  std::chrono::duration_cast<std::chrono::nanoseconds>(now-time_point).count() << endl;
+                wcout << "steps per second: " << 5.0e11 / std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_point).count() << endl;
                 time_point = now;
             }
-            
-//             if(step_count == 20) {
-//                 loop_state = false;
-//             }
         }
-    }
-    catch (rti1516e::Exception& e) {
+
+        billard.resignAndDelete();
+    } catch (rti1516e::Exception& e) {
         wcout << "* Error: " << e.what() << endl;
 
         return EXIT_FAILURE;

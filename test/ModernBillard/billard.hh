@@ -24,16 +24,16 @@ public:
 
     void createOrJoin();
 
-    void pause(const std::wstring& label);
+    void register_sync_point(const std::wstring& label);
     void synchronize(const std::wstring& label);
 
     void publishAndSubscribe();
 
     void enableTimeRegulation();
-    
-    void timeConstrainedEnabled(const rti1516e::LogicalTime & theFederateTime) throw(FederateInternalError) override;
-    
-    void timeRegulationEnabled(const rti1516e::LogicalTime & theFederateTime) throw(FederateInternalError) override;
+
+    void timeConstrainedEnabled(const rti1516e::LogicalTime& theFederateTime) throw(FederateInternalError) override;
+
+    void timeRegulationEnabled(const rti1516e::LogicalTime& theFederateTime) throw(FederateInternalError) override;
 
     void tick();
 
@@ -43,10 +43,12 @@ public:
 
     void step();
 
+    void resignAndDelete();
+
     void sendCollision(const Ball& other, const rti1516e::LogicalTime& time);
 
     void sendNewPosition(const rti1516e::LogicalTime& time);
-    
+
     void announceSynchronizationPoint(
         const std::wstring& label,
         const rti1516e::VariableLengthData& theUserSuppliedTag) throw(FederateInternalError) override;
@@ -54,7 +56,7 @@ public:
     void waitForAnnounce(const std::wstring& label);
 
     virtual void federationSynchronized(const std::wstring& label,
-                                        const FederateHandleSet& failedToSyncSet) throw(FederateInternalError) override;
+        const FederateHandleSet& failedToSyncSet) throw(FederateInternalError) override;
 
     void waitForSynchronization(const std::wstring& label);
 
@@ -63,65 +65,65 @@ public:
     void waitForTimeAdvanceGrant();
 
     void discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-                                rti1516e::ObjectClassHandle theObjectClass,
-                                const std::wstring& theObjectInstanceName) throw(FederateInternalError) override;
+        rti1516e::ObjectClassHandle theObjectClass,
+        const std::wstring& theObjectInstanceName) throw(FederateInternalError) override;
 
     void discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-                                rti1516e::ObjectClassHandle theObjectClass,
-                                const std::wstring& theObjectInstanceName,
-                                rti1516e::FederateHandle producingFederate) throw(FederateInternalError) override;
+        rti1516e::ObjectClassHandle theObjectClass,
+        const std::wstring& theObjectInstanceName,
+        rti1516e::FederateHandle producingFederate) throw(FederateInternalError) override;
 
     void receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                            const ParameterHandleValueMap& theParameterValues,
-                            const rti1516e::VariableLengthData& theUserSuppliedTag,
-                            rti1516e::OrderType sentOrder,
-                            rti1516e::TransportationType theType,
-                            const rti1516e::LogicalTime& theTime,
-                            rti1516e::OrderType receivedOrder,
-                            rti1516e::MessageRetractionHandle theHandle,
-                            rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
+        const ParameterHandleValueMap& theParameterValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        const rti1516e::LogicalTime& theTime,
+        rti1516e::OrderType receivedOrder,
+        rti1516e::MessageRetractionHandle theHandle,
+        rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
 
     void receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                            const ParameterHandleValueMap& theParameterValues,
-                            const rti1516e::VariableLengthData& theUserSuppliedTag,
-                            rti1516e::OrderType sentOrder,
-                            rti1516e::TransportationType theType,
-                            const rti1516e::LogicalTime& theTime,
-                            rti1516e::OrderType receivedOrder,
-                            rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
+        const ParameterHandleValueMap& theParameterValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        const rti1516e::LogicalTime& theTime,
+        rti1516e::OrderType receivedOrder,
+        rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
 
     void receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-                            const ParameterHandleValueMap& theParameterValues,
-                            const rti1516e::VariableLengthData& theUserSuppliedTag,
-                            rti1516e::OrderType sentOrder,
-                            rti1516e::TransportationType theType,
-                            rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
+        const ParameterHandleValueMap& theParameterValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        rti1516e::SupplementalReceiveInfo theReceiveInfo) throw(FederateInternalError) override;
 
     void reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                const AttributeHandleValueMap& theAttributeValues,
-                                const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                rti1516e::OrderType sentOrder,
-                                rti1516e::TransportationType theType,
-                                const rti1516e::LogicalTime& theTime,
-                                rti1516e::OrderType receivedOrder,
-                                rti1516e::MessageRetractionHandle theHandle,
-                                rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
+        const AttributeHandleValueMap& theAttributeValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        const rti1516e::LogicalTime& theTime,
+        rti1516e::OrderType receivedOrder,
+        rti1516e::MessageRetractionHandle theHandle,
+        rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
 
     void reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                const AttributeHandleValueMap& theAttributeValues,
-                                const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                rti1516e::OrderType sentOrder,
-                                rti1516e::TransportationType theType,
-                                const rti1516e::LogicalTime& theTime,
-                                rti1516e::OrderType receivedOrder,
-                                rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
+        const AttributeHandleValueMap& theAttributeValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        const rti1516e::LogicalTime& theTime,
+        rti1516e::OrderType receivedOrder,
+        rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
 
     void reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-                                const AttributeHandleValueMap& theAttributeValues,
-                                const rti1516e::VariableLengthData& theUserSuppliedTag,
-                                rti1516e::OrderType sentOrder,
-                                rti1516e::TransportationType theType,
-                                rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
+        const AttributeHandleValueMap& theAttributeValues,
+        const rti1516e::VariableLengthData& theUserSuppliedTag,
+        rti1516e::OrderType sentOrder,
+        rti1516e::TransportationType theType,
+        rti1516e::SupplementalReflectInfo theReflectInfo) throw(FederateInternalError) override;
 
 private:
     void show_sync_points() const;
@@ -131,8 +133,8 @@ private:
     const std::wstring& my_federation_name;
     const std::wstring& my_federate_name;
 
-    bool has_created{false};
-    bool has_collision_enabled{false};
+    bool has_created{ false };
+    bool has_collision_enabled{ false };
 
     rti1516e::FederateHandle my_handle;
 
@@ -142,16 +144,16 @@ private:
 
     Ball my_ball{};
     std::vector<Ball> my_other_balls{};
-    
-    bool my_is_time_constrained{false};
-    bool my_is_time_regulated{false};
-    
-    bool my_time_granted{false};
 
-    RTI1516fedTimeInterval my_time_interval{1.0};
+    bool my_is_time_constrained{ false };
+    bool my_is_time_regulated{ false };
 
-    RTI1516fedTime my_local_time{0.0};
-//     RTI1516fedTime my_last_granted_time{0.0};
+    bool my_time_granted{ false };
+
+    RTI1516fedTimeInterval my_time_interval{ 1.0 };
+
+    RTI1516fedTime my_local_time{ 0.0 };
+    //     RTI1516fedTime my_last_granted_time{0.0};
 };
 
 #endif // BILLARD_H
