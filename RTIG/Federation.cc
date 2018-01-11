@@ -315,11 +315,11 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
 
         // If federation is synchronizing, put federate in same state.
         if (isSynchronizing()) {
-            auto asp = make_unique<NM_Announce_Synchronization_Point>();
-            asp->setFederate(federate_handle);
-            asp->setFederation(my_handle.get());
 
             for (const auto& kv : my_synchronization_labels) {
+                auto asp = make_unique<NM_Announce_Synchronization_Point>();
+                asp->setFederate(federate_handle);
+                asp->setFederation(my_handle.get());
                 asp->setLabel(kv.first);
                 asp->setTag(kv.second);
                 Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " to the new Federate" << endl;
@@ -2230,3 +2230,5 @@ RootObject& Federation::getRootObject()
 }
 }
 } // namespace certi/rtig
+
+
