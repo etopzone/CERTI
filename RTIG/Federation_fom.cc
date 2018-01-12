@@ -189,13 +189,12 @@ std::string filepathOf(const std::string& module)
         // Try to open to verify if file exists
         std::ifstream try_to_open(filename);
         if (try_to_open.is_open()) {
-            std::cout << "... opened." << std::endl;
+            Debug(D, pdDebug) << "file successfully opened" << std::endl;
             try_to_open.close();
             return filename;
         }
     }
 
-    std::cout << "... failed : ";
     throw CouldNotOpenFED("Module not found");
 }
 

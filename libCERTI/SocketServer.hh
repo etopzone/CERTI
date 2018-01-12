@@ -93,11 +93,11 @@ public:
      * Throw RTIinternalError if the References have already been set, or
      * if the Socket is not found.
      */
-    void setReferences(long the_socket,
-                       FederationHandle federation_reference,
-                       FederateHandle federate_reference,
-                       unsigned long the_address,
-                       unsigned int the_port);
+    virtual void setReferences(long the_socket,
+                               FederationHandle federation_reference,
+                               FederateHandle federate_reference,
+                               unsigned long the_address,
+                               unsigned int the_port);
 
     // -----------------------------
     // -- Message related methods --
@@ -140,7 +140,7 @@ public:
                                   TransportType the_type = RELIABLE) const;
 
     SocketTuple* getWithReferences(FederationHandle the_federation, FederateHandle the_federate) const;
-    
+
     FederateHandle getFederateFromSocket(FederationHandle the_federation, Socket* socket) const;
 
 private:

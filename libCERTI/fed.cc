@@ -118,7 +118,9 @@ int build(const char* filename, RootObject* root, bool verboseArg)
     rewind(yyin);
     yyrestart(yyin);
 #endif
+std::cout << "############### a" << std::endl;
     int result = yyparse();
+std::cout << "############### b" << std::endl;
     fclose(file);
     return result;
 }

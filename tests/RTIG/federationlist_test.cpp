@@ -10,6 +10,8 @@
 #include <libCERTI/NM_Classes.hh>
 
 #include "temporaryfedfile.h"
+#include "../mocks/sockettcp_mock.h"
+#include "../fakes/socketserver_fake.h"
 
 using ::certi::rtig::FederationsList;
 using ::certi::rtig::Federation;
@@ -29,7 +31,7 @@ static const ::certi::FederationHandle federation_handle{1};
 
 class FederationsListTest : public ::testing::Test {
 protected:
-    ::certi::SocketServer s{new certi::SocketTCP{}, nullptr};
+    FakeSocketServer s{new ::certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
 
     FederationsList f;
@@ -76,7 +78,8 @@ TEST_F(FederationsListTest, DestroyFederationThrowsIfFederationIsNotEmpty)
     TemporaryFedFile tmp{"FedList.fed"};
     f.createFederation("fed", federation_handle, s, a, {"FedList.fed"}, "", ::certi::HLA_1_3);
 
-    f.searchFederation(federation_handle).add("federate", fed_type, {}, ::certi::HLA_1_3, nullptr, 0, 0);
+    MockSocketTcp federate_socket;
+    f.searchFederation(federation_handle).add("federate", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
     ASSERT_THROW(f.destroyFederation(federation_handle), ::certi::FederatesCurrentlyJoined);
 }

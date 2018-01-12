@@ -149,7 +149,6 @@ Federation::Federation(const string& federation_name,
     if (verboseLevel > 0) {
         cout << "New federation: " << my_name << endl;
     }
-
     if(getRtiVersion() == IEEE_1516_2010) { // mim and modules
         if (mim_module.empty()) {
             openFomModules({"HLAstandardMIM.xml"}, true);
@@ -157,13 +156,11 @@ Federation::Federation(const string& federation_name,
         else {
             openFomModules({mim_module}, true);
         }
-
         openFomModules(fom_modules);
     }
     else { // only one fdd
         openFomModules({fom_modules.front()});
     }
-
     my_min_NERx.setZero();
 
     Debug(G, pdGendoc) << "exit Federation::Federation" << endl;

@@ -124,11 +124,11 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
 {
     // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
 
-    Debug(D, pdDebug) << "ME" << std::endl;
-    displaySmall();
+//     Debug(D, pdDebug) << "ME" << std::endl;
+//     displaySmall();
 
-    Debug(D, pdDebug) << "MAIN" << std::endl;
-    main_root.displaySmall();
+//     Debug(D, pdDebug) << "MAIN" << std::endl;
+//     main_root.displaySmall();
 
     // object class
     for (const auto& object_class : *ObjectClasses) {
