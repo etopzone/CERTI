@@ -1,25 +1,27 @@
 #include "billard.hh"
 
 #include <algorithm>
+#include <chrono>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
-#include <chrono>
 
 #include "MessageBuffer.hh"
 
+#ifndef X_DISPLAY_MISSING
 #include "../libgraphc/graph_c.hh"
+#endif
 
 // #define TRACE
 
 #ifdef TRACE
 auto* out = &std::wcout;
 #else
-decltype(std::wcout) * out = nullptr;
+decltype(std::wcout)* out = nullptr;
 #endif
 
-#define debug() \
-    if (out)    \
+#define debug()                                                                                                        \
+    if (out)                                                                                                           \
     *out
 
 using std::wcout;
@@ -36,7 +38,8 @@ std::wostream& operator<<(std::wostream& os, const VariableLengthData& v)
         for (auto i(0u); i < v.size(); ++i) {
             if (i == 0) {
                 os << "x";
-            } else if (i % 4 == 0) {
+            }
+            else if (i % 4 == 0) {
                 os << ":";
             }
             os << std::setw(2) << static_cast<const uint8_t*>(v.data())[i];
@@ -59,72 +62,71 @@ std::wostream& operator<<(std::wostream& os, const AttributeHandleValueMap& v)
 }
 
 Billard::Billard(const std::wstring& federation_name, const std::wstring& federate_name, bool& loop_state)
-    : my_federation_name(federation_name)
-    , my_federate_name(federate_name)
+    : my_federation_name(federation_name), my_federate_name(federate_name)
 {
     debug() << __func__ << endl;
     my_ambassador->connect(*this, HLA_EVOKED);
-    
+
     createOrJoin();
-    
+
     if (isCreator()) {
         register_sync_point(L"Init");
-        
+
         wcout << "Press ENTER when all federates have joined" << endl;
         getchar();
-    } else {
+    }
+    else {
         enableCollisions();
-        
+
         register_sync_point(L"NotAlone");
         synchronize(L"NotAlone");
     }
-    
+
     synchronize(L"Init");
     waitForSynchronization(L"Init");
-    
+
     if (isCreator() && hasSynchronizationPending(L"NotAlone")) {
         enableCollisions();
-        
+
         synchronize(L"NotAlone");
         waitForSynchronization(L"NotAlone");
     }
-    
+
     publishAndSubscribe();
-    
+
     enableTimeRegulation();
-    
+
     tick();
-    
+
     init();
-    
+
     declare();
-    
+
     if (isCreator()) {
         register_sync_point(L"Start");
     }
-    
+
     synchronize(L"Start");
     waitForSynchronization(L"Start");
-    
-    int step_count{ 0 };
+
+    int step_count{0};
     auto time_point = std::chrono::system_clock::now();
     for (loop_state = true; loop_state; ++step_count) {
         step();
-        
+
         if (step_count % 500 == 0) {
             auto now = std::chrono::system_clock::now();
-            wcout << "steps per second: " << 5.0e11 / std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_point).count() << endl;
+            wcout << "steps per second: "
+                  << 5.0e11 / std::chrono::duration_cast<std::chrono::nanoseconds>(now - time_point).count() << endl;
             time_point = now;
         }
     }
-    
 }
 
 Billard::~Billard()
 {
     resignAndDelete();
 }
-
 
 bool Billard::isCreator() const
 {
@@ -150,13 +152,15 @@ void Billard::createOrJoin()
         my_ambassador->createFederationExecution(my_federation_name, L"Base.xml");
         has_created = true;
         debug() << "Created federation\n";
-    } catch (FederationExecutionAlreadyExists& e) {
+    }
+    catch (FederationExecutionAlreadyExists& e) {
     }
 
     std::vector<std::wstring> modules;
     if (has_created) {
         modules.emplace_back(L"Create.xml");
-    } else {
+    }
+    else {
         modules.emplace_back(L"Join.xml");
     }
 
@@ -168,8 +172,8 @@ void Billard::register_sync_point(const std::wstring& label)
 {
     debug() << __func__ << ", label:" << label << endl;
 
-    std::wstring tag{ L"" };
-    my_ambassador->registerFederationSynchronizationPoint(label, { tag.c_str(), tag.size() });
+    std::wstring tag{L""};
+    my_ambassador->registerFederationSynchronizationPoint(label, {tag.c_str(), tag.size()});
 
     show_sync_points();
 }
@@ -238,7 +242,7 @@ void Billard::timeRegulationEnabled(const rti1516e::LogicalTime& theFederateTime
 void Billard::tick()
 {
 #ifdef TRACE
-    static unsigned int tick_count{ 0 };
+    static unsigned int tick_count{0};
     ++tick_count;
     debug() << __func__ << tick_count << '\n';
 #endif
@@ -254,7 +258,9 @@ void Billard::init()
 
     debug() << "seed: " << seed << endl;
 
+#ifndef X_DISPLAY_MISSING
     InitGraphe(400, 25 + (seed - 1) * 120, 500, 100);
+#endif
 
     my_ball.init(seed);
 }
@@ -263,7 +269,7 @@ void Billard::declare()
 {
     debug() << __func__ << endl;
     auto ball_handle = my_ambassador->registerObjectInstance(my_ambassador->getObjectClassHandle(L"Ball"),
-        my_federate_name + L"_Ball");
+                                                             my_federate_name + L"_Ball");
     my_ball.setHandle(ball_handle);
     debug() << "Registered my ball with handle " << ball_handle << endl;
 }
@@ -271,7 +277,7 @@ void Billard::declare()
 void Billard::step()
 {
 #ifdef TRACE
-    static unsigned int step_count{ 0 };
+    static unsigned int step_count{0};
     ++step_count;
     debug() << __func__ << step_count << '\n';
 #endif
@@ -284,7 +290,7 @@ void Billard::step()
 
     debug() << "after query, time is " << my_local_time.toString() << endl;
 
-    auto time_aux = RTI1516fedTime{ my_local_time };
+    auto time_aux = RTI1516fedTime{my_local_time};
     time_aux += my_time_interval;
 
     debug() << "request advance to " << time_aux.toString() << endl;
@@ -308,7 +314,7 @@ void Billard::step()
 
     my_ball.erase();
 
-    auto next_step = RTI1516fedTime{ my_local_time };
+    auto next_step = RTI1516fedTime{my_local_time};
     next_step += my_time_interval;
 
     // erase screen
@@ -346,7 +352,8 @@ void Billard::resignAndDelete()
 
     try {
         my_ambassador->destroyFederationExecution(my_federation_name);
-    } catch (FederatesCurrentlyJoined& e) {
+    }
+    catch (FederatesCurrentlyJoined& e) {
         // We are not the last one, die and let the last one destroy the federation
     }
 }
@@ -374,8 +381,8 @@ void Billard::sendCollision(const Ball& other, const LogicalTime& time)
     buffer.updateReservedBytes();
     parameters[param_dy_handle] = VariableLengthData(static_cast<char*>(buffer(0)), buffer.size());
 
-    std::wstring tag{ L"" };
-    my_ambassador->sendInteraction(collision_handle, parameters, { tag.c_str(), tag.size() }, time);
+    std::wstring tag{L""};
+    my_ambassador->sendInteraction(collision_handle, parameters, {tag.c_str(), tag.size()}, time);
 }
 
 void Billard::sendNewPosition(const LogicalTime& time)
@@ -400,8 +407,8 @@ void Billard::sendNewPosition(const LogicalTime& time)
 
     debug() << "SEND::" << attributes << endl;
 
-    std::wstring tag{ L"" };
-    my_ambassador->updateAttributeValues(my_ball.getHandle(), attributes, { tag.c_str(), tag.size() }, time);
+    std::wstring tag{L""};
+    my_ambassador->updateAttributeValues(my_ball.getHandle(), attributes, {tag.c_str(), tag.size()}, time);
 }
 
 void Billard::announceSynchronizationPoint(
@@ -425,7 +432,7 @@ void Billard::waitForAnnounce(const std::wstring& label)
 }
 
 void Billard::federationSynchronized(const std::wstring& label,
-    const FederateHandleSet& /*failedToSyncSet*/) throw(FederateInternalError)
+                                     const FederateHandleSet& /*failedToSyncSet*/) throw(FederateInternalError)
 {
     debug() << __func__ << ", label:" << label << endl;
     debug() << L"Federation synchronized on label " << label << endl;
@@ -463,8 +470,8 @@ void Billard::waitForTimeAdvanceGrant()
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-    rti1516e::ObjectClassHandle theObjectClass,
-    const std::wstring& /*theObjectInstanceName*/) throw(FederateInternalError)
+                                     rti1516e::ObjectClassHandle theObjectClass,
+                                     const std::wstring& /*theObjectInstanceName*/) throw(FederateInternalError)
 {
     debug() << __func__ << ", theObject=" << theObject << endl;
 
@@ -476,23 +483,23 @@ void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
 }
 
 void Billard::discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject,
-    rti1516e::ObjectClassHandle /*theObjectClass*/,
-    const std::wstring& /*theObjectInstanceName*/,
-    rti1516e::FederateHandle /*producingFederate*/) throw(FederateInternalError)
+                                     rti1516e::ObjectClassHandle /*theObjectClass*/,
+                                     const std::wstring& /*theObjectInstanceName*/,
+                                     rti1516e::FederateHandle /*producingFederate*/) throw(FederateInternalError)
 {
     debug() << "########        " << __func__ << " 2, theObject=" << theObject << endl;
     getchar();
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-    const ParameterHandleValueMap& theParameterValues,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    const rti1516e::LogicalTime& /*theTime*/,
-    rti1516e::OrderType /*receivedOrder*/,
-    rti1516e::MessageRetractionHandle /*theHandle*/,
-    rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& theParameterValues,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 const rti1516e::LogicalTime& /*theTime*/,
+                                 rti1516e::OrderType /*receivedOrder*/,
+                                 rti1516e::MessageRetractionHandle /*theHandle*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
     debug() << __func__ << ", theInteraction=" << theInteraction << endl;
 
@@ -530,45 +537,46 @@ void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction
                 debug() << "[" << my_local_time.toString() << "] New ball position: x=" << my_ball.getX()
                         << ", y=" << my_ball.getY() << std::endl;
             }
-        } catch (std::out_of_range& e) {
+        }
+        catch (std::out_of_range& e) {
             wcout << "The interaction should have all three parameters, skip.\n";
         }
     }
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-    const ParameterHandleValueMap& /*theParameterValues*/,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    const rti1516e::LogicalTime& /*theTime*/,
-    rti1516e::OrderType /*receivedOrder*/,
-    rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 const rti1516e::LogicalTime& /*theTime*/,
+                                 rti1516e::OrderType /*receivedOrder*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
     debug() << "########        " << __func__ << " 2, theInteraction=" << theInteraction << endl;
     getchar();
 }
 
 void Billard::receiveInteraction(rti1516e::InteractionClassHandle theInteraction,
-    const ParameterHandleValueMap& /*theParameterValues*/,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
+                                 const ParameterHandleValueMap& /*theParameterValues*/,
+                                 const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                 rti1516e::OrderType /*sentOrder*/,
+                                 rti1516e::TransportationType /*theType*/,
+                                 rti1516e::SupplementalReceiveInfo /*theReceiveInfo*/) throw(FederateInternalError)
 {
     debug() << "########        " << __func__ << " 3, theInteraction=" << theInteraction << endl;
     getchar();
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-    const AttributeHandleValueMap& theAttributeValues,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    const rti1516e::LogicalTime& /*theTime*/,
-    rti1516e::OrderType /*receivedOrder*/,
-    rti1516e::MessageRetractionHandle /*theHandle*/,
-    rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& theAttributeValues,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     const rti1516e::LogicalTime& /*theTime*/,
+                                     rti1516e::OrderType /*receivedOrder*/,
+                                     rti1516e::MessageRetractionHandle /*theHandle*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
     debug() << __func__ << ", theObject=" << theObject << endl;
 
@@ -591,7 +599,8 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
 
             if (kv.first == attribute_pos_x_handle) {
                 fun = &Ball::updateX;
-            } else if (kv.first == attribute_pos_y_handle) {
+            }
+            else if (kv.first == attribute_pos_y_handle) {
                 fun = &Ball::updateY;
             }
 
@@ -614,24 +623,24 @@ void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-    const AttributeHandleValueMap& /*theAttributeValues*/,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    const rti1516e::LogicalTime& /*theTime*/,
-    rti1516e::OrderType /*receivedOrder*/,
-    rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     const rti1516e::LogicalTime& /*theTime*/,
+                                     rti1516e::OrderType /*receivedOrder*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
     debug() << "########        " << __func__ << " 2, theObject=" << theObject << endl;
     getchar();
 }
 
 void Billard::reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject,
-    const AttributeHandleValueMap& /*theAttributeValues*/,
-    const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
-    rti1516e::OrderType /*sentOrder*/,
-    rti1516e::TransportationType /*theType*/,
-    rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
+                                     const AttributeHandleValueMap& /*theAttributeValues*/,
+                                     const rti1516e::VariableLengthData& /*theUserSuppliedTag*/,
+                                     rti1516e::OrderType /*sentOrder*/,
+                                     rti1516e::TransportationType /*theType*/,
+                                     rti1516e::SupplementalReflectInfo /*theReflectInfo*/) throw(FederateInternalError)
 {
     debug() << "########        " << __func__ << " 3, theObject=" << theObject << endl;
     getchar();

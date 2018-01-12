@@ -5,8 +5,11 @@
 
 #include <cmath>
 #include <cstring>
+#include <iostream>
 
+#ifndef X_DISPLAY_MISSING
 #include "../libgraphc/graph_c.hh"
+#endif
 
 struct Board {
     double width{500};
@@ -112,12 +115,11 @@ public:
 
     void bounceAgainst(const Ball& other)
     {
-        if(std::memcmp(getHandle().encode().data(),
-            other.getHandle().encode().data(),
-                       getHandle().encode().size()) > 0) {
+        if (std::memcmp(getHandle().encode().data(), other.getHandle().encode().data(), getHandle().encode().size())
+            > 0) {
             return;
         }
-        
+
         if ((my_dx == other.getDX()) && (my_dy == other.getDY())) {
             my_dx = -my_dx;
             my_dy = -my_dy;
@@ -148,6 +150,7 @@ public:
 
     void display()
     {
+#ifndef X_DISPLAY_MISSING
         cercler disque;
         point centre;
 
@@ -155,10 +158,14 @@ public:
         centre.Y = (int) my_y;
         disque = Definecr(centre, (int) my_radius, COUL_UNIE, my_is_active ? (couleur) BLACK : GRAY);
         Drawcr(disque);
+#else
+        std::wcout << my_handle << " [" << my_x << ";" << my_y << "]\n";
+#endif
     }
 
     void erase()
     {
+#ifndef X_DISPLAY_MISSING
         cercler disque;
         point centre;
 
@@ -166,6 +173,7 @@ public:
         centre.Y = (int) my_y;
         disque = Definecr(centre, (int) my_radius, COUL_UNIE, WHITE);
         Drawcr(disque);
+#endif
     }
 
 private:

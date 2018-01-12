@@ -36,13 +36,14 @@
 
 using namespace std;
 
-static bool loop_state{ false };
+static bool loop_state{false};
 
 void signalHandler(int /*signal*/)
 {
     if (loop_state) {
         loop_state = false;
-    } else {
+    }
+    else {
         std::exit(0);
     }
 }
@@ -63,7 +64,8 @@ int main(int argc, char** argv)
 
     try {
         Billard billard(federation_name, federate_name, loop_state);
-    } catch (rti1516e::Exception& e) {
+    }
+    catch (rti1516e::Exception& e) {
         wcout << "* Error: " << e.what() << endl;
 
         return EXIT_FAILURE;
