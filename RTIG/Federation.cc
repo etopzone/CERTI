@@ -149,7 +149,6 @@ Federation::Federation(const string& federation_name,
     if (verboseLevel > 0) {
         cout << "New federation: " << my_name << endl;
     }
-
     if(getRtiVersion() == IEEE_1516_2010) { // mim and modules
         if (mim_module.empty()) {
             openFomModules({"HLAstandardMIM.xml"}, true);
@@ -157,13 +156,11 @@ Federation::Federation(const string& federation_name,
         else {
             openFomModules({mim_module}, true);
         }
-
         openFomModules(fom_modules);
     }
     else { // only one fdd
         openFomModules({fom_modules.front()});
     }
-
     my_min_NERx.setZero();
 
     Debug(G, pdGendoc) << "exit Federation::Federation" << endl;
@@ -270,7 +267,10 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
                                                      const string& federate_type,
                                                      std::vector<std::string> additional_fom_modules,
                                                      const RtiVersion rti_version,
-                                                     SocketTCP* tcp_link)
+                                                     SocketTCP* tcp_link,
+                                                     const uint32_t peer,
+                                                     const uint32_t address
+                                                    )
 {
     try {
         getFederate(federate_name);
@@ -312,11 +312,11 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
 
         // If federation is synchronizing, put federate in same state.
         if (isSynchronizing()) {
-            auto asp = make_unique<NM_Announce_Synchronization_Point>();
-            asp->setFederate(federate_handle);
-            asp->setFederation(my_handle.get());
 
             for (const auto& kv : my_synchronization_labels) {
+                auto asp = make_unique<NM_Announce_Synchronization_Point>();
+                asp->setFederate(federate_handle);
+                asp->setFederation(my_handle.get());
                 asp->setLabel(kv.first);
                 asp->setTag(kv.second);
                 Debug(D, pdTerm) << "Sending synchronization message " << kv.first << " to the new Federate" << endl;
@@ -330,6 +330,34 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
     catch (NetworkError&) {
         throw RTIinternalError("Network Error while initializing federate.");
     }
+    
+    auto rep = make_unique<NM_Join_Federation_Execution>();
+    getFOM(*rep);
+    
+    auto fom_rep = make_unique<NM_Additional_Fom_Module>();
+    getFOM(*fom_rep);
+    
+    auto fom_resp = respondToAll(std::move(fom_rep), federate_handle);
+    responses.insert(end(responses), make_move_iterator(begin(fom_resp)), make_move_iterator(end(fom_resp)));
+    
+    // Prepare answer about JoinFederationExecution
+    rep->setFederationExecutionName(getName());
+    rep->setFederate(federate_handle);
+    rep->setFederation(my_handle.get());
+    rep->setNumberOfRegulators(getNbRegulators());
+    rep->setBestEffortPeer(peer);
+    rep->setBestEffortAddress(address);
+
+// Now we have to answer about JoinFederationExecution
+#ifdef FEDERATION_USES_MULTICAST
+    rep->AdresseMulticast = MCLink->returnAdress();
+#endif
+
+    responses.emplace_back(tcp_link, std::move(rep));
+
+    // Store Federate <->Socket reference.
+    my_server->getSocketServer().setReferences(
+        tcp_link->returnSocket(), my_handle, federate_handle, address, peer);
 
     if (my_mom) {
         auto resp = my_mom->registerFederate(federate, tcp_link);
@@ -2026,6 +2054,11 @@ void Federation::getFOM(NM_Join_Federation_Execution& object_model_data)
     my_root_object->convertToSerializedFOM(object_model_data);
 }
 
+void Federation::getFOM(NM_Additional_Fom_Module& object_model_data)
+{
+    my_root_object->convertToSerializedFOM(object_model_data);
+}
+
 bool Federation::updateLastNERxForFederate(FederateHandle federate_handle, FederationTime date)
 {
     bool retval = false;
@@ -2194,3 +2227,5 @@ RootObject& Federation::getRootObject()
 }
 }
 } // namespace certi/rtig
+
+

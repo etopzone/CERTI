@@ -4,13 +4,14 @@
 #include <iostream>
 
 namespace {
-    static constexpr bool debug_disabled {true};
+static constexpr bool debug_disabled{true};
 }
 
-#define CERR \
-if (debug_disabled) { \
-} \
-else ::std::cerr << "[TemporaryFedFile]\t"
+#define CERR                                                                                                           \
+    if (debug_disabled) {                                                                                              \
+    }                                                                                                                  \
+    else                                                                                                               \
+        ::std::cerr << "[TemporaryFedFile]\t"
 
 TemporaryFedFile::TemporaryFedFile(const std::string& path) : my_path{path}
 {
@@ -23,7 +24,8 @@ TemporaryFedFile::~TemporaryFedFile()
     std::remove(my_path.c_str());
 }
 
-std::string TemporaryFedFile::path() const {
+std::string TemporaryFedFile::path() const
+{
     return my_path;
 }
 

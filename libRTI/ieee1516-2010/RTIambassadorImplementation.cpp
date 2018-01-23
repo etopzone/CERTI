@@ -378,7 +378,7 @@ rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
 
     // federate handle is only used in response
 
-    req.setFederateName({begin(federateType), end(federateType)});
+    req.setFederateName({begin(federateName), end(federateName)});
 
     req.setFederateType({begin(federateType), end(federateType)});
     

@@ -124,11 +124,11 @@ bool RootObject::canBeAddedTo(const RootObject& main_root)
 {
     // From IEEE Std 1516.1-2010 : 4.1.4.1 : Rules for combining information from FOM modules (page 35)
 
-    Debug(D, pdDebug) << "ME" << std::endl;
-    displaySmall();
+//     Debug(D, pdDebug) << "ME" << std::endl;
+//     displaySmall();
 
-    Debug(D, pdDebug) << "MAIN" << std::endl;
-    main_root.displaySmall();
+//     Debug(D, pdDebug) << "MAIN" << std::endl;
+//     main_root.displaySmall();
 
     // object class
     for (const auto& object_class : *ObjectClasses) {
@@ -669,6 +669,128 @@ void RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
     }
 }
 
+void RootObject::convertToSerializedFOM(NM_Additional_Fom_Module& message)
+{
+    // The rounting spaces
+    uint32_t routingSpaceCount = spaces.size();
+    message.setRoutingSpacesSize(routingSpaceCount);
+    for (uint32_t i = 0; i < routingSpaceCount; ++i) {
+        const RoutingSpace& rs = spaces[i];
+        NM_FOM_Routing_Space& mrs = message.getRoutingSpaces(i);
+
+        mrs.setSpace(rs.getHandle());
+        mrs.setName(rs.getName());
+
+        uint32_t dimensionCount = rs.getDimensions().size();
+        mrs.setDimensionsSize(dimensionCount);
+        for (uint32_t j = 0; j < dimensionCount; ++j) {
+            const Dimension& d = rs.getDimensions()[j];
+            NM_FOM_Dimension& md = mrs.getDimensions(j);
+
+            md.setHandle(d.getHandle());
+            md.setName(d.getName());
+        }
+    }
+
+    // The object classes
+    message.setObjectClassesSize(ObjectClasses->size());
+    uint32_t idx = 0;
+    for (ObjectClassSet::handled_const_iterator i = ObjectClasses->handled_begin(); i != ObjectClasses->handled_end();
+         ++i, ++idx) {
+        const ObjectClass* objectClass = i->second;
+        NM_FOM_Object_Class& moc = message.getObjectClasses(idx);
+
+        moc.setHandle(objectClass->getHandle());
+        std::string name = objectClass->getName();
+        ObjectClassHandle superclassHandle = objectClass->getSuperclass();
+        moc.setSuperClass(superclassHandle);
+
+        ObjectClass* parent = 0;
+        if (0 < superclassHandle) {
+            parent = getObjectClass(superclassHandle);
+
+            // strip the common substring from the parents name.
+            if (name.find(parent->getName() + ".") == 0) {
+                name = name.substr(parent->getName().size() + 1);
+            }
+        }
+
+        // Transfer the short name
+        moc.setName(name);
+
+        // Transfer the attributes that are not inheritted
+        uint32_t jdx = 0;
+        const ObjectClass::HandleClassAttributeMap& attributeMap = i->second->getHandleClassAttributeMap();
+        ObjectClass::HandleClassAttributeMap::const_iterator j = attributeMap.begin();
+        for (; j != attributeMap.end(); ++j) {
+            // Dump only those attributes from the list that are not alreay in the parent
+            if (parent && parent->hasAttribute(j->second->getHandle())) {
+                continue;
+            }
+
+            const ObjectClassAttribute* attribute = j->second;
+
+            moc.setAttributesSize(++jdx);
+            NM_FOM_Attribute& ma = moc.getAttributes(jdx - 1);
+
+            ma.setHandle(attribute->getHandle());
+            ma.setName(attribute->getName());
+            ma.setSpaceHandle(attribute->getSpace());
+            ma.setOrder(attribute->order);
+            ma.setTransport(attribute->transport);
+        }
+    }
+
+    // The interaction classes
+    message.setInteractionClassesSize(Interactions->size());
+    idx = 0;
+    for (InteractionSet::handled_const_iterator i = Interactions->handled_begin(); i != Interactions->handled_end();
+         ++i, ++idx) {
+        Interaction* interactionClass = i->second;
+        NM_FOM_Interaction_Class& mic = message.getInteractionClasses(idx);
+
+        mic.setInteractionClass(interactionClass->getHandle());
+        std::string name = interactionClass->getName();
+        InteractionClassHandle superclassHandle = interactionClass->getSuperclass();
+        mic.setSuperClass(superclassHandle);
+        mic.setSpace(interactionClass->getSpace());
+        mic.setOrder(interactionClass->order);
+        mic.setTransport(interactionClass->transport);
+
+        // Dump only those attributes from the list that are not alreay in the parent
+        Interaction* parent = 0;
+        if (0 < superclassHandle) {
+            parent = getInteractionClass(superclassHandle);
+
+            // strip the common substring from the parents name.
+            if (name.find(parent->getName() + ".") == 0) {
+                name = name.substr(parent->getName().size() + 1);
+            }
+        }
+
+        // Transfer the simple name
+        mic.setName(name);
+
+        // Transfer the new parameters
+        uint32_t jdx = 0;
+        const Interaction::HandleParameterMap& parameterMap = i->second->getHandleParameterMap();
+        Interaction::HandleParameterMap::const_iterator j = parameterMap.begin();
+        for (; j != parameterMap.end(); ++j) {
+            // Dump only those attributes from the list that are not alreay in the parent
+            const Parameter* parameter = j->second;
+            if (parent && parent->hasParameter(parameter->getHandle())) {
+                continue;
+            }
+
+            mic.setParametersSize(++jdx);
+            NM_FOM_Parameter& mp = mic.getParameters(jdx - 1);
+
+            mp.setHandle(parameter->getHandle());
+            mp.setName(parameter->getName());
+        }
+    }
+}
+
 void RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message)
 {
     // The number of routing space records to read
@@ -744,6 +866,105 @@ void RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& me
 
             Parameter* parameter = new Parameter(mp.getName(), mp.getHandle());
             current->addParameter(parameter);
+        }
+    }
+}
+
+void RootObject::rebuildFromSerializedFOM(const NM_Additional_Fom_Module& message)
+{
+    // The number of routing space records to read
+    uint32_t routingSpaceCount = message.getRoutingSpacesSize();
+    for (uint32_t i = 0; i < routingSpaceCount; ++i) {
+        const NM_FOM_Routing_Space& mrs = message.getRoutingSpaces(i);
+
+        try {
+            getRoutingSpaceHandle(mrs.getName());
+
+            Debug(D, pdDebug) << "Routing space already exists, do nothing" << std::endl;
+        }
+        catch (NameNotFound& e) {
+            Debug(D, pdDebug) << "Routing space does not exists, create it." << std::endl;
+
+            RoutingSpace current;
+            current.setHandle(mrs.getSpace());
+            current.setName(mrs.getName());
+
+            for (uint32_t j = 0; j < mrs.getDimensionsSize(); ++j) {
+                const NM_FOM_Dimension& md = mrs.getDimensions(j);
+
+                Dimension dimension(md.getHandle());
+                dimension.setName(md.getName());
+                current.addDimension(dimension);
+            }
+
+            addRoutingSpace(current);
+        }
+    }
+
+    // The number of object class records to read
+    for (uint32_t i = 0; i < message.getObjectClassesSize(); ++i) {
+        const NM_FOM_Object_Class& moc = message.getObjectClasses(i);
+
+        try {
+            getObjectClass(moc.getHandle());
+            Debug(D, pdDebug) << "Object class already exists, do nothing" << std::endl;
+        }
+        catch (ObjectClass::ObjectNotDefinedException& e) {
+            Debug(D, pdDebug) << "Object class does not currently exist, create it." << std::endl;
+
+            // add the object class to the root object
+            ObjectClass* current = new ObjectClass(moc.getName(), moc.getHandle());
+            ObjectClass* parent = 0;
+            ObjectClassHandle superclassHandle = moc.getSuperClass();
+            if (0 < superclassHandle) {
+                parent = getObjectClass(superclassHandle);
+            }
+            addObjectClass(current, parent);
+
+            for (uint32_t j = 0; j < moc.getAttributesSize(); ++j) {
+                const NM_FOM_Attribute& ma = moc.getAttributes(j);
+
+                // OrderType order = ma.getOrder();
+                // TransportType transport = ma.getTransport();
+                ObjectClassAttribute* attribute = new ObjectClassAttribute(ma.getName(), ma.getHandle());
+                // attribute->setTransport(ma.getTransport());
+                attribute->transport = ma.getTransport();
+                // attribute->setOrder(ma.getOrder());
+                attribute->order = ma.getOrder();
+                attribute->setSpace(ma.getSpaceHandle());
+                current->addAttribute(attribute);
+            }
+        }
+    }
+
+    // The number of interactions records to read
+    for (uint32_t i = 0; i < message.getInteractionClassesSize(); ++i) {
+        const NM_FOM_Interaction_Class& mic = message.getInteractionClasses(i);
+
+        try {
+            getInteractionClass(mic.getInteractionClass());
+            Debug(D, pdDebug) << "Interaction already exists, do nothing" << std::endl;
+        }
+        catch (Interaction::ObjectNotDefinedException& e) {
+            Debug(D, pdDebug) << "Interaction does not currently exist, create it." << std::endl;
+
+            Interaction* current
+                = new Interaction(mic.getName(), mic.getInteractionClass(), mic.getTransport(), mic.getOrder());
+            current->setSpace(mic.getSpace());
+            Interaction* parent = 0;
+            InteractionClassHandle superclassHandle = mic.getSuperClass();
+            if (0 < superclassHandle) {
+                parent = getInteractionClass(superclassHandle);
+            }
+
+            addInteractionClass(current, parent);
+
+            for (uint32_t j = 0; j < mic.getParametersSize(); ++j) {
+                const NM_FOM_Parameter& mp = mic.getParameters(j);
+
+                Parameter* parameter = new Parameter(mp.getName(), mp.getHandle());
+                current->addParameter(parameter);
+            }
         }
     }
 }

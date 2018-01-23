@@ -45,6 +45,7 @@ class InteractionSet;
 class RTIRegion;
 class RoutingSpace;
 class NM_Join_Federation_Execution;
+class NM_Additional_Fom_Module;
 
 /** The RootObject is literally the "root" object
  * of the HLA object class hierarchy.
@@ -155,16 +156,26 @@ public:
      *                      this may be NULL.
      */
     void addInteractionClass(Interaction* currentIC, Interaction* parentIC);
-
+    
     /**
      * Serialize the federate object model into a message buffer.
      */
     void convertToSerializedFOM(NM_Join_Federation_Execution& message);
+    
+    /**
+     * Serialize the federate object model into a message buffer.
+     */
+    void convertToSerializedFOM(NM_Additional_Fom_Module& message);
 
     /**
      * Deserialize the federate object model from a message buffer.
      */
     void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
+
+    /**
+     * Deserialize the federate object model from a message buffer.
+     */
+    void rebuildFromSerializedFOM(const NM_Additional_Fom_Module& message);
     
     int getFreeObjectClassHandle();
     int getFreeInteractionClassHandle();

@@ -129,7 +129,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Create_Federation_Execution>
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-    
+
     const auto& federation = request.message()->getFederationExecutionName();
     const auto& fom_modules = request.message()->getFomModuleDesignators();
     const auto& mim_designator = request.message()->getMimDesignator();
@@ -178,9 +178,9 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     Responses responses;
 
     my_auditServer.setLevel(AuditLine::Level(9));
-    
-    const auto& federation = request.message()->getFederationExecutionName();
-    const auto& federate = request.message()->getFederateName();
+
+    const auto& federation_name = request.message()->getFederationExecutionName();
+    const auto& federate_name = request.message()->getFederateName();
     const auto& federate_type = request.message()->getFederateType();
     const auto& additional_modules = request.message()->getAdditionalFomModules();
     const auto& rti_version = request.message()->getRtiVersion();
@@ -188,58 +188,29 @@ Responses MessageProcessor::process(MessageEvent<NM_Join_Federation_Execution>&&
     unsigned int peer = request.message()->getBestEffortPeer();
     unsigned long address = request.message()->getBestEffortAddress();
 
-    if (federation.empty() || federate.empty()) {
+    if (federation_name.empty() || federate_name.empty()) {
         throw RTIinternalError("Invalid Federation/Federate Name");
     }
 
-    my_auditServer << "Federate \"" << federate << "\" joins Federation \"" << federation << "\"";
+    my_auditServer << "Federate \"" << federate_name << "\" joins Federation \"" << federation_name << "\"";
 
-    FederationHandle federation_handle = my_federations.getFederationHandle(federation);
-
-    // Need to dump the FOM into that
-    auto rep = make_unique<NM_Join_Federation_Execution>();
+    auto federation_handle = my_federations.getFederationHandle(federation_name);
+    auto& federation = my_federations.searchFederation(federation_handle);
 
     FederateHandle federate_handle;
-    std::tie(federate_handle, responses) = my_federations.addFederate(
-        federation_handle, federate, federate_type, additional_modules, rti_version, static_cast<SocketTCP*>(request.sockets().front()), *rep);
-
-    int regulators_count;
-    int federates_count;
-    bool is_syncing;
-
-#ifdef FEDERATION_USES_MULTICAST
-    SocketMC* com_mc = nullptr;
-
-    federations.info(federation_handle, federates_count, regulators_count, is_syncing, com_mc);
-    assert(com_mc != nullptr);
-#else
-    my_federations.info(federation_handle, federates_count, regulators_count, is_syncing);
-#endif
-
-    // Store Federate <->Socket reference.
-    my_socketServer.setReferences(
-        request.sockets().front()->returnSocket(), federation_handle, federate_handle, address, peer);
-
+    std::tie(federate_handle, responses) = federation.add(federate_name,
+                                                          federate_type,
+                                                          additional_modules,
+                                                          rti_version,
+                                                          static_cast<SocketTCP*>(request.sockets().front()),
+                                                          peer,
+                                                          address);
+    
     my_auditServer << "(" << federation_handle << ") with handle " << federate_handle << ". Socket "
                    << int(request.sockets().front()->returnSocket());
 
-    // Prepare answer about JoinFederationExecution
-    rep->setFederationExecutionName(federation);
-    rep->setFederate(federate_handle);
-    rep->setFederation(federation_handle.get());
-    rep->setNumberOfRegulators(regulators_count);
-    rep->setBestEffortPeer(peer);
-    rep->setBestEffortAddress(address);
-
-// Now we have to answer about JoinFederationExecution
-#ifdef FEDERATION_USES_MULTICAST
-    rep->AdresseMulticast = com_mc->returnAdress();
-#endif
-
-    Debug(D, pdInit) << "Federate \"" << federate << "\" has joined Federation " << federation_handle
+    Debug(D, pdInit) << "Federate \"" << federate_name << "\" has joined Federation " << federation_handle
                      << " under handle " << federate_handle << endl;
-
-    responses.emplace_back(request.sockets().front(), std::move(rep));
 
     return responses;
 }

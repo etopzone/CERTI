@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<objectModel>
+    <objects>
+        <objectClass name="Ball">
+            <attribute name="PositionX" transportation="HLAreliable" order="TimeStamp" />
+            <attribute name="PositionY" transportation="HLAreliable" order="TimeStamp" />
+        </objectClass>
+    </objects>
+</objectModel>
+

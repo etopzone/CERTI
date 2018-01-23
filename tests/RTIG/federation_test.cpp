@@ -14,6 +14,7 @@
 #include "temporaryfedfile.h"
 
 #include "../mocks/sockettcp_mock.h"
+#include "../fakes/socketserver_fake.h"
 
 using ::testing::_;
 
@@ -91,28 +92,18 @@ static const std::string fed_type{"fed_type"};
 
 static constexpr int quiet{0};
 static constexpr int verbose{1};
-
-class FakeSocketServer: public ::certi::SocketServer {
-    using SocketServer::SocketServer;
-    
-    virtual ::certi::Socket* getSocketLink(::certi::FederationHandle /*the_federation*/,
-                          ::certi::FederateHandle /*the_federate*/,
-                          ::certi::TransportType /*the_type*/ = ::certi::RELIABLE) const override
-                          {
-                              return nullptr;
-                          }
-    
-};
 }
 
 class FederationTest : public ::testing::Test {
 protected:
     FakeSocketServer s{new ::certi::SocketTCP{}, nullptr};
     ::certi::AuditFile a{"tmp"};
-    
+
     TemporaryFedFile tmp{"Sample.fed"};
 
     Federation f{"name", federation_handle, s, a, {"Sample.fed"}, "", ::certi::HLA_1_3, quiet};
+
+    MockSocketTcp federate_socket;
 };
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -124,12 +115,14 @@ TEST_F(FederationTest, CtorMulticastThrowsOnNullMC)
 
 TEST_F(FederationTest, CtorThrowsOnNullHandle)
 {
-    ASSERT_THROW(Federation("name", invalid_handle, s, a, {"Test.fed"}, "", ::certi::HLA_1_3, quiet), ::certi::RTIinternalError);
+    ASSERT_THROW(Federation("name", invalid_handle, s, a, {"Test.fed"}, "", ::certi::HLA_1_3, quiet),
+                 ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, CtorThrowsOnEmptyName)
 {
-    ASSERT_THROW(Federation("", federation_handle, s, a, {"Test.fed"}, "", ::certi::HLA_1_3, quiet), ::certi::RTIinternalError);
+    ASSERT_THROW(Federation("", federation_handle, s, a, {"Test.fed"}, "", ::certi::HLA_1_3, quiet),
+                 ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, CtorFailIfUnableToFindFed)
@@ -150,7 +143,8 @@ TEST_F(FederationTest, CtorFindsFedInCertiFomPath)
 
     TemporaryFedFile tmp{env.path() + "SampleFomPath.fed"};
 
-    ASSERT_NO_THROW(Federation("fom_path", federation_handle, s, a, {"SampleFomPath.fed"}, "", ::certi::HLA_1_3, quiet));
+    ASSERT_NO_THROW(
+        Federation("fom_path", federation_handle, s, a, {"SampleFomPath.fed"}, "", ::certi::HLA_1_3, quiet));
 }
 
 TEST_F(FederationTest, CtorFindsFedInCertiHome)
@@ -159,7 +153,8 @@ TEST_F(FederationTest, CtorFindsFedInCertiHome)
 
     TemporaryFedFile tmp{"SampleCertiHome.fed"};
 
-    ASSERT_NO_THROW(Federation("certi_home", federation_handle, s, a, {"SampleCertiHome.fed"}, "", ::certi::HLA_1_3, quiet));
+    ASSERT_NO_THROW(
+        Federation("certi_home", federation_handle, s, a, {"SampleCertiHome.fed"}, "", ::certi::HLA_1_3, quiet));
 }
 
 TEST_F(FederationTest, CtorFindsFedInPackageInstallPrefix)
@@ -172,28 +167,32 @@ TEST_F(FederationTest, CtorFindsFedInPackageInstallPrefix)
 #endif
                          "SampleInstallPrefix.fed"};
 
-    ASSERT_NO_THROW(Federation("install_prefix", federation_handle, s, a, {"SampleInstallPrefix.fed"}, "", ::certi::HLA_1_3, quiet));
+    ASSERT_NO_THROW(Federation(
+        "install_prefix", federation_handle, s, a, {"SampleInstallPrefix.fed"}, "", ::certi::HLA_1_3, quiet));
 }
 
 TEST_F(FederationTest, CtorFailsIfFileIsUnopenable)
 {
-    ASSERT_THROW(Federation("unopenable", federation_handle, s, a, {"/root/"}, "", ::certi::HLA_1_3, quiet), ::certi::CouldNotOpenFED);
+    ASSERT_THROW(Federation("unopenable", federation_handle, s, a, {"/root/"}, "", ::certi::HLA_1_3, quiet),
+                 ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationTest, CtorFailsIfNoExtension)
 {
     TemporaryFedFile tmp{"SampleWithoutDotfed"};
 
-    ASSERT_THROW(Federation("no_dot_fed", federation_handle, s, a, {"SampleWithoutDotfed"}, "", ::certi::HLA_1_3, quiet),
-                 ::certi::CouldNotOpenFED);
+    ASSERT_THROW(
+        Federation("no_dot_fed", federation_handle, s, a, {"SampleWithoutDotfed"}, "", ::certi::HLA_1_3, quiet),
+        ::certi::CouldNotOpenFED);
 }
 
 TEST_F(FederationTest, CtorFailsIfWrongExtension)
 {
     TemporaryFedFile tmp{"SampleWithout.fde"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, {"SampleWithout.fde"}, "", ::certi::HLA_1_3, quiet),
-                 ::certi::CouldNotOpenFED);
+    ASSERT_THROW(
+        Federation("bad_extension", federation_handle, s, a, {"SampleWithout.fde"}, "", ::certi::HLA_1_3, quiet),
+        ::certi::CouldNotOpenFED);
 }
 
 #ifndef HAVE_XML
@@ -201,8 +200,9 @@ TEST_F(FederationTest, CtorFailsIfXmlFedWithoutXmlSupport)
 {
     TemporaryFedFile tmp{"SampleWithout.xml"};
 
-    ASSERT_THROW(Federation("bad_extension", federation_handle, s, a, {"SampleWithout.xml"}, "", ::certi::HLA_1_3, quiet),
-                 ::certi::CouldNotOpenFED);
+    ASSERT_THROW(
+        Federation("bad_extension", federation_handle, s, a, {"SampleWithout.xml"}, "", ::certi::HLA_1_3, quiet),
+        ::certi::CouldNotOpenFED);
 }
 #endif
 
@@ -269,72 +269,24 @@ TEST_F(FederationTest, FederationsDoesNotStartSynchronizing)
 
 TEST_F(FederationTest, AddFederateCreateUnderlying)
 {
-    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-
+    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
     ASSERT_EQ("fed", f.getFederate(fed).getName());
 }
 
 TEST_F(FederationTest, CannotAddSameFederateTwice)
 {
-    f.add("fed", "typeerate", {}, ::certi::HLA_1_3, nullptr);
+    f.add("fed", "typeerate", {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
-    ASSERT_THROW(f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr), ::certi::FederateAlreadyExecutionMember);
+    ASSERT_THROW(f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0),
+                 ::certi::FederateAlreadyExecutionMember);
 
     ASSERT_EQ(1, f.getNbFederates());
 }
 
-/// FIXME This should not send NM. Move to Processing!
-TEST_F(FederationTest, AddFederateWithoutRegulatorsReceiveNoMessage)
-{
-    auto responses = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).second;
-    
-    ASSERT_EQ(0u, responses.size());
-}
-
-/// FIXME This should not send NM. Move to Processing!
-TEST_F(FederationTest, AddFederateRespondNullMessageFromRegulator)
-{
-    auto fed = f.add("regul1", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-
-    try {
-        f.addRegulator(fed, {});
-    }
-    catch (certi::FederateNotExecutionMember& e) {
-        // SocketServer is empty, so we will throw from SocketServer::getWithReferences, but the regulator should be registered
-    }
-    catch (::certi::RTIinternalError& e) {
-        FAIL() << e.name() << " - " << e.reason()
-               << " : may throw from SocketServer::getWithReferences, but not from anywhere else";
-    }
-
-    ASSERT_EQ(1, f.getNbRegulators());
-
-    auto responses = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).second;
-    
-    ASSERT_EQ(1u, responses.size());
-    ASSERT_EQ(::certi::NetworkMessage::Type::MESSAGE_NULL, responses.front().message()->getMessageType());
-    ASSERT_EQ(fed, responses.front().message()->getFederate());
-
-    ASSERT_EQ(2, f.getNbFederates());
-}
-
-/// FIXME This should not send NM. Move to Processing!
-TEST_F(FederationTest, AddFederateSynchronizingReceiveASPMessage)
-{
-    f.registerSynchronization(f.add("sync_emitter", fed_type, {}, ::certi::HLA_1_3, nullptr).first, "label", "tag");
-
-    auto responses = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).second;
-    
-    ASSERT_EQ(1u, responses.size());
-    ASSERT_EQ(::certi::NetworkMessage::Type::ANNOUNCE_SYNCHRONIZATION_POINT, responses.front().message()->getMessageType());
-
-    ASSERT_EQ(2, f.getNbFederates());
-}
-
 TEST_F(FederationTest, RemoveFederateUpdatesUnderlying)
 {
-    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-    
+    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
+
     f.remove(fed);
 
     ASSERT_TRUE(f.empty());
@@ -348,7 +300,7 @@ TEST_F(FederationTest, RemoveFederateThrowsOnUnknownFederate)
 TEST_F(FederationTest, CannotRemoveSameFederateTwice)
 {
     std::cout << f.getNbFederates() << std::endl;
-    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
     std::cout << f.getNbFederates() << std::endl;
 
     f.remove(fed);
@@ -359,7 +311,7 @@ TEST_F(FederationTest, CannotRemoveSameFederateTwice)
 
 TEST_F(FederationTest, KillRemoveFederate)
 {
-    auto fed = f.add("new", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto fed = f.add("new", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     f.kill(fed);
 
@@ -368,7 +320,7 @@ TEST_F(FederationTest, KillRemoveFederate)
 
 TEST_F(FederationTest, KillRemoveFederateFromRegulators)
 {
-    auto fed = f.add("new", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto fed = f.add("new", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.addRegulator(fed, {});
@@ -388,7 +340,7 @@ TEST_F(FederationTest, KillRemoveFederateFromRegulators)
 
 TEST_F(FederationTest, EmptyThrowsIfFederatesExists)
 {
-    f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
     ASSERT_EQ(1, f.getNbFederates());
 
@@ -397,11 +349,11 @@ TEST_F(FederationTest, EmptyThrowsIfFederatesExists)
 
 TEST_F(FederationTest, EmptyThrowListOfFederates)
 {
-    f.add("fed1", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("fed1", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
-    f.add("fed2", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("fed2", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
-    f.add("fed3", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("fed3", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
     try {
         f.empty();
@@ -419,7 +371,7 @@ TEST_F(FederationTest, EmptyThrowListOfFederates)
 
 TEST_F(FederationTest, CheckReturnsTrueIfFederateExist)
 {
-    ASSERT_TRUE(f.check(f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first));
+    ASSERT_TRUE(f.check(f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first));
 }
 
 TEST_F(FederationTest, CheckThrowsOnUnknownFederate)
@@ -434,8 +386,8 @@ TEST_F(FederationTest, GetFederateThrowsOnUnknownFederate)
 
 TEST_F(FederationTest, GetFederateReturnsGoodFederate)
 {
-    auto handle1 = f.add("fed1", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-    auto handle2 = f.add("fed2", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle1 = f.add("fed1", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
+    auto handle2 = f.add("fed2", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     auto& fed1 = f.getFederate(handle1);
 
@@ -450,7 +402,7 @@ TEST_F(FederationTest, GetFederateReturnsGoodFederate)
 
 TEST_F(FederationTest, AddRemoveRegulatorAlterUnderlyingFederate)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     auto& fed = f.getFederate(handle);
 
@@ -492,7 +444,7 @@ TEST_F(FederationTest, AddRegulatorThrowsOnUnknownFederate)
 
 TEST_F(FederationTest, AddRegulatorDoesNotWorkTwice)
 {
-    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.addRegulator(fed, {});
@@ -515,7 +467,7 @@ TEST_F(FederationTest, RemoveRegulatorThrowsOnUnknownFederate)
 
 TEST_F(FederationTest, RemoveRegulatorDoesNotWorkTwice)
 {
-    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto fed = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     // Already not regulator
 
@@ -529,7 +481,7 @@ TEST_F(FederationTest, UpdateRegulatorNeedsValidFederateIfNotAnonymous)
 
 TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 {
-    auto handle = f.add("regulator", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("regulator", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.updateRegulator(handle, {}, {}, false, {}, {}, false), ::certi::RTIinternalError);
 }
@@ -538,13 +490,13 @@ TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 
 TEST_F(FederationTest, RegisterSynchronizationAddsLabelToAllFederates)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     auto& fed = f.getFederate(handle);
 
-    auto& fed1 = f.getFederate(f.add("fed 1", fed_type, {}, ::certi::HLA_1_3, nullptr).first);
-    auto& fed2 = f.getFederate(f.add("fed 2", fed_type, {}, ::certi::HLA_1_3, nullptr).first);
-    auto& fed3 = f.getFederate(f.add("fed 3", fed_type, {}, ::certi::HLA_1_3, nullptr).first);
+    auto& fed1 = f.getFederate(f.add("fed 1", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first);
+    auto& fed2 = f.getFederate(f.add("fed 2", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first);
+    auto& fed3 = f.getFederate(f.add("fed 3", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first);
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -562,14 +514,14 @@ TEST_F(FederationTest, RegisterSynchronizationThrowsIfUknFederate)
 
 TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelEmpty)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.registerSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelAlreadyExists)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -579,7 +531,7 @@ TEST_F(FederationTest, RegisterSynchronizationThrowsIfLabelAlreadyExists)
 // FIXME Possible bug here !!
 TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchronized)
 {
-    auto handle = f.add("emitter", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("emitter", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     auto& fed = f.getFederate(handle);
 
@@ -592,13 +544,13 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetIfNoSetEmitterIsNotSynchroni
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetAddsLabelToSpecifiedFederates)
 {
-    auto handle = f.add("emitter", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("emitter", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     auto& fed = f.getFederate(handle);
 
-    auto h1 = f.add("fed 1", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-    auto h2 = f.add("fed 2", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
-    auto h3 = f.add("fed 3", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto h1 = f.add("fed 1", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
+    auto h2 = f.add("fed 2", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
+    auto h3 = f.add("fed 3", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ::std::vector<::certi::FederateHandle> federatesToUpdate;
     federatesToUpdate.push_back(h2);
@@ -620,14 +572,14 @@ TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfUknFederate)
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.registerSynchronization(handle, "", "tag", {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, RegisterSynchronizationPerSetThrowsIfLabelAlreadyExists)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -641,17 +593,17 @@ TEST_F(FederationTest, UnregisterSynchronizationPerSetThrowsIfUknFederate)
 
 TEST_F(FederationTest, UnregisterSynchronizationPerSetThrowsIfLabelEmpty)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.unregisterSynchronization(handle, ""), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, UnregisterSynchronizationRemovesSyncLabelFromFederate)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     // add another fed to return early
-    f.add("other_fed", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("other_fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -662,10 +614,10 @@ TEST_F(FederationTest, UnregisterSynchronizationRemovesSyncLabelFromFederate)
 
 TEST_F(FederationTest, UnregisterSynchronizationWithOtherFederatesPausedStillSynchronizing)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     // add another fed to return early
-    f.add("other_fed", fed_type, {}, ::certi::HLA_1_3, nullptr);
+    f.add("other_fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0);
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -676,7 +628,7 @@ TEST_F(FederationTest, UnregisterSynchronizationWithOtherFederatesPausedStillSyn
 
 TEST_F(FederationTest, UnregisterSynchronizationStopsSynchronizing)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     f.registerSynchronization(handle, "label", "tag");
 
@@ -701,14 +653,14 @@ TEST_F(FederationTest, BroadcastSynchronizationThrowOnUknFederate)
 
 TEST_F(FederationTest, BroadcastSynchronizationThrowOnEmptyLabel)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag"), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, broadcastSynchronizationSendsNM)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.broadcastSynchronization(handle, "label", "tag");
@@ -729,14 +681,14 @@ TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnUknFederate)
 
 TEST_F(FederationTest, BroadcastSynchronizationPerSetThrowOnEmptyLabel)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     ASSERT_THROW(f.broadcastSynchronization(handle, "", "tag", {}), ::certi::RTIinternalError);
 }
 
 TEST_F(FederationTest, broadcastSynchronizationPerSetSendsNM)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.broadcastSynchronization(handle, "label", "tag", {});
@@ -757,7 +709,7 @@ TEST_F(FederationTest, RequestSaveThrowOnUknFederate)
 
 TEST_F(FederationTest, RequestSaveSetsFederateSavingFlag)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.requestFederationSave(handle, "save");
@@ -775,7 +727,7 @@ TEST_F(FederationTest, RequestSaveSetsFederateSavingFlag)
 
 TEST_F(FederationTest, RequestSaveThrowsIfAlreadySaving)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.requestFederationSave(handle, "save");
@@ -798,7 +750,7 @@ TEST_F(FederationTest, RequestTimedSaveThrowOnUknFederate)
 
 TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.requestFederationSave(handle, "save");
@@ -816,7 +768,7 @@ TEST_F(FederationTest, RequestTimedSaveSetsFederateSavingFlag)
 
 TEST_F(FederationTest, RequestTimedSaveThrowsIfAlreadySaving)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.requestFederationSave(handle, "save");
@@ -849,7 +801,7 @@ TEST_F(FederationTest, DeleteRegionThrowsOnUknFederate)
 
 TEST_F(FederationTest, DeleteRegionThrowsIfSaveInProgress)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
     try {
         f.requestFederationSave(handle, "save");
@@ -1019,9 +971,9 @@ TEST_F(FederationTest, FederateSaveStatusThrowsOnUknFederate)
 
 TEST_F(FederationTest, FederateSaveStatusUpdatesFlagAndUnderlyingFederate)
 {
-    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, nullptr).first;
+    auto handle = f.add("fed", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
-    f.add("other", fed_type, {}, ::certi::HLA_1_3, nullptr); // to return early
+    f.add("other", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0); // to return early
 
     try {
         f.requestFederationSave(handle, "save");

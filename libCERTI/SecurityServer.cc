@@ -55,6 +55,11 @@ FederationHandle SecurityServer::federation() const
 {
     return myFederation;
 }
+
+SocketServer& SecurityServer::getSocketServer() const
+{
+    return RTIG_SocketServer;
+}
     
 Socket* SecurityServer::getSocketLink(FederateHandle theFederate, TransportType theType) const
 {

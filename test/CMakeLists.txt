@@ -2,6 +2,8 @@ add_subdirectory(libgraphc)
 add_subdirectory(Billard)
 add_subdirectory(utility)
 add_subdirectory(mom_explorer)
+add_subdirectory(ModernBillard)
+add_subdirectory(TimeMaster)
 add_subdirectory(testFederate)
 
 # Do not compile this on Win32 (not very useful)

@@ -204,6 +204,12 @@ message NM_Join_Federation_Execution : merge NetworkMessage {
     repeated NM_FOM_Interaction_Class interactionClasses
 }
 
+message NM_Additional_Fom_Module : merge NetworkMessage {
+    repeated NM_FOM_Routing_Space routingSpaces
+    repeated NM_FOM_Object_Class objectClasses
+    repeated NM_FOM_Interaction_Class interactionClasses
+}
+
 // Resign from federation
 message NM_Resign_Federation_Execution : merge NetworkMessage {
 }

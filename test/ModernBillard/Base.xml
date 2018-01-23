@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<objectModel>
+    <routingSpace name="Geo">
+        <dimension name="X" />
+        <dimension name="Y" />
+    </routingSpace>
+    <synchronizations>
+        <synchronization label="Init" dataType="NA" capability="RegisterAchieve"/>
+        <synchronization label="Start" dataType="NA" capability="RegisterAchieve"/>
+    </synchronizations>
+    <transportations>
+        <transportation name="HLAreliable" description="Provide reliable delivery of data in the sense that TCP/IP delivers its data reliably"/>
+        <transportation name="HLAbestEffort" description="Make an effort to deliver data in the sense that UDP provides best-effort delivery"/>
+    </transportations>
+</objectModel>
+
+
