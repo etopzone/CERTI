@@ -73,7 +73,7 @@ public:
 
     // Object management
     Responses registerFederation();
-    Responses registerFederate(const Federate& federate, SocketTCP* tcp_link);
+    Responses registerFederate(const Federate& federate, SocketTCP* tcp_link, const std::vector<std::string>& additional_fom_modules);
     void deleteFederate(const FederateHandle federate_handle);
 
     // Conditional Attributes

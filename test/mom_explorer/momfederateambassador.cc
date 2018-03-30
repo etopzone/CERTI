@@ -104,6 +104,9 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     } break;
     case DataType::HLAmoduleDesignatorList: {
         const auto str_count = static_cast<const uint32_t*>(data.data())[0];
+        if(str_count == 0) {
+            return L"{empty}";
+        }
         auto pos(1u);
         for (auto i(0u); i < str_count; ++i) {
             const auto size = static_cast<const uint32_t*>(data.data())[pos];
@@ -112,7 +115,7 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
                 ret += static_cast<const char*>(data.data())[(pos + 1) * 4 + j];
             }
             ret += L"\", ";
-            pos += 1 + size/4;
+            pos += 1 + size/4 + ((size % 4 == 0) ? 0 : 1);
         }
         ret = ret.substr(0, ret.size() - 2); // remove last ", "
     } break;

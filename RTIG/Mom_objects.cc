@@ -121,7 +121,7 @@ Responses Mom::registerFederation()
     return responses;
 }
 
-Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
+Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link, const std::vector<std::string>& additional_fom_modules)
 {
     Responses responses;
     auto objectName = "Federate_" + federate.getName();
@@ -166,7 +166,7 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     // Static
     attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAFOMmoduleDesignatorList"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[federate_object][attribute] = encodeStringList(additional_fom_modules);
 
     // Conditional
     attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeConstrained"];

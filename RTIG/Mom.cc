@@ -380,7 +380,9 @@ AttributeValue_t Mom::encodeStringList(const std::vector<std::string>& strs)
     int overall_size = sizeof(uint32_t);
     for(const auto& str: strs) {
         overall_size += sizeof(uint32_t);
-        overall_size += str.size() + (4 - (str.size() % 4)); // size and padding
+        const auto remainder = (str.size() % 4);
+        const auto padding_size = ((remainder == 0) ? (0) : (4 - remainder));
+        overall_size += str.size() + padding_size; // size and padding
     }
     mb.write_uint32(overall_size);
     
@@ -389,8 +391,11 @@ AttributeValue_t Mom::encodeStringList(const std::vector<std::string>& strs)
     
     for(const auto& str: strs) {
         mb.write_string(str);
-        for(auto i(0u); i< 4 - (str.size() % 4); ++i) {
-            mb.write_char('\0');
+        const auto remainder = (str.size() % 4);
+        if(remainder != 0) {
+            for(auto i(0u); i < 4 - remainder; ++i) {
+                mb.write_char('\0');
+            }
         }
     }
     
