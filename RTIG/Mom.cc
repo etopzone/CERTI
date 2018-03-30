@@ -312,7 +312,7 @@ void Mom::publishObjects()
         std::vector<AttributeHandle> attributes;
         for (const std::string& attributeName : pair.second.second) {
             auto attribute_handle = my_root.ObjectClasses->getAttributeHandle(attributeName, object_handle);
-            my_attribute_cache.insert(std::make_pair(attributeName, attribute_handle));
+            my_attribute_cache.insert(std::make_pair(pair.first + "." + attributeName, attribute_handle));
 
             attributes.push_back(attribute_handle);
         }
@@ -369,6 +369,31 @@ AttributeValue_t Mom::encodeString(const std::string& str)
     // uint32 : cardinality
     // char*size : data
     mb.write_string(str);
+    return encodeMB();
+}
+
+AttributeValue_t Mom::encodeStringList(const std::vector<std::string>& strs)
+{
+    mb.reset();
+    
+    // write overall size
+    int overall_size = sizeof(uint32_t);
+    for(const auto& str: strs) {
+        overall_size += sizeof(uint32_t);
+        overall_size += str.size() + (4 - (str.size() % 4)); // size and padding
+    }
+    mb.write_uint32(overall_size);
+    
+    // write collection size
+    mb.write_uint32(strs.size());
+    
+    for(const auto& str: strs) {
+        mb.write_string(str);
+        for(auto i(0u); i< 4 - (str.size() % 4); ++i) {
+            mb.write_char('\0');
+        }
+    }
+    
     return encodeMB();
 }
 

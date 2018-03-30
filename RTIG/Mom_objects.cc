@@ -51,62 +51,67 @@ Responses Mom::registerFederation()
     AttributeHandle attribute;
 
     // Static
-    attribute = my_attribute_cache["HLAfederationName"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAfederationName"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getName());
 
     // Conditional
-    attribute = my_attribute_cache["HLAfederatesInFederation"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAfederatesInFederation"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeFederateHandleList();
 
     // Static
-    attribute = my_attribute_cache["HLARTIversion"]; // FIXME attribute duplicated between federate and federation 
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLARTIversion"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeVersion(my_federation.getRtiVersion());
 
     // Static
-    attribute = my_attribute_cache["HLAMIMDesignator"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAMIMDesignator"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getMimModule());
 
     // Conditional
-    attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAFOMmoduleDesignatorList"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return all values
+    my_attribute_values_cache[my_federation_object][attribute] = encodeStringList(my_federation.getFomModules());
 
     // Conditional
-    attribute = my_attribute_cache["HLAcurrentFDD"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAcurrentFDD"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(my_federation.getFomModules().front()); // FIXME return good values
+    std::string currentFDD {""};
+    for(const auto& module: my_federation.getFomModules()) {
+        currentFDD += '"' + module + "\" && ";
+    }
+    currentFDD = currentFDD.substr(0, currentFDD.size() - 4); // remove last " && "
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(currentFDD);
 
     // Static
-    attribute = my_attribute_cache["HLAtimeImplementationName"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAtimeImplementationName"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("HLAfloat64Time");
 
     // Conditional
-    attribute = my_attribute_cache["HLAlastSaveName"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAlastSaveName"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("");
 
     // Conditional
-    attribute = my_attribute_cache["HLAlastSaveTime"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAlastSaveTime"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeUInt32(0);
 
     // Conditional
-    attribute = my_attribute_cache["HLAnextSaveName"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveName"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeUInt32(0);
 
     // Conditional
-    attribute = my_attribute_cache["HLAnextSaveTime"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveTime"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeString("");
 
     // Conditional
-    attribute = my_attribute_cache["HLAautoProvide"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAautoProvide"];
     attributes.push_back(attribute);
     my_attribute_values_cache[my_federation_object][attribute] = encodeBoolean(my_federation.isAutoProvideActive());
 
@@ -133,177 +138,177 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link)
     AttributeHandle attribute;
 
     // Static
-    attribute = my_attribute_cache["HLAfederateHandle"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateHandle"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(federate.getHandle());
 
     // Static
-    attribute = my_attribute_cache["HLAfederateName"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateName"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeString(federate.getName());
 
     // Static
-    attribute = my_attribute_cache["HLAfederateType"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateType"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeString(federate.getType());
 
     // Static
-    attribute = my_attribute_cache["HLAfederateHost"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateHost"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute]
         = tcp_link ? encodeIp(tcp_link->returnAdress()) : encodeString("");
 
     // Static
-    attribute = my_attribute_cache["HLARTIversion"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLARTIversion"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeVersion(federate.getRtiVersion());
 
     // Static
-    attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAFOMmoduleDesignatorList"];
     attributes.push_back(attribute);
-    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO");
+    my_attribute_values_cache[federate_object][attribute] = encodeString("TODO"); // TODO
 
     // Conditional
-    attribute = my_attribute_cache["HLAtimeConstrained"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeConstrained"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeBoolean(federate.isConstrained());
 
     // Conditional
-    attribute = my_attribute_cache["HLAtimeRegulating"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeRegulating"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeBoolean(federate.isRegulator());
 
     // Conditional
-    attribute = my_attribute_cache["HLAasynchronousDelivery"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAasynchronousDelivery"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeBoolean(false);
 
     // Conditional
-    attribute = my_attribute_cache["HLAfederateState"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateState"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeFederateState(federate);
 
     // Conditional
-    attribute = my_attribute_cache["HLAtimeManagerState"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeManagerState"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeBoolean(false);
 
     // Periodic
-    attribute = my_attribute_cache["HLAlogicalTime"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAlogicalTime"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
-    attribute = my_attribute_cache["HLAlookahead"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAlookahead"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
-    attribute = my_attribute_cache["HLAGALT"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAGALT"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
-    attribute = my_attribute_cache["HLALITS"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLALITS"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
-    attribute = my_attribute_cache["HLAROlength"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAROlength"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLATSOlength"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLATSOlength"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAreflectionsReceived"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAreflectionsReceived"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAupdatesSent"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAupdatesSent"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAinteractionsReceived"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAinteractionsReceived"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAinteractionsSent"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAinteractionsSent"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesThatCanBeDeleted"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesThatCanBeDeleted"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesUpdated"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesUpdated"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesReflected"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesReflected"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesDeleted"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesDeleted"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesRemoved"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesRemoved"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesRegistered"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesRegistered"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAobjectInstancesDiscovered"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesDiscovered"];
     attributes.push_back(attribute);
     my_count_attributes_cache[federate.getHandle()][attribute] = 0;
     my_attribute_values_cache[federate_object][attribute] = encodeUInt32(0);
 
     // Periodic
-    attribute = my_attribute_cache["HLAtimeGrantedTime"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeGrantedTime"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Periodic
-    attribute = my_attribute_cache["HLAtimeAdvancingTime"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeAdvancingTime"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeTime({0.0});
 
     // Conditional
-    attribute = my_attribute_cache["HLAconveyRegionDesignatorSets"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyRegionDesignatorSets"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute]
         = encodeBoolean(federate.isConveyRegionDesignatorSetsSwitch());
 
     // Conditional
-    attribute = my_attribute_cache["HLAconveyProducingFederate"];
+    attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyProducingFederate"];
     attributes.push_back(attribute);
     my_attribute_values_cache[federate_object][attribute] = encodeBoolean(federate.isConveyProducingFederateSwitch());
 
@@ -325,53 +330,59 @@ void Mom::deleteFederate(const FederateHandle federate_handle)
 
 Responses Mom::updateFederatesInFederation()
 {
-    auto attribute = my_attribute_cache["HLAfederatesInFederation"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAfederatesInFederation"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeFederateHandleList();
 
     return provideAttributeValueUpdate(my_federation_object, {attribute});
 }
 
-Responses Mom::updateFomModuleDesignatorList(const std::vector<std::string>& /*value*/)
+Responses Mom::updateFomModuleDesignatorList()
 {
-    auto attribute = my_attribute_cache["HLAFOMmoduleDesignatorList"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAFOMmoduleDesignatorList"];
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federation_object][attribute] = encodeStringList(my_federation.getFomModules());
 
     return provideAttributeValueUpdate(my_federation_object, {attribute});
 }
 
-Responses Mom::updateCurrentFDD(const std::string& /*value*/)
+Responses Mom::updateCurrentFDD()
 {
-    auto attribute = my_attribute_cache["HLAcurrentFDD"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAcurrentFDD"];
+    
+    std::string currentFDD {""};
+    for(const auto& module: my_federation.getFomModules()) {
+        currentFDD += '"' + module + "\" && ";
+    }
+    currentFDD = currentFDD.substr(0, currentFDD.size() - 4); // remove last " && "
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString("TODO"); // TODO
+    my_attribute_values_cache[my_federation_object][attribute] = encodeString(currentFDD);
 
     return provideAttributeValueUpdate(my_federation_object, {attribute});
 }
 
 Responses Mom::updateLastSave()
 {
-    auto attribute = my_attribute_cache["HLAlastSaveName"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAlastSaveName"];
 
     my_attribute_values_cache[my_federation_object][attribute]
-        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveName"]];
+        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveName"]];
 
-    auto attribute2 = my_attribute_cache["HLAlastSaveTime"];
+    auto attribute2 = my_attribute_cache["HLAmanager.HLAfederation.HLAlastSaveTime"];
 
     my_attribute_values_cache[my_federation_object][attribute]
-        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAnextSaveTime"]];
+        = my_attribute_values_cache[my_federation_object][my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveTime"]];
 
     return provideAttributeValueUpdate(my_federation_object, {attribute, attribute2});
 }
 
 Responses Mom::updateNextSave(const std::string& label, const FederationTime& time)
 {
-    auto attribute = my_attribute_cache["HLAnextSaveName"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveName"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeString(label);
 
-    auto attribute2 = my_attribute_cache["HLAnextSaveTime"];
+    auto attribute2 = my_attribute_cache["HLAmanager.HLAfederation.HLAnextSaveTime"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeTime(time);
     
@@ -380,7 +391,7 @@ Responses Mom::updateNextSave(const std::string& label, const FederationTime& ti
 
 Responses Mom::updateAutoProvide(const bool value)
 {
-    auto attribute = my_attribute_cache["HLAautoProvide"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAautoProvide"];
 
     my_attribute_values_cache[my_federation_object][attribute] = encodeBoolean(value);
 
@@ -389,7 +400,7 @@ Responses Mom::updateAutoProvide(const bool value)
 
 Responses Mom::updateTimeConstrained(const Federate& federate)
 {
-    auto attribute = my_attribute_cache["HLAtimeConstrained"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeConstrained"];
 
     auto object = my_federate_objects[federate.getHandle()];
 
@@ -400,7 +411,7 @@ Responses Mom::updateTimeConstrained(const Federate& federate)
 
 Responses Mom::updateTimeRegulating(const Federate& federate)
 {
-    auto attribute = my_attribute_cache["HLAtimeRegulating"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeRegulating"];
 
     auto object = my_federate_objects[federate.getHandle()];
 
@@ -411,7 +422,7 @@ Responses Mom::updateTimeRegulating(const Federate& federate)
 
 Responses Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value)
 {
-    auto attribute = my_attribute_cache["HLAasynchronousDelivery"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAasynchronousDelivery"];
 
     auto object = my_federate_objects[federate_handle];
 
@@ -422,7 +433,7 @@ Responses Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, 
 
 Responses Mom::updateFederateState(const Federate& federate)
 {
-    auto attribute = my_attribute_cache["HLAfederateState"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateState"];
 
     auto object = my_federate_objects[federate.getHandle()];
 
@@ -433,7 +444,7 @@ Responses Mom::updateFederateState(const Federate& federate)
 
 Responses Mom::updateTimeManagerState(const FederateHandle federate_handle, const TimeState value)
 {
-    auto attribute = my_attribute_cache["HLAtimeManagerState"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeManagerState"];
 
     auto object = my_federate_objects[federate_handle];
 
@@ -444,7 +455,7 @@ Responses Mom::updateTimeManagerState(const FederateHandle federate_handle, cons
 
 Responses Mom::updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value)
 {
-    auto attribute = my_attribute_cache["HLAlogicalTime"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAlogicalTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
@@ -453,7 +464,7 @@ Responses Mom::updateLogicalTime(const FederateHandle federate_handle, const Fed
 
 Responses Mom::updateLookahead(const FederateHandle federate_handle, const FederationTime& value)
 {
-    auto attribute = my_attribute_cache["HLAlookahead"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAlookahead"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
@@ -462,7 +473,7 @@ Responses Mom::updateLookahead(const FederateHandle federate_handle, const Feder
 
 Responses Mom::updateGALT(const FederateHandle federate_handle, const FederationTime& value)
 {
-    auto attribute = my_attribute_cache["HLAGALT"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAGALT"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
@@ -471,7 +482,7 @@ Responses Mom::updateGALT(const FederateHandle federate_handle, const Federation
 
 Responses Mom::updateLITS(const FederateHandle federate_handle, const FederationTime& value)
 {
-    auto attribute = my_attribute_cache["HLALITS"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLALITS"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeTime(value);
 
@@ -521,7 +532,7 @@ Responses Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle
         count += pair.second.size();
     }
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesUpdated"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesUpdated"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(count);
 
@@ -536,7 +547,7 @@ Responses Mom::updateObjectInstancesReflected(const FederateHandle federate_hand
         count += pair.second.size();
     }
 
-    auto attribute = my_attribute_cache["HLAobjectInstancesReflected"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAobjectInstancesReflected"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(count);
 
@@ -565,7 +576,7 @@ Responses Mom::updateObjectInstancesDiscovered(const FederateHandle federate_han
 
 Responses Mom::updateTimeGrantedTime(const FederateHandle federate_handle, const int value)
 {
-    auto attribute = my_attribute_cache["HLAtimeGrantedTime"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeGrantedTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(value);
 
@@ -574,7 +585,7 @@ Responses Mom::updateTimeGrantedTime(const FederateHandle federate_handle, const
 
 Responses Mom::updateTimeAdvancingTime(const FederateHandle federate_handle, const int value)
 {
-    auto attribute = my_attribute_cache["HLAtimeAdvancingTime"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeAdvancingTime"];
 
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(value);
 
@@ -583,7 +594,7 @@ Responses Mom::updateTimeAdvancingTime(const FederateHandle federate_handle, con
 
 Responses Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value)
 {
-    auto attribute = my_attribute_cache["HLAconveyRegionDesignatorSets"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyRegionDesignatorSets"];
 
     auto object = my_federate_objects[federate_handle];
 
@@ -594,7 +605,7 @@ Responses Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_ha
 
 Responses Mom::updateConveyProducingFederate(const FederateHandle federate_handle, const bool value)
 {
-    auto attribute = my_attribute_cache["HLAconveyProducingFederate"];
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyProducingFederate"];
 
     auto object = my_federate_objects[federate_handle];
 

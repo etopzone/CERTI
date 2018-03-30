@@ -95,41 +95,80 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
 
     switch (type) {
     case DataType::HLAunicodeString: {
-        auto size = static_cast<const uint32_t*>(data.data())[0];
+        const auto size = static_cast<const uint32_t*>(data.data())[0];
         ret += L"\"";
         for (auto i(0u); i < size; ++i) {
             ret += static_cast<const char*>(data.data())[4 + i];
         }
         ret += L"\"";
     } break;
+    case DataType::HLAmoduleDesignatorList: {
+        const auto str_count = static_cast<const uint32_t*>(data.data())[0];
+        auto pos(1u);
+        for (auto i(0u); i < str_count; ++i) {
+            const auto size = static_cast<const uint32_t*>(data.data())[pos];
+            ret += L"\"";
+            for (auto j(0u); j < size; ++j) {
+                ret += static_cast<const char*>(data.data())[(pos + 1) * 4 + j];
+            }
+            ret += L"\", ";
+            pos += 1 + size/4;
+        }
+        ret = ret.substr(0, ret.size() - 2); // remove last ", "
+    } break;
     case DataType::HLAhandle:
     case DataType::HLAmsec:
     case DataType::HLAcount: {
-        auto value = std::to_string(*static_cast<const uint32_t*>(data.data()));
+        const auto value = std::to_string(*static_cast<const uint32_t*>(data.data()));
         ret += std::wstring(begin(value), end(value));
     } break;
     case DataType::HLAboolean:
-    case DataType::HLAswitch:
         ret += *static_cast<const uint32_t*>(data.data()) ? L"True" : L"False";
+        break;
+    case DataType::HLAswitch:
+        ret += *static_cast<const uint32_t*>(data.data()) ? L"On" : L"Off";
         break;
     case DataType::HLAhandleList: {
         if (data.size() == 0) {
             ret = L"{}";
         }
         else {
-            auto size = static_cast<const uint32_t*>(data.data())[0];
+            const auto size = static_cast<const uint32_t*>(data.data())[0];
             ret = L"{";
             for (auto i(0u); i < size; ++i) {
                 if (i != 0) {
                     ret += L", ";
                 }
-                auto intValue = static_cast<const uint32_t*>(data.data())[1 + i];
-                auto value = std::to_string(intValue);
+                const auto intValue = static_cast<const uint32_t*>(data.data())[1 + i];
+                const auto value = std::to_string(intValue);
                 ret += std::wstring(begin(value), end(value));
             }
             ret += L"}";
         }
 
+    } break;
+    case DataType::HLAfederateState: {
+        switch(*static_cast<const uint32_t*>(data.data())) {
+            case 1:
+                ret += L"Active";
+                break;
+            case 3:
+                ret += L"Save in progress";
+                break;
+            case 5:
+                ret += L"Restore in progress";
+                break;
+            default:
+                ret += L"{error, unknown state}";
+        }
+    } break;
+    case DataType::HLAtimeState:
+        ret += *static_cast<const uint32_t*>(data.data()) ? L"Time advancing" : L"Time granted";
+        break;
+    case DataType::HLAlogicalTime:
+    case DataType::HLAtimeInterval: {
+        const auto value = std::to_string(*static_cast<const double*>(data.data()));
+        ret += std::wstring(begin(value), end(value));
     } break;
     default: {
         ret = L"To be decoded:";
