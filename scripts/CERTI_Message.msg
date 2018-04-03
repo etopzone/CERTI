@@ -179,7 +179,14 @@ message M_Open_Connexion : merge Message {
 message M_Close_Connexion : merge Message {
 }
 
+// This message is kept for backward compatibility, especially with the JCerti Binding
 message M_Create_Federation_Execution : merge Message {
+	required string federationName // the federation name
+	required string FEDid          // the Federation ID which is in fact a filename
+}
+
+// The message to use in new versions
+message M_Create_Federation_Execution_V4 : merge Message {
     required string     federationExecutionName // the federation name
     required RtiVersion rtiVersion
     repeated string     fomModuleDesignators    // the set of FOM module designators (at least one)
@@ -191,7 +198,15 @@ message M_Destroy_Federation_Execution : merge Message {
     required string federationName
 }
 
+// This message is kept for backward compatibility, especially with the JCerti Binding
 message M_Join_Federation_Execution : merge Message {
+	required FederateHandle federate
+	required string federationName
+	required string federateName
+}
+
+// The message to use in new versions
+message M_Join_Federation_Execution_V4 : merge Message {
     required FederateHandle federate
     optional string         federateName
     required string         federateType
