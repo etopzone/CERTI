@@ -534,7 +534,7 @@ void
 {
     Debug(G, pdGendoc) << "enter RTIambassador::createFederationExecution" << std::endl;
 
-    M_Create_Federation_Execution req, rep;
+    M_Create_Federation_Execution_V4 req, rep;
 
     req.setFederationExecutionName(executionName);
 
@@ -591,7 +591,7 @@ RTI::RTIambassador::joinFederationExecution(const char* yourName,
                                                                                 RTI::FederationExecutionDoesNotExist,
                                                                                 RTI::FederateAlreadyExecutionMember)
 {
-    M_Join_Federation_Execution req, rep;
+    M_Join_Federation_Execution_V4 req, rep;
 
     Debug(G, pdGendoc) << "enter RTIambassador::joinFederationExecution" << std::endl;
 

@@ -226,7 +226,7 @@ void RTI1516ambassador::createFederationExecution(
                                                                  rti1516::CouldNotCreateLogicalTimeFactory,
                                                                  rti1516::RTIinternalError)
 {
-    certi::M_Create_Federation_Execution req, rep;
+    certi::M_Create_Federation_Execution_V4 req, rep;
 
     Debug(G, pdGendoc) << "enter RTI1516ambassador::createFederationExecution" << std::endl;
     req.setFederationExecutionName({federationExecutionName.begin(), federationExecutionName.end()});
@@ -272,7 +272,7 @@ rti1516::FederateHandle RTI1516ambassador::joinFederationExecution(
                                                            rti1516::CouldNotCreateLogicalTimeFactory,
                                                            rti1516::RTIinternalError)
 {
-    M_Join_Federation_Execution req, rep;
+    M_Join_Federation_Execution_V4 req, rep;
 
     Debug(G, pdGendoc) << "enter RTI1516ambassador::joinFederationExecution" << std::endl;
 

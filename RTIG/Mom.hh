@@ -73,14 +73,14 @@ public:
 
     // Object management
     Responses registerFederation();
-    Responses registerFederate(const Federate& federate, SocketTCP* tcp_link);
+    Responses registerFederate(const Federate& federate, SocketTCP* tcp_link, const std::vector<std::string>& additional_fom_modules);
     void deleteFederate(const FederateHandle federate_handle);
 
     // Conditional Attributes
     // Federation
     Responses updateFederatesInFederation();
-    Responses updateFomModuleDesignatorList(const std::vector<std::string>& value); // TODO in phase 3
-    Responses updateCurrentFDD(const std::string& value); // idem
+    Responses updateFomModuleDesignatorList(); // FIXME never called
+    Responses updateCurrentFDD(); // FIXME never called
     Responses updateLastSave();
     Responses updateNextSave(const std::string& label, const FederationTime& time);
     Responses updateAutoProvide(const bool value);
@@ -93,9 +93,12 @@ public:
     Responses updateTimeManagerState(const FederateHandle federate_handle, const TimeState value);
     Responses updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value);
     Responses updateLookahead(const FederateHandle federate_handle, const FederationTime& value);
-    Responses updateGALT(const FederateHandle federate_handle, const FederationTime& value); // TODO gathered from RTIA but check if we cannot get them in RTIG
+    Responses
+    updateGALT(const FederateHandle federate_handle,
+               const FederationTime& value); // TODO gathered from RTIA but check if we cannot get them in RTIG
     Responses updateLITS(const FederateHandle federate_handle, const FederationTime& value); // idem
-    Responses updateRoLenght(const FederateHandle federate_handle, const int delta = 1); // TODO check if available from queues or not compliant
+    Responses updateRoLenght(const FederateHandle federate_handle,
+                             const int delta = 1); // TODO check if available from queues or not compliant
     Responses updateTsoLenght(const FederateHandle federate_handle, const int delta = 1); // idem
     Responses updateReflectionsReceived(const FederateHandle federate_handle, const int delta = 1);
     Responses updateUpdatesSent(const FederateHandle federate_handle, const int delta = 1);
@@ -108,7 +111,9 @@ public:
     Responses updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta = 1);
     Responses updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta = 1);
-    Responses updateTimeGrantedTime(const FederateHandle federate_handle, const int value); // TODO this will be resource intensive, check if we want to support it
+    Responses
+    updateTimeGrantedTime(const FederateHandle federate_handle,
+                          const int value); // TODO this will be resource intensive, check if we want to support it
     Responses updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // idem
     Responses updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
     Responses updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
@@ -233,7 +238,7 @@ public:
 
 private:
     struct FederateUpdateSettings {
-        std::chrono::seconds updateRate{0};
+        std::chrono::seconds updateRate{1};
         std::chrono::time_point<std::chrono::system_clock> lastUpdate{};
     };
 
@@ -271,6 +276,7 @@ private:
     std::map<FederateHandle, std::set<AttributeHandle>> my_attributes_to_update_periodically;
 
     AttributeValue_t encodeString(const std::string& str);
+    AttributeValue_t encodeStringList(const std::vector<std::string>& strs);
     AttributeValue_t encodeBoolean(const bool data);
     AttributeValue_t encodeUInt32(const uint32_t data);
     AttributeValue_t encodeVersion(const RtiVersion version);
@@ -306,4 +312,3 @@ private:
 } // namespace certi/rtig
 
 #endif // _CERTI_RTIG_MOM_HH
-

@@ -272,7 +272,7 @@ void RTI1516ambassador::createFederationExecutionWithMIM(
         throw rti1516e::DesignatorIsHLAstandardMIM(L"4.5.5.d : MIM designator shall not be HLAstandardMIM.");
     }
 
-    certi::M_Create_Federation_Execution req, rep;
+    certi::M_Create_Federation_Execution_V4 req, rep;
 
     req.setFederationExecutionName({begin(federationExecutionName), end(federationExecutionName)});
 
@@ -374,7 +374,7 @@ rti1516e::FederateHandle RTI1516ambassador::joinFederationExecution(
         throw rti1516e::RTIinternalError(L"Incorrect or empty federation name");
     }
 
-    M_Join_Federation_Execution req, rep;
+    M_Join_Federation_Execution_V4 req, rep;
 
     // federate handle is only used in response
 

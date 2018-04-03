@@ -360,10 +360,14 @@ std::pair<FederateHandle, Responses> Federation::add(const string& federate_name
         tcp_link->returnSocket(), my_handle, federate_handle, address, peer);
 
     if (my_mom) {
-        auto resp = my_mom->registerFederate(federate, tcp_link);
+        auto resp = my_mom->registerFederate(federate, tcp_link, additional_fom_modules);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
         auto resp2 = my_mom->updateFederatesInFederation();
         responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
+        auto resp3 = my_mom->updateFomModuleDesignatorList();
+        responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
+        auto resp4 = my_mom->updateCurrentFDD();
+        responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
     }
 
     return {federate_handle, std::move(responses)};

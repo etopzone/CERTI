@@ -1,4 +1,4 @@
-// Generated on 2018 January Wed, 10 at 15:12:17 by the CERTI message generator
+// Generated on 2018 April Tue, 03 at 16:00:12 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -117,11 +117,37 @@ public:
     
 };
 
-
+// This message is kept for backward compatibility, especially with the JCerti Binding
 class CERTI_EXPORT M_Create_Federation_Execution : public Message {
 public:
     M_Create_Federation_Execution();
     virtual ~M_Create_Federation_Execution() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    const std::string& getFederationName() const;
+    void setFederationName(const std::string& newFederationName);
+    
+    const std::string& getFEDid() const;
+    void setFEDid(const std::string& newFEDid);
+    
+    using Super = Message;
+    friend std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg);
+
+protected:
+    std::string federationName;// the federation name
+    std::string FEDid;// the Federation ID which is in fact a filename
+};
+
+std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg);
+
+// The message to use in new versions
+class CERTI_EXPORT M_Create_Federation_Execution_V4 : public Message {
+public:
+    M_Create_Federation_Execution_V4();
+    virtual ~M_Create_Federation_Execution_V4() = default;
     
     virtual void serialize(libhla::MessageBuffer& msgBuffer);
     virtual void deserialize(libhla::MessageBuffer& msgBuffer);
@@ -150,7 +176,7 @@ public:
     bool hasLogicalTimeRepresentation() const;
     
     using Super = Message;
-    friend std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg);
+    friend std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution_V4& msg);
 
 protected:
     std::string federationExecutionName;// the federation name
@@ -162,7 +188,7 @@ protected:
     bool _hasLogicalTimeRepresentation {false};
 };
 
-std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution& msg);
+std::ostream& operator<<(std::ostream& os, const M_Create_Federation_Execution_V4& msg);
 
 
 class CERTI_EXPORT M_Destroy_Federation_Execution : public Message {
@@ -186,11 +212,41 @@ protected:
 
 std::ostream& operator<<(std::ostream& os, const M_Destroy_Federation_Execution& msg);
 
-
+// This message is kept for backward compatibility, especially with the JCerti Binding
 class CERTI_EXPORT M_Join_Federation_Execution : public Message {
 public:
     M_Join_Federation_Execution();
     virtual ~M_Join_Federation_Execution() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    const FederateHandle& getFederate() const;
+    void setFederate(const FederateHandle& newFederate);
+    
+    const std::string& getFederationName() const;
+    void setFederationName(const std::string& newFederationName);
+    
+    const std::string& getFederateName() const;
+    void setFederateName(const std::string& newFederateName);
+    
+    using Super = Message;
+    friend std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg);
+
+protected:
+    FederateHandle federate;
+    std::string federationName;
+    std::string federateName;
+};
+
+std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg);
+
+// The message to use in new versions
+class CERTI_EXPORT M_Join_Federation_Execution_V4 : public Message {
+public:
+    M_Join_Federation_Execution_V4();
+    virtual ~M_Join_Federation_Execution_V4() = default;
     
     virtual void serialize(libhla::MessageBuffer& msgBuffer);
     virtual void deserialize(libhla::MessageBuffer& msgBuffer);
@@ -221,7 +277,7 @@ public:
     void removeAdditionalFomModules(uint32_t rank);
     
     using Super = Message;
-    friend std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg);
+    friend std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution_V4& msg);
 
 protected:
     FederateHandle federate;
@@ -233,7 +289,7 @@ protected:
     std::vector<std::string> additionalFomModules;
 };
 
-std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution& msg);
+std::ostream& operator<<(std::ostream& os, const M_Join_Federation_Execution_V4& msg);
 
 
 class CERTI_EXPORT M_Resign_Federation_Execution : public Message {

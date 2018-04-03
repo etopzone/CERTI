@@ -121,6 +121,32 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         CFEr = static_cast<M_Create_Federation_Execution*>(answer);
         CFEq = static_cast<M_Create_Federation_Execution*>(request);
 
+        Debug(D, pdTrace) << "Receiving Message from Federate, type CreateFederation (legacy)." << std::endl;
+        
+        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
+        fm.createFederationExecution(
+            CFEq->getFederationName(), {CFEq->getFEDid()}, "", certi::HLA_1_3, e);
+
+        if (e == Exception::Type::RTIinternalError) {
+            answer->setException(e, "Federate is yet a creator or a member !");
+        }
+
+        Debug(D, pdTrace) << "Receiving Message from Federate, "
+                             "type CreateFederation done."
+                          << std::endl;
+
+        // RTIA needs FEDid into the answer (rep Message) to federate
+        CFEr->setFederationName(CFEq->getFederationName());
+        CFEr->setFEDid(CFEq->getFEDid());
+        // RTIA needs federation name into the answer (rep Message) to federate
+    } break;
+
+    case Message::CREATE_FEDERATION_EXECUTION_V4: {
+        M_Create_Federation_Execution_V4 *CFEq, *CFEr;
+
+        CFEr = static_cast<M_Create_Federation_Execution_V4*>(answer);
+        CFEq = static_cast<M_Create_Federation_Execution_V4*>(request);
+
         Debug(D, pdTrace) << "Receiving Message from Federate, type CreateFederation." << std::endl;
         
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
@@ -165,6 +191,53 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
         JFEr = static_cast<M_Join_Federation_Execution*>(answer);
         JFEq = static_cast<M_Join_Federation_Execution*>(request);
 
+        Debug(D, pdTrace) << "Receiving Message from Federate, type JoinFederation (legacy)." << std::endl;
+
+        JFEr->setFederate(fm.joinFederationExecution(JFEq->getFederateName(),
+                                                     JFEq->getFederateName(),
+                                                     JFEq->getFederationName(),
+                                                     {},
+                                                     certi::HLA_1_3,
+                                                     &my_root_object,
+                                                     e));
+
+        if (e == Exception::Type::NO_EXCEPTION) {
+            // Set federation name for the answer message (rep)
+            JFEr->setFederationName(JFEq->getFederationName());
+            JFEr->setFederateName(JFEq->getFederateName());
+
+            /// Set RTIA PrettyDebug federate name
+            PrettyDebug::setFederateName("RTIA::" + JFEq->getFederateName());
+        }
+        else {
+            // JOIN FAILED
+            switch (e) {
+            case Exception::Type::FederateAlreadyExecutionMember:
+                throw FederateAlreadyExecutionMember("4.9.5.b : Federate name already in use.");
+                break;
+            case Exception::Type::FederationExecutionDoesNotExist:
+                throw FederationExecutionDoesNotExist("4.9.5.c : The specified federation execution does not exist.");
+                break;
+            case Exception::Type::SaveInProgress:
+                throw SaveInProgress("4.9.5.g : Federate save in progress.");
+                break;
+            case Exception::Type::RestoreInProgress:
+                throw RestoreInProgress("4.9.5.h : Federate restore in progress.");
+                break;
+            case Exception::Type::RTIinternalError:
+            default:
+                throw RTIinternalError("4.9.5.k : RTI internal error.");
+                break;
+            }
+        }
+    } break;
+
+    case Message::JOIN_FEDERATION_EXECUTION_V4: {
+        M_Join_Federation_Execution_V4 *JFEq, *JFEr;
+
+        JFEr = static_cast<M_Join_Federation_Execution_V4*>(answer);
+        JFEq = static_cast<M_Join_Federation_Execution_V4*>(request);
+
         Debug(D, pdTrace) << "Receiving Message from Federate, type JoinFederation." << std::endl;
 
         JFEr->setFederate(fm.joinFederationExecution(JFEq->getFederateName(),
@@ -205,6 +278,7 @@ void RTIA::chooseFederateProcessing(Message* request, Message* answer, Exception
             }
         }
     } break;
+    
     case Message::RESIGN_FEDERATION_EXECUTION: {
         M_Resign_Federation_Execution* RFEq;
         RFEq = static_cast<M_Resign_Federation_Execution*>(request);

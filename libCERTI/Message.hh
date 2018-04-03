@@ -47,9 +47,9 @@ public:
         CLOSE_CONNEXION,
 
         // gestion federation
-        CREATE_FEDERATION_EXECUTION,
+        CREATE_FEDERATION_EXECUTION, // Legacy version for backward compatibility, especially with jCerti
         DESTROY_FEDERATION_EXECUTION,
-        JOIN_FEDERATION_EXECUTION,
+        JOIN_FEDERATION_EXECUTION, // Legacy version for backward compatibility, especially with jCerti
         RESIGN_FEDERATION_EXECUTION,
         REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
         SYNCHRONIZATION_POINT_REGISTRATION_FAILED,
@@ -204,6 +204,9 @@ public:
         RESERVE_OBJECT_INSTANCE_NAME, // HLA1516
         RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED, // HLA1516
         RESERVE_OBJECT_INSTANCE_NAME_FAILED, // HLA1516
+        
+        CREATE_FEDERATION_EXECUTION_V4, // CERTI V4 C++
+        JOIN_FEDERATION_EXECUTION_V4, // CERTI V4 C++
 
         LAST // should be the "last" (not used)
     };
