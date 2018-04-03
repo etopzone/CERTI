@@ -491,37 +491,37 @@ Responses Mom::updateLITS(const FederateHandle federate_handle, const Federation
 
 Responses Mom::updateRoLenght(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAROlength", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAROlength", delta);
 }
 
 Responses Mom::updateTsoLenght(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLATSOlength", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLATSOlength", delta);
 }
 
 Responses Mom::updateReflectionsReceived(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAreflectionsReceived", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAreflectionsReceived", delta);
 }
 
 Responses Mom::updateUpdatesSent(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAupdatesSent", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAupdatesSent", delta);
 }
 
 Responses Mom::updateInteractionsReceived(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAinteractionsReceived", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAinteractionsReceived", delta);
 }
 
 Responses Mom::updateInteractionsSent(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAinteractionsSent", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAinteractionsSent", delta);
 }
 
 Responses Mom::updateObjectInstancesThatCanBeDeleted(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAobjectInstancesThatCanBeDeleted", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAobjectInstancesThatCanBeDeleted", delta);
 }
 
 Responses Mom::updateObjectInstancesUpdated(const FederateHandle federate_handle)
@@ -556,22 +556,22 @@ Responses Mom::updateObjectInstancesReflected(const FederateHandle federate_hand
 
 Responses Mom::updateObjectInstancesDeleted(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAobjectInstancesDeleted", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAobjectInstancesDeleted", delta);
 }
 
 Responses Mom::updateObjectInstancesRemoved(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAobjectInstancesRemoved", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAobjectInstancesRemoved", delta);
 }
 
 Responses Mom::updateObjectInstancesRegistered(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAobjectInstancesRegistered", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAobjectInstancesRegistered", delta);
 }
 
 Responses Mom::updateObjectInstancesDiscovered(const FederateHandle federate_handle, const int delta)
 {
-    return updateCountAttribute(federate_handle, "HLAobjectInstancesDiscovered", delta);
+    return updateCountAttribute(federate_handle, "HLAmanager.HLAfederate.HLAobjectInstancesDiscovered", delta);
 }
 
 Responses Mom::updateTimeGrantedTime(const FederateHandle federate_handle, const int value)
