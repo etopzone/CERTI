@@ -1291,9 +1291,11 @@ Federation::registerObject(FederateHandle federate, ObjectClassHandle class_hand
         strname = object_name;
     }
     else {
-        // create a name if necessary
+        Debug(D, pdDebug) << "Create a default name" << std::endl;
         strname = "HLAObject_" + std::to_string(id);
     }
+    
+    Debug(D, pdDebug) << "Trying to register object \"" << strname << "\" with handle " << id << std::endl; 
 
     // Register Object.
     try {
@@ -1305,6 +1307,18 @@ Federation::registerObject(FederateHandle federate, ObjectClassHandle class_hand
         my_objects_handle_generator.free(id);
         throw;
     }
+
+    // request.message()->getFederate(), request.message()->getObjectClass(), request.message()->getLabel()
+    auto rep = make_unique<NM_Register_Object>();
+
+    rep->setFederate(federate);
+    rep->setFederation(my_handle.get());
+    rep->setObjectClass(class_handle);
+    rep->setObject(id);
+    rep->setObjectName(strname);
+    rep->setLabel(strname);
+
+    responses.emplace_back(my_server->getSocketLink(federate), std::move(rep));
 
     if (my_mom) {
         auto resp = my_mom->updateObjectInstancesThatCanBeDeleted(federate);

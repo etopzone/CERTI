@@ -853,23 +853,6 @@ Responses MessageProcessor::process(MessageEvent<NM_Register_Object>&& request)
                          << request.message()->getFederate() << " has been registered under ID " << object_handle
                          << endl;
 
-    auto rep = make_unique<NM_Register_Object>();
-
-    rep->setFederate(request.message()->getFederate());
-    rep->setFederation(request.message()->getFederation());
-    rep->setObjectClass(request.message()->getObjectClass());
-    // rep.object is set by the call of registerObject
-    if (request.message()->hasObjectName()) {
-        rep->setObjectName(request.message()->getObjectName());
-    }
-    if (request.message()->isLabelled()) {
-        rep->setLabel(request.message()->getLabel());
-    }
-
-    rep->setObject(object_handle);
-
-    responses.emplace_back(request.sockets().front(), std::move(rep));
-
     return responses;
 }
 

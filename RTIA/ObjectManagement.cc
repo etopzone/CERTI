@@ -102,12 +102,6 @@ ObjectHandle ObjectManagement::registerObject(
     if (e == Exception::Type::NO_EXCEPTION) {
         auto responses
             = rootObject->registerObjectInstance(fm->getFederateHandle(), the_class, rep->getObject(), rep->getLabel());
-        std::cout << "==========================" << std::endl;
-        std::cout << "RESPONSES FROM ROOT OBJECT" << std::endl;
-        for (auto& rep : responses) {
-            std::cout << (int) rep.message()->getMessageType() << std::endl;
-        }
-        std::cout << "==========================" << std::endl;
         return rep->getObject();
     }
     else {
