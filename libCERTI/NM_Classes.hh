@@ -1,4 +1,4 @@
-// Generated on 2018 April Tue, 03 at 16:00:12 by the CERTI message generator
+// Generated on 2018 April Thu, 05 at 11:41:47 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -286,26 +286,26 @@ public:
     virtual void deserialize(libhla::MessageBuffer& msgBuffer);
 
     // Attributes accessors and mutators
-    const FederationTime& getLookahead() const;
-    void setLookahead(const FederationTime& newLookahead);
+    const double& getLookahead() const;
+    void setLookahead(const double& newLookahead);
     
     const bool& getState() const;
     void setState(const bool& newState);
     
-    const FederationTime& getGalt() const;
-    void setGalt(const FederationTime& newGalt);
+    const double& getGalt() const;
+    void setGalt(const double& newGalt);
     
-    const FederationTime& getLits() const;
-    void setLits(const FederationTime& newLits);
+    const double& getLits() const;
+    void setLits(const double& newLits);
     
     using Super = NetworkMessage;
     friend std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);
 
 protected:
-    FederationTime lookahead;
+    double lookahead;
     bool state;
-    FederationTime galt;
-    FederationTime lits;
+    double galt;
+    double lits;
 };
 
 std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);

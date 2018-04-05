@@ -103,11 +103,11 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
 
-        msg.setLookahead(_lookahead_courant);
+        msg.setLookahead(_lookahead_courant.getTime());
         msg.setState(_avancee_en_cours == TAR);
-        msg.setGalt(_LBTS);
-        msg.setLits(requestMinNextEventTime());
-
+        msg.setGalt(_LBTS.getTime());
+        msg.setLits(requestMinNextEventTime().getTime());
+        
         comm->sendMessage(&msg);
         lastNullMessageDate = logical_time;
         Debug(DNULL, pdDebug) << "NULL message sent, Time = " << logical_time.getTime() << std::endl;
@@ -575,10 +575,30 @@ void TimeManagement::nextEventRequestAvailable(FederationTime heure_logique, Exc
         Debug(D, pdExcept) << "NextEventRequestAvailable refused, exception = " << static_cast<int>(e) << std::endl;
     }
 }
+    
+FederationTime TimeManagement::requestLBTS()
+{
+    return _LBTS;
+}
+
+bool TimeManagement::requestContraintState()
+{
+    return _is_constrained;
+}
+
+bool TimeManagement::requestRegulateurState()
+{
+    return _is_regulating;
+}
 
 FederationTime TimeManagement::requestFederationTime()
 {
     return _LBTS;
+}
+
+FederationTime TimeManagement::requestFederateTime()
+{
+    return (_heure_courante);
 }
 
 FederationTimeDelta TimeManagement::requestLookahead()
@@ -603,6 +623,11 @@ FederationTime TimeManagement::requestMinNextEventTime()
 
     return dateMNET;
 }
+
+void TimeManagement::StopperAvanceTemps()
+{
+    _avancee_en_cours = PAS_D_AVANCEE;
+};
 
 void TimeManagement::updateMinTxMessageDate(FederationTime TxMessageDate)
 {

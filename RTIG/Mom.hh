@@ -76,8 +76,8 @@ public:
     Responses registerFederate(const Federate& federate, SocketTCP* tcp_link, const std::vector<std::string>& additional_fom_modules);
     void deleteFederate(const FederateHandle federate_handle);
 
-    // Conditional Attributes
     // Federation
+    // Conditional Attributes
     Responses updateFederatesInFederation();
     Responses updateFomModuleDesignatorList(); // FIXME never called
     Responses updateCurrentFDD(); // FIXME never called
@@ -86,11 +86,15 @@ public:
     Responses updateAutoProvide(const bool value);
 
     // Federate
+    // Conditional Attributes
     Responses updateTimeConstrained(const Federate& federate);
     Responses updateTimeRegulating(const Federate& federate);
     Responses updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value);
     Responses updateFederateState(const Federate& federate);
     Responses updateTimeManagerState(const FederateHandle federate_handle, const TimeState value);
+    Responses updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
+    Responses updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
+    // Periodic Attributes
     Responses updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value);
     Responses updateLookahead(const FederateHandle federate_handle, const FederationTime& value);
     Responses
@@ -115,8 +119,6 @@ public:
     updateTimeGrantedTime(const FederateHandle federate_handle,
                           const int value); // TODO this will be resource intensive, check if we want to support it
     Responses updateTimeAdvancingTime(const FederateHandle federate_handle, const int value); // idem
-    Responses updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value);
-    Responses updateConveyProducingFederate(const FederateHandle federate_handle, const bool value);
 
     Responses
     updateCountAttribute(const FederateHandle& federate_handle, const std::string& attribute_name, const int delta);
