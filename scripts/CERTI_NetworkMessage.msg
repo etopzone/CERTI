@@ -169,10 +169,10 @@ message NM_FOM_Interaction_Class {
 message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {
-    required FederationTime lookahead
+    required double lookahead
     required bool state
-    required FederationTime galt
-    required FederationTime lits
+    required double galt
+    required double lits
 }
 
 // Create the federation execution

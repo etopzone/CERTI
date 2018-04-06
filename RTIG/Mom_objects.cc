@@ -340,10 +340,15 @@ Responses Mom::updateFederatesInFederation()
 Responses Mom::updateFomModuleDesignatorList()
 {
     auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAFOMmoduleDesignatorList"];
+    
+    const auto encoded_value = encodeStringList(my_federation.getFomModules());
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeStringList(my_federation.getFomModules());
-
-    return provideAttributeValueUpdate(my_federation_object, {attribute});
+    if(my_attribute_values_cache[my_federation_object][attribute] != encoded_value) {
+        my_attribute_values_cache[my_federation_object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(my_federation_object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateCurrentFDD()
@@ -355,10 +360,15 @@ Responses Mom::updateCurrentFDD()
         currentFDD += '"' + module + "\" && ";
     }
     currentFDD = currentFDD.substr(0, currentFDD.size() - 4); // remove last " && "
+    
+    const auto encoded_value = encodeString(currentFDD);
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeString(currentFDD);
-
-    return provideAttributeValueUpdate(my_federation_object, {attribute});
+    if(my_attribute_values_cache[my_federation_object][attribute] != encoded_value) {
+        my_attribute_values_cache[my_federation_object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(my_federation_object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateLastSave()
@@ -392,10 +402,15 @@ Responses Mom::updateNextSave(const std::string& label, const FederationTime& ti
 Responses Mom::updateAutoProvide(const bool value)
 {
     auto attribute = my_attribute_cache["HLAmanager.HLAfederation.HLAautoProvide"];
+    
+    const auto encoded_value = encodeBoolean(value);
 
-    my_attribute_values_cache[my_federation_object][attribute] = encodeBoolean(value);
-
-    return provideAttributeValueUpdate(my_federation_object, {attribute});
+    if(my_attribute_values_cache[my_federation_object][attribute] != encoded_value) {
+        my_attribute_values_cache[my_federation_object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(my_federation_object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateTimeConstrained(const Federate& federate)
@@ -403,10 +418,15 @@ Responses Mom::updateTimeConstrained(const Federate& federate)
     auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeConstrained"];
 
     auto object = my_federate_objects[federate.getHandle()];
+    
+    const auto encoded_value = encodeBoolean(federate.isConstrained());
 
-    my_attribute_values_cache[object][attribute] = encodeBoolean(federate.isConstrained());
-
-    return provideAttributeValueUpdate(object, {attribute});
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateTimeRegulating(const Federate& federate)
@@ -414,10 +434,15 @@ Responses Mom::updateTimeRegulating(const Federate& federate)
     auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeRegulating"];
 
     auto object = my_federate_objects[federate.getHandle()];
+    
+    const auto encoded_value = encodeBoolean(federate.isRegulator());
 
-    my_attribute_values_cache[object][attribute] = encodeBoolean(federate.isRegulator());
-
-    return provideAttributeValueUpdate(object, {attribute});
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, const bool value)
@@ -425,10 +450,15 @@ Responses Mom::updateAsynchronousDelivery(const FederateHandle federate_handle, 
     auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAasynchronousDelivery"];
 
     auto object = my_federate_objects[federate_handle];
+    
+    const auto encoded_value = encodeBoolean(value);
 
-    my_attribute_values_cache[object][attribute] = encodeBoolean(value);
-
-    return provideAttributeValueUpdate(object, {attribute});
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateFederateState(const Federate& federate)
@@ -436,10 +466,15 @@ Responses Mom::updateFederateState(const Federate& federate)
     auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAfederateState"];
 
     auto object = my_federate_objects[federate.getHandle()];
+    
+    const auto encoded_value = encodeFederateState(federate);
 
-    my_attribute_values_cache[object][attribute] = encodeFederateState(federate);
-
-    return provideAttributeValueUpdate(object, {attribute});
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateTimeManagerState(const FederateHandle federate_handle, const TimeState value)
@@ -447,10 +482,47 @@ Responses Mom::updateTimeManagerState(const FederateHandle federate_handle, cons
     auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAtimeManagerState"];
 
     auto object = my_federate_objects[federate_handle];
+    
+    const auto encoded_value = encodeBoolean(value == TimeState::TimeAdvancing);
 
-    my_attribute_values_cache[object][attribute] = encodeBoolean(value == TimeState::TimeAdvancing);
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
+}
 
-    return provideAttributeValueUpdate(object, {attribute});
+Responses Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value)
+{
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyRegionDesignatorSets"];
+
+    auto object = my_federate_objects[federate_handle];
+    
+    const auto encoded_value = encodeBoolean(value);
+
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
+}
+
+Responses Mom::updateConveyProducingFederate(const FederateHandle federate_handle, const bool value)
+{
+    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyProducingFederate"];
+
+    auto object = my_federate_objects[federate_handle];
+    
+    const auto encoded_value = encodeBoolean(value);
+
+    if(my_attribute_values_cache[object][attribute] != encoded_value) {
+        my_attribute_values_cache[object][attribute] = encoded_value;
+        
+        return provideAttributeValueUpdate(object, {attribute});
+    }
+    return {};
 }
 
 Responses Mom::updateLogicalTime(const FederateHandle federate_handle, const FederationTime& value)
@@ -590,28 +662,6 @@ Responses Mom::updateTimeAdvancingTime(const FederateHandle federate_handle, con
     my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeUInt32(value);
 
     return preparePeriodicAttributeValueUpdate(federate_handle, {attribute});
-}
-
-Responses Mom::updateConveyRegionDesignatorSets(const FederateHandle federate_handle, const bool value)
-{
-    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyRegionDesignatorSets"];
-
-    auto object = my_federate_objects[federate_handle];
-
-    my_attribute_values_cache[my_federate_objects[federate_handle]][attribute] = encodeBoolean(value);
-
-    return provideAttributeValueUpdate(object, {attribute});
-}
-
-Responses Mom::updateConveyProducingFederate(const FederateHandle federate_handle, const bool value)
-{
-    auto attribute = my_attribute_cache["HLAmanager.HLAfederate.HLAconveyProducingFederate"];
-
-    auto object = my_federate_objects[federate_handle];
-
-    my_attribute_values_cache[object][attribute] = encodeBoolean(value);
-
-    return provideAttributeValueUpdate(object, {attribute});
 }
 
 Responses

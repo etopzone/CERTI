@@ -452,7 +452,7 @@ Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, boo
 
     Debug(DNULL, pdDebug) << "Rcv NULL MSG (Federate=" << request.message()->getFederate()
                           << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
-
+        
     // Catch all exceptions because RTIA does not expect an answer anyway.
     try {
         return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))

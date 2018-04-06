@@ -1,4 +1,4 @@
-// Generated on 2018 April Tue, 03 at 16:00:12 by the CERTI message generator
+// Generated on 2018 April Thu, 05 at 11:41:47 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -574,16 +574,10 @@ void NM_Message_Null::serialize(libhla::MessageBuffer& msgBuffer)
     // Call parent class
     Super::serialize(msgBuffer);
     // Specific serialization code
-    // FIXME FIXME FIXME
-    //don't know how to serialize native field <lookahead> of type <FederationTime>
-    //probably no 'representation' given
+    msgBuffer.write_double(lookahead);
     msgBuffer.write_bool(state);
-    // FIXME FIXME FIXME
-    //don't know how to serialize native field <galt> of type <FederationTime>
-    //probably no 'representation' given
-    // FIXME FIXME FIXME
-    //don't know how to serialize native field <lits> of type <FederationTime>
-    //probably no 'representation' given
+    msgBuffer.write_double(galt);
+    msgBuffer.write_double(lits);
 }
 
 void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
@@ -591,24 +585,18 @@ void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
     // Call parent class
     Super::deserialize(msgBuffer);
     // Specific deserialization code
-    // FIXME FIXME FIXME
-    //don't know how to deserialize native field <lookahead> of type <FederationTime>
-    //probably no 'representation' given
+    lookahead = msgBuffer.read_double();
     state = msgBuffer.read_bool();
-    // FIXME FIXME FIXME
-    //don't know how to deserialize native field <galt> of type <FederationTime>
-    //probably no 'representation' given
-    // FIXME FIXME FIXME
-    //don't know how to deserialize native field <lits> of type <FederationTime>
-    //probably no 'representation' given
+    galt = msgBuffer.read_double();
+    lits = msgBuffer.read_double();
 }
 
-const FederationTime& NM_Message_Null::getLookahead() const
+const double& NM_Message_Null::getLookahead() const
 {
     return lookahead;
 }
 
-void NM_Message_Null::setLookahead(const FederationTime& newLookahead)
+void NM_Message_Null::setLookahead(const double& newLookahead)
 {
     lookahead = newLookahead;
 }
@@ -623,22 +611,22 @@ void NM_Message_Null::setState(const bool& newState)
     state = newState;
 }
 
-const FederationTime& NM_Message_Null::getGalt() const
+const double& NM_Message_Null::getGalt() const
 {
     return galt;
 }
 
-void NM_Message_Null::setGalt(const FederationTime& newGalt)
+void NM_Message_Null::setGalt(const double& newGalt)
 {
     galt = newGalt;
 }
 
-const FederationTime& NM_Message_Null::getLits() const
+const double& NM_Message_Null::getLits() const
 {
     return lits;
 }
 
-void NM_Message_Null::setLits(const FederationTime& newLits)
+void NM_Message_Null::setLits(const double& newLits)
 {
     lits = newLits;
 }
@@ -650,10 +638,10 @@ std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg)
     os << static_cast<const NM_Message_Null::Super&>(msg); // show parent class
     
     // Specific display
-    os << "  lookahead = " << "// TODO field <lookahead> of type <FederationTime>" << std::endl;
+    os << "  lookahead = " << msg.lookahead << std::endl;
     os << "  state = " << msg.state << std::endl;
-    os << "  galt = " << "// TODO field <galt> of type <FederationTime>" << std::endl;
-    os << "  lits = " << "// TODO field <lits> of type <FederationTime>" << std::endl;
+    os << "  galt = " << msg.galt << std::endl;
+    os << "  lits = " << msg.lits << std::endl;
     
     os << "[NM_Message_Null - End]" << std::endl;
     return os;

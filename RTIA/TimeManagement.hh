@@ -97,17 +97,11 @@ public:
     void setLookahead(FederationTimeDelta lookahead, Exception::Type& e);
     void setTimeConstrained(bool etat, Exception::Type& e);
     void setTimeRegulating(bool etat, FederationTime logical_time, FederationTimeDelta lookahead, Exception::Type& e);
-    void StopperAvanceTemps()
-    {
-        _avancee_en_cours = PAS_D_AVANCEE;
-    };
+    void StopperAvanceTemps();
 
     // Request Attribute Methods
     FederationTime requestFederationTime();
-    FederationTime requestFederateTime()
-    {
-        return (_heure_courante);
-    };
+    FederationTime requestFederateTime();
     FederationTimeDelta requestLookahead();
 
     /// Return the min of LBTS and the time stamp of the next TSO message
@@ -119,18 +113,9 @@ public:
      */
     void updateMinTxMessageDate(FederationTime TxMessageDate);
     
-    FederationTime requestLBTS()
-    {
-        return _LBTS;
-    };
-    bool requestContraintState()
-    {
-        return _is_constrained;
-    };
-    bool requestRegulateurState()
-    {
-        return _is_regulating;
-    };
+    FederationTime requestLBTS();
+    bool requestContraintState();
+    bool requestRegulateurState();
 
     /**
      * The different tick state values.
