@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
 #endif
 
     if (verboseLevel > 0) {
-        cout << "CERTI RTIG " VERSION " - Copyright 2002-2008  ONERA" << endl;
+        cout << "CERTI RTIG " VERSION " - Copyright 2002-2018  ONERA & ISAE-SUPAERO" << endl;
         cout << "This is free software ; see the source for copying "
              << "conditions. There is NO\nwarranty ; not even for "
              << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE." << endl
