@@ -476,14 +476,14 @@ TEST_F(FederationTest, RemoveRegulatorDoesNotWorkTwice)
 
 TEST_F(FederationTest, UpdateRegulatorNeedsValidFederateIfNotAnonymous)
 {
-    ASSERT_THROW(f.updateRegulator(ukn_federate, {}, {}, false, {}, {}, false), ::certi::FederateNotExecutionMember);
+    ASSERT_THROW(f.updateRegulator(ukn_federate, {}, false), ::certi::FederateNotExecutionMember);
 }
 
 TEST_F(FederationTest, UpdateRegulatorNeedsValidRegulatorIfNotAnonymous)
 {
     auto handle = f.add("regulator", fed_type, {}, ::certi::HLA_1_3, &federate_socket, 0, 0).first;
 
-    ASSERT_THROW(f.updateRegulator(handle, {}, {}, false, {}, {}, false), ::certi::RTIinternalError);
+    ASSERT_THROW(f.updateRegulator(handle, {}, false), ::certi::RTIinternalError);
 }
 
 // TODO UpdateRegulator not tested
