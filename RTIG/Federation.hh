@@ -201,16 +201,20 @@ public:
     /// Update the current time of a regulator federate.
     Responses updateRegulator(FederateHandle federate_handle,
                               FederationTime time,
-                              FederationTime lookahead,
-                              bool time_manager_state,
-                              FederationTime galt,
-                              FederationTime lits,
                               bool anonymous);
 
     /// includes Time Regulation already disabled.
     Responses removeRegulator(FederateHandle federate_handle);
 
     Responses setConstrained(FederateHandle federate_handle, bool constrained, FederationTime time);
+
+    /// Update the current time of a regulator federate.
+    Responses updateTimeState(FederateHandle federate_handle,
+                              FederationTime time,
+                              FederationTime lookahead,
+                              bool time_manager_state,
+                              FederationTime galt,
+                              FederationTime lits);
 
     // Synchronization Management.
 

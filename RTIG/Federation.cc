@@ -504,10 +504,6 @@ Responses Federation::addRegulator(FederateHandle federate_handle, FederationTim
 
 Responses Federation::updateRegulator(FederateHandle federate_handle,
                                       FederationTime time,
-                                      FederationTime lookahead,
-                                      bool time_manager_state,
-                                      FederationTime galt,
-                                      FederationTime lits,
                                       bool anonymous)
 {
     Responses responses;
@@ -525,19 +521,6 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
         Debug(D, pdDebug) << "Federation " << my_handle << ": Federate " << federate_handle << "'s new time is "
                           << time.getTime() << endl;
         my_regulators.update(federate_handle, time);
-
-        if (my_mom) {
-            responses = my_mom->updateLogicalTime(federate_handle, time);
-            auto resp = my_mom->updateLookahead(federate_handle, lookahead);
-            responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
-            auto resp2 = my_mom->updateTimeManagerState(
-                federate_handle, time_manager_state ? Mom::TimeState::TimeAdvancing : Mom::TimeState::TimeGranted);
-            responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
-            auto resp3 = my_mom->updateGALT(federate_handle, galt);
-            responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
-            auto resp4 = my_mom->updateLITS(federate_handle, lits);
-            responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
-        }
     }
 
     auto msg = make_unique<NM_Message_Null>();
@@ -608,6 +591,31 @@ Responses Federation::setConstrained(FederateHandle federate_handle, bool constr
     if (my_mom) {
         auto resp = my_mom->updateTimeConstrained(federate);
         responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+    }
+
+    return responses;
+}
+
+Responses Federation::updateTimeState(FederateHandle federate_handle,
+                                      FederationTime time,
+                                      FederationTime lookahead,
+                                      bool time_manager_state,
+                                      FederationTime galt,
+                                      FederationTime lits)
+{
+    Responses responses;
+
+    if (my_mom) {
+        responses = my_mom->updateLogicalTime(federate_handle, time);
+        auto resp = my_mom->updateLookahead(federate_handle, lookahead);
+        responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+        auto resp2 = my_mom->updateTimeManagerState(
+            federate_handle, time_manager_state ? Mom::TimeState::TimeAdvancing : Mom::TimeState::TimeGranted);
+        responses.insert(end(responses), make_move_iterator(begin(resp2)), make_move_iterator(end(resp2)));
+        auto resp3 = my_mom->updateGALT(federate_handle, galt);
+        responses.insert(end(responses), make_move_iterator(begin(resp3)), make_move_iterator(end(resp3)));
+        auto resp4 = my_mom->updateLITS(federate_handle, lits);
+        responses.insert(end(responses), make_move_iterator(begin(resp4)), make_move_iterator(end(resp4)));
     }
 
     return responses;

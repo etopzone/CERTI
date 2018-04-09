@@ -1,4 +1,4 @@
-// Generated on 2018 April Thu, 05 at 11:41:47 by the CERTI message generator
+// Generated on 2018 April Mon, 09 at 11:21:11 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -567,84 +567,6 @@ NM_Message_Null::NM_Message_Null()
 {
     this->messageName = "NM_Message_Null";
     this->type = NetworkMessage::Type::MESSAGE_NULL;
-}
-
-void NM_Message_Null::serialize(libhla::MessageBuffer& msgBuffer)
-{
-    // Call parent class
-    Super::serialize(msgBuffer);
-    // Specific serialization code
-    msgBuffer.write_double(lookahead);
-    msgBuffer.write_bool(state);
-    msgBuffer.write_double(galt);
-    msgBuffer.write_double(lits);
-}
-
-void NM_Message_Null::deserialize(libhla::MessageBuffer& msgBuffer)
-{
-    // Call parent class
-    Super::deserialize(msgBuffer);
-    // Specific deserialization code
-    lookahead = msgBuffer.read_double();
-    state = msgBuffer.read_bool();
-    galt = msgBuffer.read_double();
-    lits = msgBuffer.read_double();
-}
-
-const double& NM_Message_Null::getLookahead() const
-{
-    return lookahead;
-}
-
-void NM_Message_Null::setLookahead(const double& newLookahead)
-{
-    lookahead = newLookahead;
-}
-
-const bool& NM_Message_Null::getState() const
-{
-    return state;
-}
-
-void NM_Message_Null::setState(const bool& newState)
-{
-    state = newState;
-}
-
-const double& NM_Message_Null::getGalt() const
-{
-    return galt;
-}
-
-void NM_Message_Null::setGalt(const double& newGalt)
-{
-    galt = newGalt;
-}
-
-const double& NM_Message_Null::getLits() const
-{
-    return lits;
-}
-
-void NM_Message_Null::setLits(const double& newLits)
-{
-    lits = newLits;
-}
-
-std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg)
-{
-    os << "[NM_Message_Null - Begin]" << std::endl;
-    
-    os << static_cast<const NM_Message_Null::Super&>(msg); // show parent class
-    
-    // Specific display
-    os << "  lookahead = " << msg.lookahead << std::endl;
-    os << "  state = " << msg.state << std::endl;
-    os << "  galt = " << msg.galt << std::endl;
-    os << "  lits = " << msg.lits << std::endl;
-    
-    os << "[NM_Message_Null - End]" << std::endl;
-    return os;
 }
 
 NM_Create_Federation_Execution::NM_Create_Federation_Execution()
@@ -5373,6 +5295,90 @@ NM_Next_Message_Request_Available::NM_Next_Message_Request_Available()
     this->type = NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE;
 }
 
+NM_Time_State_Update::NM_Time_State_Update()
+{
+    this->messageName = "NM_Time_State_Update";
+    this->type = NetworkMessage::Type::TIME_STATE_UPDATE;
+}
+
+void NM_Time_State_Update::serialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::serialize(msgBuffer);
+    // Specific serialization code
+    msgBuffer.write_double(lookahead);
+    msgBuffer.write_bool(state);
+    msgBuffer.write_double(galt);
+    msgBuffer.write_double(lits);
+}
+
+void NM_Time_State_Update::deserialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::deserialize(msgBuffer);
+    // Specific deserialization code
+    lookahead = msgBuffer.read_double();
+    state = msgBuffer.read_bool();
+    galt = msgBuffer.read_double();
+    lits = msgBuffer.read_double();
+}
+
+const double& NM_Time_State_Update::getLookahead() const
+{
+    return lookahead;
+}
+
+void NM_Time_State_Update::setLookahead(const double& newLookahead)
+{
+    lookahead = newLookahead;
+}
+
+const bool& NM_Time_State_Update::getState() const
+{
+    return state;
+}
+
+void NM_Time_State_Update::setState(const bool& newState)
+{
+    state = newState;
+}
+
+const double& NM_Time_State_Update::getGalt() const
+{
+    return galt;
+}
+
+void NM_Time_State_Update::setGalt(const double& newGalt)
+{
+    galt = newGalt;
+}
+
+const double& NM_Time_State_Update::getLits() const
+{
+    return lits;
+}
+
+void NM_Time_State_Update::setLits(const double& newLits)
+{
+    lits = newLits;
+}
+
+std::ostream& operator<<(std::ostream& os, const NM_Time_State_Update& msg)
+{
+    os << "[NM_Time_State_Update - Begin]" << std::endl;
+    
+    os << static_cast<const NM_Time_State_Update::Super&>(msg); // show parent class
+    
+    // Specific display
+    os << "  lookahead = " << msg.lookahead << std::endl;
+    os << "  state = " << msg.state << std::endl;
+    os << "  galt = " << msg.galt << std::endl;
+    os << "  lits = " << msg.lits << std::endl;
+    
+    os << "[NM_Time_State_Update - End]" << std::endl;
+    return os;
+}
+
 void New_NetworkMessage::serialize(libhla::MessageBuffer& msgBuffer)
 {
     // Specific serialization code
@@ -5794,6 +5800,9 @@ NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSig
             break;
         case NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE:
             msg = new NM_Next_Message_Request_Available();
+            break;
+        case NetworkMessage::Type::TIME_STATE_UPDATE:
+            msg = new NM_Time_State_Update();
             break;
         case NetworkMessage::Type::LAST:
             throw NetworkError("LAST message type should not be used!!");

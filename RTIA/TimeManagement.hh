@@ -67,6 +67,13 @@ public:
                    ObjectManagement* GO,
                    OwnershipManagement* GP);
 
+    /** Either nextEventRequest or timeAdvanceRequest is called by federate to
+     * determine time to reach. It then calls tick() until a timeAdvanceGrant is
+     * received.
+     */
+    void timeAdvanceRequest(FederationTime logical_time, Exception::Type& e);
+    void timeAdvanceRequestAvailable(FederationTime logical_time, Exception::Type& e);
+
     // Advance Time Methods
     void nextEventRequest(FederationTime logical_time, Exception::Type& e);
     void nextEventRequestAvailable(FederationTime logical_time, Exception::Type& e);
@@ -82,13 +89,6 @@ public:
      * @return true if there is more message for the federate to handle
      */
     bool tick(Exception::Type& e);
-
-    /** Either nextEventRequest or timeAdvanceRequest is called by federate to
-     * determine time to reach. It then calls tick() until a timeAdvanceGrant is
-     * received.
-     */
-    void timeAdvanceRequest(FederationTime logical_time, Exception::Type& e);
-    void timeAdvanceRequestAvailable(FederationTime logical_time, Exception::Type& e);
 
     /// Returns true if the time stamp of a time advance request is correct
     bool testValidTime(FederationTime logical_time);
@@ -152,7 +152,7 @@ public:
     /**
      * Is asynchronous delivery enabled/disabled.
      */
-    bool _asynchronous_delivery;
+    bool _asynchronous_delivery{false};
 
 private:
     /**
@@ -206,6 +206,8 @@ private:
     void sendNullPrimeMessage(FederationTime logical_time);
     void timeRegulationEnabled(FederationTime logical_time, Exception::Type& e);
     void timeConstrainedEnabled(FederationTime logical_time, Exception::Type& e);
+    
+    void sendTimeStateUpdate();
 
     // Other RTIA Objects
     Communications* comm;
@@ -216,7 +218,7 @@ private:
     OwnershipManagement* owm;
 
     /// Federate State
-    FederationTime lastNullMessageDate;
+    FederationTime lastNullMessageDate{0.0};
     
     /// Federate State for Null Message Prim Algorithm
     FederationTime lastNullPrimeMessageDate;
@@ -224,20 +226,15 @@ private:
     FederationTime lastCurrentTimeTxMessage;
 
     /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
-    TypeAvancee _avancee_en_cours;
+    TypeAvancee _avancee_en_cours{PAS_D_AVANCEE};
     FederationTime date_avancee;
     TypeGrantedState _type_granted_state;
 
     // Federate Data
-    FederationTime _heure_courante;
-    FederationTimeDelta _lookahead_courant;
-    bool _is_regulating;
-    bool _is_constrained;
-
-    uint8_t my_tar_counter{0};
-    uint8_t my_tara_counter{0};
-    uint8_t my_ner_counter{0};
-    uint8_t my_nera_counter{0};
+    FederationTime _heure_courante{0.0};
+    FederationTimeDelta _lookahead_courant{0.0};
+    bool _is_regulating{false};
+    bool _is_constrained{false};
 };
 }
 } // namespace certi/rtia

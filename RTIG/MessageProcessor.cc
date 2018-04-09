@@ -28,6 +28,7 @@ namespace rtig {
 static PrettyDebug D("RTIG", __FILE__);
 static PrettyDebug G("GENDOC", __FILE__);
 static PrettyDebug DNULL("RTIG_NULLMSG", "[RTIG NULL MSG]");
+static PrettyDebug DTUS("RTIG_TIME_UP", "[RTIG TIME UP]");
 static PrettyDebug MP("MESSAGEPROCESSOR", __FILE__);
 
 MessageProcessor::MessageProcessor(AuditFile& audit_server,
@@ -110,6 +111,7 @@ Responses MessageProcessor::processEvent(MessageEvent<NetworkMessage> request)
         BASIC_CASE(DDM_UNSUBSCRIBE_INTERACTION, NM_DDM_Unsubscribe_Interaction);
         BASIC_CASE(ENABLE_ASYNCHRONOUS_DELIVERY, NM_Enable_Asynchronous_Delivery);
         BASIC_CASE(DISABLE_ASYNCHRONOUS_DELIVERY, NM_Disable_Asynchronous_Delivery);
+        BASIC_CASE(TIME_STATE_UPDATE, NM_Time_State_Update);
 
     case NetworkMessage::Type::CLOSE_CONNEXION:
         throw RTIinternalError("Close connection: Should have been handled by RTIG");
@@ -458,10 +460,11 @@ Responses MessageProcessor::process(MessageEvent<NM_Message_Null>&& request, boo
         return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
             .updateRegulator(request.message()->getFederate(),
                              request.message()->getDate(),
+                             /*request.message()->getLogicalTime(),
                              request.message()->getLookahead(),
                              request.message()->getState(),
                              request.message()->getGalt(),
-                             request.message()->getLits(),
+                             request.message()->getLits(),*/
                              anonymous);
     }
     catch (Exception& e) {
@@ -1544,6 +1547,27 @@ Responses MessageProcessor::process(MessageEvent<NM_Disable_Asynchronous_Deliver
 {
     return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
         .updateAsynchronousDelivery(request.message()->getFederate(), false);
+}
+
+Responses MessageProcessor::process(MessageEvent<NM_Time_State_Update>&& request)
+{
+    Debug(DTUS, pdDebug) << "Rcv Time State Update (Federate=" << request.message()->getFederate()
+                          << ", Time = " << request.message()->getDate().getTime() << ")" << endl;
+        
+    // Catch all exceptions because RTIA does not expect an answer anyway.
+    try {
+        return my_federations.searchFederation(FederationHandle(request.message()->getFederation()))
+            .updateTimeState(request.message()->getFederate(),
+                             request.message()->getDate(),
+                             request.message()->getLookahead(),
+                             request.message()->getState(),
+                             request.message()->getGalt(),
+                             request.message()->getLits());
+    }
+    catch (Exception& e) {
+    }
+
+    return {};
 }
 }
 }
