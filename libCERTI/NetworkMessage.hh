@@ -155,6 +155,7 @@ public:
         NEXT_MESSAGE_REQUEST,
         NEXT_MESSAGE_REQUEST_AVAILABLE,
         TIME_STATE_UPDATE,
+        MOM_STATUS,
         LAST
     };
     

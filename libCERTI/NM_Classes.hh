@@ -1,4 +1,4 @@
-// Generated on 2018 April Mon, 09 at 11:21:10 by the CERTI message generator
+// Generated on 2018 April Fri, 13 at 11:41:23 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -2221,6 +2221,32 @@ public:
     virtual ~NM_Next_Message_Request_Available() = default;
     
 };
+
+
+class CERTI_EXPORT NM_Mom_Status : public NetworkMessage {
+public:
+    NM_Mom_Status();
+    virtual ~NM_Mom_Status() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    const bool& getMomState() const;
+    void setMomState(const bool& newMomState);
+    
+    const uint32_t& getUpdatePeriod() const;
+    void setUpdatePeriod(const uint32_t& newUpdatePeriod);
+    
+    using Super = NetworkMessage;
+    friend std::ostream& operator<<(std::ostream& os, const NM_Mom_Status& msg);
+
+protected:
+    bool momState;
+    uint32_t updatePeriod;
+};
+
+std::ostream& operator<<(std::ostream& os, const NM_Mom_Status& msg);
 
 
 class CERTI_EXPORT NM_Time_State_Update : public NetworkMessage {

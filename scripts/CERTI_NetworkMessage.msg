@@ -584,6 +584,11 @@ message NM_Next_Message_Request : merge NetworkMessage {
 message NM_Next_Message_Request_Available : merge NetworkMessage {
 }
 
+message NM_Mom_Status : merge NetworkMessage {
+    required bool momState
+    required uint32 updatePeriod
+}
+
 message NM_Time_State_Update : merge NetworkMessage {
     required double lookahead
     required bool state

@@ -430,13 +430,23 @@ Responses Mom::processInteraction(const InteractionClassHandle interaction_class
 
 Responses Mom::processFederateSetTiming(const FederateHandle& federate_handle, const int reportPeriod)
 {
+    Responses ret;
+    
     Debug(D, pdGendoc) << "enter Mom::processFederateSetTiming " << federate_handle << ", " << reportPeriod << endl;
 
     my_federates_update_settings[federate_handle].updateRate = std::chrono::seconds(reportPeriod);
-
+    
+    auto mom_msg = make_unique<NM_Mom_Status>();
+    mom_msg->setFederation(my_federation.getHandle().get());
+    mom_msg->setFederate(federate_handle);
+    mom_msg->setMomState(true);
+    mom_msg->setUpdatePeriod(my_federates_update_settings[federate_handle].updateRate.count());
+    
+    ret.emplace_back(my_federation.my_server->getSocketLink(federate_handle), std::move(mom_msg));
+    
     Debug(D, pdGendoc) << "exit  Mom::processFederateSetTiming" << endl;
 
-    return {};
+    return ret;
 }
 
 /** Modify the ownership state of an attribute of an object instance for the specified joined federate. If the

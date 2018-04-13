@@ -508,6 +508,11 @@ bool TimeManagement::requestRegulateurState()
     return _is_regulating;
 }
 
+void TimeManagement::setMomUpdateRate(const std::chrono::seconds updateRate)
+{
+    my_updateRate = updateRate;
+}
+
 void TimeManagement::advance(bool& msg_restant, Exception::Type& e)
 {
     switch (_avancee_en_cours) {
@@ -1051,7 +1056,13 @@ void TimeManagement::timeConstrainedEnabled(FederationTime logical_time, Excepti
 
 void TimeManagement::sendTimeStateUpdate()
 {
-    static NM_Time_State_Update last_msg;
+    if(my_updateRate == std::chrono::seconds(0)) {
+        // mom disabled or no periodic update, do nothing
+        return;
+    }
+    
+    static std::chrono::time_point<std::chrono::system_clock> my_lastUpdate{};
+    static NM_Time_State_Update last_msg{};
     NM_Time_State_Update msg;
 
     msg.setFederation(fm->getFederationHandle().get());
@@ -1071,10 +1082,16 @@ void TimeManagement::sendTimeStateUpdate()
         // nothing changed, do nothing
         return;
     }
+
+    auto now = std::chrono::system_clock::now();
     
-    comm->sendMessage(&msg);
-    last_msg = msg;
-    Debug(DTUS, pdDebug) << "Time State Update sent" << std::endl;
+    if(now - my_lastUpdate >= my_updateRate) {
+        comm->sendMessage(&msg);
+        last_msg = msg;
+        my_lastUpdate = now;
+        
+        Debug(DTUS, pdDebug) << "Time State Update sent" << std::endl;
+    }
 }
 }
 } // namespaces

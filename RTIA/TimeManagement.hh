@@ -24,6 +24,7 @@
 #define CERTI_RTIA_TIME_MANAGEMENT_HH
 
 #include <iostream>
+#include <chrono>
 
 #include <include/certi.hh>
 
@@ -116,6 +117,8 @@ public:
     FederationTime requestLBTS();
     bool requestContraintState();
     bool requestRegulateurState();
+    
+    void setMomUpdateRate(const std::chrono::seconds updateRate);
 
     /**
      * The different tick state values.
@@ -235,6 +238,8 @@ private:
     FederationTimeDelta _lookahead_courant{0.0};
     bool _is_regulating{false};
     bool _is_constrained{false};
+    
+    std::chrono::seconds my_updateRate{0};
 };
 }
 } // namespace certi/rtia

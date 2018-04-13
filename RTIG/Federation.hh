@@ -481,7 +481,7 @@ public:
     Federate& getFederate(FederateHandle federate_handle);
 
     RootObject& getRootObject();
-
+    
 private:
     friend class Mom;
 

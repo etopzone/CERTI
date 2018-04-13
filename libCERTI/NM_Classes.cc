@@ -1,4 +1,4 @@
-// Generated on 2018 April Mon, 09 at 11:21:11 by the CERTI message generator
+// Generated on 2018 April Fri, 13 at 11:41:23 by the CERTI message generator
 #include <string>
 #include <vector>
 #include "NM_Classes.hh"
@@ -5295,6 +5295,64 @@ NM_Next_Message_Request_Available::NM_Next_Message_Request_Available()
     this->type = NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE;
 }
 
+NM_Mom_Status::NM_Mom_Status()
+{
+    this->messageName = "NM_Mom_Status";
+    this->type = NetworkMessage::Type::MOM_STATUS;
+}
+
+void NM_Mom_Status::serialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::serialize(msgBuffer);
+    // Specific serialization code
+    msgBuffer.write_bool(momState);
+    msgBuffer.write_uint32(updatePeriod);
+}
+
+void NM_Mom_Status::deserialize(libhla::MessageBuffer& msgBuffer)
+{
+    // Call parent class
+    Super::deserialize(msgBuffer);
+    // Specific deserialization code
+    momState = msgBuffer.read_bool();
+    updatePeriod = msgBuffer.read_uint32();
+}
+
+const bool& NM_Mom_Status::getMomState() const
+{
+    return momState;
+}
+
+void NM_Mom_Status::setMomState(const bool& newMomState)
+{
+    momState = newMomState;
+}
+
+const uint32_t& NM_Mom_Status::getUpdatePeriod() const
+{
+    return updatePeriod;
+}
+
+void NM_Mom_Status::setUpdatePeriod(const uint32_t& newUpdatePeriod)
+{
+    updatePeriod = newUpdatePeriod;
+}
+
+std::ostream& operator<<(std::ostream& os, const NM_Mom_Status& msg)
+{
+    os << "[NM_Mom_Status - Begin]" << std::endl;
+    
+    os << static_cast<const NM_Mom_Status::Super&>(msg); // show parent class
+    
+    // Specific display
+    os << "  momState = " << msg.momState << std::endl;
+    os << "  updatePeriod = " << msg.updatePeriod << std::endl;
+    
+    os << "[NM_Mom_Status - End]" << std::endl;
+    return os;
+}
+
 NM_Time_State_Update::NM_Time_State_Update()
 {
     this->messageName = "NM_Time_State_Update";
@@ -5800,6 +5858,9 @@ NetworkMessage* NM_Factory::create(NM_Type type) throw (NetworkError ,NetworkSig
             break;
         case NetworkMessage::Type::NEXT_MESSAGE_REQUEST_AVAILABLE:
             msg = new NM_Next_Message_Request_Available();
+            break;
+        case NetworkMessage::Type::MOM_STATUS:
+            msg = new NM_Mom_Status();
             break;
         case NetworkMessage::Type::TIME_STATE_UPDATE:
             msg = new NM_Time_State_Update();

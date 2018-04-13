@@ -26,6 +26,9 @@
 #include <ctime>
 #include <iomanip>
 #include <libCERTI/PrettyDebug.hh>
+#include <libCERTI/NM_Classes.hh>
+
+#include "make_unique.hh"
 
 using std::cout;
 using std::endl;
@@ -314,6 +317,14 @@ Responses Mom::registerFederate(const Federate& federate, SocketTCP* tcp_link, c
 
     auto resp = provideAttributeValueUpdate(federate_object, attributes);
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
+    
+    auto mom_msg = make_unique<NM_Mom_Status>();
+    mom_msg->setFederation(my_federation.getHandle().get());
+    mom_msg->setFederate(federate.getHandle());
+    mom_msg->setMomState(true);
+    mom_msg->setUpdatePeriod(my_federates_update_settings[federate.getHandle()].updateRate.count());
+    
+    responses.emplace_back(tcp_link, std::move(mom_msg));
 
     Debug(D, pdGendoc) << "exit  Mom::registerFederate" << endl;
     return responses;
