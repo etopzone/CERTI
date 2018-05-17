@@ -49,15 +49,32 @@ int main(int argc, char** argv)
 {
     cout << "== CERTI MOM EXPLORER ==" << endl;
 
-    if (argc != 5) {
-        cout << "usage: ./mom_explorer federate_name {create,join} federation_name {auto,manual}" << endl;
+    if (!(argc == 5 || argc == 6)) {
+        cout << "usage: ./mom_explorer federate_name {create,join} federation_name {auto [period=1],manual}" << endl;
         return EXIT_FAILURE;
     }
 
-    wstring federate_name(argv[1], argv[1] + strlen(argv[1]));
-    wstring action(argv[2], argv[2] + strlen(argv[2]));
-    wstring federation_name(argv[3], argv[3] + strlen(argv[3]));
-    wstring mode(argv[4], argv[4] + strlen(argv[4]));
+    const wstring federate_name(argv[1], argv[1] + strlen(argv[1]));
+    const wstring action(argv[2], argv[2] + strlen(argv[2]));
+    const wstring federation_name(argv[3], argv[3] + strlen(argv[3]));
+    const wstring mode(argv[4], argv[4] + strlen(argv[4]));
+    const bool is_auto = (mode == L"auto");
+    int report_period = 1;
+
+    if (is_auto) {
+        if (argc == 6) {
+            report_period = std::stoi(argv[5]);
+        }
+        cout << "Start in auto mode, period=" << report_period << endl;
+    }
+    else {
+        if (argc != 5) {
+            cout << "usage: ./mom_explorer federate_name {create,join} federation_name {auto [period=1],manual}"
+                 << endl;
+            return EXIT_FAILURE;
+        }
+        cout << "Start in manual mode" << endl;
+    }
 
     try {
         auto amb_factory = make_unique<rti1516e::RTIambassadorFactory>();
@@ -68,7 +85,8 @@ int main(int argc, char** argv)
         ambassador = amb_factory->createRTIambassador();
         cout << "* Ambassador created" << endl << endl;
 
-        auto fed_ambassador = make_unique<MOMFederateAmbassador>(*ambassador, federation_name, federate_name);
+        auto fed_ambassador
+            = make_unique<MOMFederateAmbassador>(*ambassador, federation_name, federate_name, is_auto, report_period);
 
         fed_ambassador->connect();
 
@@ -82,7 +100,7 @@ int main(int argc, char** argv)
 
         fed_ambassador->publishAndsubscribeInteractions();
 
-        if (mode == L"auto") {
+        if (is_auto) {
             while (true) {
                 ambassador->evokeCallback(0.1);
                 //                 sleep(1);
@@ -90,9 +108,9 @@ int main(int argc, char** argv)
         }
         else {
             MomCli c(*ambassador, federation_name);
-            
+
             c.execute();
-            
+
             /*
             string request;
             while (getline(cin, request)) {

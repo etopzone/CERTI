@@ -104,7 +104,7 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
     } break;
     case DataType::HLAmoduleDesignatorList: {
         const auto str_count = static_cast<const uint32_t*>(data.data())[0];
-        if(str_count == 0) {
+        if (str_count == 0) {
             return L"{empty}";
         }
         auto pos(1u);
@@ -115,7 +115,7 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
                 ret += static_cast<const char*>(data.data())[(pos + 1) * 4 + j];
             }
             ret += L"\", ";
-            pos += 1 + size/4 + ((size % 4 == 0) ? 0 : 1);
+            pos += 1 + size / 4 + ((size % 4 == 0) ? 0 : 1);
         }
         ret = ret.substr(0, ret.size() - 2); // remove last ", "
     } break;
@@ -151,18 +151,18 @@ std::wstring decode(const std::wstring& object, const std::wstring& attribute, c
 
     } break;
     case DataType::HLAfederateState: {
-        switch(*static_cast<const uint32_t*>(data.data())) {
-            case 1:
-                ret += L"Active";
-                break;
-            case 3:
-                ret += L"Save in progress";
-                break;
-            case 5:
-                ret += L"Restore in progress";
-                break;
-            default:
-                ret += L"{error, unknown state}";
+        switch (*static_cast<const uint32_t*>(data.data())) {
+        case 1:
+            ret += L"Active";
+            break;
+        case 3:
+            ret += L"Save in progress";
+            break;
+        case 5:
+            ret += L"Restore in progress";
+            break;
+        default:
+            ret += L"{error, unknown state}";
         }
     } break;
     case DataType::HLAtimeState:
@@ -297,6 +297,12 @@ std::wostream& operator<<(std::wostream& os, const FederateRestoreStatus& v)
               << ", status: " << v.status << "] ";
 }
 
+int handle2int(const ObjectClassHandle h)
+{
+    const auto str = h.toString();
+    return std::stoi(str.substr(str.rfind('_') + 1));
+}
+
 /*
 std::wostream& operator<<(std::wostream& os, const XXX& v) {
     
@@ -306,8 +312,15 @@ std::wostream& operator<<(std::wostream& os, const XXX& v) {
 
 MOMFederateAmbassador::MOMFederateAmbassador(rti1516e::RTIambassador& ambassador,
                                              const std::wstring& federation_name,
-                                             const std::wstring& federate_name)
-    : my_ambassador(ambassador), my_federation_name(federation_name), my_federate_name(federate_name)
+                                             const std::wstring& federate_name,
+                                             const bool is_auto,
+                                             const int report_period
+                                            )
+    : my_ambassador(ambassador)
+    , my_federation_name(federation_name)
+    , my_federate_name(federate_name)
+    , my_auto_mode(is_auto)
+    , my_report_period(report_period)
 {
 }
 
@@ -585,7 +598,7 @@ void MOMFederateAmbassador::discoverObjectInstance(
     std::wstring const& theObjectInstanceName) throw(FederateInternalError)
 {
     std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << my_ambassador.getObjectClassName(theObjectClass) << ", " << theObjectInstanceName << ">" << std::endl;
+               << my_ambassador.getObjectClassName(theObjectClass) << " (" << theObjectClass << "), " << theObjectInstanceName << ">" << std::endl;
 
     if (theObjectClass == my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederation")) {
         my_federation = theObject;
@@ -627,6 +640,28 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
 
     for (const auto& pair : theAttributeValues) {
         my_data[theObject][pair.first] = pair.second;
+        
+        // federate.adjust set timing if in auto mode
+        if (my_auto_mode
+            && std::find(begin(my_federates), end(my_federates), theObject) != end(my_federates)
+            && my_ambassador.getAttributeName(
+                my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederate"), pair.first) == L"HLAfederateHandle") {
+            try {
+                const std::string tag = "";
+
+                auto ich = my_ambassador.getInteractionClassHandle(L"HLAmanager.HLAfederate.HLAadjust.HLAsetTiming");
+                
+                std::map<rti1516e::ParameterHandle, rti1516e::VariableLengthData> params = {
+                    {my_ambassador.getParameterHandle(ich, L"HLAfederate"), pair.second},
+                    {my_ambassador.getParameterHandle(ich, L"HLAreportPeriod"), {&my_report_period, 4}}};
+
+                my_ambassador.sendInteraction(ich, params, {tag.c_str(), tag.size()});
+            }
+            catch (rti1516e::Exception& e) {
+                std::wcerr << "**Caught exception: " << e << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        }
     }
 
     displayData();
