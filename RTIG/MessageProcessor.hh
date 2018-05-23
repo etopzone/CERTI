@@ -116,6 +116,7 @@ private:
     Responses process(MessageEvent<NM_Request_Class_Attribute_Value_Update>&& request);
     Responses process(MessageEvent<NM_Enable_Asynchronous_Delivery>&& request);
     Responses process(MessageEvent<NM_Disable_Asynchronous_Delivery>&& request);
+    Responses process(MessageEvent<NM_Time_State_Update>&& request);
 
     AuditFile& my_auditServer;
     SocketServer& my_socketServer;

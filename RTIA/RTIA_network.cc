@@ -451,6 +451,20 @@ void RTIA::processNetworkMessage(NetworkMessage* request)
         }
         break;
     }
+    
+    case NetworkMessage::Type::MOM_STATUS: {
+        NM_Mom_Status* status = static_cast<NM_Mom_Status*>(request);
+        Debug(D, pdTrace) << "Received mom status, enable=" << status->getMomState() << ", period=" << status->getUpdatePeriod() << std::endl;
+
+        if(status->getMomState() == false) {
+            tm.setMomUpdateRate(std::chrono::seconds(0));
+        }
+        else {
+            tm.setMomUpdateRate(std::chrono::seconds(status->getUpdatePeriod()));
+        }
+        
+        break;
+    }
 
     default: {
         Debug(D, pdTrace) << "Receving Message from RTIG, unknown type " << static_cast<int>(msgType) << std::endl;

@@ -169,10 +169,6 @@ message NM_FOM_Interaction_Class {
 message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {
-    required double lookahead
-    required bool state
-    required double galt
-    required double lits
 }
 
 // Create the federation execution
@@ -586,6 +582,18 @@ message NM_Next_Message_Request : merge NetworkMessage {
 }
 
 message NM_Next_Message_Request_Available : merge NetworkMessage {
+}
+
+message NM_Mom_Status : merge NetworkMessage {
+    required bool momState
+    required uint32 updatePeriod
+}
+
+message NM_Time_State_Update : merge NetworkMessage {
+    required double lookahead
+    required bool state
+    required double galt
+    required double lits
 }
 
 message New_NetworkMessage {

@@ -199,6 +199,8 @@ std::string Message::to_string(const Message::Type& msg_type)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_SUCCEEDED)
         CASE(Message::RESERVE_OBJECT_INSTANCE_NAME_FAILED)
+        CASE(Message::CREATE_FEDERATION_EXECUTION_V4)
+        CASE(Message::JOIN_FEDERATION_EXECUTION_V4)
     //         CASE(Message::LAST)
     default:
         return "Unknown NetworkMessage::Type";

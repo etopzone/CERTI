@@ -1,4 +1,4 @@
-// Generated on 2018 April Thu, 05 at 11:41:47 by the CERTI message generator
+// Generated on 2018 April Fri, 13 at 11:41:23 by the CERTI message generator
 #ifndef NM_CLASSES_HH
 #define NM_CLASSES_HH
 // ****-**** Global System includes ****-****
@@ -282,33 +282,7 @@ public:
     NM_Message_Null();
     virtual ~NM_Message_Null() = default;
     
-    virtual void serialize(libhla::MessageBuffer& msgBuffer);
-    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
-
-    // Attributes accessors and mutators
-    const double& getLookahead() const;
-    void setLookahead(const double& newLookahead);
-    
-    const bool& getState() const;
-    void setState(const bool& newState);
-    
-    const double& getGalt() const;
-    void setGalt(const double& newGalt);
-    
-    const double& getLits() const;
-    void setLits(const double& newLits);
-    
-    using Super = NetworkMessage;
-    friend std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);
-
-protected:
-    double lookahead;
-    bool state;
-    double galt;
-    double lits;
 };
-
-std::ostream& operator<<(std::ostream& os, const NM_Message_Null& msg);
 
 // Create the federation execution
 class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
@@ -2247,6 +2221,66 @@ public:
     virtual ~NM_Next_Message_Request_Available() = default;
     
 };
+
+
+class CERTI_EXPORT NM_Mom_Status : public NetworkMessage {
+public:
+    NM_Mom_Status();
+    virtual ~NM_Mom_Status() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    const bool& getMomState() const;
+    void setMomState(const bool& newMomState);
+    
+    const uint32_t& getUpdatePeriod() const;
+    void setUpdatePeriod(const uint32_t& newUpdatePeriod);
+    
+    using Super = NetworkMessage;
+    friend std::ostream& operator<<(std::ostream& os, const NM_Mom_Status& msg);
+
+protected:
+    bool momState;
+    uint32_t updatePeriod;
+};
+
+std::ostream& operator<<(std::ostream& os, const NM_Mom_Status& msg);
+
+
+class CERTI_EXPORT NM_Time_State_Update : public NetworkMessage {
+public:
+    NM_Time_State_Update();
+    virtual ~NM_Time_State_Update() = default;
+    
+    virtual void serialize(libhla::MessageBuffer& msgBuffer);
+    virtual void deserialize(libhla::MessageBuffer& msgBuffer);
+
+    // Attributes accessors and mutators
+    const double& getLookahead() const;
+    void setLookahead(const double& newLookahead);
+    
+    const bool& getState() const;
+    void setState(const bool& newState);
+    
+    const double& getGalt() const;
+    void setGalt(const double& newGalt);
+    
+    const double& getLits() const;
+    void setLits(const double& newLits);
+    
+    using Super = NetworkMessage;
+    friend std::ostream& operator<<(std::ostream& os, const NM_Time_State_Update& msg);
+
+protected:
+    double lookahead;
+    bool state;
+    double galt;
+    double lits;
+};
+
+std::ostream& operator<<(std::ostream& os, const NM_Time_State_Update& msg);
 
 
 class CERTI_EXPORT New_NetworkMessage {

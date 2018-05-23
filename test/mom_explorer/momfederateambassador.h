@@ -14,7 +14,10 @@ class MOMFederateAmbassador : public FederateAmbassador {
 public:
     MOMFederateAmbassador(RTIambassador& ambassador,
                           const std::wstring& federation_name,
-                          const std::wstring& federate_name);
+                          const std::wstring& federate_name,
+                          const bool is_auto = false,
+                          const int report_period = 1
+                         );
 
     virtual ~MOMFederateAmbassador() = default;
 
@@ -330,6 +333,9 @@ private:
 
     const std::wstring& my_federation_name;
     const std::wstring& my_federate_name;
+    
+    const bool my_auto_mode;
+    const int my_report_period;
 
     std::map<std::wstring, VariableLengthData> show(const AttributeHandleValueMap& map,
                                                     const ObjectInstanceHandle object_instance);
