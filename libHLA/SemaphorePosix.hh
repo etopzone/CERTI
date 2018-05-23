@@ -2,8 +2,12 @@
 #define SEMAPHORE_POSIX_H
 
 // Others Systems includes
-#include <features.h>
 #include <string>
+// Mac OS doesn't have this header glib specific
+// see https://savannah.nongnu.org/bugs/?53592
+#ifndef __APPLE__
+#include <features.h>
+#endif
 
 #include "libhla.hh"
 
