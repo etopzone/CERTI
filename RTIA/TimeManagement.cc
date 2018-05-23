@@ -155,18 +155,9 @@ void TimeManagement::nextEventRequest(FederationTime logical_time, Exception::Ty
     if (_avancee_en_cours != PAS_D_AVANCEE) {
         e = Exception::Type::TimeAdvanceAlreadyInProgress;
     }
-    /*
-     * We cannot send null prime in the past of
-     *  - the last NULL message
-     *  - the last NULL PRIME message
-     */
-    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
-        msg.setFederation(fm->getFederationHandle().get());
-        msg.setFederate(fm->getFederateHandle());
-        msg.setDate(logical_time);
-        comm->sendMessage(&msg);
-        lastNullPrimeMessageDate = logical_time;
-        Debug(DNULL, pdDebug) << "NULL PRIME message sent, Time = " << logical_time.getTime() << std::endl;
+
+    if (logical_time < _heure_courante) {
+        e = Exception::Type::FederationTimeAlreadyPassed;
     }
 
     //    This is check may be overkill because
@@ -1027,7 +1018,7 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) && (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
         msg.setFederation(fm->getFederationHandle().get());
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
