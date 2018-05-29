@@ -2182,6 +2182,26 @@ Federate& Federation::getFederate(const string& federate_name)
     return *it->second;
 }
 
+Responses Federation::respondToAll(std::unique_ptr<NetworkMessage> message, const FederateHandle except)
+{
+    Responses responses;
+
+    std::vector<Socket*> sockets;
+    for (const auto& pair : my_federates) {
+        if (pair.first != except) {
+#ifdef HLA_USES_UDP
+            sockets.push_back(my_server->getSocketLink(pair.first, BEST_EFFORT));
+#else
+            sockets.push_back(my_server->getSocketLink(pair.first));
+#endif
+        }
+    }
+
+    responses.emplace_back(sockets, std::move(message));
+
+    return responses;
+}
+
 Responses Federation::respondToSome(std::unique_ptr<NetworkMessage> message,
                                     const std::vector<FederateHandle>& recipients)
 {
