@@ -230,8 +230,8 @@ void parseModuleInto(const std::string& filepath, const FileType type, RootObjec
     if (fedFile.is_open()) {
         fedFile.close();
         if (type == FileType::Fed) {
-            // parse FED file and show the parse on stdout if parsing into the final root object
-            int err = fedparser::build(filepath.c_str(), &result, is_parsing_modules);
+            // parse FED file and show the parse on stdout if parsing into the temporary root object
+            int err = fedparser::build(filepath.c_str(), &result, !is_parsing_modules);
             if (err != 0) {
                 throw ErrorReadingFED("fed parser found error in FED file");
             }
