@@ -177,7 +177,25 @@ std::string filepathOf(const std::string& module)
 
         /* try to open FED using fom_paths prefixes */
         for (const std::string& path : fom_paths) {
-            filename = path + module;
+			/* Ensure that the path is complete and ends per / (linux) or \\ (windows) */
+			char last_character = path.back();
+#ifdef WIN32
+			char exp_last_character = '\\';
+#else
+			char exp_last_character = '/';
+#endif
+			if (last_character != exp_last_character)
+			{
+#ifdef WIN32
+				filename = path +  "\\" + module;
+#else
+				filename = path +  "/" + module;
+#endif
+			}
+			else
+			{
+				filename = path + module;
+			}
             filefound = (0 == STAT_FUNCTION(filename.c_str(), &file_stat));
             if (filefound) {
                 break;
