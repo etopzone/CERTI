@@ -536,10 +536,10 @@ add_definitions(-DRTI_USES_STD_FSTREAM)
 # The toggle to linker flag is a "quick fix" to avoid that
 # but this is not the end of the story we need to fix it for good.
 if (APPLE)
-   SET (CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_INIT} "-flat_namespace -undefined suppress"
+   SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} -flat_namespace -undefined suppress"
         CACHE STRING "Flags used by the linker during the creation of dll's." FORCE)
    # module linker flags
-   SET (CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_INIT} "-flat_namespace -undefined suppress"
+   SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS_INIT} -flat_namespace -undefined suppress"
         CACHE STRING "Flags used by the linker during the creation of modules." FORCE)
 
    #set(PROPERTY LINK_FLAGS_DEBUG "-flat_namespace -undefined suppress")
