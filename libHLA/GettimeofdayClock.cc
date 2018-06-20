@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2018  ISAE-SUPAERO & ONERA
 // Copyright (C) 2009 Mathias Froehlich
 //
 // This file is part of CERTI-libCERTI
