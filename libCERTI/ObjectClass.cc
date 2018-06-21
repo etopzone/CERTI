@@ -105,8 +105,7 @@ Responses ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, 
 
     Debug(G, pdGendoc) << "      ObjectClass::broadcastClassMessage handle " << handle << std::endl;
     // 2. Update message attribute list by removing child's attributes.
-    if ((ocbList->getMsg().getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES)
-        || (ocbList->getMsg().getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+    if ((ocbList->getMsg().getMessageType() == NetworkMessage::Type::REFLECT_ATTRIBUTE_VALUES)) {
         for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
             // If the attribute is not in that class, remove it from the message.
             if (hasAttribute(ocbList->getMsgRAV()->getAttributes(attr))) {
@@ -114,6 +113,17 @@ Responses ObjectClass::broadcastClassMessage(ObjectClassBroadcastList* ocbList, 
             }
             else {
                 ocbList->getMsgRAV()->removeAttributes(attr);
+            }
+        }
+    }
+    if ((ocbList->getMsg().getMessageType() == NetworkMessage::Type::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+        for (uint32_t attr = 0; attr < (ocbList->getMsgRAV()->getAttributesSize());) {
+            // If the attribute is not in that class, remove it from the message.
+            if (hasAttribute(ocbList->getMsgRAOA()->getAttributes(attr))) {
+                ++attr;
+            }
+            else {
+                ocbList->getMsgRAOA()->removeAttributes(attr);
             }
         }
     }
