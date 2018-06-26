@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2018  ISAE-SUPAERO & ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     cout << "== CERTI MOM EXPLORER ==" << endl;
 
     if (!(argc == 5 || argc == 6)) {
-        cout << "usage: ./mom_explorer federate_name {create,join} federation_name {auto [period=1],manual}" << endl;
+        cout << "usage: ./mom_explorer federate_name {create,join} federation_name {{auto, auto2} [period=1],manual}" << endl;
         return EXIT_FAILURE;
     }
 
@@ -58,8 +58,13 @@ int main(int argc, char** argv)
     const wstring action(argv[2], argv[2] + strlen(argv[2]));
     const wstring federation_name(argv[3], argv[3] + strlen(argv[3]));
     const wstring mode(argv[4], argv[4] + strlen(argv[4]));
-    const bool is_auto = (mode == L"auto");
+    const bool is_auto = (mode == L"auto") || (mode == L"auto2");
     int report_period = 1;
+    int report_style = 0;
+    
+    if (mode == L"auto2") {
+		report_style = 1;
+	}
 
     if (is_auto) {
         if (argc == 6) {
@@ -86,7 +91,7 @@ int main(int argc, char** argv)
         cout << "* Ambassador created" << endl << endl;
 
         auto fed_ambassador
-            = make_unique<MOMFederateAmbassador>(*ambassador, federation_name, federate_name, is_auto, report_period);
+            = make_unique<MOMFederateAmbassador>(*ambassador, federation_name, federate_name, is_auto, report_period, report_style);
 
         fed_ambassador->connect();
 

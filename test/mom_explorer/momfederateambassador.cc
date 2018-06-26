@@ -314,13 +314,15 @@ MOMFederateAmbassador::MOMFederateAmbassador(rti1516e::RTIambassador& ambassador
                                              const std::wstring& federation_name,
                                              const std::wstring& federate_name,
                                              const bool is_auto,
-                                             const int report_period
+                                             const int report_period,
+                                             const int report_style
                                             )
     : my_ambassador(ambassador)
     , my_federation_name(federation_name)
     , my_federate_name(federate_name)
     , my_auto_mode(is_auto)
     , my_report_period(report_period)
+    , my_report_style(report_style)
 {
 }
 
@@ -634,9 +636,9 @@ void MOMFederateAmbassador::reflectAttributeValues(ObjectInstanceHandle theObjec
                                                    TransportationType theType,
                                                    SupplementalReflectInfo theReflectInfo) throw(FederateInternalError)
 {
-    std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
-               << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
-               << theType << ", " << theReflectInfo << ">" << std::endl;
+    //std::wcout << ">>" << __func__ << " <" << my_ambassador.getObjectInstanceName(theObject) << ", "
+    //           << show(theAttributeValues, theObject) << ", " << theUserSuppliedTag << ", " << sentOrder << ", "
+    //           << theType << ", " << theReflectInfo << ">" << std::endl;
 
     for (const auto& pair : theAttributeValues) {
         my_data[theObject][pair.first] = pair.second;
@@ -991,7 +993,9 @@ MOMFederateAmbassador::show(const ParameterHandleValueMap& map,
 
 void MOMFederateAmbassador::displayData()
 {
-    std::wcout << std::endl;
+if (my_report_style == 0) {
+    
+    std::wcout << "style = "<< std::endl;
 
     std::wcout << "+ Federation" << std::endl;
     for (const auto& pair : my_data[my_federation]) {
@@ -1012,4 +1016,39 @@ void MOMFederateAmbassador::displayData()
         }
         std::wcout << std::endl;
     }
+    
 }
+else {
+    for (const auto& fed : my_federates) {
+        //std::wcout << "Federate" << std::endl;
+        for (const auto& pair : my_data[fed]) {
+            auto attribute_name = my_ambassador.getAttributeName(
+                my_ambassador.getObjectClassHandle(L"HLAmanager.HLAfederate"), pair.first);
+            if (attribute_name == L"HLAfederateName")  {
+                std::wcout << std::setw(22)
+                       << decode(L"HLAmanager.HLAfederate", attribute_name, pair.second)  << " ";
+			}
+		    else {
+				if (attribute_name == L"HLAlogicalTime")
+	                std::wcout 
+                           << decode(L"HLAmanager.HLAfederate", attribute_name, pair.second)  << " RURS ";			
+				else
+                    if (attribute_name == L"HLAtimeRegulating"||
+                        attribute_name == L"HLAtimeConstrained"||
+                        attribute_name == L"HLAfederateState" ||
+                        attribute_name == L"HLAtimeManagerState"||
+                        attribute_name == L"HLAreflectionsReceived"||                       
+                        attribute_name == L"HLAupdatesSent"||                       
+                        attribute_name == L"HLAinteractionsReceived"||                    
+                        attribute_name == L"HLAinteractionsSent"                        
+                       ) 
+                           std::wcout 
+                                << decode(L"HLAmanager.HLAfederate", attribute_name, pair.second)  << " ";
+            }
+      }
+      std::wcout << std::endl;       
+  }
+  std::wcout << std::endl;
+}
+}
+

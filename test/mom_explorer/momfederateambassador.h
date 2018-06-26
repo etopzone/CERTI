@@ -16,7 +16,8 @@ public:
                           const std::wstring& federation_name,
                           const std::wstring& federate_name,
                           const bool is_auto = false,
-                          const int report_period = 1
+                          const int report_period = 1,
+                          const int report_style = 0
                          );
 
     virtual ~MOMFederateAmbassador() = default;
@@ -336,6 +337,7 @@ private:
     
     const bool my_auto_mode;
     const int my_report_period;
+    const int my_report_style;
 
     std::map<std::wstring, VariableLengthData> show(const AttributeHandleValueMap& map,
                                                     const ObjectInstanceHandle object_instance);
