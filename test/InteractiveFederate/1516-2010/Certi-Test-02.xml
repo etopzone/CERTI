@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE objectModel SYSTEM "hla.dtd"><objectModel DTDversion="1516.2" name="Certi Test FOM - Object handles" type="FOM" version="1.0" date="2010-04-19" other="Created with Visual OMT 1516">
+<objects>
+<objectClass name="HLAobjectRoot" sharing="Neither">
+<attribute name="HLAprivilegeToDeleteObject" dataType="NA" updateType="NA" updateCondition="NA" ownership="DivestAcquire" sharing="PublishSubscribe" dimensions="NA" transportation="HLAreliable" order="TimeStamp"/>
+<objectClass name="TestObjectClass" sharing="PublishSubscribe">
+<attribute name="Data" dataType="TestInteger64LE" transportation="HLAreliable" order="TimeStamp"/>
+</objectClass>
+<objectClass name="TestObjectClassR" sharing="PublishSubscribe">
+<attribute name="DataR" dataType="TestInteger64LE" transportation="HLAreliable" order="Receive"/>
+</objectClass>
+</objectClass>
+</objects>
+<interactions>
+<interactionClass name="HLAinteractionRoot" sharing="Neither" dimensions="NA" transportation="HLAreliable" order="Receive">
+<interactionClass name="Msg" sharing="PublishSubscribe" dimensions="NA" transportation="HLAreliable" order="TimeStamp">
+<parameter name="MsgData" dataType="HLAbyte"/>
+</interactionClass>
+<interactionClass name="MsgR" sharing="PublishSubscribe" dimensions="NA" transportation="HLAreliable" order="Receive">
+<parameter name="MsgDataR" dataType="HLAbyte"/>
+</interactionClass>
+</interactionClass>
+</interactions>
+<synchronizations>
+<synchronization label="First" dataType="NA" capability="RegisterAchieve"/>
+<synchronization label="Second" dataType="NA" capability="RegisterAchieve"/>
+</synchronizations>
+</objectModel>

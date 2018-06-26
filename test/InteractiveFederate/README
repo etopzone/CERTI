@@ -1,0 +1,28 @@
+Summary
+The InteractiveFederation is composed of a various number of interactive federates.
+These federates can use the 1.3 or IEEE 1516-2000 or IEEE 1516-2010 standard.
+Each federate has a loop around an interactive menu that allows the user
+to call the main HLA services, to test ou to understand them.
+Type h for help.
+The user can do mistakes, the exceptions are catched.
+This code can be read do see how each call is done in C++.
+An (optional) automatic preamble corresponds to a suite of calls for the
+initialization phase of the federate.
+
+To develop the federate :
+- choose a subdirectory
+- set up the CERTI environment
+- make 
+The makefile is deliberately very simple (one target and four lines).
+(And source directory = install directory = execution directory)
+
+To execute the federation
+In different terminals, with the CERTI environment and the good working directory:
+rtig
+./InteractiveFederate one
+./InteractiveFederate two
+...
+
+To do:
+to use all the HLA services
+
