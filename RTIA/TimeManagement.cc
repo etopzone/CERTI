@@ -557,8 +557,13 @@ void TimeManagement::timeAdvance(bool& msg_restant, Exception::Type& e)
                 Debug(D, pdDebug) << "Logical time : " << date_avancee.getTime() << ", LBTS : " << _LBTS.getTime()
                                   << ", lookahead : " << _lookahead_courant.getTime() << std::endl;
             }
-
-            if ((date_avancee < _LBTS) || ((date_avancee == _LBTS) && (_avancee_en_cours == TARA))) {
+#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
+		// Using NMP protocol the NER advance must be agreed when date min = _LBTS from Anonymous update
+        //if ((date_min < _LBTS) || ((date_min <= _LBTS) && (_avancee_en_cours == NER))) {
+			if (date_avancee <= _LBTS) {
+#else
+			if ((date_avancee < _LBTS) || ((date_avancee <= _LBTS) && (_avancee_en_cours == TARA))) {
+#endif
                 // send a timeAdvanceGrant to federate.
                 timeAdvanceGrant(date_avancee, e);
 
