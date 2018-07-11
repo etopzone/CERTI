@@ -181,6 +181,7 @@ void TimeManagement::nextEventRequest(FederationTime logical_time, Exception::Ty
 
     _avancee_en_cours = NER;
     date_avancee = logical_time;
+    _nerTimeRequested = logical_time;
     sendNullPrimeMessage(logical_time);
     Debug(D, pdTrace) << "NextEventRequest accepted, lk=" << _lookahead_courant.getTime()
                         << ", date_avance=" << date_avancee.getTime() << std::endl;
@@ -478,19 +479,11 @@ FederationTime TimeManagement::requestMinNextEventTime()
 }
 
 void TimeManagement::updateMinTxMessageDate(FederationTime TxMessageDate)
-{
-    // Note that we always consider a valid time!
-    // if current time is bigger than last time
-    // it means that time advance has advanced
-    if (_heure_courante > lastCurrentTimeTxMessage) {
-        minTxMessageDate = TxMessageDate;
-        lastCurrentTimeTxMessage = _heure_courante;
-    }
-    else if (lastCurrentTimeTxMessage == _heure_courante) {
-        if (TxMessageDate < minTxMessageDate) {
-            minTxMessageDate = TxMessageDate;
-        }
-    }
+{ 
+    if (TxMessageDate > _heure_courante){
+		_MyEventTimestampList.push_back(TxMessageDate.getTime());
+		std::sort(_MyEventTimestampList.begin(), _MyEventTimestampList.end(), std::less<double>());
+	}
 }
     
 FederationTime TimeManagement::requestLBTS()
@@ -620,7 +613,13 @@ void TimeManagement::nextEventAdvance(bool& msg_restant, Exception::Type& e)
         Debug(D, pdDebug) << "TM::nextEventAdvance - date avancee=" << date_avancee.getTime()
                           << " date min=" << date_min.getTime() << " LBTS = " << _LBTS.getTime() << std::endl;
 
-        if ((date_min < _LBTS) || ((date_min <= _LBTS) && (_avancee_en_cours == NERA))) {
+#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
+		// Using NMP protocol the NER advance must be agreed when date min = _LBTS from Anonymous update
+        //if ((date_min < _LBTS) || ((date_min <= _LBTS) && (_avancee_en_cours == NER))) {
+        if (date_min <= _LBTS) {
+#else
+         if ((date_min < _LBTS) || ((date_min <= _LBTS) && (_avancee_en_cours == NERA))) {
+#endif
             // nextEventRequest is done because either a TSO message
             // can be delivered or no message with lower value than
             // expected time is avail.
@@ -631,7 +630,11 @@ void TimeManagement::nextEventAdvance(bool& msg_restant, Exception::Type& e)
 
             // If federate is regulating, inform other federate we advanced.
             if (_is_regulating) {
+				#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
+				//sendNullPrimeMessage(date_min);
+				#else
                 sendNullMessage(date_min);
+                #endif
             }
 
             // Deliver to federate every TSO messages with time
@@ -654,18 +657,30 @@ void TimeManagement::nextEventAdvance(bool& msg_restant, Exception::Type& e)
             // Federate can't advance up to expected time but up to LBTS. Other
             // federates are informed and no TSO message are sent.
             if (_is_regulating) {
-                /* The following NULL message is part of the classical CMB NULL MESSAGE algorithm */
-                sendNullMessage(_LBTS);
+				#ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
                 /**
                  * The following NULL PRIME message is part of SN NULL MESSAGE PRIME algorithm
                  * This message is sent because we did receive some anonymous NULL message
                  * in the past and we are still NERing so RTIG may be interested (again)
                  * in our wanted advance time.
                  */
-                if (hasReceivedAnonymousUpdate()) {
-                    Debug(D, pdDebug) << "TM::nextEventAdvance - (re)sending NULL PRIME" << std::endl;
-                    sendNullPrimeMessage(date_avancee);
+                if (hasReceivedAnonymousUpdate()){
+					std::vector<double> MyEventTimestampTmp;
+					for (std::vector<double>::iterator it = _MyEventTimestampList.begin() ; it != _MyEventTimestampList.end(); ++it){
+						if (*it > getLastAnonymousUpdate().getTime() && (fabs(*it - getLastAnonymousUpdate().getTime()) > epsilon2) ){
+							MyEventTimestampTmp.push_back(*it);
+						}
+					}
+					FederationTime EchoBackNMP;
+					_MyEventTimestampList = MyEventTimestampTmp;
+					EchoBackNMP = sendNullPrimeMessage(_nerTimeRequested);
+					Debug(D, pdDebug) << "TM::Anonymous NMP received from RTIG with ts = " << getLastAnonymousUpdate().getTime() << "echo back with ts = " << EchoBackNMP.getTime() << std::endl;
+					resetAnonymousUpdate();
                 }
+                #else
+                /* The following NULL message is part of the classical CMB NULL MESSAGE algorithm */
+                sendNullMessage(_LBTS);
+                #endif
             }
         }
     }
@@ -705,9 +720,6 @@ void TimeManagement::timeAdvanceGrant(FederationTime logical_time, Exception::Ty
     comm->requestFederateService(&req);
 
     _heure_courante = logical_time;
-    /* reset the sending of NULL PRIME message whenever we get TAG */
-    resetAnonymousUpdate();
-    
     sendTimeStateUpdate();
 }
 
@@ -986,22 +998,22 @@ void TimeManagement::sendNullMessage(FederationTime logical_time)
     // must be logical time + lookahead
     logical_time += _lookahead_courant;
 
-    if (logical_time > lastNullMessageDate) {
+    if (logical_time > _lastNullMessageDate) {
         msg.setFederation(fm->getFederationHandle().get());
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
 
         comm->sendMessage(&msg);
-        lastNullMessageDate = logical_time;
+        _lastNullMessageDate = logical_time;
         Debug(DNULL, pdDebug) << "NULL message sent, Time = " << logical_time.getTime() << std::endl;
     }
     else {
         Debug(DNULL, pdExcept) << "NULL message not sent, Time = " << logical_time.getTime()
-                               << ", Last = " << lastNullMessageDate.getTime() << std::endl;
+                               << ", Last = " << _lastNullMessageDate.getTime() << std::endl;
     }
 }
 
-void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
+FederationTime TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
 {
     NM_Message_Null_Prime msg;
 #ifdef CERTI_USE_NULL_PRIME_MESSAGE_PROTOCOL
@@ -1010,29 +1022,34 @@ void TimeManagement::sendNullPrimeMessage(FederationTime logical_time)
      * smaller than the requested advance time then it has to be the next
      * time advance timestamp
      */
-    if ((minTxMessageDate > _heure_courante) && (minTxMessageDate < logical_time)) {
-        logical_time = minTxMessageDate;
-    }
+     if (_MyEventTimestampList.size() > 0){
+		FederationTime smallestEventTimeStamp(_MyEventTimestampList[0]);
+		if ((smallestEventTimeStamp > _heure_courante) && (smallestEventTimeStamp < logical_time)) {
+			logical_time = smallestEventTimeStamp;
+			}
+	}
+    
     /*
      * We cannot send null prime in the past of
      *  - the last NULL message
      *  - the last NULL PRIME message
      */
-    if ((logical_time > lastNullMessageDate) || (logical_time > lastNullPrimeMessageDate)) {
+    if ((logical_time > _lastNullMessageDate) || (logical_time > _lastNullPrimeMessageDate)) {
         msg.setFederation(fm->getFederationHandle().get());
         msg.setFederate(fm->getFederateHandle());
         msg.setDate(logical_time);
         comm->sendMessage(&msg);
-        lastNullPrimeMessageDate = logical_time;
+        _lastNullPrimeMessageDate = logical_time;
         Debug(DNULL, pdDebug) << "NULL PRIME message sent, Time = " << logical_time.getTime() << std::endl;
     }
     else {
         Debug(DNULL, pdExcept) << "NULL PRIME message not sent, Time = " << logical_time.getTime()
-                               << ", Last NULL= " << lastNullMessageDate.getTime()
-                               << ", Last NULL PRIME = " << lastNullPrimeMessageDate.getTime() << std::endl;
+                               << ", Last NULL= " << _lastNullMessageDate.getTime()
+                               << ", Last NULL PRIME = " << _lastNullPrimeMessageDate.getTime() << std::endl;
     }
+   return logical_time;
 #else
-    (void) logical_time; // unused
+    return logical_time;
 #endif
 }
 

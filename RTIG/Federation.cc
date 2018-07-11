@@ -2106,7 +2106,7 @@ bool Federation::updateLastNERxForFederate(FederateHandle federate_handle, Feder
         //         for (HandleFederateMap::iterator i = _handleFederateMap.begin(); i != _handleFederateMap.end(); ++i) {
         for (const auto& kv : my_federates) {
             if (kv.second->isUsingNERx()) {
-                //federate_handle.setLastNERxValue(FedTime(0.0)); // not needed
+                kv.second->setLastNERxValue(FedTime(0.0)); // not needed
                 kv.second->setIsUsingNERx(false);
                 Debug(D, pdDebug) << "Federate <" << kv.second->getName() << "> not NERing anymore." << endl;
             }

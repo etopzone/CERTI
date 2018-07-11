@@ -118,6 +118,7 @@ void LBTS::update(FederateHandle federateHandle, FederationTime time)
     else {
         anonymousUpdateReceived = true;
         it = clocks.begin();
+        _LastAnonymousUpdateNMP = time;
     }
 
     do {

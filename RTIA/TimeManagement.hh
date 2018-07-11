@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <algorithm>    // std::sort
 
 #include <include/certi.hh>
 
@@ -206,7 +207,7 @@ private:
      *  @param[in] logicalTime the logical time of the NULL message to be sent
      */
     void sendNullMessage(FederationTime logical_time);
-    void sendNullPrimeMessage(FederationTime logical_time);
+    FederationTime sendNullPrimeMessage(FederationTime logical_time);
     void timeRegulationEnabled(FederationTime logical_time, Exception::Type& e);
     void timeConstrainedEnabled(FederationTime logical_time, Exception::Type& e);
     
@@ -221,12 +222,12 @@ private:
     OwnershipManagement* owm;
 
     /// Federate State
-    FederationTime lastNullMessageDate{0.0};
+    FederationTime _lastNullMessageDate{0.0};
     
     /// Federate State for Null Message Prim Algorithm
-    FederationTime lastNullPrimeMessageDate;
-    FederationTime minTxMessageDate;
-    FederationTime lastCurrentTimeTxMessage;
+    FederationTime _lastNullPrimeMessageDate{0.0};
+    FederationTime _nerTimeRequested{0.0};
+    std::vector<double> _MyEventTimestampList;
 
     /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
     TypeAvancee _avancee_en_cours{PAS_D_AVANCEE};

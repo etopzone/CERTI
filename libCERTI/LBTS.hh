@@ -98,6 +98,11 @@ public:
     {
         return anonymousUpdateReceived;
     };
+    
+    FederationTime getLastAnonymousUpdate() const
+    {
+        return _LastAnonymousUpdateNMP;
+    };   
 
     /**
      * The reception of anonymous update have been taken into account.
@@ -111,6 +116,7 @@ protected:
     FederationTime _LBTS;
     FederateHandle MyFederateNumber;
     bool anonymousUpdateReceived;
+    FederationTime _LastAnonymousUpdateNMP{0.0};
 
 private:
     typedef std::map<FederateHandle, FederationTime> ClockSet;
