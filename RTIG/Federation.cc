@@ -536,7 +536,7 @@ Responses Federation::updateRegulator(FederateHandle federate_handle,
     auto resp = respondToAll(std::move(msg), federate_handle);
     responses.insert(end(responses), make_move_iterator(begin(resp)), make_move_iterator(end(resp)));
 
-    Debug(DNULL, pdDebug) << "Send NULL MSG (Federate=" << msg->getFederate() << ", Time = " << msg->getDate().getTime()
+    Debug(DNULL, pdDebug) << "Send NULL MSG (Federate=" << federate_handle << ", Time = " << time.getTime()
                           << ")" << std::endl;
 
     return responses;
