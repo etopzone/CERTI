@@ -216,13 +216,13 @@ void Billard::enableTimeRegulation()
     debug() << __func__ << endl;
     my_ambassador->enableTimeConstrained();
 
-    while (not my_is_time_constrained) {
+    while (!my_is_time_constrained) {
         tick();
     }
 
     my_ambassador->enableTimeRegulation(my_time_interval);
 
-    while (not my_is_time_regulated) {
+    while (!my_is_time_regulated) {
         tick();
     }
 }
@@ -424,7 +424,7 @@ void Billard::waitForAnnounce(const std::wstring& label)
 
     show_sync_points();
 
-    while (not hasSynchronizationPending(label)) {
+    while (!hasSynchronizationPending(label)) {
         tick();
     }
 
@@ -464,7 +464,7 @@ void Billard::timeAdvanceGrant(const LogicalTime& theTime) throw(FederateInterna
 
 void Billard::waitForTimeAdvanceGrant()
 {
-    while (not my_time_granted) {
+    while (!my_time_granted) {
         tick();
     }
 }

@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
         ambassador->enableTimeConstrained();
 
-        while (not federate_ambassador.is_constrained) {
+        while (!federate_ambassador.is_constrained) {
             ambassador->evokeCallback(0);
         }
 
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
 
         ambassador->enableTimeRegulation(time_interval);
 
-        while (not federate_ambassador.is_regulator) {
+        while (!federate_ambassador.is_regulator) {
             ambassador->evokeCallback(0);
         }
 
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 
             ambassador->timeAdvanceRequest(next_time);
 
-            while (not federate_ambassador.is_granted) {
+            while (!federate_ambassador.is_granted) {
                 ambassador->evokeCallback(0);
             }
         }

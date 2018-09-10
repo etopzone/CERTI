@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
-
+#include <iterator>
 #include <RTI/Enums.h>
 #include <RTI/RTI1516.h>
 #include <RTI/RTI1516fedTime.h>

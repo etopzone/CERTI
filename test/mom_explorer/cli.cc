@@ -1,11 +1,12 @@
 #include "cli.h"
 
 #include <cassert>
-
+#include <iterator>
 #include <algorithm>
 #include <exception>
 #include <iomanip>
 #include <iostream>
+#include <string>
 
 std::ostream& nl(std::ostream& out)
 {
@@ -63,7 +64,7 @@ std::string cli::requestArgument(const std::string& arg_name)
 {
     std::cout << "  Please provide argument <" << arg_name << "> : " << std::flush;
     std::string buffer;
-    getline(std::cin, buffer);
+	std::getline(std::cin, buffer);
     return buffer;
 }
 

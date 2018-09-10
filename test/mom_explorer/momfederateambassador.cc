@@ -1,7 +1,7 @@
 #include "momfederateambassador.h"
 
 #include <cstring>
-
+#include <iterator>
 #include <algorithm>
 #include <iomanip>
 
