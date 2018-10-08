@@ -130,6 +130,8 @@ public:
   void
   callNMR ();
   void
+  callNMRA ();
+  void
   callCIOT ();
 
 
@@ -493,7 +495,8 @@ main (int argc, char **argv)
       //else if (commande=="tara") myInteractifFederate->callTARA();
       else if (commande == "nmr")
 	myInteractifFederate->callNMR ();
-      //else if (commande=="nera") myInteractifFederate->callNERA();
+      else if (commande=="nmra") 
+	myInteractifFederate->callNMRA();
       //else if (commande=="ead") myInteractifFederate->callEAD();
       //else if (commande=="dad") myInteractifFederate->callDAD();
       //else if (commande=="qlbts") myInteractifFederate->callQLBTS();
@@ -1940,6 +1943,7 @@ Federe_Interactif::callNMR (void)
   catch (rti1516e::Exception & e)
   {
     test = false;
+	wcout << "catch" << e.what() << endl;
   }
   if (test)
     wcout << endl << "t=" << tps->
@@ -1948,25 +1952,27 @@ Federe_Interactif::callNMR (void)
     wcout << "nextMessageRequest a echoue" << endl;
 }
 
-/*// nextEventRequestAvailable
-void callNERA (void)
+// nextEventRequestAvailable
+void 
+Federe_Interactif::callNMRA (void)
 {
     float d;
     int test = 1;
-    cout << endl << "t=" << temps->getTime() << " : Donner la date a laquelle vous souhaitez avancer : ";
+    wcout << endl << "t=" << tps->toString() << " : Donner la date a laquelle vous souhaitez avancer : ";
     cin >> d;
+	RTI1516fedTime fedTime(d);
     try {
-       myFedere_Interactif->nextEventRequestAvailable(*(new RTIfedTime(d)));
+       rtiAmb->nextMessageRequestAvailable(fedTime);
     }
     catch (rti1516e::Exception& e) {
         test = 0;
-        cout << "catch " << e._name << " reason " << e._reason << endl;
+        wcout << "catch " << e.what() << endl;
     }
     if (test)
-       cout << endl << "t=" << temps->getTime() << " nextEventRequestAvailable(" << d << ")" << endl;
+       wcout << endl << "t=" << tps->toString() << " nextEventRequestAvailable(" << d << ")" << endl;
     else
        cout << "nextEventRequestAvailable a echoue" << endl;
-}*/
+}
 
 /*// enableAsynchronousDelivery
 void callEAD (void)
